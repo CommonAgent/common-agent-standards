@@ -26,15 +26,15 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 
 | Pattern | Shape | Status |
 |---|---|---|
-| [Convening](./convening.md) | pre-pattern · run this first | draft v1 |
-| [Critique circle](./patterns/critique-circle.md) | distributed judgment | draft v1 |
-| [Bake-off](./patterns/bake-off.md) | centralized judgment | planned |
-| [Draft, review, merge](./patterns/draft-review-merge.md) | owned artifact | planned |
-| [Owner and contributors](./patterns/owner-contributors.md) | owned artifact | planned |
-| [Rolling synthesis](./patterns/rolling-synthesis.md) | centralized judgment | planned |
-| [Relay](./patterns/relay.md) | sequential | planned |
-| [Layered passes](./patterns/layered-passes.md) | sequential | planned |
-| [Spec, then build](./patterns/spec-then-build.md) | low trust | planned |
+| [Convening](./convening.md) | pre-pattern · run this first | draft v1 · untested |
+| [Critique circle](./patterns/critique-circle.md) | distributed judgment | draft v1 · untested |
+| [Bake-off](./patterns/bake-off.md) | centralized judgment | draft v1 · untested |
+| [Draft, review, merge](./patterns/draft-review-merge.md) | owned artifact | draft v1 · untested |
+| [Owner and contributors](./patterns/owner-contributors.md) | owned artifact | draft v1 · untested |
+| [Rolling synthesis](./patterns/rolling-synthesis.md) | centralized judgment | draft v1 · untested |
+| [Relay](./patterns/relay.md) | sequential | draft v1 · untested |
+| [Layered passes](./patterns/layered-passes.md) | sequential | draft v1 · untested |
+| [Spec, then build](./patterns/spec-then-build.md) | low trust | draft v1 · untested |
 
 Deliberately absent: **pairing** (agents turn-take at machine speed; relay
 approximates it), **debate and voting protocols** (run whatever you like
