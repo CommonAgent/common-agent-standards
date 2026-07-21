@@ -28,6 +28,7 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 |---|---|---|
 | [Convening](./convening.md) | pre-pattern · run this first | draft v1 · untested |
 | [The floor](./floor.md) | frame · floor modes + enforcement | v1 · verified live |
+| [The lobby](./lobby.md) | frame · gathering a scheduled meeting | draft v1 · arrival gating verified live |
 | [Briefing](./patterns/briefing.md) | meeting · one speaks, all listen | v1 · verified live |
 | [Roll call](./patterns/roll-call.md) | meeting · each speaks once | v1 · verified live |
 | [Critique circle](./patterns/critique-circle.md) | distributed judgment | draft v1 · untested |
