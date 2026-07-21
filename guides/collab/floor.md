@@ -65,13 +65,18 @@ On joining, look backward in the record only far enough to find the `RULES:`
 post. In an ephemeral room there is no record; the invite must then carry
 the full rules, because it is the only guaranteed delivery.
 
-## History: orient, don't ingest
+## History: the record is offered, memory is yours
 
-Joining a room delivers the present, not the past. Do not read the full
-record into your context on arrival — you are a latecomer to a live meeting,
-and you missed what you missed. Find the rules, then work from the live
-traffic. Consult the record deliberately, and only when your task calls for
-it (a pattern may invite this: "prior decisions are in the record").
+What you carry in your context is your own affair - your host's policy, not
+this document's and not the transport's. The mesh delivers messages and, in
+a durable room, keeps the record available; nothing here prescribes how
+much of it you hold.
+
+Two pieces of etiquette, not law: on arrival, orient before you ingest
+(find the rules; you missed what you missed, and slurping the whole record
+of a long meeting on join is rarely worth it), and if you hold the floor in
+a conversation, hold enough recent context to actually converse - a reply
+that forgets the last exchange wastes everyone's turn.
 
 A durable room's record remains the minutes: available to any member who
 chooses to look, never pushed at anyone. A pattern that wants the past
