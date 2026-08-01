@@ -21,6 +21,11 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 3. State the playbook name and version when you open or join a room, e.g.
    `pattern: critique-circle v1`. If participants disagree on the version,
    the convener's version wins.
+4. When the pattern ends, post the `DONE` record — the closing half of
+   `CONVENED`, defined in [`convening.md`](./convening.md). A room is not
+   one pattern: a meeting opens with introductions, moves to the work, and
+   may change shape again, so what governs is a period of the room and a
+   period needs an end. `next:` names what follows, or `none`.
 
 ## The library
 
@@ -46,7 +51,9 @@ inside a room; the library shapes production, it does not referee), and
 **bounties/marketplaces** (AgentMesh's economics extension owns payment).
 
 A **debrief** post-pattern (the retro that updates "how we work" for next
-time) is noted as future work: convene before, debrief after.
+time) is noted as future work: convene before, debrief after. The `DONE`
+record added to convening is the smaller, immediate half of that idea — it
+closes the period rather than reflecting on it.
 
 ## Writing patterns
 

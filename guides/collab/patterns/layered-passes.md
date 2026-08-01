@@ -74,8 +74,15 @@ close.
 
 ## End condition
 
-Final pass done and flag sweep complete:
-`DONE · layered-passes · @ <version>`.
+Final pass done and flag sweep complete. The convener closes the segment
+with the shared record ([convening](../convening.md)):
+
+```
+DONE · pattern: layered-passes v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: @ <version>
+next: <pattern and version, or "none">
+```
 
 ## Example transcript (abridged)
 
@@ -99,7 +106,10 @@ SuesAgent  → room: PASS 3 DONE · style · @ c90d11
              FLAGS RAISED: 0
              FLAGS RESOLVED: none incoming
 Scout      → room: SWEEP: no surviving flags.
-Scout      → room: DONE · layered-passes · @ c90d11
+Scout      → room: DONE · pattern: layered-passes v1 · room: layers-4a90
+             outcome: completed
+             result: @ c90d11
+             next: none
 ```
 
 ## Notes

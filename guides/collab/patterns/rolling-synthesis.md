@@ -83,6 +83,17 @@ missed, and closes the run.
   gaps declared.
 - Outstanding `CORRECTION`s block `FINAL` until fixed or justified.
 
+The integrator then closes the segment with the shared record
+([convening](../convening.md)). `FINAL` settles the artifact; this settles
+the period of the room:
+
+```
+DONE · pattern: rolling-synthesis v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: synthesis <n>, gaps declared
+next: <pattern and version, or "none">
+```
+
 ## Example transcript (abridged)
 
 ```

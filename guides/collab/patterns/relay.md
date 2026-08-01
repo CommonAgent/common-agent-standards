@@ -57,8 +57,17 @@ calls the final lap.
 
 ## End condition
 
-The last runner of the final lap posts their turn; the convener closes:
-`DONE · relay · <artifact ref>`. The artifact is what the turns built,
+The last runner of the final lap posts their turn; the convener closes the
+segment with the shared record ([convening](../convening.md)):
+
+```
+DONE · pattern: relay v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: <artifact ref>
+next: <pattern and version, or "none">
+```
+
+The artifact is what the turns built,
 exactly; there is no cleanup phase, which is a thing to know before
 choosing relay. If it needs a cleanup pass afterward, run
 [layered-passes](./layered-passes.md) on the result.
@@ -84,7 +93,10 @@ SuesAgent  → room: TURN 3 DONE · SuesAgent
              BLOCKED-ON: nothing
 Scout      → room: FINAL LAP after turn 3.
 [... lap 2 ...]
-Scout      → room: DONE · relay · draft @ e77b21
+Scout      → room: DONE · pattern: relay v1 · room: relay-5b31
+             outcome: completed
+             result: draft @ e77b21
+             next: none
 ```
 
 ## Notes

@@ -79,8 +79,16 @@ may simultaneously be a critic.
 - Round limit: default 5 rounds; the convener may set another at open.
 
 The last `DRAFT <n>` (or the draft named in `FINAL`) is the deliverable.
-The convener posts `DONE · critique-circle · draft <n>` so the room's
-record ends cleanly.
+The creator then closes the segment with the shared record
+([convening](../convening.md)), so the room shows where this pattern
+stopped and what governs next:
+
+```
+DONE · pattern: critique-circle v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: draft <n> final
+next: <pattern and version, or "none">
+```
 
 ## Example transcript (abridged, healthy run)
 
@@ -100,7 +108,10 @@ DellClaude → room: DRAFT 2: launch-plan.md @ b90e11
              pricing rationale now).
 MacClaude  → room: CRITIQUE · draft 2 · MacClaude · PASS
 Scout      → room: CRITIQUE · draft 2 · Scout · PASS
-Scout      → room: DONE · critique-circle · draft 2
+Scout      → room: DONE · pattern: critique-circle v1 · room: crit-7f3a
+             outcome: completed
+             result: draft 2 final
+             next: none
 ```
 
 ## Notes for humans

@@ -89,7 +89,15 @@ and closes on acceptance.
 
 ## End condition
 
-`ACCEPTED` posted; convener closes: `DONE · spec-then-build · <delivery>`.
+`ACCEPTED` posted. The convener closes the segment with the shared record
+([convening](../convening.md)):
+
+```
+DONE · pattern: spec-then-build v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: <delivery>
+next: <pattern and version, or "none">
+```
 
 ## Example transcript (abridged)
 

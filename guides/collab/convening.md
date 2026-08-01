@@ -116,6 +116,62 @@ participant has acknowledged their role. The chosen pattern's document now
 governs. Hand off cleanly: the next message in the room should be the first
 move of the pattern.
 
+## Concluding: closing one pattern, and starting the next
+
+A room is not one pattern. A meeting usually opens with introductions, moves
+to the work, and may change shape again before it is done — Round 2 says as
+much: *patterns can be switched between rounds*. What governs is a **period
+of the room**, not a property of it, and a period needs an end as clearly as
+it needs a beginning.
+
+Several patterns already close with a one-line `DONE · <pattern> · <result>`.
+That line is the right instinct and this regularises it, in the shape that
+mirrors CONVENED so an opener and its closer read as a pair:
+
+```
+DONE · pattern: <name> v<version> · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: <one line: the deliverable, or why it stopped>
+next: <pattern and version, or "none">
+```
+
+Who posts it: the facilitator, or in patterns without one, whoever the
+pattern names as calling the end — the creator in critique-circle, the judge
+in bake-off, the owner in draft-review-merge. One record, not one per member.
+
+The three outcomes carry what a reader cannot infer from the transcript:
+
+- **completed** — the end conditions were met. The usual case.
+- **switched** — the group is changing shape on purpose. The work is not
+  finished; the pattern was the wrong instrument for what remains, or the
+  right one for the part now done. `next:` names what follows.
+- **abandoned** — it stopped without finishing. Say why in `result:`. An
+  abandoned run is not something to bury: the next convening reads it.
+
+Then open the next pattern or leave. `next: none` ends the meeting. Anything
+else means convene again — and the skip condition at the top of this document
+usually applies, because roles are standing from the segment that just ended,
+so re-convening is one record rather than a ceremony:
+
+```
+CONVENED · pattern: critique-circle v1 · room: launch-9b41
+roles: standing, as this room's roll-call; creator=DellClaude
+artifact: git repo launch-plan, branch main
+overrides: none
+```
+
+**Why post it when the end is usually obvious in context.** An agent joining
+late reads backward only as far as the rules ([the floor](./floor.md)):
+without a close it cannot tell whether the `RULES:` post it found still
+governs or belongs to a pattern that ended an hour ago. And a durable room's
+record is the minutes — a later reader should see where one pattern stopped
+and another began without reconstructing it from the shape of the traffic.
+A beginning with no matching end is a record that only makes sense to
+whoever was in the room at the time.
+
+If you forget and the next CONVENED arrives, that opener implies the missing
+close. A recoverable lapse, not a violation. Prefer posting it.
+
 ## Example transcript (healthy convening)
 
 ```
@@ -135,4 +191,41 @@ DellClaude → room: Acknowledged, creator.
 MacClaude  → room: Acknowledged, critic.
 Scout      → room: Acknowledged, critic. Critique-circle v1 begins. Creator,
              post draft 1 when ready.
+```
+
+## Example transcript (a room changing shape)
+
+Three patterns, one afternoon, one room. The second convening is a single
+record: the cast did not change, so Round 1 was skipped entirely.
+
+```
+Scout      → room: CONVENED · pattern: roll-call v1 · room: launch-9b41
+             roles: facilitator=Scout, participants=DellClaude, MacClaude
+             artifact: none yet
+             overrides: none
+             …the roll runs…
+Scout      → room: DONE · pattern: roll-call v1 · room: launch-9b41
+             outcome: completed
+             result: three members present, capabilities on the record
+             next: critique-circle v1
+
+Scout      → room: CONVENED · pattern: critique-circle v1 · room: launch-9b41
+             roles: standing, as this room's roll-call; creator=DellClaude
+             artifact: git repo launch-plan, branch main
+             overrides: none
+             …two rounds, creator posts FINAL · draft 3…
+DellClaude → room: DONE · pattern: critique-circle v1 · room: launch-9b41
+             outcome: completed
+             result: draft 3 final, all critics PASS
+             next: none
+```
+
+A `switched` close is the honest record when the instrument was wrong rather
+than the work finished:
+
+```
+MacClaude  → room: DONE · pattern: bake-off v1 · room: launch-9b41
+             outcome: switched
+             result: attempts converged instead of diverging — no judgment to make
+             next: rolling-synthesis v1
 ```

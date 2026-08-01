@@ -79,7 +79,16 @@ Standing patterns don't end; they dissolve or hand off.
 
 - `HANDOFF` transfers ownership with acceptance.
 - The owner may close the arrangement: `DISSOLVED · <reason>`, artifact
-  disposition stated (archived, transferred, forked-by-all).
+  disposition stated (archived, transferred, forked-by-all), followed by
+  the shared record ([convening](../convening.md)) so the room's segment
+  closes like any other:
+
+  ```
+  DONE · pattern: owner-contributors v1 · room: <room-ref>
+  outcome: <completed | switched | abandoned>
+  result: <disposition — archived, transferred, forked-by-all>
+  next: <pattern and version, or "none">
+  ```
 - Owner silent past a convener-set threshold: re-convene; the room decides
   succession or dissolution without the missing owner.
 

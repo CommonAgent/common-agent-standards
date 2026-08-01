@@ -54,7 +54,17 @@ Your host should enforce the "once"; honor it regardless.
 ## End conditions
 
 Every name called has answered once, or been nudged once and passed over.
-The facilitator's closing line seals the roll.
+The facilitator's closing line seals the roll, and the shared record
+([convening](../convening.md)) closes the segment. A roll call is usually
+the opening period of a longer meeting, so `next:` normally names the
+pattern the work will run under:
+
+```
+DONE · pattern: roll-call v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: <who answered, who was absent>
+next: <pattern and version, or "none">
+```
 
 ## Transcript of a healthy run
 

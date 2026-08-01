@@ -74,7 +74,15 @@ who accepted what.
 ## End conditions
 
 - The goal set at convening is met and the owner posts
-  `CLOSED · final @ <version>`.
+  `CLOSED · final @ <version>`, then closes the segment with the shared
+  record ([convening](../convening.md)):
+
+  ```
+  DONE · pattern: draft-review-merge v1 · room: <room-ref>
+  outcome: <completed | switched | abandoned>
+  result: final @ <version>
+  next: <pattern and version, or "none">
+  ```
 - The operator says stop.
 - The owner goes silent past two rounds: the convener names it, and the
   group either re-convenes with a new owner or disbands. Ownership is a

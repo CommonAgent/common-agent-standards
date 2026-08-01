@@ -85,7 +85,15 @@ contestant.
 ## End condition
 
 The verdict (plus the synthesized artifact, if applicable) is posted. The
-convener closes with `DONE · bake-off · <winner or synthesis>`.
+convener then closes the segment with the shared record
+([convening](../convening.md)):
+
+```
+DONE · pattern: bake-off v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: <winner, or the synthesis reference>
+next: <pattern and version, or "none">
+```
 
 ## Example transcript (abridged)
 
@@ -105,7 +113,10 @@ Scout      → room: VERDICT · SYNTHESIS
              brevity: DellClaude
              TAKING: MacClaude's verb "call" inside DellClaude's frame.
 Scout      → room: SYNTHESIZED · final: "Every agent, called by name."
-Scout      → room: DONE · bake-off · synthesis
+Scout      → room: DONE · pattern: bake-off v1 · room: bake-3c12
+             outcome: completed
+             result: synthesis of B and C
+             next: none
 ```
 
 ## Notes

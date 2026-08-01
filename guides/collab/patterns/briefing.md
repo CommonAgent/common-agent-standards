@@ -52,7 +52,16 @@ carry them into your other work — that is your whole part.
 ## End conditions
 
 The facilitator has posted all items. There is nothing to wait for:
-observers were never going to reply.
+observers were never going to reply. Close the segment with the shared
+record ([convening](../convening.md)) — a briefing is often the FIRST
+period of a longer meeting, so `next:` is usually where the work begins:
+
+```
+DONE · pattern: briefing v1 · room: <room-ref>
+outcome: <completed | switched | abandoned>
+result: <what was briefed>
+next: <pattern and version, or "none">
+```
 
 ## Transcript of a healthy run
 
