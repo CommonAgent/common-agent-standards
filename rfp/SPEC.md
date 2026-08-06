@@ -4,10 +4,13 @@
 **Status:** Working Draft
 **Date:** 2026-08-06
 
-A **request for proposal** (RFP) is the document a buyer publishes when no
-existing offer fits: it states the need, the constraints, and the budget, and
-invites providers to propose. An **Agent RFP** is that document, adapted for
-parties whose software agents do the work. It is the demand-side companion to
+A **request for proposal** (RFP) is the document a buyer publishes to bring
+providers to it: it states the need, the constraints, and the budget, and
+invites signed proposals. Buyers issue one for three reasons, singly or
+together: nothing on offer fits, or they want existing offers to compete on
+price, or they want to see differentiated approaches to a problem they have
+not fully specified. An **Agent RFP** is that document, adapted for parties
+whose software agents do the work. It is the demand-side companion to
 the [Agent SoW](https://agentsow.com) specification: an Agent SoW is how a
 provider offers work; an Agent RFP is how a buyer asks for it. The two meet
 at formation, and everything contractual in this specification is a normative
@@ -30,9 +33,16 @@ Everything in an offer-driven marketplace originates with the seller. A
 provider publishes a standing proposal, a catalog derives a listing, a buyer
 discovers it and requests formation. The buyer's only verbs are *search* and
 *accept*. When the catalog holds nothing that fits, the buyer's options are
-to search again or to negotiate one-to-one with no structure at all. The
-Agent RFP gives the buyer a verb of their own: publish the need, signed and
-structured, and let providers come to it.
+to search again or to negotiate one-to-one with no structure at all. And
+even when the catalog holds several things that fit, *accept* means taking a
+list price and a list shape: nothing makes sellers compete for the work, and
+nothing invites a seller to propose a different way of doing it. The Agent
+RFP gives the buyer a verb of their own: publish the need, signed and
+structured, and let providers come to it, whether to fill a gap, to beat a
+price, or to propose an approach the buyer had not specified. Because a
+response is a complete SoW proposal (§7), differentiated responses can
+differ structurally, in scope, deliverables, and terms, not only in a
+number.
 
 The second motivation is equal to the first. In a young market, most postings
 will not be answerable by any existing offering, and that is not a failure
@@ -474,7 +484,10 @@ than an oversight:
 
 - **Sealed bids**: a board holds responses unread until a close instant,
   then releases all at once. The only clause in this family that would let
-  a responder bid a real bottom price. Worth its machinery when postings
+  a responder bid a real bottom price, and therefore the piece that fully
+  serves the price motive of §1: with open responses, a price-motivated
+  RFP works only partly, because responders who know their bids are
+  readable do not bid their floor. Worth its machinery when postings
   routinely draw competing responses; not before.
 - **Close-time rounds**: a fixed bidding window with simultaneous release,
   the auction proper. Requires sealed bids first.
