@@ -1,16 +1,21 @@
-# Feedback: Agent Reputation Specification
+# Agent Reputations: Agent Reputation Specification
 
-**Version:** 0.1-draft
-**Date:** 2026-07-31
-**Status:** Draft, no reference implementation yet
-**Canonical source:** SPEC-FEEDBACK.md (this document). Hosted at https://feedback.net.
-**Family:** AgentMesh (transport), PAN (naming), ANS (domain identity), Feedback (reputation)
+**Version:** 0.2-draft
+**Date:** 2026-08-06
+**Status:** Draft; first bureau implementation in progress alongside the AgentMesh stack
+**Canonical source:** SPEC-FEEDBACK.md (this document). Hosted at https://agentreputations.com.
+**Family:** AgentMesh (transport), PAN (naming), ANS (domain identity), Agent SoW (engagements), Agent Reputations (reputation)
+
+*Naming note: the protocol was drafted under the working name Feedback, and the
+signed tag prefixes (`fdbk-enroll-v1`, `fdbk-attest-v1`, `fdbk-score-1`, …) keep
+that prefix permanently — tags are stable identifiers, not branding. The product
+and bureau name is Agent Reputations.*
 
 ---
 
-PAN says who an agent is. AgentMesh carries what it says. Feedback records how it went.
+PAN says who an agent is. AgentMesh carries what it says. Agent Reputations records how it went.
 
-Feedback is a small protocol for agent reputation. It defines how evidence about
+Agent Reputations is a small protocol for agent reputation. It defines how evidence about
 agent interactions is collected, how it is stored so it cannot be quietly rewritten,
 how a score is computed from it deterministically, and how the answer is served in a
 signed, portable form. It is a ledger discipline with a formula on top, not a judging
@@ -23,7 +28,7 @@ fast, did it violate a declared promise) is recorded for any agent the mesh obse
 What a caller *thought* of the work — the quality layer — exists only for agents that
 enrolled. Nobody opts out of physics; everybody opts into judgment.
 
-Second, **scores are derived, never stored.** Every number Feedback serves is a pure
+Second, **scores are derived, never stored.** Every number a bureau serves is a pure
 function of the ledger and a versioned formula. Given the same ledger and the same
 formula version, any party computes the same score. A score that cannot be recomputed
 is an opinion with a haircut.
@@ -35,12 +40,12 @@ be interpreted as described in RFC 2119.
 
 ## 1. Terminology
 
-**Subject** — an agent about which Feedback holds evidence. Identified by its PAN
-handle (e.g. `Coder.ana@example.org`) or ANS name. Feedback does not mint identities;
+**Subject** — an agent about which a bureau holds evidence. Identified by its PAN
+handle (e.g. `Coder.ana@example.org`) or ANS name. Agent Reputations does not mint identities;
 it binds evidence to identities minted elsewhere.
 
 **Anchor** — the identity root behind a subject or evaluator, as defined by PAN (the
-email that owns the handle) or ANS (the domain). Feedback uses anchors to detect
+email that owns the handle) or ANS (the domain). A bureau uses anchors to detect
 self-dealing (§6.4) and to group a publisher's portfolio (§12.1).
 
 **Bureau** — a service that ingests evidence, maintains the ledger, computes scores,
@@ -54,7 +59,7 @@ only from reporters it is configured to trust (§4.2).
 about an interaction it participated in.
 
 **Interaction** — one call from a caller to a subject, identified by an interaction
-id, optionally carrying a parent id (§4.4).
+id, optionally carrying a parent id (§4.5).
 
 **Outcome** — the coded result of an interaction, drawn from the taxonomy in §5.
 
@@ -85,14 +90,14 @@ card.
 
 ## 2. Layering
 
-Feedback does one thing: it turns interaction evidence into a signed, recomputable
+Agent Reputations does one thing: it turns interaction evidence into a signed, recomputable
 reputation report. It does not transport messages (AgentMesh), name agents (PAN,
 ANS), discover agents (ARD), route or select agents (a consumer concern), move money,
 or arbitrate quality disputes.
 
-Feedback is normative for the mesh in one direction only: a mesh that emits
+Agent Reputations is normative for the mesh in one direction only: a mesh that emits
 interaction facts to a bureau MUST emit them in the forms defined here. Nothing in
-the mesh requires a bureau to exist. An agent network without Feedback still runs;
+the mesh requires a bureau to exist. An agent network without a bureau still runs;
 it just doesn't remember.
 
 A bureau consumes PAN/ANS in the usual way: it resolves handles, verifies cards, and
@@ -241,7 +246,51 @@ normal weight. A bureau MUST record `library_version` so a probe-derived score c
 dated. Everything else about probes — libraries, rotation, indistinguishability,
 classification, appeals — is the companion specification's problem, deliberately.
 
-### 4.4. Attribution
+### 4.4. Engagements as an evidence source
+
+Since this specification was first drafted, the Agent SoW specification
+(https://agentsow.com) has defined **engagements**: signed statements of work
+under which two agents do recurring tasks, with signed task histories, mechanical
+deliverable checks, problem reports, metering receipts, and a post-engagement
+review. An engagement is the richest evidence source a bureau can have, because
+every event in it is signed, witnessed by both runtimes, and attached to a real
+interaction by construction. A bureau operating alongside an Agent SoW runtime
+SHOULD treat engagements as its primary evidence source, mapped as follows.
+
+Identity mapping: the **capability** tag for engagement evidence is the offering
+identifier from the engagement's scope clause (Agent SoW §5.2). The
+**interaction_id** is the task id; the engagement id is carried in `detail`.
+The **reporter** is the platform runtime that enforced the engagement.
+
+| Agent SoW event | Evidence class | Outcome |
+|---|---|---|
+| Task completed, all named artifacts conform (SoW §5.4) | fact | `OK` |
+| Task completed after a problem report was resolved (SoW §14) | fact | `OK_CORRECTED` |
+| Completion claimed with a required artifact missing or malformed | fact | `FAILED_SILENT` |
+| Task failed, reported as failed by the subject | fact | `FAILED` |
+| Task declined up front | fact | `DECLINED` (candor, never quality) |
+| Task parked `input_required` awaiting the caller (SoW §5.3) | excluded from quality; counted as a fact statistic |
+| Post-engagement review: accepted (SoW §15) | attestation | `OK` |
+| Post-engagement review: rejected with reasons (SoW §15) | attestation | `FAILED_SILENT` |
+| Termination for cause by the client (SoW §5.9) | fact, recorded; MAY feed `contract_violations_90d`; not quality-scored in v1 |
+
+The completion-with-missing-artifact mapping deserves its sentence of rationale:
+a subject that claimed completion without producing what the document names was
+wrong while confident, and the fact that a runtime rather than a human caught it
+does not change the class of the failure.
+
+An engagement review satisfies the witnessed-interaction rule (§6.2) by
+construction: the review's signature tag (`agent-sow-review-v1`) binds it to an
+engagement whose signed task history the reporter holds. A bureau MUST verify
+that binding rather than assume it, and MUST apply the same eligibility rules to
+review-derived attestations as to any other (one per interaction, in-window,
+non-excluded).
+
+Evidence from outside engagements — one-off mesh calls observed by a reporter —
+remains valid under §4.2 unchanged. Engagements are the primary source, not the
+only one.
+
+### 4.5. Attribution
 
 Every fact carries an `interaction_id`; every fact for a call made *by an agent in
 service of another interaction* carries the `parent_id`. This makes the call DAG
@@ -433,7 +482,7 @@ The answer to a resolution query, signed like a PAN card:
     "promises": [ { "id": "p1", "class": "mesh-verifiable",
                      "text": "p95 latency under 5s", "held_90d": 1.0 } ],
     "formula_version": "fdbk-score-1",
-    "bureau": "https://feedback.net",
+    "bureau": "https://agentreputations.com",
     "issued_at": "2026-07-31T18:40:00.000Z",
     "expires_at": "2026-07-31T19:40:00.000Z"
   },
@@ -530,7 +579,7 @@ Assumptions, named:
 
 - **Identity cost lives upstream.** Every sybil, whitewash, and carousel defense in
   this document leans on PAN/ANS making identities stable and anchors meaningful.
-  Feedback on top of free, disposable identity is decoration. This is a stated
+  Reputation on top of free, disposable identity is decoration. This is a stated
   dependency, not a solved problem.
 - **Reporters are trusted witnesses.** A compromised reporter can forge facts.
   Configured reporter lists, reporter signatures, and L3 audits bound the damage;
@@ -550,7 +599,7 @@ Assumptions, named:
   interaction) and upstream identity cost. Farming attestations requires making
   real calls under real anchors, which costs real money and leaves real facts.
 - **Collusion rings** — visible at §8.2 (anchor concentration), excludable at §6.4.
-  Bureaus SHOULD additionally monitor closed rating loops across the DAG (§4.4);
+  Bureaus SHOULD additionally monitor closed rating loops across the DAG (§4.5);
   detection thresholds are legitimate tripwires (§10.3).
 - **Whitewashing** — breaks at §3.3 (permanent enrollment history), §7.4 (UNPROVEN
   ranks below RATED), and identity cost. The escape hatch is a new identity, and
@@ -575,16 +624,16 @@ Assumptions, named:
 
 ### 12.2. What this spec refuses to do
 
-Feedback MUST NOT serve an "average of stars." Every design in §5–§8 exists because
+A bureau MUST NOT serve an "average of stars." Every design in §5–§8 exists because
 scalar averages of unverified opinions are the failure mode this protocol was
 written against: they punish honesty, reward volume, hide sample size, and launder
 collusion. If an implementer strips the outcome taxonomy, the eligibility rules,
-and the confidence bound, what remains is not a smaller Feedback; it is the thing
-Feedback replaces.
+and the confidence bound, what remains is not a smaller system; it is the thing
+Agent Reputations replaces.
 
 ## 13. Out of scope
 
-- **Routing and selection.** Consumers rank; Feedback reports. Exploration budgets
+- **Routing and selection.** Consumers rank; the bureau reports. Exploration budgets
   (giving unproven agents a chance to become proven) are a consumer/mesh policy —
   a necessary one, since a mesh that always picks the top lcb ossifies — but they
   are policy, not protocol.
@@ -613,4 +662,6 @@ implementation and will be added to this document as a normative appendix.
 
 ---
 
-*Changes from nothing: this is the first draft. Argue with it.*
+*0.2-draft (2026-08-06): renamed to Agent Reputations (tags keep the fdbk prefix); added §4.4 Engagements as an evidence source, mapping Agent SoW task outcomes, problem reports, reviews, and terminations into the evidence classes; bureau URL updated.*
+
+*0.1-draft (2026-07-31): first draft. Argue with it.*
