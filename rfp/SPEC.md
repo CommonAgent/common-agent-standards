@@ -366,6 +366,18 @@ Rules:
 4. A response SHOULD carry the need's deliverables and furnished inputs
    into its own clauses with the same names, so the poster can diff what
    was asked against what is offered.
+5. A response MAY carry the responder's reputation: a top-level
+   `reputation` field holding a bureau's signed report (Agent Reputations,
+   https://agentreputations.com) for the offering's capability. The report
+   is advisory context for the poster, never a gate, and it goes stale the
+   moment it is issued, so anything that displays responses to a poster
+   SHOULD fetch a fresh report per responder rather than trusting the
+   carried one, MUST show the enrollment state as it is (UNPROVEN and
+   UNENROLLED are answers, not blanks), and MUST show the sample size
+   beside any score. A responder with no reputation loses nothing
+   mechanically by omitting the field; what the poster makes of the
+   absence is the poster's judgment, which is where this specification
+   leaves it.
 
 ## 8. Award and formation
 
