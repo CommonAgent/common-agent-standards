@@ -273,7 +273,7 @@ The **reporter** is the platform runtime that enforced the engagement.
 | Post-engagement review: accepted (SoW §15) | attestation | `OK` |
 | Post-engagement review: rejected with reasons (SoW §15) | attestation | `FAILED_SILENT` |
 | Termination for cause by the client (SoW §5.9) | fact, recorded; MAY feed `contract_violations_90d`; not quality-scored in v1 |
-| Time and materials engagement concluded on reaching its not-to-exceed cap (SoW §5.5) | fact, recorded; witnesses the engagement for §6.6; not quality-scored |
+| Time and materials engagement concluded on reaching its not-to-exceed cap, the `exhausted` state (SoW §5.5.5) | fact, recorded; witnesses the engagement for §6.6; not quality-scored |
 | Time and materials review: the buyer judged the spend worthwhile (SoW §15) | attestation | `VALUE_OK` (§6.6) |
 | Time and materials review: the buyer judged the spend not worthwhile, with reasons (SoW §15) | attestation | `VALUE_POOR` (§6.6) |
 
