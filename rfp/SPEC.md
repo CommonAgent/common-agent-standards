@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.1.0-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-06
+**Date:** 2026-08-07
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -104,8 +104,35 @@ A posting is a JSON document. The canonical form is JCS (RFC 8785) canonical
 JSON. The document identifier is:
 
 ```
-rfp_<base32(sha256(canonical bytes of version 1, minus signatures))[0..16]>
+rfp_<crockford32(sha256(canonical bytes of version 1, minus id and signatures))[0..16]>
 ```
+
+1. **The hashed bytes exclude `id` and `signatures`.** An implementation
+   MUST remove both members from the version-1 document, canonicalize what
+   remains under JCS, and hash that. `id` is excluded because the document
+   carries the identifier derived from it: bytes that contain `id` cannot be
+   assembled until the identifier is known, and the derivation would not
+   terminate. `signatures` is excluded because the signatures are made over
+   a document the identifier already names. The two exclusions are not the
+   same as the signed bytes of §6, which remove `signatures` only. The
+   signed bytes include `id`, because the identifier is derived before the
+   posting is signed. Two byte strings are therefore in play, and they are
+   not interchangeable: an implementation that hashes the signed bytes
+   derives the wrong identifier, and an implementation that signs the hashed
+   bytes produces a signature no verifier will accept.
+2. **`crockford32` is Crockford base32, lowercased.** The alphabet is
+   `0123456789abcdefghjkmnpqrstvwxyz`, which omits `i`, `l`, `o`, and `u`.
+   An implementation MUST emit lowercase, MUST NOT pad, MUST NOT insert
+   hyphens, and MUST NOT use Crockford's check symbol. The digest is
+   encoded five bits per character, most significant bit first, and the
+   first 16 characters are taken, which are the first 80 bits of the
+   digest. Crockford's decoding aliases, `o` for `0` and `i` or `l` for
+   `1`, are a reader's convenience and MUST NOT appear in an emitted
+   identifier. RFC 4648 base32 is not the encoding here and MUST NOT be
+   substituted: its alphabet has no `0`, `1`, `8`, or `9`.
+3. Two implementations following these rules derive the same identifier
+   from the same document. An implementation that derives a different one
+   is not conformant.
 
 The identifier is stable across replacements; each replacement increments an
 integer `version` starting at 1.
@@ -294,7 +321,9 @@ Owners sign postings, for the same reason owners sign engagements: a
 solicitation in the market is an act of the accountable principal, not of a
 process. The signed bytes are the ASCII prefix `agent-rfp-v1` followed by
 one newline, followed by the JCS canonical JSON of the posting with the
-`signatures` array removed.
+`signatures` array removed. The signed bytes include `id`, because the
+identifier is derived before the posting is signed. They are not the bytes
+hashed for the identifier, which remove `id` as well (§4.1).
 
 ```json
 "signatures": [
@@ -515,3 +544,60 @@ than an oversight:
 Each of these is triggered by observable board data, not by the calendar:
 when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
+
+---
+
+*0.1.0-draft (2026-08-06): first draft. §7, the response as a complete
+Agent SoW proposal rather than a second contract vocabulary, is the section
+the rest of the document rests on; argue with it first.*
+
+*0.1.0-draft, second pass (2026-08-06): §1 states the three motives for
+issuing a posting: nothing on offer fits, existing offers should compete on
+price, or the buyer wants approaches it has not specified.*
+
+*0.1.0-draft, third pass (2026-08-06): §7 rule 5: a response MAY carry the
+responder's reputation as a bureau's signed report, advisory to the poster
+and never a gate.*
+
+*0.2.0-draft (2026-08-07): two corrections to §4.1, both found while
+building a registry against the Agent Mandate specification, which carried
+the same two defects in the same form. Each is a place this document could
+not be implemented as written.*
+
+*§4.1, the hashed bytes. The identifier was derived from the canonical bytes
+of a document that carries the identifier, so the derivation never
+terminated. The bytes hashed for an identifier now exclude both `id` and
+`signatures`, which is the only reading that terminates. The signed bytes of
+§6 are unchanged and still exclude `signatures` alone, so the hashed bytes
+and the signed bytes are now two different byte strings. Both §4.1 and §6
+say so, because an implementer who reads one and assumes the other signs the
+wrong thing.*
+
+*§4.1, the encoding. The text said `base32` without naming an alphabet. RFC
+4648's alphabet has no `0`, `1`, `8`, or `9`, and `rfp_9c4t7w2m5k8q1x3e`,
+the identifier used throughout this document and the worked example,
+contains `9`, `8`, and `1`, so the document contradicted its own example.
+The encoding is now named: Crockford base32, lowercased, unpadded, no check
+symbol, first 16 characters of the digest encoding. Both document
+identifiers that appear here, the posting's and the response's, are clean
+under that alphabet and neither is decodable under RFC 4648.*
+
+*The minor version moves rather than the draft revision, and the choice was
+argued rather than assumed. The case against moving it is that neither
+reading was implementable: a derivation that does not terminate produces no
+identifiers, so no conformant deployment exists for a breaking change to
+break. The case for moving it is stronger. The alphabet defect on its own
+was implementable: a reader could pick RFC 4648, emit sixteen characters,
+and be wrong with nothing in the text to catch it. A reader who noticed the
+circularity would most likely have dropped `id` and carried on. Both roads
+produce identifiers, and an identifier derived under either does not in
+general equal one derived under this text. Identifiers here travel by
+reference into bytes that other parties sign: a response's
+`solicitation.rfp` sits inside the responder's signed bytes, and an award
+act names `posting` inside the poster's. A wrong identifier is therefore not
+a local error that regenerating fixes; it is inside somebody else's
+signature. The earlier passes added prose to a fixed document shape and left
+every document valid; these corrections do not, and the version number
+exists so that a reader can tell which text they are holding. This follows
+Agent Mandate 0.2.0-draft, which moved its minor version for the same
+reason.*
