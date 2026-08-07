@@ -1,7 +1,7 @@
 # Agent Reputations: Agent Reputation Specification
 
-**Version:** 0.2-draft
-**Date:** 2026-08-06
+**Version:** 0.3-draft
+**Date:** 2026-08-07
 **Status:** Draft; first bureau implementation in progress alongside the AgentMesh stack
 **Canonical source:** SPEC-FEEDBACK.md (this document). Hosted at https://agentreputations.com.
 **Family:** AgentMesh (transport), PAN (naming), ANS (domain identity), Agent SoW (engagements), Agent Reputations (reputation)
@@ -273,11 +273,26 @@ The **reporter** is the platform runtime that enforced the engagement.
 | Post-engagement review: accepted (SoW §15) | attestation | `OK` |
 | Post-engagement review: rejected with reasons (SoW §15) | attestation | `FAILED_SILENT` |
 | Termination for cause by the client (SoW §5.9) | fact, recorded; MAY feed `contract_violations_90d`; not quality-scored in v1 |
+| Time and materials engagement concluded on reaching its not-to-exceed cap (SoW §5.5) | fact, recorded; witnesses the engagement for §6.6; not quality-scored |
+| Time and materials review: the buyer judged the spend worthwhile (SoW §15) | attestation | `VALUE_OK` (§6.6) |
+| Time and materials review: the buyer judged the spend not worthwhile, with reasons (SoW §15) | attestation | `VALUE_POOR` (§6.6) |
 
 The completion-with-missing-artifact mapping deserves its sentence of rationale:
 a subject that claimed completion without producing what the document names was
 wrong while confident, and the fact that a runtime rather than a human caught it
 does not change the class of the failure.
+
+Concluding at the cap is the arrangement working as designed. Time and materials
+work is best effort, and the cap is the buyer's budget rather than a promise the
+provider made about an artifact. Scoring the conclusion would let the size of a
+buyer's budget move a provider's score, so it is recorded as a fact and left
+unscored, which is the treatment terminations already get.
+
+Because time and materials work names no deliverable, there is nothing to accept,
+and the accepted and rejected rows above MUST NOT be used for it. A buyer who
+rejected would be rejecting something the document never promised. The buyer is
+asked a different question instead, and the answer is a value judgment, defined
+in §6.6.
 
 An engagement review satisfies the witnessed-interaction rule (§6.2) by
 construction: the review's signature tag (`agent-sow-review-v1`) binds it to an
@@ -317,6 +332,8 @@ interaction resolves to exactly one code:
 | `FAILED_SILENT` | Wrong, but confident. Caller discovered the failure | 0.0 |
 | `CONTRACT` | Violated a declared promise (§9) | 0.0 |
 | `UNREACHABLE` | Transport failure; no answer | excluded (fact stat) |
+| `VALUE_OK` | Buyer judged the spend worthwhile; no deliverable was promised (§6.6) | 1.0, weighted per §7.6 |
+| `VALUE_POOR` | Buyer judged the spend not worthwhile; no deliverable was promised (§6.6) | 0.0, weighted per §7.6 |
 
 Two deliberate asymmetries, because a taxonomy is an incentive schedule:
 
@@ -329,6 +346,15 @@ refusal pays agents to bluff.
 0.0 for `FAILED_SILENT` is small, but it is the entire incentive to fail loudly.
 The distance between those two numbers is the price of honesty; a bureau MUST NOT
 set it to zero.
+
+**The last two codes answer a different question.** `VALUE_OK` and `VALUE_POOR`
+do not say the work was accepted or rejected. They say the buyer judged the spend
+worthwhile or not, on engagements where nothing was named that either party could
+accept (§6.6). They enter the pool at a reduced weight (§7.6), and reports
+disclose their share of it (§8.2), so a value judgment is never presented as an
+acceptance. A bureau MUST NOT record an acceptance code for work that promised
+effort rather than a deliverable, and MUST NOT record a value judgment for work
+that named deliverables.
 
 ## 6. Attestations
 
@@ -395,6 +421,56 @@ treatment (joint estimation of subject quality and evaluator reliability) is
 explicitly a future formula version; v1 bureaus satisfy this section with the
 recorded statistics and the two rules above.
 
+### 6.6. Value judgments
+
+Some engagements promise effort, not deliverables. Under the time and materials
+arrangement in Agent SoW (https://agentsow.com), the buyer sets a mandatory
+not-to-exceed cap, funds are reserved for a window, and reaching the cap concludes
+the work. No artifact is named, so there is nothing for either party to point at
+when the engagement ends. Acceptance is the wrong question there, and the codes in
+§5 that carry an acceptance meaning MUST NOT be used for it. Reusing them would
+let a buyer record a rejection of something the document never promised.
+
+A **value judgment** is the evaluator's signed answer to the question the
+arrangement does support: was the spend worth it. It is an attestation and it
+resolves to `VALUE_OK` or `VALUE_POOR`:
+
+    fdbk-value-v1:<interaction_id>:<subject>:<capability>:<outcome>:<amount>:<currency>:<units>:<ISO-8601 timestamp>
+
+signed with the evaluator's PAN-bound agent key. `amount` and `currency` are the
+settled spend; `units` is the metered quantity that spend paid for, in the units
+of the engagement's meter. Both SHOULD be present, and they are signed rather than
+attached as commentary so a reader can trust them. A poor rating on a large
+engagement and a poor rating on a small one are not the same evidence, and without
+the numbers a reader cannot tell them apart. A bureau that accepts a value
+judgment without them MUST record it as carrying no amount and MUST show that
+absence wherever the judgment is surfaced.
+
+`VALUE_POOR` requires a reason, on the same rule that governs rejection in Agent
+SoW §15. An unreasoned negative judgment is not evidence and MUST be rejected. The
+reason text is stored and never scored, per §6.1.
+
+The interaction a value judgment refers to is the engagement itself when the work
+produced no task records. The witnessed-interaction requirement of §6.2 is
+satisfied by the runtime's signed fact for that engagement, either the
+concluded-at-cap fact of §4.4 or the engagement's metering record, rather than by
+a task fact. The requirement is met by a different record, not waived.
+
+Every other guard applies unchanged: the eligibility rules and the attestation
+window (§6.2), one judgment per interaction per evaluator with later ones recorded
+as amendments (§6.2), the exclusions for self-dealing, declared competitors, and
+rate-limit excess (§6.4), the enrollment gate that keeps quality evidence off
+UNENROLLED subjects (§3.1), and the precedence in §6.3 under which a review
+outranks a mechanical form check, which outranks a transport fact.
+
+This is also the evidence source that reaches work the transport never saw. An
+agent whose engagement is a week of research inside one long conversation produces
+no task facts, no deliverable checks, and no derived outcomes, so the mechanical
+layers have nothing to record. The buyer's signed judgment is the only evidence
+there is. Facts remain the substrate wherever the mesh can measure, and where it
+can measure nothing, this is the difference between an agent with a record and an
+agent with none.
+
 ## 7. Scoring
 
 ### 7.1. The pool
@@ -450,6 +526,41 @@ events, the report MUST disclose that a portfolio prior is in effect, and direct
 evidence MUST dominate as it accumulates. A prior is a head start, not an
 inheritance.
 
+### 7.6. The weight of a value judgment
+
+A value judgment counts for less than an acceptance of named work. With no
+artifact to point at, the rating is more subjective and more disputable, and the
+honest way to price that is one constant a reader can see and argue with, not an
+adjustment buried in an implementation.
+
+For a value-judgment event, the decay weight of §7.2 is multiplied by `K_value`:
+
+    w_i = K_value · 2 ^ ( -age_days_i / H )
+
+`K_value` defaults to **0.5**, a constant of `fdbk-score-1` alongside `H` and the
+UNPROVEN threshold. As with the half-life, a bureau MAY choose differently, MUST
+publish the value it uses (§10.3), and MUST use one value per formula version. It
+MUST NOT set `K_value` above 1.0, and SHOULD NOT set it above 0.5: a judgment
+about whether money was well spent does not outweigh a judgment about work that
+was named and delivered.
+
+Because the multiplier lands on `w_i`, it reduces the event's effect on `mean`,
+`sd`, `lcb`, and `n_eff` together. Ten value judgments move a score about as far
+as five acceptances and leave the subject closer to UNPROVEN, which is the correct
+reading of thinner evidence. Nothing else in §7.3 changes.
+
+The amount and the metered units a value judgment carries (§6.6) are context for
+the reader, not inputs to the formula. `fdbk-score-1` does not weight by
+transaction value. Value-weighted scoring is named as future work in §12.1 and is
+not introduced here by the back door.
+
+Adding this kind changes no score computed before it existed, because no ledger
+written before this revision contains a value judgment, so the formula version
+stays `fdbk-score-1`. That is a fact about this change, not a general license: any
+implementation MUST state the formula version that produced a score it serves
+(§7.3, §10.4), and a bureau that changes the outcome values of §5 or the
+arithmetic of §7.3 MUST issue a new formula version rather than reuse this one.
+
 ## 8. Reports
 
 ### 8.1. The report
@@ -477,6 +588,7 @@ The answer to a resolution query, signed like a PAN card:
       "attester_anchors": 63,
       "top_anchor_share": 0.09,
       "probe_share": 0.06,
+      "value_judgment_share": 0.12,
       "portfolio_prior": false
     },
     "promises": [ { "id": "p1", "class": "mesh-verifiable",
@@ -503,6 +615,15 @@ every quality report and REQUIRED in any consumer display that shows the score.
 **A score without its sample size is a forgery of confidence.** The concentration
 fields are the collusion tell: sixty distinct anchors with a 9% top share is a
 reputation; four anchors with a 70% top share is a book club.
+
+`value_judgment_share` is REQUIRED whenever the pool contains a value judgment
+(§6.6), and REQUIRED in any consumer display that shows the score. It is the share
+of the pool's weight, after §7.6, that came from value judgments. A reader who
+cannot separate acceptances of named work from judgments about whether a spend was
+worth it is reading two different measurements as one number. A bureau MUST also
+serve, on the subject-scoped excerpt of §4.1, the amount and units carried by each
+value judgment about that subject, so a subject can see which engagements the
+judgments came from.
 
 ### 8.3. Facts-only reports
 
@@ -545,10 +666,11 @@ A conforming bureau:
    entry. Corrections append.
 2. MUST serve scores that are pure functions of (ledger, formula version), and
    MUST recompute rather than cache across formula versions.
-3. MUST publish its formula version, half-life, UNPROVEN threshold, prior policy,
-   evaluator-weighting method and version, cooling-off period, attestation window,
-   and rate ceilings. **Publish the method; withhold nothing but the tripwires.**
-   Anti-abuse detection thresholds are the one category a bureau MAY keep private.
+3. MUST publish its formula version, half-life, UNPROVEN threshold, value-judgment
+   weight (`K_value`, §7.6), prior policy, evaluator-weighting method and version,
+   cooling-off period, attestation window, and rate ceilings. **Publish the method;
+   withhold nothing but the tripwires.** Anti-abuse detection thresholds are the one
+   category a bureau MAY keep private.
 4. MUST version formula changes (`fdbk-score-2`, …) and re-serve historical queries
    under the version that was current at the time, on request.
 5. MUST verify every signature it relies on (enrollments, attestations, reporter
@@ -661,6 +783,20 @@ expected `a`, `b`, `mean`, `sd`, `lcb`, `n_eff` values) MUST accompany the first
 implementation and will be added to this document as a normative appendix.
 
 ---
+
+*0.3-draft (2026-08-07): added the time and materials mappings to §4.4. An
+engagement that concludes on reaching its not-to-exceed cap is recorded as a fact
+and left unscored, the same treatment terminations get, because concluding at the
+cap is the arrangement working as designed. Added value judgments as a distinct
+attestation kind (§6.6), signed under `fdbk-value-v1`, carrying the amount spent
+and the metered units, with the outcome codes `VALUE_OK` and `VALUE_POOR` (§5) and
+the weighting constant `K_value` defaulting to 0.5 (§7.6). Added
+`value_judgment_share` to reports (§8.1, §8.2) and `K_value` to the publication
+list (§10.3). The version moved from 0.2 to 0.3 because the outcome taxonomy and
+the report shape both changed, and an implementation built to 0.2 would be missing
+both. The formula
+version is unchanged at `fdbk-score-1`, since no ledger written before this
+revision contains a value judgment and no score computed under it moves.*
 
 *0.2-draft (2026-08-06): renamed to Agent Reputations (tags keep the fdbk prefix); added §4.4 Engagements as an evidence source, mapping Agent SoW task outcomes, problem reports, reviews, and terminations into the evidence classes; bureau URL updated.*
 
