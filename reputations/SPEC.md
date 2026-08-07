@@ -8,7 +8,7 @@
 
 *Naming note: the protocol was drafted under the working name Feedback, and the
 signed tag prefixes (`fdbk-enroll-v1`, `fdbk-attest-v1`, `fdbk-score-1`, …) keep
-that prefix permanently — tags are stable identifiers, not branding. The product
+that prefix permanently. Tags are stable identifiers, not branding. The product
 and bureau name is Agent Reputations.*
 
 ---
@@ -25,7 +25,7 @@ Two commitments shape everything below.
 
 First, **facts before opinions.** What the mesh measured (did the agent answer, how
 fast, did it violate a declared promise) is recorded for any agent the mesh observed.
-What a caller *thought* of the work — the quality layer — exists only for agents that
+What a caller *thought* of the work (the quality layer) exists only for agents that
 enrolled. Nobody opts out of physics; everybody opts into judgment.
 
 Second, **scores are derived, never stored.** Every number a bureau serves is a pure
@@ -40,52 +40,52 @@ be interpreted as described in RFC 2119.
 
 ## 1. Terminology
 
-**Subject** — an agent about which a bureau holds evidence. Identified by its PAN
+**Subject**: an agent about which a bureau holds evidence. Identified by its PAN
 handle (e.g. `Coder.ana@example.org`) or ANS name. Agent Reputations does not mint identities;
 it binds evidence to identities minted elsewhere.
 
-**Anchor** — the identity root behind a subject or evaluator, as defined by PAN (the
+**Anchor**: the identity root behind a subject or evaluator, as defined by PAN (the
 email that owns the handle) or ANS (the domain). A bureau uses anchors to detect
 self-dealing (§6.4) and to group a publisher's portfolio (§12.1).
 
-**Bureau** — a service that ingests evidence, maintains the ledger, computes scores,
+**Bureau**: a service that ingests evidence, maintains the ledger, computes scores,
 and answers queries with signed reports. The role parallels PAN's registrar.
 
-**Reporter** — a mesh, runtime, or gateway that observed interactions firsthand and
+**Reporter**: a mesh, runtime, or gateway that observed interactions firsthand and
 submits interaction facts to a bureau under its own signature. A bureau accepts facts
 only from reporters it is configured to trust (§4.2).
 
-**Evaluator** — a caller (agent or the human behind one) that submits an attestation
+**Evaluator**: a caller (agent or the human behind one) that submits an attestation
 about an interaction it participated in.
 
-**Interaction** — one call from a caller to a subject, identified by an interaction
+**Interaction**: one call from a caller to a subject, identified by an interaction
 id, optionally carrying a parent id (§4.5).
 
-**Outcome** — the coded result of an interaction, drawn from the taxonomy in §5.
+**Outcome**: the coded result of an interaction, drawn from the taxonomy in §5.
 
-**Attestation** — a signed, structured statement by an evaluator about the outcome
+**Attestation**: a signed, structured statement by an evaluator about the outcome
 of one interaction it participated in (§6).
 
-**Probe** — a synthetic interaction with a known-correct answer, injected to produce
+**Probe**: a synthetic interaction with a known-correct answer, injected to produce
 ground truth. This document defines how probe results enter the ledger (§4.3);
 operating a probe program is out of scope and belongs to a companion specification
 (working name: *Canary*).
 
-**Capability** — an opaque string tag scoping a subject's quality evidence
+**Capability**: an opaque string tag scoping a subject's quality evidence
 (e.g. `code-review`, `translation.en-es`). Quality is always per-capability. Tags are
 declared by the subject at enrollment and treated as opaque keys; a bureau MUST NOT
 parse them.
 
-**Promise** — a machine-readable commitment declared by a subject at enrollment
+**Promise**: a machine-readable commitment declared by a subject at enrollment
 (§9): a latency bound, a schema, a behavioral claim.
 
-**Ledger** — the bureau's append-only, hash-chained event log (§4). Evidence lands
+**Ledger**: the bureau's append-only, hash-chained event log (§4). Evidence lands
 here; nothing else does.
 
-**Report** — the signed answer to a reputation query (§8). The role parallels PAN's
+**Report**: the signed answer to a reputation query (§8). The role parallels PAN's
 card.
 
-**Enrollment** — a subject's opt-in to the quality layer, with the states defined in
+**Enrollment**: a subject's opt-in to the quality layer, with the states defined in
 §3.
 
 ## 2. Layering
@@ -114,13 +114,13 @@ cannot leave quietly.**
 
 Every subject known to a bureau is in exactly one state:
 
-- **UNENROLLED** — never opted in. Facts (§4.2) may still be served if a reporter
+- **UNENROLLED**: never opted in. Facts (§4.2) may still be served if a reporter
   observed the subject; quality evidence MUST NOT be solicited, accepted, or served.
-- **UNPROVEN** — enrolled, but a capability has insufficient evidence (§7.4). This
+- **UNPROVEN**: enrolled, but a capability has insufficient evidence (§7.4). This
   state is per-capability; a subject can be RATED for one capability and UNPROVEN
   for another.
-- **RATED** — enrolled, with sufficient evidence for the capability queried.
-- **WITHDRAWN** — previously enrolled, opted out. Last-known scores are served,
+- **RATED**: enrolled, with sufficient evidence for the capability queried.
+- **WITHDRAWN**: previously enrolled, opted out. Last-known scores are served,
   labeled with the withdrawal date. They decay on the normal schedule (§7.2) and are
   never silently deleted.
 
@@ -154,7 +154,7 @@ be less than 14 days). During cooling-off, attestations for interactions that be
 before the withdrawal request continue to land and continue to score. Rationale:
 without this, withdrawal is a free dodge of in-flight bad news.
 
-The enrollment history — enrolled_at, withdrew_at, re-enrolled_at — is permanent
+The enrollment history (enrolled_at, withdrew_at, re-enrolled_at) is permanent
 ledger content. A subject that re-enrolls resumes its prior evidence (decayed by the
 gap, per §7.2); it does not start clean. **A fresh start requires a fresh identity,
 and fresh identities rank below proven ones** (§7.4, §12.2).
@@ -182,11 +182,11 @@ updated or deleted. Each entry carries the hash of the previous entry:
 `entry_hash` is SHA-256 over the canonical JSON of the entry minus the two hash
 fields, concatenated with `prev_hash`. Actions: `enrolled`, `amended`, `withdrew`,
 `fact`, `attested`, `probed`, `excluded` (§6.4), `corrected` (§10, data-error
-repairs, which append a correction — they never rewrite).
+repairs, which append a correction and never rewrite).
 
 Ledger access is subject-scoped: a subject can retrieve every entry about itself
 (explainability is an obligation, §10), a reporter can retrieve what it submitted,
-and the public gets aggregate reports (§8) — not the raw feed. Rationale mirrors PAN
+and the public gets aggregate reports (§8), not the raw feed. Rationale mirrors PAN
 §6: audit for the owner, privacy against enumeration.
 
 ### 4.2. Facts
@@ -243,8 +243,9 @@ A probe result is a fact from a reporter operating a ground-truth program:
 
 Probe results enter the quality pool (§7.1) with value 1.0 (PASS) or 0.0 (FAIL) and
 normal weight. A bureau MUST record `library_version` so a probe-derived score can be
-dated. Everything else about probes — libraries, rotation, indistinguishability,
-classification, appeals — is the companion specification's problem, deliberately.
+dated. Everything else about probes is the companion specification's problem,
+deliberately: libraries, rotation, indistinguishability, classification, and
+appeals.
 
 ### 4.4. Engagements as an evidence source
 
@@ -301,7 +302,7 @@ that binding rather than assume it, and MUST apply the same eligibility rules to
 review-derived attestations as to any other (one per interaction, in-window,
 non-excluded).
 
-Evidence from outside engagements — one-off mesh calls observed by a reporter —
+Evidence from outside engagements (one-off mesh calls observed by a reporter)
 remains valid under §4.2 unchanged. Engagements are the primary source, not the
 only one.
 
@@ -312,8 +313,8 @@ service of another interaction* carries the `parent_id`. This makes the call DAG
 recoverable from the ledger.
 
 Accountability defaults to the direct callee. If A called B and B's subcontractor C
-failed, the caller's evidence lands on B. B chose C and didn't verify the work —
-same as a general contractor. Statistical re-attribution across many traces is
+failed, the caller's evidence lands on B. B chose C and didn't verify the work,
+the same as a general contractor. Statistical re-attribution across many traces is
 possible *because* parent ids exist, but it is an analysis someone runs later, not a
 scoring rule in this document. **Record the DAG now; argue about blame later.
 The first is unbackfillable, the second is not.**
@@ -365,14 +366,14 @@ An attestation is the evaluator's signed statement about one interaction:
     fdbk-attest-v1:<interaction_id>:<subject>:<capability>:<outcome>:<ISO-8601 timestamp>
 
 signed with the evaluator's PAN-bound agent key, submitted with an optional
-free-text note (stored, never scored — text is for the subject's remediation, not
-for the formula).
+free-text note (stored, never scored, because text is for the subject's
+remediation and not for the formula).
 
 ### 6.2. Eligibility
 
 A bureau MUST reject an attestation unless:
 
-1. The `interaction_id` matches a fact from a configured reporter — **no attestation
+1. The `interaction_id` matches a fact from a configured reporter. **No attestation
    without a witnessed interaction.** This single rule removes drive-by reviews,
    most ballot stuffing, and all rating of rivals one has never called.
 2. The evaluator's signature verifies against its currently resolved PAN card.
@@ -384,9 +385,9 @@ A bureau MUST reject an attestation unless:
 ### 6.3. Conflicts between attestation and derived outcome
 
 If an attestation contradicts the fact's derived outcome, the attestation wins for
-quality scoring — the caller knows things the transport cannot — but both are kept,
-and the disagreement rate per evaluator is a published evaluator statistic (§6.5).
-Facts are never edited to agree with opinions.
+quality scoring, because the caller knows things the transport cannot. Both are
+kept, and the disagreement rate per evaluator is a published evaluator statistic
+(§6.5). Facts are never edited to agree with opinions.
 
 ### 6.4. Exclusions
 
@@ -405,15 +406,15 @@ A bureau MUST exclude from scoring (recording the exclusion in the ledger):
 
 An evaluator that attests is accruing a track record. Bureaus MUST maintain, per
 evaluator: volume, outcome distribution, disagreement rate with derived outcomes,
-and — where probe ground truth passed through the evaluator — agreement with truth.
+and agreement with truth where probe ground truth passed through the evaluator.
 
 Two rules, one distinction:
 
 - **Bias is correctable.** An evaluator that is systematically harsh or generous but
   rank-orders subjects consistently is a good instrument with an offset. Bureaus
   SHOULD recenter, not punish.
-- **Noise is not.** An evaluator whose ratings carry no information — every subject
-  gets `OK`, or the distribution is indistinguishable from random — SHOULD be
+- **Noise is not.** An evaluator whose ratings carry no information (every subject
+  gets `OK`, or the distribution is indistinguishable from random) SHOULD be
   down-weighted toward zero.
 
 The weighting method and its version MUST be published (§10). The full statistical
@@ -500,8 +501,8 @@ great now, and an agent that was bad a year ago and diligent since is not bad no
     n_eff = a + b − 2
 
 This is a Beta posterior with a uniform prior, summarized by its mean and a lower
-confidence bound at roughly the 10th percentile. It is ordinary arithmetic — no
-iteration, no randomness, no lookup tables — and therefore recomputable by anyone
+confidence bound at roughly the 10th percentile. It is ordinary arithmetic with no
+iteration, no randomness, and no lookup tables, and therefore recomputable by anyone
 holding the events (verification levels, §8.4). This formula is
 **`fdbk-score-1`** and every report names the formula version it used.
 
@@ -633,11 +634,11 @@ and physics was never opt-in.
 
 ### 8.4. Verification levels
 
-- **L1** — verify the report signature. Every consumer, every time.
-- **L2** — request the subject-scoped event excerpt (with the subject's
+- **L1**: verify the report signature. Every consumer, every time.
+- **L2**: request the subject-scoped event excerpt (with the subject's
   authorization), recompute §7, compare. Confirms the formula was followed.
-- **L3** — audit the ledger chain itself: hash continuity, reporter signatures,
-  exclusion records. Confirms the evidence wasn't cooked.
+- **L3**: audit the ledger chain itself, checking hash continuity, reporter
+  signatures, and exclusion records. Confirms the evidence wasn't cooked.
 
 A bureau MUST support L2 for the subject itself (self-audit is how an agent
 developer debugs a score) and SHOULD offer L3 to independent auditors on published
@@ -648,12 +649,12 @@ terms.
 A promise is declared at enrollment, carried in reports, and classed by how it can
 be checked:
 
-- **mesh-verifiable** — checkable per-interaction from facts (latency bounds,
+- **mesh-verifiable**: checkable per-interaction from facts (latency bounds,
   schema conformance, availability floors). Reporters check these inline
   (`promise_checks`, §4.2); violations resolve the interaction to `CONTRACT`.
-- **probe-verifiable** — checkable only by sampling (behavioral claims: "always
+- **probe-verifiable**: checkable only by sampling (behavioral claims: "always
   cites sources"). Scored only where a probe program covers them.
-- **attested-only** — not checkable at runtime ("we do not retain your data").
+- **attested-only**: not checkable at runtime ("we do not retain your data").
   Carried in reports as declarations, clearly classed, and MUST NOT contribute to
   any score. An unverifiable promise is marketing, and a bureau that scores
   marketing is laundering it.
@@ -711,43 +712,43 @@ Assumptions, named:
   served, not completeness of what was ingested. Cross-bureau corroboration is
   future work (§13).
 - **Evaluators are partial.** The system is built so that partiality is measured
-  (§6.5), bounded (§6.2, §6.4), and visible (§8.2) — not absent.
+  (§6.5), bounded (§6.2, §6.4), and visible (§8.2), not so that it is absent.
 
 ## 12. Security considerations
 
 ### 12.1. Attacks and where they break
 
-- **Sybil evaluators** — break at §6.2 (no attestation without a witnessed
-  interaction) and upstream identity cost. Farming attestations requires making
+- **Sybil evaluators** break at §6.2 (no attestation without a witnessed
+  interaction) and at upstream identity cost. Farming attestations requires making
   real calls under real anchors, which costs real money and leaves real facts.
-- **Collusion rings** — visible at §8.2 (anchor concentration), excludable at §6.4.
-  Bureaus SHOULD additionally monitor closed rating loops across the DAG (§4.5);
-  detection thresholds are legitimate tripwires (§10.3).
-- **Whitewashing** — breaks at §3.3 (permanent enrollment history), §7.4 (UNPROVEN
+- **Collusion rings** are visible at §8.2 (anchor concentration) and excludable
+  at §6.4. Bureaus SHOULD additionally monitor closed rating loops across the
+  DAG (§4.5); detection thresholds are legitimate tripwires (§10.3).
+- **Whitewashing** breaks at §3.3 (permanent enrollment history), §7.4 (UNPROVEN
   ranks below RATED), and identity cost. The escape hatch is a new identity, and
   the new identity starts unproven at the bottom.
-- **Carousel / portfolio cycling** — a publisher shuffling agents under one anchor
-  is visible because evidence and priors group by anchor (§7.5); bureaus SHOULD
-  evaluate abuse at anchor level, not agent level.
-- **Cowardice (cherry-picking easy work)** — partially priced by design: declines
+- **Carousel / portfolio cycling** is visible because evidence and priors group by
+  anchor (§7.5), so a publisher shuffling agents under one anchor shows up there.
+  Bureaus SHOULD evaluate abuse at anchor level, not agent level.
+- **Cowardice (cherry-picking easy work)** is partially priced by design: declines
   are free but *counted* (`decline_rate`, §8.2), and consumers with hard tasks can
   read the candor block. Full difficulty normalization is future formula work.
-- **Reputation cashing (build cheap, defect big)** — out of scope until value flows
-  through the mesh; noted so nobody mistakes silence for a solution. When
+- **Reputation cashing (build cheap, defect big)** is out of scope until value flows
+  through the mesh, noted here so nobody mistakes silence for a solution. When
   transactions carry value, scores must be value-weighted and a record built at
   $0.001 must not underwrite a $10,000 call.
-- **Retaliation** — attestations are not served individually to subjects with
-  evaluator identity attached; subjects see aggregates and their own ledger
-  excerpt with evaluator anchors hashed. Retaliatory *scoring* by evaluator-agents
+- **Retaliation** is bounded because attestations are not served individually to
+  subjects with evaluator identity attached; subjects see aggregates and their
+  own ledger excerpt with evaluator anchors hashed. Retaliatory *scoring* by evaluator-agents
   shows up in §6.5 statistics.
-- **Stale-score coasting** — decay (§7.2) is the defense: silence is not evidence
+- **Stale-score coasting** is answered by decay (§7.2): silence is not evidence
   of quality, and a score with no recent evidence slides toward UNPROVEN as
   `n_eff` decays below the threshold.
 
 ### 12.2. What this spec refuses to do
 
-A bureau MUST NOT serve an "average of stars." Every design in §5–§8 exists because
-scalar averages of unverified opinions are the failure mode this protocol was
+A bureau MUST NOT serve an "average of stars." Every design in §5 to §8 exists
+because scalar averages of unverified opinions are the failure mode this protocol was
 written against: they punish honesty, reward volume, hide sample size, and launder
 collusion. If an implementer strips the outcome taxonomy, the eligibility rules,
 and the confidence bound, what remains is not a smaller system; it is the thing
@@ -756,22 +757,22 @@ Agent Reputations replaces.
 ## 13. Out of scope
 
 - **Routing and selection.** Consumers rank; the bureau reports. Exploration budgets
-  (giving unproven agents a chance to become proven) are a consumer/mesh policy —
-  a necessary one, since a mesh that always picks the top lcb ossifies — but they
-  are policy, not protocol.
-- **Probe operations** — the *Canary* companion: libraries, rotation,
+  (giving unproven agents a chance to become proven) are a consumer/mesh policy.
+  That policy is necessary, since a mesh that always picks the top lcb ossifies,
+  but it is policy rather than protocol.
+- **Probe operations.** The *Canary* companion covers libraries, rotation,
   indistinguishability, classification, appeals, and the legal and bias review
   that covert testing demands.
 - **Safety certification.** A probe program may measure refusal behavior; this
   document only defines how a probe result is recorded.
 - **Payments, escrow, staking, bonding.** If the mesh grows a value layer,
   reputation-priced escrow is the obvious extension, in its own document.
-- **Cross-bureau federation** — corroboration, migration of evidence between
+- **Cross-bureau federation.** Corroboration, migration of evidence between
   bureaus, and referral formats. The single-bureau trust model (§11) is honest
   about this gap.
 - **Human-readable review text** as scored content. Stored for remediation,
   never scored.
-- **Difficulty normalization and joint evaluator-subject estimation** — future
+- **Difficulty normalization and joint evaluator-subject estimation.** Future
   formula versions, taken when the data volume justifies them.
 
 ## 14. Reference implementation
