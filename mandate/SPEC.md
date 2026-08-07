@@ -338,7 +338,10 @@ layer, because the draw records, the approval records, and the
 settlement history already are the organization's books, with every
 line signed and attributed. An income view or a cash view is a
 presentation derived from those records, and producing one is a job for
-tools that read them, not for this document.
+tools that read them, not for this document. The standard tool for that
+job is the bookkeeper, a role defined at https://agentroles.ai: it
+reads the records under a read-only grant, answers four questions, and
+holds no mandate.
 
 ## 9. Lifecycle
 
@@ -457,4 +460,6 @@ draw leaves an attributed record. Funding, custody, and value stay out
 of scope.*
 
 *0.1.0-draft, fifth pass (2026-08-06): the records are the books,
-stated in §8. No accounting layer; statements are derived views.*
+stated in §8. No accounting layer; statements are derived views.
+§8 now references the bookkeeper, the standard role for reading the
+books, defined at https://agentroles.ai.*
