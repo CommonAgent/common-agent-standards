@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.2.0-draft
+**Version:** 0.3.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-07
 
@@ -134,7 +134,75 @@ mnd_<crockford32(sha256(canonical bytes of mandate version 1, minus id and signa
    is not conformant.
 
 Charters and mandates are amended by full replacement at version N+1,
-signed fresh, never by delta. A registry MUST retain prior versions.
+signed fresh, never by delta. A registry MUST retain prior versions. The
+identifier is stable across replacements: it names the document, not one
+version of it.
+
+**Minting and re-derivation.** An identifier is minted once. The
+implementation that creates the version-1 charter or mandate derives the
+identifier there, writes it into `id`, and does not derive it again. From
+that moment the identifier is a handle, and other documents hold it by
+value: every mandate names its organization's `org_`, a sub-mandate names
+the mandate it was issued under, an Agent SoW party names `organization` and
+an approval record names `mandate` inside the SoW's signed bytes (§7), a
+draw record names the mandate it settled under (§8), and a revocation act
+names what it revokes (§13). Replacing a charter or a mandate at version N+1
+leaves the identifier alone.
+
+An implementation MUST derive an identifier once, when it mints the
+version-1 document. Storing, replacing, rendering, exporting, or verifying a
+document MUST NOT re-derive its identifier.
+
+A verifier MUST NOT reject a charter or a mandate because its identifier
+does not equal what the derivation above would produce from that document's
+version-1 bytes, and a registry MUST NOT refuse to host one, suspend one, or
+break a chain on that ground. The derivation rule binds the implementation
+that mints an identifier. It does not bind the reader of a document minted
+earlier, possibly under an earlier revision of this specification. Point 3
+above is a test a minting implementation applies to the documents it mints,
+and it is not a test a reader applies to the documents it receives.
+
+Documents minted before this revision carry identifiers derived under a
+superseded reading. Those identifiers remain valid and remain the names of
+their documents. That is the reason re-derivation is not a conformance test.
+A specification that made it one would invalidate every identifier minted
+under its own earlier text, and here the damage would land on authority
+itself: a chain verifies by each mandate naming the organization and the
+mandate above it, so re-deriving identifiers would sever chains that verify
+correctly today.
+
+There is a check a reader may legitimately want, and it is narrower than it
+looks. Where a reader holds a version-1 document and knows it was minted
+under this revision, re-deriving the identifier and comparing detects
+accidental damage: a truncated file, a re-encoded string, a record stored
+against the wrong document. Implementations MAY run that check as a
+diagnostic. A minting implementation SHOULD run it on its own output before
+the document is signed and filed with a registry, which is the last moment a
+wrong identifier is cheap to fix.
+
+Four things the check does not establish, listed because an implementation
+that has it working may be tempted to rely on it for more:
+
+1. It says nothing about a document at version 2 or higher. The identifier
+   commits to the version-1 bytes, and a charter amendment may rotate the
+   root authority keys the whole system rests on while the identifier stays
+   put.
+2. A mismatch does not establish that a document was altered. The reader
+   cannot tell an altered document from one minted correctly under an
+   earlier reading.
+3. It is not a tamper check. A party that alters a document can mint a
+   fresh identifier over the altered bytes, so the check finds accidents and
+   not adversaries.
+4. Eighty bits of a truncated digest is sized to be read, typed, and quoted
+   inside another document. It is not sized to resist a search for a
+   colliding document.
+
+The content commitment a reader can rely on is the signature: the tagged
+bytes described above, covering the whole canonical document including `id`
+at the version being read, checked against the `holder.key` of the mandate
+above it or the charter's `root_authority.keys` (§6). An identifier that
+does not re-derive is not evidence of anything. A signature that does not
+verify is.
 
 ## 5. The charter
 
@@ -552,3 +620,43 @@ added prose to a fixed document shape and left every existing document
 valid; these do not, and a reader needs to be able to tell from the version
 number which text they are holding. This follows Agent SoW 0.4.0-draft,
 which moved its minor version for the same reason.*
+
+*0.3.0-draft (2026-08-07): an identifier is minted once, and re-derivation is
+not a conformance test. §4 says how an identifier is derived and did not say
+when, so a reader holding a stored charter or mandate whose identifier does
+not equal a fresh derivation had nothing in the text telling it whether the
+document was still good. It is. An identifier is minted once, from the
+version-1 document, and is not derived again; from then on it is a handle
+other documents hold by value, and a verifier MUST NOT reject a document on
+an identifier mismatch, nor a registry refuse to host one, suspend one, or
+break a chain on that ground. Charters and mandates minted under the
+0.1.0-draft reading keep the identifiers they were minted with. §4 also gains
+the sentence it was missing, that the identifier is stable across
+replacements.*
+
+*What the check is good for is stated with it, because the honest answer is
+narrower than the appealing one. On a version-1 document known to have been
+minted under the current rule, a match detects accidental damage, and a
+minting implementation SHOULD check its own output before the document is
+signed and filed. Beyond that it establishes nothing. It says nothing about a
+document at version 2 or higher, and a charter amendment may rotate the root
+authority keys while the identifier stays put. A mismatch does not
+distinguish an altered document from one minted under an earlier reading. It
+is not a tamper check, because whoever alters a document can mint an
+identifier over the altered bytes. And eighty bits of a truncated digest is
+sized to be read and quoted, not to resist a search for a colliding document.
+The commitment a reader can rely on is the signature, checked at each hop up
+the chain to the charter's root authority keys.*
+
+*The minor version moves rather than the draft revision. The case against is
+that nothing here changes bytes: no document becomes invalid, no identifier
+changes, and 0.2.0-draft told no one to re-derive anything. The case for is
+that point 3 of §4, read alone, is a plausible licence to treat a failed
+re-derivation as non-conformance, and here that reading would cut chains, so
+a registry built against 0.2.0-draft and one built against this text can
+disagree about whether an organization's delegations verify at all. That is
+behaviour a counterparty sees, and the version number is what tells them
+which text a deployment was built against. Agent SoW 0.8.0-draft and Agent
+RFP 0.3.0-draft carry the same rule; Agent SoW additionally withdraws an
+instruction in its 0.7.0-draft entry that told implementations to re-derive
+stored identifiers.*
