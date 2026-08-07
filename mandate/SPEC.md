@@ -48,11 +48,17 @@ interpreted as described in RFC 2119.
 
 - **Organization**: a principal anchored to a domain, declared by a charter.
 - **Charter**: the organization's constitutive record: its domain, its root
-  authority keys, and its stated legal identity (§5).
-- **Root authority**: the set of keys named in the charter as holding the
-  organization's full authority. Held by officers.
-- **Officer**: a person holding a root authority key. The word carries no
-  legal weight here; it names a role in this document only.
+  authority keys, its administrator keys, and its stated legal identity (§5).
+- **Root authority**: the set of allocator keys named in the charter as
+  holding the organization's full authority, with a signing threshold.
+- **Allocator**: a person holding a root authority key: the business
+  authority who assigns spending limits by issuing mandates. In full, a
+  root capital allocator. The natural holders are the people entitled to
+  commit the organization's money: a CFO, a managing partner, an owner.
+- **Administrator**: the custodial role: a holder of keys named in the
+  charter for filing and maintaining its registry record. In full, a root
+  administrator. An administrator's signature carries no authority to
+  spend or delegate (§5).
 - **Mandate**: a signed document delegating bounded authority from an
   issuer to a holder (§6).
 - **Issuer**: the authority a mandate is signed by: root authority, or a
@@ -105,8 +111,17 @@ signed fresh, never by delta. A registry MUST retain prior versions.
 
 ## 5. The charter
 
-The organization's constitutive record, signed by its root keys. Tag:
-`agent-charter-v1`.
+A charter exists to make the organization a principal a machine can
+check. It is written once, when the organization first comes to the mesh:
+the allocators sign it, the administrator files it with a registry, and
+the registry verifies domain control before hosting it. From then on it
+is the anchor everything else refers to: every mandate names the
+charter's organization id, every chain verifies up to its root authority
+keys, and a counterparty resolves the id to see whom it is dealing with.
+A charter changes rarely; amending it, like rotating keys or changing
+allocators, is an act of root authority at version N+1.
+
+The document, signed by its root keys. Tag: `agent-charter-v1`.
 
 ```json
 {
@@ -121,9 +136,12 @@ The organization's constitutive record, signed by its root keys. Tag:
     "grade": "recorded"
   },
   "root_authority": {
-    "keys": ["<officer public key>", "<officer public key>"],
+    "keys": ["<allocator public key>", "<allocator public key>"],
     "threshold": 1,
     "grade": "evidence"
+  },
+  "administrator": {
+    "keys": ["<administrator public key>"]
   },
   "created_at": "2026-08-01T00:00:00Z",
   "signatures": [ ]
@@ -138,19 +156,40 @@ Rules:
    time; a charter whose domain proof disappears is suspended, not
    deleted. Grade: `enforced` at the registry.
 2. `root_authority.keys` are the organization's highest authority in this
-   system. `threshold` is how many root signatures an act of root
-   authority needs; issuing a mandate, amending the charter, and rotating
-   root keys are all acts of root authority. Root keys SHOULD be held by
-   people with person-grade credentials (Agent SoW §6.1), and a registry
-   SHOULD require a person-grade ceremony for every act of root authority.
-3. `legal` is a statement, not a verification. Grade: `recorded`, always,
+   system, held by its allocators. `threshold` is how many root signatures
+   an act of root authority needs; issuing a mandate, amending the
+   charter, and rotating root keys are all acts of root authority. Root
+   keys SHOULD be held by people with person-grade credentials (Agent SoW
+   §6.1), and a registry SHOULD require a person-grade ceremony for every
+   act of root authority.
+3. The charter separates custody from authority. `administrator.keys`
+   maintain the record: they submit the charter and its amendments to the
+   registry, keep the domain proof current, and file acts the allocators
+   have signed. An administrator signature is never sufficient for an act
+   of root authority: it cannot issue a mandate, amend the charter,
+   rotate keys, or approve anything, and a registry MUST refuse an act of
+   root authority carried by administrator signatures alone. Grade:
+   `enforced` at the registry. `administrator` MAY be omitted; the
+   allocators then file for themselves.
+4. `legal` is a statement, not a verification. Grade: `recorded`, always,
    and rendered as such.
-4. `name` is prose. Anything that displays a charter MUST display the
+5. `name` is prose. Anything that displays a charter MUST display the
    domain with at least equal prominence: the domain is the verified part.
 
 ## 6. The mandate
 
-The delegation document. Tag: `agent-mandate-v1`.
+A mandate exists to put one line of spending authority in writing: this
+account, held by this person, may commit the organization to these kinds
+of act, up to this much per engagement and per month, on these offerings,
+until this date. The set of mandates in force is the organization's
+ledger of who can spend what. There is no separate ledger to maintain:
+the mandates are it, the registry can list them, and an audit of the
+organization's exposure is a query.
+
+In use, an allocator issues a mandate when the business decides a person
+may commit the company, the platform checks it every time that person
+approves an act (§7), and the issuer revokes it when the person leaves or
+the limits change. The delegation document. Tag: `agent-mandate-v1`.
 
 ```json
 {
@@ -275,8 +314,17 @@ maintain or to drift.
 
 ## 10. Security considerations
 
+**Who holds the keys.** Root keys are check-signing power, not IT
+credentials. In practice the person who runs the technical setup is the
+administrator, and the setup SHOULD NOT end with that person holding root
+keys. A conforming setup ends three ways: each root key in the hands of
+an allocator, the day-to-day mandates issued, and the root keys put away,
+unused until a mandate needs changing or a key rotates. The
+administrator role exists so that maintenance never requires touching
+authority.
+
 **Stolen root keys.** Root authority is the whole prize. The mitigations
-are the charter's `threshold` (two officers to act, if the organization
+are the charter's `threshold` (two allocators to act, if the organization
 says so), person-grade ceremonies on acts of root authority, and key
 rotation by charter amendment. A rotation MUST NOT retroactively
 invalidate mandates validly issued before it; revocation is the tool for
@@ -308,7 +356,9 @@ keys, on their own domain, signed the delegations its people act under.
 
 - Org charts, titles, reporting lines, HR semantics. A title on a mandate
   is prose. The mesh needs to know who may bind the entity and within
-  what limits, and nothing else about the pyramid.
+  what limits, and nothing else about the pyramid. The two roles this
+  document does define, allocator and administrator, are positions the
+  standard itself requires, not the start of an org chart.
 - SSO and enterprise identity integration. A holder is an account; how
   the person signs into it is the platform's concern.
 - Legal-entity verification services. `legal` is recorded; a registry MAY
@@ -327,3 +377,8 @@ keys, on their own domain, signed the delegations its people act under.
 
 *0.1.0-draft (2026-08-06): first draft. The check at approval (§7) is the
 load-bearing section; argue with it first.*
+
+*0.1.0-draft, second pass (2026-08-06): the allocator and administrator
+roles replace "officer"; introductions added to §5 and §6; the mandates
+as the spending-authority ledger stated plainly; key custody guidance
+added to §10.*
