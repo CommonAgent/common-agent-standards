@@ -2,7 +2,7 @@
 
 **Version:** 0.1.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-06
+**Date:** 2026-08-07
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
@@ -34,10 +34,12 @@ implementation with no privileged machinery.
 
 Two things follow from publishing a role this way. Conformance becomes a
 test instead of a promise: hand a candidate the same records, ask the
-standard questions, and check its answers byte for byte. And the role's
-name keeps meaning something: a buyer who hires "a bookkeeper" from any
-source knows exactly what it will do, what it can see, and what it will
-refuse.
+standard questions, and check its answers byte for byte. Where a role's
+answers are prose rather than sums, the same idea moves to the refusals:
+ask the questions the role must decline and check that it declines them
+with a reason. And the role's name keeps meaning something: a buyer who
+hires "a bookkeeper" from any source knows exactly what it will do, what
+it can see, and what it will refuse.
 
 ## 2. Conformance language and terminology
 
@@ -53,7 +55,7 @@ interpreted as described in RFC 2119.
   to read a defined set of records. Grants are read-only, revocable,
   and never transitive.
 - **Statement**: a signed document a role holder produces, defined per
-  role.
+  role. Not every role defines one.
 - **Records**: the signed, attributed entries a platform keeps for an
   account: receipts, settlements, draw records, approval records, and
   formed engagements. Agent Mandate §8 states the principle this
@@ -67,12 +69,20 @@ Every role in this registry publishes the same four parts:
 
 1. **Scope**: the questions the holder answers or the acts it performs.
    The scope is closed; what is not listed is refused.
-2. **Access**: what the holder may read or touch, always the minimum,
-   always under a grant.
+2. **Access**: what the holder may read or touch, always the minimum. A
+   role that reads an account's records reads under a grant. A role that
+   works only from public information holds no grant at all.
 3. **Refusals**: what the holder must decline even when asked nicely,
    with the refusal naming the reason.
 4. **Documents**: the signed statements the holder produces, in a form a
-   third party can verify.
+   third party can verify. A role whose output is prose produces no
+   statement and defines no signature tag; its section says so.
+
+Roles are not all verified the same way. Where a role's output is a sum
+over cited records, conformance is arithmetic: recompute the sum and
+compare. Where a role's output is prose, conformance is behavioral: the
+test is what the holder refuses. Each role's section states which test
+applies to it.
 
 Roles are versioned like the family's other documents: amended by full
 replacement, never by delta.
@@ -81,8 +91,8 @@ replacement, never by delta.
 
 The bookkeeper answers basic questions about an account's money from
 the signed records, so the account's owner can see what their agents
-are doing. It is the one role in the system defined by its inability to
-spend: access without authority.
+are doing. It is defined by its inability to spend: access without
+authority.
 
 **Standard offering name**: `role-bookkeeper`.
 
@@ -93,9 +103,15 @@ stated period:
 
 1. **In**: what came in, from which engagements.
 2. **Out**: what went out, to whom, and under whose authority.
-3. **Balance**: what the balance is now.
+3. **Balance**: what the balance is now, stated as two numbers, the
+   total balance and the available balance. A time and materials
+   engagement reserves funds up to its cap the way a purchase order
+   does, and reserved funds are not spendable, so the two numbers differ
+   whenever a reservation is open.
 4. **Promised**: what is committed but not yet settled: formed
-   engagements whose price has not left the balance.
+   engagements whose price has not left the balance. For a time and
+   materials engagement the promised amount is the cap, not the amount
+   accrued so far, because the cap is what the account is exposed to.
 
 ### 4.2 The contract
 
@@ -119,6 +135,12 @@ stated period:
 6. **Determinism.** The same question, period, and records MUST yield
    the same cited record set and the same amount, from any conforming
    bookkeeper.
+7. **Reservations.** A balance answer MUST state the total balance and
+   the available balance separately, and MUST NOT report a single number
+   when a reservation is open. Funds reserved against an open time and
+   materials cap are counted in the total and excluded from the
+   available, because they are committed and cannot be spent on
+   anything else.
 
 ## 5. The bookkeeper statement
 
@@ -149,18 +171,25 @@ Rules:
 1. `question` is one of `in`, `out`, `balance`, `promised`. `period` is
    required for `in`, `out`, and `promised`; `balance` is as of
    `produced_at`.
-2. `records.ids_sha256` commits the statement to the exact record set
+2. For `question: "balance"`, `amount` carries `total` and `available`,
+   and the difference between them is the funds reserved against open
+   time and materials caps. For the other three questions `amount`
+   carries `total` alone, and a time and materials engagement
+   contributes its cap to `promised`.
+3. `records.ids_sha256` commits the statement to the exact record set
    summed. A verifier holding the records recomputes the sorted id
    array, hashes it, and recomputes the total. Either mismatch is a
    conformance failure.
-3. The statement carries record ids and a total, never record contents.
+4. The statement carries record ids and a total, never record contents.
    Detail stays between the bookkeeper and the granting owner.
-4. The full id list SHOULD accompany the statement to the granting
+5. The full id list SHOULD accompany the statement to the granting
    owner, so verification needs no help from the bookkeeper.
 
-## 6. Conformance testing
+## 6. Conformance testing: the bookkeeper
 
-Conformance is mechanical. A test harness holds a known record set and
+The bookkeeper's conformance test is arithmetic, because every number it
+states is a sum anyone holding the records can recompute. A test harness
+holds a known record set and
 the expected answers. A candidate bookkeeper is granted the records and
 asked the four questions; its statements must cite the expected record
 sets and state the expected totals, byte for byte after
@@ -173,7 +202,96 @@ A platform MAY record conformance results as evidence in the same way
 it records form checks, so a role holder's reputation reflects whether
 it does the job the role defines.
 
-## 7. Out of scope
+## 7. Role: the front desk
+
+Every mesh operator receives the same newcomer questions: what is this,
+how do I join, how does this part work, where is that written down. The
+front desk answers them from the operator's published documentation. The
+role is written for any operator's platform, not for one of them, which
+is what makes it a standard rather than a description of a product.
+
+The front desk and the bookkeeper share the no-authority rule and differ
+on access. The bookkeeper reads private records under a grant. The front
+desk reads nothing private: it works from public information only and
+holds no grant, because it never sees account data for a grant to cover.
+
+**Standard offering name**: `role-frontdesk`.
+
+### 7.1 Scope: questions about the platform
+
+A front desk answers questions about the operator's own platform, from
+material the operator has published:
+
+1. **What it is**: what the platform does, who it is for, and what its
+   parts are called.
+2. **How to join**: how an account is opened, how an agent connects, and
+   what is required to do either.
+3. **How things work**: how a published mechanism behaves, described in
+   the terms the documentation uses.
+4. **Where the documentation is**: which published page or specification
+   covers a question.
+
+The scope is closed. A front desk answers questions about the platform
+and does nothing else.
+
+### 7.2 The contract
+
+1. **Public information only.** A front desk MUST answer only from
+   material the operator has published. It MUST NOT hold a grant, and a
+   platform MUST NOT issue one to an agent offering `role-frontdesk`.
+2. **Sources.** A front desk SHOULD name the published material an
+   answer came from. It MUST NOT state a fact about the platform that is
+   not in published material, and MUST say it does not know rather than
+   fill the gap.
+3. **No account answers.** Any question about a specific account, its
+   agents, its engagements, or its history is refused. A front desk
+   cannot see accounts, and MUST NOT answer from what a visitor claims
+   about an account instead.
+4. **No money answers.** A front desk MUST NOT state a balance, a
+   charge, an amount owed, or what anything has cost. Questions about
+   money are refused, and the refusal MAY name the published page or the
+   bookkeeper role where the answer lives.
+5. **No actions.** A front desk MUST NOT act for anyone. It does not
+   open accounts, join anything, buy anything, form or change an
+   engagement, or alter a setting. It MUST NOT hold a mandate and MUST
+   NOT have a settlement path, and a platform MUST refuse to issue a
+   mandate to an agent offering `role-frontdesk`. A request to act is
+   refused, and the refusal says where the requester can do it
+   themselves.
+6. **Refusals name the reason.** Every refusal states which reason
+   applies: outside the scope, no access to account data, or no
+   authority to act.
+7. **No document.** A front desk produces answers, not statements. This
+   registry defines no signed document and no signature tag for the
+   role.
+8. **Pricing.** A front desk is hired like any agent, and every
+   engagement declares a pricing arrangement. What a front desk charges
+   is its own business, and this role requires no particular price. A
+   front desk MAY be offered as time and materials at a zero rate, which
+   is how an operator serves anonymous visitors: a guest identity forms
+   a zero-rate engagement and pays nothing.
+
+### 7.3 Conformance testing: the front desk
+
+The bookkeeper's test is arithmetic. Its statements are sums over cited
+records, so a harness recomputes them and compares byte for byte. A
+front desk's answers are prose. There is no sum to recompute and no
+canonical string to compare, so the role is tested by what it refuses.
+
+The test has two halves. First, a candidate is asked the questions it
+must decline: questions about a specific account, questions about money
+and balances, and requests to take an action. It MUST decline each one,
+and each refusal MUST name the reason. A candidate that answers any of
+them does not conform, and the quality of its other answers does not
+repair that. Second, the candidate is asked questions the operator's
+published documentation covers, and its answers MUST be supported by
+that material. An answer that goes past what is published does not
+conform, including a plausible one.
+
+This registry therefore verifies roles two ways. Some roles are checked
+by their outputs and some by their refusals.
+
+## 8. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -182,17 +300,33 @@ it does the job the role defines.
   machinery; this registry requires their properties (read-only,
   scoped, revocable, non-transitive), not their bytes.
 - Role marketplaces and pricing. A role holder is hired like any agent;
-  what it charges is its business.
+  what it charges is its business. A role MAY note a pricing arrangement
+  that suits it, as the front desk notes the zero rate in §7.2, without
+  requiring one.
 - Roles this registry has not published. A vendor MAY offer any agent
   under any private name; the standard offering names are reserved for
   conforming holders.
 
-## 8. Signature tags
+## 9. Signature tags
 
-- `agent-bookkeeper-statement-v1` — the bookkeeper statement (§5).
+- `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
+
+The front desk defines no signature tag. It produces answers, not
+statements.
 
 ---
 
 *0.1.0-draft (2026-08-06): first draft. One role: the bookkeeper. The
 registry adds roles when a job recurs often enough to deserve a
 contract.*
+
+*0.1.0-draft (2026-08-07): second role: the front desk (§7). It answers
+questions about an operator's platform from public documentation, holds
+no grant, produces no document, and is tested by what it refuses rather
+than by recomputing its answers. §3 now says that roles are verified two
+ways.*
+
+*0.1.0-draft (2026-08-07): bookkeeper corrections for time and
+materials. Promised is the cap on a time and materials engagement, not
+the amount accrued so far. Balance is stated as a total and an
+available, because funds reserved against a cap are not spendable.*
