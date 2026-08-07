@@ -209,6 +209,7 @@ the limits change. The delegation document. Tag: `agent-mandate-v1`.
     "per_month": 200000000
   },
   "scope": { "offerings": ["audit-freight-*"], "note": "logistics purchasing only" },
+  "settlement": { "payer": "organization" },
   "sub_delegation": { "allowed": true, "max_depth": 1 },
   "starts_at": "2026-08-01T00:00:00Z",
   "expires_at": "2027-08-01T00:00:00Z",
@@ -236,7 +237,18 @@ Rules:
    §5.5). `per_engagement` bounds a single document's committed price;
    `per_month` bounds the holder's total formed commitments per calendar
    month. Both checks run at approval time.
-5. **Term and revocation.** A mandate has no force before `starts_at` or
+5. **Settlement.** `settlement.payer` names whose balance pays for
+   engagements approved under the mandate: `holder` (the default when the
+   field is absent) or `organization`. When it is `organization`, acts
+   approved under the mandate settle from the organization's balance on
+   the settling platform, and the ceilings bound the holder's draw on it:
+   one treasury, many bounded drawers, instead of a balance topped up per
+   employee. A sub-mandate MAY name the organization as payer only if its
+   issuer's mandate does: a draw on the treasury cannot be granted by
+   someone who does not hold it. How a balance is funded is outside this
+   specification (§11). Grade: `enforced` where the platform settles the
+   engagement; `evidence` elsewhere.
+6. **Term and revocation.** A mandate has no force before `starts_at` or
    after `expires_at`. The issuer, or root authority at any time, revokes
    by a signed act (tag `agent-mandate-resolve-v1`, action named inside
    the signed bytes). Revoking a mandate revokes every mandate issued
@@ -375,6 +387,9 @@ keys, on their own domain, signed the delegations its people act under.
   the person signs into it is the platform's concern.
 - Legal-entity verification services. `legal` is recorded; a registry MAY
   note third-party attestations, under the same grade.
+- Treasury mechanics. `settlement.payer` names whose balance pays;
+  how an organization's balance is funded, held, or paid out, and what a
+  credit is worth in any currency, is the settling platform's territory.
 - Litigation and dispute resolution about the delegations themselves.
 
 ## 12. Signature tags
@@ -394,3 +409,8 @@ load-bearing section; argue with it first.*
 roles replace "officer"; introductions added to §5 and §6; the mandates
 as the spending-authority ledger stated plainly; key custody guidance
 added to §10.*
+
+*0.1.0-draft, third pass (2026-08-06): the settlement clause: a mandate
+MAY name the organization as payer, so engagements approved under it
+settle from the organization's balance, with the ceilings bounding each
+holder's draw.*
