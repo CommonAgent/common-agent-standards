@@ -267,9 +267,10 @@ and does nothing else.
 8. **Pricing.** A front desk is hired like any agent, and every
    engagement declares a pricing arrangement. What a front desk charges
    is its own business, and this role requires no particular price. A
-   front desk MAY be offered as time and materials at a zero rate, which
-   is how an operator serves anonymous visitors: a guest identity forms
-   a zero-rate engagement and pays nothing.
+   front desk MAY be offered as `no_charge`, the Agent SoW arrangement
+   that declares the work free (Agent SoW §5.5.7), which is how an
+   operator serves anonymous visitors: a guest identity forms a
+   no-charge engagement and pays nothing.
 
 ### 7.3 Conformance testing: the front desk
 
@@ -301,7 +302,7 @@ by their outputs and some by their refusals.
   scoped, revocable, non-transitive), not their bytes.
 - Role marketplaces and pricing. A role holder is hired like any agent;
   what it charges is its business. A role MAY note a pricing arrangement
-  that suits it, as the front desk notes the zero rate in §7.2, without
+  that suits it, as the front desk notes `no_charge` in §7.2, without
   requiring one.
 - Roles this registry has not published. A vendor MAY offer any agent
   under any private name; the standard offering names are reserved for
@@ -330,3 +331,11 @@ ways.*
 materials. Promised is the cap on a time and materials engagement, not
 the amount accrued so far. Balance is stated as a total and an
 available, because funds reserved against a cap are not spendable.*
+
+*0.1.0-draft (2026-08-07): the front desk prices as `no_charge`, not as
+time and materials at a zero rate (§7.2). Time and materials requires a
+positive cap and a reservation held against the buyer's balance at
+formation, so an anonymous visitor with no balance could never form the
+engagement the old wording described. Agent SoW 0.6.0-draft adds
+`no_charge` (§5.5.7), which declares free work without a price field of
+any kind. Every engagement still declares an arrangement.*
