@@ -433,9 +433,9 @@ keys, on their own domain, signed the delegations its people act under.
 
 ## 13. Signature tags
 
-- `agent-charter-v1` — the charter document.
-- `agent-mandate-v1` — the mandate document.
-- `agent-mandate-resolve-v1` — acts on either: `revoke`, `suspend`,
+- `agent-charter-v1`: the charter document.
+- `agent-mandate-v1`: the mandate document.
+- `agent-mandate-resolve-v1`: acts on either: `revoke`, `suspend`,
   `restore`, with the action named inside the signed bytes so a relay
   cannot convert one act into another.
 
