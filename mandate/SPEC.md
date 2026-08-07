@@ -1,8 +1,8 @@
 # Agent Mandate Specification
 
-**Version:** 0.1.0-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-06
+**Date:** 2026-08-07
 
 A **mandate** is authority, delegated in writing: a principal states who may
 act on its behalf, for what, up to what limit, until when. An **Agent
@@ -63,7 +63,9 @@ interpreted as described in RFC 2119.
   issuer to a holder (§6).
 - **Issuer**: the authority a mandate is signed by: root authority, or a
   mandate that permits sub-delegation.
-- **Holder**: the account (and its person) a mandate authorizes.
+- **Holder**: the account (and its person) a mandate authorizes, and,
+  where the mandate permits sub-delegation, the key that account signs
+  with (§6).
 - **Chain**: a mandate plus the mandates above it, up to root authority.
 - **Treasury**: the organization's own balance on a settling platform,
   drawn on only under mandates naming the organization as payer (§8).
@@ -99,14 +101,37 @@ Stated up front, because it is the honesty boundary of the whole document:
 Charters and mandates are JSON documents in JCS (RFC 8785) canonical form,
 signed with the tagged-signature convention of the family: the ASCII tag,
 one newline, then the canonical JSON of the document with `signatures`
-removed.
+removed. The signed bytes include `id`, because the identifier is derived
+before the document is signed.
 
 Identifiers:
 
 ```
-org_<base32(sha256(canonical bytes of charter version 1, minus signatures))[0..16]>
-mnd_<base32(sha256(canonical bytes of mandate version 1, minus signatures))[0..16]>
+org_<crockford32(sha256(canonical bytes of charter version 1, minus id and signatures))[0..16]>
+mnd_<crockford32(sha256(canonical bytes of mandate version 1, minus id and signatures))[0..16]>
 ```
+
+1. **The hashed bytes exclude `id` and `signatures`.** An implementation
+   MUST remove both members from the version-1 document, canonicalize what
+   remains under JCS, and hash that. `id` is excluded because the document
+   carries the identifier derived from it: bytes that contain `id` cannot
+   be assembled until the identifier is known, and the derivation would
+   not terminate. `signatures` is excluded because the signatures are made
+   over a document the identifier already names. The two exclusions are
+   not the same as the signed bytes above, which remove `signatures` only.
+2. **`crockford32` is Crockford base32, lowercased.** The alphabet is
+   `0123456789abcdefghjkmnpqrstvwxyz`, which omits `i`, `l`, `o`, and `u`.
+   An implementation MUST emit lowercase, MUST NOT pad, MUST NOT insert
+   hyphens, and MUST NOT use Crockford's check symbol. The digest is
+   encoded five bits per character, most significant bit first, and the
+   first 16 characters are taken, which are the first 80 bits of the
+   digest. Crockford's decoding aliases, `o` for `0` and `i` or `l` for
+   `1`, are a reader's convenience and MUST NOT appear in an emitted
+   identifier. RFC 4648 base32 is not the encoding here and MUST NOT be
+   substituted: its alphabet has no `0`, `1`, `8`, or `9`.
+3. Two implementations following these rules derive the same identifier
+   from the same document. An implementation that derives a different one
+   is not conformant.
 
 Charters and mandates are amended by full replacement at version N+1,
 signed fresh, never by delta. A registry MUST retain prior versions.
@@ -202,7 +227,8 @@ the limits change. The delegation document. Tag: `agent-mandate-v1`.
   "issuer": { "kind": "root" },
   "holder": {
     "account": "acct_2c9f7e1a",
-    "person": "mari@harborandline.example"
+    "person": "mari@harborandline.example",
+    "key": "<holder public key>"
   },
   "powers": ["form", "amend", "terminate", "award"],
   "ceiling": {
@@ -223,23 +249,36 @@ Rules:
 
 1. **Issuance.** A mandate is signed either by root authority (meeting the
    charter's threshold) or by the holder of a mandate whose
-   `sub_delegation.allowed` is true. Grade: `evidence`; the signatures are
-   the record.
-2. **Narrowing.** A sub-mandate MUST be at most as broad as its issuer's
+   `sub_delegation.allowed` is true. Where the issuer is root authority,
+   every signature key MUST appear in `root_authority.keys` of the charter
+   version the mandate names. Where the issuer is a mandate, the signature
+   key MUST equal the `holder.key` of that mandate. Grade: `evidence`; the
+   signatures are the record.
+2. **Holder key.** `holder.key` is the public key the mandate's holder
+   signs with. It MUST be present on a mandate whose
+   `sub_delegation.allowed` is true, and it MAY be present on any other
+   mandate. It is required only where sub-delegation is permitted because
+   that is the only case in which someone later has to check a signature
+   the holder made, and `holder.account` and `holder.person` name a party
+   without naming a key. A registry MUST refuse a mandate that sets
+   `sub_delegation.allowed` to true and carries no `holder.key`, and MUST
+   refuse a sub-mandate whose signature is not by the `holder.key` of the
+   mandate its `issuer` names. Grade: `enforced` at the registry.
+3. **Narrowing.** A sub-mandate MUST be at most as broad as its issuer's
    mandate in every dimension: powers a subset, ceilings no higher, scope
    no wider, expiry no later, depth within `max_depth`. A registry MUST
    refuse a sub-mandate that widens anything. Authority narrows going
    down; it never widens. Grade: `enforced` at the registry.
-3. **Powers.** `form` covers countersigning an engagement into existence;
+4. **Powers.** `form` covers countersigning an engagement into existence;
    `amend` covers approving amendments; `terminate` covers ending
    engagements; `award` covers awarding an RFP posting (which leads to
    `form`); `issue` is implied by `sub_delegation.allowed`. A power not
    listed is not held.
-4. **Ceilings.** Amounts use the engagement's price vocabulary (Agent SoW
+5. **Ceilings.** Amounts use the engagement's price vocabulary (Agent SoW
    §5.5). `per_engagement` bounds a single document's committed price;
    `per_month` bounds the holder's total formed commitments per calendar
    month. Both checks run at approval time.
-5. **Settlement.** `settlement.payer` names whose balance pays for
+6. **Settlement.** `settlement.payer` names whose balance pays for
    engagements approved under the mandate: `holder` (the default when the
    field is absent) or `organization`. When it is `organization`, acts
    approved under the mandate settle from the organization's balance on
@@ -251,12 +290,22 @@ Rules:
    treasury, defined in the abstract in §8; how it is funded is outside
    this specification (§12). Grade: `enforced` where the platform
    settles the engagement; `evidence` elsewhere.
-6. **Term and revocation.** A mandate has no force before `starts_at` or
+7. **Term and revocation.** A mandate has no force before `starts_at` or
    after `expires_at`. The issuer, or root authority at any time, revokes
    by a signed act (tag `agent-mandate-resolve-v1`, action named inside
    the signed bytes). Revoking a mandate revokes every mandate issued
    under it: a chain dies with its root. Grade: `enforced` at the
    registry from the moment the act is recorded.
+
+A chain verifies from the documents alone. A verifier holding the charter
+and every mandate in the chain checks each sub-mandate's signature against
+the `holder.key` of the mandate above it, checks the topmost mandate's
+signatures against the charter's `root_authority.keys` and threshold, and
+checks the narrowing rule, the powers, the ceilings, and the dates at
+every hop. None of that requires a registry. Revocation is the exception,
+because it is an event after issuance rather than a property of the bytes:
+a verifier who needs to know that no mandate in the chain has been revoked
+asks the registry for that one fact.
 
 **A mandate ceiling is not a budget.** A budget (Agent SoW §7.7) caps
 what a piece of work may cost: it lives on the engagement, and the
@@ -281,7 +330,8 @@ that check:
 1. The confirming person's account holds a mandate for the organization
    the engagement's party names.
 2. The mandate is in force: started, unexpired, unrevoked, and its chain
-   verifies up to the charter's root authority.
+   verifies up to the charter's root authority, each hop checked against
+   the `holder.key` of the mandate above it (§6).
 3. The act is within the mandate's powers: `form` for formation, `amend`
    for amendments, `terminate` for terminations, `award` for RFP awards.
 4. The engagement's committed price is within `per_engagement`, and the
@@ -463,3 +513,42 @@ of scope.*
 stated in §8. No accounting layer; statements are derived views.
 §8 now references the bookkeeper, the standard role for reading the
 books, defined at https://agentroles.ai.*
+
+*0.2.0-draft (2026-08-07): three corrections, each found by building a
+registry against the 0.1.0-draft text and each a place the document could
+not be implemented as written.*
+
+*§4, the hashed bytes. The identifier was derived from the canonical bytes
+of a document that carries the identifier, so the derivation never
+terminated. The bytes hashed for an identifier now exclude both `id` and
+`signatures`, which is the only reading that terminates. The signed bytes
+are unchanged and still exclude `signatures` alone.*
+
+*§4, the encoding. The text said `base32` without naming an alphabet. RFC
+4648's alphabet has no `0`, `1`, `8`, or `9`, and every identifier in the
+worked example contains at least one of them, so the document contradicted
+its own example. The encoding is now named: Crockford base32, lowercased,
+unpadded, no check symbol, first 16 characters of the digest encoding.*
+
+*§6, the holder key. A sub-mandate is signed by the holder of its issuer's
+mandate, but the holder block named an account and a person and carried no
+key, so nothing in the documents told a verifier which key to check. That
+made §6's offline verifiability claim false. `holder.key` is added, and it
+is REQUIRED on any mandate whose `sub_delegation.allowed` is true. §6 now
+states how a chain verifies from the documents alone, and the second check
+of §7 names the key each hop is checked against. No cross reference in §8
+became wrong: a draw on the treasury is still an act approved under a
+mandate in force, and the definition of in force is where the correction
+landed.*
+
+*The minor version moves rather than the draft revision, because all three
+corrections change bytes rather than prose. An identifier derived under the
+0.1.0-draft reading does not in general equal one derived under this
+reading, and identifiers are carried by reference into other documents: a
+party's `organization`, an approval record's `mandate`. A mandate that
+permits sub-delegation and carries no holder key was well formed under the
+old text and is not well formed under this one. The five earlier passes
+added prose to a fixed document shape and left every existing document
+valid; these do not, and a reader needs to be able to tell from the version
+number which text they are holding. This follows Agent SoW 0.4.0-draft,
+which moved its minor version for the same reason.*
