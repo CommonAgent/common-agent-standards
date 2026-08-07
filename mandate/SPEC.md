@@ -243,6 +243,18 @@ Rules:
    under it: a chain dies with its root. Grade: `enforced` at the
    registry from the moment the act is recorded.
 
+**A mandate ceiling is not a budget.** A budget (Agent SoW §7.7) caps
+what a piece of work may cost: it lives on the engagement, and the
+agent's spend is metered against it as the work runs. A mandate ceiling
+caps what a person may commit: it lives on the person's authority, spans
+every engagement they approve, and is checked once, at approval time,
+before the commitment exists. The two compose. The engagement's committed
+price, budget included, is what the approval check reads against
+`per_engagement`; after formation the mandate has done its work and the
+budget governs the spend. Both are one idea applied to different
+subjects: a budget is the owner bounding the agent, and a mandate is the
+organization bounding the person.
+
 ## 7. The check at approval
 
 This section is why the document exists. Agent SoW §6.1 defines
