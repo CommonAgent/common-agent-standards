@@ -65,6 +65,8 @@ interpreted as described in RFC 2119.
   mandate that permits sub-delegation.
 - **Holder**: the account (and its person) a mandate authorizes.
 - **Chain**: a mandate plus the mandates above it, up to root authority.
+- **Treasury**: the organization's own balance on a settling platform,
+  drawn on only under mandates naming the organization as payer (§8).
 - **Registry**: a service that hosts charters and mandates and answers
   chain queries. The platform an organization's accounts live on normally
   plays this role.
@@ -245,9 +247,10 @@ Rules:
    one treasury, many bounded drawers, instead of a balance topped up per
    employee. A sub-mandate MAY name the organization as payer only if its
    issuer's mandate does: a draw on the treasury cannot be granted by
-   someone who does not hold it. How a balance is funded is outside this
-   specification (§11). Grade: `enforced` where the platform settles the
-   engagement; `evidence` elsewhere.
+   someone who does not hold it. The organization's balance is the
+   treasury, defined in the abstract in §8; how it is funded is outside
+   this specification (§12). Grade: `enforced` where the platform
+   settles the engagement; `evidence` elsewhere.
 6. **Term and revocation.** A mandate has no force before `starts_at` or
    after `expires_at`. The issuer, or root authority at any time, revokes
    by a signed act (tag `agent-mandate-resolve-v1`, action named inside
@@ -304,7 +307,33 @@ Agent SoW documents need one addition to use this: a party MAY carry
 `"organization": "org_…"` beside its owner prose, and an approval record
 MAY carry `"mandate": "mnd_…"`. Both fields sit inside signed bytes.
 
-## 8. Lifecycle
+## 8. The treasury, in the abstract
+
+Where a mandate names the organization as payer (§6), the balance it
+draws on is the organization's **treasury**. This section defines the
+treasury as far as delegation requires and no further: what it is, how
+value leaves it, and what record a draw leaves behind. How value enters
+it, what a credit is worth in any currency, and where it is held are the
+settling platform's territory (§12).
+
+1. **One balance, owned by the entity.** A treasury is a balance held by
+   the organization itself, anchored to its charter id. It belongs to no
+   person. Personnel changes do not touch it, exactly as they do not
+   touch formed engagements.
+2. **Draws happen only under mandate.** The only way an engagement
+   settles from the treasury is an act approved under a mandate in
+   force that names the organization as payer, within its ceilings. A
+   platform MUST refuse any other draw through this specification's
+   machinery. Grade: `enforced` where the platform settles.
+3. **Every draw leaves a record.** A settlement from the treasury
+   produces a draw record naming the engagement, the mandate, the
+   holder, the amount, and the time. Draw records are enumerable by
+   root authority, and the month-to-date sums for the `per_month` check
+   (§7) are computed over them. The treasury's history is the sum of
+   its draw records, so an audit of where the money went is a query,
+   with every line already attributed to a person and their authority.
+
+## 9. Lifecycle
 
 ```
 charter:  drafted → anchored (domain proof verified) → active
@@ -322,7 +351,7 @@ pages, disclosure rules, reputation grouping), is the set of accounts
 holding mandates in force. There is no separate membership list to
 maintain or to drift.
 
-## 9. Organizations elsewhere in the family
+## 10. Organizations elsewhere in the family
 
 - **Agent SoW**: the party's `organization` field and the approval
   record's `mandate` field, per §7. An engagement formed under a mandate
@@ -336,7 +365,7 @@ maintain or to drift.
   aggregates at the entity, survives personnel changes, and anchor-level
   abuse detection covers the corporate case with no new machinery.
 
-## 10. Security considerations
+## 11. Security considerations
 
 **Who holds the keys.** Root keys are check-signing power, not IT
 credentials. In practice the person who runs the technical setup is the
@@ -376,7 +405,7 @@ certainty that a company legally exists has due diligence, not a
 protocol; what the protocol gives them is that the organization's own
 keys, on their own domain, signed the delegations its people act under.
 
-## 11. Out of scope
+## 12. Out of scope
 
 - Org charts, titles, reporting lines, HR semantics. A title on a mandate
   is prose. The mesh needs to know who may bind the entity and within
@@ -387,12 +416,12 @@ keys, on their own domain, signed the delegations its people act under.
   the person signs into it is the platform's concern.
 - Legal-entity verification services. `legal` is recorded; a registry MAY
   note third-party attestations, under the same grade.
-- Treasury mechanics. `settlement.payer` names whose balance pays;
-  how an organization's balance is funded, held, or paid out, and what a
-  credit is worth in any currency, is the settling platform's territory.
+- Treasury mechanics. §8 defines the treasury in the abstract; how it
+  is funded, held, or paid out, and what a credit is worth in any
+  currency, is the settling platform's territory.
 - Litigation and dispute resolution about the delegations themselves.
 
-## 12. Signature tags
+## 13. Signature tags
 
 - `agent-charter-v1` — the charter document.
 - `agent-mandate-v1` — the mandate document.
@@ -408,9 +437,14 @@ load-bearing section; argue with it first.*
 *0.1.0-draft, second pass (2026-08-06): the allocator and administrator
 roles replace "officer"; introductions added to §5 and §6; the mandates
 as the spending-authority ledger stated plainly; key custody guidance
-added to §10.*
+added to the security considerations.*
 
 *0.1.0-draft, third pass (2026-08-06): the settlement clause: a mandate
 MAY name the organization as payer, so engagements approved under it
 settle from the organization's balance, with the ceilings bounding each
 holder's draw.*
+
+*0.1.0-draft, fourth pass (2026-08-06): the treasury in the abstract
+(§8): one balance owned by the entity, draws only under mandate, every
+draw leaves an attributed record. Funding, custody, and value stay out
+of scope.*
