@@ -1,6 +1,6 @@
 # Agent RFP Specification
 
-**Version:** 0.2.0-draft
+**Version:** 0.3.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-07
 
@@ -136,6 +136,71 @@ rfp_<crockford32(sha256(canonical bytes of version 1, minus id and signatures))[
 
 The identifier is stable across replacements; each replacement increments an
 integer `version` starting at 1.
+
+#### 4.1.1 Minting and re-derivation
+
+An identifier is minted once. The implementation that creates the version-1
+posting derives the identifier there, writes it into `id`, and does not derive
+it again. From that moment the identifier is a handle, and other documents
+hold it by value: a response's `solicitation.rfp` (§7) sits inside the
+responder's signed bytes, an award or a withdrawal names `posting` inside the
+signer's (§6), and a board's index and its retained prior versions are keyed
+on it. Replacing a posting at version N+1 under §4.2 leaves the identifier
+alone, which is what stability across replacements means above.
+
+An implementation MUST derive an identifier once, when it mints the version-1
+posting. Storing, replacing, indexing, rendering, or verifying a posting MUST
+NOT re-derive its identifier.
+
+A verifier MUST NOT reject a posting because its identifier does not equal
+what §4.1 would derive from that posting's version-1 bytes, and a board MUST
+NOT refuse to host one on that ground. The derivation rule binds the
+implementation that mints an identifier. It does not bind the reader of a
+posting minted earlier, possibly under an earlier revision of this
+specification. Point 3 of §4.1 is a test a minting implementation applies to
+the postings it mints, and it is not a test a reader applies to the postings
+it receives.
+
+Postings minted before this revision carry identifiers derived under a
+superseded reading of §4.1. Those identifiers remain valid and remain the
+names of their postings. That is the reason re-derivation is not a
+conformance test. A specification that made it one would invalidate every
+identifier minted under its own earlier text, and here most of the damage
+would land outside the party doing the re-deriving: a response's claim to
+have answered a posting is covered by the responder's signature, and the
+poster cannot re-sign it.
+
+There is a check a reader may legitimately want, and it is narrower than it
+looks. Where a reader holds a version-1 posting and knows it was minted under
+§4.1 as this revision states it, re-deriving the identifier and comparing
+detects accidental damage: a truncated file, a re-encoded string, a record
+stored against the wrong posting. Implementations MAY run that check as a
+diagnostic. A minting implementation SHOULD run it on its own output before
+the posting is signed and published, which is the last moment a wrong
+identifier is cheap to fix; afterwards it is inside bytes other parties hold
+and signed.
+
+Four things the check does not establish, listed because an implementation
+that has it working may be tempted to rely on it for more:
+
+1. It says nothing about a posting at version 2 or higher. The identifier
+   commits to the version-1 bytes, and a replacement under §4.2 may change
+   the need, the budget, and the expiry while the identifier stays put. A
+   response names the posting version it answered for exactly this reason.
+2. A mismatch does not establish that a posting was altered. The reader
+   cannot tell an altered posting from one minted correctly under an earlier
+   reading of §4.1.
+3. It is not a tamper check. A party that alters a posting can mint a fresh
+   identifier over the altered bytes, so the check finds accidents and not
+   adversaries.
+4. Eighty bits of a truncated digest is sized to be read, typed, and quoted
+   inside another document. It is not sized to resist a search for a
+   colliding document.
+
+The content commitment a reader can rely on is the signature of §6. It covers
+the whole canonical posting, including `id`, at the version being read. An
+identifier that does not re-derive is not evidence of anything. A signature
+that does not verify is.
 
 ### 4.2 Replacement
 
@@ -601,3 +666,41 @@ every document valid; these corrections do not, and the version number
 exists so that a reader can tell which text they are holding. This follows
 Agent Mandate 0.2.0-draft, which moved its minor version for the same
 reason.*
+
+*0.3.0-draft (2026-08-07): an identifier is minted once, and re-derivation is
+not a conformance test. New §4.1.1. §4.1 says how an identifier is derived and
+did not say when, so a reader holding a stored posting whose identifier does
+not equal a fresh derivation had nothing in the text telling it whether the
+posting was still good. It is. An identifier is minted once, from the
+version-1 posting, and is not derived again; from then on it is a handle other
+documents hold by value, and a verifier MUST NOT reject a posting on an
+identifier mismatch, nor a board refuse to host one on that ground. Postings
+minted under the 0.1.0-draft reading keep the identifiers they were minted
+with, because the references that would break are not all held by the party
+doing the re-deriving: a response's `solicitation.rfp` sits inside the
+responder's signature, and the poster cannot re-sign it.*
+
+*What the check is good for is stated with it, because the honest answer is
+narrower than the appealing one. On a version-1 posting known to have been
+minted under the current rule, a match detects accidental damage, and a
+minting implementation SHOULD check its own output before the posting is
+signed and published. Beyond that it establishes nothing. It says nothing
+about a posting at version 2 or higher, which is why a response names the
+version it answered. A mismatch does not distinguish an altered posting from
+one minted under an earlier reading. It is not a tamper check, because
+whoever alters a posting can mint an identifier over the altered bytes. And
+eighty bits of a truncated digest is sized to be read and quoted, not to
+resist a search for a colliding document. The commitment a reader can rely on
+is the signature of §6.*
+
+*The minor version moves rather than the draft revision, and again the choice
+was argued. The case against is that nothing here changes bytes: no posting
+becomes invalid, no identifier changes, and 0.2.0-draft told no one to
+re-derive anything. The case for is that point 3 of §4.1, read alone, is a
+plausible licence to treat a failed re-derivation as non-conformance, so a
+board built against 0.2.0-draft and one built against this text can accept and
+reject the same posting. That is behaviour a poster and a responder see, and
+the version number is what tells them which text a deployment was built
+against. Agent SoW 0.8.0-draft carries the same rule and had one thing more to
+do: its 0.7.0-draft entry had instructed implementations to re-derive stored
+identifiers, and that instruction is withdrawn there.*
