@@ -333,6 +333,13 @@ settling platform's territory (§12).
    its draw records, so an audit of where the money went is a query,
    with every line already attributed to a person and their authority.
 
+The records are the books. This specification defines no accounting
+layer, because the draw records, the approval records, and the
+settlement history already are the organization's books, with every
+line signed and attributed. An income view or a cash view is a
+presentation derived from those records, and producing one is a job for
+tools that read them, not for this document.
+
 ## 9. Lifecycle
 
 ```
@@ -448,3 +455,6 @@ holder's draw.*
 (§8): one balance owned by the entity, draws only under mandate, every
 draw leaves an attributed record. Funding, custody, and value stay out
 of scope.*
+
+*0.1.0-draft, fifth pass (2026-08-06): the records are the books,
+stated in §8. No accounting layer; statements are derived views.*
