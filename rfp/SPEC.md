@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.3.0-draft
+**Version:** 0.4.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-07
+**Date:** 2026-08-08
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -62,9 +62,11 @@ interpreted as described in RFC 2119.
 - **Poster**: the party publishing the need; the prospective client, in
   Agent SoW terms.
 - **Responder**: a party answering a posting; the prospective provider.
-- **Response**: an Agent SoW proposal (Agent SoW §2) that references the
+- **Response**: a standing proposal (Agent SoW §12) that references the
   posting it answers. A response is a complete SoW document signed by the
-  responder only; it carries no force until formed under Agent SoW rules.
+  responder only, with the client seat blank as a standing proposal's is;
+  the poster enters that seat at formation, not at response, and the
+  response carries no force until formed under Agent SoW rules.
 - **Award**: the poster's signed act naming one response as the one it
   intends to form. An award closes the posting; it does not itself create
   an engagement.
@@ -420,12 +422,16 @@ withdrawal is **board-enforced**.
 ## 7. Responses
 
 A response MUST be a complete Agent SoW document: the responder in the
-provider seat, the poster in the client seat, signed by the responder only.
-In Agent SoW terms it is a SoW proposal, and every Agent SoW rule applies to
-it unchanged. This is the load-bearing design decision of the
-specification: there is no second contract vocabulary to learn, nothing to
-translate at award time, and the response is exactly one countersignature
-away from being a real engagement.
+provider seat, the client seat blank, signed by the responder only. In
+Agent SoW terms it is a standing proposal (Agent SoW §12), and every Agent
+SoW rule applies to it unchanged. The poster is not named inside the
+document; the link to the posting is the solicitation reference below, and
+the poster enters the client seat at formation, by countersigning, not at
+response. This is the load-bearing design decision of the specification:
+there is no second contract vocabulary to learn, nothing to translate at
+award time, a response and a catalog listing are the same kind of document,
+and the response is exactly one countersignature away from being a real
+engagement.
 
 A response declares what it answers with one top-level field in the SoW
 document:
@@ -452,15 +458,23 @@ Rules:
    plainly.
 3. A responder need not have an existing offering. Building the offering
    because the posting described it is the intended outcome, not
-   misappropriation: a public posting is a build instruction (§1). A
-   responder who builds SHOULD also publish the same document as a standing
-   proposal (Agent SoW §12), so the offering the posting summoned into
-   existence outlives the posting. Answering an RFP and creating a catalog
-   listing are nearly the same act, by construction.
-4. A response SHOULD carry the need's deliverables and furnished inputs
+   misappropriation: a public posting is a build instruction (§1). Because
+   a response IS a standing proposal, a responder who builds has published
+   the offering by responding: the offering the posting summoned into
+   existence outlives the posting with no further act. Answering an RFP
+   and creating a catalog listing are the same act, by construction.
+4. A response is an open offer, not an offer to the poster. The client
+   seat is blank, so any party who can read the response can countersign
+   it, and a responder cannot quote this poster a price below its list
+   price, because the bid is the list price. A responder who wants a
+   directed offer SHOULD carry a qualification naming the poster (Agent
+   SoW §12.1) where its runtime supports one; absent that, nothing narrows
+   the offer, and a renderer MUST NOT present a response as directed to
+   the poster.
+5. A response SHOULD carry the need's deliverables and furnished inputs
    into its own clauses with the same names, so the poster can diff what
    was asked against what is offered.
-5. A response MAY carry the responder's reputation: a top-level
+6. A response MAY carry the responder's reputation: a top-level
    `reputation` field holding a bureau's signed report (Agent Reputations,
    https://agentreputations.com) for the offering's capability. The report
    is advisory context for the poster, never a gate, and it goes stale the
@@ -482,11 +496,12 @@ effects are bounded and mostly mechanical:
    awards; one award per posting, no partial or multiple awards in this
    version.
 2. The named response proceeds to formation **under Agent SoW rules,
-   unchanged**: the poster countersigns the response document, and the
-   responder's runtime completes formation with a fresh signature over the
-   completed bytes (Agent SoW §6, §12.1). The award itself creates no
-   engagement; a response whose formation never completes binds nobody,
-   award or not.
+   unchanged**: the poster countersigns the response document, entering
+   the client seat at that moment exactly as any standing proposal is
+   accepted, and the responder's runtime completes formation with a fresh
+   signature over the completed bytes (Agent SoW §6, §12.1). The award
+   itself creates no engagement; a response whose formation never
+   completes binds nobody, award or not.
 3. Approval authority (Agent SoW §6.1) governs the countersign exactly as
    it governs any formation. A response whose `change_control.approval`
    demands a person for formation waits for the poster's human; an award is
@@ -704,3 +719,44 @@ the version number is what tells them which text a deployment was built
 against. Agent SoW 0.8.0-draft carries the same rule and had one thing more to
 do: its 0.7.0-draft entry had instructed implementations to re-derive stored
 identifiers, and that instruction is withdrawn there.*
+
+*0.4.0-draft (2026-08-08): §7 carried a contradiction, not an ambiguity, and
+it could not be implemented as written. The section's opening required the
+poster in the client seat of a response. Its rule 3 told a responder who
+builds to publish the same document as a standing proposal, and a standing
+proposal, by Agent SoW §2, has that seat blank. One document cannot carry
+both a filled and a blank client seat, so an implementer had to pick a side,
+and two implementers would pick differently: a board holding directed
+response documents and a board pointing at published offerings cannot read
+each other's responses, and each would refuse the other's as malformed.*
+
+*The resolution is toward the standing proposal. A response IS a standing
+proposal: provider seat filled, client seat blank, the claim of answering
+carried by the solicitation reference inside the responder's signed bytes,
+and the poster entering the client seat at formation, by countersigning, not
+at response. This keeps the property the first draft called load-bearing,
+that a response is one countersignature from an engagement, and it turns
+rule 3 from advice into construction: responding and publishing the offering
+are now the same act, so the offering a posting summons outlives the posting
+with no further step.*
+
+*What the resolution costs is exclusivity, and the section now says so
+rather than implying otherwise. A response with a blank client seat is an
+open offer any reader can countersign, so a responder cannot quote one
+poster a price below its list price; the bid is the list price. The road
+back, for a responder who wants a directed offer, is an Agent SoW §12.1
+qualification naming the poster, where a runtime supports one. New rule 4
+states both halves, and the reputation and diffing rules move down to 5
+and 6 unchanged.*
+
+*The minor version moves rather than the draft revision, and the choice was
+argued as it was for 0.2.0 and 0.3.0. A response built against the earlier
+opening names the poster in its client seat; a response built against this
+text leaves the seat blank. Those are different signed bytes, a validator
+built against one text refuses documents built against the other, and the
+refusal lands on a responder who followed the specification faithfully. The
+version number is what tells a poster, a responder and a board which text a
+document or a deployment was built against. Responses signed under the
+earlier reading remain what they always were, complete SoW proposals signed
+by one party and directed at a named client; whether a board indexes one as
+a response is board policy, which §11 already leaves to the board.*
