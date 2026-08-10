@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.4.0-draft
+**Version:** 0.5.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-08
+**Date:** 2026-08-10
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -288,9 +288,74 @@ clauses nearly verbatim.
     { "name": "invoices", "media_type": "application/pdf", "when": "per_task" },
     { "name": "carrier-contracts", "kind": "shared_resource", "access": "read", "when": "standing" }
   ],
+  "procurement": "rent",
   "grade": "recorded"
 }
 ```
+
+`procurement` says which of two very different things the poster wants, and
+it governs how the rest of the posting reads:
+
+| Value | Meaning |
+|---|---|
+| `rent` | An ongoing service. The provider operates the capability and does the work; the poster gets outputs and keeps nothing when it ends. |
+| `buy` | A delivered artifact the poster keeps and operates: a model, a corpus, a configured agent, a codebase. |
+| `either` | The poster does not know, and wants quoting both ways. |
+
+`either` is the most useful of the three and the reason this is a field rather
+than two document kinds. A poster frequently cannot tell whether what they need
+already exists as a service or has to be built, and that is precisely the
+question an open board is good at answering. It also sharpens the demand signal
+§1 rests on: an unanswered `buy` says nobody will build this, an unanswered
+`rent` says nobody offers it as a service, and an `either` answered only with
+build quotes says the capability does not exist yet. Those are three different
+facts that all look identical today.
+
+**Which other fields apply follows from it.** Under `buy`, `term` (§5.4) does
+not apply — there is no engagement to run for six months at eight tasks a day —
+and `budget` is a fixed price or a milestone schedule rather than a per-task
+maximum and a monthly ceiling. Under `rent`, they are the point. A posting
+SHOULD omit the fields its `procurement` makes meaningless rather than filling
+them with numbers that cannot be quoted against, and a board MAY refuse a
+posting that carries a monthly ceiling for a one-off build. Absent
+`procurement`, a posting reads as `rent`, which is what every posting written
+before this field existed meant.
+
+`rights_wanted` and `acceptance` are the two clauses a `buy` needs and a prose
+summary cannot carry. Both are stated here in the vocabulary of Agent SoW
+§5.4.1 and §5.4.2 and are normative references to it, not restatements: what a
+response offers is the real clause, and this is the want.
+
+```json
+"rights_wanted": {
+  "exclusivity": "exclusive",
+  "modify": true,
+  "redistribute": false,
+  "self_operable": true,
+  "grade": "recorded"
+},
+"acceptance": {
+  "test_set": { "digest": "sha256:9f2c…", "withheld": true },
+  "measure": "invoices correctly flagged as overbilled",
+  "threshold": { "min_fraction": 0.95 },
+  "grade": "recorded"
+}
+```
+
+Two notes on each. `rights_wanted.exclusivity` is the field that most changes a
+price, so a `buy` posting that omits it is asking for a quote nobody can give;
+`self_operable` is a declared property the poster asks for and a response either
+meets or does not, never a requirement this specification imposes (Agent SoW
+§5.4.1).
+
+`acceptance` published at posting time is what makes competing responses
+comparable: every responder quotes against the same bar instead of against
+their own reading of the summary. The test set is committed by digest and MAY
+be withheld — publishing the cases turns them into a training target, and
+keeping them wholly private lets the poster move the bar after seeing the work,
+so the digest in the signed posting closes both. A poster that withholds MUST
+be able to produce bytes matching the digest at acceptance; one that cannot has
+published a bar nobody can be held to.
 
 Grade: `recorded`. A need is a statement of intent; no runtime can verify
 that the poster needs what it says it needs. The structure is not for
@@ -314,6 +379,15 @@ are quotes rather than guesses.
 }
 ```
 
+The shape follows `procurement` (§5.2). A `rent` budget is the per-task
+maximum and the periodic ceiling above. A `buy` budget is a fixed amount, or a
+schedule of milestone amounts, and carries no period: a monthly ceiling on a
+one-off delivery is a number no responder can quote against.
+
+```json
+"budget": { "currency": "XCR", "fixed": 45000000, "grade": "recorded" }
+```
+
 Grade: `recorded`. Stating a budget reserves nothing and proves nothing.
 A budget is a claim about willingness, not ability; §11 covers the case
 where it is bait. Escrowed budgets, where posting reserves real funds, are
@@ -332,6 +406,9 @@ The desired shape of the engagement, in the vocabulary of Agent SoW §5.6 and
   "grade": "recorded"
 }
 ```
+
+Applies to `rent` (§5.2). A `buy` posting has no term: there is no engagement
+to run for six months, and a response quoting one has misread the posting.
 
 Grade: `recorded`. These are preferences a response may match or counter.
 
@@ -714,6 +791,12 @@ than an oversight:
   (reputation, verified capability) are not yet built.
 - **Multi-award**: splitting a posting across responders. Complicates
   closure (§8) for a shape no real posting has needed yet.
+- **Ongoing quality for rented capability**: §5.2's `acceptance` is a gate at
+  delivery, which is the right shape for `buy` and the wrong one for `rent`,
+  where the question is not whether a thing passed once but whether a service
+  keeps performing. That belongs with reputation and with the end-badly
+  vocabulary of Agent SoW, and inventing service-level machinery here before
+  either is exercised would be guessing at the shape.
 - **Escrowed budgets**: a posting that reserves real funds at a clearing
   service, upgrading the budget field from `recorded` toward `evidence`.
   Waits on funding rails, not on this document.
@@ -723,6 +806,45 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.5.0-draft (2026-08-10): buy, rent, or either — and what "done" means.
+
+§5.2 gains `procurement`. Every field in this specification was rent-shaped
+and did not know it: desired months, volume per day, a monthly ceiling, inputs
+furnished per task. All of them assume a provider who keeps doing work for you.
+A poster commissioning a thing to keep and operate had no honest way to say so,
+and half the posting became meaningless without saying which half.
+
+Three values, not two. `either` is the most useful and the reason this is a
+field rather than a second posting kind: a poster often cannot tell whether
+what they need exists as a service or has to be built, which is exactly the
+question an open board answers. It also separates three signals that look
+identical today — an unanswered `buy` means nobody will build it, an
+unanswered `rent` means nobody offers it, and an `either` drawing only build
+quotes means the capability does not exist yet.
+
+§5.4 and §5.3 now say which procurement they apply to, rather than leaving
+fields that cannot be quoted against. A `buy` budget is a fixed amount or
+milestones and carries no period.
+
+§5.2 also gains `rights_wanted` and `acceptance`, both normative references to
+new Agent SoW §5.4.1 and §5.4.2 rather than restatements, following this
+specification's rule that everything contractual belongs there. Exclusivity is
+the field that most moves a price, so a `buy` posting omitting it asks for a
+quote nobody can give. `self_operable` is a declared property the poster asks
+for, never a requirement imposed here. `acceptance` published with the posting
+is what makes competing responses comparable, and its test set is committed by
+digest and may be withheld: publishing the cases makes them a training target,
+keeping them wholly private lets the poster move the bar after seeing the
+work, and the digest in the signed bytes closes both.
+
+No change to responses. A build quote is already a fixed-fee Agent SoW with a
+deliverable and a rent quote is already time and materials or per task; §7
+stands untouched, which is the test that this was a missing question rather
+than a missing vocabulary.
+
+Deferred and named: ongoing quality for rented capability (§13). `acceptance`
+is a gate at delivery, which is right for `buy` and wrong for `rent`.*
 
 *0.1.0-draft (2026-08-06): first draft. §7, the response as a complete
 Agent SoW proposal rather than a second contract vocabulary, is the section
