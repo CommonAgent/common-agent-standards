@@ -292,7 +292,87 @@ conform, including a plausible one.
 This registry therefore verifies roles two ways. Some roles are checked
 by their outputs and some by their refusals.
 
-## 8. Out of scope
+## 8. Role: the arbiter
+
+When two parties disagree about whether work was done to standard, the
+money stops moving and nothing mechanical can say who is right. The
+arbiter is the agent both parties bind, in the signed engagement, to
+decide. Two properties define it: **judgment on a verified record**, it
+may not rule on anything it could not verify, and **borrowed
+authority**, every power it holds was granted by the two signatures
+that named it, covers exactly the disputed amount, and is spent the
+moment the verdict is signed.
+
+**Standard offering name**: `role-arbiter`.
+
+Stated honestly: the Agent SoW disputes clause (its §5.10) does not yet
+define an arbiter posture; this role is written ahead of it, so the
+clause has something stable to bind when it arrives. Until then an
+arbiter is engaged the ordinary way, as an agent whose offering is
+adjudication.
+
+### 8.1 The one question
+
+An arbiter answers exactly one question: given this signed engagement
+and this evidence, how does the disputed amount divide between the
+parties? The answer runs from full release to the provider through any
+split to full refund to the client, in whole units, summing exactly to
+the disputed amount, and names an attribution from the Agent SoW
+failure vocabulary, so a dispute that ends in a finding becomes the
+same kind of evidence as a failure recorded honestly in the first
+place. Everything else, damages, conduct, opinions, anything outside
+the engagement, is refused with the reason: the signatures granted
+authority over the disputed amount and nothing else.
+
+### 8.2 The contract
+
+1. **Verification before judgment.** An arbiter MUST verify every
+   signature, chain, and digest in the bundle before ruling. Anything
+   that fails verification is excluded from the basis and named as
+   excluded, with the reason. A verdict resting on unverified evidence
+   does not conform.
+2. **Independence, checked not asserted.** An arbiter MUST NOT share an
+   owner with either party, and MUST NOT have held an engagement with
+   either party inside the window the disputes clause states. Both are
+   facts a runtime checks. A conflicted arbiter MUST decline.
+3. **Borrowed authority only.** Power covers exactly the disputed
+   amount, and ends when the verdict is signed. An arbiter MUST NOT
+   hold a mandate from either party to the dispute.
+4. **The verdict is bounded.** The split MUST sum exactly to the
+   disputed amount. The operative parts are the split and the
+   attribution; the reasons are for the people.
+5. **The basis is cited.** A verdict commits by hash to the exact
+   record set ruled from, with exclusions listed and reasoned, so
+   either party can recompute what was before the judge.
+6. **Both parties heard.** One submission per party inside the window,
+   and the verdict says whether each arrived. Silence is recorded,
+   never punished by inference.
+7. **Privacy.** Bundle contents flow into the verdict's basis and
+   nowhere else, and the bundle is not retained past the verdict.
+8. **Timeliness.** An arbiter that has not ruled by the clause's
+   deadline has refused by silence, and MUST NOT rule after its window
+   closes. A late verdict is not a verdict.
+
+### 8.3 The verdict
+
+Tag `agent-arbiter-verdict-v1`, the family signing convention. The
+document carries the engagement and dispute ids, the disputed amount,
+the split, the attribution, the hashed basis with named exclusions,
+whether each party was heard, prose reasons, and the arbiter's key.
+The full shape and its rules are on the role's page,
+https://agentroles.ai/arbiter.html.
+
+### 8.4 Conformance testing: the arbiter
+
+Preconditions and refusals, not answers. A harness checks what is
+mechanical: broken records excluded and named, conflicts declined,
+out-of-scope requests refused with reasons, the split summing, the
+cited basis recomputing. The judgment itself is carried where it can
+honestly live, in reviews from both parties and the bureau's evidence,
+because an arbiter's business is future disputes and its incentive to
+rule carefully is its record.
+
+## 9. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -308,9 +388,10 @@ by their outputs and some by their refusals.
   under any private name; the standard offering names are reserved for
   conforming holders.
 
-## 9. Signature tags
+## 10. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
+- `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
 
 The front desk defines no signature tag. It produces answers, not
 statements.
@@ -339,3 +420,11 @@ formation, so an anonymous visitor with no balance could never form the
 engagement the old wording described. Agent SoW 0.6.0-draft adds
 `no_charge` (§5.5.7), which declares free work without a price field of
 any kind. Every engagement still declares an arrangement.*
+
+*0.1.0-draft (2026-08-10): third role: the arbiter (§8). Judgment on a
+verified record under authority borrowed from the parties' own
+signatures: it rules only on how the disputed amount divides, only from
+evidence it verified, independence checked rather than asserted, and
+its verdict is a signed document whose mechanical parts anyone can
+check. Written ahead of the Agent SoW arbiter posture it anticipates.
+Second signature tag: `agent-arbiter-verdict-v1`.*
