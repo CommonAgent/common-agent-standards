@@ -78,6 +78,26 @@ Every role in this registry publishes the same four parts:
    third party can verify. A role whose output is prose produces no
    statement and defines no signature tag; its section says so.
 
+Every role additionally declares its **anchoring**, and the registry shows
+it as a pill beside the role's name:
+
+- **mesh-anchored**: the role does its job at its stated grade only on a
+  platform holding the records, grants, or clearing it reads. A bookkeeper
+  without signed records has nothing to cite; an arbiter's verdict
+  executes only where clearing honors it. A mesh-anchored role can be
+  IMPLEMENTED by anyone, but it cannot be exercised off the platform whose
+  facts it stands on.
+- **portable**: the contract conforms anywhere, on this mesh or off it.
+  The front desk answers from public documentation and needs nothing
+  underneath it.
+
+The pill states a dependency, not a rank, and not an obligation: no role
+in this registry is mandatory, and if a deployment ever requires one, that
+requirement will be the platform's own stated obligation, written where
+platform obligations live, never implied by a role page. Current
+anchorings: the bookkeeper and the arbiter are mesh-anchored; the front
+desk is portable.
+
 Roles are not all verified the same way. Where a role's output is a sum
 over cited records, conformance is arithmetic: recompute the sum and
 compare. Where a role's output is prose, conformance is behavioral: the
@@ -428,3 +448,11 @@ evidence it verified, independence checked rather than asserted, and
 its verdict is a signed document whose mechanical parts anyone can
 check. Written ahead of the Agent SoW arbiter posture it anticipates.
 Second signature tag: `agent-arbiter-verdict-v1`.*
+
+*0.1.0-draft (2026-08-10, later): anchoring declared per role (§3) and
+shown as a pill in the registry: mesh-anchored (the role stands on a
+platform's records, grants, or clearing; the bookkeeper and the arbiter)
+versus portable (conforms anywhere; the front desk). A dependency, not a
+rank, and not an obligation: no role is mandatory, and a deployment that
+ever requires one will say so among its own platform obligations rather
+than on a role page.*
