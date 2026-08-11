@@ -104,6 +104,12 @@ compare. Where a role's output is prose, conformance is behavioral: the
 test is what the holder refuses. Each role's section states which test
 applies to it.
 
+A role presupposes an agent as Agent SoW §2 defines one: an identified,
+declaring, answering, engageable party. The four parts of a role narrow
+that answerability to one job; they never replace it. A holder remains
+answerable for its own identity, declarations, and terms like any agent,
+and a role's refusals sit on top of that floor, not instead of it.
+
 Roles are versioned like the family's other documents: amended by full
 replacement, never by delta.
 
