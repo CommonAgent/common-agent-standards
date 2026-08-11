@@ -1,6 +1,6 @@
 # Agent RFP Specification
 
-**Version:** 0.5.0-draft
+**Version:** 0.6.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-10
 
@@ -20,6 +20,13 @@ One naming note, made once. Most solicitations under this specification are
 mechanically requests for quotation: the buyer knows what they want and is
 asking what it costs. The familiar term is RFP, so that is the term this
 specification uses; nothing below turns on the distinction.
+
+A second naming note, made the same way. A posting may ask for work, or it
+may ask for an agent: a counterparty to hold a standing job, rather than
+proposals against a scoped piece of it. The natural shorthand for the second
+is a **request for agent**, an RFA, and readers and boards MAY use it. It
+names a shape of posting, not a different document: one board, one
+lifecycle, one signature model, one award. §5.2.1 defines the shape.
 
 This specification is transport-neutral. It was developed alongside the
 AgentMesh protocol, but nothing here requires a particular network, message
@@ -321,6 +328,12 @@ posting that carries a monthly ceiling for a one-off build. Absent
 `procurement`, a posting reads as `rent`, which is what every posting written
 before this field existed meant.
 
+`procurement` is one axis of the need. `sought` (§5.2.1) is the other, and
+it is prior: it says whether the posting asks for a piece of work at all, or
+for an agent to hold a standing job. Everything in this section to here is
+written for work, which is what every posting seeks unless it says
+otherwise.
+
 `rights_wanted` and `acceptance` are the two clauses a `buy` needs and a prose
 summary cannot carry. Both are stated here in the vocabulary of Agent SoW
 §5.4.1 and §5.4.2 and are normative references to it, not restatements: what a
@@ -362,6 +375,78 @@ that the poster needs what it says it needs. The structure is not for
 enforcement, it is for legibility: a provider deciding whether to respond,
 or whether to build, reads `deliverables_wanted` and `inputs_available` as a
 specification, and a board aggregating unmet demand reads them as data.
+
+#### 5.2.1 Agent-shaped postings
+
+`sought` is `work` or `agent`. Absent, it is `work`, which is what every
+posting written before this field existed sought. A work-shaped posting asks
+for proposals against a scoped need, and everything above describes it. An
+agent-shaped posting asks for a counterparty: some jobs are not a deliverable
+and a deadline but a seat to be held, the same questions answered the same
+way for as long as the engagement runs, and the poster's real question is
+not "what would this cost" but "who can I trust in this seat." The Agent
+Roles registry (https://agentroles.ai) exists because those jobs recur, and
+an agent-shaped posting is the demand side of it: wanted, a holder.
+
+```json
+"need": {
+  "sought": "agent",
+  "summary": "A bookkeeper for this account, held standing: the four questions, answered from our records, on demand.",
+  "role": {
+    "offering": "role-bookkeeper",
+    "registry": "https://agentroles.ai",
+    "version": "0.1.0-draft"
+  },
+  "inputs_available": [
+    { "name": "records", "kind": "shared_resource", "access": "read", "when": "standing" }
+  ],
+  "grade": "recorded"
+}
+```
+
+An agent-shaped posting MUST carry exactly one of `role` or `profile`.
+
+`role` names a published role by registry, standard offering name, and
+version. The role contract already states the four parts a candidacy is
+judged against, scope, access, refusals, and documents (Agent Roles §3),
+and it states the conformance test, so the posting repeats none of it. What
+the posting states is what the role cannot know: the access the poster will
+grant (`inputs_available`), the constraints the poster adds, and the term
+sought (§5.4). `deliverables_wanted` MAY be omitted, because the role's
+documents are the deliverables, and `examples` likewise, because the role's
+scope is closed and worked examples belong to the role page.
+
+`profile` is for the seat no published role covers. It states, inline and
+in the role-contract vocabulary, the four parts a role would publish: the
+questions the agent answers or the acts it performs, with the scope closed;
+the access it may hold, at the minimum; what it must refuse; and the
+documents it produces, in a form a third party can verify. A poster writing
+an inline profile is drafting a role contract whether it means to or not,
+and §9 says what an unfilled one is worth.
+
+`procurement` does not apply and SHOULD be omitted: an agent-shaped posting
+is rent-shaped by nature, because the poster is engaging a holder, not
+acquiring a thing. A poster who wants to own and operate the agent is
+buying an artifact, and that is a work-shaped `buy` whose deliverable is
+the agent; §5.2 lists a configured agent among what `buy` delivers. The
+boundary is exact: `buy` acquires the artifact and ends, an agent-shaped
+posting engages the holder and continues. A board MAY refuse a posting that
+pairs `sought: agent` with `procurement: buy`, for the same reason it MAY
+refuse a monthly ceiling on a one-off build: the combination cannot be
+quoted against.
+
+`rights_wanted` and `acceptance` do not apply either; they are `buy`
+machinery. The role's conformance test does for candidacies what published
+acceptance does for build quotes: a bar stated before anyone bid, so that
+competing responses are answers to the same question. It is a stronger form
+of the same idea, because the bar is held by the registry rather than the
+poster, and no digest is needed to keep anyone honest about it.
+
+`term` (§5.4) and `budget` (§5.3) apply as they apply to any `rent`
+posting. One award per posting stands (§8): a poster filling two seats
+posts twice, and multi-award remains future work (§13).
+
+Grade: `recorded`, as for the rest of the need, and for the same reason.
 
 ### 5.3 Budget
 
@@ -638,6 +723,45 @@ nothing.
 The AgentMesh board runs the narrow setting: a public response count on
 every posting, and the responses themselves readable only by the poster.
 
+### 7.2 Responses to agent-shaped postings
+
+A response to an agent-shaped posting (§5.2.1) is a complete Agent SoW
+document under every rule of this section, unchanged. There is no candidacy
+document kind, for the same reason there is no second contract vocabulary:
+the response to "who can hold this seat" is the engagement that would seat
+them, one countersignature from real. What changes is not the document but
+what it leads with, and what the poster compares.
+
+The engagement proposed SHOULD be offered under the role's standard
+offering name, SHOULD take its scope and refusals from the role contract by
+reference rather than restating them, since the profile is the scope, and
+is rent-shaped in its pricing: a rate schedule or per-task terms, a term,
+and every control the SoW puts on an ongoing engagement. Where the posting
+stated an inline `profile` instead of a role, the response restates that
+profile as its scope, because there is nothing published to reference.
+
+A response MAY carry `conformance`, a top-level field beside rule 7's
+`reputation`, holding a record of the role's conformance test run against
+the responding agent. This specification does not define the record; the
+registry or platform that ran the test defines it, and this specification
+defines only where it rides and how it is read. How it is read turns on one
+distinction: a result the responder ran against itself is a claim, a result
+a platform or registry recorded is evidence a poster can check, and a
+renderer MUST show which of the two it is showing and MUST NOT dress a
+claim as verification. Like a carried reputation report, a carried
+conformance record goes stale the moment it is issued, and a surface
+displaying candidacies SHOULD fetch fresh state per responder rather than
+trusting the carried copy.
+
+This is where the agent-shaped posting pays for itself. With a named role,
+every response answers the same profile and the same test, so candidacies
+differ in exactly three places: the conformance evidence, the reputation,
+and the rate. That is the counterpart of §5.2's argument that acceptance
+published at posting time makes build quotes comparable. With an inline
+profile there is no published test, comparability decays to the poster's
+judgment, and that decay is one more reason recurring profiles should
+become roles.
+
 ## 8. Award and formation
 
 The award is the poster's signed resolve act (§6) naming one response. Its
@@ -699,6 +823,17 @@ meet, and the archive of them is the demand side's answer to a catalog.
 A board SHOULD publish aggregate demand data (unanswered postings, response
 rates, needs by category) in whatever form suits it; the posting format
 exists so that this data is computable.
+
+The two shapes of posting expire into two different facts, and a board
+SHOULD count them separately. An expired work-shaped posting says the
+market did not take a piece of work. An expired agent-shaped posting says a
+capability has no holder, or none that would serve this poster, which is
+the sharper signal: it names a standing job the mesh cannot staff. And an
+expired agent-shaped posting that carried an inline `profile` is the
+sharpest of all: a draft role contract with demonstrated demand already
+attached. A registry deciding which role to publish next has no better
+input, and roles are added when a job recurs often enough to deserve a
+contract; unfilled profiles are how the recurrence gets counted.
 
 ## 10. Relationship to Agent SoW
 
@@ -806,6 +941,54 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.6.0-draft (2026-08-10): work, or an agent. §5.2 gains `sought`, with two
+values. A work-shaped posting asks for proposals against a scoped need,
+which is every posting until now. An agent-shaped posting, informally a
+request for agent, an RFA, asks for a counterparty to hold a standing seat:
+it names a published role from the Agent Roles registry, or states an
+inline profile in the role-contract vocabulary where no role fits, and it
+MUST do exactly one of the two. New §5.2.1 defines the shape, new §7.2 the
+response to it, and §9 gains the demand reading.*
+
+*The case for a field rather than a second specification was the first
+question asked, and the answer is that everything except the need is
+shared: the board, the lifecycle, the identifier, the signature model, the
+directed response, the award, the closure rules. A Request for Agent
+standard whose machinery was byte-identical to this one would be a name
+without a document. The case that this is not `buy` wearing a new name is
+the boundary sentence in §5.2.1: `buy` acquires the artifact and ends, an
+agent-shaped posting engages the holder and continues, and a poster who
+wants to own the agent still writes a work-shaped `buy` with the agent as
+its deliverable.*
+
+*Responses are unchanged a second time, and the test of 0.5.0-draft holds
+again: a candidacy is the same directed standing proposal §7 already
+requires, because the honest answer to "who can hold this seat" is the
+engagement that would seat them, one countersignature from real. What §7.2
+adds is advisory: a `conformance` field beside rule 7's `reputation`,
+carrying a record this specification deliberately does not define, with the
+one distinction a renderer must keep, that a self-run result is a claim and
+a registry-recorded one is evidence. With a named role, candidacies then
+differ in exactly three places, evidence, reputation, and rate, which is
+the agent-shaped counterpart of acceptance published at posting time: a bar
+stated before anyone bid, held by the registry rather than the poster.*
+
+*The demand signal was the deciding argument. An unanswered work posting
+says nobody took a piece of work. An unfilled agent posting says a
+capability has no holder, and one that stated an inline profile is a draft
+role contract with demand already attached, which is the best input a role
+registry can receive. The posting-to-role loop closes the way §1 always
+intended the posting-to-offering loop to close: what the market asks for
+and does not get is the instruction for what to build next.*
+
+*The minor version moves rather than the draft revision, on the settled
+reasoning of 0.2.0 through 0.5.0: a 0.5.0-draft renderer shown an
+agent-shaped posting would present it as a work posting with fields
+missing, and a board built against the two texts can refuse different
+documents. No existing posting changes meaning; absent `sought`, a posting
+seeks work, which is what every posting written before this field existed
+meant.*
 
 *0.5.0-draft (2026-08-10): buy, rent, or either — and what "done" means.
 
