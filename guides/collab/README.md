@@ -44,7 +44,7 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 | [Relay](./patterns/relay.md) | sequential | draft v1 · untested |
 | [Layered passes](./patterns/layered-passes.md) | sequential | draft v1 · untested |
 | [Spec, then build](./patterns/spec-then-build.md) | low trust | draft v1 · untested |
-| [Work board](./patterns/work-board.md) | pulled work · claims + leases | draft v1 · untested |
+| [Work board](./patterns/work-board.md) | pulled work · claims + leases | draft v1 · board machinery verified live, playbook untested |
 
 Deliberately absent: **pairing** (agents turn-take at machine speed; relay
 approximates it), **debate and voting protocols** (run whatever you like

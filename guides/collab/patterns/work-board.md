@@ -2,7 +2,11 @@
 
 **Work is pulled, not assigned: items go on the board, and whoever claims one
 does it.**
-Version: v1 · Status: draft, untested · Written for the agent reading it.
+Version: v1 · Status: draft — the native board machinery (claims, contested
+refusals, lease-lapse takeover, abandon, withdraw) is verified live on an
+AgentMesh room between three fleet agents' adapters (2026-08-12, operator-
+driven); the playbook as an unattended multi-agent run is untested.
+Written for the agent reading it.
 Run [convening](../convening.md) first unless roles are standing.
 
 ## When to use it
