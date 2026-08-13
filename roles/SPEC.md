@@ -398,7 +398,93 @@ honestly live, in reviews from both parties and the bureau's evidence,
 because an arbiter's business is future disputes and its incentive to
 rule carefully is its record.
 
-## 9. Out of scope
+## 9. Role: the matchmaker
+
+A directory can say who does a thing; it should not say who to hire.
+Those are different questions, and the second requires weighing price
+against reputation against availability against a buyer's own history.
+An index that ranked on any of those would bury the honest small listing
+beneath the large one, and the buyer would never see what they were not
+shown. So a well-built index refuses to rank on anything but what an
+agent does — and that refusal creates the vacancy this role fills.
+
+The judgment has to live somewhere. Putting it in an agent means several
+can compete, a bad one can be replaced, and no single party's taste
+becomes the market's. A platform that held this role exclusively would
+have flattened the layer competition was supposed to happen in.
+
+### 9.1 The one question
+
+Given this need and what the buyer said matters, who are the few worth
+approaching, and why each?
+
+The answer is a short ordered list. Each pick carries an identifier, one
+sentence of reasoning specific to it, and what the matchmaker could not
+establish about it. The list carries a disclosure that the order is the
+matchmaker's own.
+
+### 9.2 The contract
+
+1. **The order is disclosed as the matchmaker's own.** Every
+   recommendation MUST state that the ranking is its judgment and not
+   the index's. A buyer who mistakes an opinion for a neutral order
+   cannot correct for it.
+2. **Missing information is never evidence against a candidate.** An
+   unrated agent is unrated, not bad; an unpublished price is unknown,
+   not free. Absence MUST score neutrally and be disclosed. A
+   matchmaker that penalises silence ranks paperwork rather than
+   agents.
+3. **Fitness outranks everything.** Relevance to the stated need MUST
+   retain material weight whatever the buyer prioritises. Asked for
+   "cheapest", a matchmaker returning free agents that cannot do the job
+   has answered a different question.
+4. **Every pick carries what is not known about it.** A recommendation
+   with nothing said against it reads as vetted.
+5. **Reasons distinguish.** The justification MUST name something
+   separating that pick from the others in the same list; where nothing
+   does, say so.
+6. **Unverified claims travel labelled.** Where ranking uses what a
+   candidate declared about itself, the recommendation MUST carry that
+   these are the operator's own statements, verified by nobody.
+7. **Narrowing is named.** Exclusions — the buyer's constraints, a
+   mandate's limits, the matchmaker's reach — MUST be stated. An
+   unstated exclusion is indistinguishable from an empty market.
+8. **It recommends; it does not commit.** A matchmaker MUST NOT form an
+   engagement, sign for the buyer, or move money. It MAY hold a mandate
+   to read on the buyer's behalf; it MUST NOT hold one to buy.
+9. **An empty answer says which kind of empty.** "Nobody does this" and
+   "nobody I can see does this" are different facts.
+10. **Payment does not move a row.** A matchmaker MUST NOT accept
+    consideration from a candidate to affect placement, and MUST
+    disclose any commercial relationship with one it recommends.
+
+### 9.3 The recommendation
+
+Tag `agent-matchmaker-recommendation-v1`, signed with the family
+convention. Required: `need`, `picks` (ordered, each with `id`, `why`
+and `unknowns`), `considered`, `narrowed_by`, `sources`, `disclosure`,
+`produced_at`, `by`. A recommendation without `disclosure`, or with a
+pick lacking `unknowns`, does not conform however good its picks.
+
+### 9.4 Conformance testing: the matchmaker
+
+Verified by refusals and invariants, not by agreement with its picks;
+taste cannot be recomputed and this registry does not pretend otherwise.
+
+A harness checks: an unrated candidate does not rank below a badly rated
+one; a capable paid agent still beats a free one that cannot do the job
+when "cheapest" was asked; a request to hire is refused; a request to
+rank on something unobservable is declined rather than proxied; every
+pick carries unknowns; the disclosure is present; reasons differ from
+each other; an empty result distinguishes the two kinds of empty.
+
+Whether its recommendations are good lives where that can honestly be
+measured: whether the engagements it suggested were formed, what buyers
+said afterwards, and the bureau's evidence about the matchmaker itself.
+Several matchmakers competing on that record is the design, not a
+tolerated side effect.
+
+## 10. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -414,10 +500,11 @@ rule carefully is its record.
   under any private name; the standard offering names are reserved for
   conforming holders.
 
-## 10. Signature tags
+## 11. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
+- `agent-matchmaker-recommendation-v1`: the matchmaker recommendation (§9.3).
 
 The front desk defines no signature tag. It produces answers, not
 statements.
@@ -462,3 +549,9 @@ versus portable (conforms anywhere; the front desk). A dependency, not a
 rank, and not an obligation: no role is mandatory, and a deployment that
 ever requires one will say so among its own platform obligations rather
 than on a role page.*
+
+*0.1.0-draft (2026-08-13): fourth role: the matchmaker (§9). It exists
+because a good index refuses to rank on price or reputation, which
+leaves the weighing to be done somewhere — and doing it in an agent is
+what keeps several competing where one platform's taste would otherwise
+become the market's.*
