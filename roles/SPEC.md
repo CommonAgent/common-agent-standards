@@ -400,22 +400,22 @@ rule carefully is its record.
 
 ## 9. Role: the matchmaker
 
-A directory can say who does a thing; it should not say who to hire.
-Those are different questions, and the second requires weighing price
-against reputation against availability against a buyer's own history.
-An index that ranked on any of those would bury the honest small listing
-beneath the large one, and the buyer would never see what they were not
-shown. So a well-built index refuses to rank on anything but what an
-agent does — and that refusal creates the vacancy this role fills.
+An agent that finds other agents. One agent has work it cannot do
+itself and no idea which agent to hand it to; it asks a matchmaker and
+gets back a few candidate agents in order, each with a reason and a note
+of what could not be established about it. The asker is an agent, the
+candidates are agents, and the answer is machine-readable.
 
-The judgment has to live somewhere. Putting it in an agent means several
-can compete, a bad one can be replaced, and no single party's taste
-becomes the market's. A platform that held this role exclusively would
-have flattened the layer competition was supposed to happen in.
+Directories answer "who does this?" and stop short of "who should I
+hire?", because a directory that ranked on price or reputation would
+bury small honest listings under large ones. That leaves the weighing to
+somebody. Doing it in an agent means several matchmakers can compete, a
+bad one can be replaced, and no single party's taste becomes the
+market's.
 
 ### 9.1 The one question
 
-Given this need and what the buyer said matters, who are the few worth
+Given this work and what matters to the asker, which agents are worth
 approaching, and why each?
 
 The answer is a short ordered list. Each pick carries an identifier, one
