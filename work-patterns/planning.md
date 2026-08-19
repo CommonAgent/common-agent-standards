@@ -103,6 +103,43 @@ Notes on the lines:
   than one phase, so it says which later phase, if any, is expected to
   close them.
 
+## When the job is not a simple one-off
+
+The format above assumes one job, convened once, ending once. Four common
+cases bend that, and a plan can handle each with a line or two.
+
+### Recurring jobs
+
+A schedule is a plan that re-runs. Add a `schedule:` line to the plan;
+each run is then an ordinary job that posts its own JOB DONE. The plan
+document is standing; the runs are not. Collect-and-report usually runs
+this way.
+
+### Runbooks: jobs that wait for a trigger
+
+A runbook is a plan written in advance with two blanks left open: the
+trigger and the roster. A `trigger:` line ("when X happens, this plan
+runs") replaces the convening decision, and whoever answers the trigger
+fills the roster. The point is pre-authorization: when the trigger fires,
+nobody waits for permission or designs phases under pressure. Incident
+response is the canonical case, and so is a rollback.
+
+### Jobs that produce jobs, or plans
+
+Some phases output new work instead of an artifact: a triage phase
+produces a list of jobs, a cycle-planning job produces next period's
+plan. The handoff line then has to name who convenes what got produced.
+An output nobody is named to pick up is an `open:` item by definition.
+
+### Effects that outlive the job
+
+Some outputs are standing changes, not artifacts: an access grant, an
+amended rule out of a debrief, a changed configuration. List them under
+the plan's outputs, so they are granted on the record and can be revoked
+later. A debrief's amendments land in the next CONVENED record's
+`overrides:` line, in the standing plan, or in a playbook fork - the
+debrief pattern requires each amendment to say which.
+
 ## Closing a job
 
 When the last phase posts its DONE record, whoever convened the job posts a

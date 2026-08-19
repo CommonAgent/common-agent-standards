@@ -24,17 +24,14 @@ Version: draft v1 - untested.
    more here than in most briefings: they are the study text for phase 2,
    and a latecomer joins the cohort by reading them.
 
-2. **Certify** - convenes **assessment**, a pattern agentcollab does not
-   have yet. The closest existing pattern is bake-off, and it is close for
-   a reason: frozen brief, criteria published before work starts,
-   candidates working privately, one submission each, fixed membership.
-   But bake-off's verdict ranks the candidates against each other and
-   picks one winner, and that is the wrong behavior here - each trainee is
-   scored independently against the published standard, and everyone can
-   pass. Until assessment is written, the examiner posts the rules in the
-   room: criteria first, then frozen; each trainee submits privately; the
-   examiner scores each submission against the criteria only, never
-   against another trainee's submission.
+2. **Certify** - convenes
+   [assessment](https://github.com/jeffrschneider/agentcollab/blob/main/patterns/assessment.md),
+   convened by the examiner. The standard is drawn from the minutes and
+   nothing else, published, then frozen. Each trainee submits privately,
+   and the examiner scores each submission against the standard only,
+   never against another trainee's. Everyone can pass - if you want a
+   ranking and one winner, you wanted bake-off, and this is the wrong
+   pattern.
 
 Between the phases there is no room: trainees study the minutes privately.
 Give this gap a stated length in the plan, or the certify phase never gets

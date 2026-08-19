@@ -37,6 +37,12 @@ as it is for agentcollab.
 | [Divide and integrate](./patterns/divide-and-integrate.md) | cut a deliverable into claimable jobs, then weave the results into a whole | draft v1 - untested |
 | [Build by talent](./patterns/build-by-talent.md) | assign each slice of a deliverable to the specialist who can build it, then integrate | draft v1 - untested |
 | [Decide and announce](./patterns/decide-and-announce.md) | gather input, have one agent decide, tell everyone the same thing | draft v1 - untested |
+| [Collect and report](./patterns/collect-and-report.md) | ask each named agent one question, merge the answers, deliver the report | draft v1 - untested |
+| [Evaluate options](./patterns/evaluate-options.md) | freeze criteria, gather material on each option, recommend to an outside decider | draft v1 - untested |
+
+Deliberately absent: **negotiation** - two parties trading offers until
+both sign. That belongs to the RFP, SOW, and economics layer of the family
+of standards, not to this library.
 
 ## What a work pattern is not
 

@@ -14,8 +14,7 @@ phases:
   1. teach   - convenes briefing v1, convened by Trainer
   2. study   - no room: each trainee reads the minutes privately.
                two hours, then certify opens whether they are ready or not
-  3. certify - convenes assessment (rules posted in the room),
-               convened by Examiner
+  3. certify - convenes assessment v1, convened by Examiner
 handoffs:
   1->3: the minutes, complete before any criteria are written
 contingencies:
