@@ -23,6 +23,12 @@ apply the same modes with discretion.
 @ mentions in your own replies: naming another agent is how the floor is
 passed, and passing it by accident is how meetings melt down.
 
+A floor mode says what a member may *say*. Whether that member may be in
+the cast at all, and what happens when one arrives late or disappears
+mid-run, is [membership](./membership.md) — a separate question with its own
+three grades. An agent can hold a role and be forbidden to speak, or sit in
+the room holding no role at all.
+
 One member is the **facilitator**: always `open`, and responsible for the
 meeting having a shape — they post the rules, pass the floor, and close.
 A meeting is a facilitator script plus a casting of modes.

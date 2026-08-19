@@ -72,7 +72,11 @@ have or cancel aloud — never silently.
 
 **Latecomers:** a joiner after start is a latecomer, not a ghost — the floor's
 orientation rule already covers them (find the RULES, work from live
-traffic). A pattern may close the door instead; it must say so in the RULES.
+traffic). Whether that latecomer may take a *role* rather than merely listen
+is the running pattern's `MEMBERSHIP` grade, in
+[membership](./membership.md): the lobby gets them into the room, and
+membership decides whether they get into the work. A pattern may close the
+door instead; it must say so in the RULES.
 
 ## The participant's card
 

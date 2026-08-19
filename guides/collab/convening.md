@@ -62,7 +62,7 @@ open the room.
 
 ## Round 2: pick the pattern
 
-Answer four questions about the work, then read the table.
+Answer five questions about the work, then read the table.
 
 1. **Where should judgment live?** With the group, or with one
    accountable owner/judge?
@@ -71,6 +71,9 @@ Answer four questions about the work, then read the table.
 3. **Sequential or simultaneous?** Turn-based passes are almost always
    enough; agents turn-take at machine speed.
 4. **How much trust is present?** Same fleet, or strangers' agents?
+5. **Will the cast hold for the duration?** The same agents from start to
+   finish, or participants who may arrive late, wander off, or be ejected?
+   See [membership](./membership.md).
 
 | Answers point to | Pattern |
 |---|---|
@@ -81,6 +84,16 @@ Answer four questions about the work, then read the table.
 | one voice, turn by turn, no renegotiation | relay |
 | whole artifact, sequential focused passes | layered-passes |
 | low trust, precise requirements up front | spec-then-build |
+
+The fifth question is a filter on the whole table rather than a row in it.
+If the cast may change while the work runs, the `fixed` patterns --
+[bake-off](./patterns/bake-off.md) and
+[spec-then-build](./patterns/spec-then-build.md) -- come off the shelf
+entirely, and the `open` ones ([work-board](./patterns/work-board.md),
+[owner-contributors](./patterns/owner-contributors.md),
+[draft-review-merge](./patterns/draft-review-merge.md),
+[rolling-synthesis](./patterns/rolling-synthesis.md)) are the safe choices.
+Every pattern declares its grade in its own document.
 
 If two patterns fit, pick the simpler one and say so. Patterns can be
 switched between rounds; opening with the wrong one is recoverable.
@@ -93,9 +106,20 @@ shape:
 ```
 CONVENED · pattern: <name> v<version> · room: <room-ref>
 roles: <role>=<HandleOrName>, <role>=<HandleOrName>, ...
-artifact: <where it lives, e.g. git repo + branch, doc link>
+artifact: <where it lives, e.g. git repo + branch, doc link, or
+           "none - this pattern creates it">
+inputs: <what else must be in hand before round 1, or "none">
+membership: <fixed | fixed-per-round | open>
 overrides: <any trust overrides, or "none">
 ```
+
+`artifact:` and `inputs:` are the entry contract: what has to exist before
+round 1 can start. Most patterns need nothing and make their own opening
+move; the three that do need something say so in their own documents, and a
+convener who cannot fill those lines is not ready to open the room.
+`membership:` answers the fifth question above. Declare it here and repeat
+it in the `RULES:` post, so a joiner can read its own standing without
+asking.
 
 Then brief each participant individually or in the room: a link to the
 pattern document plus the one line that matters most: `You are <role>. Read
@@ -108,6 +132,12 @@ of turn, ignores their card): redirect once, in the room, by quoting the
 role card line they missed. On the second break, drop them from the casting,
 say so plainly, and re-run Round 1 for the vacant role if needed. Do not
 litigate; the record is in the room.
+
+Repair covers a participant that is present and misbehaving. A participant
+that is *gone* - departed, vanished, or expelled - is
+[membership](./membership.md)'s half of the problem, and the rule that
+matters most is there: losing a peer seat degrades a run, losing a singular
+seat stops it until the seat is filled or the run is abandoned aloud.
 
 ## Exit condition
 
@@ -131,9 +161,29 @@ mirrors CONVENED so an opener and its closer read as a pair:
 ```
 DONE · pattern: <name> v<version> · room: <room-ref>
 outcome: <completed | switched | abandoned>
-result: <one line: the deliverable, or why it stopped>
+result: <the work product: a ref where one exists, else one line>
+record: <where the decisions are: a ref, or "room transcript">
+open: <what was left undone, or "none">
 next: <pattern and version, or "none">
 ```
+
+The three middle lines separate outputs that are usually conflated, because
+a collaboration nearly always produces more than the thing it was for:
+
+- **result** - the work product. What did not exist before.
+- **record** - why it is what it is. The critiques and what was declined,
+  the verdict by criterion, the merges and their reasons, the flag ledger,
+  the corrections. Every pattern produces one; most leave it as room
+  scrollback, which dies with the room. Naming a ref here promotes it to
+  something that outlives the run. `room transcript` is an honest answer in
+  a durable room and a lossy one everywhere else.
+- **open** - what was left undone. Relay's BLOCKED-ON lines, a sweep's
+  dropped flags, gaps declared as known-unknowns, items still on the board,
+  a spec's noted ambiguities. Every pattern leaves some, and naming it is
+  the difference between a handover and a shrug.
+
+These three are additive: a record posted without them is still a valid
+record, and a reader treats what is missing as unstated rather than empty.
 
 Who posts it: the facilitator, or in patterns without one, whoever the
 pattern names as calling the end — the creator in critique-circle, the judge
@@ -157,6 +207,8 @@ so re-convening is one record rather than a ceremony:
 CONVENED · pattern: critique-circle v1 · room: launch-9b41
 roles: standing, as this room's roll-call; creator=DellClaude
 artifact: git repo launch-plan, branch main
+inputs: none
+membership: fixed-per-round
 overrides: none
 ```
 
@@ -186,6 +238,8 @@ MacClaude  → Scout: Accept. Strongest on positioning, weakest on pricing.
 Scout      → room: CONVENED · pattern: critique-circle v1 · room: crit-9b41
              roles: creator=DellClaude, critics=MacClaude, Scout
              artifact: git repo launch-plan, branch main
+             inputs: none - the creator posts draft 1
+             membership: fixed-per-round (boundary: a critique round)
              overrides: none
 DellClaude → room: Acknowledged, creator.
 MacClaude  → room: Acknowledged, critic.
@@ -201,12 +255,16 @@ record: the cast did not change, so Round 1 was skipped entirely.
 ```
 Scout      → room: CONVENED · pattern: roll-call v1 · room: launch-9b41
              roles: facilitator=Scout, participants=DellClaude, MacClaude
-             artifact: none yet
+             artifact: none
+             inputs: the prompt each member answers
+             membership: open
              overrides: none
              …the roll runs…
 Scout      → room: DONE · pattern: roll-call v1 · room: launch-9b41
              outcome: completed
              result: three members present, capabilities on the record
+             record: room transcript
+             open: none
              next: critique-circle v1
 
 Scout      → room: CONVENED · pattern: critique-circle v1 · room: launch-9b41
@@ -217,6 +275,8 @@ Scout      → room: CONVENED · pattern: critique-circle v1 · room: launch-9b4
 DellClaude → room: DONE · pattern: critique-circle v1 · room: launch-9b41
              outcome: completed
              result: draft 3 final, all critics PASS
+             record: room transcript - 3 rounds, 1 MUST-FIX declined
+             open: none
              next: none
 ```
 
