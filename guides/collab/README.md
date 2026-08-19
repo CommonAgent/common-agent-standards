@@ -32,26 +32,26 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 
 ## The library
 
-| Pattern | Shape | Membership | Status |
-|---|---|---|---|
-| [Convening](./convening.md) | pre-pattern · run this first | — | draft v1 · untested |
-| [The floor](./floor.md) | frame · floor modes + enforcement | — | v1 · verified live |
-| [The lobby](./lobby.md) | frame · gathering a scheduled meeting | — | draft v1 · arrival gating verified live |
-| [Membership](./membership.md) | frame · whether the cast may change | — | draft v1 · untested |
-| [Briefing](./patterns/briefing.md) | meeting · one speaks, all listen | open | v1 · verified live |
-| [Roll call](./patterns/roll-call.md) | meeting · each speaks once | open | v1 · verified live |
-| [Debrief](./patterns/debrief.md) | meeting · the retro, after the work | **fixed** | draft v1 · untested |
-| [Critique circle](./patterns/critique-circle.md) | distributed judgment | fixed-per-round | draft v1 · untested |
-| [Bake-off](./patterns/bake-off.md) | centralized judgment | **fixed** | draft v1 · untested |
-| [Assessment](./patterns/assessment.md) | centralized judgment · everyone can pass | **fixed** | draft v1 · untested |
-| [Approval](./patterns/approval.md) | distributed judgment · sign-off | **fixed** | draft v1 · untested |
-| [Draft, review, merge](./patterns/draft-review-merge.md) | owned artifact | open | draft v1 · untested |
-| [Owner and contributors](./patterns/owner-contributors.md) | owned artifact | open | draft v1 · untested |
-| [Rolling synthesis](./patterns/rolling-synthesis.md) | centralized judgment | open | draft v1 · untested |
-| [Relay](./patterns/relay.md) | sequential | fixed-per-round | draft v1 · untested |
-| [Layered passes](./patterns/layered-passes.md) | sequential | fixed-per-round | draft v1 · untested |
-| [Spec, then build](./patterns/spec-then-build.md) | low trust | **fixed** | draft v1 · untested |
-| [Work board](./patterns/work-board.md) | pulled work · claims + leases | open | draft v1 · board machinery verified live, playbook untested |
+| Pattern | Shape | Membership |
+|---|---|---|
+| [Convening](./convening.md) | pre-pattern · run this first | — |
+| [The floor](./floor.md) | frame · floor modes + enforcement | — |
+| [The lobby](./lobby.md) | frame · gathering a scheduled meeting | — |
+| [Membership](./membership.md) | frame · whether the cast may change | — |
+| [Briefing](./patterns/briefing.md) | meeting · one speaks, all listen | open |
+| [Roll call](./patterns/roll-call.md) | meeting · each speaks once | open |
+| [Debrief](./patterns/debrief.md) | meeting · the retro, after the work | **fixed** |
+| [Critique circle](./patterns/critique-circle.md) | distributed judgment | fixed-per-round |
+| [Bake-off](./patterns/bake-off.md) | centralized judgment | **fixed** |
+| [Assessment](./patterns/assessment.md) | centralized judgment · everyone can pass | **fixed** |
+| [Approval](./patterns/approval.md) | distributed judgment · sign-off | **fixed** |
+| [Draft, review, merge](./patterns/draft-review-merge.md) | owned artifact | open |
+| [Owner and contributors](./patterns/owner-contributors.md) | owned artifact | open |
+| [Rolling synthesis](./patterns/rolling-synthesis.md) | centralized judgment | open |
+| [Relay](./patterns/relay.md) | sequential | fixed-per-round |
+| [Layered passes](./patterns/layered-passes.md) | sequential | fixed-per-round |
+| [Spec, then build](./patterns/spec-then-build.md) | low trust | **fixed** |
+| [Work board](./patterns/work-board.md) | pulled work · claims + leases | open |
 
 **Membership** is whether the agents doing the work can change while it is
 being done. Decide it before you pick a pattern rather than when it happens.

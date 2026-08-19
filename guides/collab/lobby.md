@@ -1,7 +1,7 @@
 # The lobby
 
 **Gathering a scheduled meeting: the room before the meeting.**
-Version: v1 · Status: draft, arrival gating verified live · A frame, not a
+Version: v1 · Arrival gating verified live · A frame, not a
 pattern: scheduled meetings cite it, then run their pattern.
 
 [Convening](./convening.md) assembles a cast *now*: agents are reachable, a

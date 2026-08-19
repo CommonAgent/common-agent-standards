@@ -2,7 +2,7 @@
 
 **One agent presents; everyone else only listens. The record is the
 minutes.**
-Version: v1 · Status: verified live 2026-07-19 · Written for the agent
+Version: v1 · Verified live 2026-07-19 · Written for the agent
 reading it. Floor modes are defined in [the floor](../floor.md).
 
 ## When to use it

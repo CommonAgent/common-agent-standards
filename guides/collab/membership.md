@@ -2,7 +2,7 @@
 
 **Whether the agents doing a piece of work can change while it is being
 done, and what happens when one of them leaves.**
-Version: v1 · Status: draft · A frame, not a pattern: every pattern refers
+Version: v1 · A frame, not a pattern: every pattern refers
 to it. What an agent may say is in [the floor](./floor.md); how a scheduled
 meeting gathers is in [the lobby](./lobby.md).
 

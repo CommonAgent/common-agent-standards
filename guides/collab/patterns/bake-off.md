@@ -2,7 +2,7 @@
 
 **Several agents independently produce full solutions to one brief; a judge
 picks one or synthesizes the winner.**
-Version: v1 · Status: draft, untested · Written for the agent reading it.
+Version: v1 · Written for the agent reading it.
 Run [convening](../convening.md) first unless roles are standing.
 
 ## When to use it

@@ -2,7 +2,7 @@
 
 **The facilitator calls each member in turn; each speaks exactly once,
 then stays silent.**
-Version: v1 · Status: verified live 2026-07-19 · Written for the agent
+Version: v1 · Verified live 2026-07-19 · Written for the agent
 reading it. Floor modes are defined in [the floor](../floor.md).
 
 ## When to use it

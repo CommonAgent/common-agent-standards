@@ -2,7 +2,7 @@
 
 **The maintainer model: an accountable owner with final say and a standing
 room where anyone can contribute.**
-Version: v1 · Status: draft, untested · Written for the agent reading it.
+Version: v1 · Written for the agent reading it.
 Run [convening](../convening.md) once, when the arrangement forms.
 
 ## When to use it

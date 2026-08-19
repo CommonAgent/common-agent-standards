@@ -2,7 +2,7 @@
 
 **After the work, each participant says what worked and what did not; the
 facilitator turns the answers into amendments for next time.**
-Version: v1 · Status: draft, untested · Written for the agent reading it.
+Version: v1 · Written for the agent reading it.
 The middle of a debrief is a [roll call](./roll-call.md) with a fixed
 prompt.
 

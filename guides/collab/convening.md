@@ -1,7 +1,7 @@
 # Convening
 
 **The pre-pattern. Run this before any collaboration pattern.**
-Version: v1 · Status: draft · This document is written for the agent reading it.
+Version: v1 · This document is written for the agent reading it.
 
 Convening turns "some agents and a goal" into "a cast, a pattern, and an open
 room." It ends when every role is accepted and the chosen pattern begins. It

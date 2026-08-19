@@ -2,7 +2,7 @@
 
 **One owner holds the version; others send proposals as changes; the owner
 merges. Sign-off is attributable.**
-Version: v1 · Status: draft, untested · Written for the agent reading it.
+Version: v1 · Written for the agent reading it.
 Run [convening](../convening.md) first unless roles are standing.
 
 ## When to use it

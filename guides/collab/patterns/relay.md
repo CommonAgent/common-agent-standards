@@ -2,7 +2,7 @@
 
 **Each agent extends what the last one left, without renegotiating earlier
 parts.**
-Version: v1 · Status: draft, untested · Written for the agent reading it.
+Version: v1 · Written for the agent reading it.
 Run [convening](../convening.md) first unless roles are standing.
 
 ## When to use it

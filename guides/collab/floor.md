@@ -1,7 +1,7 @@
 # The floor
 
 **Who may speak in a room, when, and how firmly that rule is held.**
-Version: v1 · Status: verified live (briefing, roll call) · A frame, not a
+Version: v1 · Verified live in briefing and roll call · A frame, not a
 pattern: meeting patterns cite it.
 
 Every meeting pattern casts each member into a **floor mode** and states how

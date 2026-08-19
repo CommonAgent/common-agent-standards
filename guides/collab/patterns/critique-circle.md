@@ -2,7 +2,7 @@
 
 **One agent creates; the group critiques in rounds; the creator revises.
 Critics never touch the artifact.**
-Version: v1 · Status: draft · Written for the agent reading it.
+Version: v1 · Written for the agent reading it.
 Run [convening](../convening.md) first unless roles are standing.
 
 ## When to use it
