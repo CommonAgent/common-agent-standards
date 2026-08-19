@@ -7,6 +7,9 @@ repository adds is everything between the meetings: what artifact crosses
 each phase boundary, what happens when a phase fails, and who is on the
 roster across the whole job.
 
+Site: https://agentworkpatterns.com · Sibling library:
+[agentcollab.dev](https://agentcollab.dev)
+
 The dependency points one way. Work patterns name collab patterns as their
 phases; no collab playbook knows this repository exists.
 
