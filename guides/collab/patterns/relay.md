@@ -17,33 +17,34 @@ Run [convening](../convening.md) first unless roles are standing.
   draft-review-merge. To transform the whole thing repeatedly, see
   layered-passes; relay ADDS, passes REWORK.)
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none - runner 1 opens it
-  inputs:   the order, the turn scope, the lap count
-MEMBERSHIP: fixed-per-round  ·  boundary: a lap
-            singular seat: convener
-PRODUCES
-  result: the artifact exactly as the turns built it
-  record: the handoff notes - ADDED, OPEN, BLOCKED-ON per turn
-  open:   every BLOCKED-ON line, which together are the honest list of
-          what the speed cost
+INPUTS
+  - the order the agents write in
+  - how much one turn may add
+  - how many times round
+OUTPUTS
+  result: the document, exactly as the turns built it
+  record: each handoff note: what was added, what was left open, what got in the way
+  open:   <the BLOCKED-ON lines, collected, or "none">
+MEMBERSHIP
+  fixed-per-round. A new runner joins at the next lap.
+  Single-holder seat: convener.
 ```
 
-The BLOCKED-ON lines are not complaints. Collected at close they *are*
-this pattern's `open:` line, and they are the input to whatever cleans up
-afterwards - usually [layered-passes](./layered-passes.md). Relay buys
-speed by forbidding the backward edit, and this is the invoice.
+The BLOCKED-ON lines are not complaints. Collected at the end they are the
+list of what this pattern's speed cost you, and they are the input to
+whatever cleans up afterwards - usually [layered-passes](./layered-passes.md).
 
-A new runner enters the order at the next lap and the convener re-posts
-`ORDER`. A runner that goes quiet mid-lap is passed with
-`SKIPPED · turn <n> passes to <next>`; the baton never waits on an absence.
+A new runner joins the order at the next lap and the convener re-posts
+`ORDER`. A runner that goes quiet mid-lap is skipped; the baton does not
+wait.
 
 ## Roles
 

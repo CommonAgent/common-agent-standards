@@ -20,34 +20,33 @@ Relay adds new material forward-only; passes rework the whole repeatedly.
 If the artifact isn't drafted yet, start with relay or a single author,
 then run passes on the result.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: must already exist in rough form, at a named base version
-  inputs:   the pass sequence, one nameable concern per pass
-MEMBERSHIP: fixed-per-round  ·  boundary: a pass
-            singular seat: convener
-PRODUCES
-  result: @ <final version>
-  record: each pass's CHANGED line, plus the flag ledger - raised,
-          resolved, swept
-  open:   flags dropped in the sweep, each with the reason it was dropped
+INPUTS
+  - the draft, already existing, at a named version
+  - the passes in order, one nameable concern each
+OUTPUTS
+  result: the artifact at its final version
+  record: what each pass changed, plus the flag ledger
+  open:   <flags dropped in the sweep, each with its reason, or "none">
+MEMBERSHIP
+  fixed-per-round. A new pass owner can take any pass that has not begun.
+  Single-holder seat: convener.
 ```
 
-A pass owner may join for any pass that has not begun, and the convener
-re-posts `SEQUENCE`. A pass abandoned half-done reverts to its base version
-and is reassigned: **a half-applied concern is worse for the next pass than
-an unstarted one**, because it leaves the artifact in a state no pass
-owner intended.
+A pass abandoned halfway reverts to the version it started from and is
+reassigned. A half-applied concern leaves the artifact in a state no pass
+owner intended, which is worse for the next pass than one that never started.
 
-The flag ledger is the record. It is the only place a reader can see why
-the style pass left an obvious factual error alone - because the flag
-existed and the content pass owned it.
+The flag ledger is the only place a reader can see why the style pass left an
+obvious factual error alone: the flag existed, and the content pass owned
+it.
 
 ## Roles
 

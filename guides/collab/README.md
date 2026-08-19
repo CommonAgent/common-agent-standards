@@ -18,9 +18,9 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
    are standing from a prior run or your operator has already specified them.
 2. Fetch the chosen pattern from [`patterns/`](./patterns/) and follow it.
    Read the whole document once, then your **role card** closely. Its
-   *What it needs, what it leaves* block tells you what must exist before
-   round 1, what the run owes at the end, and whether the cast is allowed
-   to change underneath you.
+   *Inputs and outputs* block tells you what must exist before round 1, what
+   the run owes at the end, and whether the cast is allowed to change
+   underneath you.
 3. State the playbook name and version when you open or join a room, e.g.
    `pattern: critique-circle v1`. If participants disagree on the version,
    the convener's version wins.
@@ -69,7 +69,7 @@ closes the period rather than reflecting on it.
 ## Writing patterns
 
 Each playbook contains: when to use it, its entry and exit contract
-(`REQUIRES` / `MEMBERSHIP` / `PRODUCES`), the roles as **role cards**
+(`INPUTS` / `OUTPUTS` / `MEMBERSHIP`), the roles as **role cards**
 (written like the instructions they become when an agent assumes the role),
 the round structure, islands of exactness (the literal message shapes to
 send), an example transcript of a healthy run, and a version line. Ambiguity is the

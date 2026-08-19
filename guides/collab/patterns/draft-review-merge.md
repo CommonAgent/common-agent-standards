@@ -17,31 +17,34 @@ This is the pull-request shape. The artifact lives in a versioned store
 the group already trusts (a git repo, a doc with history); this pattern
 never hosts the artifact, it choreographs the changes.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: must already exist, in a versioned store, at a named version
-  inputs:   what "done" looks like; how long a round is
-MEMBERSHIP: open (proposers)  ·  singular seat: owner
-PRODUCES
-  result: final @ <version>
-  record: every merge, decline and REVISE, with its reason, in order
-  open:   declined proposals, and anything unanswered at close
+INPUTS
+  - the artifact, already in a versioned store, at a named version
+  - what finished looks like
+  - how long a round is
+OUTPUTS
+  result: the artifact at its final version
+  record: every change, and whether it was merged, refused or sent back, with the reason
+  open:   <proposals refused; anything unanswered at close, or "none">
+MEMBERSHIP
+  open for proposers, who can come and go.
+  Single-holder seat: owner.
 ```
 
-This pattern never hosts the artifact, so `artifact:` is a hard
-precondition rather than a courtesy: there is no run without a version to
+This pattern does not host the artifact, so the artifact is a hard
+requirement rather than a courtesy: there is no run without a version to
 propose against.
 
-Proposers may come and go freely - that is the point of the shape, and it
-is what lets strangers' agents contribute at all. The owner may not. If the
-owner goes silent past two rounds the convener names it, and the group
-re-convenes for the seat or closes as abandoned.
+Proposers can come and go. The owner cannot. If the owner stops answering for
+two rounds the convener says so, and the group either finds a new owner or
+closes the run as abandoned.
 
 ## Roles
 

@@ -17,36 +17,36 @@ When judgment should instead be centralized on a judge comparing whole
 alternatives, use bake-off. When contributors should supply diffs rather
 than comments, use draft-review-merge.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none - the creator posts DRAFT 1
-  inputs:   what the artifact is for, and who is critiquing
-MEMBERSHIP: fixed-per-round  ·  boundary: a round closes when every critic
-            has posted or passed  ·  singular seat: creator
-PRODUCES
-  result: the last DRAFT, or the draft named in FINAL
-  record: the critique log - every MUST-FIX, and the creator's change note
-          saying what was taken and what was declined
-  open:   MUST-FIXes declined and not revisited
+INPUTS
+  - nothing exists yet - the creator writes DRAFT 1
+  - who is critiquing, agreed before the first draft
+OUTPUTS
+  result: the last DRAFT, or the one named in FINAL
+  record: the critique log: every MUST-FIX, and what the creator took or refused
+  open:   <MUST-FIXes refused and never revisited, or "none">
+MEMBERSHIP
+  fixed-per-round. A new critic joins at the next DRAFT, never mid-round.
+  Single-holder seat: creator.
 ```
 
-**The record is a separate output from the artifact, and keeping them
-separate is the entire discipline.** Critics produce the record; the
-creator produces the artifact; no arrow crosses. A critic that edits the
-draft has not critiqued it. By default that record is the room's own
-transcript - fine in a durable room, lost everywhere else - so a run that
-wants it to survive names a ref on the `record:` line: a review log
-*beside* the artifact, never inside it.
+**The draft and the critique log are two different documents.** Critics write
+the log. The creator writes the draft. Neither touches the other, and a
+critic that edits the draft has not critiqued it.
 
-Membership is `fixed-per-round` because the end condition counts critics.
-"All critics PASS" is unanswerable while the set of critics is moving, so a
-new critic joins at the next `DRAFT`, not mid-round.
+By default the log is the room's own transcript, which is fine in a durable
+room and lost everywhere else. A run that wants it to survive names a file on
+the `record:` line: a review log kept beside the artifact, never inside it.
+
+Membership is fixed-per-round because the end condition counts critics. "All
+critics PASS" cannot be answered while the set of critics is still changing.
 
 ## Roles
 

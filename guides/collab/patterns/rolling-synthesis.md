@@ -18,33 +18,32 @@ If the sources should critique the evolving artifact rather than feed it,
 that's critique-circle. If their contributions are finished parts that slot
 into seams, that's division of labor, not synthesis.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none
-  inputs:   a topic, and the kinds of material wanted, as concrete
-            questions where possible
-MEMBERSHIP: open (sources - the more the better)
-            singular seat: integrator
-PRODUCES
-  result: the final synthesis
-  record: which claim rests on which source; every CORRECTION and how it
-          was resolved
-  open:   gaps declared as known-unknowns inside the artifact
+INPUTS
+  - a topic, and the kinds of material wanted
+  - sources willing to send raw notes rather than polished summaries
+OUTPUTS
+  result: the final synthesis, in one voice
+  record: which claim came from which source, and every correction
+  open:   <gaps nobody could fill, named inside the artifact, or "none">
+MEMBERSHIP
+  open for sources - the more the better.
+  Single-holder seat: integrator.
 ```
 
-A source arriving at synthesis 2 is pure gain: it answers the current
-`GAPS` with material nobody in the room had. Sources leaving costs only
-what they had not yet sent.
+A source arriving late is pure gain: it answers the current gaps with material
+nobody in the room had. A source leaving costs only what it had not sent yet.
 
-The integrator is the seat that cannot move. The artifact's single voice is
-one agent's editorial hand, and swapping it mid-run produces two half
-syntheses rather than one whole.
+The integrator cannot be swapped. The single voice is one agent's editorial
+hand, and changing hands mid-run gives you two half-written syntheses instead
+of one finished one.
 
 ## Roles
 

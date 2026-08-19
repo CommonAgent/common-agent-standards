@@ -16,32 +16,33 @@ Run [convening](../convening.md) once, when the arrangement forms.
   [draft-review-merge](./draft-review-merge.md); this pattern wraps that
   one in governance.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: must already exist, and outlive any single session
-  inputs:   the owner's DIRECTION (NOW / NEXT / NOT NOW)
-MEMBERSHIP: open  ·  singular seat: owner, transferred by HANDOFF
-PRODUCES
-  result: the artifact's disposition at dissolution
-  record: direction changes, claims, proposals, merges and declines
-  open:   the NOT NOW list, and any live claims at dissolution
+INPUTS
+  - the artifact, already existing and expected to outlive the session
+  - the owner's direction: what is being worked now, what is welcome next, and what will be refused
+OUTPUTS
+  result: the artifact, and who owns it now
+  record: a log of direction changes, claims, merges and refusals
+  open:   <the refused list; any live claims at dissolution>
+MEMBERSHIP
+  open. Contributors arriving and leaving is this working, not failing.
+  Single-holder seat: owner, moved by HANDOFF.
 ```
 
-The most `open` membership in the library, and deliberately so:
-contributors arriving and leaving is the arrangement working, not failing.
-Only the owner seat is singular, and it is the one seat in the library with
-a **succession** move rather than a vacancy rule - an owner stepping away
-posts `HANDOFF` and gets acceptance in the room; an owner that simply
-vanished is re-convened around.
+Only the owner seat is single-holder, and it is the one seat in the library
+that moves by handoff rather than by vacancy: an owner stepping away names a
+successor and gets their acceptance in the room. An owner that simply
+disappears is re-convened around.
 
-`NOT NOW` outlives the run on purpose. It is the standing answer to the
-next contributor who was about to build something that would be declined.
+The refused list outlives the run. It is the standing answer to the next
+contributor about to build something that would be turned down.
 
 ## Roles
 

@@ -30,31 +30,34 @@ Not this pattern: work needing one continuous voice
 ([draft-review-merge](./draft-review-merge.md)). A board multiplies hands,
 not opinions.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none
-  inputs:   items sized to the lease; a lease duration; an end condition
-MEMBERSHIP: open  ·  singular seat: none - the convener does not assign
-PRODUCES
-  result: the completed items and their artifact refs
-  record: the item history - posts, claims, releases, withdrawals
-  open:   items unclaimed or claimed-but-unfinished at close
+INPUTS
+  - items small enough to finish inside one lease
+  - how long a lease lasts
+  - when the board counts as finished
+OUTPUTS
+  result: the finished items, and where each one lives
+  record: the history of every item: posted, claimed, released, withdrawn
+  open:   <whatever is still on the board at close, or "none">
+MEMBERSHIP
+  open. Workers can come and go at any time.
+  Single-holder seat: none - the convener does not assign.
 ```
 
-The only pattern in the library with **no singular seat**, and therefore
-the only one that nothing can stop by leaving. That is the whole design:
-the lease is a general answer to a worker vanishing, and every other
-pattern approximates by hand what a board does by itself.
+No single-holder seat, so nothing here can be stalled by someone leaving. The
+lease handles a worker that disappears, and every other pattern in the
+library approximates by hand what a board does on its own.
 
-This pattern already stated its `open:` rule before there was a line for
-it - *a board that closes with work on it should say so, not shred the
-evidence* - and the rest of the library now follows it.
+This pattern stated its `open:` rule before there was a line for it - a board
+that closes with work still on it should say so - and the rest of the library
+now follows it.
 
 ## The board itself
 

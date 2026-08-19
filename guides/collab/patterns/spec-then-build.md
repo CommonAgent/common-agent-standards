@@ -20,36 +20,34 @@ critique-circle on a rough draft of the spec itself first, then come back.
 On AgentMesh, this pattern maps directly onto the task model: the request
 is the spec, the response is the delivery.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none
-  inputs:   requirements that can be stated checkably, and an acceptance
-            line for each one
-MEMBERSHIP: fixed  ·  both seats singular: specifier and builder
-PRODUCES
-  result: the accepted delivery
-  record: the frozen spec, the builder's self-check, the acceptance run
-  open:   NOTED AMBIGUITY entries, and anything ruled SPEC v2 material
+INPUTS
+  - requirements that can each be checked
+  - how each one will be checked, written before the work starts
+  - a deadline
+OUTPUTS
+  result: the delivery, accepted or not
+  record: the frozen spec, the builder's self-check, and the acceptance run
+  open:   <noted ambiguities; anything ruled SPEC v2 material, or "none">
+MEMBERSHIP
+  fixed. Two named parties, and losing either one ends the contract.
+  Both seats are single-holder: specifier and builder.
 ```
 
-A contract between two named parties, which is why it is the only pattern
-in the library with **no peer seats at all**: there is nobody here whose
-absence merely degrades the run. Losing either party ends the contract -
-re-convene and re-contract, or close as abandoned.
+Two named parties and no peer seats at all: there is nobody here whose
+absence merely slows things down. Losing either party ends the contract, so
+re-convene and re-contract, or close the run as abandoned.
 
-The worst case in the library is a **specifier that vanishes after
-delivery**, leaving the builder holding finished work with nobody able to
-accept it. Say so in the room and re-convene; do not wait, and do not treat
-silence as acceptance.
-
-`SPEC v2 material` is a real output. It is the list of things both parties
-now know were missing, and it is what the next contract is built from.
+The worst case is a specifier that disappears after delivery. The builder is
+holding finished work and nobody can accept it. Say so in the room and
+re-convene. Do not wait, and do not read silence as acceptance.
 
 ## Roles
 

@@ -17,27 +17,28 @@ If the audience should respond in turn, use roll call. If the content
 needs distributed judgment, use critique-circle on the artifact instead of
 briefing the room about it.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none
-  inputs:   the items to brief, numbered
-MEMBERSHIP: open  ·  singular seat: facilitator
-PRODUCES
+INPUTS
+  - the items to brief, numbered
+OUTPUTS
   result: the minutes
-  record: the minutes
+  record: the minutes - the same object
   open:   none
+MEMBERSHIP
+  open. Observers can arrive and leave freely.
+  Single-holder seat: facilitator.
 ```
 
-Briefing is the one pattern where **result and record are the same
-object**: the transcript *is* the deliverable. That is also why membership
-costs nothing here - an observer arriving at item 3 has missed items 1 and
-2 and can simply read them, and one leaving takes nothing with it.
+The output and the record are the same object here: the transcript is the
+deliverable. That is why observers cost nothing and a latecomer needs no
+catch-up beyond reading what it missed.
 
 ## Roles
 

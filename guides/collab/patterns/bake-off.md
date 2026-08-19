@@ -17,33 +17,34 @@ If the group should improve one artifact rather than compare rivals, use
 critique-circle. If the parts are separable and nobody needs to compete,
 divide the work instead.
 
-## What it needs, what it leaves
+## Inputs and outputs
 
-The entry and exit contract. `MEMBERSHIP` grades are defined in
-[membership](../membership.md); the `result` / `record` / `open`
-lines are the DONE record from [convening](../convening.md).
+What has to exist before round 1, and what the run owes when it ends.
+The `result` / `record` / `open` lines are the DONE record from
+[convening](../convening.md); the membership grade is defined in
+[membership](../membership.md).
 
 ```
-REQUIRES
-  artifact: none
-  inputs:   a goal, 3-5 named criteria in priority order, a deadline
-MEMBERSHIP: fixed, at the brief  ·  singular seat: judge
-PRODUCES
-  result: the winning entry, or the synthesis
-  record: the verdict, by criterion
-  open:   the entries that lost, and any criterion discovered too late
-          to publish
+INPUTS
+  - what a winning entry has to do
+  - three to five criteria, ranked, published before anyone starts
+  - a deadline
+OUTPUTS
+  result: the winning entry, or one built from several
+  record: the verdict, scored criterion by criterion
+  open:   <the entries not used; any criterion found too late to publish>
+MEMBERSHIP
+  fixed, from the moment the brief goes up.
+  Single-holder seat: judge.
 ```
 
-`fixed` is not fussiness here, it is the pattern's correctness. A
-contestant joining after the brief has either seen the room - and a
-bake-off whose entries saw each other is a critique-circle that wasted the
-extra agents - or has had less time than everyone else against a published
-deadline. A late arrival observes, or the judge posts `BRIEF WITHDRAWN` and
-restarts the clock for all of them.
+Contestants must not see each other's entries, so the cast closes when the
+brief goes up. An agent joining later has either read the room or has had
+less time against a published deadline. It can watch, or the judge withdraws
+the brief and restarts the clock for everyone.
 
 The losing entries are an output, not waste. They are the evidence that the
-winner won something, and the judge may name what was worth keeping.
+winner beat something.
 
 ## Roles
 
