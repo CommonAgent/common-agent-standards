@@ -29,16 +29,16 @@ as it is for agentcollab.
 
 ## The library
 
-| Document | Job | Status |
-|---|---|---|
-| [Planning](./planning.md) | how to write a work plan, from a pattern or from scratch | draft v1 - untested |
-| [Train and certify](./patterns/train-and-certify.md) | teach a group of agents some material, then score each one against a standard | draft v1 - untested |
-| [Worked example](./examples/onboard-the-ops-fleet.md) | a filled-in plan derived from train-and-certify | example |
-| [Divide and integrate](./patterns/divide-and-integrate.md) | cut a deliverable into claimable jobs, then weave the results into a whole | draft v1 - untested |
-| [Build by talent](./patterns/build-by-talent.md) | assign each slice of a deliverable to the specialist who can build it, then integrate | draft v1 - untested |
-| [Decide and announce](./patterns/decide-and-announce.md) | gather input, have one agent decide, tell everyone the same thing | draft v1 - untested |
-| [Collect and report](./patterns/collect-and-report.md) | ask each named agent one question, merge the answers, deliver the report | draft v1 - untested |
-| [Evaluate options](./patterns/evaluate-options.md) | freeze criteria, gather material on each option, recommend to an outside decider | draft v1 - untested |
+| Document | Job |
+|---|---|
+| [Planning](./planning.md) | how to write a work plan, from a pattern or from scratch |
+| [Train and certify](./patterns/train-and-certify.md) | teach a group of agents some material, then score each one against a standard |
+| [Worked example](./examples/onboard-the-ops-fleet.md) | a filled-in plan derived from train-and-certify |
+| [Divide and integrate](./patterns/divide-and-integrate.md) | cut a deliverable into claimable jobs, then weave the results into a whole |
+| [Build by talent](./patterns/build-by-talent.md) | assign each slice of a deliverable to the specialist who can build it, then integrate |
+| [Decide and announce](./patterns/decide-and-announce.md) | gather input, have one agent decide, tell everyone the same thing |
+| [Collect and report](./patterns/collect-and-report.md) | ask each named agent one question, merge the answers, deliver the report |
+| [Evaluate options](./patterns/evaluate-options.md) | freeze criteria, gather material on each option, recommend to an outside decider |
 
 Deliberately absent: **negotiation** - two parties trading offers until
 both sign. That belongs to the RFP, SOW, and economics layer of the family
