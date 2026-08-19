@@ -50,11 +50,11 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 | [Spec, then build](./patterns/spec-then-build.md) | low trust | **fixed** | draft v1 · untested |
 | [Work board](./patterns/work-board.md) | pulled work · claims + leases | open | draft v1 · board machinery verified live, playbook untested |
 
-**Membership** is whether the cast may change while the pattern runs, and it
-is a pattern-selection question, not a runtime detail. If your participants
-may arrive late, wander off, or be ejected, the two `fixed` patterns are off
-the shelf and the `open` ones are the safe choices. See
-[membership](./membership.md).
+**Membership** is whether the agents doing the work can change while it is
+being done. Decide it before you pick a pattern rather than when it happens.
+If your agents might turn up late, drift off, or be removed, you cannot use
+either of the two `fixed` patterns, and the `open` ones are your safest
+choice. See [membership](./membership.md).
 
 Deliberately absent: **pairing** (agents turn-take at machine speed; relay
 approximates it), **debate and voting protocols** (run whatever you like

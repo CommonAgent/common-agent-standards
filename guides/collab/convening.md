@@ -71,9 +71,9 @@ Answer five questions about the work, then read the table.
 3. **Sequential or simultaneous?** Turn-based passes are almost always
    enough; agents turn-take at machine speed.
 4. **How much trust is present?** Same fleet, or strangers' agents?
-5. **Will the cast hold for the duration?** The same agents from start to
-   finish, or participants who may arrive late, wander off, or be ejected?
-   See [membership](./membership.md).
+5. **Will the same agents still be there at the end?** Or might some of
+   them turn up late, drift off, or get removed? See
+   [membership](./membership.md).
 
 | Answers point to | Pattern |
 |---|---|
@@ -85,15 +85,15 @@ Answer five questions about the work, then read the table.
 | whole artifact, sequential focused passes | layered-passes |
 | low trust, precise requirements up front | spec-then-build |
 
-The fifth question is a filter on the whole table rather than a row in it.
-If the cast may change while the work runs, the `fixed` patterns --
-[bake-off](./patterns/bake-off.md) and
-[spec-then-build](./patterns/spec-then-build.md) -- come off the shelf
-entirely, and the `open` ones ([work-board](./patterns/work-board.md),
+The fifth question rules options out rather than pointing at one. If agents
+might come and go while the work is happening, you cannot use
+[bake-off](./patterns/bake-off.md) or
+[spec-then-build](./patterns/spec-then-build.md) at all, and your safest
+choices are [work-board](./patterns/work-board.md),
 [owner-contributors](./patterns/owner-contributors.md),
-[draft-review-merge](./patterns/draft-review-merge.md),
-[rolling-synthesis](./patterns/rolling-synthesis.md)) are the safe choices.
-Every pattern declares its grade in its own document.
+[draft-review-merge](./patterns/draft-review-merge.md) and
+[rolling-synthesis](./patterns/rolling-synthesis.md). Each pattern says
+which it is in its own document.
 
 If two patterns fit, pick the simpler one and say so. Patterns can be
 switched between rounds; opening with the wrong one is recoverable.
@@ -113,13 +113,14 @@ membership: <fixed | fixed-per-round | open>
 overrides: <any trust overrides, or "none">
 ```
 
-`artifact:` and `inputs:` are the entry contract: what has to exist before
-round 1 can start. Most patterns need nothing and make their own opening
-move; the three that do need something say so in their own documents, and a
-convener who cannot fill those lines is not ready to open the room.
-`membership:` answers the fifth question above. Declare it here and repeat
-it in the `RULES:` post, so a joiner can read its own standing without
-asking.
+The first two lines say what has to exist before anyone starts. Most
+patterns need nothing and produce their own starting point; only three of
+them need something in hand first, and those say so. If you cannot fill in
+those lines, you are not ready to open the room.
+
+The membership line answers the fifth question above. Put it here and in
+the rules you post, so an agent arriving later can work out where it stands
+without having to ask.
 
 Then brief each participant individually or in the room: a link to the
 pattern document plus the one line that matters most: `You are <role>. Read
@@ -133,11 +134,12 @@ role card line they missed. On the second break, drop them from the casting,
 say so plainly, and re-run Round 1 for the vacant role if needed. Do not
 litigate; the record is in the room.
 
-Repair covers a participant that is present and misbehaving. A participant
-that is *gone* - departed, vanished, or expelled - is
-[membership](./membership.md)'s half of the problem, and the rule that
-matters most is there: losing a peer seat degrades a run, losing a singular
-seat stops it until the seat is filled or the run is abandoned aloud.
+This section is about an agent that is here and behaving badly. An agent
+that has *gone* - left, went quiet, or was removed - is covered by
+[membership](./membership.md) instead. The rule that matters most is there:
+losing one of the ordinary agents slows a run down, but losing the one
+agent that a job depends on stops it until somebody else takes that job or
+the run is given up on out loud.
 
 ## Exit condition
 
@@ -167,23 +169,23 @@ open: <what was left undone, or "none">
 next: <pattern and version, or "none">
 ```
 
-The three middle lines separate outputs that are usually conflated, because
-a collaboration nearly always produces more than the thing it was for:
+Work like this almost always produces more than the one thing it was for,
+so the middle three lines separate them out:
 
-- **result** - the work product. What did not exist before.
-- **record** - why it is what it is. The critiques and what was declined,
-  the verdict by criterion, the merges and their reasons, the flag ledger,
-  the corrections. Every pattern produces one; most leave it as room
-  scrollback, which dies with the room. Naming a ref here promotes it to
-  something that outlives the run. `room transcript` is an honest answer in
-  a durable room and a lossy one everywhere else.
-- **open** - what was left undone. Relay's BLOCKED-ON lines, a sweep's
-  dropped flags, gaps declared as known-unknowns, items still on the board,
-  a spec's noted ambiguities. Every pattern leaves some, and naming it is
-  the difference between a handover and a shrug.
+- **result** - the thing you wanted. What did not exist before.
+- **record** - how it ended up that way. The reviews and what was turned
+  down, the reasoning behind a decision, every change that was accepted or
+  refused and why. Every pattern produces one of these. Most leave it
+  sitting in the room's message history, which disappears when the room
+  does; pointing at a file here keeps it.
+- **open** - what nobody finished. Things a writer could not fix, problems
+  that were noticed and dropped, questions nobody could answer, jobs still
+  sitting on the list. Every run leaves some. Writing them down is the
+  difference between handing over and shrugging.
 
-These three are additive: a record posted without them is still a valid
-record, and a reader treats what is missing as unstated rather than empty.
+These three lines are optional additions. A record posted without them is
+still a valid record, and a reader treats anything missing as simply not
+said.
 
 Who posts it: the facilitator, or in patterns without one, whoever the
 pattern names as calling the end — the creator in critique-circle, the judge
