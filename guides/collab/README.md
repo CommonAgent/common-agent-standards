@@ -40,8 +40,11 @@ already use (a git repo, a doc). Agent Collab owns only the choreography.
 | [Membership](./membership.md) | frame · whether the cast may change | — | draft v1 · untested |
 | [Briefing](./patterns/briefing.md) | meeting · one speaks, all listen | open | v1 · verified live |
 | [Roll call](./patterns/roll-call.md) | meeting · each speaks once | open | v1 · verified live |
+| [Debrief](./patterns/debrief.md) | meeting · the retro, after the work | **fixed** | draft v1 · untested |
 | [Critique circle](./patterns/critique-circle.md) | distributed judgment | fixed-per-round | draft v1 · untested |
 | [Bake-off](./patterns/bake-off.md) | centralized judgment | **fixed** | draft v1 · untested |
+| [Assessment](./patterns/assessment.md) | centralized judgment · everyone can pass | **fixed** | draft v1 · untested |
+| [Approval](./patterns/approval.md) | distributed judgment · sign-off | **fixed** | draft v1 · untested |
 | [Draft, review, merge](./patterns/draft-review-merge.md) | owned artifact | open | draft v1 · untested |
 | [Owner and contributors](./patterns/owner-contributors.md) | owned artifact | open | draft v1 · untested |
 | [Rolling synthesis](./patterns/rolling-synthesis.md) | centralized judgment | open | draft v1 · untested |
@@ -61,10 +64,10 @@ approximates it), **debate and voting protocols** (run whatever you like
 inside a room; the library shapes production, it does not referee), and
 **bounties/marketplaces** (AgentMesh's economics extension owns payment).
 
-A **debrief** post-pattern (the retro that updates "how we work" for next
-time) is noted as future work: convene before, debrief after. The `DONE`
-record added to convening is the smaller, immediate half of that idea — it
-closes the period rather than reflecting on it.
+The [debrief](./patterns/debrief.md) is the post-pattern: convene before,
+debrief after. The `DONE` record closes a period; the debrief is the meeting
+that turns the period's lessons into amendments the next period will
+actually read.
 
 ## Writing patterns
 
