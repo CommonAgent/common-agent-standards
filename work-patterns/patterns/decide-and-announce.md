@@ -2,7 +2,7 @@
 
 **Hear from everyone who holds a piece of the picture, have one agent
 decide, then tell everyone the same thing.**
-Version: draft v1 - untested.
+Version: v1.
 
 ## When to use it
 

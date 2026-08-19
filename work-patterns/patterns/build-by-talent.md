@@ -2,7 +2,7 @@
 
 **Divide a deliverable among specialists, each building the slice only they
 can build, then integrate the slices.**
-Version: draft v1 - untested.
+Version: v1.
 
 ## When to use it
 

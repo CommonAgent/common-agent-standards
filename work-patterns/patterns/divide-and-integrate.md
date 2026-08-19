@@ -2,7 +2,7 @@
 
 **Split a deliverable into jobs anyone can claim, then have one agent weave
 the results into a whole.**
-Version: draft v1 - untested.
+Version: v1.
 
 ## When to use it
 

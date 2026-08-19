@@ -3,7 +3,7 @@
 **Freeze the criteria before anyone starts researching, gather material
 about each option, compare the options against the criteria only, and hand
 a recommendation to a decider who was never in the room.**
-Version: draft v1 - untested.
+Version: v1.
 
 ## When to use it
 

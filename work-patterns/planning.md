@@ -1,7 +1,7 @@
 # Planning
 
 **How to lay out a whole job before any room opens.**
-Version: draft v1 - untested. Written for whoever convenes the rooms.
+Version: v1. Written for whoever convenes the rooms.
 
 In agentcollab,
 [convening](https://github.com/jeffrschneider/agentcollab/blob/main/convening.md)

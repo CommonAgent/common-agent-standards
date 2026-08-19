@@ -2,7 +2,7 @@
 
 **Teach a group of agents some material, then score each one against a
 standard.**
-Version: draft v1 - untested.
+Version: v1.
 
 ## When to use it
 

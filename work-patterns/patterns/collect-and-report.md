@@ -2,7 +2,7 @@
 
 **Ask each named agent one question, merge the answers into a report, and
 deliver the same report to everyone who should see it.**
-Version: draft v1 - untested.
+Version: v1.
 
 ## When to use it
 
