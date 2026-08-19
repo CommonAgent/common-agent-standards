@@ -17,6 +17,28 @@ If the audience should respond in turn, use roll call. If the content
 needs distributed judgment, use critique-circle on the artifact instead of
 briefing the room about it.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none
+  inputs:   the items to brief, numbered
+MEMBERSHIP: open  ·  singular seat: facilitator
+PRODUCES
+  result: the minutes
+  record: the minutes
+  open:   none
+```
+
+Briefing is the one pattern where **result and record are the same
+object**: the transcript *is* the deliverable. That is also why membership
+costs nothing here - an observer arriving at item 3 has missed items 1 and
+2 and can simply read them, and one leaving takes nothing with it.
+
 ## Roles
 
 ### Role card: Facilitator (exactly one — the presenter)
@@ -60,6 +82,8 @@ period of a longer meeting, so `next:` is usually where the work begins:
 DONE · pattern: briefing v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: <what was briefed>
+record: the minutes (this room's record)
+open: none
 next: <pattern and version, or "none">
 ```
 

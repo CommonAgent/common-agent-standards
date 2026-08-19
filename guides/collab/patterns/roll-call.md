@@ -17,6 +17,29 @@ Roll call is a meeting-shaped primitive: convening uses it to gather a
 cast; a standup is roll call with "your status" as the prompt; a straw
 poll is roll call with "your vote and one reason."
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none
+  inputs:   the prompt each member answers; the roster to call
+MEMBERSHIP: open, until the facilitator closes the roll
+            singular seat: facilitator
+PRODUCES
+  result: N statements, one per member, attributable
+  record: the same statements
+  open:   who was called and did not answer
+```
+
+The roll is a list the facilitator works, not a set frozen at open, so a
+late arrival can still be called. It closes when the facilitator says it
+closes, and the closing line names who was absent - that absence list is
+this pattern's `open:` line.
+
 ## Roles
 
 ### Role card: Facilitator (exactly one)
@@ -63,6 +86,8 @@ pattern the work will run under:
 DONE · pattern: roll-call v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: <who answered, who was absent>
+record: the same statements
+open: <who was called and did not answer, or "none">
 next: <pattern and version, or "none">
 ```
 

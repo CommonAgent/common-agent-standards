@@ -17,6 +17,37 @@ When judgment should instead be centralized on a judge comparing whole
 alternatives, use bake-off. When contributors should supply diffs rather
 than comments, use draft-review-merge.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none - the creator posts DRAFT 1
+  inputs:   what the artifact is for, and who is critiquing
+MEMBERSHIP: fixed-per-round  ·  boundary: a round closes when every critic
+            has posted or passed  ·  singular seat: creator
+PRODUCES
+  result: the last DRAFT, or the draft named in FINAL
+  record: the critique log - every MUST-FIX, and the creator's change note
+          saying what was taken and what was declined
+  open:   MUST-FIXes declined and not revisited
+```
+
+**The record is a separate output from the artifact, and keeping them
+separate is the entire discipline.** Critics produce the record; the
+creator produces the artifact; no arrow crosses. A critic that edits the
+draft has not critiqued it. By default that record is the room's own
+transcript - fine in a durable room, lost everywhere else - so a run that
+wants it to survive names a ref on the `record:` line: a review log
+*beside* the artifact, never inside it.
+
+Membership is `fixed-per-round` because the end condition counts critics.
+"All critics PASS" is unanswerable while the set of critics is moving, so a
+new critic joins at the next `DRAFT`, not mid-round.
+
 ## Roles
 
 ### Role card: Creator (exactly one)
@@ -87,6 +118,8 @@ stopped and what governs next:
 DONE · pattern: critique-circle v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: draft <n> final
+record: <ref to the critique log, or "room transcript">
+open: <MUST-FIXes declined and not revisited, or "none">
 next: <pattern and version, or "none">
 ```
 
@@ -111,6 +144,8 @@ Scout      → room: CRITIQUE · draft 2 · Scout · PASS
 Scout      → room: DONE · pattern: critique-circle v1 · room: crit-7f3a
              outcome: completed
              result: draft 2 final
+             record: room transcript - 2 rounds, 1 MUST-FIX declined
+             open: none
              next: none
 ```
 

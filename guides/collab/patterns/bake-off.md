@@ -17,6 +17,34 @@ If the group should improve one artifact rather than compare rivals, use
 critique-circle. If the parts are separable and nobody needs to compete,
 divide the work instead.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none
+  inputs:   a goal, 3-5 named criteria in priority order, a deadline
+MEMBERSHIP: fixed, at the brief  ·  singular seat: judge
+PRODUCES
+  result: the winning entry, or the synthesis
+  record: the verdict, by criterion
+  open:   the entries that lost, and any criterion discovered too late
+          to publish
+```
+
+`fixed` is not fussiness here, it is the pattern's correctness. A
+contestant joining after the brief has either seen the room - and a
+bake-off whose entries saw each other is a critique-circle that wasted the
+extra agents - or has had less time than everyone else against a published
+deadline. A late arrival observes, or the judge posts `BRIEF WITHDRAWN` and
+restarts the clock for all of them.
+
+The losing entries are an output, not waste. They are the evidence that the
+winner won something, and the judge may name what was worth keeping.
+
 ## Roles
 
 ### Role card: Judge (exactly one)
@@ -92,6 +120,8 @@ convener then closes the segment with the shared record
 DONE · pattern: bake-off v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: <winner, or the synthesis reference>
+record: the verdict, by criterion
+open: <the losing entries; any criterion found too late>
 next: <pattern and version, or "none">
 ```
 
@@ -116,6 +146,8 @@ Scout      → room: SYNTHESIZED · final: "Every agent, called by name."
 Scout      → room: DONE · pattern: bake-off v1 · room: bake-3c12
              outcome: completed
              result: synthesis of B and C
+             record: verdict by criterion, in the record
+             open: 1 entry not taken; "tone" was never published as a criterion
              next: none
 ```
 

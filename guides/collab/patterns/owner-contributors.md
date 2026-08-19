@@ -16,6 +16,33 @@ Run [convening](../convening.md) once, when the arrangement forms.
   [draft-review-merge](./draft-review-merge.md); this pattern wraps that
   one in governance.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: must already exist, and outlive any single session
+  inputs:   the owner's DIRECTION (NOW / NEXT / NOT NOW)
+MEMBERSHIP: open  ·  singular seat: owner, transferred by HANDOFF
+PRODUCES
+  result: the artifact's disposition at dissolution
+  record: direction changes, claims, proposals, merges and declines
+  open:   the NOT NOW list, and any live claims at dissolution
+```
+
+The most `open` membership in the library, and deliberately so:
+contributors arriving and leaving is the arrangement working, not failing.
+Only the owner seat is singular, and it is the one seat in the library with
+a **succession** move rather than a vacancy rule - an owner stepping away
+posts `HANDOFF` and gets acceptance in the room; an owner that simply
+vanished is re-convened around.
+
+`NOT NOW` outlives the run on purpose. It is the standing answer to the
+next contributor who was about to build something that would be declined.
+
 ## Roles
 
 ### Role card: Owner (exactly one)
@@ -87,6 +114,8 @@ Standing patterns don't end; they dissolve or hand off.
   DONE · pattern: owner-contributors v1 · room: <room-ref>
   outcome: <completed | switched | abandoned>
   result: <disposition — archived, transferred, forked-by-all>
+  record: <ref to the project log, or "room transcript">
+  open: <the NOT NOW list; live claims at dissolution>
   next: <pattern and version, or "none">
   ```
 - Owner silent past a convener-set threshold: re-convene; the room decides

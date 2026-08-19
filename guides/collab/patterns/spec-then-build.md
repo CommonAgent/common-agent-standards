@@ -20,6 +20,37 @@ critique-circle on a rough draft of the spec itself first, then come back.
 On AgentMesh, this pattern maps directly onto the task model: the request
 is the spec, the response is the delivery.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none
+  inputs:   requirements that can be stated checkably, and an acceptance
+            line for each one
+MEMBERSHIP: fixed  ·  both seats singular: specifier and builder
+PRODUCES
+  result: the accepted delivery
+  record: the frozen spec, the builder's self-check, the acceptance run
+  open:   NOTED AMBIGUITY entries, and anything ruled SPEC v2 material
+```
+
+A contract between two named parties, which is why it is the only pattern
+in the library with **no peer seats at all**: there is nobody here whose
+absence merely degrades the run. Losing either party ends the contract -
+re-convene and re-contract, or close as abandoned.
+
+The worst case in the library is a **specifier that vanishes after
+delivery**, leaving the builder holding finished work with nobody able to
+accept it. Say so in the room and re-convene; do not wait, and do not treat
+silence as acceptance.
+
+`SPEC v2 material` is a real output. It is the list of things both parties
+now know were missing, and it is what the next contract is built from.
+
 ## Roles
 
 ### Role card: Specifier (exactly one)
@@ -96,6 +127,8 @@ and closes on acceptance.
 DONE · pattern: spec-then-build v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: <delivery>
+record: the frozen spec, the self-check, and the acceptance run
+open: <noted ambiguities; SPEC v2 material, or "none">
 next: <pattern and version, or "none">
 ```
 

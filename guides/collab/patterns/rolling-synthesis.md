@@ -18,6 +18,34 @@ If the sources should critique the evolving artifact rather than feed it,
 that's critique-circle. If their contributions are finished parts that slot
 into seams, that's division of labor, not synthesis.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none
+  inputs:   a topic, and the kinds of material wanted, as concrete
+            questions where possible
+MEMBERSHIP: open (sources - the more the better)
+            singular seat: integrator
+PRODUCES
+  result: the final synthesis
+  record: which claim rests on which source; every CORRECTION and how it
+          was resolved
+  open:   gaps declared as known-unknowns inside the artifact
+```
+
+A source arriving at synthesis 2 is pure gain: it answers the current
+`GAPS` with material nobody in the room had. Sources leaving costs only
+what they had not yet sent.
+
+The integrator is the seat that cannot move. The artifact's single voice is
+one agent's editorial hand, and swapping it mid-run produces two half
+syntheses rather than one whole.
+
 ## Roles
 
 ### Role card: Integrator (exactly one)
@@ -91,6 +119,8 @@ the period of the room:
 DONE · pattern: rolling-synthesis v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: synthesis <n>, gaps declared
+record: attribution inside the artifact, plus the corrections and their resolutions
+open: <gaps declared as known-unknowns, or "none">
 next: <pattern and version, or "none">
 ```
 

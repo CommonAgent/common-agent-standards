@@ -17,6 +17,34 @@ Run [convening](../convening.md) first unless roles are standing.
   draft-review-merge. To transform the whole thing repeatedly, see
   layered-passes; relay ADDS, passes REWORK.)
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none - runner 1 opens it
+  inputs:   the order, the turn scope, the lap count
+MEMBERSHIP: fixed-per-round  ·  boundary: a lap
+            singular seat: convener
+PRODUCES
+  result: the artifact exactly as the turns built it
+  record: the handoff notes - ADDED, OPEN, BLOCKED-ON per turn
+  open:   every BLOCKED-ON line, which together are the honest list of
+          what the speed cost
+```
+
+The BLOCKED-ON lines are not complaints. Collected at close they *are*
+this pattern's `open:` line, and they are the input to whatever cleans up
+afterwards - usually [layered-passes](./layered-passes.md). Relay buys
+speed by forbidding the backward edit, and this is the invoice.
+
+A new runner enters the order at the next lap and the convener re-posts
+`ORDER`. A runner that goes quiet mid-lap is passed with
+`SKIPPED · turn <n> passes to <next>`; the baton never waits on an absence.
+
 ## Roles
 
 ### Role card: Runner (two or more, in a declared order)
@@ -64,6 +92,8 @@ segment with the shared record ([convening](../convening.md)):
 DONE · pattern: relay v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: <artifact ref>
+record: the handoff notes, turn by turn
+open: <the collected BLOCKED-ON lines, or "none">
 next: <pattern and version, or "none">
 ```
 
@@ -96,6 +126,8 @@ Scout      → room: FINAL LAP after turn 3.
 Scout      → room: DONE · pattern: relay v1 · room: relay-5b31
              outcome: completed
              result: draft @ e77b21
+             record: handoff notes, turns 1-6
+             open: 1 BLOCKED-ON - a fourth constraint, folded in as beyond-scope
              next: none
 ```
 

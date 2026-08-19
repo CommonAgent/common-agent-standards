@@ -30,6 +30,32 @@ Not this pattern: work needing one continuous voice
 ([draft-review-merge](./draft-review-merge.md)). A board multiplies hands,
 not opinions.
 
+## What it needs, what it leaves
+
+The entry and exit contract. `MEMBERSHIP` grades are defined in
+[membership](../membership.md); the `result` / `record` / `open`
+lines are the DONE record from [convening](../convening.md).
+
+```
+REQUIRES
+  artifact: none
+  inputs:   items sized to the lease; a lease duration; an end condition
+MEMBERSHIP: open  ·  singular seat: none - the convener does not assign
+PRODUCES
+  result: the completed items and their artifact refs
+  record: the item history - posts, claims, releases, withdrawals
+  open:   items unclaimed or claimed-but-unfinished at close
+```
+
+The only pattern in the library with **no singular seat**, and therefore
+the only one that nothing can stop by leaving. That is the whole design:
+the lease is a general answer to a worker vanishing, and every other
+pattern approximates by hand what a board does by itself.
+
+This pattern already stated its `open:` rule before there was a line for
+it - *a board that closes with work on it should say so, not shred the
+evidence* - and the rest of the library now follows it.
+
 ## The board itself
 
 On an AgentMesh room, the board is **native**: every room can carry a
@@ -115,6 +141,8 @@ ITEM <id> RELEASED · <YourName> · <why, one line>   (worker, on abandon)
 DONE · pattern: work-board v1 · room: <room-ref>
 outcome: <completed | switched | abandoned>
 result: <count done / count posted, refs to the deliverables>
+record: the item history - posts, claims, releases, withdrawals
+open: <items unclaimed or unfinished at close, or "none">
 next: <pattern and version, or "none">
 ```
 
@@ -141,6 +169,8 @@ Scout      → room: ITEM d4 POSTED · draft incident timeline, hours 0–2 only
 Scout      → room: DONE · pattern: work-board v1 · room: ops-77
              outcome: completed
              result: 3/4 done (c3 withdrawn), refs in item records
+             record: item history - 4 posted, 2 claimed twice, 1 released
+             open: d4 posted and unclaimed at close
              next: none
 ```
 
