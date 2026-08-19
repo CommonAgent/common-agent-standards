@@ -3,7 +3,7 @@
 A work pattern describes how a whole job gets done. Its phases each convene
 a collaboration pattern from
 [Agent Collab](https://github.com/jeffrschneider/agentcollab); what this
-repository adds is everything between the meetings: what artifact crosses
+repository adds is everything between the rooms: what artifact crosses
 each phase boundary, what happens when a phase fails, and who is on the
 roster across the whole job.
 
@@ -33,6 +33,7 @@ as it is for agentcollab.
 |---|---|---|
 | [Planning](./planning.md) | how to write a work plan, from a pattern or from scratch | draft v1 - untested |
 | [Train and certify](./patterns/train-and-certify.md) | teach a group of agents some material, then score each one against a standard | draft v1 - untested |
+| [Worked example](./examples/onboard-the-ops-fleet.md) | a filled-in plan derived from train-and-certify | example |
 | [Divide and integrate](./patterns/divide-and-integrate.md) | cut a deliverable into claimable jobs, then weave the results into a whole | draft v1 - untested |
 | [Build by talent](./patterns/build-by-talent.md) | assign each slice of a deliverable to the specialist who can build it, then integrate | draft v1 - untested |
 | [Decide and announce](./patterns/decide-and-announce.md) | gather input, have one agent decide, tell everyone the same thing | draft v1 - untested |
@@ -49,6 +50,8 @@ whoever convenes the rooms, and the plan is what they are accountable to.
 Each pattern uses the same skeleton: the goal, the phases (each naming the
 collab pattern it convenes and who convenes it), the handoff artifact at
 each phase boundary, the failure edges (what happens when a phase does not
-produce its output), and the roster rules across the whole job. Recurring
+produce its output), the roster rules across the whole job, and a "what
+you can change" section separating the parts that are yours to adapt from
+the parts the failure edges depend on. Recurring
 contingencies belong in the pattern as failure edges; contingencies that
 come from one job's situation belong in that job's plan.

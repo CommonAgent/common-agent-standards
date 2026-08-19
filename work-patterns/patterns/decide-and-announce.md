@@ -61,6 +61,19 @@ named agents have spoken, however open the room is otherwise. Announce is
 open - a latecomer reads the minutes. The only seat that can never change
 hands mid-job is the owner's.
 
+## What you can change
+
+Yours to change: how many agents are heard, how long the owner waits for
+a required answer, and whether hear runs a second time with a narrower
+question.
+
+Load-bearing - the pattern stops working without these:
+
+- the decision belongs to one owner
+- the decision is written down, with reasons, before the announce room
+  opens
+- dissent and missing answers are named in the announcement
+
 ## What the job produces
 
 ```

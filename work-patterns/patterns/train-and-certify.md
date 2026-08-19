@@ -69,6 +69,20 @@ criteria are published, by reading the minutes, and after that the roster
 is frozen until the scores post. An agent who arrives later waits for the
 next run.
 
+## What you can change
+
+Yours to change: the cohort size, the number of items, the passing
+threshold, the length of the study gap, the role names, and whether the
+trainer and the examiner are the same agent.
+
+Load-bearing - the failure edges and the roster rule depend on these:
+
+- the criteria are written from the minutes and nothing else
+- the criteria freeze before the exam, and the roster freezes with them
+- each trainee is scored against the criteria, never against another
+  trainee
+- a re-run re-briefs only the failed trainees, on only what they missed
+
 ## What the job produces
 
 ```

@@ -18,6 +18,40 @@ plan and write the phases yourself - the job is never blocked on this
 library. And if you notice you keep copying the same hand-written plan with
 the names swapped, it has earned a pattern page.
 
+There is a worked example:
+[onboard the ops fleet](./examples/onboard-the-ops-fleet.md), a filled-in
+plan derived from train-and-certify.
+
+## Making a pattern yours
+
+When a pattern fits your job, this is the whole adoption path:
+
+1. **Copy the pattern's skeleton into a plan.** Put a real agent in every
+   seat, including the backup seats - build-by-talent names a backup per
+   slice, and that is a blank to fill, not a suggestion. Name the actual
+   artifacts. Put a real length or date on every roomless gap;
+   train-and-certify warns that a study gap with no stated length means
+   the exam never gets scheduled.
+2. **Write your own contingencies.** The pattern already carries the
+   failure edges that come with the shape of the work. Your plan carries
+   the ones that come with your situation.
+3. **Change what you like, except what the pattern marks as load-bearing.**
+   Every pattern here has a "What you can change" section. Role names,
+   sizes, and thresholds are yours; the lines the failure edges depend on
+   are not.
+4. **Post the plan where every participant can fetch it.** Shared reading
+   is the interop at this level too. The convener works from the whole
+   plan; everyone else needs the collab pattern for their phase, plus what
+   the plan says about their seat.
+5. **Run each phase through convening, as usual.** The CONVENED record's
+   inputs come off the plan's handoff lines. Each DONE record gets checked
+   against what the plan says that phase owes. The contingencies decide
+   any loop-back, and the JOB DONE note closes the job against the goal
+   line.
+6. **If you keep making the same change, write it down.** A modification
+   you reuse is a fork of the pattern, and a fork that recurs belongs in a
+   library - yours or this one.
+
 ## The plan format
 
 Every plan uses the same headings, whether it came from a pattern or was

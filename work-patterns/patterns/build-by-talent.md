@@ -67,6 +67,19 @@ Fixed, by definition - the roster was cast by talent in the plan before
 any room opened. If a specialist leaves, the job stalls on their slice.
 That is why the backup line in the plan is not optional.
 
+## What you can change
+
+Yours to change: the number of slices, the role names, which pattern the
+spec phase convenes (owner-contributors is the default; draft-review-merge
+also works), and whether the review phase runs at all for low-stakes work.
+
+Load-bearing - the pattern stops working without these:
+
+- assignment happens in the plan, never on a board
+- the spec freezes before build starts, with the seams stated in it
+- each delivered slice names the spec version it was built against
+- the plan names a backup per slice, or accepts the delay in writing
+
 ## What the job produces
 
 ```

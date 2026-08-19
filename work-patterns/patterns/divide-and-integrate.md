@@ -70,6 +70,19 @@ integrate, one agent holds the pen and feeders can come and go. This is the
 most open job in this library; reach for it when you cannot predict who
 will be available.
 
+## What you can change
+
+Yours to change: how the deliverable is cut, the size of the jobs, the
+board's deadline, and whether the synthesizer posts follow-up jobs while
+still integrating.
+
+Load-bearing - the pattern stops working without these:
+
+- the jobs ask for material, not finished prose
+- one agent holds the pen in integrate
+- material that does not fit becomes a follow-up job, never a negotiation
+  with the original worker
+
 ## What the job produces
 
 ```
