@@ -45,12 +45,14 @@ only a few of them and why one earns its place by recurring across
 organizations.
 
 A process is yours. It has your brand rules in it, your compliance gate,
-your systems, and a person's name on it. A department has ten to forty,
-and that is the normal number. Forty work patterns would not be.
+your systems, and a person's name on it. A department usually has
+somewhere between ten and forty of them. You would never have forty work
+patterns.
 
-The other difference is lifetime. A work pattern is a shape you reach
-for. A process is a standing document that gets amended a few times a
-year, runs hundreds of times, and outlives everyone who wrote it. That is
+They also last different lengths of time. You pick up a work pattern
+when you need it and put it down again. A process is a standing document:
+it gets amended a few times a year, runs hundreds of times, and outlives
+everyone who wrote it. That is
 why it carries a version, an owner, an effective date, and an amendment
 history, and why every run records which version it ran under.
 
@@ -63,7 +65,8 @@ approve the result. That is enough for an agent to take a phase, and
 enough for a person to check afterwards that it did what it was supposed
 to.
 
-The automation level is per phase, not per process, because that is how
-automation actually arrives: one phase at a time, each move dated and
-attributable. Some phases never move, and the format says so out loud
-rather than leaving it to be discovered.
+The automation level sits on each phase rather than on the process as a
+whole, because that is how automation actually arrives: one phase at a
+time, with each move dated and attributed. Some phases will never move,
+and the format asks you to say so at the time rather than leaving it for
+somebody to find out later.

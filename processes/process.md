@@ -88,9 +88,10 @@ system. Say which, and if runs may overlap, say what they share.
 
 ## The phase graph
 
-Phases are named, not numbered. Numbering implies a sequence, and a real
-process is a graph: several phases start the moment the trigger fires,
-they run without waiting for each other, and they join at the end.
+Phases have names rather than numbers. If you number them 1, 2, 3, you
+are saying that each one follows the last, and that is usually not what
+happens: several phases start the moment the trigger fires, they run
+without waiting for each other, and they join at the end.
 
 Order comes from `after:` lines, not from the order phases are listed.
 Two phases with no path between them run at the same time. A phase with
@@ -114,9 +115,10 @@ A phase resolves to exactly one of four things:
   a scheduler publishes, a job runs, a record is written.
 - **`human: <action>`** - a person acts outside any room.
 
-The last two are why a business process cannot be written with work
-patterns alone. Most real processes have steps where nothing collaborates
-at all, and a format that cannot express them forces people to lie.
+The last two matter more than they look. Most real processes have steps
+where nobody collaborates with anybody, and if the format has no way to
+describe those steps, people end up writing down something other than
+what really happens.
 
 ## Automation, phase by phase
 
@@ -132,15 +134,15 @@ changes as they gain confidence.
 | `autonomous` | an agent | nobody in the loop; the record is the check |
 | `never` | people, permanently | people |
 
-Four of those are rungs on a ladder. `never` is not: it is a decision
-that this phase stays with a person no matter how good the agents get,
-because a regulator, a contract, or a customer relationship requires it.
-Keeping it separate stops an automation program from quietly climbing
-over a gate that was put there on purpose.
+The first four are steps you can move through over time. `never` is
+different. It means the phase stays with a person no matter how good the
+agents get, because a regulator, a contract, or a customer relationship
+requires it. It is worth having a separate word for that, so that nobody
+automates a step that was deliberately left to a person.
 
-Moving a phase up the ladder is an amendment, with a version. That is
-deliberate: it means the change is dated, attributable, and visible to
-whoever audits the process later.
+Moving a phase to the next level is an amendment, and it gets a
+version. That way the change is dated, it is clear who made it, and
+anyone auditing the process later can see it.
 
 ## Handoffs
 
@@ -152,7 +154,7 @@ and the phase after it should say where to find it.
 
 ## Bindings
 
-Bindings are what make a process executable rather than merely described.
+Bindings are what an agent needs before it can actually run a phase.
 
 - **roster** - which agent or person holds each role, standing, between
   runs. A run fills its cast from here instead of negotiating one.
@@ -164,8 +166,8 @@ Bindings are what make a process executable rather than merely described.
   claims register, a price list. Version these, because a run's output is
   only defensible against the version it read.
 
-Bindings are also the pre-authorization. When a trigger fires, nobody
-should be deciding what the agents are allowed to do.
+Bindings also settle permissions in advance. When a trigger fires,
+nobody should still be working out what the agents are allowed to do.
 
 ## Policy
 
@@ -206,7 +208,7 @@ A run records the version it ran under. That is what makes an audit
 possible a year later: the auditor reads the run's records against the
 version that was effective at the time, not against today's page.
 
-## What a run leaves behind
+## The records a run produces
 
 A run produces a chain of records, one per level:
 
@@ -229,11 +231,10 @@ result: <what exists now that did not before>
 open: <what nobody finished, and who may close it>
 ```
 
-Read from the bottom up, that chain answers the three questions an
-auditor asks: what is your process, did it run, and can you show me. The
-process document answers the first. The run records answer the second.
-The third is answered by the fact that each record names who acted and
-when, and none of them were written afterwards from memory.
+Between them, those records answer what an auditor asks for. The
+process document says what the process is, and the run records show that
+it ran. Because each record was written as the work happened and names
+who acted and when, nobody has to reconstruct any of it afterwards.
 
 ## Failure edges at the process level
 
@@ -259,8 +260,8 @@ A process is not a work pattern. Do not publish yours as one unless the
 shape recurs beyond your organization, with your specifics removed.
 
 A process is not a diagram. The graph is written as `after:` lines
-because a person, an agent, and an auditor can all read text, and only
-one of the three can read a diagram.
+because text is something a person, an agent, and an auditor can all
+read.
 
 A process is not enforceable. Nothing holds a run to the graph except the
 records it leaves, and the fact that somebody reads them.

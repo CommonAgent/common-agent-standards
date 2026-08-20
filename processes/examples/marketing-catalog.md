@@ -20,9 +20,10 @@ in [social-campaign.md](./social-campaign.md).
 | mkt/quarterly-readout | quarterly readout | VP Marketing | the quarter closes | 4 a year | supervised | running |
 
 Two rows say `documented` rather than `running`, which means the process
-is written down but nobody has run it against the document yet. That is a
-real state and worth showing: writing it down is the first step, and
-claiming it runs before it has is how a catalog stops being trusted.
+is written down but nobody has run it against the document yet. It is
+worth showing that state rather than hiding it. Writing a process down is
+the first step, and a catalog that claims a process is running before it
+has run is one people stop believing.
 
 ## The dependency graph
 
@@ -45,33 +46,35 @@ mkt/agency-brief ──────> mkt/social-campaign
 
 ## What the graph says
 
-**Two processes are load-bearing.** The competitor review feeds six
-others, and the claims register feeds three of the four that put words in
-front of a customer. Neither is high volume: the competitor review runs
-sixteen times a year and the claims register ten times a quarter. Ranked
-by volume alone, both would be near the bottom of an automation list, and
-both are the wrong things to leave until last.
+**Two processes have a lot of other work depending on them.** The
+competitor review feeds six others, and the claims register feeds three
+of the four that write anything a customer will read. Neither runs very
+often: the competitor review sixteen times a year, the claims register
+ten times a quarter. If you ranked this catalog by how often each process
+runs, both would come near the bottom, and both are still worth
+automating early.
 
-**The volume is somewhere else entirely.** Lead routing runs four hundred
-times a week, more than everything else in the catalog combined. It is
-already autonomous, which is usually what happens to the highest-volume
-process whether or not anyone planned it.
+**The high-volume work is somewhere else.** Lead routing runs four
+hundred times a week, more than everything else in the catalog put
+together. It is already autonomous, which is what usually happens to the
+busiest process in a department, whether or not anyone planned it.
 
-**Two processes are effectively gated by one person.** Social and email
-campaigns both report `never`, and in both cases it is the same legal
-approval phase, held by the same reviewer. That is one seat, in the path
-of sixty runs a quarter. Nothing in the catalog can automate it away, but
-knowing it is there changes what you would fix: not the automation level,
-the staffing.
+**Two processes wait on the same person.** Social and email campaigns
+both report `never`, and in both cases it is the same legal approval done
+by the same reviewer, which puts one person in the path of sixty runs a
+quarter. The catalog cannot automate that away. What it does tell you is
+that the thing to fix here is how that review is staffed, rather than the
+automation level.
 
-**Nothing is an orphan.** Every process feeds something, which is either
-a healthy sign or a sign that the first pass missed the standalone work.
-Given that events and agency briefing are still `documented` rather than
-`running`, the second reading is worth checking.
+**Every process feeds something else.** That is either a good sign or a
+sign that the first pass missed the work that stands on its own. Since
+events and agency briefing are still `documented` rather than `running`,
+it is worth checking which.
 
 ## Where this department would start
 
-Not with the biggest number. The order that falls out of the graph is:
+The order that falls out of the graph does not start with the process
+that runs most often:
 
 1. **mkt/claims-register.** Three processes wait on it, and every one of
    them has a policy rule that cannot be satisfied without it. It is also

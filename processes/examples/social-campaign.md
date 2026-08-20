@@ -69,11 +69,11 @@ amendments:
 
 ## What the graph says
 
-The phases are named rather than numbered because this process is a
-chain in the middle and not at the ends. `direction` starts the moment
-the brief lands. `readout` starts fourteen days after the posts go out,
-which is not "after the previous phase finished" but a real clock, and
-`by:` and `after:` are what let the document say so.
+The phases in the middle of this process do run one after another, but
+the two ends do not. `direction` starts the moment the brief lands.
+`readout` starts fourteen days after the posts go out, which is a clock
+rather than a phase finishing, and the `after:` and `by:` lines are how
+the document says so.
 
 The chain from `produce` to `legal` is strict on purpose. Nothing reaches
 legal that has not been scored against the claims register first, which
@@ -82,9 +82,10 @@ the bottleneck for a process that runs forty times a quarter.
 
 ## Where the automation actually is
 
-Four phases are autonomous or supervised, and one is `never`. That single
-`never` is why this process cannot be described as automated, and the
-catalog reports it as `never` for exactly that reason.
+Four phases are autonomous or supervised, and one is `never`. Because
+the catalog reports the least automated phase in a process, that one
+phase is what the whole row says, and it is the honest answer: a campaign
+still cannot go out without a person approving it.
 
 The progression is visible in the amendments. `claims` was supervised
 until it had twenty runs behind it, then moved to autonomous with a
@@ -92,7 +93,7 @@ version and a date. If a regulator asks when a machine started deciding
 whether a claim was substantiated, the answer is version 3, effective on
 its date, with the runs on either side of it in the record.
 
-## What a run leaves behind
+## The records a run produces
 
 ```
 RUN: mkt/social-campaign v4 · run 47
@@ -117,8 +118,8 @@ open: one asset held back - the claim about response times has no
 ## The failure edges that have actually fired
 
 - **Legal refuses.** The approval comes back `REDLINE`, and the run
-  returns to `produce`, not to the beginning. The direction was not the
-  problem.
+  returns to `produce` rather than starting over. The direction was not
+  the problem.
 - **An asset changes after approval.** The approval was signed against a
   version, so a new version voids it and legal runs again. The policy
   line exists because this is the rule people most want an exception to.
@@ -126,5 +127,5 @@ open: one asset held back - the claim about response times has no
   here, which is why the concurrency line says so. The runs share the
   claims register and the brand guidelines, both read-only during a run.
 - **A run is abandoned.** Anything already scheduled has to be pulled,
-  and the run's `open:` line names who pulled it. A campaign abandoned
-  after `schedule` is not a campaign that never happened.
+  and the run's `open:` line names who pulled it. Once a campaign has been
+  scheduled, abandoning the run does not take it down on its own.

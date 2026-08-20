@@ -3,24 +3,24 @@
 A catalog is the index of every process a team owns. One row per process,
 and every field in the row comes from that process document's header.
 
-A department that writes down one process has a document. A department
-that writes down forty has a problem: nobody can hold forty documents in
-their head, nobody knows which ones matter most, and nobody notices when
-one of them stops being true. The catalog is what makes forty documents
-usable.
+One process written down is easy enough to keep track of. Once a
+department has forty of them, nobody can hold them all in mind: it gets
+hard to say which ones matter most, and nobody notices when one of them
+stops being true. A catalog is what makes forty documents usable.
 
 ## What it is for
 
-- **Knowing what exists.** A process nobody wrote down is invisible, and
-  work that is invisible cannot be automated, audited, or handed over.
+- **Knowing what exists.** Work that nobody has written down gets
+  missed, and it cannot be automated, audited, or handed over.
 - **Knowing who owns each one.** Every row has a person's name in it.
 - **Knowing what depends on what.** The `feeds` and `fed by` lines across
   forty processes form a graph, and that graph is how you decide what to
   automate first.
 - **Sequencing an automation program.** Which processes are worth agent
   time, in what order, and which parts of them will never be automated.
-- **Answering an auditor.** "Show me your processes" is one document, and
-  "show me that one ran" is the run records behind a single row.
+- **Answering an auditor.** When somebody asks to see your processes,
+  this is the document. When they ask whether one of them ran, the answer
+  is the run records behind that row.
 
 ## The row
 
@@ -37,15 +37,16 @@ usable.
 | status | header | documented, running, or retired |
 | version | header | the version in effect, and its date |
 
-Every field is derived from the process document. The catalog is a
-projection, never a second source of truth: when the two disagree, the
-process document is right and the row is stale. Nobody should be
-maintaining the same fact in two places.
+Every field is copied from the process document. The catalog does not
+store anything of its own, so when the two disagree, the process document
+is right and the row is out of date. Nobody has to maintain the same fact
+in two places.
 
 The **automation** column deserves care. A process is only as automated
-as its least automated required phase, so a process with four autonomous
-phases and one `never` phase is not an autonomous process. Report the
-floor, not the average, or the catalog will flatter you.
+as its least automated required phase, so one with four autonomous phases
+and one `never` phase is not an autonomous process. Report the least
+automated phase. If you average them, the catalog will make the
+department look further along than it is.
 
 ## Ids and naming
 
@@ -66,22 +67,23 @@ spaces. References between processes cite the id and never the name.
 Read `feeds` and `fed by` across the whole catalog and you get a graph of
 the department. Three things fall out of it immediately:
 
-- **Load-bearing processes.** The ones many others depend on. These are
-  where automation pays off most and where a bad run does the most
-  damage, so they get automated first and watched hardest.
-- **Orphans.** Processes that feed nothing and are fed by nothing. Some
-  are genuinely standalone. The rest are candidates for retirement, and
-  asking the question is usually productive.
-- **Cycles.** Two processes that feed each other are either one process
-  with a loop, or two processes with a queue between them. Both are fine.
-  Not knowing which is not.
+- **The processes many others depend on.** Automating these pays off
+  most, and a bad run in one of them does the most damage, so they get
+  automated first and watched most closely.
+- **The processes nothing depends on.** Some of these genuinely stand on
+  their own. The rest are candidates for retirement, and it is usually
+  worth asking which.
+- **Processes that feed each other in a loop.** This is either one
+  process with a loop in it or two processes with a queue between them.
+  Either is fine, as long as you know which one you have.
 
 ## Building one
 
-Start from triggers, not from the org chart. A process exists wherever
-there is something that starts work and somebody who owns the result. An
-org chart tells you who reports to whom, which is a different question
-and has misled every process-mapping exercise that started there.
+Start from triggers rather than from the org chart. A process exists
+wherever there is something that starts work and somebody who owns the
+result. An org chart tells you who reports to whom, which is a different
+question, and it has misled every process-mapping exercise that started
+there.
 
 **Is this one process or two?** If the two halves have different
 triggers, or different owners, they are two. If a phase in the middle
@@ -117,16 +119,15 @@ the change.
 
 A catalog decays unless three rules are held:
 
-- **What is not in the catalog does not exist.** Work that happens
-  outside it cannot be automated, measured, or handed over when somebody
-  leaves. Finding uncatalogued work is the point of the exercise, not an
-  embarrassment.
-- **A process with no owner is a finding, not a row.** Either somebody
-  takes it or it is retired. A row with an empty owner is a promise
-  nobody made.
-- **A process that has not run in a year is retired, not documented.**
-  Keeping dead processes in the catalog is how a catalog stops being
-  read.
+- **Work that is missing from the catalog gets missed.** You cannot
+  automate it, measure it, or hand it over when somebody leaves. Turning
+  up work that nobody had written down is the point of the exercise, so
+  it is a good sign rather than an embarrassing one.
+- **Every row needs an owner.** If nobody will own a process, that is
+  something to fix rather than a row to file: either somebody takes it or
+  you retire it. A row with an empty owner is a promise nobody made.
+- **Retire anything that has not run in a year.** Once a catalog fills up
+  with processes nobody runs, people stop reading it.
 
 Review the catalog on a schedule, and make that review a process in the
 catalog like any other.
