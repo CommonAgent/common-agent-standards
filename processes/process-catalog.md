@@ -1,7 +1,9 @@
 # The process catalog
 
-A catalog is the index of every process a team owns. One row per process,
-and every field in the row comes from that process document's header.
+A catalog is a table with one row per process. Each row says the same few
+things about its process, so you can read a whole department at once and
+know which documents to open. Every one of those facts is copied from the
+process document's header.
 
 One process written down is easy enough to keep track of. Once a
 department has forty of them, nobody can hold them all in mind: it gets

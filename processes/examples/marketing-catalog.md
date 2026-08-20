@@ -1,9 +1,9 @@
 # Worked example: a marketing department's catalog
 
-Eleven processes, one row each. This is what a department has after the
+Eleven processes, one row each. This is what a department has after a
 first pass: enough to see what exists, who owns it, and where the
-dependencies are. One row, `mkt/social-campaign`, is written out in full
-in [social-campaign.md](./social-campaign.md).
+dependencies are. One of the rows, `mkt/social-campaign`, is written out
+in full in [social-campaign.md](./social-campaign.md).
 
 | id | name | owner | trigger | cadence | automation | status |
 |---|---|---|---|---|---|---|
@@ -20,10 +20,9 @@ in [social-campaign.md](./social-campaign.md).
 | mkt/quarterly-readout | quarterly readout | VP Marketing | the quarter closes | 4 a year | supervised | running |
 
 Two rows say `documented` rather than `running`, which means the process
-is written down but nobody has run it against the document yet. It is
-worth showing that state rather than hiding it. Writing a process down is
-the first step, and a catalog that claims a process is running before it
-has run is one people stop believing.
+is written down but nobody has run it against the document yet. A catalog
+that says a process is running before it has run is one people stop
+believing, so the state is recorded as it stands.
 
 ## The dependency graph
 

@@ -1,8 +1,7 @@
 # Worked example: the social campaign process
 
-One row of the [marketing catalog](./marketing-catalog.md), written out in
-full. It is here to show what a process document looks like when every
-line has a real answer in it.
+This is one row of the [marketing catalog](./marketing-catalog.md), with
+every blank filled in.
 
 ```
 PROCESS: social campaign              id: mkt/social-campaign   v4
