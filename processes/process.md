@@ -39,6 +39,11 @@ phases:
   <name> - <runs|convenes|system:|human:> <what>   owner: <who>
            after: <phase names, or trigger>        by: <deadline>
            automation: <manual|assisted|supervised|autonomous|never>
+run-scoped:
+  <name> - <runs|convenes|system:|human:> <what>   owner: <who>
+           every: <cadence> | on: <event>
+           from: <phase or trigger>   until: <phase or run close>
+           automation: <manual|assisted|supervised|autonomous|never>
 handoffs:
   <phase> -> <phase>: <what crosses, and what it has to contain>
 bindings:
@@ -144,6 +149,25 @@ Moving a phase to the next level is an amendment, and it gets a
 version. That way the change is dated, it is clear who made it, and
 anyone auditing the process later can see it.
 
+## What attaches to the run
+
+Not everything a process does sits in a phase. A weekly status report to
+management runs for the whole campaign. A budget is watched from the
+first purchase to the last invoice. Replies from the public are fielded
+whenever they arrive, for as long as the work is live.
+
+These lines are run-scoped. They resolve to the same four things a phase
+does, and they carry the same automation level, but instead of `after:`
+edges they carry either a cadence (`every: 7 days`) or an event
+(`on: a reply arrives`), plus `from:` and `until:` lines that say when
+they are live. `until: run close` is the common case.
+
+Write them down for the same reason phases get written down. Most of a
+process's management lives here - the status reporting, the spend watch,
+the escalation path - and a process that lists only its phases reads as
+if nobody is watching between handoffs. These lines are where a reader
+learns who notices when a run goes quiet.
+
 ## Handoffs
 
 The same rule as a work plan: name what crosses each edge and what it has
@@ -222,7 +246,9 @@ Each phase then leaves the record its own level produces. A phase that
 convenes a collab pattern leaves that pattern's `CONVENED` and `DONE`
 records. A phase that runs a work pattern leaves its plan and its
 `JOB DONE`. A `system:` or `human:` phase leaves one line saying what
-happened, when, and who or what did it. The run closes with:
+happened, when, and who or what did it. Run-scoped lines leave records
+too, at their cadence or as their events fire, and a run is not complete
+until each of them has closed. The run closes with:
 
 ```
 RUN DONE: mkt/social-campaign v4 · run 47

@@ -4,14 +4,14 @@ This is one row of the [marketing catalog](./marketing-catalog.md), with
 every blank filled in.
 
 ```
-PROCESS: social campaign              id: mkt/social-campaign   v4
-owner: Head of Social                 effective: 2026-06-01
+PROCESS: social campaign              id: mkt/social-campaign   v5
+owner: Head of Social                 effective: 2026-08-19
 trigger: a campaign brief is approved in mkt/campaign-planning
 concurrency: runs may overlap - up to six live at once, one per campaign
 goal: a legally cleared campaign scheduled on every channel the brief
       names, and a readout of how it did
 phases:
-  direction - runs evaluate-options          owner: Head of Social
+  direction - convenes bake-off              owner: Head of Social
               after: trigger                 by: 2 days
               automation: supervised
   produce   - runs build-by-talent           owner: Creative Lead
@@ -29,9 +29,21 @@ phases:
   readout   - runs collect-and-report        owner: Analytics agent
               after: schedule + 14 days
               automation: autonomous
+run-scoped:
+  status    - runs collect-and-report        owner: Analytics agent
+              every: 7 days
+              from: produce   until: run close
+              automation: autonomous
+  spend     - runs allocate-and-reconcile    owner: Head of Social
+              from: trigger   until: run close
+              automation: assisted
+  community - human: field replies, escalate to the owner
+              on: a reply or complaint arrives
+              from: schedule  until: schedule + 14 days
+              automation: assisted
 handoffs:
-  direction -> produce: the chosen direction and the channel list, with
-    the criteria it was chosen against
+  direction -> produce: the winning concept and the channel list, with
+    the verdicts it won on
   produce -> claims: every asset, each naming the spec version it was
     built against
   claims -> legal: the assets, plus a score per claim against the claims
@@ -64,6 +76,9 @@ amendments:
        runs (debrief, run 31)
   v4 - readout moved from 7 days to 14. A week was too early to see
        anything on the slower channels (debrief, run 38)
+  v5 - the weekly status, the budget watch, and community response
+       written down as run-scoped. All three were already happening, and
+       none was recorded (debrief, run 47)
 ```
 
 ## What the graph says
@@ -100,11 +115,13 @@ started: 2026-08-03 by Head of Social
 trigger: campaign brief CB-118, approved in mkt/campaign-planning run 9
 ```
 
-Each phase then leaves the record its own level produces: `direction` and
-`produce` leave a plan and a `JOB DONE` each, because they run work
-patterns; `claims` and `legal` leave the `CONVENED` and `DONE` records of
-an assessment and an approval; `schedule` leaves one line naming what the
-scheduler posted and when. The run closes:
+Each phase then leaves the record its own level produces: `produce` and
+`readout` leave a plan and a `JOB DONE` each, because they run work
+patterns; `direction`, `claims` and `legal` leave the `CONVENED` and
+`DONE` records of a bake-off, an assessment and an approval; `schedule`
+leaves one line naming what the scheduler posted and when. The run-scoped
+lines leave records at their own pace: a report every week from `status`,
+and the spend watch's reconciliation at close. The run closes:
 
 ```
 RUN DONE: mkt/social-campaign v4 · run 47
@@ -113,6 +130,9 @@ result: 14 assets live across 4 channels, scheduled 2026-08-11
 open: one asset held back - the claim about response times has no
       citation, and the claims register entry is with Legal
 ```
+
+The records say v4 while the document above says v5. A run keeps the
+version it ran under, and version 5 came out of run 47's own debrief.
 
 ## The failure edges that have actually fired
 
