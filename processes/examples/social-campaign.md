@@ -1,150 +1,191 @@
 # Worked example: the social campaign process
 
 This is one row of the [marketing catalog](./marketing-catalog.md), with
-every blank filled in.
+every blank filled in. Version 6 rewrote it around the thirteen
+activities a social media manager actually does, after walking the full
+activity list against the earlier draft and finding how much it had
+compressed or left out.
 
 ```
-PROCESS: social campaign              id: mkt/social-campaign   v5
-owner: Head of Social                 effective: 2026-08-19
+PROCESS: social campaign              id: mkt/social-campaign   v6
+owner: Head of Social                 effective: 2026-08-20
 trigger: a campaign brief is approved in mkt/campaign-planning
 concurrency: runs may overlap - up to six live at once, one per campaign
-goal: a legally cleared campaign scheduled on every channel the brief
-      names, and a readout of how it did
+goal: a campaign launched on every channel the brief names, run for its
+      window, and reported against what the brief asked for
 phases:
-  direction - convenes bake-off              owner: Head of Social
-              after: trigger                 by: 2 days
-              automation: supervised
-  produce   - runs build-by-talent           owner: Creative Lead
-              after: direction               by: 5 days
-              automation: supervised
-  claims    - convenes assessment            owner: Brand agent
-              after: produce                 by: 1 day
-              automation: autonomous
-  legal     - convenes approval              owner: Legal reviewer
-              after: claims                  by: 1 day
-              automation: never
-  schedule  - system: the scheduler          owner: Social agent
-              after: legal
-              automation: autonomous
-  readout   - runs collect-and-report        owner: Analytics agent
-              after: schedule + 14 days
-              automation: autonomous
+  take-in-brief    - human: read the brief, pull out what the campaign
+                     must accomplish
+                     owner: Manager           after: trigger
+                     automation: assisted
+  set-parameters   - human: pick platforms, audience and dates, and put
+                     a number on it. Leadership confirms the budget
+                     owner: Manager           after: take-in-brief
+                     automation: assisted
+  brief-creatives  - convenes briefing: the team hears what is needed
+                     and by when, together
+                     owner: Manager           after: set-parameters
+                     automation: assisted
+  settle-direction - convenes bake-off: two or three concepts, one
+                     chosen, with the reasons said out loud
+                     owner: Manager           after: brief-creatives
+                     by: 5 days               automation: supervised
+  produce-posts    - runs build-by-talent: copy, images and video,
+                     each sized and worded for its platform
+                     owner: Manager           after: settle-direction
+                     by: 5 days               automation: supervised
+  get-sign-offs    - convenes approval: brand and legal sign, as named
+                     signers, against a version of the posts
+                     owner: Legal reviewer    after: produce-posts
+                     by: 2 days               automation: never
+  practical-side   - human: tracking links, the landing page check, the
+                     ad campaigns, the posting schedule
+                     owner: Manager           after: set-parameters
+                     by: launch               automation: supervised
+  launch           - human: the manager says go. The scheduler and the
+                     ad platforms take it from there
+                     owner: Manager
+                     after: get-sign-offs + practical-side
+                     automation: supervised
+  watch            - human: track results against the brief
+                     owner: Manager           after: launch
+                     automation: assisted
+  engage           - human: answer comments and messages, flag what
+                     needs the manager
+                     owner: Community manager  after: launch
+                     automation: assisted
+  optimize         - human: move ad money toward what works, swap
+                     creative that has gone stale
+                     owner: Media buyer       after: launch
+                     automation: assisted
+  wrap-up          - runs collect-and-report: the numbers from every
+                     channel, reported against the brief
+                     owner: Manager
+                     after: watch + engage + optimize
+                     automation: assisted
+  record-learnings - convenes debrief: what to repeat, what to avoid
+                     owner: Manager           after: wrap-up
+                     automation: assisted
 run-scoped:
-  status    - runs collect-and-report        owner: Analytics agent
-              every: 7 days
-              from: produce   until: run close
-              automation: autonomous
-  spend     - runs allocate-and-reconcile    owner: Head of Social
-              from: trigger   until: run close
-              automation: assisted
-  community - human: field replies, escalate to the owner
-              on: a reply or complaint arrives
-              from: schedule  until: schedule + 14 days
-              automation: assisted
+  spend  - runs allocate-and-reconcile       owner: Manager
+           from: set-parameters   until: run close
+           automation: assisted
+  status - runs collect-and-report           owner: Manager
+           every: 7 days
+           from: launch   until: run close
+           automation: assisted
 handoffs:
-  direction -> produce: the winning concept and the channel list, with
-    the verdicts it won on
-  produce -> claims: every asset, each naming the spec version it was
-    built against
-  claims -> legal: the assets, plus a score per claim against the claims
-    register. Legal reviews what failed, not everything
-  legal -> schedule: the approved assets at a named version. A later
-    version voids the approval and legal runs again
-  schedule -> readout: what was posted, where, and when
+  take-in-brief -> set-parameters: the goal, stated in one line that
+    every later decision can be tested against
+  set-parameters -> brief-creatives: the channels, audience, dates and
+    budget
+  set-parameters -> practical-side: the same parameters. Both branches
+    read one record, which is what keeps them from drifting apart
+  settle-direction -> produce-posts: the chosen concept, and why it won
+  produce-posts -> get-sign-offs: the posts at a version
+  get-sign-offs -> launch: the approved posts at the signed version. A
+    later change voids the approval and sign-offs run again
+  practical-side -> launch: tracking, ads and schedule, ready to fire
+  wrap-up -> record-learnings: the report, as delivered
 bindings:
-  roster:  Head of Social (owner), Creative Lead, Copy agent,
-           Design agent, Brand agent, Analytics agent,
-           Legal reviewer (a person, named in the standing roster)
-  systems: the CMS (write), the scheduler (write), analytics (read),
-           the claims register (read)
-  data:    brand guidelines v9, the claims register, the channel list
+  roster:  Manager (owner), Marketing lead, Copywriter, Designer,
+           Video editor, Brand reviewer, Legal reviewer (a person,
+           named in the standing roster), Community manager, Media buyer
+  systems: the scheduler (write), the ad platforms (write),
+           the CMS (write), analytics (read)
+  data:    brand guidelines v9, the claims register, the campaign brief
 policy:
   no claim ships without a citation in the claims register
-  legal approval is a human gate and is never delegated to an agent
-  an asset changed after approval goes back through legal. There is no
-    minor-change path
+  sign-off is a human gate and is never delegated to an agent
+  a post changed after sign-off goes back through sign-offs. There is
+    no minor-change path
 measures:
-  cycle time: 9 days from trigger to scheduled
+  cycle time: about two weeks from the brief to launch, plus the
+    campaign window
   volume: about 40 runs a quarter
-  quality gate: no claim shipped without a citation
+  quality gate: nothing publishes unsigned
 fed by: mkt/campaign-planning, mkt/competitor-review
 feeds:  mkt/quarterly-readout
 amendments:
-  v2 - claims moved out of legal into its own phase, so legal reviews
-       the exceptions rather than every asset (debrief, run 12)
-  v3 - claims raised from supervised to autonomous after twenty clean
-       runs (debrief, run 31)
-  v4 - readout moved from 7 days to 14. A week was too early to see
+  v2 - claims checking moved out of legal review, so legal reads the
+       exceptions rather than every asset (debrief, run 12)
+  v3 - claims checking raised from supervised to autonomous after
+       twenty clean runs (debrief, run 31)
+  v4 - the readout moved from 7 days to 14. A week was too early to see
        anything on the slower channels (debrief, run 38)
   v5 - the weekly status, the budget watch, and community response
-       written down as run-scoped. All three were already happening, and
-       none was recorded (debrief, run 47)
+       written down as run-scoped. All three were already happening,
+       and none was recorded (debrief, run 47)
+  v6 - rewritten around the thirteen activities the manager actually
+       does. Setting parameters, the practical side, the launch
+       decision, the live window and the learnings had been compressed
+       into six phases or left out entirely (activity walk, 2026-08-20)
 ```
 
 ## What the graph says
 
-The phases in the middle of this process do run one after another, but
-the two ends do not. `direction` starts the moment the brief lands.
-`readout` starts fourteen days after the posts go out, which is a clock
-rather than a phase finishing, and the `after:` and `by:` lines are how
-the document says so.
+The graph has two branches and a window. After the parameters are set,
+the creative chain (brief the team, settle a direction, produce, get
+sign-offs) and the practical side run at the same time, and launch waits
+for both. After launch, three activities - watch, engage, optimize - run
+at once for as long as the campaign is live, and wrap-up waits for all
+three. Nothing about that is visible when the phases are numbered 1 to
+13, which is why the order comes from the `after:` lines.
 
-The chain from `produce` to `legal` is strict on purpose. Nothing reaches
-legal that has not been scored against the claims register first, which
-is what version 2 changed: before that, legal read every asset and became
-the bottleneck for a process that runs forty times a quarter.
+Two edges point backwards, and both go to the same place. A sign-off
+that comes back with changes reopens produce-posts, and only the part
+that failed. Creative that goes stale mid-flight reopens produce-posts
+too. One is a gate refusing, the other is the world changing, and the
+process treats both as normal work rather than exceptions.
 
 ## Where the automation actually is
 
-Four phases are autonomous or supervised, and one is `never`. Because
-the catalog reports the least automated phase in a process, that one
-phase is what the whole row says, and it is the honest answer: a campaign
-still cannot go out without a person approving it.
+Most phases are `assisted`: an agent drafts, gathers, or watches, and a
+person decides. The two `supervised` phases are where agents do the work
+and a person reviews it before it moves on. One phase is `never`:
+sign-off stays with people no matter how good the agents get, because
+that is a policy decision rather than a capability question.
 
-The progression is visible in the amendments. `claims` was supervised
-until it had twenty runs behind it, then moved to autonomous with a
-version and a date. If a regulator asks when a machine started deciding
-whether a claim was substantiated, the answer is version 3, effective on
-its date, with the runs on either side of it in the record.
+The earlier versions of this document tell the automation story in
+miniature. Claims checking inside sign-offs went from supervised to
+autonomous only after twenty clean runs, and the amendment that moved it
+carries the date, which is what an auditor reads a year later.
 
 ## The records a run produces
 
 ```
-RUN: mkt/social-campaign v4 · run 47
-started: 2026-08-03 by Head of Social
+RUN: mkt/social-campaign v6 · run 52
+started: 2026-08-20 by Manager
 trigger: campaign brief CB-118, approved in mkt/campaign-planning run 9
 ```
 
-Each phase then leaves the record its own level produces: `produce` and
-`readout` leave a plan and a `JOB DONE` each, because they run work
-patterns; `direction`, `claims` and `legal` leave the `CONVENED` and
-`DONE` records of a bake-off, an assessment and an approval; `schedule`
-leaves one line naming what the scheduler posted and when. The run-scoped
-lines leave records at their own pace: a report every week from `status`,
-and the spend watch's reconciliation at close. The run closes:
+Each activity leaves whatever record its own kind of work produces. The
+briefing, the bake-off, the approval and the debrief leave their
+CONVENED and DONE records. Produce-posts and wrap-up leave a plan and a
+JOB DONE each, because they run work patterns. The `human:` activities
+leave one line each saying what happened and who did it. The run-scoped
+lines leave records at their own pace: a status report every week, and
+the spend line's reconciliation at close. The run closes:
 
 ```
-RUN DONE: mkt/social-campaign v4 · run 47
+RUN DONE: mkt/social-campaign v6 · run 52
 outcome: completed
-result: 14 assets live across 4 channels, scheduled 2026-08-11
-open: one asset held back - the claim about response times has no
-      citation, and the claims register entry is with Legal
+result: the campaign ran its window on 4 channels; posts reached v3;
+        reported against the brief
+open: one flagged reply is waiting on an answer from support
 ```
-
-The records say v4 while the document above says v5. A run keeps the
-version it ran under, and version 5 came out of run 47's own debrief.
 
 ## The failure edges that have actually fired
 
-- **Legal refuses.** The approval comes back `REDLINE`, and the run
-  returns to `produce` rather than starting over. The direction was not
-  the problem.
-- **An asset changes after approval.** The approval was signed against a
-  version, so a new version voids it and legal runs again. The policy
-  line exists because this is the rule people most want an exception to.
+- **A sign-off comes back with changes.** The run returns to
+  produce-posts, and only the piece the signers named reopens. The
+  direction was never the problem.
+- **Creative goes stale mid-flight.** Optimize sends the run back to
+  produce-posts while the campaign is live, and the replacement assets
+  get a new version like any others.
 - **The trigger fires while runs are in flight.** Six at once is normal
   here, which is why the concurrency line says so. The runs share the
   claims register and the brand guidelines, both read-only during a run.
-- **A run is abandoned.** Anything already scheduled has to be pulled,
-  and the run's `open:` line names who pulled it. Once a campaign has been
-  scheduled, abandoning the run does not take it down on its own.
+- **A run is abandoned.** Scheduled posts have to be pulled and the ads
+  turned off by hand, and the spend line reconciles anyway. Abandoning a
+  campaign cancels its remaining work. The books still have to close.
