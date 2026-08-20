@@ -35,7 +35,7 @@ When a pattern fits your job, this is the whole adoption path:
 2. **Write your own contingencies.** The pattern already carries the
    failure edges that come with the shape of the work. Your plan carries
    the ones that come with your situation.
-3. **Change what you like, except what the pattern marks as load-bearing.**
+3. **Change what you like, except what the failure edges depend on.**
    Every pattern here has a "What you can change" section. Role names,
    sizes, and thresholds are yours; the lines the failure edges depend on
    are not.
