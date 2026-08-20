@@ -76,7 +76,7 @@ Yours to change: how the deliverable is cut, the size of the jobs, the
 board's deadline, and whether the synthesizer posts follow-up jobs while
 still integrating.
 
-Load-bearing - the pattern stops working without these:
+Do not change these - the pattern stops working without them:
 
 - the jobs ask for material, not finished prose
 - one agent holds the pen in integrate

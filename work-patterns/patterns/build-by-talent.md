@@ -73,7 +73,7 @@ Yours to change: the number of slices, the role names, which pattern the
 spec phase convenes (owner-contributors is the default; draft-review-merge
 also works), and whether the review phase runs at all for low-stakes work.
 
-Load-bearing - the pattern stops working without these:
+Do not change these - the pattern stops working without them:
 
 - assignment happens in the plan, never on a board
 - the spec freezes before build starts, with the seams stated in it

@@ -72,7 +72,7 @@ Yours to change: the number of options, whether gather runs on a board or
 as assigned slices, the comparison's format, and whether the
 recommendation includes a ranked list or a single choice.
 
-Load-bearing - the pattern stops working without these:
+Do not change these - the pattern stops working without them:
 
 - the criteria freeze before any research starts
 - the jobs ask for material, not verdicts

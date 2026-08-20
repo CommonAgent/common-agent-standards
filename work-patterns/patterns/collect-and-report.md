@@ -67,7 +67,7 @@ trust.
 Yours to change: the cadence, the question, the audience, the report's
 format, and whether deliver is a room at all.
 
-Load-bearing - the pattern stops working without these:
+Do not change these - the pattern stops working without them:
 
 - the question is posted before any answer
 - every named reporter is accounted for: answered, or recorded missing

@@ -39,6 +39,7 @@ as it is for agentcollab.
 | [Decide and announce](./patterns/decide-and-announce.md) | gather input, have one agent decide, tell everyone the same thing |
 | [Collect and report](./patterns/collect-and-report.md) | ask each named agent one question, merge the answers, deliver the report |
 | [Evaluate options](./patterns/evaluate-options.md) | freeze criteria, gather material on each option, recommend to an outside decider |
+| [Allocate and reconcile](./patterns/allocate-and-reconcile.md) | one owner splits a budget into lines, spend is reported against the lines, and the books close even if the job dies |
 
 Deliberately absent: **negotiation** - two parties trading offers until
 both sign. That belongs to the RFP, SOW, and economics layer of the family

@@ -67,7 +67,7 @@ Yours to change: how many agents are heard, how long the owner waits for
 a required answer, and whether hear runs a second time with a narrower
 question.
 
-Load-bearing - the pattern stops working without these:
+Do not change these - the pattern stops working without them:
 
 - the decision belongs to one owner
 - the decision is written down, with reasons, before the announce room

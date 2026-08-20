@@ -72,7 +72,7 @@ Yours to change: the cohort size, the number of items, the passing
 threshold, the length of the study gap, the role names, and whether the
 trainer and the examiner are the same agent.
 
-Load-bearing - the failure edges and the roster rule depend on these:
+Do not change these - the failure edges and the roster rule depend on them:
 
 - the criteria are written from the minutes and nothing else
 - the criteria freeze before the exam, and the roster freezes with them
