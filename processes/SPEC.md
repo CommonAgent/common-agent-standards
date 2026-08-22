@@ -114,7 +114,8 @@ A document MUST carry `PROCESS:`, `id:`, `trigger:`, `goal:`, `phases:` and
 
 Sections 4 to 13 specify each part. Section 14 covers failure edges, which are
 deliberately not normative. Section 15 specifies the reference profile, 16
-translation, 17 conformance and 18 versioning.
+translation, 17 conformance, 18 versioning, and 19 what all of it means
+when a run spans two organizations.
 
 ## 4. The header
 
@@ -1904,3 +1905,82 @@ new reference version's changes and not others, because the document is
 theirs.
 
 A new version of a reference process changes no adopted document.
+
+---
+
+## 19. Processes that span organizations
+
+Every obligation in this specification is written as though one
+organization runs the process and one runtime carries it out. Some
+processes are not like that. A co-sell is worked by two companies, an
+alliance by two, and a proposal by a seller and a buyer, and in each
+case half the work happens inside somebody else's organization, on their
+systems, under their policies.
+
+This section says what the rest of the specification means when that is
+true. It adds no syntax, because the corpus already models it correctly
+and the defect was that the specification never said so.
+
+### 19.1. A process is written from one side
+
+A process document is written from the side of the organization that
+adopts it. The other organization appears as a role held by a person,
+in the activity table and in the roster, exactly as `partner lead
+(person)` appears in `ref/prt/run-a-co-sell`.
+
+Work that happens inside the counterparty is NOT phases of this process.
+A document MUST NOT write a phase whose owner is the counterparty, and a
+document that does is describing a process it cannot run, because
+nothing on this side can start that phase, observe it, or know when it
+finished.
+
+Where the counterparty runs a process of its own, that is a second
+document on the other side, and the two meet at the boundary rather than
+merging into one graph.
+
+### 19.2. A boundary handoff is satisfied by what arrived
+
+A handoff whose sending phase is held by a counterparty role crosses an
+organizational boundary. Section 8 obliges the receiving phase not to
+begin before the handoff exists, and at a boundary "exists" means
+something narrower than it does inside one organization.
+
+A runtime MUST treat a boundary handoff as satisfied by what actually
+arrived, and MUST NOT infer from an arrival that anything happened on
+the far side beyond it. It MUST record what arrived, when, and from
+whom. It MUST NOT record what the counterparty did.
+
+The distinction is not pedantry. "The partner confirmed the split" and
+"a message from the partner saying the split is confirmed arrived on
+this date" are different claims, and only the second is one this side
+can stand behind later.
+
+### 19.3. Gates on the far side
+
+A phase at `never` whose signer is a counterparty role is an external
+wait. A runtime MUST NOT mark such a gate signed on an assertion alone.
+It marks it signed when the evidence the document names has arrived, and
+until then the run is waiting rather than proceeding.
+
+A runtime MUST NOT lower the level of a phase because its signer is
+outside the organization. A gate that is inconvenient to wait for is
+still a gate.
+
+### 19.4. Records are kept per side
+
+Neither side holds the whole record of a shared run, and no requirement
+here creates one. Each side leaves the records its own document names,
+for the phases it owns.
+
+A document SHOULD say, for each boundary handoff, which side keeps the
+record of it. Assembling a timeline across both sides is done by
+correlating the two records after the fact, and a runtime MUST NOT
+present its own record as though it were the whole run.
+
+### 19.5. Concurrency is per side
+
+`concurrency:` binds the organization whose document it is. The
+counterparty may be running any number of its own runs against the same
+subject, and this side cannot see them. A document MUST NOT state a
+concurrency rule it can only keep by assuming what the other
+organization is doing.
