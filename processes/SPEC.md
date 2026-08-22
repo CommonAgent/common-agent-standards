@@ -867,8 +867,11 @@ key is written in square brackets before the colon:
 ```
 
 A key is lowercase, hyphen-separated, and unique within the document.
-Keys are one namespace: a handoff key and a record key (Section 13) in
-the same document MUST NOT be the same string.
+Keys are one namespace, and it has three members rather than two: a
+handoff key, a record key (Section 13), and the name of a run-scoped
+line (Section 9) in the same document MUST NOT be the same string. A
+run-scoped line is already cited by its name, `spend` or `coverage`, so
+it is a key whether or not anybody calls it one.
 
 The key exists because a sentence cannot be a field name. A runtime
 that tracks handoffs, or a translator that renders the document into
@@ -1365,6 +1368,28 @@ A runtime MUST NOT write a record that names a version it did not
 actually read. Recording today's version because it is the one to hand
 is worse than recording no version, because it converts an unknown into
 a wrong answer that reads as an authoritative one.
+
+### 13.6a. Naming the records
+
+Section 13.1 establishes what a run leaves behind without a block of its
+own: each phase's level fixes the shape of that phase's record, and each
+role's abstract agent carries its own `records:` line. No document in the
+corpus writes a `records:` block, and none is required to.
+
+A document MAY nonetheless carry one, after `bindings:`, where the
+records a run must leave are worth stating in the process rather than
+assembled from the phases and the agents:
+
+```
+records:
+  concession-record - every closed ask with the answer, the reason, the
+                      date, and the person on each side who agreed
+```
+
+Where a document carries the block, it does not replace what Section
+13.1 already establishes. It names the records that matter across the
+whole run, which is the set a reader of the process asks about and the
+set a runtime is most likely to store.
 
 ### 13.7. Record keys
 
