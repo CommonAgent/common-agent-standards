@@ -276,6 +276,19 @@ trigger that names what arrives: the record, the system it arrives in,
 and the field or state that changed. No document in the corpus does this
 today, so it is a MAY and not a SHOULD.
 
+It is written as an indented `watch:` line under the sentence, naming the
+record, the system it arrives in, and the change that starts a run:
+
+```
+trigger: the buyer replies to an offer with asks, in <your CRM>
+         watch: record=<opportunity> system=<your CRM>
+                change=<a reply is logged against a sent offer>
+```
+
+Each value MAY be a blank, and in a reference process each of them
+normally is, because which system holds the record is exactly the kind
+of decision a reference refuses to make.
+
 Where a document carries one:
 
 - The sentence remains the normative statement of the trigger. A
@@ -500,6 +513,39 @@ is a decision about where the work can actually be repaired, and naming
 it is the whole point of writing the edge down.
 
 Every document in the corpus carries at least one deviation edge.
+
+### 6.7.1 Deviations in the document
+
+The examples above are drawn from a diagram, and Section 6.10 says a
+diagram is a rendering rather than a source of truth. Read together,
+those two statements oblige a document to carry something the document
+block has no way to write down, which is a defect in this
+specification rather than in any document.
+
+A document MAY carry a `deviations:` block, after `handoffs:` and in the
+same shape, so that going backwards is stated where the rest of the
+graph is stated:
+
+```
+deviations:
+  approve-concessions -> price-asks [concession-refused]: an approver
+    refuses a concession, so the ask is priced again against the floor
+  reconcile-paper -> record-agreed [paper-disagrees]: the contract text
+    and the agreed record disagree, and the agreed record governs
+```
+
+The left side names the phase the run is in, the right side names the
+phase it returns to, the key is optional and shares the namespace with
+handoff and record keys, and the sentence says what happened. A
+deviation line MUST NOT return to a phase that does not exist, and MUST
+NOT be the only statement of a failure the failure edges also describe:
+the two say different things, one to a machine and one to a person.
+
+Where a document carries deviation lines and a diagram, they MUST agree.
+Where they disagree, the document governs.
+
+Until a document carries them, a reader takes the deviations from the
+diagram, which is what every document in the corpus does today.
 
 ### 6.8 The close
 
