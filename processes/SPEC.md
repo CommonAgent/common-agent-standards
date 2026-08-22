@@ -467,10 +467,49 @@ allowed to start; the handoff says what has to be there when it does,
 and a runtime MUST satisfy both.
 
 The value of `after:` is normally names joined by `+`. It MAY carry
-qualifying prose where an edge is conditional; two documents in the
-corpus write forms like `after: do-the-work, when it slips`. A
-translator that cannot parse such a value MUST refuse it rather than
-discard the qualification.
+qualifying prose where an edge is conditional; the corpus writes forms
+like `after: do-the-work, when it slips`. A translator that cannot parse
+such a value MUST refuse it rather than discard the qualification.
+
+### 6.5.1 The exception edge
+
+One of those conditional forms is not a qualification at all and is
+worth its own name, because it is a different kind of edge and because
+in some processes it is the only place a person appears.
+
+An exception edge is the path taken when a phase CANNOT complete. Six
+documents in the corpus carry one, written in forms like:
+
+```
+  clear-exception - human: a lead that score or route could not settle
+                    waits in the queue until a person settles it
+                    after: score or route, whichever could not finish
+  escalate-stall  - human: the work has not moved
+                    after: do-the-work, when it slips
+```
+
+It is neither of the other two edges. `after:` names a phase that
+completed; a deviation edge (Section 6.7) returns to a phase that
+already ran and can repair the work. An exception edge leaves a phase
+that stopped without finishing, and it usually leads somewhere a person
+is waiting.
+
+A phase entered by an exception edge MUST name, in its `after:` value,
+the phases whose failure sends work to it. It MUST NOT be reachable only
+through prose in the failure edges, because a reader assembling the graph
+from the document would never find it.
+
+Where a phase is entered only by an exception edge, its level bears more
+weight than any other in the process. A process whose ordinary phases are
+`autonomous` has, by construction, no person in it except at that phase,
+so a document SHOULD write that phase at `never` and a runtime MUST NOT
+raise it. `ref/mkt/lead-routing` is the clearest example in the corpus:
+five phases at `autonomous`, and `clear-exception` at `never` with a
+`by:` deadline in hours.
+
+A run that ends at an exception phase has ended. It has not failed, and
+a runtime MUST NOT report it as an error: the process anticipated this
+and routed it to somebody.
 
 ### 6.6 `by:`
 
