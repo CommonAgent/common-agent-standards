@@ -1,8 +1,17 @@
 # Agent Processes Specification
 
-**Version:** 0.1.0-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-22
+
+**This revision.** Four documents in the corpus were upgraded against
+0.1.0-draft. Doing that produced twenty-five findings about what the
+format could not say, and eighteen of them are answered here. Every
+obligation this revision adds was checked against all 169 reference
+processes before it was written. Where the corpus does not already do
+the thing, it is written as SHOULD or MAY rather than as MUST, on the
+principle that an obligation the corpus fails is a bug in the
+obligation.
 
 A process document says how work actually gets done: what happens, in what
 order, who does each part, what passes between them, where a person has to sign,
@@ -232,6 +241,45 @@ given, traded or refused, each with a reason and a named approver, and
 one written position both sides hold" is a goal. "negotiate with the
 buyer" is not.
 
+### `bounded-by:`
+
+`bounded-by:` is OPTIONAL. It states a deadline on the whole run rather
+than on a phase.
+
+A phase deadline is written `by:` (Section 6.6). A run deadline that is
+the same for every run can be written as a `by:` on the closing phase.
+Neither of those fits a run deadline that is agreed inside the run and
+is different every time. A proof of value ends on a date negotiated with
+that particular customer, and `ref/sls/run-a-proof-of-value` can say so
+only in a policy line, "the proof ends on the agreed date whatever the
+score, and an extension is a signed change with a new end date", which
+is a rule rather than a date anything can check a run against.
+
+`bounded-by:` names where the date comes from:
+
+```
+bounded-by: the end date agreed in agree-dates
+```
+
+Where the value names a phase, that phase MUST be declared in the phase
+list. A runtime MUST NOT check the bound before that phase has closed,
+because until then there is no date to check against.
+
+When the moment passes and the run has not closed, a runtime MUST record
+that the run passed its bound, and MUST NOT extend the bound on its own.
+Whether the run then stops, closes as abandoned, or carries on with the
+overrun recorded is the document's decision, stated in its failure edges
+(Section 14) or its policy (Section 11). A runtime that quietly lets a
+run run past a date the customer agreed to has produced the failure the
+key exists to make visible.
+
+`bounded-by:` binds the run, not any phase in it. It does not close the
+run and it does not stop a phase; the close is what Section 6.8 says it
+is.
+
+No document in the corpus carries the key today, which is why it is
+OPTIONAL.
+
 ### Layout
 
 Whitespace in the header carries no meaning. Fields are separated by
@@ -256,14 +304,36 @@ event. A trigger that names an intention rather than an event ("when we
 decide to refresh the messaging") is not conformant, because nothing can
 be watched for it and no run record can point at the thing that fired.
 
-A trigger MAY name more than one event. Nearly half the corpus does:
+A trigger MAY name more than one event, and the corpus names them in
+both of the two ways there are. Some triggers name alternatives, and any
+one of them starts a run:
 
 ```
-trigger: the buyer replies to an offer with asks, in <your CRM>
+trigger: the review cadence comes round every <cadence>, or a tripwire
 ```
 
-is one event, and other documents name an alternative with `or`. Any one
-of the named events starting a run is what a multi-event trigger means.
+Others name events that must all have happened before a run starts:
+
+```
+trigger: a shaping run decides that description is not enough and <who>
+         approves an evaluation
+```
+
+The first is disjunctive and the second is conjunctive. Where a trigger
+is conjunctive, a runtime MUST NOT start a run on one of the named
+events alone. A run started on the first of them begins before the thing
+it needs exists, which for the trigger above is an evaluation nobody
+approved, and the phases that follow are then built on it.
+
+A document SHOULD say which of the two it means. In the structured form
+(Section 5.1) the two are told apart by the word that joins the `watch:`
+lines, `and` or `or`. In the sentence they are told apart by the words
+the sentence uses, and `and` on its own does not settle it: the corpus
+writes `and` inside the description of a single event, as in "a brand
+positioning is signed and issued at a version", and reads
+"a tool goes live under an owner, and again every `<cadence>`" as
+alternatives rather than as a conjunction. A runtime MUST NOT read a
+trigger as conjunctive on the strength of the word `and` alone.
 
 A trigger SHOULD also name who may start a run. Most of the corpus
 leaves this to the roster and the phase owners, so it is not a MUST, but
@@ -274,8 +344,8 @@ about who was allowed to fire it.
 
 A document MAY carry, alongside the sentence, a structured form of the
 trigger that names what arrives: the record, the system it arrives in,
-and the field or state that changed. No document in the corpus does this
-today, so it is a MAY and not a SHOULD.
+and the field or state that changed. Eight documents in the corpus carry
+one, so it is a MAY and not a SHOULD.
 
 It is written as an indented `watch:` line under the sentence, naming the
 record, the system it arrives in, and the change that starts a run:
@@ -286,9 +356,50 @@ trigger: the buyer replies to an offer with asks, in <your CRM>
                 change=<a reply is logged against a sent offer>
 ```
 
-Each value MAY be a blank, and in a reference process each of them
-normally is, because which system holds the record is exactly the kind
-of decision a reference refuses to make.
+`system=` is normally a blank in a reference process, because which
+system holds the record is exactly the kind of decision a reference
+refuses to make. `record=` and `change=` say what the trigger sentence
+already says. Section 15.4 forbids an author to blank something the
+reference process does know, and a reference whose sentence reads "the
+buyer replies to an offer with asks" knows which record arrives and
+knows what changed about it. The angle brackets around `<opportunity>`
+in the example above hold the adopter's own name for that record, which
+is a different thing from a decision the reference declined to make.
+
+A trigger that fires on a clock has no record and no change. Section 5
+names one, "the first Monday of the month arrives", and the corpus
+writes several, including "the clock - a cycle opens every `<period>`"
+and "the review cadence comes round every `<cadence>`". The structured
+form of a clock trigger is written as an `every=` value in the `watch:`
+line, taking the same kind of cadence a run-scoped `every:` line takes,
+and it carries no `record=` and no `system=`:
+
+```
+trigger: the clock - a cycle opens every <period>, and no one has to
+         ask for it
+         watch: every=<period>
+```
+
+A document MAY carry more than one `watch:` line where the trigger names
+more than one event, one line per event, joined by `and` where the
+events must all have happened and by `or` where any one of them starts a
+run. The example below takes `ref/sls/run-a-proof-of-value`'s trigger
+sentence and splits it, which is not how that document writes it today;
+it folds both events into one `change=` value:
+
+```
+trigger: a shaping run decides that description is not enough and <who>
+         approves an evaluation
+         watch: record=<shaping decision> system=<your CRM>
+                change=<a shaping run records that description is not
+                enough>
+         and watch: record=<opportunity> system=<your CRM>
+                change=<an evaluation is approved>
+```
+
+A single `watch:` line needs no joining word. A document that carries
+several MUST join them, because a runtime that cannot tell which of the
+two it is reading has to guess whether to wait for the second event.
 
 Where a document carries one:
 
@@ -511,14 +622,113 @@ A run that ends at an exception phase has ended. It has not failed, and
 a runtime MUST NOT report it as an error: the process anticipated this
 and routed it to somebody.
 
+### 6.5.2 A phase that does not run in every run
+
+Some phases only happen when the run gives them something to do. In
+`ref/rev/publish-the-carve`, `apply-changes` applies the appeals that
+were upheld, and a run where nothing was upheld has nothing for it to
+apply. The phase after it reads:
+
+```
+  publish-final      - human: the final carve at its version, to
+                       everybody it binds, on <publication date>
+                       owner: quota-setter
+                       after: decide-appeals + apply-changes
+```
+
+Read against Section 6.5, that join waits for both, and read against
+Section 8.4 the final publication also waits for a handoff out of
+`apply-changes`. In a run where no appeal was upheld, neither ever
+arrives, and the carve is never published. The rule below is what stops
+that.
+
+**A phase that a run never entered counts as closed for the purposes of
+a join.** A join waits for the phases that had something to do in this
+run, not for every phase named in the line. **A handoff from a phase
+that did not run is not owed**, and a runtime MUST NOT hold the
+receiving phase for it (Section 8.4).
+
+This is not permission to skip a phase. It settles what a join means for
+a phase the run never had a reason to enter, and nothing here lets a
+runtime decide that a phase it could have entered was not worth
+entering.
+
+A runtime cannot in general tell the difference between a phase that
+will never be entered and one that has not been entered yet, so a
+document MAY mark the phases that do not run in every run. The marker is
+a trailing `?` on the name in an `after:` value:
+
+```
+                       after: decide-appeals + apply-changes?
+```
+
+A runtime MUST NOT wait on a phase marked this way that the run never
+entered. The marker MAY appear only in an `after:` value. It is not part
+of the phase's name, and a document MUST NOT write it in the phase list,
+in a handoff, or in a run-scoped `from:` or `until:`, because the name
+those cite has to stay the name Section 6.1 declares.
+
+No document in the corpus carries the marker today, which is why it is a
+MAY. A document that does not carry it is saying nothing about which of
+its phases always run, and a runtime reading such a document has only
+the rule above and whatever the run itself shows it.
+
 ### 6.6 `by:`
 
 `by:` is OPTIONAL. About half the phases in the corpus carry one.
 
-Where present, it states a deadline, either as a duration relative to
-the trigger or to the phase this one follows (`by: <days>`,
-`by: <hours>`, `by: <weeks>`), or as a named point in the run
-(`by: launch`).
+Where present, it states a deadline in one of four forms.
+
+**A duration**, counted from the trigger or from the phase this one
+follows: `by: <days>`, `by: <hours>`, `by: <weeks>`, `by: <minutes>`.
+This is what nearly every `by:` in the corpus is.
+
+**A named point in the run**: `by: launch`, `by: switch-on`,
+`by: issue-release`, `by: brief-creators`.
+
+**An absolute or externally-set moment**, which is a date somebody
+outside the run fixed or a date the run itself fixed earlier:
+`by: <date>`, `by: effective date`, `by: send date`,
+`by: the read date`, `by: the award's deadline`,
+`by: the organizer's deadline`, `by: <the cut-off date>`.
+
+**A duration counted backwards from one of those**:
+`by: <weeks before>`, `by: <months before>`,
+`by: <days before the event>`, `by: <days before the period closes>`,
+and, written out in full in `ref/mkt/pricing-change`:
+
+```
+                     by: effective date minus <the longest notice
+                         period in force>
+```
+
+All four forms are in the corpus today. The last two are there because
+a great deal of real work is scheduled against a date nobody in the run
+chose: a trade show opens, an award closes, a price takes effect, and
+the notice has to go out a fixed time before it.
+
+**What a named point may name.** A named point MUST be one of three
+things: a phase this document declares, a blank, or a moment the
+document names somewhere else. The third covers both a moment somebody
+outside the run sets, as with `by: the organizer's deadline` in
+`ref/mkt/speaking-engagement`, and a moment a phase of this run fixes,
+as with `by: the read date` in `ref/mkt/conversion-experiment`, which is
+set when the test is sized and appears in that document's activity
+table, its handoffs and its failure edges. A named point MUST NOT be a
+phase name the phase list does not declare.
+
+A document SHOULD name the moment somewhere a reader can find it, in the
+activity table, in a phase, in a handoff, in policy or in the measures.
+A deadline whose moment appears nowhere else is a date nobody can look
+up, and the run misses it without anyone being able to say when it was.
+
+**Where a phase repeats.** A phase MAY carry `every:` and repeat
+(Section 9.4). Where it does, `by:` binds each occurrence, not the phase
+as a whole. A weekly reading due within `<days>` is due within `<days>`
+of each reading, not `<days>` after the first one. A document that means
+the deadline to bind the phase as a whole MUST say so in the phase's own
+words, because the reading a runtime takes without being told is the
+per-occurrence one. No phase in the corpus carries both keys today.
 
 Deadlines belong in the process rather than in a run because they are
 usually policy: payroll has a legal deadline, an access revocation has a
@@ -527,10 +737,71 @@ security one.
 A reference process MUST leave the number blank. It shows where the
 number goes; the number is the adopter's decision.
 
-A document that carries `by:` on any phase MUST say, in its failure
-edges, what happens when a deadline is missed. Both answers are
-legitimate, the run continues and the miss is recorded, or the run
-stops. Not choosing is not.
+**A missed deadline.** A document that carries `by:` on any phase SHOULD
+say, in its failure edges, what happens when a deadline is missed. One
+failure edge covering deadlines discharges this for every `by:` in the
+document; there is no obligation to write one per phase.
+
+Two kinds of answer satisfy it. The document may say what happens to the
+**run**, which is either that it continues and the miss is recorded or
+that it stops. It may instead say what happens to the **date**: that the
+date moves, and who agrees the move. Both are quoted here, the first
+from `ref/mkt/award-entry` and the second from `ref/mkt/pricing-change`:
+
+> **The deadline cannot be made.** The manager says so on the day the
+> arithmetic stops working, while there is still time for `<who>` to
+> decide whether the entry is dropped, whether the body will grant an
+> extension, or whether the entry goes in thinner than it was planned.
+
+> **The effective date moves after notices have gone out.** Every notice
+> already served names a date that is now wrong. The run goes back to
+> produce-material for the corrected wording and then to serve-notice,
+> the waiting time starts again from the day the corrected notice goes,
+> and nobody moves on the date the first notice named.
+
+This was a MUST in 0.1.0-draft and is a SHOULD here, because most of the
+corpus does not do it. A document that leaves it out has left a real gap
+and the SHOULD says so, but it is not thereby non-conformant.
+
+### 6.6.1 `not-before:`
+
+`not-before:` is OPTIONAL. It states the moment a phase MUST NOT begin
+before, in the same forms `by:` takes.
+
+`by:` says a phase must not finish after a moment. Nothing in
+0.1.0-draft said a phase must not begin before one, and Section 6.2
+tells a runtime to take order from `after:` lines, which means a phase
+starts as soon as the phases it waits for have closed. That is the
+wrong answer for an embargo. `ref/mkt/announce-company-news` carries the
+embargo in its handoffs and its data bindings, and its release phase
+reads:
+
+```
+  issue-release    - human: the named owner says go, the release is sent
+                     and the page on the site goes live
+                     owner: comms-manager
+                     after: get-sign-offs + line-up-press
+                     automation: <level>
+```
+
+Every phase it waits for can close a week early. Nothing in the graph
+says the release does not go out then, and an embargo broken by the
+organization that set it is the one failure the whole process exists to
+avoid.
+
+A runtime MUST NOT begin a phase carrying `not-before:` until that
+moment has arrived, even when every phase its `after:` line names has
+closed. `not-before:` and `after:` are both conditions on starting, and
+both have to hold.
+
+`not-before:` does not make a phase start on its own. It says when the
+phase becomes allowed, not when it happens, and the phase still needs
+its `after:` phases closed and its handoffs in hand (Section 8.4).
+
+No document in the corpus carries the key today, which is why it is
+OPTIONAL rather than REQUIRED on phases that need it. A reference
+process that carries one MUST leave the moment blank where the moment is
+the adopter's decision, on the same rule `by:` follows.
 
 ### 6.7 Deviation edges
 
@@ -549,8 +820,25 @@ the phase that can act on them:
 The second one is worth reading twice. The reconciliation finds that the
 contract text and the agreed record disagree, and the edge returns to
 the agreed record, not to the contract. Which phase an edge returns to
-is a decision about where the work can actually be repaired, and naming
-it is the whole point of writing the edge down.
+is the decision the edge exists to record, and naming it is the whole
+point of writing the edge down.
+
+Usually the phase it returns to is where the work can actually be
+repaired. Not always. An edge may also return to the phase that holds
+the leverage, which is a different thing. `ref/rev/retire-a-tool` writes:
+
+```
+  confirm-deletion -> close-accounts [supplier-will-not-confirm]: the
+    supplier will not confirm what it destroyed, so the closing is
+    worked again against the agreement
+```
+
+Nothing at `close-accounts` can be redone. The accounts are shut and the
+agreement is ended. The run returns there because that is where the
+agreement and the final invoice sit, and they are what the organization
+has left to press the supplier with. An author naming the target of a
+deviation edge SHOULD ask both questions: where can this be repaired,
+and, where it cannot, who still holds something the far side wants.
 
 Every document in the corpus carries at least one deviation edge.
 
@@ -575,17 +863,104 @@ deviations:
 ```
 
 The left side names the phase the run is in, the right side names the
-phase it returns to, the key is optional and shares the namespace with
-handoff and record keys, and the sentence says what happened. A
-deviation line MUST NOT return to a phase that does not exist, and MUST
-NOT be the only statement of a failure the failure edges also describe:
-the two say different things, one to a machine and one to a person.
+phase it goes to, and the sentence says what happened. The key is
+optional. It belongs to the one key namespace, which has four members: a
+handoff key, a deviation key, a record key, and the name of a run-scoped
+line, no two of them the same string in one document (Section 8.6). A
+deviation line MUST NOT name a phase that does not exist on either side.
+
+**The left side MAY be `any`.** Some deviations do not belong to one
+phase. A story leaking can happen while the run is anywhere between
+setting the date and issuing the release, and `any` says so without
+writing the same line eight times. The line below is
+`ref/mkt/announce-company-news`'s own failure edge, written as a
+deviation:
+
+```
+  any -> issue-release [story-leaks]: the story leaks before the date,
+    so the run issues what is signed at that moment or the organization
+    stays quiet, and <who> decides which
+```
+
+`any` means every phase of this document. A document that means a
+particular set of phases writes them out. A runtime MUST NOT read `any`
+as making the deviation automatic; it is still a deviation, taken when
+the sentence's condition holds.
+
+**The right side MAY be a phase further forward.** A deviation is
+normally backward or sideways, and a forward target is not an ordinary
+edge: it says the run skips work the graph said it would do. It is
+permitted because the world sometimes takes the decision away from the
+run. When the story is already out, the phases between here and the
+release have lost their purpose, and a process that could only walk
+forward one phase at a time would have the organization silent while
+somebody else told its news. A document that writes a forward deviation
+MUST say in the sentence what happens to the phases it passes over, and
+its failure edges SHOULD say the same thing in prose.
+
+**A deviation line and a failure edge are not substitutes.** The
+0.1.0-draft wording here said a deviation line MUST NOT be the only
+statement of a failure the failure edges also describe, which cannot be
+violated as written and so obliged nothing. What it meant is this: a
+deviation line does not replace the prose failure edge, and a document
+SHOULD carry both where the failure is one a person building this
+process needs explained. The line carries the edge, which is the part a
+runtime can act on. The prose carries the scope, the judgment and the
+reason, which is the part a person acts on at two in the morning
+(Section 14.1).
 
 Where a document carries deviation lines and a diagram, they MUST agree.
 Where they disagree, the document governs.
 
 Until a document carries them, a reader takes the deviations from the
-diagram, which is what every document in the corpus does today.
+diagram, which is what most of the corpus does today.
+
+### 6.7.2 Which of the two an edge is
+
+Section 6.5.1 says an exception edge leaves a phase that stopped without
+finishing. Section 6.7 says a deviation edge returns to a phase that
+already ran. Plenty of real edges satisfy both tests at once, and three
+of the documents upgraded against 0.1.0-draft hit one. The buyer's
+records break the environment: `load-buyer-case` cannot finish, which is
+the exception test, and the environment was built by a phase that can be
+built again, which is the deviation test.
+
+**Classify by the target.** If the target phase exists to receive work
+that could not finish, the edge is an exception edge. If the target is a
+phase that already ran and can be run again, the edge is a deviation.
+
+Under that rule the environment case is a deviation, and
+`ref/sls/run-a-proof-of-value` writes it as one:
+
+```
+  load-buyer-case -> set-up-environment [data-will-not-load]: the
+    buyer's records break the environment, so the environment is fixed
+    before the case is loaded again
+```
+
+`clear-exception` in `ref/mkt/lead-routing` is the other way round. It
+exists for nothing except leads that score or route could not settle, it
+never runs in an ordinary run, and it is reached only when a phase stops
+without finishing. That is an exception edge.
+
+The target is the right discriminator because it is what decides where
+the work goes and who is standing there. An exception edge ends up at a
+phase whose whole purpose is to hold work a person now has to settle,
+and Section 6.5.1's obligations about its automation level follow from
+that. A deviation ends up in the ordinary graph, at a phase that will
+run again and hand on again.
+
+**An exception edge MUST NOT create a cycle in `after:`.** A phase
+entered by an exception edge names, in its `after:` value, the phases
+whose failure sends work to it (Section 6.5.1). Where one of those
+phases already names the other in its own `after:`, both phases wait for
+each other and neither can ever start. Writing `set-up-environment` as
+`after: load-buyer-case` while `load-buyer-case` is
+`after: set-up-environment` deadlocks the pair on every run, not just
+the ones that go wrong. No document in the corpus has a cycle in its
+`after:` lines. A return path that would make one is a deviation and is
+written under `deviations:` (Section 6.7.1), which is not part of the
+`after:` graph and creates no wait.
 
 ### 6.8 The close
 
@@ -634,6 +1009,16 @@ Where the diagram and the `after:` lines disagree, the `after:` lines
 govern, and the document MUST be amended to bring the diagram back into
 line. A runtime MUST NOT read the graph from the diagram.
 
+The same holds for the diagram's trigger node. Every diagram in the
+corpus opens with one, as
+`T([the buyer cannot decide from description alone])` does in
+`ref/sls/run-a-proof-of-value`, and it is a rendering of the `trigger:`
+line. Where the trigger node and the `trigger:` line disagree, the
+`trigger:` line governs, and the document MUST be amended. A runtime
+MUST NOT take the trigger from the diagram. The node is often shorter
+than the line, because a box has less room than a sentence, and shorter
+is not disagreeing; a node that names a different event is.
+
 The graph is written as `after:` lines because text is something a
 person, an agent and an auditor can all read, and because a diagram
 cannot carry an owner, a deadline or an automation level.
@@ -674,8 +1059,17 @@ whether a person is standing between an agent and the world.
 ### 7.1 `never`
 
 `never` means the phase stays with a person no matter how good the
-agents get, because a regulator, a contract, or a customer relationship
-requires it.
+agents get, because a regulator, a contract, a customer relationship, or
+the fact that the next act cannot be undone requires it.
+
+The fourth reason is the strongest and was missing from 0.1.0-draft. The
+first three are somebody else's rule, and rules change. Irreversibility
+is a property of the work. `ref/rev/retire-a-tool` puts its `never` gate
+at `review-switch-off`, immediately before `close-accounts`, because
+after that phase every account is shut and the agreement is ended, and
+no later phase and no amendment can put any of it back. A phase like
+that is the last moment a person can still say no, and that is what
+makes it worth a person's time.
 
 A runtime MUST interrupt every run at a `never` phase and MUST NOT
 proceed past it until a named person has acted. The person MUST be
@@ -705,6 +1099,18 @@ preparation.
 it are the ones that would be expensive to get wrong:
 `set-walk-away`, `approve-concessions`, `escalate-deadlock` and
 `confirm-position` all read `automation: never`.
+
+**The point of no return.** A document SHOULD name the phase past which
+a run cannot be undone. Most processes have one and most documents do
+not say which it is, which is why this is a SHOULD. The natural place to
+say it is the abandonment failure edge (Section 14.2), because that is
+where a reader goes when they need it, and the reader who needs it is
+deciding whether to stop a run that is already halfway through.
+
+Naming it is also how an author finds the `never` gate they were
+missing. If the phase past which nothing can be undone has no person
+standing in front of it, the process is one agent's bad afternoon away
+from something nobody can reverse.
 
 ### 7.2 `assisted`
 
@@ -818,8 +1224,33 @@ nobody can keep, and a handoff from one is an input that never arrives.
 Both read as complete on the page, which is what makes them worth a
 MUST: this is the defect a reader is least likely to catch by eye.
 
-The sending side MUST be a phase of this document. A run cannot hand on
-what it did not produce.
+The sending side MUST be either a phase of this document or a
+counterparty role. A run cannot hand on what it did not produce, so
+where the thing was produced inside this organization, a phase of this
+document produced it.
+
+The counterparty case is the exception and it exists because half of
+some processes happen inside somebody else's organization (Section 19).
+A proof of value waits for the buyer's own data, and the buyer is not a
+phase of this document and MUST NOT be written as one (Section 19.1).
+The sending side is then written as the role name exactly as the roster
+names it, which is how the reader tells it from a phase:
+
+```
+  customer sponsor (person) -> load-buyer-case [buyer-data]: the
+    buyer's own records at the buyer's own volumes, including the ones
+    they said were awkward
+```
+
+A role on the sending side is a role, not a phase. It gets no `after:`
+line, it appears in no join, it closes nothing, and a runtime MUST NOT
+treat it as a phase of the graph. What it does carry is Section 19.2's
+rule about what satisfies it: the handoff is satisfied by what actually
+arrived, and by nothing that is merely asserted about the far side.
+
+That is the inbound direction. Outbound, where the run hands something
+to the counterparty rather than taking something from them, is the
+destination case the next paragraph covers.
 
 The receiving side MAY instead name a destination outside the document,
 written in prose rather than as a key. This is how a run hands its
@@ -882,6 +1313,10 @@ when it does. A phase that starts on the edge alone starts without its
 input, and the work it does before the input arrives is work that has
 to be done again.
 
+A handoff out of a phase the run never entered is not owed, and this
+rule does not hold the receiving phase for it. Section 6.5.2 says what a
+run never entering a phase means and how a document marks such a phase.
+
 ### 8.5. A handoff is a thing, not a conversation
 
 What a handoff names MUST be something a later reader can point at: a
@@ -907,11 +1342,13 @@ key is written in square brackets before the colon:
 ```
 
 A key is lowercase, hyphen-separated, and unique within the document.
-Keys are one namespace, and it has three members rather than two: a
-handoff key, a record key (Section 13), and the name of a run-scoped
-line (Section 9) in the same document MUST NOT be the same string. A
-run-scoped line is already cited by its name, `spend` or `coverage`, so
-it is a key whether or not anybody calls it one.
+Keys are one namespace, and it has four members: a handoff key, a
+deviation key (Section 6.7.1), a record key (Section 13), and the name
+of a run-scoped line (Section 9). Two of those in the same document
+MUST NOT be the same string. A run-scoped line is already cited by its
+name, `spend` or `coverage`, so it is a key whether or not anybody calls
+it one, and a deviation key is written in the same brackets a handoff
+key is written in, so nothing but the block it sits in tells them apart.
 
 The key exists because a sentence cannot be a field name. A runtime
 that tracks handoffs, or a translator that renders the document into
@@ -1080,8 +1517,8 @@ agent with more access than the process needs is a finding waiting to
 happen.
 
 Every system in the list MUST carry an access word. The access words
-are `read`, `write` and `trigger`, and a grant MUST carry exactly one
-of them:
+are `read`, `write`, `trigger` and `revoke`, and a grant MUST carry
+exactly one of them:
 
 - `read` is the right to look. Nothing changes.
 - `write` is the right to change what is stored.
@@ -1090,6 +1527,24 @@ of them:
   building. `trigger` is separated from `write` because staging a send
   and sending it are different risks, and a run that may do the first
   is not thereby allowed the second.
+- `revoke` is the right to end access: to close an account, cut off a
+  person or a system, or end the arrangement under which the
+  organization has the system at all.
+
+`revoke` is new in 0.2.0-draft and no document in the corpus uses it
+yet. It exists because the other three cannot say "take it away".
+`ref/rev/retire-a-tool` closes every account on the tool, ends the
+agreement on the notice it requires, and agrees the final invoice, and
+its binding for that tool reads `the tool (read)`. Nothing in the three
+words available said what the run was actually going to do to it.
+
+`revoke` is the access most worth seeing in a binding. A `write` grant
+that turns out to be too wide produces a mess somebody can work back
+through. A `revoke` grant that turns out to be too wide produces people
+locked out of a system, or an agreement ended that somebody was still
+relying on, and neither of those is undone by editing a record. An
+author listing a system a run will switch off SHOULD write `revoke`
+rather than `write`, so that the grant says the thing out loud.
 
 A system that needs two of them takes two grants. The corpus writes
 both inside one parenthesis, separated by a semicolon, and MAY qualify
@@ -1140,6 +1595,40 @@ it read, and a year later the current version is not that one.
 The document names the material. Naming which version a particular run
 actually read is the run's obligation, not the document's, and it is
 discharged in the records (Section 13).
+
+### 10.5. A grant that does not last the whole run
+
+A grant with no time on it is in force for the whole run, from the
+trigger to the close. That is how every grant in the corpus reads today,
+and for most processes it is right: a run that may write to the CRM may
+write to it throughout.
+
+It is wrong for a process that hands a system back.
+`ref/rev/retire-a-tool` takes an export, stops the links, puts the tool
+into read-only, closes the accounts and then ends the agreement. By the
+last third of the run the tool is gone, and a binding that still grants
+access to it is granting access to something that no longer exists, in a
+document whose whole subject is orderly removal.
+
+A grant MAY therefore carry `from:` and `until:`, naming phases, exactly
+as a run-scoped line does (Section 9.3):
+
+```
+  systems: the tool (revoke, from: trigger, until: close-accounts),
+```
+
+A phase named in a grant's `from:` or `until:` MUST be declared in the
+phase list, for the same reason a handoff's phases must be. Where a
+grant carries them, a runtime MUST NOT use that access before the phase
+its `from:` names has been reached or after the phase its `until:` names
+has closed. Where a grant carries neither, the grant is in force for the
+whole run and nothing here changes that.
+
+No document in the corpus carries a dated grant, which is why this is a
+MAY. It is written down because the alternative an author reaches for is
+a policy line saying nobody should still be using the tool, and a policy
+line is not a permission; the permission is the grant, and the grant is
+here (Section 10.3).
 
 ---
 
@@ -1524,6 +2013,26 @@ can work out from the graph. What a half-finished run has already
 changed is knowable only to whoever wrote the process down, and the
 person who needs it is under time pressure when they need it.
 
+**When there is nothing to undo.** The paragraphs above discuss
+abandonment entirely in terms of undoing, and some runs pass a point
+where undoing is not one of the options. Accounts are closed. An
+agreement is ended on notice. Data is destroyed and the supplier has
+sent the receipt. Section 7.1 asks a document to name the phase past
+which a run cannot be undone, and this is where a reader looks for it.
+
+Where a run can stop but not be undone, a document SHOULD say what a
+person does instead. The answers are of a different kind from the
+undoing ones. Somebody has to be told. Something has to be bought or
+built again. A record has to say what state the work was left in and who
+now owns it. `ref/rev/retire-a-tool` is the clear case: a run abandoned
+after `close-accounts` cannot reopen the accounts, and what it can do is
+say plainly which systems are gone, where the export sits, and who is
+now answerable for the work the tool used to run.
+
+An abandonment edge that names only what gets undone leaves the reader
+of a run that is past that point with nothing, and that reader is the
+one who most needed the document to have thought about it.
+
 The run's closing record carries `outcome: <completed | abandoned>`, so
 a run can record that it stopped. The record says that it happened. The
 failure edge says what it costs.
@@ -1780,8 +2289,10 @@ A conforming process document:
   `handoffs:` (section 3);
 - carries a version alongside its id;
 - names every phase in its phase list;
-- states both endpoints of every handoff as phases declared in the same
-  document;
+- states, for every handoff, a sending side that is either a phase
+  declared in the same document or a counterparty role named in the
+  roster (Section 19.2), and a receiving side that is either a declared
+  phase or a destination outside this process (Section 8.2);
 - satisfies every MUST in sections 4 to 13.
 
 The handoff check is the one a second implementer gets wrong, because a
@@ -1979,10 +2490,24 @@ merging into one graph.
 
 ### 19.2. A boundary handoff is satisfied by what arrived
 
-A handoff whose sending phase is held by a counterparty role crosses an
-organizational boundary. Section 8 obliges the receiving phase not to
-begin before the handoff exists, and at a boundary "exists" means
-something narrower than it does inside one organization.
+A handoff whose sending side is a counterparty role crosses an
+organizational boundary. Section 19.1 forbids a phase owned by the
+counterparty, so the sending side of an inbound boundary handoff is the
+role itself, named exactly as the roster names it, and Section 8.2
+permits that. This is the one place a handoff's sending side is not a
+phase of this document.
+
+0.1.0-draft said "a handoff whose sending phase is held by a
+counterparty role", which no conforming document could write: Section
+19.1 forbids the phase and Section 8.2 required the sending side to be
+one. The effect was that no conforming document could say it waits for
+something the counterparty sends, which is what
+`ref/sls/run-a-proof-of-value` does when it loads the buyer's own case
+into the environment.
+
+Section 8 obliges the receiving phase not to begin before the handoff
+exists, and at a boundary "exists" means something narrower than it does
+inside one organization.
 
 A runtime MUST treat a boundary handoff as satisfied by what actually
 arrived, and MUST NOT infer from an arrival that anything happened on
@@ -2004,6 +2529,30 @@ until then the run is waiting rather than proceeding.
 A runtime MUST NOT lower the level of a phase because its signer is
 outside the organization. A gate that is inconvenient to wait for is
 still a gate.
+
+**Gates both sides sign.** The paragraphs above cover a gate the
+counterparty signs. The other shape, and a common one at a boundary, is
+a gate both sides sign, and 0.1.0-draft had nothing to say about it.
+`ref/sls/run-a-proof-of-value` has three, and writes them into the
+phase:
+
+```
+  agree-criteria     - convenes approval: what counts as a pass,
+                       written and signed by both sides before anything
+                       is built. <how many> criteria at most
+```
+
+A gate MAY name signers on both sides. Where it does, it does not close
+until every named signer has acted, and a runtime MUST NOT treat one
+side's signature as closing it. Everything Section 7.1 says about what
+counts as a person acting applies to each signer separately: a window
+that expires is not a signature on either side of the boundary.
+
+Which signature arrives first is not fixed and a document SHOULD NOT
+write the gate as though it were. What makes a co-signed gate worth
+writing as one phase rather than two is that the two sides are signing
+the same thing at the same version, and a document that splits it into
+two phases has made it possible for them to sign different versions.
 
 ### 19.4. Records are kept per side
 
