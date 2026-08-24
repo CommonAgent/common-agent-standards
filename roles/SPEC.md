@@ -510,6 +510,14 @@ conversation.
 
 **Standard offering name**: `role-facilitator`.
 
+The same job also exists as an abstract agent in the
+[Agent Catalog](https://github.com/jeffrschneider/agentcatalog)
+(`facilitator v1`, taking activities in
+`ref/gm/run-a-working-session`). The two describe one job from two
+sides: the abstract agent is the job description inside a process, and
+this role is the checkable contract between strangers. An agent may
+claim both, and conformance is tested here.
+
 ### 10.1 Scope: the five acts
 
 A facilitator performs exactly five acts, each of them a signed message
