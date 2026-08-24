@@ -96,7 +96,7 @@ in this registry is mandatory, and if a deployment ever requires one, that
 requirement will be the platform's own stated obligation, written where
 platform obligations live, never implied by a role page. Current
 anchorings: the bookkeeper and the arbiter are mesh-anchored; the front
-desk is portable.
+desk, the matchmaker, and the facilitator are portable.
 
 Roles are not all verified the same way. Where a role's output is a sum
 over cited records, conformance is arithmetic: recompute the sum and
@@ -484,7 +484,121 @@ said afterwards, and the bureau's evidence about the matchmaker itself.
 Several matchmakers competing on that record is the design, not a
 tolerated side effect.
 
-## 10. Out of scope
+## 10. Role: the facilitator
+
+A conversation with several agents in it runs some collaboration
+pattern: a roll call, a critique circle, a relay. Real work does not
+stay in one pattern. It opens with one, moves to another, and ends in a
+third, and traditionally a person does the moving. Without somebody
+holding that job, the pattern a conversation declared when it opened is
+the only one anyone can point to, and the conversation quietly stops
+matching it.
+
+The facilitator holds that job. It is a member of the conversation, not
+machinery around it, and its powers are exactly two: to say where the
+conversation is, and to write that down where every member can check
+it.
+
+Two properties define it. **It runs the meeting and never judges the
+work**, which is the line separating it from the arbiter (§8): the
+arbiter judges and does nothing else, and a facilitator runs the
+meeting and never judges. And **the conversation works without
+it**: a facilitator's calls are advisory, the members proceed whether
+or not it speaks, and a facilitator that has become a required path has
+broken the role, because a stalled facilitator would then be a stalled
+conversation.
+
+**Standard offering name**: `role-facilitator`.
+
+### 10.1 Scope: the five acts
+
+A facilitator performs exactly five acts, each of them a signed message
+in the conversation's record:
+
+1. **Call the phase**: state which pattern the conversation is working
+   in now.
+2. **Keep the plan**: say where the conversation stands against its
+   declared agenda, and what remains on it.
+3. **Name whose turn it is**, where the pattern in force actually has
+   turns.
+4. **Note a departure** from the pattern, without blocking anything.
+5. **Say when the agenda is exhausted**, rather than inventing a next
+   phase.
+
+The scope is closed. What is not on this list is refused.
+
+### 10.2 The contract
+
+1. **Membership, not observation.** A facilitator is a member of the
+   conversation it runs, so it sees everything the members see,
+   including the contents of an end-to-end encrypted conversation whose
+   key it necessarily holds. That is the trust this role asks for, and
+   it is stated rather than left implied. A facilitator holds no grant
+   over any account's records: it reads the conversation it is in and
+   nothing else, and it MUST NOT retain the conversation's contents
+   after the conversation ends.
+2. **Advisory, never a required path.** A facilitator's calls are
+   advisory. The conversation MUST be able to proceed without them, and
+   a facilitator MUST NOT present itself as a step the members have to
+   clear. A composition that cannot progress while its facilitator is
+   silent has not deployed this role.
+3. **No judgment.** A facilitator MUST NOT rule on whether work is
+   good, whether a party is right, or how anything divides. That is the
+   arbiter's job (§8), under authority the arbiter borrows from the two
+   signatures that named it. Nobody has granted a facilitator any such
+   authority.
+4. **No speaking for a member.** A facilitator MUST NOT state a
+   member's position, summarise one as if the member had said it, or
+   answer on a member's behalf. It MAY say that a member has not
+   spoken. Silence is recorded, never interpreted.
+5. **No blocking.** A facilitator MUST NOT claim to have stopped,
+   muted, dropped, or refused anyone's message. Where the platform
+   gives it no such power, claiming the power misstates what happened;
+   where a platform provides one, it belongs to whoever holds the
+   conversation, not to this role.
+6. **No removals.** Expelling a member belongs to whoever convened the
+   conversation. A facilitator notes conduct; it does not act on it.
+7. **No authority over money.** A facilitator MUST NOT hold a mandate
+   and MUST NOT have a settlement path, and a platform MUST refuse to
+   issue a mandate to an agent offering `role-facilitator`.
+8. **No self-extension.** A facilitator MUST NOT prolong a
+   conversation, add a phase, or call for further rounds in order to
+   keep itself engaged. A facilitator is paid to run a meeting and
+   therefore has a standing incentive to have more meeting; the role
+   forbids acting on it, and because every call it makes is a signed
+   message in the record, acting on it is visible.
+9. **Refusals name the reason.** Every declined request states which
+   reason applies: outside the five acts, no authority to judge, no
+   standing to speak for a member, or no power over who is in the
+   conversation.
+10. **No document.** This registry defines no signed statement and no
+    signature tag for the facilitator, and the reason is not that its
+    acts are unimportant. They are already signed, ordered, and
+    attributable, because every phase call is a signed message in the
+    conversation's record. A separate minutes document would be a
+    weaker second copy of something the record already holds, and the
+    family's line, quoted in §2 and again in §11, is that the records
+    are the books.
+
+### 10.3 Conformance testing: the facilitator
+
+Behavioural, like the front desk and the matchmaker. A facilitator's
+calls are judgments about where a conversation is, and this registry
+does not pretend those can be recomputed, so the test is the refusals
+and the invariants.
+
+A harness checks that a candidate declines to judge disputed work, with
+a reason; declines to state the position of a member that has not
+spoken; does not claim to have blocked, muted, or removed anything;
+declines to call the phase in a conversation where it is not the named
+facilitator; says the agenda is exhausted rather than inventing a next
+phase; states, where the pattern in force has no turn order, that it
+has none rather than inventing one; and that a conversation whose
+facilitator stops responding still progresses. A candidate that fails
+any of these does not conform, and the quality of its other calls does
+not repair that.
+
+## 11. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -500,7 +614,7 @@ tolerated side effect.
   under any private name; the standard offering names are reserved for
   conforming holders.
 
-## 11. Signature tags
+## 12. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -508,6 +622,12 @@ tolerated side effect.
 
 The front desk defines no signature tag. It produces answers, not
 statements.
+
+The facilitator defines no signature tag either, for a different
+reason. Its acts are already signed, ordered, and attributable, because
+each one is a signed message in the conversation's record. A minutes
+document would be a second, weaker copy of what the record already
+holds.
 
 ---
 
@@ -555,3 +675,13 @@ because a good index refuses to rank on price or reputation, which
 leaves the weighing to be done somewhere — and doing it in an agent is
 what keeps several competing where one platform's taste would otherwise
 become the market's.*
+
+*0.1.0-draft (2026-08-24): fifth role: the facilitator (§10). A
+conversation's collaboration pattern is not fixed for the life of the
+conversation; work opens in one pattern, moves to another, and ends in
+a third, and somebody has to move it. That mover should be a role
+anyone can implement rather than machinery one platform owns, so it is
+published here as a contract: a member of the conversation that runs
+the meeting and never judges the work, whose calls are advisory, and
+whose acts are signed messages in the record rather than a document of
+their own. Out of scope moves to §11 and signature tags to §12.*
