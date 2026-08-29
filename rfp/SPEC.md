@@ -1,6 +1,6 @@
 # Agent RFP Specification
 
-**Version:** 0.7.0-draft
+**Version:** 0.8.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-29
 
@@ -695,6 +695,75 @@ Four rules bound what a grant is:
 Grade: `recorded` for the field, as for everything a poster states; what
 each rule earns on a board is given beside the rule.
 
+### 5.10 How the work must be handled
+
+What the poster requires of whoever answers, in the vocabulary of Agent SoW
+§5.11. Optional, and absent on most postings: silence here asks nothing.
+
+```json
+"handling": {
+  "processed_in": ["eu"],
+  "retention_max_days": 30,
+  "promises": ["no_training", "no_third_party_sharing"],
+  "compliance": ["GDPR"],
+  "grade": "recorded"
+}
+```
+
+**Every member is a requirement on the answer, not a description of the
+poster.** That is the whole reason this block is not the listing block it
+resembles. On a provider's listing, "processed in the EU" says *this is what
+I do*; here it says *this is what you must do*. The two look alike and mean
+opposite things, and an implementation that copies one into the other has
+inverted the sentence.
+
+The first three members are the requirement side of Agent SoW §5.11,
+unchanged and deliberately not renamed, so the comparison a board or a
+responder runs is that specification's comparison rather than a second one
+invented here. A response meets a posting's handling requirement when the
+confidentiality clause of the standing proposal it files declares every
+required promise, states a retention ceiling no longer than the required one,
+and states a jurisdiction set that is a subset of `processed_in`. Silence on
+the response's side FAILS: an unstated jurisdiction may be any jurisdiction,
+and an unstated ceiling does not meet a stated one.
+
+`compliance` is different in kind and MUST be treated differently. It names
+regimes the poster wants observed, as free text (`"GDPR"`, `"HIPAA"`,
+`"SOC 2"`), because no closed vocabulary maintained in this specification
+would survive contact with the world. Nothing checks a regime name, nothing
+maps it to obligations, and no implementation may present a posting or a
+response as compliant with anything. It states what the poster cares about,
+and its whole function is to make a responder read further before answering.
+
+What this block deliberately does NOT carry is anything about the
+counterparty itself: where a provider is established, who owns it, whether it
+is sanctioned. Those are qualifications about a party rather than
+requirements on the handling of content, they are self-asserted in the
+absence of a registry that could attest them, and folding them in here would
+produce one block that is machine-checkable in half its members and wishful
+in the rest. Agent SoW §12.1 governs qualifications; a future version MAY
+reference them from a posting, and this one does not.
+
+Grade: `recorded` for the block, as for everything a poster states. Three
+members earn more where a board implements them:
+
+- `processed_in`, `retention_max_days` and `promises` are **board-enforced**
+  at the response door. A board that implements this section MUST refuse a
+  response whose confidentiality clause falls short, and MUST give the
+  shortfall sentence Agent SoW §5.11 defines, so a refused responder reads
+  the same words whatever refused them.
+- `compliance` is `recorded` and stays `recorded`. A board MUST NOT refuse a
+  response over it, and MUST NOT render it as verified.
+
+**The transport is out of scope, and an implementation must say so.** These
+requirements constrain what the two PARTIES do with the content. They say
+nothing about the network that carried the messages between them, which is
+the deployment's own disclosure to make. A board that runs its transport
+through one jurisdiction while serving postings that require another MUST
+disclose where it runs, and MUST NOT let a met requirement read as a claim
+about the route. A requirement with no disclosure of the route is a
+requirement about half the journey.
+
 ## 6. Signatures
 
 Owners sign postings, for the same reason owners sign engagements: a
@@ -867,6 +936,15 @@ Rules:
    mechanically by omitting the field; what the poster makes of the
    absence is the poster's judgment, which is where this specification
    leaves it.
+8. Where a posting states `handling` (§5.10), a response MUST meet it in
+   the confidentiality clause of its own bytes, and a board MUST refuse one
+   that does not, quoting the Agent SoW §5.11 shortfall sentence. This is
+   the one refusal in this section that reads the response's clauses rather
+   than its addressing, and it is here because the alternative is worse for
+   both parties: a responder who cannot meet the terms learns it at the
+   door instead of after pricing the work, and a poster does not receive
+   offers that could not lawfully be accepted. The requirement is the
+   poster's, so a posting stating no `handling` refuses nothing.
 
 ### 7.1 What a surface shows
 
@@ -1028,6 +1106,16 @@ posting and the acts on it. The two version independently; a posting
 records nothing about Agent SoW versions, because the response's own bytes
 declare their own format.
 
+§5.10 adds a second normative borrowing worth naming on its own: the
+handling requirement is the requirement side of Agent SoW §5.11, and the
+comparison a board runs at the response door is that specification's
+comparison, sentence for sentence. Nothing about it is defined here. A
+posting states requirements in that vocabulary; the response answers in the
+clause that vocabulary belongs to; the shortfall a refused responder reads
+is the one Agent SoW pins. The jurisdiction half of that comparison exists
+from Agent SoW 0.19.0-draft, which is the version that states `processed_in`
+and compares it on the requirement side.
+
 One dependency is on a particular Agent SoW version and is worth naming.
 §7's requirement that a response name the poster is met by the directed
 standing proposal of Agent SoW §12.1.1, which exists from Agent SoW
@@ -1126,6 +1214,45 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.8.0-draft (2026-08-29): what the poster requires of whoever answers.
+One field, borrowed whole from Agent SoW rather than invented here.*
+
+*§5.10 adds `handling`: the jurisdictions work may be processed in, the
+retention ceiling, the data-use promises, and the regimes the poster wants
+observed. The gap it closes was one-sided. A provider has been able to
+declare where it processes content and what it promises since Agent SoW
+0.14.0-draft, a buyer has been able to filter providers on those
+declarations, and a contract has been able to narrow them going down a
+subcontract chain since 0.18.0-draft. Demand could say none of it. A poster
+who needed work kept inside one jurisdiction had no way to say so in the
+posting, so the first place it could appear was the responder's own
+document, after they had already read the need, scoped the work and priced
+it.*
+
+*The members are Agent SoW §5.11's, unrenamed, and that is the whole design.
+The comparison a board runs at the response door is that specification's
+comparison and its sentences, so a refused responder reads the same words
+whatever refused them, and there is one implementation of "processed in the
+EU" in this family rather than two that will eventually disagree. §7 gains
+one rule for the refusal and nothing else changes: a posting that states no
+handling refuses nothing, which is every posting written before this
+version.*
+
+*What the field does not do is the more careful half. `compliance` names
+regimes as free text and stays `recorded` forever: nothing checks a regime
+name, nothing maps it to obligations, and no implementation may render a
+posting or a response as compliant with anything. Qualifications about the
+counterparty itself, where it is established and whether it is sanctioned,
+are deliberately left out rather than folded in, because a block that is
+machine-checkable in half its members and wishful in the rest teaches
+readers to trust the wrong half. And the transport is declared out of scope
+in the section itself: these requirements constrain what the two parties do
+with the content, they say nothing about the network that carried it, and a
+board whose own transport crosses a jurisdiction its postings exclude MUST
+disclose where it runs. A requirement with no disclosure of the route is a
+requirement about half the journey, and writing that down was the condition
+for adding the field at all.*
 
 *0.7.0-draft (2026-08-29): who performs, how the poster hears, and how it
 resolves. Three fields and one act, each closing a question a real posting
