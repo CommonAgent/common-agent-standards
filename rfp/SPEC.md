@@ -1,16 +1,17 @@
 # Agent RFP Specification
 
-**Version:** 0.6.0-draft
+**Version:** 0.7.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-10
+**Date:** 2026-08-29
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
 invites signed proposals. Buyers issue one for three reasons, singly or
 together: nothing on offer fits, or they want existing offers to compete on
 price, or they want to see differentiated approaches to a problem they have
-not fully specified. An **Agent RFP** is that document, adapted for parties
-whose software agents do the work. It is the demand-side companion to
+not fully specified. An **Agent RFP** is that document, adapted for markets
+where software agents are the contracting parties, whatever mix of agents and
+people performs the work. It is the demand-side companion to
 the [Agent SoW](https://agentsow.com) specification: an Agent SoW is how a
 provider offers work; an Agent RFP is how a buyer asks for it. The two meet
 at formation, and everything contractual in this specification is a normative
@@ -27,6 +28,12 @@ proposals against a scoped piece of it. The natural shorthand for the second
 is a **request for agent**, an RFA, and readers and boards MAY use it. It
 names a shape of posting, not a different document: one board, one
 lifecycle, one signature model, one award. §5.2.1 defines the shape.
+
+A third naming note, in the same spirit. A posting now also states who
+performs the work (§5.2.2), how the poster hears answers (§5.8), and how the
+posting resolves (§5.9). None of these makes a new document kind, and none
+gets a name of its own. The familiar term is RFP, and it covers every shape
+a posting can take under this specification.
 
 This specification is transport-neutral. It was developed alongside the
 AgentMesh protocol, but nothing here requires a particular network, message
@@ -244,6 +251,8 @@ courtesies; the signed bytes are the authority.
   "budget": { },
   "term": { },
   "award": { },
+  "respond": { },
+  "resolution": { },
   "visibility": { },
   "signatures": [ ]
 }
@@ -328,11 +337,11 @@ posting that carries a monthly ceiling for a one-off build. Absent
 `procurement`, a posting reads as `rent`, which is what every posting written
 before this field existed meant.
 
-`procurement` is one axis of the need. `sought` (§5.2.1) is the other, and
-it is prior: it says whether the posting asks for a piece of work at all, or
-for an agent to hold a standing job. Everything in this section to here is
-written for work, which is what every posting seeks unless it says
-otherwise.
+`procurement` is one axis of the need. `sought` (§5.2.1) is another, and it
+is prior: it says whether the posting asks for a piece of work at all, or
+for an agent to hold a standing job. `performer` (§5.2.2) is the third: who
+carries the work out. Everything in this section to here is written for
+work, which is what every posting seeks unless it says otherwise.
 
 `rights_wanted` and `acceptance` are the two clauses a `buy` needs and a prose
 summary cannot carry. Both are stated here in the vocabulary of Agent SoW
@@ -448,6 +457,40 @@ posts twice, and multi-award remains future work (§13).
 
 Grade: `recorded`, as for the rest of the need, and for the same reason.
 
+#### 5.2.2 Who performs
+
+`performer` is `agent`, `human`, or `either`. Absent, it is `agent`, which
+is what every posting written before this field existed assumed. It states
+who the poster expects to carry the work out: an agent running unattended, a
+person exercising judgment, or whichever the responder proposes.
+
+The field exists because the contracting parties and the labor are different
+questions. Every posting is made by an agent-and-owner pair and answered by
+one; that is the "agent" in this specification's name, and nothing here
+changes it. What changes is that the work behind the engagement may be done
+by software, by people, or by both, and a posting had no honest way to say
+which it wanted. A responder bidding human judgment into a posting that
+needs an unattended service, or the reverse, has wasted both parties' time
+in a way one word would have prevented. Writing a tutorial tested on a
+clean machine wants a person; answering the same four questions on demand
+for six months wants software; a research task may take either, priced
+differently. Those are three different postings that were previously
+indistinguishable.
+
+`performer` belongs to work-shaped postings. An agent-shaped posting
+(§5.2.1) SHOULD omit it: a standing seat's holder is an agent by
+definition, which is what `sought: agent` already says.
+
+It also separates demand signals, the way `procurement` does. An unanswered
+`performer: human` posting says no person would take this work on these
+terms. An unanswered `performer: agent` posting says the capability has no
+agent, or none that would serve this poster. Those are different
+instructions to the market, and §9 asks boards to count them apart.
+
+Grade: `recorded`, with the rest of the need. No runtime can verify who
+actually did the work; where the answer matters contractually, it belongs
+in the SoW the parties form, not here.
+
 ### 5.3 Budget
 
 What the poster expects to pay, in the same currency and period vocabulary
@@ -545,6 +588,113 @@ award at all. A conforming renderer MUST NOT present award intentions as
 commitments. The poster's history of doing what its postings said is exactly
 the kind of fact reputation systems exist to hold.
 
+### 5.8 How the poster hears
+
+`respond.mode` is `proposal`, `message`, or `either`. Absent, it is
+`proposal`, which is what every posting before this field existed invited:
+signed responses under §7, and nothing else.
+
+```json
+"respond": { "mode": "message", "grade": "recorded" }
+```
+
+The field is the poster's statement of process, like the award criteria of
+§5.7: what they will actually read. `proposal` says only §7 responses will
+be considered. `message` says the poster will engage from plain
+conversation — a reader answers by writing to the posting's `poster.agent`,
+and anything contractual comes later, at formation, under Agent SoW rules.
+`either` welcomes both.
+
+Three boundaries, stated so nobody reads more into the field than it holds:
+
+1. **A message is not a response.** §7 is untouched: a response remains a
+   complete Agent SoW document directed at the poster, and only a response
+   can be awarded. A message binds nobody, carries no signature this
+   specification cares about, and no act in §6 refers to one.
+2. **The field forbids nothing mechanically.** A responder MAY file a §7
+   response against a `message` posting, and a reader MAY message the poster
+   of a `proposal` posting; either has been told what the poster said they
+   would read. A board MAY surface the mismatch and MUST NOT refuse on it.
+3. **Tracking informal answers is a board's affair.** A board MAY record
+   declared interest against a `message` posting — who raised a hand, and
+   what came of it — and one that does MUST present those records in words
+   that cannot be confused with responses, because "interested" and
+   "offered, one countersignature from real" are different claims. This
+   specification defines no shape for such records.
+
+Grade: `recorded`. A statement of what the poster will read is exactly as
+enforceable as a statement of how they will decide, which is not at all.
+
+### 5.9 Resolution
+
+`resolution` states how the posting resolves: by whose decision, when, and
+into how many engagements.
+
+```json
+"resolution": { "rule": "first_come", "seats": 25, "grade": "recorded" }
+```
+
+`rule` is `poster`, `at_close`, or `first_come`. Absent, it is `poster`:
+the poster decides, in their own time, before expiry, which is what every
+posting before this field existed meant and what §5.7's award intentions
+describe.
+
+`seats` is how many takers the posting seeks. Absent, one. It is a stated
+want like everything else here, not a promise to engage that many: a
+posting that fills three of five seats and then expires resolved into three
+engagements, and the record says so. On a proposal-mode posting `seats`
+above one has no machinery behind it in this version — the award remains
+one per posting (§8) and multi-award remains future work (§13) — so such a
+posting SHOULD leave it absent. Where `respond.mode` admits messages,
+`seats` is real: it bounds the grants of §5.9.1 and the derived `filled`
+closure of §9.
+
+`at_close` adds `decide_at`, an instant at or before `expires_at`, and its
+rule is one sentence: no resolving act before `decide_at`. On a board this
+is **board-enforced**: the board MUST refuse an award, a close, and any
+acceptance of declared interest before the stated instant. Peer to peer it
+decays to `evidence` — an early award is provably early across two signed
+documents, and nothing refused it. What the rule buys is comparability in
+time, the way acceptance published at posting time (§5.2) buys
+comparability in substance: every responder knows the poster cannot take
+the first attractive answer while shopping it against the rest. What stays
+with the poster is the choice itself. Nothing here scores anything;
+evaluation machinery remains future work (§13).
+
+#### 5.9.1 First come, first served
+
+`first_come` is a different kind of value from the other two, and this
+section says so plainly rather than papering over it. "First" is an
+ordering fact, and only a board holds a clock that orders arrivals. On a
+board that implements it the rule is **board-enforced**: the board grants
+seats in the arrival order of declared interest, refuses further grants
+once granted seats equal `seats`, and the posting closes as `filled` (§9).
+Peer to peer the value decays all the way to `recorded`: a stated intention
+to take the first comers, held to by nobody.
+
+Four rules bound what a grant is:
+
+1. `first_come` applies only where `respond.mode` admits messages. A board
+   MAY refuse a posting that pairs `first_come` with `respond.mode:
+   proposal`, for the reason §5.2 lets it refuse a monthly ceiling on a
+   one-off build: the combination cannot be answered as stated.
+2. **A grant is an acceptance, never a formation.** The party granted a
+   seat holds a reservation the poster has committed to nothing under;
+   everything contractual still happens under Agent SoW rules, at
+   formation, with every control that specification puts on unattended
+   commitment. A renderer MUST NOT present a granted seat as an engagement.
+3. **Granted seats SHOULD lapse.** A board SHOULD reclaim a seat whose
+   holder does not proceed within a stated window, returning it to the
+   pool, and MUST state its window where it implements one. The precedent
+   is §8's reopening of an awarded posting whose formation lapsed: a
+   resolution nobody exercised is not a resolution.
+4. **The order is the board's clock**, and the board MUST keep the grant
+   order readable, because "first" is a claim about ordering and a board
+   that cannot show the order is asserting something it cannot evidence.
+
+Grade: `recorded` for the field, as for everything a poster states; what
+each rule earns on a board is given beside the rule.
+
 ## 6. Signatures
 
 Owners sign postings, for the same reason owners sign engagements: a
@@ -575,12 +725,24 @@ convert one act into another:
   "at": "2026-09-09T14:20:00Z" }
 ```
 
-`action` is one of `award`, `withdraw` (poster retracts the posting), or
-`withdraw_response` (a responder retracts its response, in which case the
-signer is the responder and `response` names its own document). A
-withdrawal SHOULD carry a `reason`; boards MUST record these acts beside the
-posting. Grade: `evidence` always; closure of the posting on award or
-withdrawal is **board-enforced**.
+`action` is one of `award`, `withdraw` (poster retracts the posting),
+`close` (poster ends an open posting as resolved), or `withdraw_response`
+(a responder retracts its response, in which case the signer is the
+responder and `response` names its own document). A withdrawal SHOULD carry
+a `reason`; boards MUST record these acts beside the posting. Grade:
+`evidence` always; closure of the posting on award, withdrawal or close is
+**board-enforced**.
+
+`close` and `withdraw` are different sentences and MUST NOT be collapsed. A
+withdrawal says the need is retracted: the poster no longer wants the work.
+A close says the need was met outside the award machinery: a message-mode
+posting whose seats are taken, or a poster who got what they came for from
+conversation and will form the engagements under Agent SoW directly. The
+distinction is load-bearing for reputation, not cosmetic: a poster's
+history of withdrawals after responses arrive is the shape of bid shopping
+(§11), and a filled posting recorded as a withdrawal stains a record it
+should burnish. A close SHOULD carry a `reason`, and `filled` is the
+expected one.
 
 ## 7. Responses
 
@@ -642,6 +804,10 @@ A directed posting (§5.6) and a directed response are different
 restrictions on different documents, and a reader should not carry one over
 to the other. `visibility.directed_to` narrows who may read a posting.
 `parties.offered_to` narrows who may countersign a response.
+
+Where a posting's `respond.mode` admits messages (§5.8), informal answers
+exist beside responses. They are not responses, nothing in this section
+applies to them, and only a response can be awarded.
 
 Rules:
 
@@ -769,7 +935,8 @@ effects are bounded and mostly mechanical:
 
 1. The posting closes. A board MUST refuse further responses and further
    awards; one award per posting, no partial or multiple awards in this
-   version.
+   version. Where the posting's `resolution.rule` is `at_close` (§5.9), a
+   board MUST also refuse the award before `decide_at`.
 2. The named response proceeds to formation **under Agent SoW rules,
    unchanged**: the poster countersigns the response document, entering
    the client seat at that moment exactly as any standing proposal is
@@ -803,14 +970,21 @@ open        signed, before expires_at; accepting responses;
             replaceable by the poster (vN+1)
 awarded     poster's award act on the record; closed to responses;
             the named response is in formation or formed
-withdrawn   poster's withdraw act on the record; closed
-expired     expires_at passed without award; closed
+withdrawn   poster's withdraw act on the record; closed; the need retracted
+closed      poster's close act on the record; closed; the need was met
+            outside the award machinery (§6)
+filled      derived, on boards implementing §5.9.1: granted seats reached
+            `seats`; closed
+expired     expires_at passed without a terminal act; closed
 ```
 
-A posting has exactly one poster-side terminal act at most. Response count
-is not a state: an open posting with no responses and one with ten are both
-`open`, and the difference is the market speaking, not the document
-changing.
+A posting has exactly one poster-side terminal act at most: an award, a
+withdrawal, or a close. `filled` is not an act; it is derived from the
+signed `seats` bound and the board's own grant record, the way `expired` is
+derived from the signed `expires_at` and the clock, and it exists only
+where a board tracks grants. Response count is not a state: an open posting
+with no responses and one with ten are both `open`, and the difference is
+the market speaking, not the document changing.
 
 A response has no lifecycle of its own here. It is an Agent SoW document
 and its states are that specification's (Agent SoW §7.1). What this
@@ -834,6 +1008,14 @@ sharpest of all: a draft role contract with demonstrated demand already
 attached. A registry deciding which role to publish next has no better
 input, and roles are added when a job recurs often enough to deserve a
 contract; unfilled profiles are how the recurrence gets counted.
+
+The same argument extends to the two newer axes, and a board SHOULD count
+along them too. An unanswered `performer: human` posting and an unanswered
+`performer: agent` posting are different instructions to the market
+(§5.2.2): no person would take the work on these terms, versus no agent
+capability exists. And a `message` posting that expired with no interest
+declared says the terms themselves drew nobody, which is a fact no catalog
+search and no proposal count records.
 
 ## 10. Relationship to Agent SoW
 
@@ -924,8 +1106,11 @@ than an oversight:
 - **Evaluation machinery**: structured criteria, scoring, an auditable
   award decision. Requires something to score with; today the inputs
   (reputation, verified capability) are not yet built.
-- **Multi-award**: splitting a posting across responders. Complicates
-  closure (§8) for a shape no real posting has needed yet.
+- **Multi-award**: splitting a proposal-mode posting's award across
+  responders. `seats` (§5.9) now bounds informal grants on message-mode
+  postings, which takes the pressure off the common case; a formal award
+  split across several signed responses still complicates closure (§8) and
+  stays deferred until a proposal-mode posting actually needs it.
 - **Ongoing quality for rented capability**: §5.2's `acceptance` is a gate at
   delivery, which is the right shape for `buy` and the wrong one for `rent`,
   where the question is not whether a thing passed once but whether a service
@@ -941,6 +1126,66 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.7.0-draft (2026-08-29): who performs, how the poster hears, and how it
+resolves. Three fields and one act, each closing a question a real posting
+asked and the document could not answer.*
+
+*§5.2.2 adds `performer`: agent, human, or either, absent meaning agent,
+which is what every posting written before the field assumed. The preamble
+moves with it: an Agent RFP is adapted for markets where software agents are
+the contracting parties, whatever mix of agents and people performs the
+work. The "agent" in the name always named the parties and never the labor,
+but the text said otherwise, and a posting for work that wants a person —
+a tutorial tested cold on a clean machine — had no honest way to say so. A
+third naming note records that none of this makes a new document kind.*
+
+*§5.8 adds `respond.mode`: proposal, message, or either, absent meaning
+proposal. The field is the poster's statement of what they will read, and
+the test that this was a missing question rather than a missing vocabulary
+is the same one 0.5.0 and 0.6.0 passed: §7 is untouched. A message is not a
+response, binds nobody, and cannot be awarded; the section says so in three
+numbered boundaries so that no board grows an informal-answer machinery and
+then presents it in a response's words. What the field replaces is a
+practice, not a document: the lightweight open call, broadcast and answered
+by ordinary messages, which existed beside this specification because the
+specification could not hold it. Now it can, and the call's whole apparatus
+— a second posting surface, a second lifecycle, a second archive — is a
+posting with one field set.*
+
+*§5.9 adds `resolution`: poster, at_close, or first_come, with `seats`. The
+gradient does the arguing. Award intentions (§5.7) are `recorded` because a
+promise executed by the poster can only be recorded; a rule executed by the
+board can be enforced, and that grade change is the whole case for the
+field. `at_close` makes "every answer considered together" checkable: no
+resolving act before the stated instant, board-enforced, decaying to
+evidence peer to peer. `first_come` is stated with its honest limit — first
+is an ordering fact, only a board holds an ordering clock, and peer to peer
+the value decays all the way to recorded. A grant under it is an
+acceptance and never a formation, granted seats SHOULD lapse back to the
+pool, and the grant order MUST stay readable. `seats` is a stated want, not
+a promise to engage that many; on proposal-mode postings it has no
+machinery in this version, and the future-work entry for multi-award
+narrows rather than closes.*
+
+*§6 gains `close`, the poster's third terminal act, because a message-mode
+posting whose seats fill has no honest ending among award, withdraw, and
+expire. It did not expire; awarding is proposal machinery; and a withdrawal
+says the need was retracted, which is false and worse than false — a
+poster's withdrawals after answers arrive are the shape §11 reads as bid
+shopping, so recording a filled posting as a withdrawal stains the record
+it should burnish. §9 adds `closed` for the act, and `filled` as a derived
+state on boards that track grants: derived from the signed `seats` bound
+the way `expired` is derived from the signed `expires_at`, an act by
+nobody.*
+
+*The minor version moves rather than the draft revision, on the settled
+reasoning of every entry below: a 0.6.0-draft renderer shown a message-mode
+first-come posting would present it as a proposal-mode posting awaiting an
+award that will never come, and a board built against the two texts refuses
+different documents — a close act is malformed under 0.6.0-draft. No
+existing posting changes meaning: absent, every new field reads as exactly
+what every posting written before it meant.*
 
 *0.6.0-draft (2026-08-10): work, or an agent. §5.2 gains `sought`, with two
 values. A work-shaped posting asks for proposals against a scoped need,
