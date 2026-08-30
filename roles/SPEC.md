@@ -1,8 +1,8 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.1.0-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-07
+**Date:** 2026-08-29
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
@@ -12,13 +12,23 @@ refuse, and the documents it produces. Any agent that meets the contract
 can hold the role. This registry lists the standard roles, starting with
 the bookkeeper.
 
+Some behaviour recurs without being a whole job. Answering what a piece
+of work would cost, or saying whether you are free right now, is not a
+job anybody hires for, but two agents that have never met still have to
+agree on how it is asked and answered. This registry publishes those as
+**interfaces**: a slice of behaviour an agent implements, alongside
+whatever else it does. Roles say what an agent is. Interfaces say what
+an agent can be asked. An agent implements as many as it likes and holds
+at most one role.
+
 This specification is part of the family that includes
 [Agent SoW](https://agentsow.com), [Agent RFP](https://agentrfp.net),
 [Agent Mandate](https://agentmandate.net), and
 [Agent Reputations](https://agentreputations.com). Those standardize
-documents between parties; this one standardizes recurring jobs. It is
-transport-neutral, developed alongside the AgentMesh protocol; nothing
-here requires a particular network or vendor.
+documents between parties; this one standardizes recurring jobs and the
+recurring exchanges underneath them. It is transport-neutral, developed
+alongside the AgentMesh protocol; nothing here requires a particular
+network or vendor.
 
 ---
 
@@ -51,6 +61,15 @@ interpreted as described in RFC 2119.
 - **Profile**: the normative rules an agent must honor to hold a role.
 - **Holder** (of a role): an agent that conforms to the profile and
   offers the role under its standard offering name.
+- **Interface**: a slice of behaviour published as a contract: the
+  exchanges an agent accepts, what each answer must carry, and what it
+  refuses. Narrower than a role, and composable with other interfaces.
+- **Implementer** (of an interface): an agent that declares the
+  interface and answers its exchanges as published. Implementing an
+  interface states nothing about what else the agent does.
+- **Exchange**: one asked-and-answered pair an interface defines. An
+  interface is a closed set of exchanges; anything outside it is
+  refused, the same way a role's scope is closed.
 - **Grant**: the account holder's explicit permission for a role holder
   to read a defined set of records. Grants are read-only, revocable,
   and never transitive.
@@ -585,7 +604,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §11, is that the records
+    family's line, quoted in §2 and again in §14, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -606,7 +625,234 @@ facilitator stops responding still progresses. A candidate that fails
 any of these does not conform, and the quality of its other calls does
 not repair that.
 
-## 11. Out of scope
+## 11. Interfaces
+
+A role is a whole job, and an agent holds at most one. That weight is
+deliberate: the name has to mean something, so the scope is closed and
+the refusals are absolute. It also means most agents will never hold a
+role. Almost nothing is a bookkeeper.
+
+The same few exchanges keep recurring underneath every job anyway.
+Something asks an agent whether it is free. Something asks what a piece
+of work would cost before committing to it. Something asks how a job
+that was accepted is going. None of those is a job anyone hires for, and
+all of them have to work between two agents that have never met and
+share no vendor, no harness, and no code.
+
+An **interface** publishes one of those slices. An agent implements as
+many as it likes, alongside whatever else it does, and implementing one
+says nothing about the rest. That is the difference from a role. A role
+is what an agent is. An interface is what an agent can be asked.
+
+### 11.1 What an interface publishes
+
+Every interface publishes four parts, narrower than a role's and read
+the same way:
+
+1. **Exchanges**: what the implementer accepts, and what each answer
+   MUST carry. The set is closed, and anything outside it is refused.
+2. **Refusals**: what the implementer MUST decline or MUST NOT claim,
+   with the refusal naming its reason.
+3. **Documents**: the signed statements the interface defines, if any.
+   Most define none, and say so.
+4. **Conformance**: how a candidate is tested. For an interface this is
+   always the same shape, because an interface is only its exchanges.
+   Ask them, and check the answers.
+
+An interface declares its anchoring like a role does. Both interfaces
+published here are portable, and that is not incidental. An interface
+exists so two parties who share nothing can work together; one that
+needed a particular platform underneath it would have defeated its own
+purpose.
+
+Standard interface names are reserved the same way standard offering
+names are. An implementer declares which interfaces it answers, and at
+which version, wherever it declares the rest of its capabilities.
+
+### 11.2 The rules that make interfaces composable
+
+1. **Implementing states nothing else.** An implementer MUST NOT be
+   read as claiming anything beyond the exchanges it declared. An agent
+   that will tell you what a job would cost has said nothing about
+   whether it can be trusted with money.
+2. **Interfaces do not collide.** An agent MAY implement any number of
+   them. Where two would define the same exchange, they are the same
+   exchange or one is misnamed, and this registry MUST NOT publish
+   interfaces whose exchanges overlap.
+3. **A declaration is checkable by exercising it.** An interface MUST
+   NOT require a claim that cannot be tested by asking, because a
+   declaration nobody can check is a claim about paperwork.
+4. **Silence is not an answer.** An implementer that does not answer a
+   declared exchange does not implement it. There is no partial
+   implementation and no degraded mode. An exchange that cannot be
+   served right now is refused with a reason, and a refusal is an
+   answer.
+5. **Versioned by replacement**, like everything else in this family.
+   An implementer declares the version it answers.
+6. **A role MAY require interfaces of its holders.** None of the roles
+   published here does. Restating the existing five as bundles of
+   interfaces is left to a later revision rather than done in the same
+   pass that introduces the idea.
+
+## 12. Interface: the worker
+
+An agent that can be given a piece of work by something that knows
+nothing about it.
+
+A fleet is rarely built from one thing. The agents in it come from
+different vendors, run on different harnesses, and were mostly not
+written to be managed at all. Something still has to hand them work and
+find out how it is going. This interface is what lets the directing side
+do that without knowing anything about the side being directed.
+
+Standard interface name `interface-worker`. Portable.
+
+### 12.1 The exchanges
+
+1. **Are you free?** The answer states whether the implementer can take
+   work now, and MAY state when that changes. The answer MUST come from
+   the agent itself. A process being up is not the same as an agent
+   being able to answer, and an interface that let anything other than
+   the agent answer this would be reporting on the wrong thing.
+2. **What would this take?** Given a description of work, the answer
+   states whether the implementer can do it, what it would cost, and how
+   long it would take. It MUST distinguish "I cannot do this" from "I
+   cannot tell whether I can do this". An estimate is not a commitment
+   unless the answer says it is, and the answer MUST say which it is.
+3. **Will you take it?** The implementer accepts or refuses, and a
+   refusal names its reason. Accepting means it owns that job until it
+   delivers, fails, or is told to stop.
+4. **How is it going?** For a job it accepted, the answer states
+   working, blocked, done, or failed, with one line of detail. The
+   implementer MUST answer even when nothing has happened, and MUST NOT
+   report progress it cannot point at. Asked about a job it never
+   accepted, it says so rather than inventing one.
+5. **What came of it?** The result, or the failure stated plainly.
+   Either is an answer. Only silence is not.
+6. **What do you need?** The implementer raises a block: what it needs,
+   and who it needs it from. This exchange exists because a stuck agent
+   and a slow agent look identical from outside, and only the agent
+   knows which it is.
+7. **Stop.** The implementer accepts cancellation and states what
+   condition the work is in. It MUST NOT keep working on a cancelled
+   job.
+
+### 12.2 The contract
+
+1. **It does not price the deal.** The implementer says what work costs
+   it. What that work is sold for is not its business, and the two
+   numbers answer to different parties.
+2. **It is never held to terms it was not given.** An implementer
+   honours the constraints handed to it with the job, and MUST NOT be
+   held to one it was never told. Making sure it is always told is what
+   §13 is for.
+3. **An accepted job is never dropped silently.** Where the implementer
+   cannot continue, it says so through exchange 4 or 6. Going quiet is
+   the failure this interface exists to eliminate.
+4. **A second job is declared, not absorbed.** An implementer asked to
+   take work while holding other work MUST say whether it can run both.
+   Accepting quietly and then doing them one after another is how a
+   stated turnaround becomes untrue.
+5. **Refusal is specific.** An exchange outside what the implementer
+   does is refused with the reason, never answered with a guess. An
+   invented estimate is worse than no estimate, because it will be
+   planned against.
+6. **No document.** This interface defines no signed statement and no
+   signature tag. Everything here is a live exchange between two parties
+   that already know each other. Where a durable record of what was
+   agreed matters, it is the directing side that owes it, and that
+   obligation belongs to the role holding §13 rather than to either
+   interface.
+
+### 12.3 Conformance testing: the worker
+
+Behavioural, like the front desk. A harness asks the seven exchanges and
+checks that being free is answered by the agent rather than by something
+watching it; that work outside what it does draws a refusal rather than
+an invented estimate; that work it cannot assess draws "I cannot tell"
+rather than a number; that a status question about a job it never
+accepted is answered as such; that a job it accepted and then abandoned
+reports failed rather than nothing; that a cancelled job stops; and that
+every estimate says whether it is a commitment. Refusing an exchange
+with a reason conforms. Not answering does not.
+
+## 13. Interface: the manager
+
+The other side of §12: what a worker can rely on from whatever is
+directing it.
+
+An interface with only one side published is half a contract. A worker
+that answers all seven exchanges faithfully can still be stranded. It
+can be handed a job with no statement of what counts as done, raise a
+block that nobody answers, or keep working for an hour on something
+cancelled upstream. This interface states what the directing side owes.
+
+Anything that directs a worker implements it, including a person's
+script. An agent that manages a fleet on an owner's behalf is a job
+rather than a slice of behaviour, and this registry expects to publish
+that as a role; the role would implement this interface, and nothing
+here waits on it.
+
+Standard interface name `interface-manager`. Portable.
+
+### 13.1 The exchanges
+
+1. **Here is work.** A job handed to a worker carries what is wanted,
+   what counts as done, and every constraint already agreed with
+   somebody else that limits how it may be done. A worker cannot honour
+   a promise it was never told about.
+2. **Here is your answer.** When a worker raises a block, the manager
+   answers it. "I cannot clear this, refuse the job" is an answer. Not
+   answering is the failure.
+3. **Stop that.** The manager tells a worker when its job is no longer
+   wanted. Work cancelled upstream and still running is spending
+   somebody's money on nothing.
+4. **What did you commit?** Asked by its owner, the manager states what
+   it agreed on the owner's behalf and which worker it gave the work to.
+   This is the one exchange facing the owner rather than the worker, and
+   it is here because something that can commit on your behalf without
+   being answerable for it is not something you should run.
+
+### 13.2 The contract
+
+1. **Terms flow down.** A manager MUST pass on every constraint it
+   already agreed that bears on how the work is done, including where
+   the work may be performed and what may be kept afterwards. A
+   constraint that stops at the manager is a promise nobody is keeping.
+2. **It MUST NOT assign work whose terms the worker cannot meet.**
+   Checking that is the manager's job, and it happens before the
+   assignment rather than after the failure.
+3. **Capacity is confirmed, not assumed.** A manager MUST NOT state
+   capacity it has not confirmed by asking, through exchange 1 of §12.
+   A process list, a schedule, and its own memory of an earlier answer
+   are not asking.
+4. **It MUST NOT commit beyond the authority it holds.** Where a
+   manager can commit at all, it refuses at its limit rather than at the
+   failure that follows exceeding it.
+5. **It answers, or it says it will not.** A raised block draws an
+   answer within a stated time, or a statement that none is coming.
+6. **Cancellation reaches the worker.** A manager that learns work is
+   no longer wanted MUST tell whoever is doing it.
+7. **It does not hide what it committed.** Exchange 4 is not optional
+   and MUST NOT be answered selectively.
+8. **No document.** Like §12, this interface defines no signed
+   statement. What a manager committed on an owner's behalf is worth
+   signing, and this registry expects the role holding this interface to
+   define that statement. An interface says how two parties talk. What
+   gets signed belongs to the job.
+
+### 13.3 Conformance testing: the manager
+
+Behavioural. A harness checks that a job handed down carries the
+constraints already agreed above it; that a manager whose only available
+worker cannot meet those constraints declines to assign rather than
+assigning and hoping; that a raised block draws an answer or an explicit
+refusal to answer, and never silence; that cancelling work upstream
+produces a stop downstream; that a request to commit beyond its
+authority is refused at the limit; and that asked what it committed, it
+says, in full.
+
+## 14. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -620,9 +866,16 @@ not repair that.
   requiring one.
 - Roles this registry has not published. A vendor MAY offer any agent
   under any private name; the standard offering names are reserved for
-  conforming holders.
+  conforming holders. The same applies to interface names.
+- How an exchange is carried. An interface defines what is asked and
+  what the answer must contain, never the wire format, the transport, or
+  the encoding. Two implementers on different networks conform or do
+  not conform on the same terms.
+- Scheduling, placement, and fleet operations. §13 states what a manager
+  owes a worker. How it decides which worker, in what order, on which
+  machine, is where implementations are supposed to differ.
 
-## 12. Signature tags
+## 15. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -636,6 +889,12 @@ reason. Its acts are already signed, ordered, and attributable, because
 each one is a signed message in the conversation's record. A minutes
 document would be a second, weaker copy of what the record already
 holds.
+
+Neither interface defines a signature tag, and for the same reason as
+each other. An interface is a way two parties talk. What is worth
+signing is what somebody committed, and that belongs to the job holding
+the interface rather than to the interface itself (§12.2 rule 6, §13.2
+rule 8).
 
 ---
 
@@ -693,3 +952,18 @@ published here as a contract: a member of the conversation that runs
 the meeting and never judges the work, whose calls are advisory, and
 whose acts are signed messages in the record rather than a document of
 their own. Out of scope moves to §11 and signature tags to §12.*
+
+*0.2.0-draft (2026-08-29): a second kind of entry. Roles are whole jobs
+and an agent holds at most one, which is why most agents will never hold
+any. The exchanges underneath the jobs recur far more often than the
+jobs do, and they have to work between agents that share no vendor, no
+harness, and no code. Those are now published as **interfaces** (§11): a
+slice of behaviour an agent implements alongside whatever else it does,
+composable, and stating nothing about the rest of the agent. Two are
+published, facing each other. The worker (§12) can be given work by
+something that knows nothing about it. The manager (§13) is what a
+worker can rely on from whatever is directing it, and exists because an
+interface with only one side published is half a contract. Neither
+defines a document. The registry's first two-sided contract, and its
+first entry that is not a job. Out of scope moves to §14 and signature
+tags to §15.*
