@@ -1,8 +1,8 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.2.0-draft
+**Version:** 0.3.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-29
+**Date:** 2026-08-30
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
@@ -604,7 +604,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §14, is that the records
+    family's line, quoted in §2 and again in §15, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -852,7 +852,83 @@ produces a stop downstream; that a request to commit beyond its
 authority is refused at the limit; and that asked what it committed, it
 says, in full.
 
-## 14. Out of scope
+## 14. Interface: the entryway
+
+What a stranger may ask before anybody has agreed to anything.
+
+Every agent decides who it will deal with, and today each one decides in
+its own way. Something that wants to hire an agent it has never met has
+to be built for that agent specifically: work out what it is, ask for
+access however that agent happens to expect it, and find out later
+whether the request went anywhere. This interface publishes the small
+set of exchanges that work before a relationship exists, so a caller
+who knows nothing about the implementer can still get to the point of
+being admitted or told no.
+
+It is not the front desk (§7). The front desk is a whole job, answering
+newcomer questions about an operator's platform from published material.
+This is four exchanges about one agent's own door, and any agent can
+implement it alongside whatever else it does.
+
+Standard interface name `interface-entryway`. Portable.
+
+### 14.1 The exchanges
+
+1. **What are you?** The answer states what the implementer is called,
+   what it does, what it charges, and what it refuses. It is answered to
+   callers who have not been admitted, because a caller that must be
+   admitted before it can find out what it is asking to be admitted to
+   has learned nothing. The answer MAY be narrower for a stranger than
+   for an admitted caller; it MUST NOT be false.
+2. **Will you let me talk to you?** A request to be admitted, carrying
+   the caller's identity and nothing else. The answer states admitted,
+   waiting, or refused, and a refusal names its reason.
+3. **Are you accepting new callers?** The current admission policy,
+   stated without reference to the caller asking. The answer MUST NOT
+   name any other caller, nor say who has been admitted or refused.
+4. **Where do I stand?** The answer states never asked, waiting,
+   admitted, or refused, for the caller asking. Exchange 2 is not
+   answered on the spot in the general case, so a caller that could not
+   ask this would have to guess.
+
+### 14.2 The contract
+
+1. **All four are answered without admission.** An interface whose
+   exchanges required admission could not do its job, because admission
+   is the thing being asked for.
+2. **A request to be admitted carries no work.** An implementer MUST NOT
+   perform work found in exchange 2, and a caller MUST NOT put work
+   there. The exchange exists to be cheap to receive from a stranger,
+   and an implementer that acted on its contents would have given every
+   stranger one free instruction.
+3. **A refusal is an answer.** Silence is not. A caller that is turned
+   away is told, and told why, in the terms of §11.2 rule 4.
+4. **The roster stays private.** Exchanges 3 and 4 tell a caller about
+   the policy and about itself. Neither reveals another caller's
+   standing, and an implementer MUST NOT answer either one in a way that
+   allows one to be enumerated from the other.
+5. **Admission is revocable and says nothing about work.** Being
+   admitted means the implementer will receive what this caller sends.
+   It is not a promise to accept any particular job, not a price, and
+   not permanent. Once revoked, exchange 4 answers refused.
+6. **What it says about itself binds nothing.** Exchange 1 is a
+   description. It is not an offer, and a caller MUST NOT read a stated
+   charge there as a price it can hold the implementer to.
+7. **No document.** Like §12 and §13, this interface defines no signed
+   statement. Whether a caller was admitted is the implementer's own
+   business to keep; what gets signed belongs to the work that follows.
+
+### 14.3 Conformance testing: the entryway
+
+Behavioural. A harness checks that a caller with no prior relationship
+gets an answer to all four exchanges; that a request to be admitted
+carrying a piece of work is refused rather than performed; that every
+refusal names a reason; that the policy exchange answers without naming
+another caller; that a caller who has never asked is told so rather than
+receiving an error; and that a caller whose admission was revoked is
+told refused rather than still admitted.
+
+## 15. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -875,7 +951,7 @@ says, in full.
   owes a worker. How it decides which worker, in what order, on which
   machine, is where implementations are supposed to differ.
 
-## 15. Signature tags
+## 16. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -890,11 +966,11 @@ each one is a signed message in the conversation's record. A minutes
 document would be a second, weaker copy of what the record already
 holds.
 
-Neither interface defines a signature tag, and for the same reason as
-each other. An interface is a way two parties talk. What is worth
-signing is what somebody committed, and that belongs to the job holding
-the interface rather than to the interface itself (§12.2 rule 6, §13.2
-rule 8).
+None of the three interfaces defines a signature tag, and for the same
+reason as each other. An interface is a way two parties talk. What is
+worth signing is what somebody committed, and that belongs to the job
+holding the interface rather than to the interface itself (§12.2 rule 6,
+§13.2 rule 8, §14.2 rule 7).
 
 ---
 
@@ -967,3 +1043,17 @@ interface with only one side published is half a contract. Neither
 defines a document. The registry's first two-sided contract, and its
 first entry that is not a job. Out of scope moves to §14 and signature
 tags to §15.*
+
+*0.3.0-draft (2026-08-30): a third interface, and the first that runs
+before anybody has agreed to anything. The worker and the manager both
+assume a relationship already exists. The entryway (§14) is what a
+stranger may ask on the way in: what are you, will you let me talk to
+you, are you accepting new callers, and where do I stand. It exists
+because every agent already decides who it will deal with, and each one
+decides in its own way, so anything approaching an agent it has never
+met has to be written for that agent specifically. Two of its rules are
+the ones to argue with. A request to be admitted carries no work, which
+keeps the cheapest exchange cheap and stops a stranger buying one free
+instruction. And what an agent says about itself on the way in binds
+nothing, because a description offered before admission is not an offer.
+Out of scope moves to §15 and signature tags to §16.*
