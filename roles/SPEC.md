@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.7.0-draft
+**Version:** 0.8.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-30
 
@@ -649,6 +649,9 @@ vendors' schedule and this specification does not.
 
 ### 11.1 What it can be asked
 
+These exchanges are the role's primary interface, the deployer
+(`interface-deployer`, per §14.3).
+
 1. **Deploy this.** A package, a target host and framework, and the
    deploy-time decisions: which identity to mint or use, who may call
    the agent at first, whether a person attends it. The request names
@@ -795,6 +798,9 @@ nobody has run the agent it describes.
 
 ### 12.1 What it can be asked
 
+These exchanges are the role's primary interface, the builder
+(`interface-builder`, per §14.3).
+
 1. **Build this.** A description: a name, one sentence on what the agent
    does, the jobs it does (each becomes a skill), the systems it needs
    and at what access, what it refuses, what always goes to a person, and
@@ -909,6 +915,9 @@ never grades the quality of the work, because quality is not a promise a
 package makes and a machine cannot score it honestly.
 
 ### 13.1 What it can be asked
+
+These exchanges are the role's primary interface, the evaluator
+(`interface-evaluator`, per §14.3).
 
 1. **Evaluate this.** A deployed agent and the package it was built from.
    The evaluator derives the test, runs it against the agent, audits the
@@ -1067,8 +1076,9 @@ which version, wherever it declares the rest of its capabilities.
 5. **Versioned by replacement**, like everything else in this family.
    An implementer declares the version it answers.
 6. **A role MAY require interfaces of its holders.** §14.3 defines the
-   relationship and what adding a requirement costs. None of the roles
-   published here requires one yet.
+   relationship and what adding a requirement costs. The three operations
+   roles publish their primary interfaces as named entries; no role
+   requires a further interface beyond its primary yet.
 
 ### 14.3 Primary and required interfaces
 
@@ -1532,6 +1542,14 @@ each is migrated in its own changelog. The registry's roles and the Agent
 Catalog's abstract agents remain two documents for one job: the catalog
 describes the job inside a process, and a role is the contract between
 strangers.*
+
+*0.8.0-draft (2026-08-31): the operations roles' primary interfaces are
+published as named entries: the deployer (§11.1), the builder (§12.1),
+and the evaluator (§13.1), each carrying its role's defining exchanges
+and nothing else. The role pages cite them instead of restating the
+exchanges, which is the citation rule §14.3 introduced. The five older
+roles keep their exchanges inline until each migrates in its own
+changelog.*
 
 *0.4.0-draft (2026-08-30, later): a second hand-run onto a different CLI
 framework, and a working implementation of the role, exercised the
