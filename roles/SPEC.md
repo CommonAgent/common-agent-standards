@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.4.0-draft
+**Version:** 0.5.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-30
 
@@ -604,7 +604,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §16, is that the records
+    family's line, quoted in §2 and again in §17, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -774,7 +774,123 @@ finds. Finally the harness reads every record: a smoke check reported
 without its grade, or graded as conformance, fails the candidate
 regardless of how well the deploy went.
 
-## 12. Interfaces
+## 12. Role: the agent builder
+
+**Offering name:** `role-agent-builder`
+**Anchoring:** portable
+
+The agent builder turns a description of a needed agent into a package
+another system can deploy. It takes what an agent should do, the systems
+it needs, what it must refuse, and the records it must leave, and it
+emits an agent plugin: skills, obligations, and a manifest. It is the
+other end of the deployment manager (§11): one builds the package, the
+other stands it up.
+
+It is defined by what it will not make up. A package is only as honest as
+the judgment in it, and two parts are judgment rather than description:
+what the agent refuses, and what it must record. The builder asks for
+both and refuses to emit a package without them. And it never pretends to
+have made a finished thing: every package it produces is a draft, because
+nobody has run the agent it describes.
+
+### 12.1 What it can be asked
+
+1. **Build this.** A description: a name, one sentence on what the agent
+   does, the jobs it does (each becomes a skill), the systems it needs
+   and at what access, what it refuses, what always goes to a person, and
+   the records it must leave. The builder returns a package, or refuses
+   and says what the description was missing.
+2. **What did you build?** The manifest of a package it produced: its
+   name, version, skills, systems, and obligations, and the note that it
+   is a draft.
+3. **Revise it.** The same description changed, rebuilt to a new version,
+   with the same parts required.
+
+### 12.2 The contract
+
+1. **The judgment parts are required, never invented.** A package MUST
+   carry what the agent refuses and the records it must leave, and the
+   builder MUST refuse to emit one that lacks either. It does not derive
+   them from the description, because an agent with nothing written down
+   that it will not do, and no records it must keep, is the failure a run
+   only reveals once it is too late.
+2. **Every package is a draft.** The builder has not run the agent it
+   describes and MUST NOT present the package as more than a starting
+   point. The manifest carries the draft mark, and the record says nobody
+   has run it.
+3. **Systems are named by role, not by product.** Each system the agent
+   needs is a role, an access level, and what the access is for. The
+   builder MUST NOT name a vendor or wire a package to a particular
+   supplier; binding roles to real systems belongs to whoever deploys it.
+4. **Least access asked for.** Each system's access is the most the job
+   needs and no more. The builder MUST NOT request write where the
+   description only reads, or a trigger the jobs never fire.
+5. **Skills are jobs, not tools.** One skill per thing somebody would ask
+   the agent for, each saying when to reach for it, what a good result
+   looks like, and what to do when it comes back empty.
+6. **The manifest conforms to the plugin standard.** A package MUST
+   validate against the Agent Plugin schema it declares, so any
+   conforming runtime can load it. A package only this builder's own
+   deployer can read is not portable, which defeats the point.
+7. **Every build leaves a record.** Builds, revisions, and refusals each
+   produce the signed record in §12.3.
+
+### 12.3 The record
+
+The document an agent builder produces for every build. Tag:
+`agent-build-record-v1`, signed with the family convention: the ASCII
+tag, one newline, then the JCS (RFC 8785) canonical JSON of the document
+with `signatures` removed.
+
+```json
+{
+  "record": "v1",
+  "role": "agent-builder",
+  "act": "build",
+  "requested_by": "<who asked>",
+  "package": {
+    "name": "<package name>",
+    "version": "<version>",
+    "schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+    "sha256": "<digest of the package the builder emitted>"
+  },
+  "shape": { "skills": 3, "systems": 2, "refuses": 3, "records": 4 },
+  "draft": true,
+  "produced_at": "<timestamp>",
+  "by": "<agent builder public key>",
+  "signatures": [ ]
+}
+```
+
+Rules:
+
+1. `act` is one of `build`, `revise`, `refuse`. A refusal record carries
+   `refused` with the reason and names which required part the
+   description was missing.
+2. `package.sha256` commits the record to the bytes the builder emitted,
+   so a reviewer can confirm they are looking at what was built.
+3. `draft` is always true. A build record claiming otherwise would assert
+   the agent had been run, which the builder never does.
+4. `shape` counts what the package carries. A build whose `refuses` or
+   `records` count is zero is not a conforming build, and the counts are
+   where that shows.
+
+### 12.4 Conformance testing: the agent builder
+
+Behavioural. A harness hands the candidate a description and reads what
+it emits. The package must validate against the schema it declares, carry
+one skill per named job, name each system by role with the least access
+the description implies, and carry the refusals and records the
+description gave. The harness then hands a description with the refusals
+removed, and one with the records removed; the candidate must refuse
+each, naming the missing part, rather than emit a package with an empty
+obligation. It hands a description that names a vendor for a system; the
+package must carry the role and not the vendor. Finally the harness reads
+the record: a build record whose `draft` is not true, or whose `shape`
+disagrees with the package it points at, fails the candidate regardless
+of how good the package is.
+
+## 13. Interfaces
 
 A role is a whole job, and an agent holds at most one. That weight is
 deliberate: the name has to mean something, so the scope is closed and
@@ -793,7 +909,7 @@ many as it likes, alongside whatever else it does, and implementing one
 says nothing about the rest. That is the difference from a role. A role
 is what an agent is. An interface is what an agent can be asked.
 
-### 12.1 What an interface publishes
+### 13.1 What an interface publishes
 
 Every interface publishes four parts, narrower than a role's and read
 the same way:
@@ -818,7 +934,7 @@ Standard interface names are reserved the same way standard offering
 names are. An implementer declares which interfaces it answers, and at
 which version, wherever it declares the rest of its capabilities.
 
-### 12.2 The rules that make interfaces composable
+### 13.2 The rules that make interfaces composable
 
 1. **Implementing states nothing else.** An implementer MUST NOT be
    read as claiming anything beyond the exchanges it declared. An agent
@@ -843,7 +959,7 @@ which version, wherever it declares the rest of its capabilities.
    interfaces is left to a later revision rather than done in the same
    pass that introduces the idea.
 
-## 13. Interface: the worker
+## 14. Interface: the worker
 
 An agent that can be given a piece of work by something that knows
 nothing about it.
@@ -856,7 +972,7 @@ do that without knowing anything about the side being directed.
 
 Standard interface name `interface-worker`. Portable.
 
-### 13.1 The exchanges
+### 14.1 The exchanges
 
 1. **Are you free?** The answer states whether the implementer can take
    work now, and MAY state when that changes. The answer MUST come from
@@ -886,7 +1002,7 @@ Standard interface name `interface-worker`. Portable.
    condition the work is in. It MUST NOT keep working on a cancelled
    job.
 
-### 13.2 The contract
+### 14.2 The contract
 
 1. **It does not price the deal.** The implementer says what work costs
    it. What that work is sold for is not its business, and the two
@@ -894,7 +1010,7 @@ Standard interface name `interface-worker`. Portable.
 2. **It is never held to terms it was not given.** An implementer
    honours the constraints handed to it with the job, and MUST NOT be
    held to one it was never told. Making sure it is always told is what
-   §14 is for.
+   §15 is for.
 3. **An accepted job is never dropped silently.** Where the implementer
    cannot continue, it says so through exchange 4 or 6. Going quiet is
    the failure this interface exists to eliminate.
@@ -910,10 +1026,10 @@ Standard interface name `interface-worker`. Portable.
    signature tag. Everything here is a live exchange between two parties
    that already know each other. Where a durable record of what was
    agreed matters, it is the directing side that owes it, and that
-   obligation belongs to the role holding §14 rather than to either
+   obligation belongs to the role holding §15 rather than to either
    interface.
 
-### 13.3 Conformance testing: the worker
+### 14.3 Conformance testing: the worker
 
 Behavioural, like the front desk. A harness asks the seven exchanges and
 checks that being free is answered by the agent rather than by something
@@ -925,9 +1041,9 @@ reports failed rather than nothing; that a cancelled job stops; and that
 every estimate says whether it is a commitment. Refusing an exchange
 with a reason conforms. Not answering does not.
 
-## 14. Interface: the manager
+## 15. Interface: the manager
 
-The other side of §13: what a worker can rely on from whatever is
+The other side of §14: what a worker can rely on from whatever is
 directing it.
 
 An interface with only one side published is half a contract. A worker
@@ -944,7 +1060,7 @@ here waits on it.
 
 Standard interface name `interface-manager`. Portable.
 
-### 14.1 The exchanges
+### 15.1 The exchanges
 
 1. **Here is work.** A job handed to a worker carries what is wanted,
    what counts as done, and every constraint already agreed with
@@ -962,7 +1078,7 @@ Standard interface name `interface-manager`. Portable.
    it is here because something that can commit on your behalf without
    being answerable for it is not something you should run.
 
-### 14.2 The contract
+### 15.2 The contract
 
 1. **Terms flow down.** A manager MUST pass on every constraint it
    already agreed that bears on how the work is done, including where
@@ -972,7 +1088,7 @@ Standard interface name `interface-manager`. Portable.
    Checking that is the manager's job, and it happens before the
    assignment rather than after the failure.
 3. **Capacity is confirmed, not assumed.** A manager MUST NOT state
-   capacity it has not confirmed by asking, through exchange 1 of §13.
+   capacity it has not confirmed by asking, through exchange 1 of §14.
    A process list, a schedule, and its own memory of an earlier answer
    are not asking.
 4. **It MUST NOT commit beyond the authority it holds.** Where a
@@ -984,13 +1100,13 @@ Standard interface name `interface-manager`. Portable.
    no longer wanted MUST tell whoever is doing it.
 7. **It does not hide what it committed.** Exchange 4 is not optional
    and MUST NOT be answered selectively.
-8. **No document.** Like §13, this interface defines no signed
+8. **No document.** Like §14, this interface defines no signed
    statement. What a manager committed on an owner's behalf is worth
    signing, and this registry expects the role holding this interface to
    define that statement. An interface says how two parties talk. What
    gets signed belongs to the job.
 
-### 14.3 Conformance testing: the manager
+### 15.3 Conformance testing: the manager
 
 Behavioural. A harness checks that a job handed down carries the
 constraints already agreed above it; that a manager whose only available
@@ -1001,7 +1117,7 @@ produces a stop downstream; that a request to commit beyond its
 authority is refused at the limit; and that asked what it committed, it
 says, in full.
 
-## 15. Interface: the entryway
+## 16. Interface: the entryway
 
 What a stranger may ask before anybody has agreed to anything.
 
@@ -1021,7 +1137,7 @@ implement it alongside whatever else it does.
 
 Standard interface name `interface-entryway`. Portable.
 
-### 15.1 The exchanges
+### 16.1 The exchanges
 
 1. **What are you?** The answer states what the implementer is called,
    what it does, what it charges, and what it refuses. It is answered to
@@ -1040,7 +1156,7 @@ Standard interface name `interface-entryway`. Portable.
    answered on the spot in the general case, so a caller that could not
    ask this would have to guess.
 
-### 15.2 The contract
+### 16.2 The contract
 
 1. **All four are answered without admission.** An interface whose
    exchanges required admission could not do its job, because admission
@@ -1051,7 +1167,7 @@ Standard interface name `interface-entryway`. Portable.
    and an implementer that acted on its contents would have given every
    stranger one free instruction.
 3. **A refusal is an answer.** Silence is not. A caller that is turned
-   away is told, and told why, in the terms of §12.2 rule 4.
+   away is told, and told why, in the terms of §13.2 rule 4.
 4. **The roster stays private.** Exchanges 3 and 4 tell a caller about
    the policy and about itself. Neither reveals another caller's
    standing, and an implementer MUST NOT answer either one in a way that
@@ -1063,11 +1179,11 @@ Standard interface name `interface-entryway`. Portable.
 6. **What it says about itself binds nothing.** Exchange 1 is a
    description. It is not an offer, and a caller MUST NOT read a stated
    charge there as a price it can hold the implementer to.
-7. **No document.** Like §13 and §14, this interface defines no signed
+7. **No document.** Like §14 and §15, this interface defines no signed
    statement. Whether a caller was admitted is the implementer's own
    business to keep; what gets signed belongs to the work that follows.
 
-### 15.3 Conformance testing: the entryway
+### 16.3 Conformance testing: the entryway
 
 Behavioural. A harness checks that a caller with no prior relationship
 gets an answer to all four exchanges; that a request to be admitted
@@ -1077,7 +1193,7 @@ another caller; that a caller who has never asked is told so rather than
 receiving an error; and that a caller whose admission was revoked is
 told refused rather than still admitted.
 
-## 16. Out of scope
+## 17. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -1096,19 +1212,20 @@ told refused rather than still admitted.
   what the answer must contain, never the wire format, the transport, or
   the encoding. Two implementers on different networks conform or do
   not conform on the same terms.
-- Scheduling, placement, and fleet operations. §14 states what a manager
+- Scheduling, placement, and fleet operations. §15 states what a manager
   owes a worker. How it decides which worker, in what order, on which
   machine, is where implementations are supposed to differ. The
   deployment manager (§11) does not move this line: it deploys to the
   target its instruction names, and choosing targets is not part of the
   role.
 
-## 17. Signature tags
+## 18. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
 - `agent-matchmaker-recommendation-v1`: the matchmaker recommendation (§9.3).
 - `agent-deployment-record-v1`: the deployment record (§11.3).
+- `agent-build-record-v1`: the build record (§12.3).
 
 The front desk defines no signature tag. It produces answers, not
 statements.
@@ -1122,8 +1239,8 @@ holds.
 None of the three interfaces defines a signature tag, and for the same
 reason as each other. An interface is a way two parties talk. What is
 worth signing is what somebody committed, and that belongs to the job
-holding the interface rather than to the interface itself (§13.2 rule 6,
-§14.2 rule 8, §15.2 rule 7).
+holding the interface rather than to the interface itself (§14.2 rule 6,
+§15.2 rule 8, §16.2 rule 7).
 
 ---
 
@@ -1225,6 +1342,21 @@ and a failed step stops the work rather than being improvised past.
 Fourth signature tag: `agent-deployment-record-v1`. Interfaces move to
 §12, the worker to §13, the manager to §14, the entryway to §15, out of
 scope to §16 and signature tags to §17.*
+
+*0.5.0-draft (2026-08-30): seventh role: the agent builder (§12), the
+other end of the deployment manager. Describing an agent and building one
+are different work: turning a description into a loadable package means a
+manifest at the right schema, one skill per job, and the obligations that
+keep the agent honest once it runs. That last part is where a description
+quietly becomes a specification, and the load-bearing clause is that the
+parts a description tends to omit, what the agent refuses and what it must
+record, are required and never invented, because those are exactly the
+parts that bite once the agent runs. Every package is a draft, since
+nobody has run it. Distilled from a working implementation that built a
+real package and passed it to the deployment manager unchanged. Fifth
+signature tag: `agent-build-record-v1`. Interfaces move to §13, the
+worker to §14, the manager to §15, the entryway to §16, out of scope to
+§17 and signature tags to §18.*
 
 *0.4.0-draft (2026-08-30, later): a second hand-run onto a different CLI
 framework, and a working implementation of the role, exercised the
