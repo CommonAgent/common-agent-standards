@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.6.0-draft
+**Version:** 0.7.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-30
 
@@ -1066,10 +1066,43 @@ which version, wherever it declares the rest of its capabilities.
    answer.
 5. **Versioned by replacement**, like everything else in this family.
    An implementer declares the version it answers.
-6. **A role MAY require interfaces of its holders.** None of the roles
-   published here does. Restating the existing five as bundles of
-   interfaces is left to a later revision rather than done in the same
-   pass that introduces the idea.
+6. **A role MAY require interfaces of its holders.** §14.3 defines the
+   relationship and what adding a requirement costs. None of the roles
+   published here requires one yet.
+
+### 14.3 Primary and required interfaces
+
+A role's defining exchanges are its **primary interface**. Every role
+answers a closed set of exchanges, and that set is an interface like any
+other: it can be named, published, and implemented. When a role's primary
+interface is published as its own entry, the role's scope section cites
+it rather than restating the exchanges.
+
+Implementing a primary interface alone does not grant the role. An
+interface carries only the exchanges. The role also carries its
+refusals, its access and handling rules, its conformance test, and the
+documents its holders sign, and an agent holds the role only when it
+meets all of it. An agent MAY implement a primary interface without
+holding the role, and doing so states nothing beyond the exchanges
+themselves, which is the same rule every interface carries (§14.2 rule
+1).
+
+Roles published before this section keep their exchanges inline until
+each is migrated deliberately, and each migration is recorded in that
+role's own changelog.
+
+A role MAY also require interfaces beyond its primary one. A required
+interface is part of the role's contract: every holder implements it,
+and the role's page lists it beside the primary interface. An interface
+a particular agent implements on its own, beyond what its role requires,
+binds that agent alone, and nothing about the role promises it to a
+caller.
+
+Requiring an interface is a change to the role's contract, because every
+existing holder must then implement it or stop conforming. A required
+interface is therefore added only in a new version of the role, and only
+for behaviour every holder truly must have. A role does not require an
+interface that most holders would merely find useful.
 
 ## 15. Interface: the worker
 
@@ -1484,6 +1517,21 @@ touching. Distilled from a working generator and a hand-run conformance
 eval. Sixth signature tag: `agent-eval-record-v1`. Interfaces move to §14,
 the worker to §15, the manager to §16, the entryway to §17, out of scope to
 §18 and signature tags to §19.*
+
+*0.7.0-draft (2026-08-31): the model behind the registry, stated. A role
+describes an agent in the abstract, and the overview now says so, with a
+diagram of what only an agent has, what only a role has, and the sections
+both describe. A role's defining exchanges are its primary interface
+(§14.3), and implementing that interface alone does not grant the role,
+because the refusals, the handling rules, the conformance test, and the
+record formats are the rest of it. A role may also require further
+interfaces of its holders, and adding a requirement is a contract change
+that happens only in a new version of the role (§14.3, and §14.2 rule 6
+now points there). The existing roles keep their exchanges inline until
+each is migrated in its own changelog. The registry's roles and the Agent
+Catalog's abstract agents remain two documents for one job: the catalog
+describes the job inside a process, and a role is the contract between
+strangers.*
 
 *0.4.0-draft (2026-08-30, later): a second hand-run onto a different CLI
 framework, and a working implementation of the role, exercised the
