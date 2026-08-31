@@ -1225,3 +1225,15 @@ and a failed step stops the work rather than being improvised past.
 Fourth signature tag: `agent-deployment-record-v1`. Interfaces move to
 §12, the worker to §13, the manager to §14, the entryway to §15, out of
 scope to §16 and signature tags to §17.*
+
+*0.4.0-draft (2026-08-30, later): a second hand-run onto a different CLI
+framework, and a working implementation of the role, exercised the
+contract without changing a clause. The implementation ran a real
+deploy and a real removal and produced the §11.3 record. Two things the
+runs settled and §11 now reflects: the model an agent is given is a
+deploy-time parameter with its own failure modes, so a smoke check must
+include a working answer and not only a boot; and where no signer is
+available the record is produced faithfully but unsigned rather than not
+at all. What stays untested by a fresh framework is the case where the
+install step is not a flattening but a native read of the package's
+skills, because that harness is not one this project can run.*
