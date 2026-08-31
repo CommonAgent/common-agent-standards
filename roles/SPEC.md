@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.3.0-draft
+**Version:** 0.4.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-30
 
@@ -604,7 +604,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §15, is that the records
+    family's line, quoted in §2 and again in §16, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -625,7 +625,156 @@ facilitator stops responding still progresses. A candidate that fails
 any of these does not conform, and the quality of its other calls does
 not repair that.
 
-## 11. Interfaces
+## 11. Role: the deployment manager
+
+**Offering name:** `role-deployment-manager`
+**Anchoring:** portable
+
+The deployment manager turns a package into a running agent, and can say
+afterward exactly what it did. It takes an agent package, stands it up
+on a named host and framework, gives it the identity its platform
+requires, checks it, reports what was checked in words that do not
+overstate it, and removes it cleanly when asked.
+
+It is defined as much by restraint as by capability. It touches hosts
+and it places credentials, which makes it the most powerful role in
+this registry, and the contract answers that power three ways: it acts
+only on instruction, it follows its published procedure rather than
+improvising, and it never holds a secret that a request handed it.
+
+Which hosts and frameworks a given deployment manager can deploy to is
+its own declaration, made on its card and its listing like any other
+coverage claim. The role names none, because frameworks change on their
+vendors' schedule and this specification does not.
+
+### 11.1 What it can be asked
+
+1. **Deploy this.** A package, a target host and framework, and the
+   deploy-time decisions: which identity to mint or use, who may call
+   the agent at first, whether a person attends it. The request names
+   the secrets the deployment will need; it never contains them.
+2. **What is deployed?** The inventory: each agent it has stood up, its
+   package and version, its target, its identity, and the state it was
+   last known to be in.
+3. **How did it go?** The report for one deploy: what was done, what
+   was checked, and what kind of check it was.
+4. **Update it.** The same package at a newer version, through the same
+   steps and the same checks, with the same record at the end.
+5. **Remove it.** Processes stopped, configuration entries removed, the
+   identity retired, and a statement of anything that could not be
+   removed.
+
+### 11.2 The contract
+
+1. **Only on instruction.** A deploy, an update, and a removal each
+   happen because the owner asked for that act. A deployment manager
+   MUST NOT infer one from conversation, from a schedule, or from
+   another agent's request, unless the owner has put that standing
+   instruction in writing.
+2. **Secrets are named, never carried.** A request names which secrets
+   the deployment needs; the deployment manager fetches them from the
+   owner's designated store and places them. A request that contains a
+   secret value MUST be refused before the secret is used, because a
+   role that accepted secrets in requests would teach every owner to
+   paste credentials into messages.
+3. **Checks are graded, and the grade is stated.** Every deploy ends
+   with a check, and the record says which kind: a **smoke check**
+   proves the agent boots, connects, and answers something; a
+   **conformance check** proves it does the job its package describes,
+   against known-answer work. A report that says "verified" without the
+   grade does not conform. A smoke check reported as conformance is a
+   false statement.
+4. **The declarations are part of the deploy.** Who may call the agent
+   at first, and whether a person attends it, are decisions the
+   instruction must settle. A deployment manager MUST NOT let a
+   framework's default answer either one silently.
+5. **Procedure, not improvisation.** A deployment manager follows its
+   published procedure for the target framework. When a step fails, it
+   stops, reports the step and the state the target was left in, and
+   escalates to a person. It MUST NOT work around a failed step by
+   unplanned means, because it operates with host access and identity
+   authority, which is exactly where an unanticipated step does the
+   most damage.
+6. **Least power, and no driving.** It holds access to the hosts it
+   deploys to and to its platform's identity mint, uses both only in
+   service of an instructed act, and MUST NOT operate the agents it
+   deploys. Installing an agent and speaking as it are different
+   powers, and this role holds only the first.
+7. **Every act leaves a record.** Deploys, updates, removals, and
+   refusals each produce the signed record in §11.3. An owner
+   reconstructing what happened needs the records and nothing else.
+8. **Removal is honest.** A removal record states what was removed and
+   names anything that was not, because "removed" with a live
+   credential left behind is the failure an owner cannot see.
+
+### 11.3 The record
+
+The document a deployment manager produces for every act. Tag:
+`agent-deployment-record-v1`, signed with the family convention: the
+ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON of the
+document with `signatures` removed.
+
+```json
+{
+  "record": "v1",
+  "role": "deployment-manager",
+  "act": "deploy",
+  "instructed_by": "<owner identity>",
+  "package": {
+    "name": "<package name>",
+    "version": "<package version>",
+    "url": "<where the package was fetched>",
+    "sha256": "<digest of the bytes actually deployed>"
+  },
+  "target": { "host": "<host name>", "framework": "<framework and version>" },
+  "agent": { "key": "<deployed agent public key>", "handle": "<handle, if named>" },
+  "declarations": { "interaction": "service", "admitted_at_start": ["<caller>"] },
+  "secrets_placed": ["<secret name>"],
+  "checks": [
+    { "kind": "smoke", "passed": true, "at": "<timestamp>",
+      "what": "<plain words for what the check exercised>" }
+  ],
+  "produced_at": "<timestamp>",
+  "by": "<deployment manager public key>",
+  "signatures": [ ]
+}
+```
+
+Rules:
+
+1. `act` is one of `deploy`, `update`, `remove`, `refuse`. A refusal
+   record carries `refused` with the reason in place of `checks`.
+2. `package.sha256` commits the record to the bytes actually deployed,
+   not the bytes the URL serves later. A verifier who fetches the URL
+   and gets a different digest has learned the package moved, not that
+   the record lies.
+3. `checks[].kind` is `smoke` or `conformance`, and `what` says in
+   plain words what the check exercised. The grade travels with every
+   copy of the claim.
+4. `secrets_placed` carries names only. A record containing a secret
+   value is a conformance failure in itself.
+5. A removal record repeats `agent` and `target`, lists what was
+   removed, and lists what was not under `remaining`, which is empty
+   only when the removal was complete.
+
+### 11.4 Conformance testing: the deployment manager
+
+Behavioural, against a sandbox target. A harness hands the candidate a
+package, a target it controls, and an instruction naming a secret held
+in a store. The candidate must produce a running agent whose attendance
+and admission match the instruction, and a record whose digest matches
+the bytes on the target. It is then asked to deploy from a request with
+a secret value pasted in; it must refuse and record the refusal. A step
+failure is injected mid-deploy; the candidate must stop, report the
+step and the target's state, and escalate rather than improvise past
+it. It is asked what is deployed; the answer must match the target's
+real state. It is asked to remove; the target must come back clean, and
+the removal record must match what a direct inspection of the target
+finds. Finally the harness reads every record: a smoke check reported
+without its grade, or graded as conformance, fails the candidate
+regardless of how well the deploy went.
+
+## 12. Interfaces
 
 A role is a whole job, and an agent holds at most one. That weight is
 deliberate: the name has to mean something, so the scope is closed and
@@ -644,7 +793,7 @@ many as it likes, alongside whatever else it does, and implementing one
 says nothing about the rest. That is the difference from a role. A role
 is what an agent is. An interface is what an agent can be asked.
 
-### 11.1 What an interface publishes
+### 12.1 What an interface publishes
 
 Every interface publishes four parts, narrower than a role's and read
 the same way:
@@ -669,7 +818,7 @@ Standard interface names are reserved the same way standard offering
 names are. An implementer declares which interfaces it answers, and at
 which version, wherever it declares the rest of its capabilities.
 
-### 11.2 The rules that make interfaces composable
+### 12.2 The rules that make interfaces composable
 
 1. **Implementing states nothing else.** An implementer MUST NOT be
    read as claiming anything beyond the exchanges it declared. An agent
@@ -694,7 +843,7 @@ which version, wherever it declares the rest of its capabilities.
    interfaces is left to a later revision rather than done in the same
    pass that introduces the idea.
 
-## 12. Interface: the worker
+## 13. Interface: the worker
 
 An agent that can be given a piece of work by something that knows
 nothing about it.
@@ -707,7 +856,7 @@ do that without knowing anything about the side being directed.
 
 Standard interface name `interface-worker`. Portable.
 
-### 12.1 The exchanges
+### 13.1 The exchanges
 
 1. **Are you free?** The answer states whether the implementer can take
    work now, and MAY state when that changes. The answer MUST come from
@@ -737,7 +886,7 @@ Standard interface name `interface-worker`. Portable.
    condition the work is in. It MUST NOT keep working on a cancelled
    job.
 
-### 12.2 The contract
+### 13.2 The contract
 
 1. **It does not price the deal.** The implementer says what work costs
    it. What that work is sold for is not its business, and the two
@@ -745,7 +894,7 @@ Standard interface name `interface-worker`. Portable.
 2. **It is never held to terms it was not given.** An implementer
    honours the constraints handed to it with the job, and MUST NOT be
    held to one it was never told. Making sure it is always told is what
-   §13 is for.
+   §14 is for.
 3. **An accepted job is never dropped silently.** Where the implementer
    cannot continue, it says so through exchange 4 or 6. Going quiet is
    the failure this interface exists to eliminate.
@@ -761,10 +910,10 @@ Standard interface name `interface-worker`. Portable.
    signature tag. Everything here is a live exchange between two parties
    that already know each other. Where a durable record of what was
    agreed matters, it is the directing side that owes it, and that
-   obligation belongs to the role holding §13 rather than to either
+   obligation belongs to the role holding §14 rather than to either
    interface.
 
-### 12.3 Conformance testing: the worker
+### 13.3 Conformance testing: the worker
 
 Behavioural, like the front desk. A harness asks the seven exchanges and
 checks that being free is answered by the agent rather than by something
@@ -776,9 +925,9 @@ reports failed rather than nothing; that a cancelled job stops; and that
 every estimate says whether it is a commitment. Refusing an exchange
 with a reason conforms. Not answering does not.
 
-## 13. Interface: the manager
+## 14. Interface: the manager
 
-The other side of §12: what a worker can rely on from whatever is
+The other side of §13: what a worker can rely on from whatever is
 directing it.
 
 An interface with only one side published is half a contract. A worker
@@ -795,7 +944,7 @@ here waits on it.
 
 Standard interface name `interface-manager`. Portable.
 
-### 13.1 The exchanges
+### 14.1 The exchanges
 
 1. **Here is work.** A job handed to a worker carries what is wanted,
    what counts as done, and every constraint already agreed with
@@ -813,7 +962,7 @@ Standard interface name `interface-manager`. Portable.
    it is here because something that can commit on your behalf without
    being answerable for it is not something you should run.
 
-### 13.2 The contract
+### 14.2 The contract
 
 1. **Terms flow down.** A manager MUST pass on every constraint it
    already agreed that bears on how the work is done, including where
@@ -823,7 +972,7 @@ Standard interface name `interface-manager`. Portable.
    Checking that is the manager's job, and it happens before the
    assignment rather than after the failure.
 3. **Capacity is confirmed, not assumed.** A manager MUST NOT state
-   capacity it has not confirmed by asking, through exchange 1 of §12.
+   capacity it has not confirmed by asking, through exchange 1 of §13.
    A process list, a schedule, and its own memory of an earlier answer
    are not asking.
 4. **It MUST NOT commit beyond the authority it holds.** Where a
@@ -835,13 +984,13 @@ Standard interface name `interface-manager`. Portable.
    no longer wanted MUST tell whoever is doing it.
 7. **It does not hide what it committed.** Exchange 4 is not optional
    and MUST NOT be answered selectively.
-8. **No document.** Like §12, this interface defines no signed
+8. **No document.** Like §13, this interface defines no signed
    statement. What a manager committed on an owner's behalf is worth
    signing, and this registry expects the role holding this interface to
    define that statement. An interface says how two parties talk. What
    gets signed belongs to the job.
 
-### 13.3 Conformance testing: the manager
+### 14.3 Conformance testing: the manager
 
 Behavioural. A harness checks that a job handed down carries the
 constraints already agreed above it; that a manager whose only available
@@ -852,7 +1001,7 @@ produces a stop downstream; that a request to commit beyond its
 authority is refused at the limit; and that asked what it committed, it
 says, in full.
 
-## 14. Interface: the entryway
+## 15. Interface: the entryway
 
 What a stranger may ask before anybody has agreed to anything.
 
@@ -872,7 +1021,7 @@ implement it alongside whatever else it does.
 
 Standard interface name `interface-entryway`. Portable.
 
-### 14.1 The exchanges
+### 15.1 The exchanges
 
 1. **What are you?** The answer states what the implementer is called,
    what it does, what it charges, and what it refuses. It is answered to
@@ -891,7 +1040,7 @@ Standard interface name `interface-entryway`. Portable.
    answered on the spot in the general case, so a caller that could not
    ask this would have to guess.
 
-### 14.2 The contract
+### 15.2 The contract
 
 1. **All four are answered without admission.** An interface whose
    exchanges required admission could not do its job, because admission
@@ -902,7 +1051,7 @@ Standard interface name `interface-entryway`. Portable.
    and an implementer that acted on its contents would have given every
    stranger one free instruction.
 3. **A refusal is an answer.** Silence is not. A caller that is turned
-   away is told, and told why, in the terms of §11.2 rule 4.
+   away is told, and told why, in the terms of §12.2 rule 4.
 4. **The roster stays private.** Exchanges 3 and 4 tell a caller about
    the policy and about itself. Neither reveals another caller's
    standing, and an implementer MUST NOT answer either one in a way that
@@ -914,11 +1063,11 @@ Standard interface name `interface-entryway`. Portable.
 6. **What it says about itself binds nothing.** Exchange 1 is a
    description. It is not an offer, and a caller MUST NOT read a stated
    charge there as a price it can hold the implementer to.
-7. **No document.** Like §12 and §13, this interface defines no signed
+7. **No document.** Like §13 and §14, this interface defines no signed
    statement. Whether a caller was admitted is the implementer's own
    business to keep; what gets signed belongs to the work that follows.
 
-### 14.3 Conformance testing: the entryway
+### 15.3 Conformance testing: the entryway
 
 Behavioural. A harness checks that a caller with no prior relationship
 gets an answer to all four exchanges; that a request to be admitted
@@ -928,7 +1077,7 @@ another caller; that a caller who has never asked is told so rather than
 receiving an error; and that a caller whose admission was revoked is
 told refused rather than still admitted.
 
-## 15. Out of scope
+## 16. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -947,15 +1096,19 @@ told refused rather than still admitted.
   what the answer must contain, never the wire format, the transport, or
   the encoding. Two implementers on different networks conform or do
   not conform on the same terms.
-- Scheduling, placement, and fleet operations. §13 states what a manager
+- Scheduling, placement, and fleet operations. §14 states what a manager
   owes a worker. How it decides which worker, in what order, on which
-  machine, is where implementations are supposed to differ.
+  machine, is where implementations are supposed to differ. The
+  deployment manager (§11) does not move this line: it deploys to the
+  target its instruction names, and choosing targets is not part of the
+  role.
 
-## 16. Signature tags
+## 17. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
 - `agent-matchmaker-recommendation-v1`: the matchmaker recommendation (§9.3).
+- `agent-deployment-record-v1`: the deployment record (§11.3).
 
 The front desk defines no signature tag. It produces answers, not
 statements.
@@ -969,8 +1122,8 @@ holds.
 None of the three interfaces defines a signature tag, and for the same
 reason as each other. An interface is a way two parties talk. What is
 worth signing is what somebody committed, and that belongs to the job
-holding the interface rather than to the interface itself (§12.2 rule 6,
-§13.2 rule 8, §14.2 rule 7).
+holding the interface rather than to the interface itself (§13.2 rule 6,
+§14.2 rule 8, §15.2 rule 7).
 
 ---
 
@@ -1057,3 +1210,18 @@ keeps the cheapest exchange cheap and stops a stranger buying one free
 instruction. And what an agent says about itself on the way in binds
 nothing, because a description offered before admission is not an offer.
 Out of scope moves to §15 and signature tags to §16.*
+
+*0.4.0-draft (2026-08-30): sixth role: the deployment manager (§11). A
+package does nothing until somebody installs it, and installing is real
+work with real judgment in it: the instructions have to reach the
+framework in the form that framework reads, the declared systems have
+to be bound to real ones, and the agent needs an identity, an admission
+decision, and an attendance declaration before its first caller. The
+role is distilled from a hand-run deploy rather than designed in the
+abstract, and its contract answers the power it holds: acts only on
+instruction, secrets are named in requests and never carried in them,
+every check is graded as smoke or conformance with the grade stated,
+and a failed step stops the work rather than being improvised past.
+Fourth signature tag: `agent-deployment-record-v1`. Interfaces move to
+§12, the worker to §13, the manager to §14, the entryway to §15, out of
+scope to §16 and signature tags to §17.*
