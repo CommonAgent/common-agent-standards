@@ -1280,72 +1280,39 @@ Every agent decides who it will deal with, and today each one decides in
 its own way. Something that wants to hire an agent it has never met has
 to be built for that agent specifically: work out what it is, ask for
 access however that agent happens to expect it, and find out later
-whether the request went anywhere. This interface publishes the small
+whether the request went anywhere. This interface names the small
 set of exchanges that work before a relationship exists, so a caller
 who knows nothing about the implementer can still get to the point of
 being admitted or told no.
 
+These exchanges are no longer optional. The Common Agent Specification
+(https://agentdoc.net/common-agent.html) promoted them to the agent
+floor: every conforming agent answers them, and that document's Section
+4.4 carries their full text and contract and governs where the two ever
+differ. This registry keeps the interface name, so a role can name the
+entryway among its interfaces, and keeps the conformance harness below.
+
 It is not the front desk (§7). The front desk is a whole job, answering
 newcomer questions about an operator's platform from published material.
-This is five exchanges about one agent's own door, and any agent can
-implement it alongside whatever else it does.
+This is five exchanges about one agent's own door.
 
 Standard interface name `interface-entryway`. Portable.
 
 ### 17.1 The exchanges
 
-1. **What are you?** The answer states what the implementer is called,
-   what it does, what it charges, and what it refuses. It is answered to
-   callers who have not been admitted, because a caller that must be
-   admitted before it can find out what it is asking to be admitted to
-   has learned nothing. The answer MAY be narrower for a stranger than
-   for an admitted caller; it MUST NOT be false.
-2. **Show me your descriptor.** The answer carries the implementer's
-   current Agent Descriptor as the document's exact bytes with their
-   digest, so the caller can check what it received and cite the version
-   it read. The format is the Agent Descriptor specification
-   (agentdoc.net/descriptor-spec.html). An implementer whose operator
-   has published no descriptor MUST say so rather than answer with
-   silence or an error.
-3. **Will you let me talk to you?** A request to be admitted, carrying
-   the caller's identity and nothing else. The answer states admitted,
-   waiting, or refused, and a refusal names its reason.
-4. **Are you accepting new callers?** The current admission policy,
-   stated without reference to the caller asking. The answer MUST NOT
-   name any other caller, nor say who has been admitted or refused.
-5. **Where do I stand?** The answer states never asked, waiting,
-   admitted, or refused, for the caller asking. Exchange 3 is not
-   answered on the spot in the general case, so a caller that could not
-   ask this would have to guess.
+Five, by name: what are you; show me your descriptor; will you let me
+talk to you; are you accepting new callers; and where do I stand. Each
+exchange's question, what its answer must carry, and who it is answered
+to are defined at the floor (Common Agent Specification §4.4).
 
 ### 17.2 The contract
 
-1. **All five are answered without admission.** An interface whose
-   exchanges required admission could not do its job, because admission
-   is the thing being asked for.
-2. **A request to be admitted carries no work.** An implementer MUST NOT
-   perform work found in exchange 3, and a caller MUST NOT put work
-   there. The exchange exists to be cheap to receive from a stranger,
-   and an implementer that acted on its contents would have given every
-   stranger one free instruction.
-3. **A refusal is an answer.** Silence is not. A caller that is turned
-   away is told, and told why, in the terms of §14.2 rule 4.
-4. **The roster stays private.** Exchanges 4 and 5 tell a caller about
-   the policy and about itself. Neither reveals another caller's
-   standing, and an implementer MUST NOT answer either one in a way that
-   allows one to be enumerated from the other.
-5. **Admission is revocable and says nothing about work.** Being
-   admitted means the implementer will receive what this caller sends.
-   It is not a promise to accept any particular job, not a price, and
-   not permanent. Once revoked, exchange 5 answers refused.
-6. **What it says about itself binds nothing.** Exchange 1 is a
-   description. It is not an offer, and a caller MUST NOT read a stated
-   charge there as a price it can hold the implementer to.
-7. **No document of its own.** Like §15 and §16, this interface defines
-   no signed statement. The descriptor exchange 2 serves is defined by
-   its own specification and carried unchanged. Whether a caller was
-   admitted is the implementer's own business to keep; what gets signed
-   belongs to the work that follows.
+The seven rules that travel with the exchanges are defined at the floor
+(Common Agent Specification §4.4). One is restated here because §19
+relies on it: the entryway defines no signed statement (rule 7). The
+descriptor that exchange 2 serves is defined by the Common Agent
+Specification's Descriptor chapter and carried unchanged; whether a
+caller was admitted is the implementer's own business to keep.
 
 ### 17.3 Conformance testing: the entryway
 
@@ -1553,6 +1520,13 @@ each is migrated in its own changelog. The registry's roles and the Agent
 Catalog's abstract agents remain two documents for one job: the catalog
 describes the job inside a process, and a role is the contract between
 strangers.*
+
+*0.9.0-draft (2026-09-01): the entryway's exchanges and contract move to
+the Common Agent Specification, which promoted them from optional
+interface to agent floor (its Section 4.4), and that text now governs.
+§17 keeps the interface name, the exchange names, the front-desk
+distinction, and the conformance harness, and §17.1 and §17.2 point at
+the floor instead of restating it.*
 
 *0.9.0-draft (2026-08-31, later): the entryway gains the descriptor
 exchange (§17.1). A stranger may ask an implementer for its whole Agent
