@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.3.0-draft
+**Version:** 0.4.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-07
 
@@ -424,6 +424,28 @@ system (§3).
 Agent SoW documents need one addition to use this: a party MAY carry
 `"organization": "org_…"` beside its owner prose, and an approval record
 MAY carry `"mandate": "mnd_…"`. Both fields sit inside signed bytes.
+
+### 7.1 The check at a resource proxy
+
+The check above runs where a platform can hold an act pending. One more
+place can run it, and it is the first place the gradient reaches a system
+outside this family: a client agent answering a provider's requests against
+a resource it holds, under an Agent SoW grant made `via: "proxy"` (SoW
+§5.3.1).
+
+Such a proxy MAY extend the check to the acts it answers for. A read within
+the grant is answered on the grant alone. A mutating act, a write, a send,
+anything with consequences outside the conversation, is answered only when
+the caller presents a mandate in force whose powers and scope cover the act,
+checked exactly as §7 checks it: chain to the charter, unexpired, unrevoked,
+the act within powers, the resource within scope. A refusal names the
+failing check, like every refusal in this family.
+
+Nothing new is defined here. The mandate, its chain, and its check are §6
+and §7's; the proxy is simply a counterparty that chose to run it at the
+resource boundary. Where it does, the mandate is `enforced` at that
+boundary, because the act does not happen without it, and the vendor behind
+the resource never needed to learn what a mandate is.
 
 ## 8. The treasury, in the abstract
 
