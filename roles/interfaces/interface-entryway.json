@@ -1,0 +1,14 @@
+{
+  "interface": "interface-entryway",
+  "version": "v1",
+  "title": "The entryway",
+  "definition": "https://agentroles.ai/entryway.html",
+  "summary": "What a stranger may ask before anybody has agreed to anything.",
+  "exchanges": [
+    { "id": "what", "asks": "what are you?", "answer_carries": ["what it is called", "what it does", "what it charges", "what it refuses"] },
+    { "id": "descriptor", "asks": "show me your descriptor.", "answer_carries": ["the current Agent Descriptor as exact bytes with their digest", "or the plain statement that none is published"] },
+    { "id": "admit", "asks": "will you let me talk to you?", "answer_carries": ["admitted, waiting, or refused", "the reason on a refusal"] },
+    { "id": "policy", "asks": "are you accepting new callers?", "answer_carries": ["the current admission policy, naming no other caller"] },
+    { "id": "standing", "asks": "where do I stand?", "answer_carries": ["never asked, waiting, admitted, or refused, for the caller asking"] }
+  ]
+}

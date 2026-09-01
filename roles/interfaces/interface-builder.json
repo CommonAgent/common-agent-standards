@@ -1,0 +1,12 @@
+{
+  "interface": "interface-builder",
+  "version": "v1",
+  "title": "The builder",
+  "definition": "https://agentroles.ai/builder.html",
+  "summary": "The agent builder role's primary interface: a described agent becomes a draft package.",
+  "exchanges": [
+    { "id": "build", "asks": "build this.", "answer_carries": ["a package, or a refusal naming what the description was missing"] },
+    { "id": "manifest", "asks": "what did you build?", "answer_carries": ["name, version, skills, systems, and obligations", "the note that it is a draft"] },
+    { "id": "revise", "asks": "revise it.", "answer_carries": ["the changed description rebuilt to a new version, with the same parts required"] }
+  ]
+}

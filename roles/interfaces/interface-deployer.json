@@ -1,0 +1,14 @@
+{
+  "interface": "interface-deployer",
+  "version": "v1",
+  "title": "The deployer",
+  "definition": "https://agentroles.ai/deployer.html",
+  "summary": "The deployment manager role's primary interface: standing a packaged agent up, and standing it down.",
+  "exchanges": [
+    { "id": "deploy", "asks": "deploy this.", "answer_carries": ["the deployment performed through the standard steps, or refused", "the signed deployment record at the end"] },
+    { "id": "inventory", "asks": "what is deployed?", "answer_carries": ["each agent stood up: package, version, target, identity, last known state"] },
+    { "id": "report", "asks": "how did it go?", "answer_carries": ["what was done", "what was checked, and what kind of check it was"] },
+    { "id": "update", "asks": "update it.", "answer_carries": ["the newer version through the same steps and checks", "the same record at the end"] },
+    { "id": "remove", "asks": "remove it.", "answer_carries": ["processes stopped, configuration removed, the identity retired", "anything that could not be removed, stated"] }
+  ]
+}
