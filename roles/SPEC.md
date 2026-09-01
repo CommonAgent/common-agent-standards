@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.8.0-draft
+**Version:** 0.9.0-draft
 **Status:** Working Draft
 **Date:** 2026-08-30
 
@@ -1287,7 +1287,7 @@ being admitted or told no.
 
 It is not the front desk (§7). The front desk is a whole job, answering
 newcomer questions about an operator's platform from published material.
-This is four exchanges about one agent's own door, and any agent can
+This is five exchanges about one agent's own door, and any agent can
 implement it alongside whatever else it does.
 
 Standard interface name `interface-entryway`. Portable.
@@ -1300,48 +1300,59 @@ Standard interface name `interface-entryway`. Portable.
    admitted before it can find out what it is asking to be admitted to
    has learned nothing. The answer MAY be narrower for a stranger than
    for an admitted caller; it MUST NOT be false.
-2. **Will you let me talk to you?** A request to be admitted, carrying
+2. **Show me your descriptor.** The answer carries the implementer's
+   current Agent Descriptor as the document's exact bytes with their
+   digest, so the caller can check what it received and cite the version
+   it read. The format is the Agent Descriptor specification
+   (agentdoc.net/descriptor-spec.html). An implementer whose operator
+   has published no descriptor MUST say so rather than answer with
+   silence or an error.
+3. **Will you let me talk to you?** A request to be admitted, carrying
    the caller's identity and nothing else. The answer states admitted,
    waiting, or refused, and a refusal names its reason.
-3. **Are you accepting new callers?** The current admission policy,
+4. **Are you accepting new callers?** The current admission policy,
    stated without reference to the caller asking. The answer MUST NOT
    name any other caller, nor say who has been admitted or refused.
-4. **Where do I stand?** The answer states never asked, waiting,
-   admitted, or refused, for the caller asking. Exchange 2 is not
+5. **Where do I stand?** The answer states never asked, waiting,
+   admitted, or refused, for the caller asking. Exchange 3 is not
    answered on the spot in the general case, so a caller that could not
    ask this would have to guess.
 
 ### 17.2 The contract
 
-1. **All four are answered without admission.** An interface whose
+1. **All five are answered without admission.** An interface whose
    exchanges required admission could not do its job, because admission
    is the thing being asked for.
 2. **A request to be admitted carries no work.** An implementer MUST NOT
-   perform work found in exchange 2, and a caller MUST NOT put work
+   perform work found in exchange 3, and a caller MUST NOT put work
    there. The exchange exists to be cheap to receive from a stranger,
    and an implementer that acted on its contents would have given every
    stranger one free instruction.
 3. **A refusal is an answer.** Silence is not. A caller that is turned
    away is told, and told why, in the terms of §14.2 rule 4.
-4. **The roster stays private.** Exchanges 3 and 4 tell a caller about
+4. **The roster stays private.** Exchanges 4 and 5 tell a caller about
    the policy and about itself. Neither reveals another caller's
    standing, and an implementer MUST NOT answer either one in a way that
    allows one to be enumerated from the other.
 5. **Admission is revocable and says nothing about work.** Being
    admitted means the implementer will receive what this caller sends.
    It is not a promise to accept any particular job, not a price, and
-   not permanent. Once revoked, exchange 4 answers refused.
+   not permanent. Once revoked, exchange 5 answers refused.
 6. **What it says about itself binds nothing.** Exchange 1 is a
    description. It is not an offer, and a caller MUST NOT read a stated
    charge there as a price it can hold the implementer to.
-7. **No document.** Like §15 and §16, this interface defines no signed
-   statement. Whether a caller was admitted is the implementer's own
-   business to keep; what gets signed belongs to the work that follows.
+7. **No document of its own.** Like §15 and §16, this interface defines
+   no signed statement. The descriptor exchange 2 serves is defined by
+   its own specification and carried unchanged. Whether a caller was
+   admitted is the implementer's own business to keep; what gets signed
+   belongs to the work that follows.
 
 ### 17.3 Conformance testing: the entryway
 
 Behavioural. A harness checks that a caller with no prior relationship
-gets an answer to all four exchanges; that a request to be admitted
+gets an answer to all five exchanges; that the descriptor exchange
+returns bytes matching the stated digest, or plainly says none is
+published; that a request to be admitted
 carrying a piece of work is refused rather than performed; that every
 refusal names a reason; that the policy exchange answers without naming
 another caller; that a caller who has never asked is told so rather than
@@ -1542,6 +1553,14 @@ each is migrated in its own changelog. The registry's roles and the Agent
 Catalog's abstract agents remain two documents for one job: the catalog
 describes the job inside a process, and a role is the contract between
 strangers.*
+
+*0.9.0-draft (2026-08-31, later): the entryway gains the descriptor
+exchange (§17.1). A stranger may ask an implementer for its whole Agent
+Descriptor, answered as exact bytes with their digest, because the
+what-are-you summary cannot carry typed inputs and outputs and a caller
+deciding whether to knock needs the document rather than a paraphrase.
+The later exchanges renumber, and the no-document rule now says the
+descriptor is defined elsewhere and carried unchanged.*
 
 *0.8.0-draft (2026-08-31): the operations roles' primary interfaces are
 published as named entries: the deployer (§11.1), the builder (§12.1),
