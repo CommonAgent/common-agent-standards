@@ -631,7 +631,11 @@ not repair that.
 **Anchoring:** portable
 
 The deployment manager turns a package into a running agent, and can say
-afterward exactly what it did. It takes an agent package, stands it up
+afterward exactly what it did. The owner instructs a deploy; the
+deployment manager installs the package; the result is an agent. Those
+are three different things and this section keeps them apart: the acts
+below are named deploy, update, remove and refuse because they are what
+the owner asked for, and what happens inside a deploy is an install. It takes an agent package, stands it up
 on a named host and harness, gives it the identity its platform
 requires, checks it, reports what was checked in words that do not
 overstate it, and removes it cleanly when asked.
