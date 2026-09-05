@@ -789,6 +789,13 @@ emits an agent plugin: skills, obligations, and a manifest. It is the
 other end of the deployment manager (§11): one builds the package, the
 other stands it up.
 
+What it emits is an Agent Package as the Common Agent Specification
+defines it (Chapter 12, https://agentdoc.net/package-spec.html): an Agent
+Plugin carrying the agent's draft Descriptor and an install file beside
+the manifest, under the namespace `net.agentdoc.package`. That chapter
+owns the package's shape; this role owns the judgment a builder must ask
+for and the record it signs.
+
 It is defined by what it will not make up. A package is only as honest as
 the judgment in it, and two parts are judgment rather than description:
 what the agent refuses, and what it must record. The builder asks for
@@ -857,7 +864,7 @@ with `signatures` removed.
   "package": {
     "name": "<package name>",
     "version": "<version>",
-    "schema": "https://agent-plugins.org/schemas/1.1.0/plugin.schema.json",
+    "schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
     "sha256": "<digest of the package the builder emitted>"
   },
   "shape": { "skills": 3, "systems": 2, "refuses": 3, "records": 4 },
