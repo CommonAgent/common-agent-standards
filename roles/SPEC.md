@@ -632,7 +632,7 @@ not repair that.
 
 The deployment manager turns a package into a running agent, and can say
 afterward exactly what it did. It takes an agent package, stands it up
-on a named host and framework, gives it the identity its platform
+on a named host and harness, gives it the identity its platform
 requires, checks it, reports what was checked in words that do not
 overstate it, and removes it cleanly when asked.
 
@@ -642,17 +642,20 @@ this registry, and the contract answers that power three ways: it acts
 only on instruction, it follows its published procedure rather than
 improvising, and it never holds a secret that a request handed it.
 
-Which hosts and frameworks a given deployment manager can deploy to is
+Which hosts and harnesses a given deployment manager can deploy to is
 its own declaration, made on its card and its listing like any other
-coverage claim. The role names none, because frameworks change on their
-vendors' schedule and this specification does not.
+coverage claim. The role names none, because harnesses change on their
+vendors' schedule and this specification does not. A harness, in the
+sense the Common Agent Specification 12.1 gives the word, is the program
+that does the thinking when a message arrives; it is not an agent, and
+an agent is what exists after the install.
 
 ### 11.1 What it can be asked
 
 These exchanges are the role's primary interface, the deployer
 (`interface-deployer`, per §14.3).
 
-1. **Deploy this.** A package, a target host and framework, and the
+1. **Deploy this.** A package, a target host and harness, and the
    deploy-time decisions: which identity to mint or use, who may call
    the agent at first, whether a person attends it. The request names
    the secrets the deployment will need; it never contains them.
@@ -690,9 +693,9 @@ These exchanges are the role's primary interface, the deployer
 4. **The declarations are part of the deploy.** Who may call the agent
    at first, and whether a person attends it, are decisions the
    instruction must settle. A deployment manager MUST NOT let a
-   framework's default answer either one silently.
+   harness's default answer either one silently.
 5. **Procedure, not improvisation.** A deployment manager follows its
-   published procedure for the target framework. When a step fails, it
+   published procedure for the target harness. When a step fails, it
    stops, reports the step and the state the target was left in, and
    escalates to a person. It MUST NOT work around a failed step by
    unplanned means, because it operates with host access and identity
@@ -729,7 +732,7 @@ document with `signatures` removed.
     "url": "<where the package was fetched>",
     "sha256": "<digest of the bytes actually deployed>"
   },
-  "target": { "host": "<host name>", "framework": "<framework and version>" },
+  "target": { "host": "<host name>", "harness": "<harness and version>" },
   "agent": { "key": "<deployed agent public key>", "handle": "<handle, if named>" },
   "declarations": { "interaction": "service", "admitted_at_start": ["<caller>"] },
   "secrets_placed": ["<secret name>"],
@@ -1479,7 +1482,7 @@ Out of scope moves to §15 and signature tags to §16.*
 *0.4.0-draft (2026-08-30): sixth role: the deployment manager (§11). A
 package does nothing until somebody installs it, and installing is real
 work with real judgment in it: the instructions have to reach the
-framework in the form that framework reads, the declared systems have
+harness in the form that harness reads, the declared systems have
 to be bound to real ones, and the agent needs an identity, an admission
 decision, and an attendance declaration before its first caller. The
 role is distilled from a hand-run deploy rather than designed in the
@@ -1559,13 +1562,13 @@ roles keep their exchanges inline until each migrates in its own
 changelog.*
 
 *0.4.0-draft (2026-08-30, later): a second hand-run onto a different CLI
-framework, and a working implementation of the role, exercised the
+harness, and a working implementation of the role, exercised the
 contract without changing a clause. The implementation ran a real
 deploy and a real removal and produced the §11.3 record. Two things the
 runs settled and §11 now reflects: the model an agent is given is a
 deploy-time parameter with its own failure modes, so a smoke check must
 include a working answer and not only a boot; and where no signer is
 available the record is produced faithfully but unsigned rather than not
-at all. What stays untested by a fresh framework is the case where the
+at all. What stays untested by a fresh harness is the case where the
 install step is not a flattening but a native read of the package's
 skills, because that harness is not one this project can run.*
