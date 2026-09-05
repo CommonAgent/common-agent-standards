@@ -921,6 +921,13 @@ the records it must leave. The evaluator checks those mechanically. It
 never grades the quality of the work, because quality is not a promise a
 package makes and a machine cannot score it honestly.
 
+Evaluation is a separate act an owner asks for, never a step a deploy
+requires: the deployment manager's own graded check (§11) is what a deploy
+ends with, and the record family says plainly when no evaluation exists
+rather than implying one. An agent a person attends is not evaluated by
+probing, because the person would be answering; its deploy check is the
+check it carries.
+
 ### 13.1 What it can be asked
 
 These exchanges are the role's primary interface, the evaluator
