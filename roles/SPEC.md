@@ -1,8 +1,8 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.9.0-draft
+**Version:** 0.10.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-30
+**Date:** 2026-09-08
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
@@ -604,7 +604,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §18, is that the records
+    family's line, quoted in §2 and again in §19, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -1329,7 +1329,7 @@ to are defined at the floor (Common Agent Specification §4.4).
 ### 17.2 The contract
 
 The seven rules that travel with the exchanges are defined at the floor
-(Common Agent Specification §4.4). One is restated here because §19
+(Common Agent Specification §4.4). One is restated here because §20
 relies on it: the entryway defines no signed statement (rule 7). The
 descriptor that exchange 2 serves is defined by the Common Agent
 Specification's Descriptor chapter and carried unchanged; whether a
@@ -1347,7 +1347,129 @@ another caller; that a caller who has never asked is told so rather than
 receiving an error; and that a caller whose admission was revoked is
 told refused rather than still admitted.
 
-## 18. Out of scope
+## 18. Interface: revisable work
+
+A delivered piece of work can be changed without being redone.
+
+Work that comes back from an agent is often nearly right, and the usual
+remedy is to run the whole job again. That charges the buyer the full
+price for a change to one part, and it costs the agent the work of
+producing the parts that were already right. A buyer that wants one
+section rewritten or one image replaced has no way to ask for exactly
+that, and no way to check afterwards that the rest was left alone.
+
+This interface publishes what makes a delivered job changeable. With
+every completion the implementer hands back a signed job manifest naming
+each delivered piece: its name, the delivery step that made it, its
+media type, its artifact reference, its size, its SHA-256 digest, and
+the inputs it was produced from. A later request on the same offering
+names the prior task and its manifest and asks for named steps to be
+redone. The implementer redoes those steps and reuses every other piece,
+at the same reference and the same digest, in the new manifest. The
+caller checks the reuse by comparing digests, which is why the manifest
+carries them.
+
+Two things are cited here and defined elsewhere. The manifest's format
+is the Common Agent Specification's `job-manifest-v1`. The revision
+policy, meaning how many revisions a job includes, what a further one
+costs, and how long the window stays open, is the agent's own
+declaration under the Agent SoW revisions clause (Agent SoW §5.4.3) and
+the descriptor's offering `revisions` member. The attribute this
+interface backs, Revisable, lives in the Common Agent Specification's
+attribute table.
+
+It is not the builder's revise exchange (§12.1). That rebuilds a whole
+package from a changed description. This applies to the output of any
+offering, and it names the steps to redo rather than describing what
+changed.
+
+Standard interface name `interface-revisable-work`. Portable.
+
+### 18.1 The exchanges
+
+The first two are exchanges of this interface. The third is a request
+on the offering that produced the work, and it is listed here because
+this interface is what makes the offering answer it.
+
+1. **What did you deliver?** The `job.manifest` exchange. The request
+   names a task the implementer completed. The answer MUST be the
+   signed job manifest of that completion, or a typed answer that it
+   has none: no manifest for that task, or the task is unknown to it.
+   The node answers from its records, without involving the model.
+2. **What would redoing these steps cost now?** The `job.quote`
+   exchange. The request names the prior task, the prior manifest by
+   its artifact reference, and the step ids to redo. The answer MUST
+   name each step with a flat price, the total price, how many included
+   revisions are left, and when the revision window closes, or that it
+   does not close. The node computes it from the declared revision
+   policy and the count so far, without involving the model.
+3. **Redo these steps.** Not a new exchange. A request on the offering
+   that produced the work, carrying the prior task id, the prior
+   manifest's reference, the step ids to redo, and the change itself in
+   the request's text. It completes like any task, with a new job
+   manifest attached, in which every piece not redone MUST carry the
+   same reference and digest as before, and the manifest's `reused`
+   member counts those pieces.
+
+The definition file for this interface carries two members the other
+definition files do not, `request` and `input`, which name the request
+types and members each exchange is carried on; this is the one place
+the registry names wire-level names, and it does so because the Common
+Agent Specification defines them, not this registry.
+
+### 18.2 The contract
+
+1. **Every completion carries a manifest.** An implementer MUST attach
+   a job manifest to every completion on an offering it implements this
+   interface for, not only to the ones it expects to be revised. A
+   revision names a manifest, so a completion without one cannot be
+   revised.
+2. **The manifest is signed by the agent's own key.** A manifest signed
+   by anything other than the agent that did the work is not that
+   agent's manifest, and an implementer MUST NOT hand one back as its
+   own.
+3. **Included revisions and prices come from the declared policy.** A
+   quote MUST be computed from the declared revision policy and the
+   count so far, and MUST NOT be set at the moment of asking.
+4. **A revision it cannot cover is refused with its price.** A revision
+   beyond the included count, with no budget covering its price, MUST
+   be refused with a typed budget refusal carrying the price as a
+   quote. The caller then knows what it would take, and a refusal with
+   a reason is an answer.
+5. **Reuse is computed, never asserted.** The `reused` count MUST be
+   derived from the digests. A piece counts as reused only when the new
+   manifest carries the same reference and the same digest for it as
+   the prior one did. An implementer MUST NOT state a count it cannot
+   show digest by digest.
+6. **The two exchanges are answered from records.** The node answers
+   `job.manifest` from what it holds and `job.quote` from the declared
+   policy and the count so far, and MUST NOT involve the model in
+   either, so both answers are cheap and the same each time they are
+   asked.
+7. **No document of its own.** This interface defines no signed
+   statement and no signature tag. The job manifest it obliges is
+   defined by the Common Agent Specification and carried here
+   unchanged, the same way §17.2 carries the descriptor. What gets
+   signed belongs to the work.
+
+### 18.3 Conformance testing: revisable work
+
+Behavioural. A harness runs a job on the offering and checks that the
+completion carries a signed job manifest naming every delivered piece
+with its digest; asks for one step to be redone through a request
+carrying the prior task, the prior manifest, and the step; fetches both
+manifests through the manifest exchange; and asserts that every piece
+not redone has the same reference and the same digest in both, that at
+least one piece changed, and that the new manifest's `reused` count
+equals the number of unchanged pieces. It also checks that the manifest
+exchange answers a task the implementer never completed with a typed
+answer rather than an error; that a quote for named steps returns each
+step's price, the total, the remaining included count, and the window;
+and that a revision past the included count with no budget is refused
+with the price as a quote rather than performed or dropped. Refusing an
+exchange with a reason conforms. Not answering does not.
+
+## 19. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -1373,7 +1495,7 @@ told refused rather than still admitted.
   target its instruction names, and choosing targets is not part of the
   role.
 
-## 19. Signature tags
+## 20. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -1391,11 +1513,15 @@ each one is a signed message in the conversation's record. A minutes
 document would be a second, weaker copy of what the record already
 holds.
 
-None of the three interfaces defines a signature tag, and for the same
+Six of the seven interfaces define no signature tag, and for the same
 reason as each other. An interface is a way two parties talk. What is
 worth signing is what somebody committed, and that belongs to the job
 holding the interface rather than to the interface itself (§15.2 rule 6,
-§16.2 rule 8, §17.2 rule 7).
+§16.2 rule 8, §17.2 rule 7). The seventh, revisable work (§18), defines
+no tag either, but it obliges a signed document: every completion
+carries a job manifest signed by the implementer's own key, under a
+format the Common Agent Specification defines (`job-manifest-v1`) and
+this registry only cites (§18.2 rule 7).
 
 ---
 
@@ -1576,3 +1702,20 @@ available the record is produced faithfully but unsigned rather than not
 at all. What stays untested by a fresh harness is the case where the
 install step is not a flattening but a native read of the package's
 skills, because that harness is not one this project can run.*
+
+*0.10.0-draft (2026-09-08): a seventh interface: revisable work (§18).
+Work that comes back from an agent is often nearly right, and until now
+the only remedy was to run the whole job again. An implementer hands
+back a signed job manifest with every completion, naming each delivered
+piece with its digest, and accepts a later request on the same offering
+that names the prior task and its manifest and asks for named steps to
+be redone, reusing every piece it did not redo at the same reference and
+digest. The rule to argue with is that reuse is computed from digests
+rather than asserted, because a stated count nobody can check is a
+claim about paperwork. The manifest's format and the revision policy are
+defined by the Common Agent Specification and the Agent SoW and cited
+here rather than restated. The definition file names the request types
+and members the exchanges are carried on, the registry's one exception
+to the rule in §19 that it never names a wire format, because those
+names are defined elsewhere. Out of scope moves to §19 and signature
+tags to §20.*
