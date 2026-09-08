@@ -7,6 +7,7 @@
     { "name": "interface-entryway", "version": "v1", "url": "https://agentroles.ai/interfaces/interface-entryway.json" },
     { "name": "interface-deployer", "version": "v1", "url": "https://agentroles.ai/interfaces/interface-deployer.json" },
     { "name": "interface-builder", "version": "v1", "url": "https://agentroles.ai/interfaces/interface-builder.json" },
-    { "name": "interface-evaluator", "version": "v1", "url": "https://agentroles.ai/interfaces/interface-evaluator.json" }
+    { "name": "interface-evaluator", "version": "v1", "url": "https://agentroles.ai/interfaces/interface-evaluator.json" },
+    { "name": "interface-revisable-work", "version": "v1", "url": "https://agentroles.ai/interfaces/interface-revisable-work.json" }
   ]
 }
