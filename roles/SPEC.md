@@ -1,16 +1,18 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.10.0-draft
+**Version:** 0.11.0-draft
 **Status:** Working Draft
-**Date:** 2026-09-08
+**Date:** 2026-09-14
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
 **standard role** publishes the contract for one of those jobs: the
 questions the agent answers, the access it may hold, what it must
 refuse, and the documents it produces. Any agent that meets the contract
-can hold the role. This registry lists the standard roles, starting with
-the bookkeeper.
+can hold the role. This registry lists the standard roles in three
+families (§3.1): roles that act on the mesh's own workings, roles that act
+on an agent as a thing being made, proved and run, and roles that act on
+work that spans agents.
 
 Some behaviour recurs without being a whole job. Answering what a piece
 of work would cost, or saying whether you are free right now, is not a
@@ -131,6 +133,36 @@ and a role's refusals sit on top of that floor, not instead of it.
 
 Roles are versioned like the family's other documents: amended by full
 replacement, never by delta.
+
+### 3.1 Three families
+
+Roles are grouped by what they act on. The family is a way of reading the
+registry, not a rank, and a role belongs to exactly one.
+
+- **Mesh roles** act on the mesh's own workings: the bookkeeper (§4), the
+  front desk (§7), the arbiter (§8), the matchmaker (§9), and the
+  facilitator (§10).
+- **Lifecycle roles** act on an agent as a thing being made, proved and
+  run: the spec writer (§19), the test writer (§20), the code writer
+  (§21), the code critic (§22), the package maker (§12), the deployment
+  manager (§11), the conformance checker (§13), the agent critic (§23),
+  the doc writer (§24), the publisher (§25), the watcher (§26), and the
+  incident recorder (§27). Each holds one or more stages of the lifecycle
+  mapped at https://agenticdevelopment.ai, and its chapter names them.
+- **Composition roles** act on work that spans agents: the process runner
+  (§28), and later whatever holds decomposing an ask into members.
+
+### 3.2 What earns a page
+
+One rule decides whether a job becomes a role here: a recurring job with
+an artifact in, an artifact out, and a check the holder does not control.
+A job that recurs but hands back nothing a third party can read is not a
+role. A job whose check is the holder's own word is not a role either,
+because the name would then mean whatever the holder said it meant. The
+check need not be mechanical; a person reading the artifact against what
+they already know is a check the holder does not control, and two roles
+in this registry rest on that.
+
 
 ## 4. Role: the bookkeeper
 
@@ -604,7 +636,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §19, is that the records
+    family's line, quoted in §2 and again in §29, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -784,12 +816,14 @@ finds. Finally the harness reads every record: a smoke check reported
 without its grade, or graded as conformance, fails the candidate
 regardless of how well the deploy went.
 
-## 12. Role: the agent builder
+## 12. Role: the package maker
 
-**Offering name:** `role-agent-builder`
+**Offering name:** `role-package-maker` (alias: `role-agent-builder`, the
+name the role carried until 2026-09-14; a holder offering either name holds
+the role)
 **Anchoring:** portable
 
-The agent builder turns a description of a needed agent into a package
+The package maker turns a description of a needed agent into a package
 another system can deploy. It takes what an agent should do, the systems
 it needs, what it must refuse, and the records it must leave, and it
 emits an agent plugin: skills, obligations, and a manifest. It is the
@@ -857,7 +891,7 @@ These exchanges are the role's primary interface, the builder
 
 ### 12.3 The record
 
-The document an agent builder produces for every build. Tag:
+The document an package maker produces for every build. Tag:
 `agent-build-record-v1`, signed with the family convention: the ASCII
 tag, one newline, then the JCS (RFC 8785) canonical JSON of the document
 with `signatures` removed.
@@ -877,7 +911,7 @@ with `signatures` removed.
   "shape": { "skills": 3, "systems": 2, "refuses": 3, "records": 4 },
   "draft": true,
   "produced_at": "<timestamp>",
-  "by": "<agent builder public key>",
+  "by": "<package maker public key>",
   "signatures": [ ]
 }
 ```
@@ -894,8 +928,11 @@ Rules:
 4. `shape` counts what the package carries. A build whose `refuses` or
    `records` count is zero is not a conforming build, and the counts are
    where that shows.
+5. `role` carries `agent-builder`, the name the role had when this record
+   format was published. A verifier accepts `package-maker` beside it, and
+   records already signed keep the old value.
 
-### 12.4 Conformance testing: the agent builder
+### 12.4 Conformance testing: the package maker
 
 Behavioural. A harness hands the candidate a description and reads what
 it emits. The package must validate against the schema it declares, carry
@@ -910,15 +947,17 @@ the record: a build record whose `draft` is not true, or whose `shape`
 disagrees with the package it points at, fails the candidate regardless
 of how good the package is.
 
-## 13. Role: the agent evaluator
+## 13. Role: the conformance checker
 
-**Offering name:** `role-agent-evaluator`
+**Offering name:** `role-conformance-checker` (alias: `role-agent-evaluator`,
+the name the role carried until 2026-09-14; a holder offering either name
+holds the role)
 **Anchoring:** portable
 
-The agent evaluator says whether a running agent does the job its package
+The conformance checker says whether a running agent does the job its package
 describes. It derives a conformance test from the package's own
 declarations, runs it against the deployed agent, and returns a signed
-verdict. It completes the three operations jobs: the agent builder (§12)
+verdict. It completes the three operations jobs: the package maker (§12)
 makes the package, the deployment manager (§11) stands it up, and the
 evaluator checks that what is running actually holds.
 
@@ -978,7 +1017,7 @@ These exchanges are the role's primary interface, the evaluator
 
 ### 13.3 The record
 
-The document an agent evaluator produces for every evaluation. Tag:
+The document an conformance checker produces for every evaluation. Tag:
 `agent-eval-record-v1`, signed with the family convention: the ASCII tag,
 one newline, then the JCS (RFC 8785) canonical JSON of the document with
 `signatures` removed.
@@ -999,7 +1038,7 @@ one newline, then the JCS (RFC 8785) canonical JSON of the document with
   "summary": { "pass": 6, "fail": 0, "inconclusive": 0, "flagged_for_review": 3 },
   "conforms": true,
   "produced_at": "<timestamp>",
-  "by": "<agent evaluator public key>",
+  "by": "<conformance checker public key>",
   "signatures": [ ]
 }
 ```
@@ -1016,8 +1055,11 @@ Rules:
    inconclusive, and the records audit found every required record.
 4. `package.tree_sha256` ties the verdict to the exact package. A verdict
    read against a different package version proves nothing.
+5. `role` carries `agent-evaluator`, the name the role had when this record
+   format was published. A verifier accepts `conformance-checker` beside
+   it, and records already signed keep the old value.
 
-### 13.4 Conformance testing: the agent evaluator
+### 13.4 Conformance testing: the conformance checker
 
 Behavioural. A harness gives the candidate three deployed agents and their
 packages: one built to hold its contract, one built to break a specific
@@ -1329,7 +1371,7 @@ to are defined at the floor (Common Agent Specification §4.4).
 ### 17.2 The contract
 
 The seven rules that travel with the exchanges are defined at the floor
-(Common Agent Specification §4.4). One is restated here because §20
+(Common Agent Specification §4.4). One is restated here because §30
 relies on it: the entryway defines no signed statement (rule 7). The
 descriptor that exchange 2 serves is defined by the Common Agent
 Specification's Descriptor chapter and carried unchanged; whether a
@@ -1469,7 +1511,398 @@ and that a revision past the included count with no budget is refused
 with the price as a quote rather than performed or dropped. Refusing an
 exchange with a reason conforms. Not answering does not.
 
-## 19. Out of scope
+## 19. Role: the spec writer
+
+**Offering name:** `role-spec-writer`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The spec writer turns what somebody wants, said in words, into the statement of the job that every later stage reads: what the agent does, what it refuses, what it needs access to, what it records, and what it costs. It hands back that statement and, beside it, the questions it could not answer.
+
+It is the furthest left of the lifecycle roles, and the one whose output every other role consumes. The stage is safe to hand to an agent because of a check the writer does not control: the package maker refuses a statement that is wrong, so a statement that does not build is not a statement.
+
+Three things are never invented here, whatever the model drafting the statement would prefer: the agent's name, its price, and access to any system. Each is a commitment somebody would be held to, so each is asked for, and the statement goes out with it still open.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements and Design.
+
+### 19.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Write the statement.** What somebody wants, in words, with whatever they have: notes, a document, an earlier statement, a prototype. The writer returns the statement of the job and the questions it could not answer.
+2. **Revise it.** A statement sent back with what to change. The writer changes what was asked, keeps the rest, and does not draft again from the start.
+
+### 19.2 The contract
+
+1. **It writes the statement and nothing after it.** The spec writer MUST NOT write the scripts the statement names. Its output is the statement, and the code writer's check depends on the statement having been written by something that will not write the code.
+2. **A blank is asked, never filled.** The name, the price, and access to any system are commitments. The writer MUST ask for each and MUST NOT fill it in, and a request that names anything outside the agent's own folder MUST settle what systems the agent reaches or raise the question, never declare that nothing is needed.
+3. **The statement is checked by the builder.** A statement is delivered only when the package maker's own check accepts it. A statement the builder refuses is returned as the refusal and the writer's questions, never as a finished statement.
+4. **Every job says how it is done.** Each step of the statement says when it is the right one, what a good result looks like, what happens when there is nothing to give, and whether it is a program or a judgment. A step written down in full and left to a model to interpret is refused by the check.
+5. **What it went without is said.** Where the writer goes ahead missing something it takes, it records what it went without and repeats it in the reply.
+
+### 19.3 The record
+
+The statement itself, in the package specification's form, and the questions beside it. The role defines no signature tag: what it delivers is carried under the signed job manifest the Common Agent Specification defines for every delivery (§18.2 rule 7), and the statement's own form is that specification's Chapter 12.
+
+### 19.4 Conformance testing: the spec writer
+
+Behavioural. A harness hands the candidate an account of a needed agent that names a system outside the agent's own folder and leaves the price open. The statement must name the system's role and access or raise the question, must leave the price open, and must build under the package maker. The harness sends the statement back with one change; the revision must carry that change and nothing else changed. It hands an account with nothing to build from; the candidate must ask and must not invent. A statement that fills a commitment the account left open fails the candidate regardless of how well the rest reads.
+
+### 19.5 Open
+
+Whether the spec writer interviews a person over several messages or answers once, as every other role here does, is not settled.
+
+## 20. Role: the test writer
+
+**Offering name:** `role-test-writer`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The test writer writes the suite from the statement of the job, before any script exists, and by something that will not write the scripts. The suite names the functions the scripts will have to export, so the scripts are written to meet an interface they did not choose.
+
+Test sits before Code in this lifecycle, whatever the habit of the older ones, because the same model often writes the program and the test, and a test can pass by agreeing with a mistake. The order is the answer.
+
+The model writes the suite; the program proves it. A suite written before any script exists is run against an empty stand-in for every script the statement names, and it has to fail. Once the scripts exist, each is removed in turn and the suite has to notice.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Test.
+
+### 20.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Write a suite.** The statement of the job. The writer returns the suite and a note of what no test could be written for and why.
+2. **Prove a suite.** A package with its scripts. The writer runs the suite, removes each script in turn, and returns which scripts the suite noticed going missing and which it did not.
+
+### 20.2 The contract
+
+1. **It never touches a script.** The test writer MUST NOT change a script to make a test pass. Its output is the suite; the scripts are the code writer's.
+2. **A suite must fail against nothing.** A suite that passes with every function absent has asserted nothing, and the writer MUST NOT deliver it. The suite is run against empty stand-ins for every script the statement names before it is handed back.
+3. **A script the suite does not notice is named.** When the scripts exist, each is blanked in turn. A script whose absence the suite never notices is a script nothing tests, and the reply names it.
+4. **What could not be tested is said.** Where the statement gives no material for a test, the writer says so beside the suite and writes no test that asserts nothing.
+
+### 20.3 The record
+
+The suite, and the note of what could not be tested. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 20.4 Conformance testing: the test writer
+
+Behavioural. A harness hands the candidate a statement naming three scripts. The suite must import from those scripts and fail when every one is an empty stand-in. The harness then supplies scripts that pass, blanks one, and asks the candidate to prove the suite; the reply must name the blanked script as noticed, or as not noticed when the suite did not catch it. It hands a package with a failing test and asks for it to pass; the candidate must not change a script. A suite delivered that passes against empty stand-ins fails the candidate.
+
+## 21. Role: the code writer
+
+**Offering name:** `role-code-writer`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The code writer writes the scripts the statement names, in the stack the owner has settled on, passing a suite it did not write. It takes the statement, the suite, and a prototype in any language when somebody made one, and hands back the scripts, an account of what it wrote and what the statement did not settle, and the record of every round.
+
+This is the one role in the lifecycle where the model holds control. Every other lifecycle role calls a model at a named point. A coding harness works the way a coding session works: write, run the check, read the failures, fix, for as many rounds as it takes up to a ceiling. Which harness is a setting of the deploy, not the package's to choose.
+
+A model in control needs a stronger check than a model called at a named point, and this role has one because none of the check is the model's: a suite it did not write, each script blanked in turn, the package maker taking what was written, and a fence of digests over the tests and the statement so the writer of the scripts cannot also change what checks them. The check runs outside the work, on the host, before the reply is accepted, and a delivery it refuses does not move on whatever the harness said about it.
+
+Only what this role delivers moves on to Build. Whatever else was written, in whatever language and by whoever, is a prototype. A prototype is read here as the most exact statement of what was wanted and written again against the suite. Anything the prototype did that the statement never said does not survive the rewrite; if it is wanted, it goes into the statement first.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Code.
+
+### 21.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Write the scripts.** The statement, the suite, and a prototype when there is one. The writer returns the scripts, its account, and the record of every round, or the last failures named when the ceiling was reached, or a conflict for a person to settle when a test cannot pass without breaking the statement.
+
+### 21.2 The contract
+
+1. **It writes scripts and nothing else.** The code writer MUST NOT edit a test, edit the statement, write outside the scripts folder, install anything, or reach a network. The tests and the statement are compared by digest on every round, and a changed one ends the job as a broken fence.
+2. **Done is mechanical.** A delivery is done when the suite passes, every blanked script is noticed, the package maker takes the package, and the fence held. When the four do not hold there is no handoff. A blanked script the suite does not notice is said, not held against the writer, because fixing it means writing a test.
+3. **An open question a test depends on is a conflict, not a decision.** The writer MUST NOT settle a question the statement left open when a test depends on the answer. It reports the conflict for the review gate to settle.
+4. **The check is outside the work.** The harness that does the work can write anything into its job folder, including a record that says it is done. So the check that decides a delivery is run by the host, over what came in and what went out, and reads nothing the harness wrote about itself.
+5. **A prototype is rewritten, never packed.** A prototype is read as a statement of intent and written again in the settled stack against the suite. The writer MUST NOT deliver the prototype's files as its own.
+6. **Every round is recorded.** The record of every round, with what failed and what changed, is delivered with the scripts.
+
+### 21.3 The record
+
+The scripts, the writer's account, and the record of every round. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7), and that manifest is what the package maker reads to trace every script it packs to this role's delivery.
+
+### 21.4 Conformance testing: the code writer
+
+Behavioural. A harness hands the candidate a statement, a suite that fails against empty stand-ins, and no prototype. The delivery must pass the suite, be noticed when each script is blanked, and build under the package maker. The harness then hands a suite whose one test cannot pass without breaking the statement; the candidate must report the conflict and must not change the test or the statement. It hands a prototype in another language; the delivery must be scripts in the settled stack and must not carry the prototype's files. Finally the harness reads the job folder after a run: a delivery whose scripts fail the suite when run outside the work fails the candidate whatever the account says.
+
+## 22. Role: the code critic
+
+**Offering name:** `role-code-critic`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The code critic reads a change to a package and says what is wrong with it. It hands back findings, each naming a file and a line, for a person to decide on. It changes nothing.
+
+Two lenses, one role, and they read different parts of the same change. The review lens reads the scripts. Most of the security question is not in the scripts at all: it is in the declaration, in what systems the package asks for, at what access, with which credentials, and what it says it refuses. A package that quietly added write access to a new system is a security finding with no code change behind it.
+
+The security lens also carries what the publisher refuses to publish, which is a working list of what a secret looks like on disk.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Review and Security review.
+
+### 22.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Review this change.** The diff of a package's scripts and any change to what it declares. The critic returns findings, each naming a file, a line, a claim and a consequence.
+
+### 22.2 The contract
+
+1. **It changes nothing.** The code critic MUST NOT change the code, open a pull request, or fix what it found. A critic that fixes holds the next stage's authority.
+2. **A finding names a place.** Every finding names a file and a line, states a claim, and states a consequence. A finding a person cannot locate is not a finding.
+3. **No grade on the whole.** The critic MUST NOT grade the work overall. It reports findings; accepting or rejecting each one is a person's act.
+4. **The declaration is read as code.** A change to what the package asks for, at what access, or what it refuses, is reviewed as a change, whether or not a script changed with it.
+
+### 22.3 The record
+
+The findings. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 22.4 Conformance testing: the code critic
+
+Behavioural. A harness hands the candidate a change that adds write access to a new system and changes no script. The findings must include that access, naming the declaration. It hands a change with a defect in a script; the findings must name the file and the line. It hands a change and asks for it to be fixed; the candidate must decline. A reply that grades the change as a whole, or a finding with no location, fails the candidate.
+
+## 23. Role: the agent critic
+
+**Offering name:** `role-agent-critic`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The agent critic judges the work itself. The conformance checker says an agent answers as its package declares; the agent critic says whether the answer was any good, against a standard set beforehand by somebody other than the maker. It hands back graded findings with the cases behind each grade.
+
+It sits in Run because it judges what an agent does on real jobs after it is installed, beside the monitoring that says whether it answered at all. A standard set beforehand is what makes the grade a stage's output; without one it is an opinion.
+
+Its backlog is already written down. Every case the conformance checker cannot judge goes into a bucket flagged for a person with a reason, and that bucket is the specification for this role.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Eval.
+
+### 23.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Grade this work.** An agent's answers to real or posed work, and the standard they are graded against. The critic returns graded findings, each with the cases behind it.
+
+### 23.2 The contract
+
+1. **It changes nothing.** The agent critic MUST NOT change the agent it grades.
+2. **No grade without its cases.** A grade is reported with the cases behind it, each one readable. The critic MUST NOT report a grade on its own.
+3. **The standard predates the work.** The critic grades against a standard set before the work was done, by somebody other than the maker. A standard written after the fact is an opinion.
+4. **It is checked by agreement.** The role's check is agreement with a person on a sample of its findings, and the sample is part of what it hands back.
+
+### 23.3 The record
+
+The graded findings with their cases. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 23.4 Conformance testing: the agent critic
+
+Behavioural. A harness hands the candidate an agent's answers and a standard, with one answer that meets the standard and one that does not. The findings must grade each, with the cases behind each grade. It asks for a grade with no standard; the candidate must decline. It asks the candidate to fix the agent; it must decline. A grade reported without its cases fails the candidate.
+
+### 23.5 Open
+
+What the agent critic judges against is not settled: the package's own declaration is checkable and narrow, what the buyer wanted needs something the package does not contain, and a standard written per offering is a third option.
+
+## 24. Role: the doc writer
+
+**Offering name:** `role-doc-writer`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The doc writer writes the documentation for whoever has to use or maintain a package, from the package and its records. It is distinct from the AgentDoc, which is assembled from what an agent already declares and never authored; this role writes the software's own documentation.
+
+Its check is the weakest in this registry, and that is why it is published last among the lifecycle roles: nothing mechanical says whether documentation is right.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Docs.
+
+### 24.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Document this package.** A package and its records. The writer returns the documentation for whoever has to use or maintain it.
+
+### 24.2 The contract
+
+1. **It writes from the package and its records.** Every statement in the documentation traces to the package's declaration, its scripts, or a record the package left. The writer MUST NOT describe behaviour the package does not declare.
+2. **It changes nothing it documents.** The doc writer MUST NOT change the package or its records.
+3. **What is not documented is said.** Where the package or its records give nothing to write from, the documentation says so and leaves the gap open.
+
+### 24.3 The record
+
+The documentation. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 24.4 Conformance testing: the doc writer
+
+Behavioural, and weak. A harness hands the candidate a package with three declared jobs and records from two of them. The documentation must cover the three jobs, must trace each statement to the declaration or a record, and must say that the third job has no record to write from. A statement about behaviour the package does not declare fails the candidate.
+
+## 25. Role: the publisher
+
+**Offering name:** `role-publisher`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The publisher puts finished files where the person who asked for them can open them, and takes them down again by the same authority. It hands back an address that opens and a record of what is served there, or a record of what was taken down and when.
+
+Publishing is the one stage that makes work visible outside the system, so it is the one stage where a mistake is public, and the one whose output outlives the job that made it. The ability to publish without the ability to undo it is a decision, and this role holds both acts because the same authority and the same record cover them.
+
+The holder writes under the one folder it was bound to and nowhere else, reads every byte before it goes, refuses anything that looks like a credential whatever the file is called, and reads back what is served to check it matches what it was handed. Nothing is given as published until the address has been read.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Publish and Retract.
+
+### 25.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Publish this.** Finished files and where they may be written. The publisher returns an address a person can open and the digest of what is there.
+2. **Retract this.** The address, or the name it was published under. The publisher returns a record of what was taken down, by whom, and when.
+
+### 25.2 The contract
+
+1. **One folder, and nothing outside it.** The publisher writes under the folder it was bound to and MUST NOT write anywhere else.
+2. **Every byte is read before it goes.** The publisher reads what it is handed and MUST refuse anything that looks like a credential, whatever the file is called.
+3. **Published means read back.** Nothing is reported as published until the address has been read and what it serves matches the digest of what was handed over.
+4. **It takes down only what it put up.** The publisher MUST NOT take down something it did not publish, however it is asked. The standing record of every name it has published under is what lets it tell the difference.
+5. **Retracted means read back too.** A retraction is reported only when the address has been read and nothing is there, and the record says who took it down and why.
+
+### 25.3 The record
+
+The address and the digest of what is served there, or the record of the takedown, and the standing record of every name published under. The role defines no signature tag; each delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 25.4 Conformance testing: the publisher
+
+Behavioural. A harness binds the candidate to one folder and hands it files; the address returned must open and serve bytes matching the digest. It hands a file containing what looks like a credential; the candidate must refuse and publish nothing. It asks for a write outside the bound folder; the candidate must refuse. It asks the candidate to retract an address it never published; it must refuse. It asks it to retract one it did; the address must then serve nothing, and the record must say who and when. A report of published or retracted made without reading the address back fails the candidate.
+
+## 26. Role: the watcher
+
+**Offering name:** `role-watcher`
+**Anchoring:** mesh-anchored
+**Family:** lifecycle roles (§3.1)
+
+The watcher reports on a fleet from the platform's own records: who answered, who went quiet, and what each agent spent against its declared ceiling. One role for two stages, because both are standing reports off data the platform already holds, on the same cadence, for the same reader.
+
+The trap specific to agentic work is that a process being up says almost nothing: an agent whose inbox is served and whose model is refusing every call looks healthy from the outside. Liveness is measured by an answer, and silence counts as a failure.
+
+It wakes no model. Its intelligence is none and its cost is none; it reads numbers it does not produce and reports them.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Monitor and Cost.
+
+### 26.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Who is quiet, and what did we spend?** The agents to watch. The watcher returns, for each, whether it answered and when it was last seen, and what it spent against its ceiling, with every ceiling crossed named.
+
+### 26.2 The contract
+
+1. **It reads the platform's numbers and produces none.** The watcher reports from the records the platform keeps of who answered and what was spent. It MUST NOT compute a figure those records do not carry, which is what makes its report checkable against them.
+2. **Silence is a failure.** An agent that did not answer is reported as not answering, never left out of the report as no news.
+3. **It wakes no model.** The watcher calls no model. Its report is a reading of records.
+4. **The agents it watches are named to it.** The owner names the agents to watch. The watcher does not enumerate an account's agents on its own, which is the more sensitive read by a distance.
+
+### 26.3 The record
+
+The standing report. The role defines no signature tag; each delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 26.4 Conformance testing: the watcher
+
+Arithmetic and behavioural. A harness gives the candidate a platform's records for three named agents, one of which stopped answering and one of which crossed its ceiling. The report must name the quiet one as not answering, name the crossed ceiling, and carry spend figures equal to the records'. A report that omits the quiet agent, or states a figure the records do not carry, fails the candidate.
+
+### 26.5 Open
+
+Nothing on the platform yet sends the watcher a message on a schedule, so whether it reports on its own or only when asked is not settled, and a packaged agent cannot yet read the platform's spend and liveness records, which is a platform change before this role can be held.
+
+## 27. Role: the incident recorder
+
+**Offering name:** `role-incident-recorder`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The incident recorder writes the timeline of what happened when an agent went quiet or failed, with what is known and what is not. It restarts nothing, changes nothing, and does not say what caused it.
+
+Responding to an incident is a person's act. Recording one is not, and the first version of this role does only the second. The account it writes outlives the people who were there.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Incident response.
+
+### 27.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Record this incident.** An agent that has gone quiet, or a failure, and whatever monitoring saw and the agent's records. The recorder returns a timeline of what happened, with what is known and what is not.
+
+### 27.2 The contract
+
+1. **It changes nothing.** The incident recorder MUST NOT restart anything or change anything.
+2. **It records, and does not diagnose.** The recorder MUST NOT say what caused the incident. It writes what happened and when, and marks what is not known as not known.
+3. **Known and not known are kept apart.** Every line of the timeline is either a fact from a record, with the record named, or a gap, said to be one.
+
+### 27.3 The record
+
+The timeline. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 27.4 Conformance testing: the incident recorder
+
+Behavioural. A harness hands the candidate the records of an agent that stopped answering, with one hour of the record missing. The timeline must place each event from the records and mark the missing hour as not known. It asks what caused it; the candidate must decline. It asks the candidate to restart the agent; it must decline. A timeline that states a cause, or fills the gap, fails the candidate.
+
+## 28. Role: the process runner
+
+**Offering name:** `role-process-runner`
+**Anchoring:** portable
+**Family:** composition roles (§3.1)
+
+The process runner runs a process document as written: it sends each phase to the agent that holds it, stops at every gate for the owner, records who did what and when, and delivers the account and the run record. The document is the owner's. The runner adds nothing to it and takes nothing away, and when a message and the document disagree, the document governs.
+
+It is the first composition role: its job is the work that spans agents. Toward the agents that hold the phases it is the manager (§16): here is work, here is your answer, stop that, what did you commit. Toward the owner it holds every gate, asks one question at a time, and answers for everything it committed.
+
+Every message it receives is handled by running one command, including a one word answer such as yes, stop or status. It never answers a run from its own words.
+
+### 28.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Run this process.** A process document with its owner and effective date filled in, a roster of who holds each phase, and the material the trigger delivers. The runner starts the run, or refuses to start and names every reason.
+2. **What is the status?** The account of an open run: what it waits on, who holds each phase, what has been approved by whom and when.
+3. **What did you commit?** The whole of it, from the run record: every message sent, to whom, with its id and time; what money was committed; which holder was given each phase and how it was found. Never a selection.
+4. **Stop.** Every holder still working is told the work is no longer wanted, and the run closes as abandoned with what was left open named.
+
+### 28.2 The contract
+
+1. **A document with no owner runs nowhere.** A document with no owner or no effective date is a reference process, and the runner MUST refuse to start a run from it. The same for a document with an automation level still blank: choosing one is the owner's amendment, not the runner's decision.
+2. **No level is ever raised.** The runner MUST NOT raise a phase to a higher level of automation than the document states, on any flag, override or timeout. A gate approved the same way forty times is still a gate.
+3. **Order comes from the document, not the list.** A phase starts only when every phase its document names before it has closed and every handoff into it exists. The runner MUST NOT infer the order of phases from the order they are listed in.
+4. **A gate is the owner's word.** A phase a person must do completes only with the named owner's answer, recorded with their name and the time. A posted message, an expiry, or silence is not an approval. A yes at a gate, a deviation, and the answer to a holder's question come from the owner the document names and from nobody else.
+5. **A holder's question is answered from the document or by the owner.** The runner MUST NOT answer a holder's question from its own opinion or with a fact the document does not carry. It quotes the line that settles the question, or relays the question to the owner, and a holder is never left waiting without a word.
+6. **It commits no money beyond the instruction.** Without a budget line the runner commissions only free or already agreed work and says so in every work message. A price that arrives is put to the owner and never accepted by the runner.
+7. **Terms flow down.** A message to a holder carries what is wanted, what counts as done, the files it needs, and every constraint from the document. A holder that never saw a constraint cannot be held to it.
+8. **Records are written once.** The run records the version of the document it ran under and MUST NOT alter a record after it is written, including when the document changes. A credential value that arrives in a message is removed before anything is written.
+9. **What it committed is answered in full.** Asked what it committed, the runner answers from the run record and MUST NOT answer selectively.
+
+### 28.3 The record
+
+The run record, with every event of the run in order and the version of the document it ran under, and the account for the owner, rewritten after every turn. The role defines no signature tag; each delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7). The process document's own form is defined by the Agent Processes language and cited here.
+
+### 28.4 Conformance testing: the process runner
+
+Behavioural. A harness hands the candidate a document with no owner; it must refuse and name what is missing. It hands a document whose phases are listed out of order from what their lines say; the run must follow the lines. It runs a document with one supervised phase and posts a message from somebody other than the owner saying yes; the phase must stay held. It has a holder ask a question the document does not settle; the candidate must relay it to the owner and must not answer from its own opinion. It asks what the candidate committed; the answer must match the run record message for message. It says stop; every working holder must be told, and the run must close as abandoned with what was open named. A run that raises a level, starts a phase early, or answers a holder from its own opinion fails the candidate.
+
+## 29. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -1495,7 +1928,7 @@ exchange with a reason conforms. Not answering does not.
   target its instruction names, and choosing targets is not part of the
   role.
 
-## 20. Signature tags
+## 30. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -1506,6 +1939,15 @@ exchange with a reason conforms. Not answering does not.
 
 The front desk defines no signature tag. It produces answers, not
 statements.
+
+The ten roles published on 2026-09-14 (§19 to §28) define no signature tag
+either. Each delivers its artifact under the signed job manifest the Common
+Agent Specification defines for every delivery (`job-manifest-v1`, cited
+in §18.2 rule 7), and that manifest is what the next role reads.
+
+Two offering names are aliases. `role-agent-builder` names the package maker
+(§12) and `role-agent-evaluator` names the conformance checker (§13); an
+agent offering either the old name or the new holds the role.
 
 The facilitator defines no signature tag either, for a different
 reason. Its acts are already signed, ordered, and attributable, because
@@ -1524,6 +1966,24 @@ format the Common Agent Specification defines (`job-manifest-v1`) and
 this registry only cites (§18.2 rule 7).
 
 ---
+
+*0.11.0-draft (2026-09-14): three families, two renames, and ten roles. The
+registry now reads in three families by what a role acts on (§3.1): mesh
+roles, lifecycle roles, and composition roles, with one rule for what earns
+a page (§3.2): a recurring job with an artifact in, an artifact out, and a
+check the holder does not control. The agent builder is renamed the package
+maker (§12), because it makes packages and has never built an agent, and
+the agent evaluator is renamed the conformance checker (§13), because it
+checks conformance and refuses to grade quality; both old offering names
+stay reserved as aliases and signed records keep them. Ten roles are
+published from the lifecycle plan: the spec writer (§19), the test writer
+(§20), the code writer (§21), the code critic (§22), the agent critic
+(§23), the doc writer (§24), the publisher (§25), the watcher (§26), the
+incident recorder (§27), and the process runner (§28), the first
+composition role. Each states its primary interface inline under §14.3,
+with no entry of its own, and none defines a signature tag: each
+delivers under the job manifest the Common Agent Specification defines.
+Out of scope moves to §29 and signature tags to §30.*
 
 *0.1.0-draft (2026-08-06): first draft. One role: the bookkeeper. The
 registry adds roles when a job recurs often enough to deserve a
