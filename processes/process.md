@@ -36,7 +36,8 @@ trigger: <what starts a run, and who may start one>
 concurrency: <one run at a time | runs may overlap>
 goal: <what exists when a run is done>
 phases:
-  <name> - <runs|convenes|system:|human:> <what>   owner: <who>
+  <name> - <runs|runs process|convenes|system:|human:> <what>
+           owner: <who>
            after: <phase names, or trigger>        by: <deadline>
            automation: <manual|assisted|supervised|autonomous|never>
 run-scoped:
@@ -108,11 +109,18 @@ Deadlines belong in the process rather than in a run because they are
 usually policy: payroll has a legal deadline, an access revocation has a
 security one.
 
-A phase resolves to exactly one of four things:
+A phase resolves to exactly one of five things:
 
 - **`runs <work pattern>`** - the phase is a whole sub-job with its own
   plan and its own close. The process names what comes out and never
   reaches inside.
+- **`runs process <id> v<n>`** - the phase starts a run of another of
+  your processes and waits for that run to close. It names what comes
+  out, which has to be something the other process's goal says a run
+  produces, and never reaches inside. Your roster names who holds the
+  other process's roles as well as this one's, so the whole cast is
+  decided before anything starts. A process never runs itself, directly
+  or through another.
 - **`convenes <collab pattern>`** - the phase is one room, running an
   [Agent Collab](https://github.com/jeffrschneider/agentcollab) playbook
   as written.
@@ -156,8 +164,9 @@ management runs for the whole campaign. A budget is watched from the
 first purchase to the last invoice. Replies from the public are fielded
 whenever they arrive, for as long as the work is live.
 
-These lines are run-scoped. They resolve to the same four things a phase
-does, and they carry the same automation level, but instead of `after:`
+These lines are run-scoped. They resolve to the same things a phase
+does, except that a run-scoped line never runs a process, and they
+carry the same automation level, but instead of `after:`
 edges they carry either a cadence (`every: 7 days`) or an event
 (`on: a reply arrives`), plus `from:` and `until:` lines that say when
 they are live. `until: run close` is the common case.
@@ -216,7 +225,9 @@ them, amendments come from whoever complained most recently.
 
 Processes connect without merging. `fed by` names the processes whose
 output this one consumes; `feeds` names the ones that consume this one's.
-Both cite ids.
+Both cite ids. They describe one process starting after another has
+finished. A phase that runs a process is different: this run waits for
+that one to close before it goes on.
 
 Two processes that feed each other in a loop are usually one process with
 a cycle in it, or two processes with a queue between them. Say which.

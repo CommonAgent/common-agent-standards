@@ -1,17 +1,25 @@
 # Agent Processes Specification
 
-**Version:** 0.2.0-draft
+**Version:** 0.3.0-draft
 **Status:** Working Draft
-**Date:** 2026-08-22
+**Date:** 2026-09-15
 
-**This revision.** Four documents in the corpus were upgraded against
-0.1.0-draft. Doing that produced twenty-five findings about what the
-format could not say, and eighteen of them are answered here. Every
-obligation this revision adds was checked against all 169 reference
-processes before it was written. Where the corpus does not already do
-the thing, it is written as SHOULD or MAY rather than as MUST, on the
-principle that an obligation the corpus fails is a bug in the
-obligation.
+**This revision.** A phase can now run another process and wait for its
+run to close (Section 6.3.1). Processes are published to be reused, and
+the corpus already holds one written to be started by others:
+`ref/mkt/approve-marketing-material` fires when "another process submits
+finished material at a version" and hands its clearance back to "the
+submitting process". Until this revision the submitting side had no way
+to say that it waits. No document in the corpus uses the new form yet,
+so every obligation it brings binds only a document that does, and no
+reference process fails one.
+
+0.2.0-draft answered eighteen of the twenty-five findings that came from
+upgrading four documents against 0.1.0-draft. Every obligation it added
+was checked against all 169 reference processes before it was written,
+and where the corpus did not already do the thing it was written as
+SHOULD or MAY rather than as MUST, on the principle that an obligation
+the corpus fails is a bug in the obligation.
 
 A process document says how work actually gets done: what happens, in what
 order, who does each part, what passes between them, where a person has to sign,
@@ -74,6 +82,10 @@ to a close, owned by an organization and in force from a date.
 blank, published to be adopted rather than run. Specified in section 15.
 
 **Run.** One execution of a process, from its trigger firing to its close.
+
+**Inner run.** A run of another process that a phase of this one starts
+and waits for. The run that phase belongs to is the outer run
+(Section 6.3.1).
 
 **Phase.** One step of the work, named, with a way it resolves and a place in
 the graph. The activity table and the phase list describe the same steps.
@@ -502,13 +514,18 @@ why.
 
 ### 6.3 How a phase resolves
 
-A phase MUST resolve to exactly one of four forms, and it MUST name that
+A phase MUST resolve to exactly one of five forms, and it MUST name that
 form immediately after the dash.
 
 **`runs <pattern>:`** The phase is a whole sub-job with its own plan and
 its own close, running a work pattern. The process names what comes out
 of it and MUST NOT reach inside it. The corpus writes
 `runs assessment:`, `runs collect-and-report:`, `runs build-by-talent:`.
+
+**`runs process <id> v<n>:`** The phase starts a run of another process
+and waits for that run to close. The process names what comes out of it
+and MUST NOT reach inside it. Section 6.3.1 says what the form obliges.
+No document in the corpus writes it yet.
 
 **`convenes <pattern>:`** The phase is one room, running a collab
 playbook as written. The corpus writes `convenes approval:`,
@@ -529,7 +546,170 @@ The same pattern name MAY appear after `runs` in one phase and after
 `convenes` in another. `roll-call`, `assessment`, `bake-off` and
 `decide-and-announce` all do in the corpus. A translator MUST NOT infer
 the family of a pattern from its name; the verb says which family is
-meant.
+meant. The word `process` after `runs` always marks the fifth form, and
+a translator MUST NOT read it as a work pattern named `process`.
+
+### 6.3.1 A phase that runs another process
+
+A phase that runs another process names the other document by its id
+and a version, and says what comes out:
+
+```
+  clear-posts      - runs process acme-mkt/approve-material v2: the
+                     posts cleared at one version, with the clearance
+                     record
+                     owner: campaign-manager   after: produce-posts
+                     by: 5 days                automation: autonomous
+```
+
+The corpus's `ref/mkt/social-campaign` convenes its own sign-offs, so
+that phase is not in it. The phase shows how an organization's adoption
+of it, `acme-mkt/social-campaign`, would instead hand its posts to the
+same organization's adoption of `ref/mkt/approve-marketing-material`, a
+process whose trigger already reads "another process submits finished
+material at a version". In this section the run that phase starts is the
+**inner run**. Its document is the **inner document**. The run the phase
+belongs to is the **outer run**.
+
+**What it cites.** The phase MUST name the inner document by its id and
+a version, never by its name (Section 4). The inner document MUST be one
+a run can start from, with an owner and an effective date, which a
+reference process does not have (Section 4, and Section 15.2's list of
+what a reference process lacks), so a phase MUST NOT run one. The version is the one
+the outer document was written against. It does the job the version in
+a `from:` line does (Section 18.4): it makes drift visible, and it binds
+nothing. The inner run runs under the inner document's effective
+version, as every new run does (Section 18.3), because an organization
+that amends its approval process means the amendment to govern every
+approval from that day, including the ones another process asks for.
+Where the effective version is not the one the phase cites, a runtime
+MUST record both in the outer run's record of the phase and MUST say so
+where the person running the outer process will see it. An amendment can
+change what a run of the inner document produces, and the outer phase
+finds that out at the close, when what it names does not arrive. Saying
+early that the version has moved is what gives somebody the chance to
+read the amendment before the run gets there.
+
+**What goes in.** Starting the phase fires the inner document's trigger.
+The handoff into the phase is what that trigger names, and Section 8.4
+does not let the phase begin until it exists.
+
+The same trigger fires for other reasons, and the inner run has to know
+which it was, because the cast comes from a different place in the two
+cases. The mark is the one the records already carry: an inner run's
+`RUN` record names the outer run and the phase that started it, written
+by the side that started it (Records, below). A runtime MUST fill an
+inner run's cast from the outer roster where that line is present, and
+MUST NOT where it is absent, and MUST NOT infer either from the trigger
+event, which looks the same from the outside.
+
+A firing is a firing, so the inner document's `concurrency:` line decides
+what happens when a run of it is already in flight (Section 5.3). A
+firing that line refuses leaves the phase unable to complete. Where the
+line queues the firing, the phase's own `by:` runs from the firing and
+not from the moment the queued run starts. Where the line joins the
+firing to a run already in flight, that run's cast governs, whatever
+filled it, and a runtime MUST record that the phase waits on a run it did
+not cast.
+
+**What comes out, and nothing else.** What the outer document names as
+coming out of the phase MUST be something the inner document's `goal:`
+says exists when a run closes. The outer document MUST NOT reach inside
+the inner one: none of its `after:`, `by:`, `not-before:`, handoff,
+deviation, grant, or run-scoped `from:` and `until:` lines names a
+phase, a handoff key or a record key of the inner document. The inner
+document's phases, grants, policy and failure edges govern the inner
+run, and the outer document grants it nothing.
+
+**When the phase closes.** The phase closes when the inner run closes, by
+the inner document's own rules and with its run-scoped lines closed
+(Section 9.3), and what the outer document names as coming out of the
+phase is in that run's `result:`. Where it is not, the phase has stopped
+without finishing, and the outer document's exception edges and failure
+edges say what happens next, as they do for any phase that cannot
+complete. Two ways an inner run reaches that state are worth naming: a
+run recorded `abandoned` (Section 13.5), and a run that ended at an
+exception phase, which on its own side has ended rather than failed
+(Section 6.5.1) and still leaves the outer phase with nothing to hand
+on. A deviation that returns to the phase starts a new inner run. It
+never reopens the one that closed.
+
+A `by:` on the phase binds the phase and does not shorten the inner run,
+which runs under its own deadlines until it closes. A missed deadline is
+the outer document's failure edge (Section 6.6), and where that edge
+stops the outer run, the paragraph on abandoning the outer run applies.
+
+**The cast.** The outer roster names who holds the inner document's
+roles (Section 10.1), so the whole cast of both runs is decided before
+the outer trigger fires. A runtime MUST fill the inner run's cast from
+the outer roster, the inner document's own roster does not apply to that
+run, and a runtime MUST NOT start an inner run with a role nobody holds.
+An amendment to the inner document can add a role the outer roster was
+written before anyone had heard of, and a runtime that meets one refuses
+the inner run and records the refusal rather than casting the role
+itself. That refusal is the cost of the version rule above, and it is
+why a version that has moved is shown to a person rather than logged.
+
+**Automation.** Each inner phase runs at the level its own document
+states or at the outer phase's level, whichever is lower on the ladder
+of Section 7, and a `never` phase in the inner document stays `never`.
+The outer level can lower the level an inner phase runs at and can never
+raise it. At `supervised`, a person also approves the inner run's result
+before it is handed on (Section 7.3). A phase that runs a process MUST
+NOT be written at `never`. A runtime holds a `never` phase until a named
+person acts (Section 7.1), and the inner document has already put its
+gates where its own author wanted them; one more gate around the whole
+run either repeats them or stops work the inner document settled. A gate
+on what the inner run produced is a phase of its own, after it.
+
+**No process runs itself.** A process MUST NOT run itself, directly or
+through any chain of processes it runs. The check is by id, whatever
+versions are cited, and a document whose chain returns to its own id is
+not conformant. A reader checks it by following the `runs process` lines
+from document to document until the chain ends or comes back.
+
+That check is good as of the documents a reader has open, and an
+amendment to a document further down the chain can create a cycle
+afterwards without anybody editing the document at the top of it. So a
+runtime MUST refuse to start an inner run whose document is already in
+the chain of runs that started it, and MUST record the refusal. The
+document check and the runtime check are both needed, and neither
+replaces the other.
+
+**Across organizations.** A phase runs a document the organization runs
+itself. Work inside a counterparty is not a phase of this document, and
+a counterparty's process is a second document that meets this one at a
+boundary (Section 19.1). Nothing in the format names an organization, so
+this is a rule an author keeps and a reader checks by reading the two
+documents' owners. A runtime cannot test it.
+
+**Records.** The inner run leaves its own records under its own
+document, from its `RUN` record to its `RUN DONE` (Section 13), and the
+`trigger:` line of its `RUN` record names the outer run and the phase
+that started it. The outer run's record of the phase names the inner
+run, the version it ran under and its outcome, and MUST NOT copy the
+inner run's records into its own.
+
+**Abandoning the outer run.** An outer run that is abandoned while an
+inner run it started is still open MUST NOT leave that inner run open
+with nobody running it (Section 13.5). The inner run is abandoned with
+it, and the inner document's abandonment edge says what that costs,
+unless the outer document's abandonment edge names who takes over the
+inner run.
+
+**In a reference process.** The id is a blank that names the reference
+process it expects, and the version is a blank like any other number
+(Section 15.2):
+
+```
+  clear-posts      - runs process <your adoption of
+                     ref/mkt/approve-marketing-material> v<n>: …
+```
+
+Which document an adopter runs, and at which version, is the adopter's
+decision (Section 15.4). Adopting the outer document includes filling
+both blanks with a document the adopter runs, and a runtime MUST NOT
+start a run against a document that still carries either of them.
 
 ### 6.4 `owner:`
 
@@ -999,6 +1179,11 @@ and both stop being trusted.
 Run-scoped lines are not phases. They MUST NOT appear in the activity
 table and MUST NOT be counted against it.
 
+A row for a phase that runs another process (Section 6.3.1) MUST name
+that document's id. One row commits a second document's whole cast
+(Section 10.1), and a reader of the table alone would otherwise see one
+owner where there is a second roster.
+
 ### 6.10 The diagram
 
 A document SHOULD carry a diagram of the graph. All 169 documents in the
@@ -1375,8 +1560,11 @@ reads as if nobody is watching between handoffs.
 
 ### 9.1. The line
 
-A run-scoped line resolves to the same four things a phase does, and it
-names an owner. Quoted from `ref/mkt/display-retargeting`:
+A run-scoped line resolves to one of the forms a phase does, except
+running a process, and it names an owner. A run-scoped line MUST NOT run
+a process: a process that ought to run on a cadence while this one is
+live has a trigger of its own (Section 5), and nothing in this graph
+waits for it. Quoted from `ref/mkt/display-retargeting`:
 
 ```
 run-scoped:
@@ -1508,6 +1696,12 @@ running anywhere and has nobody to name. Quoted from
 
 An adopted process names a holder for each role. That is part of what
 adoption is.
+
+**Where a phase runs another process** (Section 6.3.1), the roster MUST
+also account for every role the inner document names, and every role of
+any process that document runs in turn. The inner run fills its cast
+from here. In a reference process the unbound roster names those roles
+among the ones the adopter has to fill.
 
 ### 10.2. Systems
 
@@ -1841,6 +2035,7 @@ Each phase leaves the record its own level produces:
 | The phase | What it leaves |
 |---|---|
 | `runs <work pattern>` | the sub-job's plan and its `JOB DONE` |
+| `runs process <id> v<n>` | one line naming the inner run, the version it ran under and its outcome; the inner run keeps its own records (Section 6.3.1) |
 | `convenes <collab pattern>` | that pattern's `CONVENED` and `DONE` records |
 | `system: <action>` | one line: what happened, when, and what did it |
 | `human: <action>` | one line: what happened, when, and who did it |
@@ -2234,6 +2429,11 @@ translator that reports nothing is usually a translator that lost these:
   survive as a schema. Why they are required does not.
 - **The measures.** A runtime that reports its own cycle time is not
   reporting the same thing the document asked to be measured.
+- **A phase that runs a process.** A translator that copies the inner
+  document's phases into the outer graph has reached inside it, dropped
+  the version the phase cites, and merged two runs' records into one.
+  It SHOULD render the inner run as a run of its own, and report it
+  where the target cannot.
 
 ### 16.3 Blanks
 
@@ -2293,6 +2493,13 @@ A conforming process document:
   declared in the same document or a counterparty role named in the
   roster (Section 19.2), and a receiving side that is either a declared
   phase or a destination outside this process (Section 8.2);
+- for every phase that runs a process, cites the inner document by id
+  and version, names as its output something the inner document's goal
+  says exists, names nothing inside the inner document, and starts no
+  chain of processes that comes back to its own id (Section 6.3.1); the
+  first three a reader checks with both documents open, and the last by
+  following the `runs process` lines through every document in the
+  chain;
 - satisfies every MUST in sections 4 to 13.
 
 The handoff check is the one a second implementer gets wrong, because a
@@ -2333,7 +2540,7 @@ with its own id, a version 1 and a `from:` line (section 15.6).
 
 A runtime is whatever carries out a run: a workflow engine, an agent, a
 person with the document open, or any combination (section 2). It
-conforms by what it does with four sets of obligations.
+conforms by what it does with five sets of obligations.
 
 **The graph (section 6).** A runtime MUST NOT begin a phase before every
 phase its `after:` line names has closed. A runtime MUST allow phases
@@ -2363,6 +2570,14 @@ phase finishes has skipped the part where somebody was watching.
 requires, and MUST record the version of the document the run ran under.
 A runtime MUST NOT alter a record afterwards, including when the
 document changes (section 18).
+
+**Inner runs (section 6.3.1).** A runtime MUST start an inner run only
+when the handoff its phase takes in exists, fill the inner run's cast
+from the outer roster, run no inner phase above the lower of its own
+level and the outer phase's level, close the phase only when the inner
+run closes having reached its goal, refuse an inner run whose document
+is already in the chain of runs that started it, and MUST NOT leave an
+inner run open when the outer run is abandoned.
 
 Nothing in this specification enforces a run. A process is not
 enforceable, and nothing holds a run to the graph except the records it
