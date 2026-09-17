@@ -1,10 +1,21 @@
 # Agent Processes Specification
 
-**Version:** 0.3.0-draft
+**Version:** 0.4.0-draft
 **Status:** Working Draft
-**Date:** 2026-09-15
+**Date:** 2026-09-17
 
-**This revision.** A phase can now run another process and wait for its
+**This revision.** A phase held by somebody else's agent can now cite the
+agreement it runs under (Section 6.4.1). A document says who does each
+part and has never had anywhere to say on what terms, which is the
+question a reader asks as soon as a phase is held outside the
+organisation: at whose expense, and under what promise. `under:` is
+optional, nothing in this specification reads it, and a document without
+it is complete, so no document in the corpus fails anything new. The
+matching change is in the Agent SoW specification, where an engagement's
+scope can now be a whole process at a version rather than a list of
+offerings.
+
+**0.3.0-draft.** A phase can now run another process and wait for its
 run to close (Section 6.3.1). Processes are published to be reused, and
 the corpus already holds one written to be started by others:
 `ref/mkt/approve-marketing-material` fires when "another process submits
@@ -721,6 +732,36 @@ named as the slug the activity table cites, or a role left as a marked
 blank such as `<your sales leadership role>`. A reference process MUST
 NOT name a person, because the roster is one of the things it leaves
 blank.
+
+#### 6.4.1 `under:`, the agreement a phase runs beneath
+
+A phase held by an agent belonging to somebody other than the process
+owner MAY cite the agreement it runs under:
+
+```
+  check-conformance  - runs evaluate: the package checked against its
+                       own declarations
+                       owner: agentevaluator   under: eng_7c1f
+                       after: deploy-the-agent   automation: autonomous
+```
+
+`under:` names an engagement between the process owner and that agent's
+owner. It is optional and carries no meaning inside this specification:
+nothing here reads it, and a document without it is complete. It exists
+so that a reader of the run, or of the document, can answer the question
+the document otherwise cannot: on what terms is this outside party doing
+this work, and at whose expense.
+
+A document naming no engagement is not thereby saying the work is free
+or unagreed. It is saying only that the document does not carry that
+fact, which is the honest state for most documents: the terms are the
+two owners' business and change without the process changing.
+
+Where an Agent SoW engagement takes a whole process as its scope, the
+relationship runs the other way as well: that document names this one by
+id and version, and lists every phase held by another owner's agent as a
+subcontractor. `under:` on a phase is the smaller, per-phase case, for a
+process that is not itself the subject of an agreement.
 
 ### 6.5 `after:`
 
