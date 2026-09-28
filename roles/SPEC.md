@@ -1,8 +1,8 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.11.0-draft
+**Version:** 0.12.0-draft
 **Status:** Working Draft
-**Date:** 2026-09-14
+**Date:** 2026-09-28
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
@@ -636,7 +636,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §29, is that the records
+    family's line, quoted in §2 and again in §30, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -1371,7 +1371,7 @@ to are defined at the floor (Common Agent Specification §4.4).
 ### 17.2 The contract
 
 The seven rules that travel with the exchanges are defined at the floor
-(Common Agent Specification §4.4). One is restated here because §30
+(Common Agent Specification §4.4). One is restated here because §31
 relies on it: the entryway defines no signed statement (rule 7). The
 descriptor that exchange 2 serves is defined by the Common Agent
 Specification's Descriptor chapter and carried unchanged; whether a
@@ -1902,7 +1902,86 @@ The run record, with every event of the run in order and the version of the docu
 
 Behavioral. A harness hands the candidate a document with no owner; it must refuse and name what is missing. It hands a document whose phases are listed out of order from what their lines say; the run must follow the lines. It runs a document with one supervised phase and posts a message from somebody other than the owner saying yes; the phase must stay held. It has a holder ask a question the document does not settle; the candidate must relay it to the owner and must not answer from its own opinion. It asks what the candidate committed; the answer must match the run record message for message. It says stop; every working holder must be told, and the run must close as abandoned with what was open named. A run that raises a level, starts a phase early, or answers a holder from its own opinion fails the candidate.
 
-## 29. Out of scope
+## 29. Interface: the lifecycle
+
+An agent can be asked to pause, resume, and stop, and it does what it is
+asked, including work it was doing off the mesh.
+
+An owner or an operator who needs an agent to stop can cut it off from
+the mesh. That stops its messages. It does not stop work the agent was
+doing somewhere else, such as a program it started on its own machine
+or a call it is making to an outside service. Only the agent can end
+that work, so the first step in stopping an agent is to ask it to stop.
+This interface says how that request is made and what the answer must
+say. A caller that also plans to cut the agent off from the mesh SHOULD
+send the request first, before it cuts the connection.
+
+Two parties may ask: the agent's owner, and the operator of the mesh the
+agent is on. Anyone else is refused, and nothing changes.
+
+Standard interface name `interface-lifecycle`. Portable.
+
+### 29.1 The exchanges
+
+1. **Pause.** The answer MUST say the agent is paused and how many
+   pieces of running work it stopped. From then on the agent takes no
+   new work and sends nothing until it is resumed.
+2. **Resume.** The answer MUST say the agent is running again, or refuse
+   with the reason. Work the pause stopped does not restart; the agent
+   takes new work again.
+3. **Stop.** The answer MUST say the agent is stopped and that every
+   piece of work it had was stopped, on the mesh and off it.
+4. **Are you running?** The answer MUST say running, paused, or stopped,
+   and how much work is running.
+
+Each request is a plain text message. The first line is exactly
+`agentmesh-lifecycle/v1`. The second line names the request: `pause`,
+`resume`, `stop`, or `status`. Anything after that is the reason, which
+is optional. The answer names the interface and the state, and a
+refusal says so and gives the reason. The definition file for this
+interface carries a `wire` member naming the first line and the shape.
+This is the second place the registry names wire-level text (the first
+is §18.1), and it does so because the request has to be recognized from
+its first line alone, before anything else about it is read.
+
+### 29.2 The contract
+
+1. **Only the owner and the operator.** A request from anyone else MUST
+   be refused, and the agent's state MUST NOT change.
+2. **A pause stops the work that is running.** That includes work the
+   agent was doing off the mesh. A paused agent MUST take no new work
+   and send nothing until it is resumed.
+3. **A stop ends everything.** That includes work the agent was doing
+   off the mesh.
+4. **Only the operator lifts the operator's pause.** A resume from the
+   owner of an agent the operator paused MUST be refused with that
+   reason.
+5. **The status answer reports the agent's actual state.** After a
+   pause, a resume, or a stop, the status exchange MUST report the
+   change, and the work count MUST match what is running, on the mesh
+   and off it.
+6. **A refusal gives its reason.** Refusing is an answer. Not answering
+   is not.
+7. **No document of its own.** This interface defines no signed
+   statement and no signature tag.
+
+### 29.3 Conformance testing: the lifecycle
+
+Behavioral. A test asks for status and expects running. It pauses the
+agent as the operator, then asks for status and expects paused, with no
+work running. It sends a pause from a stranger and expects a refusal. It
+resumes the agent as the operator and expects running. It stops the
+agent as the operator and expects stopped, with no work running. The
+test checks status after each change instead of trusting the agent's own
+report, and it counts running work itself, separately from the agent.
+Refusing with a reason conforms where refusing is the right answer. Not
+answering does not conform. Answering without doing what was asked does
+not conform either. The reference check is
+`fleet-manager/runtime/fleet/lifecycle-check.mjs` in the AgentMesh
+repository; it does not depend on how messages are carried, so it runs
+the same way in a test and against a live agent on the mesh.
+
+## 30. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -1920,7 +1999,11 @@ Behavioral. A harness hands the candidate a document with no owner; it must refu
 - How an exchange is carried. An interface defines what is asked and
   what the answer must contain, never the wire format, the transport, or
   the encoding. Two implementers on different networks conform or do
-  not conform on the same terms.
+  not conform on the same terms. Two interfaces name wire-level text
+  that is defined elsewhere or has to be recognized on sight: revisable
+  work names request types the Common Agent Specification defines
+  (§18.1), and the lifecycle names the first line of its requests
+  (§29.1).
 - Scheduling, placement, and fleet operations. §16 states what a manager
   owes a worker. How it decides which worker, in what order, on which
   machine, is where implementations are supposed to differ. The
@@ -1928,7 +2011,7 @@ Behavioral. A harness hands the candidate a document with no owner; it must refu
   target its instruction names, and choosing targets is not part of the
   role.
 
-## 30. Signature tags
+## 31. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -1955,17 +2038,27 @@ each one is a signed message in the conversation's record. A minutes
 document would be a second, weaker copy of what the record already
 holds.
 
-Six of the seven interfaces define no signature tag, and for the same
+Seven of the eight interfaces define no signature tag, and for the same
 reason as each other. An interface is a way two parties talk. What is
 worth signing is what somebody committed, and that belongs to the job
 holding the interface rather than to the interface itself (§15.2 rule 6,
-§16.2 rule 8, §17.2 rule 7). The seventh, revisable work (§18), defines
+§16.2 rule 8, §17.2 rule 7, §29.2 rule 7). The eighth, revisable work (§18), defines
 no tag either, but it obliges a signed document: every completion
 carries a job manifest signed by the implementer's own key, under a
 format the Common Agent Specification defines (`job-manifest-v1`) and
 this registry only cites (§18.2 rule 7).
 
 ---
+
+*0.12.0-draft (2026-09-28): an eighth interface: the lifecycle (§29).
+An agent can be asked to pause, resume, and stop, and it does what it is
+asked, including work it was doing off the mesh, which cutting it off
+from the mesh cannot reach. Only the agent's owner and the operator of
+its mesh may ask, and a pause the operator placed is lifted only by the
+operator. The definition file names the first line of each request,
+`agentmesh-lifecycle/v1`, the registry's second exception to the rule in
+§30 that it never names a wire format. Out of scope moves to §30 and
+signature tags to §31.*
 
 *0.11.0-draft (2026-09-14): three families, two renames, and ten roles. The
 registry now reads in three families by what a role acts on (§3.1): mesh
