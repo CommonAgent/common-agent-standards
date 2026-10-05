@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.13.0-draft
+**Version:** 0.13.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-05
 
@@ -147,10 +147,9 @@ registry, not a rank, and a role belongs to exactly one.
   (§20), the code writer (§21), the code critic (§22), the package maker
   (§12), the deployment manager (§11), the conformance checker (§13), the
   agent critic (§23), the doc writer (§24), the publisher (§25), the
-  watcher (§26), the incident recorder (§27), and the ledger (§31). Each
+  watcher (§26), and the incident recorder (§27). Each
   holds one or more stages of the lifecycle mapped at
-  https://agenticdevelopment.ai, and its chapter names them. The ledger
-  is the exception: it holds no stage and keeps the record beside them.
+  https://agenticdevelopment.ai, and its chapter names them.
 - **Composition roles** act on work that spans agents: the process runner
   (§28), and later whatever holds decomposing an ask into members.
 
@@ -2014,7 +2013,7 @@ Both answers end with what has to be redone and what can be reused, and what the
 2. **It calls no model.** The comparison and the answers follow written rules. The same two versions and the same dependents MUST give the same report.
 3. **Every dependent is named.** Every dependent the analyst knows of, whether declared or seen in the record of who called the agent, appears in the report with where it was found. None is left out. A source of dependents it could not read is named as not read.
 4. **A change a dependent would notice is never called compatible.** Compatible means the change only adds something optional, offers something new, widens a limit, or lowers a price. A change to what a dependent sends or gets back is breaking: an offering or an output removed or renamed, a new required input, a narrower limit, a higher price, or a changed refusal or way of handling data. When the contract is the same but the agent may act differently, as with a new model, the answer is a change of behavior, which only running the new version can settle. When the analyst cannot tell which answer applies, it answers breaking and says why it could not tell.
-5. **It files what is owed.** For each dependent whose answer is breaking or a change of behavior, the analyst files an item with the ledger (§31): a change dependency debt, owed to that dependent's owner.
+5. **It files what is owed.** For each dependent whose answer is breaking or a change of behavior, the analyst files an item in the ledger, a platform service rather than a role (§31 is withdrawn): a change dependency debt, owed to that dependent's owner.
 6. **It does not judge the change.** The analyst MUST NOT say whether the change is worth making, and MUST NOT run the new version. Running it against what each dependent counts as done is the evidence half, and it belongs to the conformance checker (§13) once the new version exists.
 
 ### 30.3 The record
@@ -2025,48 +2024,14 @@ The impact report. The role defines no signature tag; the delivery travels under
 
 Mechanical. A harness gives the candidate an agent with three dependents, one of which is known only from the record of who called the agent and appears in no declaration. It then proposes three changes in turn. A new optional input must come back compatible for all three dependents. Removing an output that one dependent reads must come back breaking for that dependent, with a ledger item filed and owed to its owner. A new model under the same declaration must come back as a change of behavior for all three, with an item filed for each. The harness runs every case twice, and the two reports must match. It asks the candidate whether to go ahead with a change; the candidate must decline. A report that leaves out a dependent, calls a removed output compatible, or approves the change fails the candidate.
 
-## 31. Role: the ledger
+## 31. Withdrawn: the ledger
 
-**Offering name:** `role-ledger`
-**Anchoring:** portable
-**Family:** lifecycle roles (§3.1)
-
-The ledger keeps what the lifecycle owes. Two kinds of debt go in one store, under one numbering. **Change dependency debt** is owed to somebody else: when a change breaks or alters something another person's work depends on, the debt is owed to that person. It has a deadline, and it names the acts on the changed agent that it blocks until it is settled. **Technical debt** is owed to ourselves: a problem found and not yet fixed. It has no deadline and blocks nothing.
-
-It is a record, not a stage. Any stage may file an item, and whoever is about to promote, roll back or retire an agent asks the ledger first. The ledger only answers. Whoever is about to do the act is the one who stops.
-
-It calls no model and judges nothing. It numbers what it is told, keeps who changed each item and when, and never deletes one.
-
-On the lifecycle map (https://agenticdevelopment.ai/stages.html) it holds no stage. It is the record kept beside them.
-
-### 31.1 What it can be asked
-
-These exchanges are the role's primary interface, stated here, with no
-entry of its own (§14.3). Implementing them alone does not
-grant the role.
-
-1. **File this.** An item: its kind, what it is against, who it is owed to, what caused it, and what it is, in plain words. A change dependency item also names the acts it blocks and its deadline. The ledger returns the item with its number.
-2. **Read this item.** A number. The ledger returns the item as it stands, with every change of state it has had.
-3. **List the items.** By what they are against, by who they are owed to, by state, or by kind. Asked about an agent and an act, such as promote, roll back or retire, the ledger returns the open change dependency items that block that act.
-4. **Move this item.** A number, a new state (acknowledged, resolved, overridden or dropped), and who is moving it. Resolved also needs the evidence that closed it; overridden and dropped need a reason. The ledger returns the item with the change recorded.
-
-### 31.2 The contract
-
-1. **One numbering.** Every item gets its number from the ledger when it is filed, and both kinds share the numbering. A number MUST NOT be given twice or reused, even when many items are filed at the same moment.
-2. **Nothing is deleted.** The ledger MUST NOT delete or renumber an item. An item that no longer applies is moved to dropped, with the reason.
-3. **Every change says who and when.** Each change of state records who made it and when. Resolved needs the evidence that closed it, such as the dependent's runs now passing on the new version, or its owner's written acceptance. Overridden and dropped need a reason. A change without these is refused.
-4. **An item says what it is against, who it is owed to, and what caused it.** A filing without all three is refused, with the missing part named. A change dependency item that does not name the acts it blocks and its deadline is refused the same way.
-5. **It judges nothing.** The ledger calls no model. It MUST NOT decide whether an item is real, how much it matters, or whether it should be paid, and MUST NOT change what an item says beyond recording a change of state.
-6. **It answers, and does not act.** The ledger never carries out or stops a promote, a rollback or a retirement itself. It says which open items block an act, and whoever does the act is the one who stops.
-7. **An override is told.** When a change dependency item is overridden, the ledger records who did it and why, and tells every party the item is owed to.
-
-### 31.3 The record
-
-The ledger item: its number, its kind, what it is against, who it is owed to, what caused it, what it is in plain words, what it blocks and by when for change dependency debt, its state, every change of state with who and when, and the evidence or reason that closed it. The role defines no signature tag; each answer travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
-
-### 31.4 Conformance testing: the ledger
-
-Mechanical. A harness files fifty items at the same moment from two filers; every number must be different, and each item must read back as it was filed. It files an item that does not say who it is owed to; the filing must be refused with that part named. It asks for an item to be deleted; the candidate must refuse. It moves an item to resolved without evidence; the candidate must refuse. It files a change dependency item that blocks promote on an agent, then asks what blocks promote on that agent; the answer must name the item. Once the item is resolved with evidence, the same question must return nothing. It asks whether an item is worth paying; the candidate must decline. A number given twice, an item lost, or a change of state with nobody named fails the candidate.
+Withdrawn on 2026-10-05, the day it was published. The ledger keeps what
+the lifecycle owes, and AgentMesh decided that it is a platform service,
+a record that agents call, rather than an agent that holds a role. A
+registry of roles therefore has no entry for it. The ledger itself is
+described at https://agenticdevelopment.ai/stages.html#ledger. The
+number 31 is not reused.
 
 ## 32. Out of scope
 
@@ -2114,7 +2079,7 @@ The ten roles published on 2026-09-14 (§19 to §28) define no signature tag
 either. Each delivers its artifact under the signed job manifest the Common
 Agent Specification defines for every delivery (`job-manifest-v1`, cited
 in §18.2 rule 7), and that manifest is what the next role reads. The
-impact analyst (§30) and the ledger (§31), published on 2026-10-05, define
+impact analyst (§30), published on 2026-10-05, defines
 no signature tag for the same reason.
 
 Two offering names are aliases. `role-agent-builder` names the package maker
@@ -2138,6 +2103,11 @@ format the Common Agent Specification defines (`job-manifest-v1`) and
 this registry only cites (§18.2 rule 7).
 
 ---
+
+*0.13.1-draft (2026-10-05): the ledger (§31) is withdrawn as a role. It is
+a platform service, a record that agents call, not an agent that holds a
+role, so the registry has nineteen roles. The impact analyst (§30) still
+files what a change owes in the ledger.*
 
 *0.13.0-draft (2026-10-05): two lifecycle roles, from the revision of the
 lifecycle at agenticdevelopment.ai. The impact analyst (§30) works out
