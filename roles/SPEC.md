@@ -1650,7 +1650,7 @@ Behavioral. A harness hands the candidate a statement, a suite that fails agains
 
 The code critic reads a change to a package and says what is wrong with it. It hands back findings, each naming a file and a line, for a person to decide on. It changes nothing.
 
-A change to a package includes more than its scripts. What the package declares is part of the change too: the systems it asks for, at what access, with which credentials, and what it says it refuses. A change that quietly adds write access to a new system gets a finding even when no script changed.
+A change to a package includes more than its scripts. What the package declares is part of the change too: the systems it asks for, at what access, with which credentials, and what it says it refuses. A change that adds write access to a new system gets a finding even when no script changed.
 
 Deciding what the whole package may reach and spend is the job of the security reviewer (§34), at the next stage. The code critic reports on the change it is given and writes no statement of what the agent may be given.
 
@@ -2059,9 +2059,9 @@ These exchanges are the role's primary interface, stated here, with no
 entry of its own (§14.3). Implementing them alone does not
 grant the role.
 
-1. **Plan this from a description.** What somebody wants done, in their own words. The planner returns the requirements, the questions whose answers would change the result, and the plan.
-2. **Plan this from a written spec.** A specification the person wrote. The planner keeps their words, asks only about gaps and contradictions, and returns the requirements and the plan.
-3. **Revise this plan.** A change, with the current requirements and plan. The planner returns the next requirements and plan, and the list of lines that changed.
+1. **Plan this from a description.** The planner is given what somebody wants done, in their own words. The planner returns the requirements, the questions whose answers would change the result, and the plan.
+2. **Plan this from a written spec.** The planner is given a specification the person wrote. The planner keeps their words, asks only about gaps and contradictions, and returns the requirements and the plan.
+3. **Revise this plan.** The planner is given a change, with the current requirements and plan. The planner returns the next requirements and plan, and the list of lines that changed.
 
 The requirements say what the job is, what the person gives at the start, what comes back, when it runs, what must be true of the result for the job to count as done, what it refuses, and the most a run may cost.
 
@@ -2070,13 +2070,13 @@ The requirements say what the job is, what the person gives at the start, what c
 1. **"Done" is written before any step.** The solution planner MUST write down what must be true of the result for the job to count as done, as statements that can be checked, before it plans a step. A plan with nothing written under "done" is not delivered.
 2. **Every line says where it came from.** Each line of the requirements is marked written when it is the person's own words, assumed when the planner filled it in, or asked when the planner asked and the person answered. An assumption MUST be shown to the person as an assumption and never left unmarked.
 3. **It asks only what would change the result.** The planner asks the person a question only when the answer would change the plan or what counts as done.
-4. **It says what each step needs and leaves the agent open.** Each step names what it takes, what it hands back, and what kind of work it is. The planner MUST NOT choose the agent or the solution that does a step, because the catalog (§33) answers that at Source.
+4. **It says what each step needs and leaves the agent open.** Each step names what it takes, what it hands back, and what kind of work it is. The planner MUST NOT choose the agent or the solution that does a step, because the catalog (§33) answers that at the next stage, Source.
 5. **It writes no agent's statement.** When the catalog answers a step with "build one", the step becomes a new agent, and its statement is the spec writer's to write. The solution planner MUST NOT write it.
 6. **A revision names what changed.** A revised plan comes with the list of lines that changed in the requirements and in the plan. The impact analyst (§30) reads the two versions to work out what the change touches.
 
 ### 32.3 The record
 
-The requirements and the plan. The requirements are the top of the solution's own process document, written in the Agent Processes language (https://agentcatalog.com/spec/agent-processes), so a new version of the requirements is a new version of the document. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+The record is the requirements and the plan. The requirements are the first part of the solution's own process document, written in the Agent Processes language (https://agentcatalog.com/spec/agent-processes), so a new version of the requirements is a new version of the document. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
 
 ### 32.4 Conformance testing: the solution planner
 
@@ -2090,7 +2090,7 @@ Behavioral. A harness hands the candidate a short description that says nothing 
 
 The catalog finds what already exists before anything new is built. It is given the steps of a plan, each with what it takes and what it hands back. For each step it answers with an agent or a solution already listed that fits, or with "build one" and the reason nothing listed fits.
 
-The cheapest way to do a step is with something that already exists and has already been checked. A catalog that always finds a match sends work to agents that do not fit, though. So this role has to be able to answer that nothing fits, and that answer is what sends a step on to be built.
+The cheapest way to do a step is with something that already exists and has already been checked. A catalog that always finds a match would send work to agents that do not fit. So the catalog has to be able to answer that nothing fits. That answer sends the step on to be built.
 
 The matchmaker (§9) also finds agents, and it does a different job. It weighs a few candidates for a piece of work and recommends them in its own order. The catalog answers each step of a plan with one thing that fits, or says that nothing does.
 
@@ -2102,7 +2102,7 @@ These exchanges are the role's primary interface, stated here, with no
 entry of its own (§14.3). Implementing them alone does not
 grant the role.
 
-1. **What fits these steps?** The steps of a plan, each with what it takes, what it hands back, and what kind of work it is. For each step the catalog returns an agent and the offering that does the step, or a solution, or "build one" with the reason nothing listed fits.
+1. **What fits these steps?** The catalog is given the steps of a plan, each with what it takes, what it hands back, and what kind of work it is. For each step the catalog returns an agent and the offering that does the step, or a solution, or "build one" with the reason nothing listed fits.
 
 ### 33.2 The contract
 
@@ -2114,7 +2114,7 @@ grant the role.
 
 ### 33.3 The record
 
-The answer for each step. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+The record is the answer for each step. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
 
 ### 33.4 Conformance testing: the catalog
 
@@ -2126,11 +2126,11 @@ Mechanical. A harness gives the candidate a catalog of three agents and one solu
 **Anchoring:** portable
 **Family:** lifecycle roles (§3.1)
 
-The security reviewer decides what an agent may reach, what it may spend, and what it must never do, before it is given any of it. It reads the package, the systems the package says it will reach, and the spending limit its owner set. It hands back a written statement of those three things, and of what was accepted knowingly.
+The security reviewer writes down what an agent may reach, what it may spend, and what it must never do, before it is given any of it. It reads the package, the systems the package says it will reach, and the spending limit its owner set. It hands back a written statement of those three things, and of what was accepted knowingly.
 
 The review comes before the agent is installed because the agent will hold credentials and act without anybody watching. How much harm it can do is set when its access is granted, and that is very hard to reduce afterwards. A review made after the credentials are bound can only report what was already given.
 
-Most of the answer is in what the package declares: which systems it asks for, at what access, with which credentials, and what it says it refuses. The programs matter too, because a program that reaches a system the declaration does not name has access nobody agreed to. What the package depends on is checked here as well. The build records what went into the package, and the security reviewer decides whether each part should be there. It also reads the package's files for anything that looks like a credential, using the list of what the publisher refuses to publish.
+Most of what the reviewer needs to know is in what the package declares: which systems it asks for, at what access, with which credentials, and what it says it refuses. The programs matter too, because a program that reaches a system the declaration does not name has access nobody agreed to. The reviewer also checks what the package depends on. The build records what went into the package, and the reviewer decides whether each part should be there. It also reads the package's files for anything that looks like a credential, using the list of what the publisher refuses to publish.
 
 The code critic (§22), at the stage before, reports on a single change. The security reviewer writes the statement for the whole package.
 
@@ -2142,19 +2142,19 @@ These exchanges are the role's primary interface, stated here, with no
 entry of its own (§14.3). Implementing them alone does not
 grant the role.
 
-1. **Review this package.** The package, with its statement, its programs, the systems it declares, and the spending limit its owner set. The reviewer returns a statement of what the agent may reach and why, what it may spend, what it must never do, and what was accepted knowingly. If it will not pass the package, it returns a refusal that names what stopped it.
+1. **Review this package.** The reviewer is given the package, with its statement, its programs, the systems it declares, and the spending limit its owner set. The reviewer returns a statement of what the agent may reach and why, what it may spend, what it must never do, and what was accepted knowingly. If it will not pass the package, it returns a refusal that names what stopped it.
 
 ### 34.2 The contract
 
 1. **It grants nothing and changes nothing.** The review is made before the agent is installed and before any credential is bound to it. The security reviewer MUST NOT change the package, grant access, bind a credential, or install the agent.
 2. **Every access has a reason.** Each system the package asks for, at each access level, has a reason recorded against it in the statement. The reviewer MUST NOT pass an access that has no reason.
-3. **The programs stay inside the declaration.** The reviewer MUST refuse to pass a package whose programs reach a system the declaration does not name, and the refusal names that system.
+3. **The programs reach only what the declaration names.** The reviewer MUST refuse to pass a package whose programs reach a system the declaration does not name, and the refusal names that system.
 4. **A spending limit is required.** The reviewer MUST refuse to pass a package whose owner has set no spending limit.
 5. **What was accepted knowingly is written down.** Anything the statement lets through that carries a risk is listed as accepted knowingly.
 
 ### 34.3 The record
 
-The statement, or the refusal. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+The record is the statement, or the refusal. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
 
 ### 34.4 Conformance testing: the security reviewer
 
@@ -2168,7 +2168,7 @@ Behavioral. A harness hands the candidate a package that declares one system at 
 
 The documenter assembles and signs an agent's AgentDoc, the document a stranger reads before deciding to use the agent. It gathers the AgentDoc from records that already exist: what the agent declares, its identity, its registration, and the verdicts other roles have signed about it. It writes nothing of its own.
 
-A document that somebody writes can say anything. A document that is gathered can only say what its sources say, and where a source says nothing, the AgentDoc shows that nothing was said. The AgentDoc format, and the rules every assembler follows, are defined at https://agentdoc.net. This role adds that every AgentDoc is signed, and that a reader can ask which records have changed since it was signed.
+An AgentDoc is gathered from records, so it can say only what those records say. Where a record says nothing, the AgentDoc says it was not stated. The AgentDoc format, and the rules every assembler follows, are defined at https://agentdoc.net. This role adds that every AgentDoc is signed, and that a reader can ask which records have changed since it was signed.
 
 Writing the documentation people read to use or maintain the software is a different job, held by the doc writer (§24). The documenter only assembles.
 
@@ -2180,25 +2180,25 @@ These exchanges are the role's primary interface, stated here, with no
 entry of its own (§14.3). Implementing them alone does not
 grant the role.
 
-1. **Document this agent.** An agent. The documenter returns its AgentDoc, signed, with every record it read named by its digest.
-2. **What has changed?** An agent. The documenter returns which of the agent's records differ from the ones its last signed AgentDoc was assembled from.
+1. **Document this agent.** The documenter is given an agent. The documenter returns its AgentDoc, signed, with every record it read named by its digest.
+2. **What has changed?** The documenter is given an agent. The documenter returns which of the agent's records differ from the ones its last signed AgentDoc was assembled from.
 
 ### 35.2 The contract
 
-1. **Nothing is authored.** Every statement in an AgentDoc comes from a record the documenter read, as the AgentDoc specification requires of every assembler (its §4.2). The documenter MUST NOT add a statement of its own.
-2. **It calls no model.** The same records MUST give the same AgentDoc.
-3. **Silence is shown.** Where a source says nothing about something, the AgentDoc says it was not stated, as the AgentDoc specification requires (its §5.4 and §6). The documenter MUST NOT fill the gap.
+1. **Nothing is authored.** Every statement in an AgentDoc comes from a record the documenter read, as the AgentDoc specification requires (its §4.2). The documenter MUST NOT add a statement of its own.
+2. **It calls no model.** The same records MUST give the same AgentDoc, apart from the time it was signed.
+3. **Gaps are shown.** Where a source says nothing about something, the AgentDoc says it was not stated, as the AgentDoc specification requires (its §5.4 and §6). The documenter MUST NOT fill the gap.
 4. **Every record is named.** The AgentDoc names each record it was assembled from, with the digest of that record when it was read, so a reader can check any line against its source.
-5. **Every AgentDoc is signed.** The documenter signs every AgentDoc it assembles with its own key, using the assembler's signature the AgentDoc specification defines (its §4.5). The signature says the documenter gathered these records at this time and reported them faithfully. It does not say that what the agent declared is true.
+5. **Every AgentDoc is signed.** The documenter signs every AgentDoc it assembles with its own key, using the signature the AgentDoc specification defines for an assembler (its §4.5). The signature says the documenter gathered these records at this time and reported them faithfully. It does not say that what the agent declared is true.
 6. **It changes nothing it documents.** The documenter MUST NOT change the agent or any of its records. An owner who wants the AgentDoc to say something different changes the record it is assembled from.
 
 ### 35.3 The record
 
-The signed AgentDoc. Its form and its signature are the AgentDoc specification's, and the role defines no signature tag of its own.
+The record is the signed AgentDoc. Its form and its signature are the AgentDoc specification's, and the role defines no signature tag of its own.
 
 ### 35.4 Conformance testing: the documenter
 
-Mechanical. A harness gives the candidate an agent with a declaration, an identity and a signed verdict, and no registration record. The AgentDoc must carry what each record says, name each record with its digest, and show that the registration was not stated, and its signature must verify. The harness asks for the AgentDoc twice from the same records, and the two documents must match apart from when each was signed. It changes one record and asks what has changed, and the answer must name that record and no other. It asks the candidate to add a sentence describing the agent, and the candidate must decline. An AgentDoc with a statement no record carries, a gap filled in, or a signature that does not verify fails the candidate.
+Mechanical. A harness gives the candidate an agent with a declaration, an identity and a signed verdict, and no registration record. The AgentDoc must carry what each record says, name each record with its digest, and show that the registration was not stated. Its signature must verify. The harness asks for the AgentDoc twice from the same records, and the two documents must match apart from when each was signed. It changes one record and asks what has changed, and the answer must name that record and no other. It asks the candidate to add a sentence describing the agent, and the candidate must decline. An AgentDoc with a statement no record carries, a gap filled in, or a signature that does not verify fails the candidate.
 
 ## 36. Out of scope
 
