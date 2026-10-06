@@ -1,6 +1,6 @@
 # Agent Roles: Standard Roles Registry
 
-**Version:** 0.13.1-draft
+**Version:** 0.14.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-05
 
@@ -143,11 +143,13 @@ registry, not a rank, and a role belongs to exactly one.
   front desk (§7), the arbiter (§8), the matchmaker (§9), and the
   facilitator (§10).
 - **Lifecycle roles** act on an agent as a thing being made, proved and
-  run: the spec writer (§19), the impact analyst (§30), the test writer
-  (§20), the code writer (§21), the code critic (§22), the package maker
-  (§12), the deployment manager (§11), the conformance checker (§13), the
-  agent critic (§23), the doc writer (§24), the publisher (§25), the
-  watcher (§26), and the incident recorder (§27). Each
+  run: the spec writer (§19), the solution planner (§32), the impact
+  analyst (§30), the catalog (§33), the test writer (§20), the code
+  writer (§21), the code critic (§22), the security reviewer (§34), the
+  package maker (§12), the deployment manager (§11), the conformance
+  checker (§13), the agent critic (§23), the documenter (§35), the doc
+  writer (§24), the publisher (§25), the watcher (§26), and the incident
+  recorder (§27). Each
   holds one or more stages of the lifecycle mapped at
   https://agenticdevelopment.ai, and its chapter names them.
 - **Composition roles** act on work that spans agents: the process runner
@@ -637,7 +639,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §32, is that the records
+    family's line, quoted in §2 and again in §36, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -686,6 +688,8 @@ vendors' schedule and this specification does not. A harness, in the
 sense the Common Agent Specification 12.1 gives the word, is the program
 that does the thinking when a message arrives; it is not an agent, and
 an agent is what exists after the install.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Deploy, Configure, Update, Rollback and Decommission.
 
 ### 11.1 What it can be asked
 
@@ -845,6 +849,8 @@ both and refuses to emit a package without them. And it never pretends to
 have made a finished thing: every package it produces is a draft, because
 nobody has run the agent it describes.
 
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Build and package, and Release.
+
 ### 12.1 What it can be asked
 
 These exchanges are the role's primary interface, the builder
@@ -974,6 +980,8 @@ ends with, and the record family says plainly when no evaluation exists
 rather than implying one. An agent a person attends is not evaluated by
 probing, because the person would be answering; its deploy check is the
 check it carries.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Conformance.
 
 ### 13.1 What it can be asked
 
@@ -1372,7 +1380,7 @@ to are defined at the floor (Common Agent Specification §4.4).
 ### 17.2 The contract
 
 The seven rules that travel with the exchanges are defined at the floor
-(Common Agent Specification §4.4). One is restated here because §33
+(Common Agent Specification §4.4). One is restated here because §37
 relies on it: the entryway defines no signed statement (rule 7). The
 descriptor that exchange 2 serves is defined by the Common Agent
 Specification's Descriptor chapter and carried unchanged; whether a
@@ -1524,7 +1532,7 @@ It is the furthest left of the lifecycle roles, and the one whose output every o
 
 Three things are never invented here, whatever the model drafting the statement would prefer: the agent's name, its price, and access to any system. Each is a commitment somebody would be held to, so each is asked for, and the statement goes out with it still open.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements and Design.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements and Design, for a single agent. The solution planner (§32) holds the same two stages for a solution.
 
 ### 19.1 What it can be asked
 
@@ -1642,11 +1650,11 @@ Behavioral. A harness hands the candidate a statement, a suite that fails agains
 
 The code critic reads a change to a package and says what is wrong with it. It hands back findings, each naming a file and a line, for a person to decide on. It changes nothing.
 
-Two lenses, one role, and they read different parts of the same change. The review lens reads the scripts. Most of the security question is not in the scripts at all: it is in the declaration, in what systems the package asks for, at what access, with which credentials, and what it says it refuses. A package that quietly added write access to a new system is a security finding with no code change behind it.
+A change to a package includes more than its scripts. What the package declares is part of the change too: the systems it asks for, at what access, with which credentials, and what it says it refuses. A change that quietly adds write access to a new system gets a finding even when no script changed.
 
-The security lens also carries what the publisher refuses to publish, which is a working list of what a secret looks like on disk.
+Deciding what the whole package may reach and spend is the job of the security reviewer (§34), at the next stage. The code critic reports on the change it is given and writes no statement of what the agent may be given.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Review and Security review.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Review.
 
 ### 22.1 What it can be asked
 
@@ -1722,7 +1730,7 @@ The doc writer writes the documentation for whoever has to use or maintain a pac
 
 Its check is the weakest in this registry, and that is why it is published last among the lifecycle roles: nothing mechanical says whether documentation is right.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Docs.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Docs, for the written documentation. The documenter (§35) holds Docs for the AgentDoc.
 
 ### 24.1 What it can be asked
 
@@ -2033,7 +2041,166 @@ registry of roles therefore has no entry for it. The ledger itself is
 described at https://agenticdevelopment.ai/stages.html#ledger. The
 number 31 is not reused.
 
-## 32. Out of scope
+## 32. Role: the solution planner
+
+**Offering name:** `role-solution-planner`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The solution planner turns what somebody wants done into a plan for a solution, which is several agents doing one job together, each handing its result to the next. Before it plans any step, it writes down what the job is and what "done" means, so the finished solution has something to be checked against. It hands back those requirements and the plan: the steps in order, what passes between them, and what each step needs.
+
+It does not decide which agent does each step. The catalog (§33) decides that at the next stage, answering each step with an agent or a solution that already exists, or with "build one". A step that nothing existing can do becomes a new agent, and the spec writer (§19) writes that agent's statement.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements and Design, for a solution. The spec writer holds the same two stages for a single agent.
+
+### 32.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Plan this from a description.** What somebody wants done, in their own words. The planner returns the requirements, the questions whose answers would change the result, and the plan.
+2. **Plan this from a written spec.** A specification the person wrote. The planner keeps their words, asks only about gaps and contradictions, and returns the requirements and the plan.
+3. **Revise this plan.** A change, with the current requirements and plan. The planner returns the next requirements and plan, and the list of lines that changed.
+
+The requirements say what the job is, what the person gives at the start, what comes back, when it runs, what must be true of the result for the job to count as done, what it refuses, and the most a run may cost.
+
+### 32.2 The contract
+
+1. **"Done" is written before any step.** The solution planner MUST write down what must be true of the result for the job to count as done, as statements that can be checked, before it plans a step. A plan with nothing written under "done" is not delivered.
+2. **Every line says where it came from.** Each line of the requirements is marked written when it is the person's own words, assumed when the planner filled it in, or asked when the planner asked and the person answered. An assumption MUST be shown to the person as an assumption and never left unmarked.
+3. **It asks only what would change the result.** The planner asks the person a question only when the answer would change the plan or what counts as done.
+4. **It says what each step needs and leaves the agent open.** Each step names what it takes, what it hands back, and what kind of work it is. The planner MUST NOT choose the agent or the solution that does a step, because the catalog (§33) answers that at Source.
+5. **It writes no agent's statement.** When the catalog answers a step with "build one", the step becomes a new agent, and its statement is the spec writer's to write. The solution planner MUST NOT write it.
+6. **A revision names what changed.** A revised plan comes with the list of lines that changed in the requirements and in the plan. The impact analyst (§30) reads the two versions to work out what the change touches.
+
+### 32.3 The record
+
+The requirements and the plan. The requirements are the top of the solution's own process document, written in the Agent Processes language (https://agentcatalog.com/spec/agent-processes), so a new version of the requirements is a new version of the document. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 32.4 Conformance testing: the solution planner
+
+Behavioral. A harness hands the candidate a short description that says nothing about when the job runs. The requirements must carry "done" lines that can be checked, and the line saying when it runs must be marked assumed. The harness hands a written spec, and every line taken from it must be marked written and keep the person's words. It hands a change to an earlier plan, and the reply must list the lines that changed. In every plan, each step must say what it takes and what it hands back, and must name no agent. A plan with no "done" lines, an assumption left unmarked, or a step that names its agent fails the candidate.
+
+## 33. Role: the catalog
+
+**Offering name:** `role-catalog`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The catalog finds what already exists before anything new is built. It is given the steps of a plan, each with what it takes and what it hands back. For each step it answers with an agent or a solution already listed that fits, or with "build one" and the reason nothing listed fits.
+
+The cheapest way to do a step is with something that already exists and has already been checked. A catalog that always finds a match sends work to agents that do not fit, though. So this role has to be able to answer that nothing fits, and that answer is what sends a step on to be built.
+
+The matchmaker (§9) also finds agents, and it does a different job. It weighs a few candidates for a piece of work and recommends them in its own order. The catalog answers each step of a plan with one thing that fits, or says that nothing does.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Source.
+
+### 33.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **What fits these steps?** The steps of a plan, each with what it takes, what it hands back, and what kind of work it is. For each step the catalog returns an agent and the offering that does the step, or a solution, or "build one" with the reason nothing listed fits.
+
+### 33.2 The contract
+
+1. **Every step gets an answer.** The catalog MUST answer every step it is given, and MUST NOT leave a step out.
+2. **"Build one" is an answer.** When nothing listed fits a step, the catalog answers "build one" and says why. It MUST NOT offer a poor fit in place of that answer.
+3. **A fit is checked against what is declared.** An agent fits a step when one of its declared offerings takes what the step takes and hands back what the step hands back. A solution fits in the same way. A name or a description that sounds right is not enough.
+4. **It answers only from what is listed.** The catalog MUST NOT name an agent or a solution it does not list.
+5. **It hires nothing and starts nothing.** The catalog MUST NOT hire or call an agent it names, wire it into the plan, or start a build for a step it answered "build one". Whoever asked decides what to do with the answers.
+
+### 33.3 The record
+
+The answer for each step. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 33.4 Conformance testing: the catalog
+
+Mechanical. A harness gives the candidate a catalog of three agents and one solution, and a plan of three steps. One step matches an offering that one of the agents declares, one matches the solution, and one matches nothing listed. The answer must name the agent and its offering for the first step, the solution for the second, and "build one" with a reason for the third. The harness then lists an agent whose description sounds right for the third step but whose offering takes a different input, and the answer for that step must still be "build one". It asks the candidate to hire the agent it named, and the candidate must decline. An answer that names something the catalog does not list, leaves a step without an answer, or says "build one" without a reason fails the candidate.
+
+## 34. Role: the security reviewer
+
+**Offering name:** `role-security-reviewer`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The security reviewer decides what an agent may reach, what it may spend, and what it must never do, before it is given any of it. It reads the package, the systems the package says it will reach, and the spending limit its owner set. It hands back a written statement of those three things, and of what was accepted knowingly.
+
+The review comes before the agent is installed because the agent will hold credentials and act without anybody watching. How much harm it can do is set when its access is granted, and that is very hard to reduce afterwards. A review made after the credentials are bound can only report what was already given.
+
+Most of the answer is in what the package declares: which systems it asks for, at what access, with which credentials, and what it says it refuses. The programs matter too, because a program that reaches a system the declaration does not name has access nobody agreed to. What the package depends on is checked here as well. The build records what went into the package, and the security reviewer decides whether each part should be there. It also reads the package's files for anything that looks like a credential, using the list of what the publisher refuses to publish.
+
+The code critic (§22), at the stage before, reports on a single change. The security reviewer writes the statement for the whole package.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Security review.
+
+### 34.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Review this package.** The package, with its statement, its programs, the systems it declares, and the spending limit its owner set. The reviewer returns a statement of what the agent may reach and why, what it may spend, what it must never do, and what was accepted knowingly. If it will not pass the package, it returns a refusal that names what stopped it.
+
+### 34.2 The contract
+
+1. **It grants nothing and changes nothing.** The review is made before the agent is installed and before any credential is bound to it. The security reviewer MUST NOT change the package, grant access, bind a credential, or install the agent.
+2. **Every access has a reason.** Each system the package asks for, at each access level, has a reason recorded against it in the statement. The reviewer MUST NOT pass an access that has no reason.
+3. **The programs stay inside the declaration.** The reviewer MUST refuse to pass a package whose programs reach a system the declaration does not name, and the refusal names that system.
+4. **A spending limit is required.** The reviewer MUST refuse to pass a package whose owner has set no spending limit.
+5. **What was accepted knowingly is written down.** Anything the statement lets through that carries a risk is listed as accepted knowingly.
+
+### 34.3 The record
+
+The statement, or the refusal. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 34.4 Conformance testing: the security reviewer
+
+Behavioral. A harness hands the candidate a package that declares one system at read access, with a spending limit its owner set, and programs that reach only that system. The statement must name the system, its access and the reason for it, and the limit. The harness changes one program to reach a second system the declaration does not name, and the candidate must refuse to pass the package and name that system. It hands a package with no spending limit, and the candidate must refuse. It asks the candidate to bind the package's credential, and the candidate must decline. A statement that passes an access with no reason, or passes a program that reaches an undeclared system, fails the candidate.
+
+## 35. Role: the documenter
+
+**Offering name:** `role-documenter`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The documenter assembles and signs an agent's AgentDoc, the document a stranger reads before deciding to use the agent. It gathers the AgentDoc from records that already exist: what the agent declares, its identity, its registration, and the verdicts other roles have signed about it. It writes nothing of its own.
+
+A document that somebody writes can say anything. A document that is gathered can only say what its sources say, and where a source says nothing, the AgentDoc shows that nothing was said. The AgentDoc format, and the rules every assembler follows, are defined at https://agentdoc.net. This role adds that every AgentDoc is signed, and that a reader can ask which records have changed since it was signed.
+
+Writing the documentation people read to use or maintain the software is a different job, held by the doc writer (§24). The documenter only assembles.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Docs, for the AgentDoc. The doc writer holds Docs for the written documentation.
+
+### 35.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Document this agent.** An agent. The documenter returns its AgentDoc, signed, with every record it read named by its digest.
+2. **What has changed?** An agent. The documenter returns which of the agent's records differ from the ones its last signed AgentDoc was assembled from.
+
+### 35.2 The contract
+
+1. **Nothing is authored.** Every statement in an AgentDoc comes from a record the documenter read, as the AgentDoc specification requires of every assembler (its §4.2). The documenter MUST NOT add a statement of its own.
+2. **It calls no model.** The same records MUST give the same AgentDoc.
+3. **Silence is shown.** Where a source says nothing about something, the AgentDoc says it was not stated, as the AgentDoc specification requires (its §5.4 and §6). The documenter MUST NOT fill the gap.
+4. **Every record is named.** The AgentDoc names each record it was assembled from, with the digest of that record when it was read, so a reader can check any line against its source.
+5. **Every AgentDoc is signed.** The documenter signs every AgentDoc it assembles with its own key, using the assembler's signature the AgentDoc specification defines (its §4.5). The signature says the documenter gathered these records at this time and reported them faithfully. It does not say that what the agent declared is true.
+6. **It changes nothing it documents.** The documenter MUST NOT change the agent or any of its records. An owner who wants the AgentDoc to say something different changes the record it is assembled from.
+
+### 35.3 The record
+
+The signed AgentDoc. Its form and its signature are the AgentDoc specification's, and the role defines no signature tag of its own.
+
+### 35.4 Conformance testing: the documenter
+
+Mechanical. A harness gives the candidate an agent with a declaration, an identity and a signed verdict, and no registration record. The AgentDoc must carry what each record says, name each record with its digest, and show that the registration was not stated, and its signature must verify. The harness asks for the AgentDoc twice from the same records, and the two documents must match apart from when each was signed. It changes one record and asks what has changed, and the answer must name that record and no other. It asks the candidate to add a sentence describing the agent, and the candidate must decline. An AgentDoc with a statement no record carries, a gap filled in, or a signature that does not verify fails the candidate.
+
+## 36. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -2063,7 +2230,7 @@ number 31 is not reused.
   target its instruction names, and choosing targets is not part of the
   role.
 
-## 33. Signature tags
+## 37. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -2080,7 +2247,10 @@ either. Each delivers its artifact under the signed job manifest the Common
 Agent Specification defines for every delivery (`job-manifest-v1`, cited
 in §18.2 rule 7), and that manifest is what the next role reads. The
 impact analyst (§30), published on 2026-10-05, defines
-no signature tag for the same reason.
+no signature tag for the same reason, and neither do the solution planner
+(§32), the catalog (§33) and the security reviewer (§34). The documenter
+(§35) defines no tag of its own either, because it signs each AgentDoc
+with the assembler's signature the AgentDoc specification defines.
 
 Two offering names are aliases. `role-agent-builder` names the package maker
 (§12) and `role-agent-evaluator` names the conformance checker (§13); an
@@ -2103,6 +2273,22 @@ format the Common Agent Specification defines (`job-manifest-v1`) and
 this registry only cites (§18.2 rule 7).
 
 ---
+
+*0.14.0-draft (2026-10-05): four lifecycle roles that the lifecycle at
+agenticdevelopment.ai already names. The solution planner (§32) writes
+down what done means for a solution before it plans any step, and leaves
+the choice of agent for each step to the catalog. The catalog (§33)
+answers each step of a plan with an agent or a solution that fits, or
+with "build one" and the reason. The security reviewer (§34) writes down
+what an agent may reach, spend and never do before it is installed. The
+documenter (§35) assembles and signs every AgentDoc and writes nothing of
+its own. Security review moves from the code critic (§22) to the security
+reviewer, and the code critic now holds Review only. The deployment
+manager, the package maker and the conformance checker (§11 to §13) now
+name the stages they hold, as §3.1 says every lifecycle chapter does. The
+registry has twenty-three roles. None of the four defines a signature
+tag. Out of scope moves to §36 and signature tags to §37, and §31 stays
+withdrawn.*
 
 *0.13.1-draft (2026-10-05): the ledger (§31) is withdrawn as a role. It is
 a platform service, a record that agents call, not an agent that holds a
