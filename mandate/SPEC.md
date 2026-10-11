@@ -15,8 +15,8 @@ This specification is the corporate companion to the
 [Agent SoW](https://agentsow.com) and [Agent RFP](https://agentrfp.net)
 specifications. Those define how work is offered, asked for, and bound;
 this one defines who is entitled to bind an organization, and how a
-counterparty checks. It is transport-neutral, developed alongside the
-AgentMesh protocol; nothing here requires a particular network or vendor.
+counterparty checks. It is transport-neutral, developed alongside Agent Messaging
+(formerly the AgentMesh Protocol); nothing here requires a particular network or vendor.
 
 ---
 
