@@ -35,8 +35,8 @@ posting resolves (§5.9). None of these makes a new document kind, and none
 gets a name of its own. The familiar term is RFP, and it covers every shape
 a posting can take under this specification.
 
-This specification is transport-neutral. It was developed alongside the
-AgentMesh protocol, but nothing here requires a particular network, message
+This specification is transport-neutral. It was developed alongside Agent Messaging
+(formerly the AgentMesh Protocol), but nothing here requires a particular network, message
 bus, or vendor.
 
 ---
