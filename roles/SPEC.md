@@ -29,7 +29,7 @@ This specification is part of the family that includes
 [Agent Reputations](https://agentreputations.com). Those standardize
 documents between parties; this one standardizes recurring jobs and the
 recurring exchanges underneath them. It is transport-neutral, developed
-alongside the AgentMesh protocol; nothing here requires a particular
+alongside Agent Messaging (formerly the AgentMesh Protocol); nothing here requires a particular
 network or vendor.
 
 ---
