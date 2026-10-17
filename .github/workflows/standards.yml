@@ -16,19 +16,30 @@
 # repository only, and only for main or a tag; the service account may write
 # the three site buckets and clear the CDN of their two load balancers, and
 # nothing else.
-# The repository variables (Settings, Secrets and variables, Actions, Variables):
-#   DEPLOY_SITES        true
-#   GCP_WIF_PROVIDER    projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
-#   GCP_DEPLOY_SA       the service account that may write the site buckets and clear the CDN
-#   GCP_PROJECT         the Google Cloud project that holds them
-# and, for each standard with a builder other than common-agent (whose bucket
-# and load balancer are named in common-agent/site/deploy.sh), with <ID> its id
-# in capitals (MESSAGING, NAMING):
-#   <ID>_BUCKET         gs://<bucket>
-#   <ID>_URLMAP         the load balancer's URL map
-#   <ID>_HOSTS          the hosts to clear, separated by spaces
-# With DEPLOY_SITES unset, every run renders and checks the sites and uploads
-# nothing. A workflow_dispatch on a tag publishes that tag again.
+#
+# What the deployment is called stays out of this public repository and its
+# public logs: the project, the provider, the service account, the buckets and
+# the load balancers are repository secrets, which GitHub masks wherever they
+# would be printed. Repository variables (Settings, Secrets and variables,
+# Actions, Variables):
+#   DEPLOY_SITES          true to publish
+#   <ID>_HOSTS            for each standard with a builder other than
+#                         common-agent, with <ID> its id in capitals (MESSAGING,
+#                         NAMING): the hosts to clear, separated by spaces
+# Repository secrets:
+#   GCP_PROJECT           the Google Cloud project that holds the sites
+#   GCP_PROJECT_NUMBER    its number, masked because the provider's name holds it
+#   GCP_WIF_PROVIDER      projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
+#   GCP_DEPLOY_SA         the service account that may write the site buckets and clear the CDN
+#   <ID>_BUCKET           gs://<bucket>
+#   <ID>_URLMAP           the load balancer's URL map
+# commonagent.net's bucket and load balancer are named in
+# common-agent/site/deploy.sh. With DEPLOY_SITES unset, every run renders and
+# checks the sites and uploads nothing.
+#
+# A tag is published again with this workflow, whatever the workflow was when
+# the tag was made, by running it by hand on main with the input tag set (gh
+# workflow run standards.yml --ref main -f tag=<tag>).
 name: Standards
 
 on:
@@ -37,6 +48,11 @@ on:
     tags: ["*-v*"]
   pull_request:
   workflow_dispatch:
+    inputs:
+      tag:
+        description: "A tag to check, render and publish again, such as naming-v0.10. Empty checks main."
+        required: false
+        default: ""
 
 permissions:
   contents: read
@@ -44,7 +60,7 @@ permissions:
 
 # One publish at a time, in order, so an older run never overwrites a newer one.
 concurrency:
-  group: standards-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}-${{ github.ref_type == 'tag' && github.ref_name || 'main' }}
+  group: standards-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}-${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || 'main' }}
   cancel-in-progress: false
 
 jobs:
@@ -56,6 +72,8 @@ jobs:
       mode: ${{ steps.plan.outputs.mode }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || '' }}
 
       - uses: actions/setup-node@v4
         with:
@@ -69,12 +87,14 @@ jobs:
 
       - name: The standards to check, from standards.json
         id: plan
+        env:
+          TAG: ${{ inputs.tag || (github.ref_type == 'tag' && github.ref_name) || '' }}
         run: |
           node -e '
             const reg = require("./standards.json");
             let list = reg.standards, mode = "draft";
-            if (process.env.GITHUB_REF_TYPE === "tag") {
-              mode = process.env.GITHUB_REF_NAME;
+            if (process.env.TAG) {
+              mode = process.env.TAG;
               list = list.filter((s) => s.tag === mode);
               if (!list.length) { console.error(`no standard in standards.json is tagged ${mode}`); process.exit(1); }
             }
@@ -96,8 +116,18 @@ jobs:
       MODE: ${{ needs.plan.outputs.mode }}
       PUBLISH: ${{ github.event_name != 'pull_request' && vars.DEPLOY_SITES == 'true' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag') }}
     steps:
+      - name: Mask the names derived from the secrets
+        if: matrix.builder == 'yes' && env.PUBLISH == 'true'
+        env:
+          BUCKET: ${{ secrets[format('{0}_BUCKET', matrix.var)] }}
+          NUMBER: ${{ secrets.GCP_PROJECT_NUMBER }}
+        run: |
+          [ -z "$BUCKET" ] || echo "::add-mask::${BUCKET#gs://}"
+          [ -z "$NUMBER" ] || echo "::add-mask::$NUMBER"
+
       - uses: actions/checkout@v4
         with:
+          ref: ${{ inputs.tag || '' }}
           fetch-depth: 0
 
       - uses: actions/setup-node@v4
@@ -118,8 +148,8 @@ jobs:
         if: matrix.builder == 'yes' && env.PUBLISH == 'true'
         uses: google-github-actions/auth@v2
         with:
-          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
-          service_account: ${{ vars.GCP_DEPLOY_SA }}
+          workload_identity_provider: ${{ secrets.GCP_WIF_PROVIDER }}
+          service_account: ${{ secrets.GCP_DEPLOY_SA }}
 
       - name: Set up gcloud
         if: matrix.builder == 'yes' && env.PUBLISH == 'true'
@@ -129,9 +159,9 @@ jobs:
         if: matrix.builder == 'yes'
         env:
           KEEP: ${{ runner.temp }}/site
-          PROJECT: ${{ vars.GCP_PROJECT }}
-          BUCKET: ${{ vars[format('{0}_BUCKET', matrix.var)] }}
-          URLMAP: ${{ vars[format('{0}_URLMAP', matrix.var)] }}
+          PROJECT: ${{ secrets.GCP_PROJECT }}
+          BUCKET: ${{ secrets[format('{0}_BUCKET', matrix.var)] }}
+          URLMAP: ${{ secrets[format('{0}_URLMAP', matrix.var)] }}
           HOSTS: ${{ vars[format('{0}_HOSTS', matrix.var)] }}
         run: |
           DRY="--dry-run"
@@ -152,6 +182,6 @@ jobs:
         if: matrix.builder == 'yes'
         uses: actions/upload-artifact@v4
         with:
-          name: site-${{ matrix.id }}-${{ github.ref_type == 'tag' && github.ref_name || 'draft' }}
+          name: site-${{ matrix.id }}-${{ needs.plan.outputs.mode }}
           path: ${{ runner.temp }}/site
           retention-days: 14
