@@ -7,14 +7,12 @@ refuses what it does not do with a typed answer, and it collects signed records
 of what others have checked about it. Every clause can be checked by a program
 or a signature.
 
-AgentMesh sponsors this standard. Nothing in the specification requires
-AgentMesh or any other network: Agent Messaging is one network binding of the
-agent it defines (Section 11).
+It is the base of the [Common Agent Standards](../README.md), and every other
+standard in the suite builds on it. AgentMesh sponsors the suite. Nothing in
+the specification requires AgentMesh or any other network: Agent Messaging is
+one network binding of the agent it defines (Section 11).
 
-This repository is the source of the specification. The site at
-<https://commonagent.net> is rendered from it.
-
-## What's here
+## What is here
 
 - **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.26.0-draft.
   It covers the floor every agent meets (the five questions, the exchanges, the
@@ -28,14 +26,19 @@ This repository is the source of the specification. The site at
   obligations this specification owns. Section 14 says how conformance is
   checked.
 - **[site/](site/)**: the pages of commonagent.net and the tools that render
-  them from SPEC.md and CHANGELOG.md.
+  them from SPEC.md and CHANGELOG.md. The front page of commonagent.net belongs
+  to the whole suite and is made from [standards.json](../standards.json) by
+  [site/tools/build-home.mjs](../site/tools/build-home.mjs) at the root of the
+  repository.
 
 ## Versions
 
-Each version is tagged as `v` followed by the version, such as `v0.26.0-draft`,
-and has a GitHub release. The text of SPEC.md at a tag is the text of that
-version. Versions before 0.26.0-draft were drafted in the AgentMesh repository,
-and their changes are recorded in CHANGELOG.md.
+Each version is tagged as `common-agent-v` followed by the version, such as
+`common-agent-v0.26.0-draft`, and has a GitHub release. The text of SPEC.md at
+a tag is the text of that version. Versions before 0.26.0-draft were drafted in
+the AgentMesh repository, and their changes are recorded in CHANGELOG.md. The
+specification moved here from jeffrschneider/common-agent-specification, whose
+one commit is part of this folder's history.
 
 The site follows the repository. A push to main renders the main branch at
 <https://commonagent.net/draft/>, and a tag renders that version at
@@ -44,31 +47,33 @@ The site follows the repository. A push to main renders the main branch at
 ## Changing the specification
 
 Open a pull request that edits SPEC.md. A change to what the specification
-requires gets a new version: raise the version line at the top of SPEC.md and
-add an entry at the top of CHANGELOG.md, in the form the earlier entries use.
-When the change is merged, tag the merge commit `v<version>`.
+requires gets a new version: raise the version line at the top of SPEC.md, add
+an entry at the top of CHANGELOG.md in the form the earlier entries use, and
+change the version in [standards.json](../standards.json). When the change is
+merged, tag the merge commit `common-agent-v<version>`.
 
 ## Building the site
 
 ```
-cd site/tools && npm ci && cd ../..
-node site/tools/build-spec.mjs                  # writes site/dist
-site/deploy.sh draft --dry-run                  # renders /draft/ and runs the contrast gate
+cd common-agent/site/tools && npm ci && cd ../../..
+node common-agent/site/tools/build-spec.mjs                  # writes common-agent/site/dist
+common-agent/site/deploy.sh draft --dry-run                  # renders /draft/ and runs the contrast gate
 ```
 
-`site/deploy.sh` renders the site, checks that every piece of text clears a
-4.5:1 contrast ratio in both themes, and uploads it. The workflow in
-`.github/workflows/site.yml` runs it on every push to main and every tag. The
-hand-written pages are `site/index.html`, `site/conformance.html` and
-`site/404.html`; the menu and footer they share live in `site/tools/chrome.mjs`,
-and `node site/tools/chrome.mjs` rewrites them in place.
+`common-agent/site/deploy.sh` renders the site, checks that every piece of text
+clears a 4.5:1 contrast ratio in both themes, and uploads it. The workflow in
+`.github/workflows/standards.yml` runs it on every push to main and every
+`common-agent-v` tag, and uploads only when publishing is switched on. The
+hand-written pages are `site/conformance.html` and `site/404.html`; the menu
+and footer every page shares live in `site/tools/chrome.mjs`, and
+`node common-agent/site/tools/chrome.mjs` rewrites them in place.
 
 ## Licensing
 
 The specification prose (SPEC.md and CHANGELOG.md) is licensed under
-[CC BY 4.0](LICENSE-SPEC), so you can implement it freely, with attribution. All
-code, including the conformance fixtures and the site tools, is licensed under
-[Apache-2.0](LICENSE).
+[CC BY 4.0](../LICENSE-SPEC), so you can implement it freely, with attribution.
+All code, including the conformance fixtures and the site tools, is licensed
+under [Apache-2.0](../LICENSE).
 
 ## Related
 

@@ -1,13 +1,16 @@
 #!/usr/bin/env bash
-# Render the site of the Common Agent Specification and publish it to
-# gs://commonagent-site, the bucket behind https://commonagent.net.
+# Render commonagent.net, the home of the Common Agent Standards and the site of
+# the Common Agent Specification, and publish it to the bucket behind it.
 #
-#   site/deploy.sh draft [--dry-run]           the main branch, at /draft/
-#   site/deploy.sh v0.26.0-draft [--dry-run]   that tag, at /0.26.0-draft/ and at the root
+#   common-agent/site/deploy.sh draft [--dry-run]                        the main branch, at /draft/
+#   common-agent/site/deploy.sh common-agent-v0.26.0-draft [--dry-run]   that tag, at /0.26.0-draft/ and at the root
 #
-# The GitHub Actions workflow runs this on every push to main and on every tag.
-# It can also be run by hand from a checkout, with gcloud signed in to an
-# account that may write the bucket and clear the CDN.
+# The front page (index.html) is the suite's, made from standards.json by
+# site/tools/build-home.mjs at the repository root; the other pages are the
+# specification's. The workflow .github/workflows/standards.yml runs this on
+# every push to main and on every common-agent-v tag. It can also be run by
+# hand from a checkout, with gcloud signed in to an account that may write the
+# bucket and clear the CDN, and PROJECT set to the Google Cloud project.
 #
 # The staging folder mirrors the bucket: the root pages at its top, a tagged
 # version under /<version>/, the main branch under /draft/. The contrast gate
@@ -20,10 +23,10 @@ MODE="${1:-}"
 DRY="${2:-}"
 BUCKET="${BUCKET:-gs://commonagent-site}"
 URLMAP="${URLMAP:-commonagent-lb}"
-PROJECT="${PROJECT:?PROJECT names the Google Cloud project that holds the bucket}"
+PROJECT="${PROJECT:-}"
 GCLOUD="${GCLOUD:-gcloud}"
 
-usage() { echo "usage: site/deploy.sh draft|v<version> [--dry-run]" >&2; exit 2; }
+usage() { echo "usage: common-agent/site/deploy.sh draft|common-agent-v<version> [--dry-run]" >&2; exit 2; }
 [ -n "$MODE" ] || usage
 [ -z "$DRY" ] || [ "$DRY" = "--dry-run" ] || usage
 
@@ -44,10 +47,10 @@ case "$MODE" in
   draft)
     node "$TOOLS/build-spec.mjs" --out "$OUT/draft" --base draft --ref main --draft
     ;;
-  v[0-9]*)
-    VERSION="${MODE#v}"
-    AT="$(git -C "$REPO" describe --tags --exact-match HEAD 2>/dev/null || true)"
-    if [ "$AT" != "$MODE" ]; then
+  common-agent-v[0-9]*)
+    VERSION="${MODE#common-agent-v}"
+    # Several standards can be tagged on one commit, so look for this tag among them.
+    if ! git -C "$REPO" tag --points-at HEAD | grep -qx "$MODE"; then
       echo "deploy refused: HEAD is not the tag $MODE. Check the tag out first." >&2
       exit 1
     fi
@@ -66,10 +69,16 @@ if ! node "$TOOLS/contrast-gate.mjs" --root "$OUT"; then
   exit 1
 fi
 
+if [ -n "${KEEP:-}" ]; then
+  mkdir -p "$KEEP" && cp -r "$STAGE"/. "$KEEP"/
+  echo "kept a copy of the rendered site in $KEEP"
+fi
+
 if [ "$DRY" = "--dry-run" ]; then
   echo "dry run: built and checked $MODE; nothing was uploaded."
   exit 0
 fi
+[ -n "$PROJECT" ] || { echo "deploy refused: set PROJECT to the Google Cloud project." >&2; exit 1; }
 
 "$GCLOUD" storage rsync -r "$OUT" "$BUCKET" --cache-control="public, max-age=300" --project "$PROJECT"
 "$GCLOUD" compute url-maps invalidate-cdn-cache "$URLMAP" --path "/*" --project "$PROJECT" --async

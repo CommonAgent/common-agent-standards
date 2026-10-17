@@ -5,15 +5,16 @@
 //                                  [--draft] [--expect-version <version>]
 //                                  [--spec <file>] [--changelog <file>]
 //
-// It copies the hand-written pages (index.html, conformance.html, 404.html,
-// site.css, favicon.svg, brand/) into the output folder (default site/dist)
-// and writes beside them:
+// It copies the hand-written pages (conformance.html, 404.html, site.css,
+// favicon.svg, brand/) into the output folder (default site/dist) and writes
+// beside them:
+//   index.html        the front page of the Common Agent Standards, made from
+//                     standards.json by site/tools/build-home.mjs
 //   spec.html         the whole specification
 //   descriptor.html   Section 6, the Agent Descriptor, as a page of its own
 //   package.html      Section 12, the Agent Package, as a page of its own
 //   versions.html     every version and the changelog
-// and fills two marked regions of the copied pages: the version line on
-// index.html and the text of Section 14 on conformance.html. Nothing in the
+// and fills the text of Section 14 into conformance.html. Nothing in the
 // repository is rewritten, so a build leaves the working tree clean.
 //
 // --base puts the site under a path: the main branch is rendered at /draft/ and
@@ -21,7 +22,7 @@
 // tagged. Every link that starts with "/" is moved under the base, and so is
 // the canonical address. --draft marks every page noindex and says on it that
 // the published version is at the root. --expect-version refuses to build when
-// SPEC.md carries another version (a tag v0.26.0-draft must hold 0.26.0-draft).
+// SPEC.md carries another version (a tag common-agent-v0.26.0-draft must hold 0.26.0-draft).
 //
 // ANCHORS. Links into the specification were made against the pages this site
 // replaces (dev.agentmesh.ai/common-agent.html, agentdoc.net/descriptor-spec.html
@@ -37,6 +38,7 @@ import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import { SITE, REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
+import { renderHome, copySuiteAssets } from "../../../site/tools/build-home.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(ROOT, "..");
@@ -46,8 +48,11 @@ const CHANGES = resolve(arg("--changelog") ?? resolve(REPO, "CHANGELOG.md"));
 const OUT = resolve(arg("--out") ?? resolve(ROOT, "dist"));
 const BASE = `/${(arg("--base") ?? "/").replace(/^\/+|\/+$/g, "")}/`.replace(/^\/\/$/, "/");
 const REF = arg("--ref") ?? "";
+// Tags in the Common Agent Standards repository name their standard: this one's
+// are common-agent-v<version>, such as common-agent-v0.26.0-draft.
+const TAG_PREFIX = "common-agent-v";
 const DRAFT = process.argv.includes("--draft");
-const STATIC = ["index.html", "conformance.html", "404.html", "site.css", "favicon.svg", "brand"];
+const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "brand"];
 
 let md = readFileSync(MD, "utf8").replace(/\r\n/g, "\n");
 
@@ -63,7 +68,7 @@ if (!arg("--spec") && !arg("--changelog")) {
 }
 // The versions that have a tag, and so a copy of the site at /<version>/.
 let tagged = [];
-try { tagged = git("tag", "-l", "v*").split("\n").filter(Boolean).map((t) => t.slice(1)); } catch { /* not a repository */ }
+try { tagged = git("tag", "-l", `${TAG_PREFIX}*`).split("\n").filter(Boolean).map((t) => t.slice(TAG_PREFIX.length)); } catch { /* not a repository */ }
 
 // ── the header block ────────────────────────────────────────────────────────
 const head = md.match(/^# (.+)\n+\*\*Version:\*\*\s*(.+)\n\*\*Status:\*\*\s*(.+)\n/);
@@ -181,8 +186,8 @@ function addLinks(html, page) {
 }
 
 const GENERATED = new Date().toISOString().slice(0, 10);
-const refText = !REF ? "" : /^v\d/.test(REF) ? `, tag <span class="mono">${esc(REF)}</span>` : `, branch <span class="mono">${esc(REF)}</span>`;
-const stamp = `Rendered ${GENERATED} from <span class="mono">SPEC.md</span> in the <a href="${REPO_URL}">specification's repository</a>${refText}${commit ? `, commit <span class="mono">${commit}</span>` : ""}.`
+const refText = !REF ? "" : REF.startsWith(TAG_PREFIX) ? `, tag <span class="mono">${esc(REF)}</span>` : `, branch <span class="mono">${esc(REF)}</span>`;
+const stamp = `Rendered ${GENERATED} from <span class="mono">SPEC.md</span> in the <a href="${REPO_URL}">Common Agent Standards repository</a>${refText}${commit ? `, commit <span class="mono">${commit}</span>` : ""}.`
   + (DRAFT ? ` This copy follows the main branch, which can be ahead of the published version at <a href="${SITE}/">commonagent.net</a>.` : "");
 const metas = `<div class="metas">
           <span>version <b>${esc(VERSION)}</b></span>
@@ -350,7 +355,7 @@ chapter({
   const entries = log.map((e) => `  <li id="${e.id}"><span class="ver">${esc(e.ver)} (${esc(e.when)})</span>${marked.parseInline(e.text)}</li>`).join("\n");
   const body = `<h2 id="versions">Versions<a class="hl" href="#versions" aria-label="Link to this section">#</a></h2>
 <p>The specification is published one version at a time. This site carries ${esc(VERSION)}, dated ${DATE}, and every page of the specification names that version at the top. The table lists each version with the date in its changelog entry and the first words of that entry.</p>
-<p>The source of every version is in the <a href="${REPO_URL}">specification's repository</a>, where each version from 0.26.0-draft on is tagged as <span class="mono">v</span> followed by the version.${archive}</p>
+<p>The source of every version is in the <a href="${REPO_URL}">Common Agent Standards repository</a>, where each version from 0.26.0-draft on is tagged as <span class="mono">common-agent-v</span> followed by the version.${archive}</p>
 <table class="versions">
   <tr><th>Version</th><th>Date</th><th>What it changed</th></tr>
 ${rows}
@@ -381,9 +386,10 @@ function fill(file, name, html) {
   writeFileSync(p, s.replace(re, () => `<!-- spec:${name} -->${html}<!-- /spec:${name} -->`));
   console.log(`${file}: spec:${name} filled`);
 }
-fill("index.html", "version", DRAFT
-  ? `This copy follows the main branch of the <a href="${REPO_URL}">specification's repository</a>, at version <a href="/versions.html">${esc(VERSION)}</a>. The published version is at <a href="${SITE}/">commonagent.net</a>.`
-  : `The version on this site is <a href="/versions.html">${esc(VERSION)}</a>, dated ${DATE}.`);
+// index.html is the front page of the Common Agent Standards, made from
+// standards.json (site/tools/build-home.mjs at the repository root).
+write("index.html", renderHome({ draft: DRAFT }));
+copySuiteAssets(OUT);
 {
   const s14 = section("s14").md.replace(/^## .+\n/, "");
   fill("conformance.html", "s14", `\n${marked.parse(s14)}`);

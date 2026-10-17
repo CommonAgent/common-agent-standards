@@ -4,12 +4,22 @@
 // rewrites the same parts of the hand-written pages between their marker
 // comments, so a menu change is made here once. The layout follows
 // agentmessaging.ai's tools/chrome.mjs.
+//
+// commonagent.net is the home of the Common Agent Standards. Its front page
+// (site/tools/build-home.mjs at the repository root) introduces the suite, and
+// the menu lists every standard in standards.json beside the pages of the
+// Common Agent Specification, the base the other standards build on.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const SITE = "https://commonagent.net";
-export const REPO_URL = "https://github.com/jeffrschneider/common-agent-specification";
+export const SUITE_REPO = "https://github.com/CommonAgent/common-agent-standards";
+export const REPO_URL = `${SUITE_REPO}/tree/main/common-agent`;
+
+// The registry the suite's pages are made from.
+const REGISTRY = resolve(dirname(fileURLToPath(import.meta.url)), "../../../standards.json");
+export const SUITE = JSON.parse(readFileSync(REGISTRY, "utf8"));
 
 export const headLinks = `<link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -32,17 +42,19 @@ const ext = `<span class="ext" aria-hidden="true">↗</span>`;
 export function rail(active) {
   const a = (href, label, key, external) =>
     `<a href="${href}"${key && key === active ? ' class="on" aria-current="page"' : ""}>${label}${external ? ext : ""}</a>`;
+  const others = SUITE.standards.filter((s) => s.kind !== "base")
+    .map((s) => a(s.site, s.name, "", true)).join("\n          ");
+  const word = active === "home" ? "Standards" : "Specification";
   return `<aside class="rail" id="rail">
       <div class="railhead">
-        <a class="brand" href="/" aria-label="The Common Agent Specification, home">${MARK}<span class="wm">Common Agent <b>Specification</b></span></a>
+        <a class="brand" href="/" aria-label="The Common Agent Standards, home">${MARK}<span class="wm">Common Agent <b>${word}</b></span></a>
         <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
         <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
       </div>
-      <nav aria-label="The Common Agent Specification">
+      <nav aria-label="The Common Agent Standards">
         <details class="sec" open>
-          <summary>The standard${chev}</summary>
+          <summary>The Common Agent Specification${chev}</summary>
           <div class="items">
-          ${a("/", "What it is", "home")}
           ${a("/spec.html", "The specification", "spec")}
           ${a("/descriptor.html", "The Agent Descriptor", "descriptor")}
           ${a("/package.html", "The Agent Package", "package")}
@@ -51,22 +63,28 @@ export function rail(active) {
           ${a(REPO_URL, "The source on GitHub", "", true)}
           </div>
         </details>
-        <details class="sec" open>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards${chev}</summary>
+          <div class="items">
+          ${a("/", "Every standard", "home")}
+          ${others}
+          ${a(SUITE_REPO, "The standards on GitHub", "", true)}
+          </div>
+        </details>
+        <details class="sec related" open>
           <summary>Related${chev}</summary>
           <div class="items">
           ${a("https://agentdoc.net/", "AgentDoc", "", true)}
-          ${a("https://agentmessaging.ai/", "Agent Messaging", "", true)}
-          ${a("https://agentroles.ai/", "The roles registry", "", true)}
           </div>
         </details>
       </nav>
-      <div class="foot"><a href="https://agentmesh.ai/">AgentMesh</a> sponsors this standard.</div>
+      <div class="foot"><a href="https://agentmesh.ai/">AgentMesh</a> sponsors the Common Agent Standards.</div>
     </aside>`;
 }
 
 export const footer = `<footer class="sitefoot">
         <div class="wrap">
-          <span>The Common Agent Specification</span>
+          <a href="/">The Common Agent Standards</a>
           <a href="/spec.html">The specification</a>
           <a href="/descriptor.html">The Agent Descriptor</a>
           <a href="/package.html">The Agent Package</a>
@@ -74,8 +92,7 @@ export const footer = `<footer class="sitefoot">
           <a href="/conformance.html">Conformance</a>
           <a href="${REPO_URL}">The source on GitHub</a>
           <a href="https://agentdoc.net/">agentdoc.net</a>
-          <a href="https://agentmessaging.ai/">agentmessaging.ai</a>
-          <span><a href="https://agentmesh.ai/">AgentMesh</a> sponsors this standard.</span>
+          <span><a href="https://agentmesh.ai/">AgentMesh</a> sponsors the Common Agent Standards.</span>
         </div>
       </footer>`;
 
@@ -91,7 +108,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "conformance.html": "conformance", "404.html": "" };
+const PAGES = { "conformance.html": "conformance", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {
