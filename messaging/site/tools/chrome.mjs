@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
-export const REPO_URL = "https://github.com/agent-messaging/agent-messaging";
+export const REPO_URL = "https://github.com/CommonAgent/common-agent-standards/tree/main/messaging";
 
 export const headLinks = `<link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">

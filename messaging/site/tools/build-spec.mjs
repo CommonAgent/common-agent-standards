@@ -1,6 +1,8 @@
 // build-spec.mjs: render spec.html from the canonical Agent Messaging SPEC.md.
-// Usage: node tools/build-spec.mjs [path-to-SPEC.md]
-// Default source: ../AgentMesh/SPEC.md (falls back to the public GitHub raw copy).
+// Usage: node messaging/site/tools/build-spec.mjs [--spec <SPEC.md>] [--out <folder>]
+// Default source: messaging/SPEC.md in the Common Agent Standards repository.
+// Default output: messaging/site/spec.html. tools/render-site.sh renders the
+// whole site into a staging folder with --out.
 // Regenerate whenever the spec changes; spec.html is a committed artifact and is
 // never hand-edited. This builder moved here from dev.agentmesh.ai on
 // 2026-10-11, when the specification was renamed Agent Messaging and given this
@@ -13,25 +15,26 @@ import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const MONOREPO = resolve(ROOT, "../AgentMesh");
-const explicit = process.argv[2];
-const SRC = explicit ?? resolve(MONOREPO, "SPEC.md");
-const RAW_URL = "https://raw.githubusercontent.com/agent-messaging/agent-messaging/main/SPEC.md";
+const STANDARD = resolve(ROOT, "..");
+const arg = (flag) => { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : undefined; };
+const explicit = arg("--spec");
+const SRC = explicit ?? resolve(STANDARD, "SPEC.md");
+const OUT = resolve(arg("--out") ?? ROOT);
 import { REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
 
 let md, commit = "";
 try {
   md = readFileSync(SRC, "utf8");
-  // The commit stamp is only true when the page is rendered from the monorepo's
-  // own checkout. A file named on the command line may be anything, so it gets
-  // no stamp rather than a misleading one.
+  // The commit stamp is only true when the page is rendered from this
+  // repository's own checkout. A file named on the command line may be
+  // anything, so it gets no stamp rather than a misleading one.
   if (!explicit) {
     try {
-      commit = execSync(`git -C "${MONOREPO}" rev-parse --short HEAD`, { encoding: "utf8" }).trim();
+      commit = execSync(`git -C "${STANDARD}" rev-parse --short HEAD`, { encoding: "utf8" }).trim();
     } catch { /* no local repo info */ }
   }
 } catch {
-  md = await (await fetch(RAW_URL)).text();
+  throw new Error(`cannot read ${SRC}`);
 }
 
 md = md.replace(/\r\n/g, "\n");
@@ -184,5 +187,5 @@ ${body}
 </html>
 `;
 
-writeFileSync(resolve(ROOT, "spec.html"), page);
+writeFileSync(resolve(OUT, "spec.html"), page);
 console.log(`spec.html written: ${(page.length / 1024).toFixed(0)} KB, ${toc.length} sections, ${title}, ${meta.version} (${meta.date})${commit ? ", commit " + commit : ""}`);

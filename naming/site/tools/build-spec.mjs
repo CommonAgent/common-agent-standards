@@ -1,7 +1,8 @@
 // build-spec.mjs: render spec.html from the canonical SPEC-NAMING.md.
-// Usage, from this repo's root: node tools/build-spec.mjs [path-to-SPEC-NAMING.md]
-// Default source: ../AgentMesh/SPEC-NAMING.md, a sibling checkout of the
-// AgentMesh repository (falls back to the public GitHub raw copy).
+// Usage: node naming/site/tools/build-spec.mjs [--spec <SPEC-NAMING.md>] [--out <folder>]
+// Default source: naming/SPEC-NAMING.md in the Common Agent Standards
+// repository. Default output: naming/site/spec.html. tools/render-site.sh
+// renders the whole site into a staging folder with --out.
 // spec.html is a committed artifact and must never be hand edited: edit the
 // spec there, regenerate here, read the diff, commit, then deploy.
 import { readFileSync, writeFileSync } from "node:fs";
@@ -12,9 +13,9 @@ import { marked } from "marked";
 import { rail, footer, SPEC_REPO_URL } from "./chrome.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const REPO = resolve(ROOT, "..", "AgentMesh");
-const SRC = process.argv[2] ?? resolve(REPO, "SPEC-NAMING.md");
-const RAW_URL = "https://raw.githubusercontent.com/AgentNaming/personal-agent-naming/main/SPEC-NAMING.md";
+const arg = (flag) => { const i = process.argv.indexOf(flag); return i >= 0 ? process.argv[i + 1] : undefined; };
+const SRC = resolve(arg("--spec") ?? resolve(ROOT, "..", "SPEC-NAMING.md"));
+const OUT = resolve(arg("--out") ?? ROOT);
 
 let md, commit = "";
 try {
@@ -23,7 +24,7 @@ try {
     commit = execSync(`git -C "${dirname(SRC)}" rev-parse --short HEAD`, { encoding: "utf8" }).trim();
   } catch { /* no local repo info */ }
 } catch {
-  md = await (await fetch(RAW_URL)).text();
+  throw new Error(`cannot read ${SRC}`);
 }
 
 md = md.replace(/\r\n/g, "\n");
@@ -191,5 +192,5 @@ ${body}
 </html>
 `;
 
-writeFileSync(resolve(ROOT, "spec.html"), page);
+writeFileSync(resolve(OUT, "spec.html"), page);
 console.log(`spec.html written: ${(page.length / 1024).toFixed(0)} KB, ${toc.length} sections, ${meta.version} (${meta.date})${commit ? ", commit " + commit : ""}`);

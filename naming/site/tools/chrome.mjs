@@ -9,9 +9,9 @@ import { fileURLToPath } from "node:url";
 
 // The naming specification's own repository (SPEC-NAMING.md and its
 // conformance vectors). Never link the Agent Messaging repositories for it.
-export const SPEC_REPO_URL = "https://github.com/AgentNaming/personal-agent-naming";
+export const SPEC_REPO_URL = "https://github.com/CommonAgent/common-agent-standards/tree/main/naming";
 // This site's own source.
-export const SITE_REPO_URL = "https://github.com/AgentNaming/agentnaming.ai";
+export const SITE_REPO_URL = "https://github.com/CommonAgent/common-agent-standards/tree/main/naming/site";
 
 const chev = `<svg class="sn-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
