@@ -18,7 +18,7 @@ SPEC.md §1.6 defines two conformance profiles, and the suite groups its tests i
 
 | Profile | Tests |
 |---|---|
-| core (32) | c01, c01b, c02 to c07, c09 to c16, c18 to c20, c22, c23, c24, c24b; t01 to t05, t06a, t06b, t09, t14 |
+| core (33) | c01, c01b, c02 to c07, c09 to c16, c18 to c20, c22, c23, c24, c24b, c25; t01 to t05, t06a, t06b, t09, t14 |
 | platform (5) | c08 (AgentMesh's own retired guest routes), c21 (§4.11 places, which need a signed-in person), c22b (provider advisories), t05b (the HTTPS describe door), t10 (federation) |
 | naming (5) | t07, t08, t11, t12, t13 |
 | identity (14) | i01 to i09 (native enrollment by an outside proof), i10 (`identity_source`), i11 (identity bridges), i12 (admission by source), i13 (`on_behalf_of`, a test of the SDK), i14 (stop signals) |
@@ -81,6 +81,46 @@ runners, `core/run.mjs` and `peering/run.mjs`, take the same options for their o
 default. The nightly (`.github/workflows/nightly.yml`) runs them against AgentMesh's dev mesh, with
 `--agentmesh-operator` on the core suite so that it names the standing test agents and declares the run's keys to the
 AgentMesh operator API. Nothing else calls those AgentMesh doors.
+
+## Messages for a person (SPEC.md §5.7)
+
+SPEC.md §5.7 lets a sender mark a message for the person behind the receiving agent, with `meta.audience: "person"`.
+The pieces of the suite below cover it.
+
+- `audience.json` pins the readings of the mark, really-signed envelopes (a marked request, a person's marked reply,
+  and two controls), tamper cases that show stripping or adding the mark fails verification, the receiver's routing
+  table, the inbox listing, the frame's `audience:` line, the task manager's cases and the sender's pre-flight.
+  `node conformance/lib/check-audience-fixture.mjs` checks it with node alone: the signatures verify and the tamper
+  cases fail (with `lib/envelope-vectors.mjs`, which first reproduces `accept-signal.json`'s signed accept), the
+  cases agree with §5.7's rules, and the frames are `inbound-protections.json`'s frames with the one line added.
+  CI runs it on every pull request, in the `checks` job.
+- c25 (core) checks the server's part on a live mesh: the task manager applies no Task update marked for a person,
+  marked with an unknown string, or with a mark that is not a string; an explicit `agent` applies; a marked first
+  update creates no Task; and the marked update is carried byte for byte. Its baseline is `pass` in both
+  expectations files: Agent Messaging Server 0.3.0 keeps the rule, and its CI runs c25 on both brokers.
+- The receiver's rules are an optional extension in this version. They bind an agent that declares
+  `mesh://extensions/audience/v1`, and the suite checks them only for an implementation that declares it.
+- The adapter's tests are written with the adapter's change, which names its own commands, and run against the
+  reference adapter as c12 and c13 do. The plan for them follows.
+
+**The plan for the adapter tests.** Each line is one assertion, against `audience.json` where a case exists.
+
+| # | Mode | What is sent | What must hold |
+|---|---|---|---|
+| a1 | inbox (c13) | a request marked `person` from an admitted sender | the sender gets the queued ack (`queued: true`, `inbox_id`) and no `"accepted"`; the entry is in the inbox with the mark |
+| a2 | inbox (c13) | the same, then the session lists its inbox | the listing the harness reads carries no text of the entry; it MAY say a message is waiting for the person, with sender and time (`inbox.cases` `listing_setting_off`) |
+| a3 | inbox (c13) | the same, read on the person's surface | the person's view shows the text, the verified sender and the time, and does not present it as the agent's own |
+| a4 | inbox (c13) | the same, with the owner's setting on | the harness listing carries the text framed with the `audience:` line, byte for byte as `frame.cases` (`listing_setting_on`) |
+| a5 | inbox (c13) | the person replies through the adapter | the reply reaches the sender's inbox as a bare `respond`, `in_reply_to` the note, `meta.audience: "person"`, `status: completed`, no `task_id`, and it verifies |
+| a6 | inbox (c13) | a marked reply arrives for a request the session sent | it goes to the person's surface; the session's pending request is not resolved by it |
+| a7 | pipe (c12) | a request marked `person` | the command is never spawned for it (the spawn count stays where the control left it); the sender gets no answer from the command |
+| a8 | pipe and inbox | `meta.audience` set to `7`, then to `null` | refused before any handler with `INVALID_ENVELOPE`, `details.reason: "audience_malformed"`, at the sender's inbox |
+| a9 | pipe and inbox | `meta.audience` set to `"household"` | handled as `person` (a1 to a3, a7) |
+| a10 | inbox (c13) | a marked request with a `budget` and a `payload.offering` | no budget admission, no `BUDGET_INSUFFICIENT`, no dispatch; surfaced to the person as a1 |
+| a11 | inbox, guarded | a marked request from a sender the roster holds | held at the door like any other message; nothing reaches the person's surface until the owner admits the sender |
+| a12 | either | the adapter's registered manifest | declares `mesh://extensions/audience/v1` exactly when the adapter can reach the agent's person (it is linked to an account); an unlinked adapter does not |
+| a13 | sender side | the adapter sends a message marked for a person to a target that does not declare the URI | refused locally with `AUDIENCE_NOT_SUPPORTED`, nothing published; with the explicit send-anyway choice it is published with the mark (`sender.preflight`) |
+| a14 | either | a marked emit and a marked Task update reach the adapter | neither is given to a handler; each raises a local signal |
 
 ## The discipline
 
