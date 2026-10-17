@@ -14,11 +14,11 @@ one network binding of the agent it defines (Section 11).
 
 ## What is here
 
-- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.27.0-draft.
+- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.28.0-draft.
   It covers the floor every agent meets (the five questions, the exchanges, the
   refusals), the work an agent does, the Agent Descriptor (Section 6), the
   capabilities, the signed records others issue, the AgentDoc (Section 9), the
-  twenty-one attributes, the Agent Package (Section 12) and the agent
+  twenty attributes, the Agent Package (Section 12) and the agent
   repository (Section 13). Readable at <https://commonagent.net/spec.html>.
 - **[CHANGELOG.md](CHANGELOG.md)**: every version and what it changed, newest
   first.

@@ -285,7 +285,7 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
     file: "spec.html", active: "spec",
     title: `${TITLE} ${VERSION}`,
     ogTitle: TITLE,
-    description: "The full text of the Common Agent Specification: the floor every agent meets, the work it does, the Agent Descriptor, the capabilities, the signed records others issue, the AgentDoc, the twenty-one attributes, the Agent Package and the agent repository.",
+    description: "The full text of the Common Agent Specification: the floor every agent meets, the work it does, the Agent Descriptor, the capabilities, the signed records others issue, the AgentDoc, the twenty attributes, the Agent Package and the agent repository.",
     eyebrow: "The specification",
     h1: esc(TITLE),
     sub: "The definition of the agent as a testable claim. Every clause can be checked by a program or a signature.",
