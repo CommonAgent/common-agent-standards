@@ -1,0 +1,81 @@
+# Renders https://commonagent.net from this repository.
+#
+# A push to main renders the main branch at /draft/. A tag v<version> renders
+# that version at /<version>/ and at the root. A pull request renders the draft
+# and runs the contrast gate, and uploads nothing.
+#
+# Publishing is off until Google Cloud trusts this workflow. To turn it on, set
+# three repository variables (Settings, Secrets and variables, Actions,
+# Variables):
+#   DEPLOY_SITE        true
+#   GCP_WIF_PROVIDER   projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
+#   GCP_DEPLOY_SA      the service account that may write gs://commonagent-site
+#                      and clear the CDN on commonagent-lb
+# Until then every run builds and checks the site and stops before the upload.
+name: Site
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+# One publish at a time, in order, so an older run never overwrites a newer one.
+concurrency:
+  group: site-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}
+  cancel-in-progress: false
+
+jobs:
+  site:
+    runs-on: ubuntu-latest
+    env:
+      PUBLISH: ${{ github.event_name != 'pull_request' && vars.DEPLOY_SITE == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: site/tools/package-lock.json
+
+      - name: Install the site tools
+        working-directory: site/tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Choose what to render
+        id: mode
+        run: |
+          if [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            echo "mode=$GITHUB_REF_NAME" >> "$GITHUB_OUTPUT"
+          else
+            echo "mode=draft" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Authenticate to Google Cloud
+        if: env.PUBLISH == 'true'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - name: Set up gcloud
+        if: env.PUBLISH == 'true'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Render, check and publish
+        run: |
+          if [ "$PUBLISH" = "true" ]; then
+            site/deploy.sh "${{ steps.mode.outputs.mode }}"
+          else
+            site/deploy.sh "${{ steps.mode.outputs.mode }}" --dry-run
+          fi

@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Common Agent Specification</title>
+  <meta name="description" content="The Common Agent Specification defines what an agent is in terms anyone can check: a key that signs, answers a stranger can get, one signed document of standing facts, typed refusals, and signed records others issue about it.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="The Common Agent Specification">
+  <meta property="og:title" content="The Common Agent Specification">
+  <meta property="og:description" content="The Common Agent Specification defines what an agent is in terms anyone can check: a key that signs, answers a stranger can get, one signed document of standing facts, typed refusals, and signed records others issue about it.">
+  <meta property="og:url" content="https://commonagent.net/">
+  <meta property="og:image" content="https://commonagent.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Common Agent Specification. The definition of the agent as a testable claim">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://commonagent.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://commonagent.net/">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="The Common Agent Specification, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path d="M16 2.8 27.4 9.4v13.2L16 29.2 4.6 22.6V9.4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5v7M16 10.5v11M21 12.5v7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="wm">Common Agent <b>Specification</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="The Common Agent Specification">
+        <details class="sec" open>
+          <summary>The standard<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/" class="on" aria-current="page">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/descriptor.html">The Agent Descriptor</a>
+          <a href="/package.html">The Agent Package</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/conformance.html">Conformance</a>
+          <a href="https://github.com/jeffrschneider/common-agent-specification">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentdoc.net/">AgentDoc<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">The roles registry<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot"><a href="https://agentmesh.ai/">AgentMesh</a> sponsors this standard.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+      <header class="herobg">
+      <div class="wrap hero">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>A standard for agents</span>
+            <h1>The Common Agent Specification</h1>
+            <p class="lede">The Common Agent Specification defines what an agent is, in terms
+              anyone can check. An agent holds a key that signs. It answers a small set of
+              questions for anyone who asks, and it declares its standing facts in one signed
+              document. It refuses what it does not do with a typed answer, and it collects
+              signed records of what others have checked about it.</p>
+            <div class="cta">
+              <a class="btn btn-primary" href="/spec.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read the specification</a>
+              <a class="btn btn-ghost" href="/descriptor.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8"/><path d="M16 13H8"/><path d="M16 17H8"/></svg>The Agent Descriptor</a>
+            </div>
+            <p class="version"><!-- spec:version -->The version on this site is <a href="/versions.html">0.26.0-draft</a>, dated 2026-10-08.<!-- /spec:version --></p>
+          </div>
+          <div class="quick">
+            <div class="bar"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>The five questions every agent answers</div>
+            <div class="note">
+              <ol class="steps">
+                <li>Who are you?</li>
+                <li>What do you do?</li>
+                <li>How are you used?</li>
+                <li>On what terms?</li>
+                <li>What do you refuse?</li>
+              </ol>
+            </div>
+            <p class="note">Each answer comes from bytes the operator declared and signed.
+              The agent's model is never asked to produce them, so a program can check every
+              answer against its source (<a href="/spec.html#s4-3">Section 4.3</a>).</p>
+          </div>
+        </div>
+      </div>
+      </header>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 3v18"/><path d="M15 3v18"/></svg>Three columns</p>
+          <h2>Every fact about an agent comes from one of three places</h2>
+          <p>The specification sorts what can be said about an agent by how a reader checks
+            it, and it keeps the three kinds apart. A reader who knows which column a fact came
+            from knows how far to trust it.</p>
+          <ol class="columns">
+            <li class="c-mint"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/></svg></span>
+              <h3>What it answers</h3>
+              <p>Behavior that a program can test by asking. The exchanges every agent
+                serves and its answers to the five questions belong here.</p>
+              <p class="check">A reader checks these by asking the agent.</p></li>
+            <li class="c-blue"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span>
+              <h3>What it declares</h3>
+              <p>Standing facts the operator writes once, in the Agent Descriptor: what the
+                agent does, what each offering takes and returns, what it refuses, and what
+                it needs to run.</p>
+              <p class="check">A reader checks the format and the signature, and takes the
+                content as the operator's word.</p></li>
+            <li class="c-amber"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/><circle cx="12" cy="8" r="6"/></svg></span>
+              <h3>What others attest</h3>
+              <p>Signed records issued by someone other than the operator about something
+                that happened, such as a build, a deployment or an evaluation.</p>
+              <p class="check">A reader checks the issuer's signature and weighs the
+                issuer.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band tinted">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 20h20"/><path d="M5 20V8l7-5 7 5v12"/></svg>The floor</p>
+          <h2>What every agent must do</h2>
+          <p>Section 4 is the floor. An agent meets every clause in it, and there is no
+            partial floor. On a conforming deployment, calling something an agent means it
+            meets these clauses, and anyone can check that in seconds.</p>
+          <ol class="floor">
+            <li><span>It holds exactly one Ed25519 key, and the public key is its identifier. <a href="/spec.html#s4-1">Section 4.1</a></span></li>
+            <li><span>It says what it is to anyone who asks, before any relationship exists. <a href="/spec.html#s4-2">Section 4.2</a></span></li>
+            <li><span>It answers the five questions from its signed declarations. <a href="/spec.html#s4-3">Section 4.3</a></span></li>
+            <li><span>It keeps an entryway where a stranger may read, and nothing a stranger sends reaches its model, tools or memory. <a href="/spec.html#s4-4">Section 4.4</a></span></li>
+            <li><span>It implements the four inbound handlers of the agent surface. <a href="/spec.html#s4-5">Section 4.5</a></span></li>
+            <li><span>It refuses work outside its declared offerings at the boundary, before anything that thinks sees the request. <a href="/spec.html#s4-6">Section 4.6</a></span></li>
+            <li><span>Every refusal is typed and names its reason. <a href="/spec.html#s4-7">Section 4.7</a></span></li>
+            <li><span>It enforces the inbound protections before its model sees anything. <a href="/spec.html#s4-8">Section 4.8</a></span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>The chapters</p>
+          <h2>What the specification covers</h2>
+          <p>The specification is one document. The Agent Descriptor and the Agent Package
+            also have pages of their own on this site, and the AgentDoc has a site of its
+            own.</p>
+          <div class="doors">
+            <a class="door c-violet" href="/spec.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The specification</h3><p>The full text: the floor, the work an agent does, its capabilities, the records others sign, the twenty-one attributes, bindings and conformance.</p><p class="go">Read the full text<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/descriptor.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M16 13H8"/><path d="M16 17H8"/></svg></span><h3>The Agent Descriptor</h3><p>Section 6. The one document where the operator writes the agent's standing facts, signed once it is bound to its agent.</p><p class="go">Read Section 6<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="https://agentdoc.net/"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></span><h3>The AgentDoc</h3><p>Section 9. One document assembled from the Descriptor and the records others sign, with its own site at agentdoc.net.</p><p class="go">Go to agentdoc.net<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-amber" href="/package.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z"/><path d="M12 22V12"/><path d="m3.3 7 7.703 4.734a2 2 0 0 0 1.994 0L20.7 7"/></svg></span><h3>The Agent Package</h3><p>Section 12. How an agent travels from a description to a running agent with an identity, through a depot and an install.</p><p class="go">Read Section 12<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="band tinted">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>The AgentDoc</p>
+          <h2>An AgentDoc is assembled from the agent's Descriptor</h2>
+          <p>The Descriptor is the document the operator writes. The AgentDoc gathers the
+            Descriptor and the signed records others hold about the agent into one document
+            that a program can act on and a person can read, and every part of it says where
+            it came from. Nobody writes an AgentDoc by hand, so it can hold no fact that is
+            missing from its sources.</p>
+          <p>The AgentDoc is Section 9 of this specification. Its tools, examples and a
+            rendering of that chapter are at <a href="https://agentdoc.net/">agentdoc.net</a>.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>Bindings</p>
+          <h2>It works on any network</h2>
+          <p>The specification names no transport. A binding connects an agent to a network:
+            it carries identity, delivery, registration and discovery, and it spells the
+            floor's exchanges in that network's own verbs. An agent that conforms on one
+            binding conforms on any. <a href="https://agentmessaging.ai/">Agent Messaging</a>
+            is the reference binding (<a href="/spec.html#s11">Section 11</a>).</p>
+          <p>The specification leaves the model, the harness and the way an agent thinks to
+            the people who build it. Conformance means the obligations are met. Whether the
+            work is good is a question for evaluation and reputation, and the specification
+            defines the signed records those produce.</p>
+        </div>
+      </section>
+
+      <section class="band tinted">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>Sponsor</p>
+          <h2>AgentMesh sponsors this standard</h2>
+          <p><a href="https://agentmesh.ai/">AgentMesh</a> sponsors the Common Agent
+            Specification and publishes this site. Nothing in the specification requires a
+            particular network or vendor, and any party can implement it.</p>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>The Common Agent Specification</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/descriptor.html">The Agent Descriptor</a>
+          <a href="/package.html">The Agent Package</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/conformance.html">Conformance</a>
+          <a href="https://github.com/jeffrschneider/common-agent-specification">The source on GitHub</a>
+          <a href="https://agentdoc.net/">agentdoc.net</a>
+          <a href="https://agentmessaging.ai/">agentmessaging.ai</a>
+          <span><a href="https://agentmesh.ai/">AgentMesh</a> sponsors this standard.</span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
