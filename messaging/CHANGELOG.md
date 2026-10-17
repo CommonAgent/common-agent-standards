@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.9.1-draft (2026-10-17)
+
+Section 5.7, messages for the person behind an agent, now reads whom an agent acts for from the Common Agent Specification's `acts_for` (its Sections 6.2 and 6.9). Only an agent whose `acts_for` is `person` declares the extension `mesh://extensions/audience/v1`. Every other receiver written to this version refuses a message marked for a person at its door with `AUDIENCE_NOT_SUPPORTED`, carrying `details.reason` and `details.acts_for`, so the sender never waits for a person who is not there. A sending SDK that finds an `acts_for` other than `person` in a receiver's Descriptor treats the receiver as not declaring the extension. Appendix D, Section 12.2 and the extension registry say the same, and `conformance/audience.json` and its checker gain the door's cases. The Change History entry of 2026-10-17 in [SPEC.md](SPEC.md) has the details. The wire version stays 0.3.0.
+
 ## 0.9.0-draft (2026-10-16)
 
 The first version tagged in the Common Agent Standards repository, as

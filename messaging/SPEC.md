@@ -2,9 +2,9 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.0-draft
+**Version:** 0.9.1-draft
 **Status:** Working Draft
-**Date:** 2026-10-16
+**Date:** 2026-10-17
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6). AgentMesh, the sponsor, runs a network that claims the full specification.
 
@@ -916,12 +916,13 @@ A verifier that cannot obtain the cited bytes, which is the ordinary case across
 ### 5.7. Messages for the Person Behind an Agent
 
 > **An optional extension in this version.** The receiver's rules below bind
-> an agent that declares `mesh://extensions/audience/v1` in its manifest. They
-> are outside the floor every agent meets (the Common Agent Specification), so
-> an agent that does not declare the extension has no obligation under them. A
-> later version is planned to put them on the floor and make them mandatory
-> for every agent. The sender's check, the server's part and the fixture apply
-> now, as written here.
+> an agent that declares `mesh://extensions/audience/v1` in its manifest, and
+> only an agent that acts for a person (the Common Agent Specification's
+> `acts_for`) declares it. They are outside the floor every agent meets (the
+> Common Agent Specification). A later version is planned to put them on the
+> floor and make them mandatory for every agent that acts for a person. The
+> refusal at the door by every other receiver, the sender's check, the
+> server's part and the fixture apply now, as written here.
 
 Most messages ask an agent to do something. Some are meant for the person the agent works for: a note one person sends another through their agents, an invitation, a reply to something that person asked. Delivered as ordinary input, such a message reaches a model that may hold tools, credentials and a filesystem, and the model has no way to tell a note for its person from an instruction to itself. "Please move the deposit to the new account" is a reasonable thing to tell a person and a dangerous thing to hand an agent with payment tools. This section lets a sender say which reader a message is for, and says what a receiver that understands the mark does with it.
 
@@ -950,9 +951,9 @@ The third reason has a cost, stated here: the operator can see which messages ar
 
 **What a message for a person carries.** It carries no work. A sender MUST NOT attach a `budget` (§7.7) or a `task_id` to it, and SHOULD omit `payload.offering`; a receiver MUST NOT dispatch on an offering that is present. The text for the person SHOULD travel as `payload.text`, the first rung of §22.5's ladder, and files travel as §7.5.3 says. All of §22 applies on arrival exactly as it does to any message, and the fence (§22.6) applies whenever the text is shown to a model.
 
-**The person.** The person behind an agent is the person its owner (§4.9) names to read what is sent to them through it. For an agent a person owns, that is the owner. An organization that owns an agent names who reads its messages for a person; until it does, the agent has no person and MUST NOT declare support (below).
+**The person.** Whom an agent acts for is the Common Agent Specification's `acts_for` (Common Agent Specification, Sections 6.2 and 6.9), which the agent's bound Descriptor carries. An agent whose `acts_for` is `person` acts for one person, and that person is its owner (§4.9). This is the person behind the agent, and the only reader a message marked `person` is for. So only an agent whose `acts_for` is `person` MAY declare the extension (below). An agent whose `acts_for` is `organization` or `anyone`, or whose Descriptor does not state it, has no person behind it in this specification, MUST NOT declare the extension, and refuses a message marked for a person at its door (below). The Common Agent Specification lets an organization name someone to read such messages (its Section 6.9); Agent Messaging carries no message to that reader in this version, so an organization's agent refuses them too.
 
-**What a receiver does.** These rules bind every receiver that declares the extension (below), in its SDK, its node, or both. In this version they are an optional extension that an agent takes on by declaring it, and they are outside the floor. A receiver that does not declare the extension, including every receiver written before this section, may read the mark as ordinary input, which is why a sender checks the declaration before it sends:
+**What a receiver does.** These rules bind every receiver that declares the extension (below), in its SDK, its node, or both. In this version they are an optional extension that an agent takes on by declaring it, and they are outside the floor. A receiver that does not declare the extension follows the refusal at the door, after this list, and a receiver written before version 0.9.1-draft may read the mark as ordinary input, which is why a sender checks the declaration before it sends. A receiver that declares the extension keeps these six rules.
 
 1. It MUST NOT give a message marked `person` to an offering handler, a tool call or a model as input. It sends no accept signal (§6.4a), runs no budget admission (§7.7), creates no Task (§7.0), meters nothing as work (§13.5), and applies no price (§19). A `respond` marked `person` does not resolve a request the agent is waiting on.
 2. It MUST surface the message to its person, on the surface where that person already reads what concerns them about this agent: the owner channel where held senders are reviewed (EXT-6 §9) and where the agent's own questions to its owner arrive (EXT-8 §2, `ask_owner`), an app, or a notification. The surface MUST show the verified sender (the handle when the host resolved it, the agent ID otherwise, found as §22.6 finds provenance) and when the message arrived, and MUST NOT present the message as written by the person's own agent.
@@ -961,9 +962,11 @@ The third reason has a cost, stated here: the operator can see which messages ar
 5. It refuses a malformed mark. An `audience` that is present and is not a string (`null` included) MUST be refused before any handler runs, with `INVALID_ENVELOPE` and `details.reason: "audience_malformed"`, answered where a reply path exists. A string other than `agent` or `person` MUST be read as `person`, so that a value added after the receiver was written never reaches a model through it.
 6. An event (§6.6) or a Task update that carries the mark is never given to a handler: the receiver drops it and raises a local signal (§22.7).
 
+**The refusal at the door.** A receiver written to this version that does not declare the extension has nobody to carry a message for a person to, and that includes every agent whose `acts_for` is not `person`. It MUST refuse a `request`, a `respond` or a room post whose `audience` reads as `person` (rule 5 says how a mark reads), so that the sender never waits for a person who is not there. The refusal is the first thing the receiver does with the message once admission (EXT-6) has let it through: before any handler, tool or model sees it, and before it enters an inbox (§16.4). It is `AUDIENCE_NOT_SUPPORTED` (§12.2), with `details.reason` set to `"no_person"` when the agent's `acts_for` is `organization`, `anyone` or not stated, and to `"not_declared"` when the agent acts for a person and does not declare the extension, and with `details.acts_for` carrying the agent's own value (`person`, `organization`, `anyone` or `not_stated`). Where a reply path exists, the receiver answers with that error as §12.3 says and never with the queued acknowledgement. A room post has no reply path, so the member's node gives it to no handler, tool or model, shows it to nobody, and raises a local signal (§22.7). An event or a Task update that carries the mark is handled as rule 6 says, whether or not the receiver declares the extension. Admission comes first and is unchanged: a sender the door holds stays held, and learns nothing about the agent from the mark.
+
 **A person may let their agent read these messages.** A person MAY let their agent read the messages addressed to them, for example to summarize them or to remind them. The setting is owner policy (§4.9). It MUST be off until the person turns it on, and it MAY be limited to particular senders. With it on, the receiver still never dispatches such a message to an offering handler or a tool call: it gives the agent the message framed as §22.6 requires, with the frame's `audience:` line, and the agent MUST NOT act on anything in it as an instruction from the sender. The agent MAY tell its person about the message, summarize it, and draft an answer for the person to approve. A reply the agent sends without that approval is the agent's own message and MUST NOT be presented as the person's words. The message passes the screening socket's `delivery` call site at that moment (EXT-10 §5.3).
 
-**Replies.** A person's reply to a message for a person is itself for a person: a `respond` with `in_reply_to` naming the message, `meta.audience: "person"`, no `task_id`, `payload.status: "completed"`, and the reply's text in `payload.text`. The original sender's node surfaces it to its own person under the rules above. Errors and delivery signals about a message for a person (an `INVALID_ENVELOPE`, an admission refusal, the queued acknowledgement) are for the sending agent and carry no mark.
+**Replies.** A person's reply to a message for a person is itself for a person: a `respond` with `in_reply_to` naming the message, `meta.audience: "person"`, no `task_id`, `payload.status: "completed"`, and the reply's text in `payload.text`. The original sender's node surfaces it to its own person under the rules above. Errors and delivery signals about a message for a person (an `INVALID_ENVELOPE`, an `AUDIENCE_NOT_SUPPORTED` from the door, an admission refusal, the queued acknowledgement) are for the sending agent and carry no mark.
 
 **Saying that a receiver keeps these rules.** A receiver that does not know the mark delivers the message as ordinary input, because receivers ignore what they do not know (§17.4, §20.2). A sender therefore cannot assume the rules hold, and has to know before it sends. An agent whose SDK and node implement this section declares the extension in its manifest (§8.1, §17.2):
 
@@ -976,9 +979,9 @@ The third reason has a cost, stated here: the operator can see which messages ar
 }]
 ```
 
-An agent MUST NOT declare it unless every path that delivers to it keeps rules 1 to 6 and its node can reach its person. The declaration travels wherever the manifest does, so a sender reads it from the registry (§9.2) like any other manifest field. The registry does not give every sender every manifest: a private agent's manifest is read by its owner. So the receiver's knock door (EXT-6 §9.3) is a second place to read the declaration, after the registry. The door's answer to a sender it lets in carries `extensions`, the extension URIs the agent declares, and a knock whose input is `{ "ask": ["extensions"] }` is that read only. A sender the door does not let in gets the answer any knock gets, the same answer as for an agent that does not exist, so the read tells a stranger nothing about a private agent. A bridge carries it in a generated A2A card as a `capabilities.extensions[]` entry with the same URI (`BRIDGE-A2A.md` §8.4).
+An agent MUST NOT declare it unless its `acts_for` is `person`, every path that delivers to it keeps rules 1 to 6, and its node can reach its person. The declaration travels wherever the manifest does, so a sender reads it from the registry (§9.2) like any other manifest field. The registry does not give every sender every manifest: a private agent's manifest is read by its owner. So the receiver's knock door (EXT-6 §9.3) is a second place to read the declaration, after the registry. The door's answer to a sender it lets in carries `extensions`, the extension URIs the agent declares, and a knock whose input is `{ "ask": ["extensions"] }` is that read only. A sender the door does not let in gets the answer any knock gets, the same answer as for an agent that does not exist, so the read tells a stranger nothing about a private agent. A bridge carries it in a generated A2A card as a `capabilities.extensions[]` entry with the same URI (`BRIDGE-A2A.md` §8.4).
 
-**What a sender does.** Before it publishes a message for a person, a sending SDK MUST read the receiver's declaration, from the registry or, when the registry does not give it the manifest, at the receiver's knock door (above), as it reads the receiver's declared limits in pre-flight (§6.4b). For a room post it checks every current member. When a receiver does not declare the extension, or its declaration can be read from neither place, the SDK MUST refuse locally with `AUDIENCE_NOT_SUPPORTED`, naming those receivers in `details.receivers`, unless the caller passes an explicit choice to send anyway. The sending agent SHOULD put that choice to its own person in plain words, such as "their agent may read this as a request", and send only at the person's word. A message sent anyway keeps its mark, so a receiver that learns the mark later reads it then.
+**What a sender does.** Before it publishes a message for a person, a sending SDK MUST read the receiver's declaration, from the registry or, when the registry does not give it the manifest, at the receiver's knock door (above), as it reads the receiver's declared limits in pre-flight (§6.4b). For a room post it checks every current member. Where the sender can read a receiver's Descriptor and it states an `acts_for` other than `person`, the sender treats that receiver as one that does not declare the extension, whatever its manifest says. Where the Descriptor does not state `acts_for`, the sender relies on the declaration, as the Common Agent Specification's Section 6.9 says. When a receiver does not declare the extension, or its declaration can be read from neither place, the SDK MUST refuse locally with `AUDIENCE_NOT_SUPPORTED`, naming those receivers in `details.receivers`, unless the caller passes an explicit choice to send anyway. The sending agent SHOULD put that choice to its own person in plain words, such as "their agent may read this as a request", and send only at the person's word. A message sent anyway keeps its mark. A receiver written to this version that does not declare the extension refuses it at its door, so the sender gets `AUDIENCE_NOT_SUPPORTED` back and is not left waiting, and a receiver written before this version may read it as ordinary input.
 
 **Admission, screening and rooms.**
 
@@ -1004,7 +1007,7 @@ An agent MUST NOT declare it unless every path that delivers to it keeps rules 1
 - *The setting brings the risk back, by choice.* A person who lets their agent read their messages lets other people's words into its model. The frame and the no-action rule are a warning label and a dispatch rule (§22.6 says what a label is worth). An implementation SHOULD let the person limit the setting to senders they know.
 - *Old receivers.* A receiver that predates this section ignores the mark, which is why the declaration exists and why the sending SDK refuses until its person chooses otherwise.
 
-`conformance/audience.json` pins the readings of the mark, really-signed envelopes that show stripping or adding the mark fails verification, the receiver's routing table, the frame's `audience:` line and the server's cases. The core profile's test c25 checks the task manager.
+`conformance/audience.json` pins the readings of the mark, really-signed envelopes that show stripping or adding the mark fails verification, the receiver's routing table, the refusal at the door, the frame's `audience:` line and the server's cases. The core profile's test c25 checks the task manager.
 
 ---
 
@@ -3415,7 +3418,7 @@ Signing every chunk of a stream (one Ed25519 signature per token of LLM output) 
 | `AGREEMENT_REQUIRED` | Refused at admission: the requested work is covered by a paid SKU and the consumer's account holds no agreement for the SKU's current digest. `details` names the `sku`, the `sku_digest`, and the `approval_url`. The Section 1.3 "payment required" refusal, typed. (Economics extension, Sections 19.1, 19.5.) | No |
 | `BUDGET_EXHAUSTED` | The cost ceiling was reached mid-work; the Task is paused in `input_required` with spend so far and an estimate to finish. Resolved by a budget revision or cancellation, not by retry. (Section 7.7.) | No |
 | `DEADLINE_EXCEEDED` | Recorded on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
-| `AUDIENCE_NOT_SUPPORTED` | The message is marked for the person behind the receiving agent (§5.7), and the receiver does not declare `mesh://extensions/audience/v1`, so nothing says the message will reach the person. Raised locally by a sending SDK before it publishes, unless the caller chose to send anyway, and by a bridge whose far side cannot keep §5.7's rules (`BRIDGE-A2A.md` §8.4). `details.receivers` names the receivers that do not declare it. | No |
+| `AUDIENCE_NOT_SUPPORTED` | The message is marked for the person behind the receiving agent (§5.7), and the receiver does not declare `mesh://extensions/audience/v1`, so nothing says the message will reach the person. Raised locally by a sending SDK before it publishes, unless the caller chose to send anyway, and by a bridge whose far side cannot keep §5.7's rules (`BRIDGE-A2A.md` §8.4). `details.receivers` names the receivers that do not declare it. Also the answer of a receiver written to this version that does not declare the extension, at its door (§5.7), with `details.reason` (`no_person` when its `acts_for` is not `person`, `not_declared` otherwise) and `details.acts_for`. | No |
 
 #### Processing Errors
 
@@ -4046,7 +4049,7 @@ suite, `docs/implementation-status.md`, not here.
 | `mesh://extensions/contacts/v1` | **Draft** (see `extensions/EXT-4-contacts.md`) | Private, mutual-consent contact exchange between people: handle → owner-key resolution, roster disclosure (§8.6), revocation. Explicitly NOT a public directory and NOT org modeling; public/organizational discovery is ceded to ARD (agenticresourcediscovery.org). |
 | `mesh://extensions/allowance/v1` | **Draft** (see `extensions/EXT-8-allowance.md`) | The owner-side spending ceiling: a signed, node-held **allowance** document (declared token→money cost model; per-task/context/day ceilings in integer micro-units) that the agent's own node meters against and enforces through §7.7 refusal-with-estimate (`BUDGET_INSUFFICIENT`). The budget's complement: it guards the owner's money, crosses no trust boundary, and rides no envelope. Platform role is visibility only (spend rollups over §19.2 receipts, `mesh.event.agent.allowance_exceeded`, EXT-3 class `allowance`); settlement and cross-agent constraints out of scope. |
 | `mesh://extensions/screening/v1` | **Draft** (see `extensions/EXT-10-screening.md`) | Who reads inbound content before an agent does. A recipient-side socket: the node consults a provider the OWNER chose — an HTTPS service or a mesh agent — and gets back pass / flag / hold, where a hold routes to the EXT-6 door rather than deleting anything. Screening is local because a sealed payload (EXT-7) opens only on the recipient's node, so anything upstream would cover unsealed traffic alone and read as covering all of it. Five call sites: message delivery, room history replay, room file fetch, work-board read, and outbound send. **The protocol carries no detector and never will** — a shipped detector makes every miss the platform's, and an account with no provider configured is unscreened and must be told so in that word. |
-| `mesh://extensions/audience/v1` | **Draft** (see §5.7) | Messages for the person behind an agent. A sender marks a `request`, a `respond` or a room post with `meta.audience: "person"`, under its signature; a receiver that declares this URI in its manifest never gives such a message to a handler or a model, surfaces it to its person, and lets the agent read it only when the person allows, framed, with nothing in it taken as an instruction. A sending SDK checks the declaration and refuses with `AUDIENCE_NOT_SUPPORTED` until its person chooses to send anyway. The server's part (carrying the mark, and a task manager that applies no marked update) is in the core profile (§1.6). |
+| `mesh://extensions/audience/v1` | **Draft** (see §5.7) | Messages for the person behind an agent. Only an agent whose Common Agent Specification `acts_for` is `person` declares this URI, and every other receiver written to this version refuses a message marked for a person at its door with `AUDIENCE_NOT_SUPPORTED`. A sender marks a `request`, a `respond` or a room post with `meta.audience: "person"`, under its signature; a receiver that declares this URI in its manifest never gives such a message to a handler or a model, surfaces it to its person, and lets the agent read it only when the person allows, framed, with nothing in it taken as an instruction. A sending SDK checks the declaration and refuses with `AUDIENCE_NOT_SUPPORTED` until its person chooses to send anyway. The server's part (carrying the mark, and a task manager that applies no marked update) is in the core profile (§1.6). |
 | Sessions (`connect`/`disconnect`) | Candidate | The parked session operations (§10.1 and §10.2), if a durable-session extension is ever needed beyond `context_id`. |
 
 Extensions whose normative text lives outside this document are collected in
@@ -5612,8 +5615,10 @@ section wins, and the disagreement is a defect in this appendix.
 
 > **This checklist restates the floor.** The obligations are Common Agent
 > Specification §4, which governs; the fixtures pin their mesh encodings.
-> Line 15 is the exception: it is §5.7's optional extension, which binds only
-> an agent that declares it and is outside the floor in this version.
+> Lines 15 and 16 are the exceptions, and both come from §5.7. Line 15 is
+> its optional extension, which binds only an agent that declares it and is
+> outside the floor in this version. Line 16 is Agent Messaging's own rule for
+> every agent written to this version that does not declare it.
 
 | # | Obligation | Spec | Fixture |
 |---|-----------|------|---------|
@@ -5632,7 +5637,8 @@ section wins, and the disagreement is a defect in this appendix.
 | 12 | Enforce agreements at admission where a paid SKU covers the offering: no unexpired agreement at the current digest → `AGREEMENT_REQUIRED` with `sku`, `sku_digest`, `approval_url` | §19.5 | `commerce.json` |
 | 13 | Report declared usage in `payload.usage` of the terminal respond, or of a reply-`request` carrying `in_reply_to`: cumulative, superseding, covered by the envelope signature; the provider is the respond's recipient but the reply-request's SENDER | §13.5 | `metering.json` |
 | 14 | Publish every direct `respond` (accept, bare answer, Task-creating first reply) to the requester's inbox, correlated by `in_reply_to`; never response data on a transport reply subject | §6.5, §18.7 | *(none)* |
-| 15 | If you declare `mesh://extensions/audience/v1`, an optional extension in this version: give a message marked `person` to no handler, tool or model; surface it to your person; refuse a mark that is not a string; read an unknown string as `person`; let the agent read it only under the person's setting, framed with the `audience:` line; declare `mesh://extensions/audience/v1` only when every path to you keeps these rules and your node can reach your person | §5.7, §22.6 | `audience.json` |
+| 15 | If you declare `mesh://extensions/audience/v1`, an optional extension in this version: give a message marked `person` to no handler, tool or model; surface it to your person; refuse a mark that is not a string; read an unknown string as `person`; let the agent read it only under the person's setting, framed with the `audience:` line; declare `mesh://extensions/audience/v1` only when your `acts_for` is `person`, every path to you keeps these rules and your node can reach your person | §5.7, §22.6 | `audience.json` |
+| 16 | If you do not declare `mesh://extensions/audience/v1`: refuse a `request`, a `respond` or a room post marked `person` at your door with `AUDIENCE_NOT_SUPPORTED`, `details.reason` `no_person` or `not_declared` and `details.acts_for`, after admission and before any handler or inbox; never answer it with the queued ack | §5.7, §12.2 | `audience.json` |
 
 ### D.2. A caller (a sender of requests)
 
@@ -5647,7 +5653,7 @@ section wins, and the disagreement is a defect in this appendix.
 | 7 | Cancel with a reason from the closed eight-value enum; cancellation is effective when sent | §10.8 | `cancel.json` |
 | 8 | Deduplicate inbound traffic and replies on `(from, id)`, never on `id` alone | §5.5, §22.2 | `inbound-protections.json` |
 | 9 | Treat silence from a registered agent as possibly queued, not failed; every reply, live or late, arrives at your own inbox, correlated by `in_reply_to`, and response data on a transport reply subject is ignored | §6.4, §6.5 | *(none)* |
-| 10 | Before sending a message marked for a person, check each receiver's declaration and refuse locally with `AUDIENCE_NOT_SUPPORTED` unless your person chose to send anyway; attach no `budget` and no `task_id` | §5.7 | `audience.json` |
+| 10 | Before sending a message marked for a person, check each receiver's declaration (a receiver whose Descriptor states an `acts_for` other than `person` does not declare it) and refuse locally with `AUDIENCE_NOT_SUPPORTED` unless your person chose to send anyway; attach no `budget` and no `task_id` | §5.7 | `audience.json` |
 
 ### D.3. A node (a host of agents)
 
@@ -5658,7 +5664,7 @@ section wins, and the disagreement is a defect in this appendix.
 | 3 | Ack only durably accepted mail; answer an attended inbox's requests with the queued ack (`queued: true`, `inbox_id`), never with `"accepted"` | §16.4, §6.4a | `accept-signal.json` |
 | 4 | Bound every mailbox drain to the bind-time backlog; re-run on every reconnect and periodically (default 60 s); never overlap passes | §16.4 | *(none)* |
 | 5 | Heartbeat per node on `mesh.heartbeat.{node_id}`; the subject token, not the payload, names the node | §10.10 | *(none)* |
-| 6 | For an agent that declares `mesh://extensions/audience/v1`, an optional extension in this version: keep the mark on an inbox entry marked for a person, keep its text out of every listing a harness reads, answer it with the queued ack, and declare `mesh://extensions/audience/v1` only when you can reach the agent's person | §5.7, §16.4 | `audience.json` |
+| 6 | For an agent that declares `mesh://extensions/audience/v1`, an optional extension in this version: keep the mark on an inbox entry marked for a person, keep its text out of every listing a harness reads, answer it with the queued ack, and declare `mesh://extensions/audience/v1` only for an agent whose `acts_for` is `person` and only when you can reach that person. For an agent that does not declare it: refuse a message marked for a person before it enters the inbox, as D.1 line 16 says | §5.7, §16.4 | `audience.json` |
 
 ---
 
@@ -6348,3 +6354,26 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > Agent Messaging Server release whose task manager keeps §5.7, because that
 > release's capabilities answer is what says a server implements this version
 > (the order in which Agent Messaging 0.8 was released).
+
+> **2026-10-17: Version 0.9.1-draft. Messages for a person go only to an
+> agent that acts for one.** §5.7 now reads whom an agent acts for from the
+> Common Agent Specification's `acts_for` (its Sections 6.2 and 6.9). Only
+> an agent whose `acts_for` is `person` has a person behind it, and only such
+> an agent declares `mesh://extensions/audience/v1`. An agent whose
+> `acts_for` is `organization` or `anyone`, or is not stated, has no person
+> behind it here. The Common Agent Specification lets an organization name a
+> reader for such messages; Agent Messaging carries none to that reader in
+> this version. New in §5.7, the refusal at the door: a receiver written to
+> this version that does not declare the extension refuses a `request`, a
+> `respond` or a room post marked for a person with `AUDIENCE_NOT_SUPPORTED`
+> (§12.2), after admission and before any handler or inbox, with
+> `details.reason` (`no_person` or `not_declared`) and `details.acts_for`,
+> so the sender never waits for a person who is not there. It answers with
+> the error where a reply path exists and never with the queued
+> acknowledgement, and drops a room post with a local signal. A sending SDK
+> that reads a receiver's Descriptor and finds an `acts_for` other than
+> `person` treats the receiver as not declaring the extension. Appendix D
+> gains line D.1 16 and amends D.1 15, D.2 10 and D.3 6.
+> `conformance/audience.json` gains the door's cases and a pre-flight case
+> for each `acts_for`, and its checker states the new rules. The wire version
+> stays `0.3.0` (§20.1).
