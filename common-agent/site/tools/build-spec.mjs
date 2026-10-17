@@ -318,7 +318,8 @@ function chapter({ file, active, id, num, name, sub, description, ids, introAlia
 // Section 6. The standalone Descriptor page numbered these 3 to 9; its ids are
 // kept as the ids here, with the specification's numbering as aliases.
 const DESCRIPTOR_IDS = { "6.1": "primary", "6.2": "document", "6.3": "kinds", "6.4": "rules", "6.5": "versioning",
-  "6.6": "signature", "6.7": "serving", "6.8": "consumers", "6.9": "declaration-set", "6.10": "doctrine" };
+  "6.6": "signature", "6.7": "serving", "6.8": "consumers", "6.9": "declaration-set", "6.10": "doctrine",
+  "6.11": "scope", "6.12": "shape" };
 chapter({
   file: "descriptor.html", active: "descriptor", id: "s6", num: 6, name: "The Agent Descriptor",
   sub: "The operator's standing description of one agent, and the primary location for its metadata.",
