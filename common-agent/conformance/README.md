@@ -15,6 +15,7 @@ must be accepted beside cases that must be refused.
 | Fixture | What it pins | Sections |
 |---------|--------------|----------|
 | [trial.json](trial.json) | Which trial declarations a registry refuses, the order of admission and its first-failure answer, the fields of a `TRIAL_REFUSED` refusal, what a node measures at admission, and that only admitted trials are counted. | 7.7, with 7.5 and 4.7 |
+| [offering-scope.json](offering-scope.json) | Which offering declarations a registry accepts by scope, focus, workspace, authority and ceilings; the boundary's checks in order and the refusal each gives, with its `decided_by`; how values a reader does not recognise are read, `acts_for` among them; how a Descriptor's former `shape` maps; and that a search by the work wanted never returns an open-ended offering. | 6.11 and 6.12, with 6.2, 4.6 and 4.7 |
 
 The cases in `trial.json` are the same as those in the copy the Agent Messaging
 Server repository carries.

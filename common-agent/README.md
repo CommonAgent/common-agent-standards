@@ -14,7 +14,7 @@ one network binding of the agent it defines (Section 11).
 
 ## What is here
 
-- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.26.0-draft.
+- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.27.0-draft.
   It covers the floor every agent meets (the five questions, the exchanges, the
   refusals), the work an agent does, the Agent Descriptor (Section 6), the
   capabilities, the signed records others issue, the AgentDoc (Section 9), the
