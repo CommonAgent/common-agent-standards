@@ -43,7 +43,9 @@ OUT="$(win "$STAGE")"
 render() { # render <dest folder> <base path without slashes, or empty> <draft 0|1>
   local dest="$1" base="$2" draft="$3"
   mkdir -p "$dest"
-  (cd "$SITE" && find . -path ./tools -prune -o -type f -print) | while read -r f; do
+  # Only the site's own files: the tools, dotfiles, Markdown and scripts stay in
+  # the repository.
+  (cd "$SITE" && find . \( -path ./tools -o -name '.?*' -o -name '*.md' -o -name '*.sh' -o -name '*.mjs' \) -prune -o -type f -print) | while read -r f; do
     mkdir -p "$dest/$(dirname "$f")"; cp "$SITE/$f" "$dest/$f"
   done
   rm -f "$dest/spec.html"
