@@ -1,0 +1,13 @@
+{
+  "interface": "interface-manager",
+  "version": "v1",
+  "title": "The manager",
+  "definition": "https://agentroles.ai/manager.html",
+  "summary": "What a worker can rely on from whatever is directing it.",
+  "exchanges": [
+    { "id": "work", "asks": "here is work.", "answer_carries": ["what is wanted", "what counts as done", "every constraint already agreed that limits how it may be done"] },
+    { "id": "answer", "asks": "here is your answer.", "answer_carries": ["the answer to a raised block, or the statement that none is coming"] },
+    { "id": "stop", "asks": "stop that.", "answer_carries": ["the cancellation, reaching whoever is doing the work"] },
+    { "id": "committed", "asks": "what did you commit?", "answer_carries": ["what it agreed on the owner's behalf", "which worker it gave the work to"] }
+  ]
+}

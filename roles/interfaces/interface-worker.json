@@ -1,0 +1,16 @@
+{
+  "interface": "interface-worker",
+  "version": "v1",
+  "title": "The worker",
+  "definition": "https://agentroles.ai/worker.html",
+  "summary": "An agent that can be given a piece of work by something that knows nothing about it.",
+  "exchanges": [
+    { "id": "free", "asks": "are you free?", "answer_carries": ["free or not, answered by the agent itself", "when that changes, where known"] },
+    { "id": "estimate", "asks": "what would this take?", "answer_carries": ["can, cannot, or cannot tell", "cost and duration", "whether this is a commitment or an estimate"] },
+    { "id": "take", "asks": "will you take it?", "answer_carries": ["accepted or refused, with the reason on a refusal", "ownership of the job on acceptance"] },
+    { "id": "status", "asks": "how is it going?", "answer_carries": ["working, blocked, done, or failed", "one line of detail", "never-accepted, for a job it never accepted"] },
+    { "id": "result", "asks": "what came of it?", "answer_carries": ["the result, or the failure stated plainly"] },
+    { "id": "need", "asks": "what do you need?", "answer_carries": ["what it needs", "who it needs it from"] },
+    { "id": "stop", "asks": "stop.", "answer_carries": ["cancellation accepted", "the condition the work is in"] }
+  ]
+}

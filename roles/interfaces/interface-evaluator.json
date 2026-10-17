@@ -1,0 +1,12 @@
+{
+  "interface": "interface-evaluator",
+  "version": "v1",
+  "title": "The evaluator",
+  "definition": "https://agentroles.ai/evaluator.html",
+  "summary": "The agent evaluator role's primary interface: a deployed agent, tested against what its package obliges.",
+  "exchanges": [
+    { "id": "evaluate", "asks": "evaluate this.", "answer_carries": ["a graded verdict: each case and its result", "the records audit", "whether the agent conforms"] },
+    { "id": "test", "asks": "what is the test?", "answer_carries": ["the cases it would put", "the records it would audit"] },
+    { "id": "verdict", "asks": "what did you find?", "answer_carries": ["the verdict for one evaluation, case by case"] }
+  ]
+}

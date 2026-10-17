@@ -1,0 +1,24 @@
+{
+  "interface": "interface-lifecycle",
+  "version": "v1",
+  "title": "The lifecycle",
+  "definition": "https://agentroles.ai/lifecycle.html",
+  "summary": "An agent that can be asked to pause, resume and stop, and that honors it, including work it was doing off the mesh.",
+  "wire": {
+    "marker": "agentmesh-lifecycle/v1",
+    "shape": "line one is exactly the marker, line two is the verb, and the rest is the reason"
+  },
+  "who_may_ask": "the agent's owner, and the operator of the mesh it is on; anyone else is refused and nothing changes",
+  "exchanges": [
+    { "id": "pause", "asks": "pause.", "answer_carries": ["paused, from the agent itself", "how many pieces of work it ended", "it takes no new work and sends nothing until resumed"] },
+    { "id": "resume", "asks": "resume.", "answer_carries": ["running, or refused with the reason (for example, a pause its operator placed is lifted by its operator only)"] },
+    { "id": "stop", "asks": "stop.", "answer_carries": ["stopped", "that every piece of work was ended, on the mesh and off it"] },
+    { "id": "status", "asks": "are you running?", "answer_carries": ["running, paused or stopped", "how much work is running"] }
+  ],
+  "conformance": {
+    "check": "ask status, pause as the operator, check status says paused and nothing is running, pause as a stranger and check it is refused, resume as the operator, check status says running, stop as the operator and check nothing is running",
+    "reference": "fleet-manager/runtime/fleet/lifecycle-check.mjs in the AgentMesh repository",
+    "refusing_with_a_reason_conforms": true,
+    "not_answering_conforms": false
+  }
+}

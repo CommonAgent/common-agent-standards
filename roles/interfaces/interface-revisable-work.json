@@ -1,0 +1,12 @@
+{
+  "interface": "interface-revisable-work",
+  "version": "v1",
+  "title": "Revisable work",
+  "definition": "https://agentroles.ai/revisable-work.html",
+  "summary": "A delivered piece of work can be changed without being redone.",
+  "exchanges": [
+    { "id": "manifest", "asks": "what did you deliver?", "request": "job.manifest", "input": ["task_id"], "answer_carries": ["the signed job manifest of that completion", "or a typed answer that it has none: no manifest for that task, or the task is unknown to it"] },
+    { "id": "quote", "asks": "what would redoing these steps cost now?", "request": "job.quote", "input": ["revises", "job.manifest", "steps"], "answer_carries": ["each named step with its flat price, amount_micro and currency", "the total price", "included_remaining, how many included revisions are left", "window_ends_at, when the revision window closes, or null"] },
+    { "id": "revise", "asks": "redo these steps.", "request": "a request on the offering that produced the work", "input": ["revises", "job.manifest", "steps", "the change, in the request's text"], "answer_carries": ["the task completed like any other", "a new job manifest, in which every piece not redone carries the same reference and digest as before", "the manifest's reused member, counting those pieces"] }
+  ]
+}
