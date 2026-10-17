@@ -15,9 +15,9 @@
 //      signature verifies.
 //   4. Every tamper case (the mark stripped, flipped or added after signing)
 //      fails verification, and the untouched control passes.
-//   5. The readings, the receiver's routing table, the task manager's cases
-//      and the sender's pre-flight agree with §5.7's rules, written out below
-//      as small reference functions.
+//   5. The readings, the receiver's routing table, the refusal at the door,
+//      the task manager's cases and the sender's pre-flight agree with §5.7's
+//      rules, written out below as small reference functions.
 //   6. The frame cases equal inbound-protections.json's frames with the one
 //      audience line added, so the two fixtures cannot drift apart.
 //
@@ -70,13 +70,33 @@ function route({ type, audience, setting }) {
   return setting === "on" ? "agent_note" : "person";
 }
 
+/**
+ * Where a receiver written to this version that does NOT declare the
+ * extension sends a message: §5.7's refusal at the door. Only an agent whose
+ * acts_for is "person" may declare it, so this is every other agent, and an
+ * agent that acts for a person and does not declare it.
+ */
+function door({ type, audience, acts_for }) {
+  const meta = audience === "absent" ? {} : { audience };
+  const reading = readAudience(meta);
+  if (reading === "malformed") return { outcome: "refused" };
+  if (reading === "agent") return { outcome: "handler" };
+  if (NEVER_TO_A_HANDLER.has(type)) return { outcome: "dropped" };
+  if (!CARRIERS.has(type)) return { outcome: "ignored" };
+  if (type.startsWith("say")) return { outcome: "dropped_at_door" };
+  return { outcome: "refused_at_door", reason: acts_for === "person" ? "not_declared" : "no_person" };
+}
+
 /** Whether the task manager applies a Task update with this meta. */
 const taskManagerApplies = (meta) => readAudience(meta) === "agent";
 
 /** The sending SDK's pre-flight for a message marked for a person. */
 function preflight({ receivers, audience = "person", send_anyway }) {
   if (audience !== "person") return { result: "send" };
-  const missing = receivers.filter((r) => r.declares !== true).map((r) => r.id);
+  // A Descriptor that states an acts_for other than "person" outweighs the
+  // manifest; where acts_for is not stated, the declaration is what counts.
+  const declares = (r) => r.declares === true && (r.acts_for === undefined || r.acts_for === "person" || r.acts_for === "not_stated");
+  const missing = receivers.filter((r) => !declares(r)).map((r) => r.id);
   if (missing.length && !send_anyway) return { result: "AUDIENCE_NOT_SUPPORTED", details_receivers: missing };
   return { result: "send" };
 }
@@ -164,6 +184,31 @@ for (const outcome of ["handler", "person", "agent_note", "refused", "dropped", 
   if (!fixture.receiver.cases.some((c) => c.outcome === outcome)) fail("receiver", `no case with outcome ${outcome}`);
 }
 
+const ACTS_FOR = new Set(["person", "organization", "anyone", "not_stated"]);
+for (const c of fixture.door.cases) {
+  count("door");
+  if (c.declares !== false) fail(`door.${c.id}`, "a case at the door is a receiver that does not declare the extension");
+  if (!ACTS_FOR.has(c.acts_for)) fail(`door.${c.id}`, `acts_for ${JSON.stringify(c.acts_for)} is not one of person, organization, anyone, not_stated`);
+  const got = door(c);
+  if (got.outcome !== c.outcome) fail(`door.${c.id}`, `goes to ${got.outcome}, the fixture says ${c.outcome}`);
+  if (got.reason !== c.reason) fail(`door.${c.id}`, `reason ${got.reason}, the fixture says ${c.reason}`);
+  if (got.outcome !== "handler" && got.outcome !== "ignored") {
+    for (const k of ["accept_signal", "task", "metered", "inbox"]) if (c[k] !== false) fail(`door.${c.id}`, `${k} must be false for a message no handler gets`);
+  }
+  if (got.outcome === "refused_at_door" && (!c.answer.startsWith("AUDIENCE_NOT_SUPPORTED") || !/never the queued acknowledgement/.test(c.answer))) {
+    fail(`door.${c.id}`, "the door answers AUDIENCE_NOT_SUPPORTED and never the queued acknowledgement");
+  }
+}
+for (const outcome of ["refused_at_door", "dropped_at_door", "handler", "refused", "dropped", "ignored"]) {
+  if (!fixture.door.cases.some((c) => c.outcome === outcome)) fail("door", `no case with outcome ${outcome}`);
+}
+for (const reason of ["no_person", "not_declared"]) {
+  if (!fixture.door.cases.some((c) => c.reason === reason)) fail("door", `no case with reason ${reason}`);
+}
+for (const a of ["organization", "anyone", "not_stated", "person"]) {
+  if (!fixture.door.cases.some((c) => c.acts_for === a && c.outcome === "refused_at_door")) fail("door", `no refusal for acts_for ${a}`);
+}
+
 for (const c of fixture.inbox.cases) {
   count("inbox");
   const marked = c.entry_audience === "person";
@@ -207,7 +252,7 @@ for (const c of fixture.frame.cases) {
 
 // ── the board ──────────────────────────────────────────────────────────────
 
-const REQUIRED = ["helper", "identities", "envelopes", "tamper", "readings", "receiver", "inbox", "server.task_manager", "server.carriage", "sender.preflight", "frame"];
+const REQUIRED = ["helper", "identities", "envelopes", "tamper", "readings", "receiver", "door", "inbox", "server.task_manager", "server.carriage", "sender.preflight", "frame"];
 for (const s of REQUIRED) if (!counts[s]) fail(s, "has no cases; a section nobody checks is decoration");
 
 for (const s of REQUIRED) console.log(`${problems.some((p) => p.startsWith(s)) ? "✗" : "✓"} ${s} (${counts[s] ?? 0})`);

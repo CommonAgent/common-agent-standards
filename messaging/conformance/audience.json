@@ -1,7 +1,7 @@
 {
-  "comment": "Messages for the person behind an agent (SPEC.md 5.7). Pins what prose cannot: where the mark lives and how its values read, really-signed envelopes that show the mark can be neither stripped nor added without the signature failing, the receiver's routing table, the frame's audience line byte for byte, the task manager's cases, and the sender's pre-flight. THE FIXTURE IS THE AUTHORITY on these bytes and decisions, on SPEC.md 22.8's terms: when an implementation disagrees, the implementation changes; when the fixture is believed wrong, it changes only together with SPEC.md 5.7. conformance/lib/check-audience-fixture.mjs checks the fixture against itself and against the rules of 5.7 with node alone; the SDKs, the server and the adapter read it in their own tests as each implements 5.7.",
+  "comment": "Messages for the person behind an agent (SPEC.md 5.7). Pins what prose cannot: where the mark lives and how its values read, really-signed envelopes that show the mark can be neither stripped nor added without the signature failing, the receiver's routing table, the refusal at the door by a receiver that does not declare the extension, the frame's audience line byte for byte, the task manager's cases, and the sender's pre-flight. THE FIXTURE IS THE AUTHORITY on these bytes and decisions, on SPEC.md 22.8's terms: when an implementation disagrees, the implementation changes; when the fixture is believed wrong, it changes only together with SPEC.md 5.7. conformance/lib/check-audience-fixture.mjs checks the fixture against itself and against the rules of 5.7 with node alone; the SDKs, the server and the adapter read it in their own tests as each implements 5.7.",
   "version": 1,
-  "spec": "SPEC.md 5.7 (the mark, the receiver, the sender, the server), 5.3 (signed bytes), 6.4a (queued acknowledgement), 7.0 and 7.3 (no Task), 12.2 (INVALID_ENVELOPE, AUDIENCE_NOT_SUPPORTED), 17.2 (declaration), 22.6 (the frame); EXT-5 3.1 (room posts); EXT-10 5.3 (screening); BRIDGE-A2A.md 8.4 (A2A)",
+  "spec": "SPEC.md 5.7 (the mark, the person, the receiver, the refusal at the door, the sender, the server), 5.3 (signed bytes), 6.4a (queued acknowledgement), 7.0 and 7.3 (no Task), 12.2 (INVALID_ENVELOPE, AUDIENCE_NOT_SUPPORTED), 17.2 (declaration), 22.6 (the frame); EXT-5 3.1 (room posts); EXT-10 5.3 (screening); BRIDGE-A2A.md 8.4 (A2A); Common Agent Specification 6.2 and 6.9 (acts_for)",
   "identities": {
     "comment": "TEST VECTORS, the same published seed accept-signal.json, budget.json and inbound-protections.json use, so no new private-key-shaped string enters the repository. They control nothing. Only the identity with the published seed signs; the receiver's seed was discarded.",
     "sender_seed": "SUAEGDPNTWXACIF45CA23BUY36RIMWZXW5LEHSEOK2ONS5JWJ7PBC2EWBA",
@@ -470,6 +470,173 @@
       }
     ]
   },
+  "door": {
+    "comment": "The refusal at the door (5.7) by a receiver written to this version that does not declare mesh://extensions/audience/v1. Only an agent whose acts_for (Common Agent Specification 6.2) is 'person' may declare it, so this is every agent whose acts_for is 'organization', 'anyone' or not stated, and an agent that acts for a person and does not declare it. 'acts_for' is the receiver's own value ('not_stated' when its Descriptor does not state it). Outcomes: 'refused_at_door' = AUDIENCE_NOT_SUPPORTED after admission and before any handler, tool, model or inbox, answered where a reply path exists and never with the queued acknowledgement, with details.reason 'no_person' (acts_for is not 'person') or 'not_declared' (acts_for is 'person'); 'dropped_at_door' = a room post, which has no reply path: given to no handler, tool or model, shown to nobody, local signal raised (22.7); 'handler', 'refused', 'dropped' and 'ignored' as in the receiver's table.",
+    "cases": [
+      {
+        "id": "organization_request_person",
+        "type": "request",
+        "audience": "person",
+        "acts_for": "organization",
+        "declares": false,
+        "outcome": "refused_at_door",
+        "reason": "no_person",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "AUDIENCE_NOT_SUPPORTED, details.reason no_person, details.acts_for; never the queued acknowledgement"
+      },
+      {
+        "id": "anyone_request_person",
+        "type": "request",
+        "audience": "person",
+        "acts_for": "anyone",
+        "declares": false,
+        "outcome": "refused_at_door",
+        "reason": "no_person",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "AUDIENCE_NOT_SUPPORTED, details.reason no_person, details.acts_for; never the queued acknowledgement"
+      },
+      {
+        "id": "not_stated_request_person",
+        "type": "request",
+        "audience": "person",
+        "acts_for": "not_stated",
+        "declares": false,
+        "outcome": "refused_at_door",
+        "reason": "no_person",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "AUDIENCE_NOT_SUPPORTED, details.reason no_person, details.acts_for; never the queued acknowledgement"
+      },
+      {
+        "id": "person_not_declared_request_person",
+        "type": "request",
+        "audience": "person",
+        "acts_for": "person",
+        "declares": false,
+        "outcome": "refused_at_door",
+        "reason": "not_declared",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "AUDIENCE_NOT_SUPPORTED, details.reason not_declared, details.acts_for; never the queued acknowledgement"
+      },
+      {
+        "id": "organization_respond_person",
+        "type": "respond",
+        "audience": "person",
+        "acts_for": "organization",
+        "declares": false,
+        "outcome": "refused_at_door",
+        "reason": "no_person",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "AUDIENCE_NOT_SUPPORTED, details.reason no_person, details.acts_for; never the queued acknowledgement"
+      },
+      {
+        "id": "organization_request_unknown_string",
+        "type": "request",
+        "audience": "household",
+        "acts_for": "organization",
+        "declares": false,
+        "outcome": "refused_at_door",
+        "reason": "no_person",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "AUDIENCE_NOT_SUPPORTED, details.reason no_person, details.acts_for; never the queued acknowledgement"
+      },
+      {
+        "id": "anyone_room_say_person",
+        "type": "say",
+        "audience": "person",
+        "acts_for": "anyone",
+        "declares": false,
+        "outcome": "dropped_at_door",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "none; a room post has no reply path, so the member raises a local signal"
+      },
+      {
+        "id": "organization_request_unmarked",
+        "type": "request",
+        "audience": "absent",
+        "acts_for": "organization",
+        "declares": false,
+        "outcome": "handler",
+        "accept_signal": "as 6.4a says",
+        "task": "as 7.0 says",
+        "metered": "as 13.5 says",
+        "inbox": "as 16.4 says",
+        "answer": "the agent's own answer"
+      },
+      {
+        "id": "organization_request_agent",
+        "type": "request",
+        "audience": "agent",
+        "acts_for": "organization",
+        "declares": false,
+        "outcome": "handler",
+        "accept_signal": "as 6.4a says",
+        "task": "as 7.0 says",
+        "metered": "as 13.5 says",
+        "inbox": "as 16.4 says",
+        "answer": "the agent's own answer"
+      },
+      {
+        "id": "anyone_request_malformed",
+        "type": "request",
+        "audience": 1,
+        "acts_for": "anyone",
+        "declares": false,
+        "outcome": "refused",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "INVALID_ENVELOPE, details.reason audience_malformed"
+      },
+      {
+        "id": "anyone_event_person",
+        "type": "emit",
+        "audience": "person",
+        "acts_for": "anyone",
+        "declares": false,
+        "outcome": "dropped",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": false,
+        "answer": "none"
+      },
+      {
+        "id": "organization_room_join_person",
+        "type": "join",
+        "audience": "person",
+        "acts_for": "organization",
+        "declares": false,
+        "outcome": "ignored",
+        "accept_signal": false,
+        "task": false,
+        "metered": false,
+        "inbox": "as 16.4 says",
+        "answer": "none"
+      }
+    ]
+  },
   "inbox": {
     "comment": "The node-held inbox (16.4) and the attended listing a harness reads (8.3a). A marked entry keeps the mark; its text is never in a listing the harness reads; the listing MAY say one is waiting for the person, with sender and time. With the setting on, the harness gets the text framed with the audience line.",
     "cases": [
@@ -603,7 +770,7 @@
     ]
   },
   "sender": {
-    "comment": "The sending SDK's pre-flight for a message marked for a person (5.7, beside 6.4b). It reads each receiver's manifest and looks for the declaration's uri. A refusal is local: nothing is published. 'send_anyway' is the caller's explicit choice, which the sending agent SHOULD take from its own person.",
+    "comment": "The sending SDK's pre-flight for a message marked for a person (5.7, beside 6.4b). It reads each receiver's manifest and looks for the declaration's uri. A refusal is local: nothing is published. 'send_anyway' is the caller's explicit choice, which the sending agent SHOULD take from its own person. A receiver whose Descriptor states an acts_for other than 'person' is treated as not declaring the extension, whatever its manifest says; where acts_for is not stated, the sender relies on the declaration (Common Agent Specification 6.9).",
     "preflight": [
       {
         "id": "declared",
@@ -704,6 +871,65 @@
         "audience": "agent",
         "send_anyway": false,
         "result": "send"
+      },
+      {
+        "id": "declares_acts_for_person",
+        "receivers": [
+          {
+            "id": "A",
+            "declares": true,
+            "acts_for": "person"
+          }
+        ],
+        "send_anyway": false,
+        "result": "send"
+      },
+      {
+        "id": "declares_acts_for_not_stated",
+        "receivers": [
+          {
+            "id": "A",
+            "declares": true,
+            "acts_for": "not_stated"
+          }
+        ],
+        "send_anyway": false,
+        "result": "send"
+      },
+      {
+        "id": "declares_but_acts_for_organization",
+        "receivers": [
+          {
+            "id": "A",
+            "declares": true,
+            "acts_for": "organization"
+          }
+        ],
+        "send_anyway": false,
+        "result": "AUDIENCE_NOT_SUPPORTED",
+        "details_receivers": [
+          "A"
+        ]
+      },
+      {
+        "id": "room_member_acts_for_anyone",
+        "receivers": [
+          {
+            "id": "A",
+            "declares": true,
+            "acts_for": "person"
+          },
+          {
+            "id": "B",
+            "declares": true,
+            "acts_for": "anyone"
+          }
+        ],
+        "send_anyway": false,
+        "result": "AUDIENCE_NOT_SUPPORTED",
+        "details_receivers": [
+          "B"
+        ]
       }
     ],
     "never_on_a_message_for_a_person": [

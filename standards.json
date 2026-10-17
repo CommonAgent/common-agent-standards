@@ -27,9 +27,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.0-draft",
+      "version": "0.9.1-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.0-draft",
+      "tag": "messaging-v0.9.1-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [

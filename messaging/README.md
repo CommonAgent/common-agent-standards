@@ -6,7 +6,7 @@ Agent Messaging is a Common Agent Standard, kept in the [Common Agent Standards 
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.9.0-draft, status Working Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.9.1-draft, status Working Draft.
 - [extensions/](extensions/): the extensions, each versioned on its own. The index is [extensions/README.md](extensions/README.md).
 - [bindings/a2a-bridge.md](bindings/a2a-bridge.md): the A2A Bridge, the normative mapping between Agent Messaging and A2A, version 0.4.0-draft.
 - [bindings/rabbitmq.md](bindings/rabbitmq.md): the RabbitMQ binding, version 0.1.
@@ -17,7 +17,7 @@ Agent Messaging is a Common Agent Standard, kept in the [Common Agent Standards 
 ## Versions
 
 Each version is tagged as `messaging-v` followed by the version, such as
-`messaging-v0.9.0-draft`, and has a release on GitHub. The site of the standard is
+`messaging-v0.9.1-draft`, and has a release on GitHub. The site of the standard is
 <https://agentmessaging.ai/>.
 
 ## Licence
