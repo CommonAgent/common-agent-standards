@@ -15,6 +15,7 @@ must be accepted beside cases that must be refused.
 | Fixture | What it pins | Sections |
 |---------|--------------|----------|
 | [trial.json](trial.json) | Which trial declarations a registry refuses, the order of admission and its first-failure answer, the fields of a `TRIAL_REFUSED` refusal, what a node measures at admission, and that only admitted trials are counted. | 7.7, with 7.5 and 4.7 |
+| [descriptor-floor.json](descriptor-floor.json) | Which served Descriptors meet the floor: bound, signed with `descriptor-statement-v1` by the subject, and holding the minimal Descriptor's members, with signatures that really verify; and which answers to the entryway's descriptor exchange conform. Check it with `node common-agent/conformance/lib/check-descriptor-floor.mjs`. | 4.9, with 6.2, 6.6, 6.8 and 4.4 |
 | [offering-scope.json](offering-scope.json) | Which offering declarations a registry accepts by scope, focus, workspace, authority and ceilings; the boundary's checks in order and the refusal each gives, with its `decided_by`; how values a reader does not recognise are read, `acts_for` among them; how a Descriptor's former `shape` maps; and that a search by the work wanted never returns an open-ended offering. | 6.11 and 6.12, with 6.2, 4.6 and 4.7 |
 
 The cases in `trial.json` are the same as those in the copy the Agent Messaging
