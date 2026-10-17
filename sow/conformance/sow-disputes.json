@@ -7,7 +7,7 @@
     "sender_seed": "SUAEGDPNTWXACIF45CA23BUY36RIMWZXW5LEHSEOK2ONS5JWJ7PBC2EWBA",
     "sender": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
     "recipient": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
-    "comment": "The same published test vectors sow-pricing.json, budget.json and signature-tags.json use, deliberately: they are not real identities and control nothing, and reusing them keeps any new private-key-shaped string out of the repository. Here the SENDER key plays the ARBITER - it signs the verdict below - and the recipient key plays the arbiter agent bound at formation in the clause examples."
+    "comment": "The same published test vectors sow-pricing.json beside it and budget.json and signature-tags.json in messaging/conformance use, deliberately: they are not real identities and control nothing, and reusing them keeps any new private-key-shaped string out of the repository. Here the SENDER key plays the ARBITER - it signs the verdict below - and the recipient key plays the arbiter agent bound at formation in the clause examples."
   },
 
   "postures": {
