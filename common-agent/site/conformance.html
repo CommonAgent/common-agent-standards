@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conformance: the Common Agent Specification</title>
+  <meta name="description" content="How conformance to the Common Agent Specification is checked: the interview, the Descriptor, AgentDoc, package and repository checks, and the fixtures that pin byte-exact obligations.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="The Common Agent Specification">
+  <meta property="og:title" content="Conformance: the Common Agent Specification">
+  <meta property="og:description" content="How conformance to the Common Agent Specification is checked: the interview, the Descriptor, AgentDoc, package and repository checks, and the fixtures that pin byte-exact obligations.">
+  <meta property="og:url" content="https://commonagent.net/conformance.html">
+  <meta property="og:image" content="https://commonagent.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="The Common Agent Specification. The definition of the agent as a testable claim">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://commonagent.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://commonagent.net/conformance.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="The Common Agent Specification, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path d="M16 2.8 27.4 9.4v13.2L16 29.2 4.6 22.6V9.4z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 12.5v7M16 10.5v11M21 12.5v7" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="wm">Common Agent <b>Specification</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="The Common Agent Specification">
+        <details class="sec" open>
+          <summary>The standard<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/descriptor.html">The Agent Descriptor</a>
+          <a href="/package.html">The Agent Package</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/conformance.html" class="on" aria-current="page">Conformance</a>
+          <a href="https://github.com/jeffrschneider/common-agent-specification">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentdoc.net/">AgentDoc<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">The roles registry<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot"><a href="https://agentmesh.ai/">AgentMesh</a> sponsors this standard.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Conformance</span>
+        <h1>Checking an agent against the specification</h1>
+        <p class="lede">Conformance to the Common Agent Specification is checked by programs.
+          Each check passes or fails on its own, and none of them adds up to a score.</p>
+      </div>
+      </header>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Section 14</p>
+          <h2>What the specification says about conformance</h2>
+          <p>This is the text of <a href="/spec.html#s14">Section 14</a>, reproduced from the specification.</p>
+          <div class="spec"><blockquote><!-- spec:s14 -->
+<p>The floor is checked mechanically, and a conforming deployment ships the checker: a program that asks Section 4&#39;s exchanges of an agent and treats silence as failure, because absence of an error is not evidence of permission. The interview of Section 4.3 is the template. Descriptor checking is Section 6.8&#39;s; AgentDoc checking is Section 9.10&#39;s. Attribute claims are checked by fetching their artifacts. Behavioral conformance to interfaces and roles is the evaluator&#39;s territory, and its verdicts are Section 8.4 records.</p>
+<p>Byte-exact obligations are pinned by conformance fixtures, under the family&#39;s fixture doctrine: the fixture is the authority, and when an implementation disagrees with it, the implementation is what changes; every case is checkable without a network or a clock, cases whose verdict depends on time carrying their own now; and a fixture contains cases that MUST be accepted as well as cases that MUST be refused, because a fixture of refusals alone is passed by an implementation that refuses everything. Fixture identities are test vectors and control nothing.</p>
+<p>Nothing in this section produces a score.</p>
+<!-- /spec:s14 --></blockquote></div>
+        </div>
+      </section>
+
+      <section class="band tinted">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>The checks</p>
+          <h2>One mechanical check for each kind of claim</h2>
+          <p>Each chapter that defines a document or an exchange also says how a program
+            checks it. None of these checks asks whether the agent is any good. That question
+            belongs to an evaluator, whose verdict is a signed record of its own
+            (<a href="/spec.html#s8-4">Section 8.4</a>).</p>
+          <table class="map prose">
+            <tr><th>Check</th><th>What a program verifies</th><th>Where</th></tr>
+            <tr><td>The interview</td><td>It asks the five questions, verifies each answer against the signed bytes it comes from, asks questions outside the agent's offerings and expects the standard refusals.</td><td><a href="/spec.html#s4-3">Section 4.3</a></td></tr>
+            <tr><td>Checking a Descriptor</td><td>The required members are present, every kind is a media type or a defined value kind, no member carries an address, credential or endpoint, and a bound Descriptor's signature verifies against its subject.</td><td><a href="/descriptor.html#consumers">Section 6.8</a></td></tr>
+            <tr><td>Checking an AgentDoc</td><td>Every section cites sources the document lists, every source can be fetched and matches its digest, every fact appears in a cited source, and nothing left unstated has been given a default.</td><td><a href="/spec.html#s9-10">Section 9.10</a></td></tr>
+            <tr><td>Checking a package</td><td>The layout, the manifest against its pinned schema, the draft Descriptor, the install file, the absence of credential values, and one skill for each offering.</td><td><a href="/package.html#conformance">Section 12.10</a></td></tr>
+            <tr><td>Checking a repository</td><td>The manifest and every path it names, the package inside it, a package AgentDoc that regenerates byte for byte, and the lineage of each copy.</td><td><a href="/spec.html#s13-9">Section 13.9</a></td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="m9 15 2 2 4-4"/></svg>Fixtures</p>
+          <h2>Fixtures pin the byte-exact parts</h2>
+          <p>A fixture is a file of test cases that an implementation must agree with. When an
+            implementation disagrees with a fixture, the implementation is what changes. Every
+            case can be checked without a network or a clock, and each fixture holds cases that
+            must be accepted beside cases that must be refused.</p>
+          <ul class="plain">
+            <li><b>Trials</b> (<a href="/spec.html#s7-7">Section 7.7</a>, with the trial scope of
+              the allowance in Section 7.5 and the refusals of Section 4.7). The fixture says which
+              trial declarations a registry refuses, the order of admission and its first-failure
+              answer, the fields of a <code>TRIAL_REFUSED</code> refusal, what a node measures at
+              admission, and that only admitted trials are counted. It is published as
+              <a href="https://github.com/jeffrschneider/common-agent-specification/blob/main/conformance/trial.json">conformance/trial.json</a>
+              in the specification's repository, and the Agent Messaging Server repository carries
+              the same cases.</li>
+          </ul>
+          <p class="aside">A binding pins the byte-level constants this specification leaves
+            symbolic, such as fence text and freshness windows, in its own conformance fixtures.
+            The fixtures for Agent Messaging are described at
+            <a href="https://agentmessaging.ai/conformance.html">agentmessaging.ai</a>.</p>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>The Common Agent Specification</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/descriptor.html">The Agent Descriptor</a>
+          <a href="/package.html">The Agent Package</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/conformance.html">Conformance</a>
+          <a href="https://github.com/jeffrschneider/common-agent-specification">The source on GitHub</a>
+          <a href="https://agentdoc.net/">agentdoc.net</a>
+          <a href="https://agentmessaging.ai/">agentmessaging.ai</a>
+          <span><a href="https://agentmesh.ai/">AgentMesh</a> sponsors this standard.</span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
