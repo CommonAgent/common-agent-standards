@@ -1,0 +1,151 @@
+# Checks every standard in this repository and renders the site of each one
+# that has a builder.
+#
+# A pull request and a push to main check every standard: the registry against
+# the specifications, the links in each standard's folder, and, for each
+# standard with a builder (common-agent, messaging and naming), its site
+# rendered at /draft/, the contrast gate over every page, and the links in the
+# rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
+# and renders that one standard at /<version>/ and at the root.
+#
+# Publishing is off. The steps that upload a site are written below and run
+# only when the repository variable DEPLOY_SITES is true, which needs Workload
+# Identity Federation first. To switch it on, set these repository variables
+# (Settings, Secrets and variables, Actions, Variables):
+#   DEPLOY_SITES        true
+#   GCP_WIF_PROVIDER    projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
+#   GCP_DEPLOY_SA       the service account that may write the site buckets and clear the CDN
+#   GCP_PROJECT         the Google Cloud project that holds them
+# and, for each standard with a builder other than common-agent (whose bucket
+# and load balancer are named in common-agent/site/deploy.sh), with <ID> its id
+# in capitals (MESSAGING, NAMING):
+#   <ID>_BUCKET         gs://<bucket>
+#   <ID>_URLMAP         the load balancer's URL map
+#   <ID>_HOSTS          the hosts to clear, separated by spaces
+# Until then every run renders and checks the sites and uploads nothing.
+name: Standards
+
+on:
+  push:
+    branches: [main]
+    tags: ["*-v*"]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+# One publish at a time, in order, so an older run never overwrites a newer one.
+concurrency:
+  group: standards-${{ github.event_name == 'pull_request' && github.ref || 'publish' }}-${{ github.ref_type == 'tag' && github.ref_name || 'main' }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: what to check
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.plan.outputs.matrix }}
+      mode: ${{ steps.plan.outputs.mode }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: The registry agrees with the specifications
+        run: node tools/check-registry.mjs
+
+      - name: Links between the files of the repository
+        run: node tools/check-links.mjs
+
+      - name: The standards to check, from standards.json
+        id: plan
+        run: |
+          node -e '
+            const reg = require("./standards.json");
+            let list = reg.standards, mode = "draft";
+            if (process.env.GITHUB_REF_TYPE === "tag") {
+              mode = process.env.GITHUB_REF_NAME;
+              list = list.filter((s) => s.tag === mode);
+              if (!list.length) { console.error(`no standard in standards.json is tagged ${mode}`); process.exit(1); }
+            }
+            const include = list.map((s) => ({ id: s.id, name: s.name, folder: s.folder,
+              builder: s.builder ? "yes" : "no", var: s.id.toUpperCase().replace(/-/g, "_") }));
+            console.log(`matrix=${JSON.stringify({ include })}`);
+            console.log(`mode=${mode}`);
+          ' >> "$GITHUB_OUTPUT"
+          cat "$GITHUB_OUTPUT"
+
+  standard:
+    name: ${{ matrix.name }}
+    needs: plan
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
+    env:
+      MODE: ${{ needs.plan.outputs.mode }}
+      PUBLISH: ${{ github.event_name != 'pull_request' && vars.DEPLOY_SITES == 'true' }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Links in ${{ matrix.folder }}/
+        run: node tools/check-links.mjs "${{ matrix.folder }}" --external
+
+      - name: Install the site tools
+        if: matrix.builder == 'yes'
+        working-directory: ${{ matrix.folder }}/site/tools
+        run: |
+          npm ci --no-audit --no-fund
+          npx playwright install --with-deps chromium
+
+      - name: Authenticate to Google Cloud
+        if: matrix.builder == 'yes' && env.PUBLISH == 'true'
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - name: Set up gcloud
+        if: matrix.builder == 'yes' && env.PUBLISH == 'true'
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Render, check and (when switched on) publish the site
+        if: matrix.builder == 'yes'
+        env:
+          KEEP: ${{ runner.temp }}/site
+          PROJECT: ${{ vars.GCP_PROJECT }}
+          BUCKET: ${{ vars[format('{0}_BUCKET', matrix.var)] }}
+          URLMAP: ${{ vars[format('{0}_URLMAP', matrix.var)] }}
+          HOSTS: ${{ vars[format('{0}_HOSTS', matrix.var)] }}
+        run: |
+          DRY="--dry-run"
+          [ "$PUBLISH" = "true" ] && DRY=""
+          if [ "${{ matrix.id }}" = "common-agent" ]; then
+            # commonagent.net's bucket and load balancer are named in the script.
+            unset BUCKET URLMAP HOSTS
+            common-agent/site/deploy.sh "$MODE" $DRY
+          else
+            tools/render-site.sh "${{ matrix.id }}" "$MODE" $DRY
+          fi
+
+      - name: Links in the rendered site
+        if: matrix.builder == 'yes'
+        run: node tools/check-links.mjs --site "${{ runner.temp }}/site"
+
+      - name: Keep the rendered site
+        if: matrix.builder == 'yes'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-${{ matrix.id }}-${{ github.ref_type == 'tag' && github.ref_name || 'draft' }}
+          path: ${{ runner.temp }}/site
+          retention-days: 14

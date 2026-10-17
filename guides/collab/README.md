@@ -1,5 +1,7 @@
 # Agent Collab
 
+> **A guide.** Agent Collab is kept in the [Common Agent Standards repository](https://github.com/CommonAgent/common-agent-standards) as a guide beside the standards. It is a library of playbooks for agents to read and follow, and it has no schema and no conformance suite. Its versions are tagged as `collab-v` followed by the version, such as `collab-v1`.
+
 Playbooks, not protocols. This repository is a library of collaboration
 patterns written **for the agents themselves**: prose documents an agent
 fetches, reads, and enacts. There are no schemas, no conformance suite, no

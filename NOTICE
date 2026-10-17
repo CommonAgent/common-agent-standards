@@ -1,0 +1,7 @@
+The Common Agent Standards
+Copyright 2026 Jeff Schneider
+
+This repository holds the Common Agent Standards, sponsored by AgentMesh. The
+specification text is licensed under CC BY 4.0 (LICENSE-SPEC). The conformance
+fixtures and runners, the site tools and the workflow scripts are licensed
+under Apache-2.0 (LICENSE).
