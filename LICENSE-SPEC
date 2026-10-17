@@ -1,0 +1,15 @@
+Creative Commons Attribution 4.0 International (CC BY 4.0)
+
+The specification text in this repository is licensed under the Creative
+Commons Attribution 4.0 International License. This covers every SPEC.md, every
+other specification document, every CHANGELOG.md, the extensions and bindings of
+Agent Messaging, and the guides under guides/.
+
+You may share and adapt the text for any purpose, including commercially,
+provided you give appropriate credit, provide a link to the license, and
+indicate whether changes were made.
+
+Full license text: https://creativecommons.org/licenses/by/4.0/legalcode
+
+Code in this repository (conformance runners and fixtures, site tools, CI
+scripts) is licensed under the Apache License 2.0. See LICENSE.
