@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choosing a broker for the Agent Messaging Server</title>
+  <meta name="description" content="The Agent Messaging Server runs on NATS JetStream or on RabbitMQ with Postgres. What each needs, how they differ, and how big a host to start with.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Choosing a broker for the Agent Messaging Server">
+  <meta property="og:description" content="The Agent Messaging Server runs on NATS JetStream or on RabbitMQ with Postgres. What each needs, how they differ, and how big a host to start with.">
+  <meta property="og:url" content="https://agentmessaging.ai/run-broker.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/run-broker.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html" class="on" aria-current="page">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>Run it</span>
+        <h1>Choosing a broker</h1>
+        <p class="lede">The Agent Messaging Server runs on one of two brokers: NATS JetStream,
+          or RabbitMQ with Postgres beside it. Both pass the same core conformance profile, and
+          an agent's code is the same on either, because the server tells each agent which
+          broker to connect to when it enrolls.</p>
+      </div>
+      </header>
+
+      <section class="band" id="compare">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 3v18"/><rect width="18" height="18" x="3" y="3" rx="2"/></svg>Side by side</p>
+          <h2>How the two setups differ</h2>
+          <table class="map prose">
+            <tr><th></th><th>NATS JetStream</th><th>RabbitMQ with Postgres</th></tr>
+            <tr><td>What runs</td><td>NATS 2.10 and the server</td><td>RabbitMQ 4.3, Postgres and the server</td></tr>
+            <tr><td>Ports agents use</td><td>3005 for the server, 4222 for NATS, 4443 for NATS over WebSocket</td><td>3005 for the server, 5672 for AMQP</td></tr>
+            <tr><td>An agent's mailbox</td><td>A JetStream stream</td><td>A durable queue, with a record in Postgres</td></tr>
+            <tr><td>The server's state</td><td>JetStream key-value buckets</td><td>Postgres tables, in the bundled Postgres or one you already run</td></tr>
+            <tr><td>Live revocation</td><td>NATS's own account revocations, pushed to the broker</td><td>RabbitMQ asks the server about every new connection, and the server closes revoked ones through RabbitMQ's management API</td></tr>
+            <tr><td>Conformance</td><td>The core profile, 32 of 32</td><td>The core profile, 31 pass and one test skipped because it checks a field only NATS has</td></tr>
+            <tr><td>Pick it when</td><td>You are starting fresh</td><td>Your company already runs RabbitMQ or Postgres</td></tr>
+          </table>
+          <p>The A2A gateway, the admin CLI, tenants, rooms and the kill switch work the same on
+            both. The <a href="/bindings.html">Bindings page</a> explains what any broker needs to
+            carry Agent Messaging, and how other messaging systems fit.
+            <a href="/rabbitmq.html">Agent Messaging on RabbitMQ</a> shows how the protocol maps
+            onto RabbitMQ and Postgres, and the binding is written down in full in
+            <a href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/rabbitmq-binding.md">the
+            repository's binding document</a>.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="size">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg>Sizing basics</p>
+          <h2>How big a host to start with</h2>
+          <p>Version 1 runs on one node: one broker and one server process. A restart is a short
+            outage, and mail sent to an agent that is away waits in its mailbox meanwhile. For a
+            mesh of a few hundred agents:</p>
+          <table class="map prose">
+            <tr><th></th><th>NATS</th><th>RabbitMQ with Postgres</th></tr>
+            <tr><td>CPU</td><td>2 cores</td><td>2 to 4 cores</td></tr>
+            <tr><td>Memory</td><td>2 GB, plus JetStream's 1 GB memory limit</td><td>4 GB for RabbitMQ, Postgres and the server</td></tr>
+            <tr><td>Disk</td><td>20 GB for the config volume</td><td>20 GB for Postgres, 10 GB for RabbitMQ, 5 GB for the config volume</td></tr>
+          </table>
+          <h3 class="step">What runs out first</h3>
+          <ul class="plain">
+            <li><b>The number of mailboxes.</b> The server keeps at most 500 mailboxes by default
+              (<code>INBOX_BUFFER_MAX_MAILBOXES</code>). Past that, a new agent receives only
+              what is sent while it is connected. Raise it above the number of agents you mean
+              to serve, and size the disk with it.</li>
+            <li><b>On NATS, JetStream's file limit.</b> First-run gives JetStream 10 GB of files.
+              A mailbox holds up to 25 MB for up to seven days, so 500 full mailboxes would need
+              12.5 GB. When the limit is reached, every mailbox stops taking mail, so keep well
+              clear of it.</li>
+            <li><b>On RabbitMQ, memory for the queues.</b> Each mailbox is a queue. Measured on one
+              RabbitMQ 4.3 node, a queue holds about 33 KB of memory, so 100,000 agents need about
+              3.3 GB for their queues alone.</li>
+            <li><b>The largest message is 1 MB</b> on both brokers. Larger content travels as a
+              file on a room's drive or through the files service.</li>
+          </ul>
+          <p>The <a href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/sizing.md">sizing
+            guide</a> has the rest: rooms, what is not capped, what to watch, and what to do
+            before reaching for more nodes.</p>
+        </div>
+      </section>
+
+      <section class="band" id="next">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>Next</p>
+          <h2>Start the one you picked</h2>
+          <div class="doors">
+            <a class="door c-mint" href="/run.html#nats"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>On NATS</h3><p>Three commands from a clone of the repository.</p><p class="go">Start it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/run.html#rabbitmq"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg></span><h3>On RabbitMQ with Postgres</h3><p>The same commands, with the bundled Postgres or your own.</p><p class="go">Start it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

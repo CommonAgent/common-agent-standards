@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Messaging</title>
+  <meta name="description" content="Agent Messaging is an open protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence that shows who is online.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Agent Messaging">
+  <meta property="og:description" content="Agent Messaging is an open protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence that shows who is online.">
+  <meta property="og:url" content="https://agentmessaging.ai/">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/" class="on" aria-current="page">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <div class="hero-grid">
+          <div>
+            <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Agents over reliable messaging</span>
+            <h1>Agent Messaging</h1>
+            <p class="lede">Agent Messaging is an open protocol for agents that work over
+              reliable messaging. An agent can send a signed message to another agent's
+              inbox, where it waits if that agent is offline. It can publish events that
+              reach every agent subscribed to them. It can also see which agents are
+              online right now.</p>
+            <div class="cta">
+              <a class="btn btn-primary" href="/spec.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read the specification</a>
+              <a class="btn btn-ghost" href="/conformance.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>The conformance suite</a>
+            </div>
+            <p class="version">The current version is 0.7, and its source is
+              <a href="https://github.com/agent-messaging/agent-messaging">on GitHub</a>.</p>
+          </div>
+
+          <figure class="scene">
+            <svg viewBox="0 46 440 120" aria-hidden="true" focusable="false">
+              <path class="track" d="M106 92H180"/>
+              <path class="track" d="M260 92H334"/>
+              <circle class="st-ring" cx="66" cy="92" r="36"/>
+              <circle class="st-ring inbox-ring" cx="220" cy="92" r="36"/>
+              <circle class="st-ring" cx="374" cy="92" r="36"/>
+              <g class="st-ico" transform="translate(54 80)"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></g>
+              <g class="st-ico" transform="translate(208 80)"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></g>
+              <g class="st-ico" transform="translate(362 80)"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></g>
+              <text class="st-lbl" x="66" y="152" text-anchor="middle">Sender</text>
+              <text class="st-lbl" x="220" y="152" text-anchor="middle">Inbox</text>
+              <text class="st-lbl" x="374" y="152" text-anchor="middle">Receiver</text>
+              <circle class="dot-off" cx="400" cy="66" r="7"/>
+              <circle class="dot-on" cx="400" cy="66" r="7"/>
+              <g class="done"><circle class="seal" cx="400" cy="118" r="11"/><path class="seal-tick" d="M395 118.5l3.5 3.5 6-7"/></g>
+              <g class="env">
+                <rect class="env-body" x="-21" y="-15" width="42" height="30" rx="4"/>
+                <path class="env-flap" d="M-19 -12L0 2L19 -12"/>
+                <g class="seal-g"><circle class="seal" cx="16" cy="11" r="8.5"/><path class="seal-tick" d="M12.2 11.2l2.6 2.6 4.4-5"/></g>
+              </g>
+            </svg>
+            <ol class="steps">
+              <li>The sender signs the envelope with its own key.</li>
+              <li>The receiver's inbox holds it while the receiver is offline.</li>
+              <li>The receiver's presence turns online, and it collects the message and checks the signature.</li>
+            </ol>
+          </figure>
+        </div>
+
+        <div class="quick">
+          <div class="bar"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>An envelope, signed by the sending agent</div>
+<pre><span class="k">v       </span> <span class="v">"0.3.0"</span>
+<span class="k">type    </span> <span class="v">request</span>
+<span class="k">from    </span> <span class="addr">agent UD653KLV…</span>
+<span class="k">to      </span> <span class="addr">agent UB2FF7Q4…</span>
+<span class="k">payload </span> { … }
+<span class="k">sig     </span> <span class="ok">✓ Ed25519, checked on arrival</span></pre>
+          <p class="note">The <code class="inline">v</code> field is the wire version, which is
+            separate from the version of the specification. Under Agent Messaging 0.7,
+            implementations send <code class="inline">0.3.0</code> (§20.1).</p>
+        </div>
+      </div>
+      </header>
+
+      <section class="band" id="three-ways">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>The protocol</p>
+          <h2>How agents talk to each other</h2>
+          <p>An agent reaches the network through a node, which is a host that connects
+            once and carries the messages of every agent it runs. Over that connection
+            each agent can talk in three ways, which section 3.2 of the specification
+            describes.</p>
+          <div class="ways">
+            <a class="way c-amber" href="#inbox">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+              <h3>Inbox messages</h3>
+              <p>An agent sends a request to one agent's inbox and gets the answer back at
+                its own inbox. A message for an offline agent waits until it returns.</p>
+              <p class="types"><code>request</code> <code>respond</code></p>
+            </a>
+            <a class="way c-blue" href="#pubsub">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg></span>
+              <h3>Publish and subscribe</h3>
+              <p>An agent publishes an event on a subject, and every agent whose
+                subscription matches it receives a copy. Durable subscribers catch up on
+                what they missed.</p>
+              <p class="types"><code>emit</code> <code>subscribe</code></p>
+            </a>
+            <a class="way c-mint" href="#presence">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg></span>
+              <h3>Registry and presence</h3>
+              <p>An agent registers a manifest that says what it does. Others discover it by
+                what it does, and presence tells them whether it can be reached now.</p>
+              <p class="types"><code>register</code> <code>discover</code></p>
+            </a>
+          </div>
+          <p>On the wire, every envelope's <code>type</code> is one of these six message
+            types, which the specification calls primitives (section 6). Tasks,
+            streaming, feeds, heartbeats and the other operations in the specification
+            are built from them.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="inbox">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>Inbox messages</p>
+          <h2>Messages that wait for the receiver</h2>
+          <p>Every message travels in an envelope that the sending agent signs with its own
+            Ed25519 key. The receiver checks that signature itself, so it never has to
+            trust the connection or the server that carried the message.</p>
+          <p>Messages are asynchronous. A sender does not hold a connection open while it
+            waits. The answer comes back the same way the request went, as a message to
+            the sender's own inbox, and it is matched to the request by the request's id.
+            If the receiver is offline, the message waits. The receiver's node keeps its
+            inbox, and while the node itself is away the network holds a redelivery buffer
+            for up to seven days or 25 MB.</p>
+          <p>A sender learns what happened to its message from what comes back (§6.4a):</p>
+          <ul class="signals">
+            <li><span class="sig c-mint">accepted</span><span>A live handler has admitted the request and is about to run, so the sender keeps waiting.</span></li>
+            <li><span class="sig c-blue">queued</span><span>A node is holding the message in an inbox for a session to collect, and the reply will arrive later at the sender's inbox.</span></li>
+            <li><span class="sig c-amber">silence</span><span>The receiver's node is offline and the network may be holding the message. Nothing answers in that case, so a sender treats silence from a registered agent as possibly queued.</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band" id="pubsub">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/></svg>Publish and subscribe</p>
+          <h2>One event reaches every subscriber</h2>
+          <p>An agent publishes an event on a subject such as
+            <code>mesh.event.orders.shipped</code>. Every agent whose subscription matches
+            the subject receives a copy, whether that is one agent or a thousand, and the
+            publisher does not wait for anyone to answer. A subscription is a pattern, so
+            an agent can follow one kind of event or a whole domain.</p>
+          <figure class="diagram fan">
+            <svg class="wide" viewBox="0 0 640 250" role="img" aria-labelledby="fan-t">
+              <title id="fan-t">One published event fans out to the three subscribers whose patterns match the subject, and skips the fourth.</title>
+              <path class="wire" d="M96 125H178"/>
+              <path class="wire on" d="M402 125C430 125 420 40 450 40"/>
+              <path class="wire on" d="M402 125C430 125 420 97 450 97"/>
+              <path class="wire on" d="M402 125C430 125 420 154 450 154"/>
+              <path class="wire off" d="M402 125C430 125 420 211 450 211"/>
+              <circle class="node" cx="60" cy="125" r="34"/>
+              <g class="nico" transform="translate(48 113)"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></g>
+              <text class="lbl" x="60" y="182" text-anchor="middle">Publisher</text>
+              <rect class="subj" x="178" y="105" width="224" height="40" rx="20"/>
+              <text class="mono-lbl" x="290" y="130" text-anchor="middle">mesh.event.orders.shipped</text>
+              <text class="cap" x="290" y="168" text-anchor="middle">the subject</text>
+              <rect class="sub on" x="450" y="22" width="180" height="36" rx="10"/>
+              <text class="mono-lbl" x="464" y="45">mesh.event.orders.*</text>
+              <rect class="sub on" x="450" y="79" width="180" height="36" rx="10"/>
+              <text class="mono-lbl" x="464" y="102">mesh.event.&gt;</text>
+              <rect class="sub on" x="450" y="136" width="180" height="36" rx="10"/>
+              <text class="mono-lbl" x="464" y="159">…orders.shipped</text>
+              <rect class="sub off" x="450" y="193" width="180" height="36" rx="10"/>
+              <text class="mono-lbl dim" x="464" y="216">mesh.event.billing.*</text>
+              <circle class="pkt p0" r="6"/>
+              <circle class="pkt p1" r="6"/>
+              <circle class="pkt p2" r="6"/>
+            </svg>
+            <svg class="narrow" viewBox="0 0 340 380" role="img" aria-labelledby="fan-n">
+              <title id="fan-n">One published event fans out to the three subscribers whose patterns match the subject, and skips the fourth.</title>
+              <path class="wire" d="M60 66V96"/>
+              <path class="wire on" d="M40 132V290M40 178H64M40 233H64M40 288H64"/>
+              <path class="wire off" d="M40 290V343H64"/>
+              <circle class="node" cx="60" cy="38" r="28"/>
+              <g class="nico" transform="translate(48 26)"><path d="M12 8V4H8"/><rect width="16" height="12" x="4" y="8" rx="2"/><path d="M2 14h2"/><path d="M20 14h2"/><path d="M15 13v2"/><path d="M9 13v2"/></g>
+              <text class="lbl" x="102" y="43">Publisher</text>
+              <rect class="subj" x="10" y="96" width="320" height="36" rx="18"/>
+              <text class="mono-lbl" x="170" y="119" text-anchor="middle">mesh.event.orders.shipped</text>
+              <rect class="sub on" x="64" y="160" width="266" height="36" rx="10"/>
+              <text class="mono-lbl" x="78" y="183">mesh.event.orders.*</text>
+              <rect class="sub on" x="64" y="215" width="266" height="36" rx="10"/>
+              <text class="mono-lbl" x="78" y="238">mesh.event.&gt;</text>
+              <rect class="sub on" x="64" y="270" width="266" height="36" rx="10"/>
+              <text class="mono-lbl" x="78" y="293">mesh.event.orders.shipped</text>
+              <rect class="sub off" x="64" y="325" width="266" height="36" rx="10"/>
+              <text class="mono-lbl" x="78" y="348">mesh.event.billing.*</text>
+            </svg>
+            <figcaption>Three subscriptions match the subject and each receives the event.
+              The fourth follows billing events, so it receives nothing.</figcaption>
+          </figure>
+          <div class="cards two">
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+              <h3>Durable delivery</h3>
+              <p>Events are stored so they can be replayed (§6.6). A durable subscription
+                delivers each event at least once, waits for the subscriber to acknowledge
+                it, and replays what was published while the subscriber was away (§6.7).</p>
+            </div>
+            <div class="card">
+              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></span>
+              <h3>Feeds that belong to one agent</h3>
+              <p>A feed is an event channel owned by one agent, and only that agent's node
+                may publish on it (§6.6a). A stream feed keeps an ordered history. A state
+                feed keeps a current value, so a late subscriber reads the latest one
+                without replaying the past. Agents list their feeds in their manifests, so
+                discovery can find them.</p>
+            </div>
+          </div>
+          <p class="aside">Every permitted subscriber can read an event, so anything private
+            travels as a message to one agent's inbox. Broadcasting to the agents that can
+            do some job is discovery followed by an event (§10.6).</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="presence">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M22 12h-2.48a2 2 0 0 0-1.93 1.46l-2.35 8.36a.25.25 0 0 1-.48 0L9.24 2.18a.25.25 0 0 0-.48 0l-2.35 8.36A2 2 0 0 1 4.49 12H2"/></svg>Presence</p>
+          <h2>Who is online right now</h2>
+          <p>Presence tells other agents whether an agent can be reached at this moment. Each
+            node sends a signed heartbeat, every 30 seconds by default, and one heartbeat
+            covers every agent the node runs. An agent is online, busy, degraded or
+            offline. When two heartbeat intervals pass with no heartbeat, presence marks
+            the node offline (§9.6, §10.10).</p>
+          <figure class="diagram beat">
+            <svg class="wide" viewBox="0 0 640 180" role="img" aria-labelledby="beat-t">
+              <title id="beat-t">Heartbeats arrive every 30 seconds. After two intervals with none, presence turns offline. When heartbeats resume, it turns online again.</title>
+              <path class="axis" d="M30 70H620"/>
+              <path class="now" d="M0 54V86"/>
+              <g class="hb"><circle cx="50" cy="70" r="9"/><circle cx="130" cy="70" r="9"/><circle cx="210" cy="70" r="9"/></g>
+              <g class="hb miss"><circle cx="290" cy="70" r="9"/><circle cx="370" cy="70" r="9"/></g>
+              <g class="hb late"><circle cx="450" cy="70" r="9"/><circle cx="530" cy="70" r="9"/><circle cx="610" cy="70" r="9"/></g>
+              <text class="cap" x="130" y="40" text-anchor="middle">a heartbeat every 30 s</text>
+              <text class="cap" x="330" y="40" text-anchor="middle">none for two intervals</text>
+              <text class="cap" x="530" y="40" text-anchor="middle">heartbeats resume</text>
+              <rect class="st on" x="30" y="104" width="340" height="30" rx="6"/>
+              <rect class="st off" x="370" y="104" width="80" height="30" rx="6"/>
+              <rect class="st on2" x="450" y="104" width="170" height="30" rx="6"/>
+              <text class="st-t" x="200" y="124" text-anchor="middle">online</text>
+              <text class="st-t dark" x="410" y="124" text-anchor="middle">offline</text>
+              <text class="st-t" x="535" y="124" text-anchor="middle">online</text>
+              <text class="cap" x="325" y="165" text-anchor="middle">The manifest in the registry is never touched.</text>
+            </svg>
+            <svg class="narrow" viewBox="0 0 340 200" role="img" aria-labelledby="beat-n">
+              <title id="beat-n">Heartbeats arrive every 30 seconds. After two intervals with none, presence turns offline. When heartbeats resume, it turns online again.</title>
+              <path class="axis" d="M10 60H330"/>
+              <g class="hb"><circle cx="25" cy="60" r="7"/><circle cx="65" cy="60" r="7"/><circle cx="105" cy="60" r="7"/></g>
+              <g class="hb miss"><circle cx="145" cy="60" r="7"/><circle cx="185" cy="60" r="7"/></g>
+              <g class="hb late"><circle cx="225" cy="60" r="7"/><circle cx="265" cy="60" r="7"/><circle cx="305" cy="60" r="7"/></g>
+              <text class="cap" x="65" y="32" text-anchor="middle">every 30 s</text>
+              <text class="cap" x="165" y="32" text-anchor="middle">none</text>
+              <text class="cap" x="265" y="32" text-anchor="middle">resume</text>
+              <rect class="st on" x="10" y="88" width="175" height="28" rx="6"/>
+              <rect class="st off" x="185" y="88" width="40" height="28" rx="6"/>
+              <rect class="st on2" x="225" y="88" width="105" height="28" rx="6"/>
+              <text class="st-t" x="97" y="107" text-anchor="middle">online</text>
+              <text class="st-t" x="277" y="107" text-anchor="middle">online</text>
+              <text class="st-t" x="205" y="138" text-anchor="middle">offline</text>
+              <text class="cap" x="170" y="180" text-anchor="middle">The manifest is never touched.</text>
+            </svg>
+          </figure>
+          <p>Presence is kept apart from the registry on purpose (§8.4, §9.5). The registry
+            holds each agent's manifest, which describes what the agent does and changes
+            rarely. Presence holds only whether the agent is reachable now. A laptop that
+            sleeps goes offline in presence and comes back online when it wakes, and its
+            registration stays exactly as it was.</p>
+          <div class="cards three">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
+              <h3>Discovery joins them</h3>
+              <p>An agent can ask for agents that can do a job and are online now. The
+                registry answers from manifests and joins presence at query time (§9.3).</p>
+            </div>
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+              <h3>Expected uptime</h3>
+              <p>A node can declare whether it is always on, intermittent or on demand, so a
+                requester can tell an agent that is always there from one that comes and
+                goes (§9.7).</p>
+            </div>
+            <div class="card">
+              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
+              <h3>Signed by the node</h3>
+              <p>A heartbeat must be signed by the node it speaks for, or by an agent that
+                node vouched for. Anything else is dropped, so nobody can mark another
+                node offline.</p>
+            </div>
+          </div>
+          <ul class="spans">
+            <li><b>Seconds</b><span>Presence goes stale after two missed heartbeats.</span></li>
+            <li><b>Days</b><span>A message waits for an offline agent for up to seven days.</span></li>
+            <li><b>Weeks</b><span>A registration lasts much longer, so an agent whose mail is still waiting can always be found (§9.2).</span></li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band" id="trust">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>Trust</p>
+          <h2>Trust between agents that have never met</h2>
+          <div class="cards two">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>
+              <h3>Agents with their own keys</h3>
+              <p>An agent's public key is its id. Its node vouches for it, and every message
+                it sends carries its own signature, so a receiver knows which agent wrote a
+                message whatever server carried it.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg></span>
+              <h3>Consent between strangers</h3>
+              <p>Each owner decides who may reach their agents, and allows, holds or blocks
+                each sender. A newcomer may read an agent's public description and may
+                knock, and a knock carries no message. Neither one runs the agent.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <h3>What a receiver checks</h3>
+              <p>A receiver rejects duplicates, refuses messages outside a freshness window
+                or addressed to someone else, caps the size of what it accepts, and fences
+                a stranger's text so the agent reads it as the stranger's own words (§22).</p>
+            </div>
+            <div class="card">
+              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg></span>
+              <h3>A kill switch</h3>
+              <p>An owner or operator can pause or terminate one agent, everything an
+                account holds, or the whole network. Connections are revoked live, a
+                terminated agent's key is revoked for good, and every press is recorded.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band tinted" id="work">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>Work</p>
+          <h2>Tasks, files and rooms</h2>
+          <div class="cards three">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
+              <h3>Tasks</h3>
+              <p>Work that takes time becomes a task: submitted, working, needing input or
+                authorization, and then completed, failed, canceled or rejected. A task can
+                stream its progress and be canceled, and errors share one form.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/></svg></span>
+              <h3>Files</h3>
+              <p>A file too large for a message goes into the artifact store, and the message
+                carries a reference to it. References cannot be guessed, and the store
+                checks each file's digest.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span>
+              <h3>Rooms</h3>
+              <p>A room is a shared conversation among several agents, with a durable record
+                and a drive for files. A room can admit only its members.</p>
+            </div>
+          </div>
+          <p class="aside">Every envelope carries trace context, so one piece of work can be
+            followed from agent to agent, and each task keeps a history of its messages.</p>
+        </div>
+      </section>
+
+      <section class="band" id="profiles">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Conformance</p>
+          <h2>What a server must implement</h2>
+          <p>Section 1.6 of the specification defines two profiles for a server, meaning the
+            infrastructure that runs a network: its mesh servers, the control plane that
+            issues credentials, and the platform services.</p>
+          <div class="cards two">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span>
+              <h3>The core profile</h3>
+              <p>Every server must implement it. It covers the envelope and signing, the key
+                chain and live revocation, stopping agents, the registry, discovery and
+                presence, requests, responses and tasks, events and feeds, files, rooms,
+                admission and the knock, subjects and limits, and the binding.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span>
+              <h3>The full specification</h3>
+              <p>It adds the parts a deployment decides for itself, such as the tenancy model,
+                how owners sign in, delegation to many places, verified names, the sandbox,
+                metering and the other extensions. A server says which of these it offers.</p>
+            </div>
+          </div>
+          <p>The <a href="/conformance.html">conformance suite</a> checks a running server
+            against either profile.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="bindings">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg>Bindings and implementations</p>
+          <h2>Any reliable messaging system can carry it</h2>
+          <p>The protocol is written separately from the messaging system underneath it. A
+            binding maps it onto real infrastructure, and section 18.1 says what any
+            binding must provide:</p>
+          <ul class="reqs">
+            <li>subject addressing with wildcards</li>
+            <li>ordered, at-least-once delivery with deduplication</li>
+            <li>durable publish and subscribe</li>
+            <li>request and reply with a timeout</li>
+            <li>a durable task store and storage for large files</li>
+            <li>a signed credential chain with publish and subscribe permissions per subject</li>
+            <li>presence from heartbeats that expire</li>
+          </ul>
+          <div class="doors three">
+            <a class="door c-violet" href="/bindings.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span><h3>What can carry it</h3><p>How NATS, RabbitMQ, Kafka, the cloud services, MQTT brokers and Redis measure up, and why Kafka is not one.</p><p class="go">Bindings<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/nats.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>The reference binding</h3><p>NATS JetStream is the reference binding. Its page shows how the protocol maps onto NATS and what it adds to NATS.</p><p class="go">Agent Messaging on NATS<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></span><h3>Agent Messaging Server</h3><p>The reference implementation. It is one open-source server that implements the core profile, on NATS or on RabbitMQ with Postgres.</p><p class="go">The server on GitHub<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+          <p>Agent Messaging is sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>, which
+            is why some wire identifiers carry the AgentMesh name, such as the
+            <code>mesh.*</code> subjects and the <code>agentmesh-</code> signature tags.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>Other protocols</p>
+          <h2>How it relates to A2A, MCP and ARD</h2>
+          <p>A2A defines direct calls between agents over HTTP, with an Agent Card and a
+            task lifecycle. The Agent Messaging task model mirrors A2A's, and an agent
+            manifest maps to an A2A Agent Card. What Agent Messaging adds sits beneath
+            A2A's method layer: a signed network that reaches agents behind firewalls,
+            publish and subscribe, and presence. An extension defines a bridge between
+            agents on the network and A2A agents, in both directions.</p>
+          <p>MCP connects an agent to its own tools and data. That is a different job, so
+            the two do not overlap. ARD handles discovery across the wider ecosystem, and
+            discovery in Agent Messaging covers the agents registered on one network,
+            together with their presence. Section 1.3 of <a href="/spec.html#1-3-related-specifications">the
+            specification</a> sets out what Agent Messaging takes from each of these and
+            what it leaves to them.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>Names</p>
+          <h2>Names for agents</h2>
+          <p>On the wire, an agent is addressed by its public key. People need names they
+            can read and type, and those come from the companion specification, Agent
+            Naming, published at <a href="https://agentnaming.ai/">agentnaming.ai</a>. A
+            handle is a name anchored to an email address its owner controls. It resolves
+            to a signed card that carries the agent's key and the network the agent lives
+            on.</p>
+          <div class="doors">
+            <a class="door c-mint" href="/spec.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The specification</h3><p>The full text of Agent Messaging 0.7.</p><p class="go">Read the specification<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>Black-box tests that check a server against the core profile or the full specification.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-violet" href="https://github.com/agent-messaging/agent-messaging"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span><h3>The repository</h3><p>SPEC.md, the naming specification and the conformance suite.</p><p class="go">Open it on GitHub<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-amber" href="https://agentnaming.ai/"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></span><h3>Agent Naming</h3><p>The companion specification for agent handles.</p><p class="go">Go to agentnaming.ai<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

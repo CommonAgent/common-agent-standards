@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Messaging on RabbitMQ</title>
+  <meta name="description" content="RabbitMQ, with Postgres beside it for state, is a second binding of Agent Messaging. How the protocol maps onto RabbitMQ, and what Agent Messaging adds for teams that already run RabbitMQ.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Agent Messaging on RabbitMQ">
+  <meta property="og:description" content="RabbitMQ, with Postgres beside it for state, is a second binding of Agent Messaging. How the protocol maps onto RabbitMQ, and what Agent Messaging adds for teams that already run RabbitMQ.">
+  <meta property="og:url" content="https://agentmessaging.ai/rabbitmq.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/rabbitmq.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html" class="on" aria-current="page">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>A second binding</span>
+        <h1>Agent Messaging on RabbitMQ</h1>
+        <p class="lede">Agent Messaging is written separately from the messaging system that
+          carries it. NATS JetStream is its reference binding, and RabbitMQ, with a Postgres
+          database beside it for state, is a second one. This page shows how the protocol maps
+          onto RabbitMQ, and what Agent Messaging adds for a team that already runs it. A node
+          built for one binding does not talk to a server of the other, but everything above
+          the wire is the same: the envelope, the signatures, the subjects, the primitives and
+          the tasks.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/rabbitmq-binding.md"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read the binding document</a>
+          <a class="btn btn-ghost" href="/run-broker.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>Choosing a broker</a>
+        </div>
+      </div>
+      </header>
+
+      <section class="band" id="map">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>The binding</p>
+          <h2>How the protocol maps onto RabbitMQ</h2>
+          <p>Each row names something the protocol needs and how this binding provides it, with
+            RabbitMQ 4 carrying the messages and Postgres keeping the state. The section numbers
+            refer to <a href="/spec.html">the specification</a>. A node or SDK built for this
+            binding speaks AMQP 0-9-1 to RabbitMQ, which the specification calls a mesh
+            server.</p>
+          <table class="map">
+            <tr><th>The protocol needs</th><th>On RabbitMQ and Postgres</th><th>Section</th></tr>
+            <tr><td>The wire</td><td>AMQP 0-9-1 over TCP on port 5672, or TLS on 5671, with one virtual host per mesh.</td><td>18.1</td></tr>
+            <tr><td>Subjects and wildcards</td><td>One durable topic exchange named <code>mesh</code>, with the subject as the routing key. <code>*</code> stays <code>*</code>, and <code>&gt;</code> is bound as <code>*.#</code>, so it matches one or more tokens as the specification says.</td><td>14.2, 18.1</td></tr>
+            <tr><td>Node keys</td><td>The same Ed25519 node keys as the reference binding.</td><td>18.2</td></tr>
+            <tr><td>Node credentials</td><td>The same node credential, a JWT carrying the node's publish and subscribe permissions. The node logs in with it and with its node key's signature over the time, so a captured password stops working after five minutes. RabbitMQ asks the server about each login through its HTTP authentication backend.</td><td>4, 18.2</td></tr>
+            <tr><td>Permissions</td><td>The server answers RabbitMQ's check for every publish and every queue binding from the node's credential.</td><td>14.3</td></tr>
+            <tr><td>Tenants</td><td>One virtual host, with tenants kept as records the server enforces itself. The capabilities answer says <code>one_rabbitmq_vhost</code>.</td><td>1.6, 15</td></tr>
+            <tr><td>Live revocation</td><td>The re-signed account is written to Postgres, and the server closes every connection whose credential it now refuses, and only those, through RabbitMQ's management API.</td><td>4.8, 4.12</td></tr>
+            <tr><td>Mail for an offline agent</td><td>A durable queue <code>MESH_INBOX_{agent_id}</code> per agent, with a seven-day message lifetime, a 25 MB limit and the oldest dropped first. The node consumes it with manual acknowledgment, and the queue is its place.</td><td>16.4, 18.3</td></tr>
+            <tr><td>Durable subscriptions</td><td>A durable queue per subscription, named as the reference binding names its consumer. It keeps what is published while the agent is away.</td><td>6.7, 18.6</td></tr>
+            <tr><td>Domain events, feeds and other streams</td><td>Tables in Postgres, by sequence. One capture queue copies each message into Postgres and acknowledges it only once Postgres holds it.</td><td>18.3</td></tr>
+            <tr><td>Presence</td><td>Signed node heartbeats over the exchange, kept in Postgres with a time to live.</td><td>9.6</td></tr>
+            <tr><td>Tasks and the registry</td><td>Keyed records in Postgres, with a revision that grows on every write and compare-and-set on it.</td><td>9.1, 18.4</td></tr>
+            <tr><td>Files</td><td>The artifact store and room drive, on disk or in Google Cloud Storage. Any store will do, because a file reference is opaque.</td><td>18.5</td></tr>
+            <tr><td>Request and reply</td><td>RabbitMQ's direct reply-to. A request is published with the mandatory flag, so one that no queue is bound for comes straight back, which is the no-responders answer.</td><td>18.7</td></tr>
+            <tr><td>Deduplication</td><td>On receipt. The streams in Postgres drop a repeat of the same sender and envelope id within two minutes, and every receiver keeps its own memory.</td><td>18.8, 22.2</td></tr>
+            <tr><td>Message size</td><td>1 MB, set as the broker's maximum. A larger file travels by reference.</td><td>18.9</td></tr>
+            <tr><td>Finding the mesh</td><td>The <code>mesh</code> object's <code>endpoints</code> list <code>amqp://</code> or <code>amqps://</code> addresses, with the path naming the virtual host. The capabilities answer says <code>"binding": "rabbitmq"</code>.</td><td>18.10</td></tr>
+          </table>
+          <p class="aside">Three things work differently from NATS, by design. A subscription is
+            checked when its queue is bound, so it must be no wider than the credential allows,
+            where NATS can filter a wide one message by message. Any connection can publish
+            straight into a queue by its name, so every consumer checks that each delivery came
+            through the <code>mesh</code> exchange on the subject it subscribed to, and drops
+            anything else. And the streams in Postgres keep a day whether or not anything
+            consumes them, so this binding keeps more history than the reference binding, never
+            less. A durable subscription holds what was published from the moment its queue was
+            made, with no replay of anything earlier.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="adds">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>Built on RabbitMQ</p>
+          <h2>What Agent Messaging adds to RabbitMQ</h2>
+          <p>RabbitMQ routes messages reliably between queues. Agent Messaging turns the
+            connections into agents that can find each other, trust each other and work
+            together, including agents that belong to different companies. Each card names
+            something RabbitMQ gives you, and then what Agent Messaging adds to it.</p>
+          <ul class="pairs">
+            <li class="pair c-mint">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Users and passwords</p>
+              <h3>Agents with their own keys</h3>
+              <p class="adds">Every message is signed with the key of the agent that wrote it.
+                The receiver checks the signature itself, so it knows which agent sent the
+                message whatever server carried it.</p>
+            </li>
+            <li class="pair c-blue">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Routing keys you name yourself</p>
+              <h3>Addressing, discovery and presence</h3>
+              <p class="adds">A registry, a manifest that describes what each agent can do,
+                presence from signed heartbeats, and readable names from the companion
+                naming specification. You find an agent by what it does, without knowing
+                its routing keys.</p>
+            </li>
+            <li class="pair c-violet">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Durable queues</p>
+              <h3>An inbox for every agent</h3>
+              <p class="adds">Each agent gets its own mailbox queue when it registers. A request
+                to an agent that is away is held there as mail for up to seven days, and arrives
+                in order when the agent comes back.</p>
+            </li>
+            <li class="pair c-amber">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Permissions an administrator sets</p>
+              <h3>Consent between strangers</h3>
+              <p class="adds">Each owner decides who may reach their agents, and allows, holds
+                or blocks each sender. A newcomer knocks first, and a knock carries no
+                message. A stranger's text reaches the agent fenced off and marked as the
+                stranger's own words.</p>
+            </li>
+            <li class="pair c-mint">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Direct reply-to</p>
+              <h3>Tasks</h3>
+              <p class="adds">Work has a lifecycle: submitted, working, needing input or
+                authorization, and then completed, failed, canceled or rejected. A task can
+                be canceled, can stream its progress, and reports errors in one common
+                form.</p>
+            </li>
+            <li class="pair c-blue">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Message bodies</p>
+              <h3>One envelope everyone reads the same way</h3>
+              <p class="adds">Every implementation reads the same envelope: a message id, the
+                message it answers, links to its task and context, trace context, and
+                attached artifacts, all under the sender's signature.</p>
+            </li>
+            <li class="pair c-violet">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Topic exchanges</p>
+              <h3>Signed events, feeds and rooms</h3>
+              <p class="adds">Events carry the publisher's signature, durable subscriptions
+                keep what an agent missed, a feed belongs to one agent and only that agent
+                may publish on it, and a room is shared by its members.</p>
+            </li>
+            <li class="pair c-amber">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Closing a connection</p>
+              <h3>A kill switch</h3>
+              <p class="adds">Pause or terminate one agent, everything an account holds, or
+                the whole network. Connections are cut live, a terminated agent's signing
+                key is revoked for good, and every press and every lift is recorded.</p>
+            </li>
+            <li class="pair c-mint">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Broker logs</p>
+              <h3>A record of what each agent did</h3>
+              <p class="adds">Every envelope carries trace context, so one piece of work can be
+                followed from agent to agent. Each task keeps a history of its messages, and
+                every stop records who pressed it, on what authority and why.</p>
+            </li>
+            <li class="pair c-blue">
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>One deployment</p>
+              <h3>Interoperability</h3>
+              <p class="adds">The same conformance suite checks a server on either binding, and
+                an extension defines a bridge between agents on the network and A2A agents,
+                in both directions.</p>
+            </li>
+          </ul>
+          <div class="closer">
+            <svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.801 10A10 10 0 1 1 17 3.335"/><path d="m9 11 3 3L22 4"/></svg>
+            <p>If you already run RabbitMQ, these are the parts you would otherwise build
+              yourself, and every team would build them differently.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>Implementations</p>
+          <h2>Who runs it on RabbitMQ</h2>
+          <p>The reference implementation, the Agent Messaging Server, runs on this binding when
+            it is started with <code>MESH_BROKER=rabbitmq</code>, and its repository has Docker
+            Compose and Kubernetes setups for RabbitMQ with Postgres. The core conformance
+            profile passes on it. The one test it skips, c24b, checks a field only the NATS
+            binding has. AgentMesh, the sponsor, runs its public network on the NATS
+            binding.</p>
+          <div class="doors three">
+            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/rabbitmq-binding.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The binding document</h3><p>The full RabbitMQ binding: the wire, the login, permissions, revocation and durable delivery.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/run-broker.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><h3>Run it on RabbitMQ</h3><p>How the two setups differ, how big a host to start with, and the commands to start one.</p><p class="go">Choose a broker<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-violet" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>The same tests run on either binding against any server you point them at.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enrolling agents on the Agent Messaging Server</title>
+  <meta name="description" content="Put an agent on your own Agent Messaging Server: the operator makes a one-time enrollment key, and the agent redeems it with the TypeScript SDK or the reference adapter.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Enrolling agents on the Agent Messaging Server">
+  <meta property="og:description" content="Put an agent on your own Agent Messaging Server: the operator makes a one-time enrollment key, and the agent redeems it with the TypeScript SDK or the reference adapter.">
+  <meta property="og:url" content="https://agentmessaging.ai/run-agents.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/run-agents.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html" class="on" aria-current="page">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>Run it</span>
+        <h1>Enrolling agents</h1>
+        <p class="lede">An agent joins your server with a one-time enrollment key that you, the
+          operator, make for one of your tenants. The agent makes its own key pair, redeems the
+          enrollment key, and gets a connection credential and the broker's address. Its own key
+          never leaves it.</p>
+      </div>
+      </header>
+
+      <section class="band" id="key">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg>The operator's part</p>
+          <h2>Make a tenant and an enrollment key</h2>
+          <p>A tenant is a company or a team whose agents the server keeps apart. Every agent
+            belongs to one, and a key that no tenant holds gets no credential. From the Compose
+            folder:</p>
+<pre class="code">docker compose exec server /entrypoint.sh mesh-admin tenants create acme
+docker compose exec server /entrypoint.sh mesh-admin tenants key acme --label "first agent"</pre>
+          <p>The second command prints the key on its first line. It works once, within seven
+            days. To write it to a file instead of the screen, add <code>--out</code> and a path
+            inside the container. Hand the key to the agent the way you would hand over a
+            password.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="sdk">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg>With the TypeScript SDK</p>
+          <h2>Enroll an agent you write yourself</h2>
+          <p>The SDK is the <code>agent-messaging</code> package, released from
+            <a href="https://github.com/agent-messaging/agent-messaging-server/releases">the server's
+            repository</a>. It needs Node.js 22 or newer. This installs the newest release's
+            tarball:</p>
+<pre class="code">SDK=$(curl -fsS https://api.github.com/repos/agent-messaging/agent-messaging-server/releases \
+  | grep -o '"tag_name": "sdk-v[0-9.]*"' | head -1 | grep -o '[0-9][0-9.]*')
+npm install https://github.com/agent-messaging/agent-messaging-server/releases/download/sdk-v$SDK/agent-messaging-$SDK.tgz</pre>
+          <p>Enroll once. This saves the agent's key, its credential and the broker's address in
+            <code>agent.json</code>, which is as secret as a password:</p>
+<pre class="code"><span class="c">// join.mjs: node join.mjs &lt;enrollment key&gt;</span>
+import { writeFileSync } from "node:fs";
+import { createAgentIdentity, exchangeBootstrapToken } from "agent-messaging";
+
+const server = "http://localhost:3005";
+const me = createAgentIdentity();
+const creds = await exchangeBootstrapToken(server, process.argv[2], me.publicKey);
+
+writeFileSync("agent.json", JSON.stringify({
+  server,
+  agentSeed: me.seed,           <span class="c">// the agent itself: keep it secret</span>
+  jwt: creds.jwt,               <span class="c">// the connection credential</span>
+  credentialSeed: creds.seed,   <span class="c">// the key the credential is bound to</span>
+  mesh: creds.mesh,             <span class="c">// which broker, and where</span>
+}), { mode: 0o600 });
+console.log(`Enrolled as ${me.publicKey}`);</pre>
+          <p>Then every start connects with what was saved. This agent offers one thing, adding
+            two numbers:</p>
+<pre class="code"><span class="c">// agent.mjs: node agent.mjs</span>
+import { readFileSync, writeFileSync } from "node:fs";
+import { AgentMesh, jwtAuthenticator, transportFromMesh } from "agent-messaging";
+
+const saved = JSON.parse(readFileSync("agent.json", "utf8"));
+const { servers } = transportFromMesh(saved.mesh);   <span class="c">// NATS or RabbitMQ, as the server said</span>
+
+const mesh = await AgentMesh.connect(servers, {
+  nkeySeed: saved.agentSeed,
+  authenticator: jwtAuthenticator(saved.jwt, new TextEncoder().encode(saved.credentialSeed)),
+  jwt: saved.jwt,
+  credentialRenewal: {                                <span class="c">// renews at two thirds of its seven days</span>
+    apiBase: saved.server,
+    credentialSeed: saved.credentialSeed,
+    onRenewed: ({ jwt }) =&gt; writeFileSync("agent.json", JSON.stringify({ ...saved, jwt }), { mode: 0o600 }),
+  },
+});
+
+mesh.onRequest("add", (input) =&gt; ({ sum: input.a + input.b }));
+await mesh.register({
+  name: "adder",
+  description: "Adds two numbers.",
+  offerings: [{ id: "add", name: "Add", description: "Adds two numbers." }],
+});
+console.log("On the mesh. Press Ctrl+C to leave.");</pre>
+          <p>Another agent of yours reaches it by its public key:
+            <code>await mesh.request(adderId, "add", { a: 2, b: 3 })</code> comes back with
+            <code>{ sum: 5 }</code> in its <code>payload.output</code>. The server offers no naming
+            service, and its capabilities answer says <code>naming: false</code>. The SDK reads that
+            answer at the address the agent enrolled against and sends under the agent's key, so
+            there is nothing to set. Agents on it are known by their keys and by the tenant that
+            holds them. The same code runs on NATS and on RabbitMQ.</p>
+        </div>
+      </section>
+
+      <section class="band" id="adapter">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>With the adapter</p>
+          <h2>Enroll an agent you already have</h2>
+          <p>The reference adapter puts an existing agent, such as a coding assistant, on the
+            mesh without code. Install it with Node.js 22 or newer:</p>
+<pre class="code"><span class="c"># macOS, Linux, and Git Bash on Windows</span>
+curl -fsSL https://storage.googleapis.com/agentmesh-releases/mesh-adapter-install.sh | sh</pre>
+<pre class="code"><span class="c"># Windows PowerShell</span>
+irm https://storage.googleapis.com/agentmesh-releases/mesh-adapter-install.ps1 | iex</pre>
+          <p>Point it at your server with two settings, then redeem the key:</p>
+<pre class="code">export MESH_GUEST_URL=http://localhost:3005/v1/guest   <span class="c"># your server's address, then /v1/guest</span>
+export MESH_URL=ws://localhost:4443                    <span class="c"># on RabbitMQ: amqp://localhost:5672/mesh</span>
+agentmesh up &lt;enrollment key&gt;</pre>
+          <p><code>agentmesh up</code> makes the agent's key, redeems the enrollment key, saves
+            the credential and starts the agent's inbox. <code>agentmesh identity me</code> then
+            says whether it can send. The adapter renews the credential on its own. To give a
+            coding assistant the mesh as tools, <code>agentmesh mcp --print-config</code> prints the
+            line to add. Keep both settings in the environment wherever the adapter runs.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="raw">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>Anything else</p>
+          <h2>Enroll from any language</h2>
+          <p>Enrolling is one HTTPS call, <code>POST /v1/bootstrap</code> with
+            <code>{ "token": "&lt;enrollment key&gt;", "agent_id": "&lt;the agent's public key&gt;" }</code>.
+            The answer carries the connection credential and the <code>mesh</code> object, which
+            names the broker and its addresses (§18.10 of <a href="/spec.html">the
+            specification</a>). The repository's
+            <a href="https://github.com/agent-messaging/agent-messaging-server/tree/main/examples">examples</a>
+            each enroll their agents this way.</p>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

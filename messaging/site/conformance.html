@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Conformance: Agent Messaging</title>
+  <meta name="description" content="The Agent Messaging conformance suite: black-box tests that check a server against the core profile or the full specification, and byte-level fixtures for implementations in any language.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Conformance: Agent Messaging">
+  <meta property="og:description" content="The Agent Messaging conformance suite: black-box tests that check a server against the core profile or the full specification, and byte-level fixtures for implementations in any language.">
+  <meta property="og:url" content="https://agentmessaging.ai/conformance.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/conformance.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html" class="on" aria-current="page">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Reference</span>
+        <h1>The conformance suite</h1>
+        <p class="lede">The conformance suite is a set of black-box tests and byte-level
+          fixtures that check whether an implementation follows Agent Messaging. Every test
+          belongs to one of the profiles that section 1.6 of the specification defines. It
+          lives in the specification's repository on GitHub, in the
+          <span class="mono">conformance/</span> folder next to SPEC.md.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/agent-messaging/agent-messaging/tree/main/conformance"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>The suite on GitHub</a>
+          <a class="btn btn-ghost" href="/spec.html#1-6-conformance-profiles"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read section 1.6, the profiles</a>
+        </div>
+        <div class="stats four">
+          <a class="stat" href="#core"><span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg></span><span class="txt"><b>32</b>tests in the core profile</span></a>
+          <a class="stat" href="#platform"><span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg></span><span class="txt"><b>5</b>tests of deployment-defined parts</span></a>
+          <a class="stat" href="#naming"><span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></span><span class="txt"><b>5</b>tests of naming registrars</span></a>
+          <a class="stat" href="#fixtures"><span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/></svg></span><span class="txt"><b>29</b>byte-level fixtures</span></a>
+        </div>
+      </div>
+      </header>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Profiles</p>
+          <h2>Three kinds of test</h2>
+          <ul class="plain">
+            <li><b>Core.</b> What every Agent Messaging server must pass. A server that runs
+              only the core profile runs these as its health check.</li>
+            <li><b>Platform.</b> Parts that section 1.6 makes deployment-defined and that
+              AgentMesh offers. A core server may leave these out.</li>
+            <li><b>Naming.</b> Tests of Agent Naming registrars, which are not messaging
+              servers. They belong to Agent Naming's own suite and run here until they move
+              there.</li>
+          </ul>
+          <p>Every test declares its profile, and a check in the repository fails on a test
+            that does not, so no test can drop out of the core set by accident.</p>
+        </div>
+      </section>
+
+      <section class="band tinted">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>Running it</p>
+          <h2>How the tests run</h2>
+          <p>The tests exercise a running server over its real wire, and nothing is mocked in
+            process. They speak the reference binding, NATS JetStream, so they run against
+            any server on that binding. A run of the core profile has no default address:
+            it stops until you name the server to test.</p>
+<pre class="code"><span class="c"># once: the shared dependencies</span>
+cd conformance/peering &amp;&amp; npm install
+cd ..
+
+<span class="c"># the core profile, against your server</span>
+MESH_WS_URL=wss://mesh.example.com MESH_CREDS_FILE=~/mesh.creds \
+  STOREFRONT_BASE=https://api.example.com node run.mjs</pre>
+          <p><code class="inline">run.mjs</code> runs the core tests of both suites on one
+            board and prints the specification version and the profile it tested. A test
+            whose setting is missing reports env-skip and names the setting. The adapter
+            tests (c12, c13 and c15) also need the reference adapter, which comes with
+            the AgentMesh SDKs.</p>
+          <ul class="plain">
+            <li><b>MESH_WS_URL</b> is the server's NATS WebSocket address. Every live test
+              needs it.</li>
+            <li><b>MESH_CREDS_FILE</b> is a NATS credentials file for the suite. It defaults
+              to <span class="mono">~/.agentmesh/mesh.creds</span>.</li>
+            <li><b>STOREFRONT_BASE</b> is the server's HTTPS API, where the credential doors
+              and the key check are. c19, c20, c22, c24 and c24b need it.</li>
+            <li><b>MESH_IDENTITY_FILE</b> is an agent identity the suite signs as and mints
+              credentials for. c10 opens its room as this agent, so an account on the server
+              must own it. c20, c24 and c24b mint credentials for it.</li>
+            <li><b>MESH_CONFORMANCE_AGENTS_FILE</b> holds standing keys for the agents the
+              suite registers, which a server needs when registration requires a name.</li>
+            <li><b>REGISTRAR</b> is an Agent Naming registrar for the adapter tests, and
+              <b>ECHO_TARGET</b> is an agent for t02 and t05 to send to. Without
+              ECHO_TARGET, the suite starts its own echo agent with the reference
+              adapter.</li>
+          </ul>
+<pre class="code">node run.mjs --profile platform   <span class="c"># the deployment-defined parts AgentMesh offers</span>
+node run.mjs --profile naming     <span class="c"># the registrar tests</span>
+node run.mjs --profile all        <span class="c"># everything</span>
+node run.mjs --only c05           <span class="c"># one test</span>
+node run.mjs --ci                 <span class="c"># fail on a regression against expectations.json</span>
+node run.mjs --update             <span class="c"># record this run as the new baseline</span></pre>
+          <p>Outside the core profile, an address you leave unset falls back to AgentMesh's
+            reference deployment, and the run prints a banner naming each one that did. The
+            <a href="https://github.com/agent-messaging/agent-messaging/blob/main/conformance/README.md">README</a>
+            lists every setting.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>Results</p>
+          <h2>What a result means</h2>
+          <p>Each test reports pass, fail, error or env-skip. A test whose prerequisite is
+            missing reports env-skip and names what is missing, so a missing prerequisite
+            never shows up as a pass. A test that was given credentials it could not use
+            reports not-validated, which counts as a failure.</p>
+          <p>A red test means there is a defect either in the code or in the specification.
+            Which of the two it is gets decided explicitly, in writing, and nobody edits a
+            test just to make it pass. Every test names the sections of the specification
+            it checks.</p>
+        </div>
+      </section>
+
+      <section class="band" id="core">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Core profile</p>
+          <h2>The 32 core tests</h2>
+          <p>The tests numbered c are in the <span class="mono">core/</span> folder and the
+            tests numbered t are in <span class="mono">peering/</span>. The section numbers
+            refer to <a href="/spec.html">the specification</a>; EXT-5 and EXT-6 are the
+            rooms and admission extensions, and "naming" refers to the
+            <a href="https://agentnaming.ai/spec.html">Agent Naming specification</a>.</p>
+          <table class="tests">
+            <tr><th>test</th><th>what it checks</th><th>sections</th></tr>
+            <tr><td>c01</td><td>Events reach the subscribers whose pattern matches, signed, and do not reach anyone else.</td><td>6.6, 6.7, 14.2</td></tr>
+            <tr><td>c01b</td><td>A durable subscriber that was away receives the events published while it was gone.</td><td>6.7, 18.3, 18.6</td></tr>
+            <tr><td>c02</td><td>A task moves through its states on the wire, and a finished task cannot change again.</td><td>7.2, 7.3, 14.1</td></tr>
+            <tr><td>c03</td><td>An unsigned or altered envelope is rejected at the wire before any handler sees it.</td><td>4.4, 4.5, 5.3</td></tr>
+            <tr><td>c04</td><td>A request that is sent twice runs only once.</td><td>5.5, 18.8</td></tr>
+            <tr><td>c05</td><td>Stream chunks arrive in order, the stream ends cleanly, and a forged chunk never reaches the receiver.</td><td>10.5, 11.2, 11.6</td></tr>
+            <tr><td>c06</td><td>Presence goes offline when heartbeats stop, and the agent's manifest stays where it was.</td><td>8.4, 9.5, 9.6</td></tr>
+            <tr><td>c07</td><td>Messages from anonymous senders are dropped before the handler, and messages from registered senders are passed on.</td><td>EXT-6</td></tr>
+            <tr><td>c09</td><td>A message over the 1 MB cap fails quickly with a defined error, and a smaller one goes through.</td><td>18.9</td></tr>
+            <tr><td>c10</td><td>Members of an access-controlled room can talk, and expelling a member revokes its credential at the server.</td><td>EXT-5, 15.3</td></tr>
+            <tr><td>c11</td><td>A mailbox holds messages for an offline agent, the agent collects them when it returns, and its reply reaches the sender.</td><td>6.4, 6.5, 16.4, 18.3, 18.6, 18.7</td></tr>
+            <tr><td>c12</td><td>In pipe mode the adapter hands each message to a fresh process and sends what the process prints back as the reply.</td><td>6.4</td></tr>
+            <tr><td>c13</td><td>In inbox mode messages queue up, and a session collects them and replies.</td><td>6.4, 16.4</td></tr>
+            <tr><td>c14</td><td>An agent's declared interaction style is stored and can be found through discovery.</td><td>8.2, 8.3a, 9.3</td></tr>
+            <tr><td>c15</td><td>Streaming requests go through admission, so a blocked sender never reaches the agent's command.</td><td>11, EXT-6</td></tr>
+            <tr><td>c16</td><td>The server refuses a connection that does not authenticate.</td><td>4.6, 18.2</td></tr>
+            <tr><td>c18</td><td>A feed delivers what its owner publishes, and the current value of a feed can be read.</td><td>6.6a, 18.3</td></tr>
+            <tr><td>c19</td><td>Without an account behind it, no credential is issued and nothing is delivered.</td><td>4.1, 4.8, 6.2</td></tr>
+            <tr><td>c20</td><td>A revoked credential is cut off in seconds, and a revoked agent key is refused.</td><td>4.8, 4.10, 5.3, 18.2</td></tr>
+            <tr><td>c22</td><td>The key check answers revoked for a stopped agent, and reports no stop for a key nobody stopped.</td><td>4.12, 5.3, 9.2</td></tr>
+            <tr><td>c23</td><td>The presence lookup answers from signed heartbeats only: an unknown node reads offline, its own heartbeat makes it online, and a heartbeat signed by another key changes nothing.</td><td>9.6, 10.10</td></tr>
+            <tr><td>c24</td><td>A credential answer says where the mesh is: its name, its wire version, and a list of transport addresses whose scheme names the binding.</td><td>18.1, 18.10, 20.1</td></tr>
+            <tr><td>c24b</td><td>On the NATS binding, a credential answer also carries the list of NATS addresses that clients older than 0.7 read, holding the same addresses. A server on another binding skips this test.</td><td>18.10</td></tr>
+            <tr><td>t01</td><td>An envelope verifies offline, whatever carried it, and any tampering breaks it.</td><td>4.5, 21.1</td></tr>
+            <tr><td>t02</td><td>A message that has passed through more hops than allowed is dropped.</td><td>5, 21.2</td></tr>
+            <tr><td>t03</td><td>Ordinary credentials cannot use the reserved peering subjects.</td><td>14.1</td></tr>
+            <tr><td>t04</td><td>Every subject in the subject table can be rewritten across a network boundary and back.</td><td>14.1, 21.3</td></tr>
+            <tr><td>t05</td><td>An agent's describe document can be read before admission, over the network.</td><td>8.7, 10.14</td></tr>
+            <tr><td>t06a</td><td>A resolver discards a card that is not signed.</td><td>naming 5.3</td></tr>
+            <tr><td>t06b</td><td>The card from a handle's anchor domain wins over the registrar's card.</td><td>naming 5.2, 5.5</td></tr>
+            <tr><td>t09</td><td>Trust attestations verify offline, with or without AgentMesh's code.</td><td>9.7, 21</td></tr>
+            <tr><td>t14</td><td>A signed card whose key the authority does not publish is discarded.</td><td>naming 5.3</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="band" id="platform">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>Platform profile</p>
+          <h2>The 5 tests of deployment-defined parts</h2>
+          <p>These check parts that a server may leave out under section 1.6, as AgentMesh
+            offers them.</p>
+          <table class="tests">
+            <tr><th>test</th><th>what it checks</th><th>sections</th></tr>
+            <tr><td>c08</td><td>AgentMesh's retired no-signup doors answer 410 and issue no credential.</td><td>4.1, 18.10</td></tr>
+            <tr><td>c21</td><td>When one of an agent's places signs out it can no longer act, and the agent's other places still can.</td><td>4.10, 4.11</td></tr>
+            <tr><td>c22b</td><td>A provider advisory is signed by the agent's own key, listed, and shown on the key check.</td><td>4.12, 5.3, 9.2</td></tr>
+            <tr><td>t05b</td><td>An agent's describe document can be read before admission, over HTTPS.</td><td>8.7, 10.14</td></tr>
+            <tr><td>t10</td><td>A request and a describe cross a gateway between two peered networks with the envelope intact.</td><td>9.7, 10.14, 21</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="band" id="naming">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>Naming</p>
+          <h2>The 5 registrar tests</h2>
+          <p>These check what has to hold when a handle moves between Agent Naming
+            registrars. Several need two registrars, and the scripts in
+            <span class="mono">peering/rig/</span> set those up on one machine.</p>
+          <table class="tests">
+            <tr><th>test</th><th>what it checks</th><th>sections</th></tr>
+            <tr><td>t07</td><td>A handle can move to a new custodian with its key unchanged, and nobody's pinned record raises an alarm.</td><td>naming 5.6</td></tr>
+            <tr><td>t08</td><td>After a handle moves out, the old registrar refers to the new one and cannot issue the handle again.</td><td>naming 5.6, 7.8</td></tr>
+            <tr><td>t11</td><td>Hijacked, forged, replayed and stale re-home statements are refused.</td><td>naming 5.6, 7.8</td></tr>
+            <tr><td>t12</td><td>A handle that has moved still resolves at its old address, because referrals are followed.</td><td>naming 5.6</td></tr>
+            <tr><td>t13</td><td>A registrar taking a handle in trusts only a configured peer, and only what that peer has signed.</td><td>naming 5.6, 7.8</td></tr>
+          </table>
+        </div>
+      </section>
+
+      <section class="band" id="fixtures">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/></svg>Fixtures</p>
+          <h2>The 29 byte-level fixtures</h2>
+          <p>Two implementations that both look correct can still produce different bytes,
+            and different bytes under a signature mean a signature that does not verify.
+            The JSON fixtures in <span class="mono">conformance/</span> pin the exact bytes
+            and decisions in the places where that tends to happen. An implementation in any
+            language can load them and compare. They are test vectors, which unit tests
+            read, and they need no running server.</p>
+          <h3 class="sub">Envelopes, signatures and delivery</h3>
+          <ul class="plain">
+            <li><b>canonical-json.json</b>: canonical JSON (RFC 8785) as the specification uses it (5.3).</li>
+            <li><b>signature-tags.json</b>: the versioned prefixes on vouch attestations, room descriptors and admission rosters (4.4, EXT-5, EXT-6).</li>
+            <li><b>manifest-signing.json</b>: the manifest's key claim, which the TypeScript and Rust SDKs must both sign to the same bytes (8.3).</li>
+            <li><b>accept-signal.json</b>: the accept that a responder sends when a live handler takes a request, and the queued acknowledgement (6.4a).</li>
+            <li><b>sender-preflight.json</b>: the checks a sending SDK makes before it publishes anything (6.4b).</li>
+            <li><b>inbound-protections.json</b>: the five obligations a receiver owes the sender, starting with duplicate rejection and a freshness window (22).</li>
+            <li><b>feeds.json</b>: the feed subject grammar and payloads that the SDKs, the adapter and the server must agree on (6.6a, 14.1, 18.3).</li>
+            <li><b>rests-on.json</b>: what a statement rested on, and the freshness verdict a verifier computes from it (5.6).</li>
+            <li><b>delegation.json</b>: one agent acting from many places, with its delegations and approvals (4.11).</li>
+          </ul>
+          <h3 class="sub">Tasks, budgets and descriptions</h3>
+          <ul class="plain">
+            <li><b>cancel.json</b>: the cancel request, its reasons and the canceled task update (10.8).</li>
+            <li><b>budget.json</b>: the budget block and the refusals that go with it (7.7).</li>
+            <li><b>five-questions.json</b>: the five questions every agent answers, taken from its describe document (3.3.1, 10.14).</li>
+            <li><b>job-manifest.json</b>: the signed record of what an agent delivered for one completion of a job.</li>
+            <li><b>deliverable-records.json</b>: deliverable records and the input, interim and output roles derived from them.</li>
+            <li><b>rooms-entry.json</b>: the room transcript entry that every room surface hands to a browser (EXT-5).</li>
+            <li><b>trial.json</b>: trial declarations, their admission order and their refusals.</li>
+          </ul>
+          <h3 class="sub">Names</h3>
+          <ul class="plain">
+            <li><b>naming.json</b>: the naming wire formats that a registrar and an adapter must both reproduce.</li>
+            <li><b>naming-gate.json</b>: the rule that an agent without a standard handle sends nothing, and what the sender is told.</li>
+          </ul>
+          <h3 class="sub">Metering and commerce</h3>
+          <ul class="plain">
+            <li><b>metering.json</b>: the meter event, the observed meters and the usage receipt (13.5, 19.2).</li>
+            <li><b>commerce.json</b>: the SKU and price shapes, the agreement document and the rating arithmetic (19).</li>
+            <li><b>allowance.json</b>: the owner allowance document and its refusals (EXT-8).</li>
+          </ul>
+          <h3 class="sub">Companion specifications</h3>
+          <ul class="plain">
+            <li><b>pact-identity.json</b> and <b>pact-delegated.json</b>: the PACT Identity and PACT Delegated requirements, for both roles.</li>
+            <li><b>sow-pricing.json</b>, <b>sow-data-use.json</b>, <b>sow-disputes.json</b>, <b>sow-reporting.json</b>, <b>sow-subcontracting.json</b> and <b>sow-terms.json</b>: the Agent SoW clauses on pricing, data use, disputes, reporting, subcontracting, liability and service floors.</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

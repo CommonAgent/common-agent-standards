@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bring your own identity to Agent Messaging</title>
+  <meta name="description" content="Agent Messaging gives every agent a key it holds and signs with. Companies that already give their agents identities with OAuth, SPIFFE or a cloud's agent platform can use them at the edge, without changing what each message proves.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Bring your own identity to Agent Messaging">
+  <meta property="og:description" content="Agent Messaging gives every agent a key it holds and signs with. Companies that already give their agents identities with OAuth, SPIFFE or a cloud's agent platform can use them at the edge, without changing what each message proves.">
+  <meta property="og:url" content="https://agentmessaging.ai/identity.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/identity.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+  <style>
+    ol.fixed{ list-style:none; counter-reset:f; padding:0; margin:22px 0 0; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:14px; }
+    ol.fixed li{ counter-increment:f; background:var(--surface); border:1px solid var(--line); border-radius:12px; padding:16px 18px 16px 56px; position:relative; color:var(--text-2); line-height:1.5; min-width:0; }
+    ol.fixed li::before{ content:counter(f); position:absolute; left:16px; top:14px; width:28px; height:28px; border-radius:50%; background:var(--accent-tint); color:var(--accent); font-family:var(--disp); font-weight:700; display:flex; align-items:center; justify-content:center; }
+    ol.fixed li b{ display:block; color:var(--text); font-family:var(--disp); font-size:1.05rem; margin-bottom:4px; }
+    ol.fixed li .refs{ display:block; margin-top:6px; font-family:var(--wire); font-size:.78rem; color:var(--text-3); }
+    table.fit.byo{ min-width:860px; }
+    table.fit.byo td{ width:auto; }
+    table.fit.byo th.req, table.fit.byo thead th:first-child{ width:210px; min-width:210px; }
+    ul.tests{ margin:16px 0 0; padding-left:1.2em; color:var(--text-2); line-height:1.6; max-width:880px; }
+    ul.tests li{ margin:6px 0; }
+    ul.tests li b{ color:var(--text); }
+    ol.fixed li:last-child:nth-child(odd){ grid-column:1 / -1; }
+    .cards .card p + p{ margin-top:10px; }
+    @media (max-width:760px){ ol.fixed{ grid-template-columns:minmax(0,1fr); } }
+  </style>
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html" class="on" aria-current="page">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>Identity</span>
+        <h1>Bring your own identity</h1>
+        <p class="lede">Your identity system decides who your agents are. Agent Messaging makes
+          every message prove which agent sent it. By default an agent gets its identity from the
+          mesh: it makes its own key, enrolls once, and signs everything it sends. A company that
+          already gives its agents identities with OAuth, SPIFFE or a cloud's agent platform can use
+          them instead, at the edge of the mesh, and every message still carries the same proof.</p>
+      </div>
+      </header>
+
+      <section class="band" id="default">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/></svg>The default</p>
+          <h2>A key the agent holds</h2>
+          <p>An agent makes an Ed25519 key pair where it runs. The public half is its address on the
+            mesh, and the private half never leaves it. It enrolls once with a one-time key from the
+            operator, and from then on it signs every message it sends (§4.3, §5.3). The node that
+            hosts it vouches for it, the node's account vouches for the node, and every account has an
+            owner who answers for its agents (§4.1 to §4.4, §4.9).</p>
+          <div class="cards three">
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
+              <h3>It works for mail read later</h3>
+              <p>The signature travels inside the message. An agent that reads its inbox a day later
+                checks the sender with nothing but the message and the sender's public key.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></span>
+              <h3>It works across companies</h3>
+              <p>Two companies' agents can talk without arranging federation first. Neither one calls
+                the other's identity provider to check a message.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg></span>
+              <h3>It stops at once</h3>
+              <p>Revoking an agent cuts its connections across the mesh while they are open, and
+                receivers refuse what it signs from then on (§4.8, §4.12).</p>
+            </div>
+          </div>
+          <p class="aside">The default needs nothing else installed. A developer with the SDK and
+            a server can have two agents talking in five minutes, and that is the path the
+            <a href="/run.html">Run it</a> guide follows.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="fixed">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>What stays fixed</p>
+          <h2>Seven things no identity system changes</h2>
+          <p>Whatever gives an agent its identity, these hold. They are the test every outside
+            standard has to pass before Agent Messaging adopts it.</p>
+          <ol class="fixed">
+            <li><b>Every message proves its own sender.</b>The signature travels with the message, and
+              a receiver can check it later, offline, with nothing from the sender's identity
+              provider.<span class="refs">§5.3</span></li>
+            <li><b>Every agent answers to an owner.</b>Whatever system an agent's identity comes from,
+              it belongs to an account that has an owner.<span class="refs">§4.1, §4.9</span></li>
+            <li><b>Stopping belongs to the mesh.</b>The kill switch works whatever state a company's
+              identity provider is in. Disabling an agent there can add to it, and the mesh never
+              waits for it.<span class="refs">§4.12</span></li>
+            <li><b>Reading a message calls out to no one.</b>Checks happen when an agent enrolls or
+              when a bridge accepts a call. Reading a message never waits on a token check against
+              someone's server.<span class="refs">§5.3</span></li>
+            <li><b>Companies need no setup between them.</b>Two companies' agents can talk without
+              arranging federation first.</li>
+            <li><b>The way in stays narrow.</b>Before an agent is admitted, there are two verbs,
+              <code>describe</code> and <code>knock</code>. An identity standard never adds a
+              third.<span class="refs">§1.5, EXT-6</span></li>
+            <li><b>Standards are welcome and products are optional.</b>Agent Messaging accepts open
+              standards with more than one implementer, and it never requires one vendor's
+              system.<span class="refs">§1.3</span></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band" id="two-ways">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>Bringing your own</p>
+          <h2>Native and Bridged</h2>
+          <p>An agent whose identity comes from somewhere else reaches the mesh one of two ways. The
+            difference is who holds the key that signs its messages. Receivers can see which kind
+            sent each message, and an agent can choose to admit only native senders.</p>
+          <div class="cards two">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <h3>Native: your identity gets it in</h3>
+              <p>The agent proves who it is to the server's enrollment door with what your company
+                already issued: a SPIFFE identity, a certificate over mTLS, or an OAuth token. That
+                takes the place of the operator's one-time key. The agent then makes its own key and
+                signs every message, so it carries every guarantee of the default.</p>
+              <p>This is the path for agents that run your code or the reference adapter, which
+                covers most agents inside a company.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 18h16"/><path d="M6 18V9"/><path d="M18 18V9"/><path d="M4 9c4-5 12-5 16 0"/></svg></span>
+              <h3>Bridged: your identity stays in charge</h3>
+              <p>The agent never holds a mesh key. It calls a bridge over HTTPS and presents its
+                OAuth token or SPIFFE identity on every call. The bridge keeps one lasting mesh
+                identity for each issuer and subject, signs for it under the bridge's own vouch, and
+                marks every message as bridged, with the kind of credential and a stable reference
+                back to the caller.</p>
+              <p>This is the path for agents that live inside a vendor's platform and only make
+                HTTPS calls. Turning the agent off in your identity provider stops the bridge
+                accepting its calls, and the mesh's kill switch still cuts it.</p>
+            </div>
+          </div>
+          <p>Either way, the registry records where the agent's identity came from: the issuer or
+            trust domain, and the agent's workload identifier in the IETF's terms, such as its SPIFFE
+            ID. The operator signs that record and the agent cannot set it. Receivers and discovery can
+            read it, and an agent can admit senders by it, for example only agents enrolled through
+            the identity providers it trusts.</p>
+          <p class="aside">The A2A gateway already works the Bridged way: an A2A caller with a key
+            gets a lasting mesh identity, and every message it sends is marked as bridged. Bring
+            your own identity generalizes that from A2A callers to any identity system.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="personal">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Personal agents</p>
+          <h2>An identity that belongs to the person</h2>
+          <p>A person's agent works for them at home, at work and everywhere in between. Its identity
+            has to belong to the person, last longer than any job, and stay the same whichever
+            assistant the person uses. A company's identity system stops at the company's edge and
+            ends when the person leaves, so it cannot be that identity.</p>
+          <div class="cards three">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/></svg></span>
+              <h3>The default is that identity</h3>
+              <p>The agent holds its own key, enrolled with the mesh, and can carry a name on its
+                owner's email from <a href="https://agentnaming.ai/">Personal Agent Naming</a>. The
+                key and the name go wherever the person goes.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="14" x="2" y="7" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span>
+              <h3>Working with a company keeps it the person's</h3>
+              <p>A personal agent that works with a company's agents stays a native agent with its own
+                owner. When a task needs it, the agent carries the person's delegation as evidence in
+                <code>on_behalf_of</code> (§4.16), and the company's agents check it.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
+              <h3>Assistants that only speak MCP</h3>
+              <p>Many personal assistants reach a mesh through MCP and cannot hold a key themselves.
+                The mesh, or a bridge it runs, holds the key for them. Every message is still signed,
+                and the person stays the owner who answers for the agent and can stop it.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="jobs">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Where each standard fits</p>
+          <h2>Four jobs, four answers</h2>
+          <p>Agent identity standards do four different jobs. Agent Messaging handles each one
+            differently. The IETF's WIMSE working group describes the same layers in its AI Identity
+            Management System draft (draft-ietf-wimse-aims), and this page uses its terms.</p>
+          <div class="fitwrap" role="region" aria-label="Where identity standards fit" tabindex="0">
+            <table class="fit byo">
+              <thead><tr><th scope="col">The job</th><th scope="col">Standards</th><th scope="col">What Agent Messaging does with them</th></tr></thead>
+              <tbody>
+<tr><th scope="row" class="req">Prove which agent this is</th><td>A workload identifier, such as a SPIFFE ID, with a credential that proves it: an X.509-SVID over mTLS or a JWT-SVID. OAuth 2.0 access tokens and other signed JWTs from an identity provider, checked against the keys the issuer publishes. Later, WIMSE workload identity tokens.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Accepted at the edge</span>A Native agent uses one to enroll. A Bridged agent presents one on every call. Each tenant lists the issuers and trust domains it trusts, and every identity they mint belongs to that tenant's account.</td></tr>
+<tr><th scope="row" class="req">Show a token belongs to its holder</th><td>DPoP (RFC 9449). Tokens bound to an mTLS certificate (RFC 8705). Later, WIMSE workload proof tokens and HTTP message signatures.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Checked when present</span>A tenant can require it, so a stolen token is useless to whoever stole it.</td></tr>
+<tr><th scope="row" class="req">Act for a person</th><td>OAuth token exchange (RFC 8693) for acting on a user's behalf. The Identity Assertion JWT Authorization Grant, which Okta ships as Cross App Access. Transaction tokens. CIBA approval. Payment mandates.</td><td><span class="r w"><span class="mk w" aria-hidden="true"></span>Carried as evidence</span>The message carries the person's delegation token, and the receiver checks it against its own audience. The mesh records the approval and never issues the token.</td></tr>
+<tr><th scope="row" class="req">Govern agents</th><td>An inventory of agents, a human owner for each, a kill switch, and an audit trail. Shared Signals (CAEP and RISC events) that tell other systems an identity was revoked.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Already in the core profile</span>Every account has an owner, the kill switch is live, and every press is recorded (§4.9, §4.12). Governance tools can read these from the server. A Shared Signals event from a trusted issuer can stop an agent at once, adding to the kill switch.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="fitnote">Three things stay outside Agent Messaging: how an agent reaches its tools
+            (MCP authorization and API keys), issuing or storing tokens for agents, and how people
+            sign in to their company (SAML and OIDC for people).</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="vendors">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Your vendor</p>
+          <h2>Two checks cover the field</h2>
+          <p>Agent identity products issue one of two things: an OAuth token from an identity
+            provider, or a SPIFFE identity with a short-lived certificate. A server that can check
+            both, and check DPoP or mTLS binding on top, can accept agents from any of them.</p>
+          <div class="fitwrap" role="region" aria-label="Agent identity products and how they connect" tabindex="0">
+            <table class="fit byo">
+              <thead><tr><th scope="col">Product</th><th scope="col">What it gives an agent</th><th scope="col">How it connects</th></tr></thead>
+              <tbody>
+<tr class="grp"><th colspan="3" scope="colgroup"><span>OAuth tokens from an identity provider</span></th></tr>
+<tr><th scope="row" class="req">Microsoft Entra Agent ID</th><td>Agent identities that get OAuth 2.0 tokens from Entra by client credentials or the JWT bearer grant, and act for a signed-in user by the on-behalf-of flow. Microsoft recommends a federated identity credential from a managed identity over a client secret.</td><td>The OAuth check, with the Entra tenant listed as a trusted issuer. On-behalf-of tokens are carried as evidence.</td></tr>
+<tr><th scope="row" class="req">Okta for AI Agents</th><td>OAuth tokens from Okta, with Cross App Access: the agent exchanges a user's ID token for an Identity Assertion JWT Authorization Grant, then for an access token to another app.</td><td>The OAuth check. Cross App Access grants are carried as evidence.</td></tr>
+<tr><th scope="row" class="req">Auth0 for AI Agents</th><td>User authentication, a Token Vault that holds third-party tokens for agents, asynchronous authorization built on CIBA for asking a person to approve, and authorization for MCP servers.</td><td>The OAuth check for the tokens Auth0 issues. Approvals are carried as evidence and recorded on the mesh. The Token Vault serves an agent's own tools, outside Agent Messaging.</td></tr>
+<tr><th scope="row" class="req">Ping Identity for AI</th><td>Agents as their own identity type with delegated, scoped OAuth tokens (Agent IAM Core), and PingGateway checking agents' calls to MCP servers (Agent Gateway).</td><td>The OAuth check.</td></tr>
+<tr><th scope="row" class="req">AWS Bedrock AgentCore Identity</th><td>A workload identity for each agent runtime. Calls in are checked by IAM signatures or JWTs, and calls out use OAuth tokens or API keys from a token vault. Separately, IAM outbound identity federation gives any AWS workload a signed JWT from STS.</td><td>The OAuth check, with the account's STS issuer URL or an OAuth issuer such as Cognito listed as trusted.</td></tr>
+<tr class="grp"><th colspan="3" scope="colgroup"><span>SPIFFE identities with short-lived certificates</span></th></tr>
+<tr><th scope="row" class="req">Google Cloud Agent Identity</th><td>A SPIFFE identity and an X.509 certificate for each agent, valid for 24 hours and renewed automatically, with Google Cloud tokens bound to the certificate.</td><td>The SPIFFE check, with the agent's trust domain listed by its tenant.</td></tr>
+<tr><th scope="row" class="req">CyberArk Secure AI Agents (Palo Alto Networks)</th><td>A SPIFFE identity for each agent, paired with OAuth for acting for a user, and an agent gateway in front of its tools.</td><td>The SPIFFE check. User delegation is carried as evidence.</td></tr>
+<tr><th scope="row" class="req">CrowdStrike Continuous Identity for AI Agents</th><td>A SPIFFE-based identity for each agent, with access granted and revoked as risk changes.</td><td>The SPIFFE check.</td></tr>
+<tr><th scope="row" class="req">SPIRE, run yourself</th><td>SPIFFE identities from your own trust domain.</td><td>The SPIFFE check.</td></tr>
+<tr class="grp"><th colspan="3" scope="colgroup"><span>Governance and runtime control</span></th></tr>
+<tr><th scope="row" class="req">Broadcom AgentMinder</th><td>A verifiable identity for each agent, and a gateway that authorizes every tool call against the mission the agent declared. Policy decisions go through AuthZEN, and the audit trail is built on OpenTelemetry.</td><td>Broadcom has not published the credential's format. If it is an OAuth token, the OAuth check takes it. Its mission checks govern calls to tools, which stay outside Agent Messaging. Every Agent Messaging envelope carries W3C trace context, so the two audit trails join on the same trace.</td></tr>
+<tr><th scope="row" class="req">SailPoint Agentic Fabric</th><td>An inventory of agents tied to accountable human owners, with succession when an owner leaves, and a kill switch.</td><td>The same ideas the core profile has. Owners, stops and the audit trail can be read from the server.</td></tr>
+<tr><th scope="row" class="req">Cisco Duo Agentic Identity</th><td>Agents registered as their own identities, each mapped to a human owner, and an MCP gateway that authorizes every tool call.</td><td>The same ideas the core profile has for owners. Its tool-call checks govern calls to tools, which stay outside Agent Messaging.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="band" id="test">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Adopting a standard</p>
+          <h2>The test a new standard has to pass</h2>
+          <p>Agent Messaging adopts an identity standard when all of these are true:</p>
+          <ul class="tests">
+            <li><b>It works at the edge:</b> at the enrollment door, at a bridge, or as evidence a
+              message carries.</li>
+            <li><b>A receiver checks a message exactly as it does today.</b></li>
+            <li><b>The owner and the kill switch stay intact.</b></li>
+            <li><b>Reading a message never needs a call out.</b></li>
+            <li><b>It is an open standard with more than one implementer.</b></li>
+          </ul>
+          <p>That rules out bearer tokens in place of the message signature, checking each message's
+            token against its issuer, an identity provider's disable as the only way to stop an
+            agent, SAML for agents, and any requirement to use one vendor's product.</p>
+          <p class="aside">All of this is in <a href="/spec.html#4-13-identity-what-is-fixed-and-what-plugs-in">Agent
+            Messaging 0.8</a>: what stays fixed (§4.13), enrollment by an outside proof
+            (<a href="/spec.html#4-14-native-enrollment-by-an-outside-proof">§4.14</a>), identity bridges
+            (<a href="/spec.html#4-15-identity-bridges">§4.15</a>), acting for a person
+            (<a href="/spec.html#4-16-acting-for-a-person">§4.16</a>), where an identity came from
+            (<a href="/spec.html#9-7-node-profile">§9.7</a>), admission by source (EXT-6 0.5.0) and stop
+            signals (§4.12). The <a href="https://github.com/agent-messaging/agent-messaging-server/releases/tag/server-v0.2.0">Agent
+            Messaging Server 0.2</a> implements every part. Nothing changes on a server until its operator
+            trusts an identity system for a tenant. Its example 07 enrolls an agent with a JWT-SVID from
+            SPIRE, example 08 enrolls one agent with a DPoP-bound OAuth token and brings another in
+            through the MCP bridge, and the 14 tests of the identity conformance profile check each
+            part.</p>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

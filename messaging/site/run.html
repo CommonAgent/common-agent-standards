@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Run the Agent Messaging Server</title>
+  <meta name="description" content="Start the Agent Messaging Server, the reference implementation of Agent Messaging, on one host with Docker Compose: on NATS, or on RabbitMQ with Postgres.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Run the Agent Messaging Server">
+  <meta property="og:description" content="Start the Agent Messaging Server, the reference implementation of Agent Messaging, on one host with Docker Compose: on NATS, or on RabbitMQ with Postgres.">
+  <meta property="og:url" content="https://agentmessaging.ai/run.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/run.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html" class="on" aria-current="page">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></svg>Run it</span>
+        <h1>Start a server in five minutes</h1>
+        <p class="lede">The Agent Messaging Server is the reference implementation of Agent
+          Messaging. It is free and open source under the Apache License 2.0. One host with
+          Docker Compose is enough to run it, on NATS or on RabbitMQ with Postgres, and your
+          agents use the same code on either.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="https://github.com/agent-messaging/agent-messaging-server"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>The repository on GitHub</a>
+          <a class="btn btn-ghost" href="/run-broker.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg>Choosing a broker</a>
+        </div>
+      </div>
+      </header>
+
+      <section class="band" id="nats">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg>Step one</p>
+          <h2>Start it on NATS</h2>
+          <p>You need Git and Docker with Compose. The commands on these pages are for a Unix
+            shell: macOS, Linux, WSL or Git Bash on Windows.</p>
+<pre class="code">git clone https://github.com/agent-messaging/agent-messaging-server
+cd agent-messaging-server/deploy/compose/nats
+docker compose up -d</pre>
+          <p>The first start builds the server's two images from the clone, which takes a few
+            minutes. To run the newest released images instead, set these before
+            <code>docker compose up</code>. The first line finds the newest release's number,
+            and <a href="https://github.com/agent-messaging/agent-messaging-server/releases">the
+            releases page</a> lists them all.</p>
+<pre class="code">VERSION=$(curl -fsS https://api.github.com/repos/agent-messaging/agent-messaging-server/releases \
+  | grep -o '"tag_name": "server-v[0-9.]*"' | head -1 | grep -o '[0-9][0-9.]*')
+export SERVER_IMAGE=ghcr.io/agent-messaging/agent-messaging-server:$VERSION
+export GATEWAY_IMAGE=ghcr.io/agent-messaging/agent-messaging-a2a-gateway:$VERSION</pre>
+          <p>Compose runs first-run setup once, which makes the operator key, the signing keys,
+            the broker's settings and the first admin token, and keeps them all in the Compose
+            volume <code>config</code>. Then it starts NATS, the server on port 3005 and the A2A
+            gateway on port 8090. Every port is published on 127.0.0.1 only, so the mesh is
+            reachable from this host and nowhere else until you decide otherwise.</p>
+          <p>Check that it is healthy:</p>
+<pre class="code">docker compose exec server /entrypoint.sh mesh-admin status</pre>
+          <div class="quick">
+            <div class="bar">What a healthy server says</div>
+<pre>Mesh: agent-messaging
+Server: run from source (no release number)
+Agent Messaging 0.7.0, core profile, wire protocol 0.3, tenancy: one_nats_account
+The AgentMesh platform beside it: no
+Live revocation: <span class="ok">on</span>
+Credential minting: <span class="ok">on</span>
+Tenants 0, agents 0, credentials 0, stops in force 0 (0 placed with this tool)
+Signed in with the admin token: first-run</pre>
+          </div>
+          <p>The capabilities answer is public and names the version of Agent Messaging, the
+            profile and the broker: <code>curl http://localhost:3005/v1/capabilities</code>.</p>
+          <p class="aside"><b>Keep a copy of the operator key.</b> It is the mesh's identity.
+            If it is lost, every agent's credential has to be issued again under a new mesh.
+            <code>docker compose logs setup</code> says where it is, and
+            <code>docker compose cp server:/config/keystore ./operator-keystore-backup</code>
+            copies it out. Move the copy somewhere safe and offline.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="watch">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>Step two</p>
+          <h2>Watch a message wait for an agent that is away</h2>
+          <p>The repository's first example puts two agents of two companies on your server.
+            One asks the other for a price while it is online, then again while it is offline.
+            The second request waits in the offline agent's mailbox and is answered when that
+            agent comes back. It needs Node.js 22 or newer. From the
+            <code>deploy/compose/nats</code> folder:</p>
+<pre class="code">cd ../../../sdk-typescript &amp;&amp; npm ci &amp;&amp; npm run build
+cd ../examples &amp;&amp; npm ci
+node run.mjs nats 01</pre>
+          <div class="quick">
+            <div class="bar">What it prints</div>
+<pre>=== 01-two-companies on nats ===
+Two companies on one mesh: tenants acme-mv68zjkx and globex-mv68zjkx.
+Both agents are connected and the quoting agent is registered.
+  <span class="ok">ok:</span> Acme's buyer asked Globex's agent across companies and got a price
+The quoting agent is offline now. The buyer sends a request anyway.
+Four seconds later the quoting agent comes back, and finds the request in its mailbox.
+  <span class="ok">ok:</span> the request sent while it was away was answered when it returned, 4.1 s after it was sent
+Done: store and forward between two companies.</pre>
+          </div>
+          <p><code>node run.mjs nats</code> runs all five examples: two companies, an internal
+            network with a LangChain agent and a coding agent, an A2A agent joining through the
+            gateway, the kill switch, and a room where three agents share files. Each has a
+            README in <a href="https://github.com/agent-messaging/agent-messaging-server/tree/main/examples">the
+            repository's examples folder</a>.</p>
+        </div>
+      </section>
+
+      <section class="band" id="rabbitmq">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5V19A9 3 0 0 0 21 19V5"/><path d="M3 12A9 3 0 0 0 21 12"/></svg>The other broker</p>
+          <h2>Start it on RabbitMQ with Postgres</h2>
+          <p>The RabbitMQ setup works the same way. The two setups use the same host ports, so
+            stop the NATS one first (<code>docker compose down</code> in its folder), or change
+            the ports as the next section says.</p>
+<pre class="code">cd agent-messaging-server/deploy/compose/rabbitmq
+docker compose up -d
+docker compose exec server /entrypoint.sh mesh-admin status</pre>
+          <p>This starts Postgres 18, where the server keeps its state, RabbitMQ 4.3, the server
+            and the gateway. Only ports 3005, 5672 and 8090 are published. Postgres and
+            RabbitMQ's management API stay on the Compose network, because only the server uses
+            them. The examples run the same way with <code>node run.mjs rabbitmq 01</code>.</p>
+
+          <h3 class="step" id="own-postgres">With a Postgres you already run</h3>
+          <p>The bundled Postgres is only the default. To keep the server's state in a database
+            you already run, such as a managed cloud database, put the password in a file on this
+            host and start with the second Compose file:</p>
+<pre class="code">printf '%s\n' '<span class="c">the database password</span>' &gt; postgres.password
+export MESH_POSTGRES_URL=postgres://mesh@db.example.com:5432/mesh
+export MESH_POSTGRES_PASSWORD_HOST_FILE=./postgres.password
+docker compose -f compose.yaml -f compose.own-postgres.yaml up -d</pre>
+          <p>The password never goes in the URL or the environment; the containers read it from
+            the file. The database user needs the right to create tables and functions, because
+            first-run makes the server's eight tables there (their names start with
+            <code>ams_</code>). The host in the URL must be reachable from inside the containers:
+            with Docker Desktop, a database on your own machine is
+            <code>host.docker.internal</code>. The bundled Postgres is not started.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="settings">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 7h-9"/><path d="M14 17H5"/><circle cx="17" cy="17" r="3"/><circle cx="7" cy="7" r="3"/></svg>Settings</p>
+          <h2>Ports, addresses, and starting over</h2>
+          <p>Each Compose folder has an <code>.env.example</code> that lists its settings. Copy it
+            to <code>.env</code> beside <code>compose.yaml</code> and change what you need.</p>
+          <table class="map prose">
+            <tr><th>Setting</th><th>What it does</th></tr>
+            <tr><td><code>SERVER_PORT</code>, <code>GATEWAY_PORT</code></td><td>The host ports of the server (3005) and the A2A gateway (8090).</td></tr>
+            <tr><td><code>NATS_PORT</code>, <code>NATS_WS_PORT</code>, <code>AMQP_PORT</code></td><td>The broker's host ports: 4222 and 4443 on NATS, 5672 on RabbitMQ.</td></tr>
+            <tr><td><code>BIND_ADDRESS</code></td><td>The host address every port is published on, 127.0.0.1 by default. Put TLS in front before you open it to other machines.</td></tr>
+            <tr><td><code>MESH_PUBLIC_URL</code>, <code>MESH_NATS_ENDPOINTS</code>, <code>MESH_AMQP_ENDPOINTS</code></td><td>The addresses agents are given with their credentials. First-run reads them on the first start only, so set them before it when agents will reach the mesh by another name.</td></tr>
+          </table>
+          <p><code>docker compose down</code> stops the mesh and keeps everything.
+            <code>docker compose down -v</code> deletes the volumes too, keys included, and the
+            next start is a new mesh whose agents all need new credentials.</p>
+        </div>
+      </section>
+
+      <section class="band" id="next">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>Next</p>
+          <h2>Where to go from here</h2>
+          <div class="doors">
+            <a class="door c-mint" href="/run-agents.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span><h3>Enrolling agents</h3><p>Put your own agent on the server with the TypeScript SDK or the adapter.</p><p class="go">Enroll one<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/run-broker.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="m2 16 3-8 3 8c-.87.65-1.92 1-3 1s-2.13-.35-3-1Z"/><path d="M7 21h10"/><path d="M12 3v18"/><path d="M3 7h2c2 0 5-1 7-2 2 1 5 2 7 2h2"/></svg></span><h3>Choosing a broker</h3><p>What NATS and RabbitMQ each need, and how big a host to start with.</p><p class="go">Compare them<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-violet" href="/run-admin.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg></span><h3>The admin CLI</h3><p>Tenants, agents, and the kill switch that cuts an agent off live.</p><p class="go">Run it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-amber" href="/run-operate.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg></span><h3>Upgrades and backups</h3><p>Moving to a new release, backing up, and Kubernetes.</p><p class="go">Operate it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Upgrading and backing up the Agent Messaging Server</title>
+  <meta name="description" content="Move the Agent Messaging Server to a new release, back it up and restore it, and find the Kubernetes manifests, the operator handbook, the sizing guide and the examples.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="Upgrading and backing up the Agent Messaging Server">
+  <meta property="og:description" content="Move the Agent Messaging Server to a new release, back it up and restore it, and find the Kubernetes manifests, the operator handbook, the sizing guide and the examples.">
+  <meta property="og:url" content="https://agentmessaging.ai/run-operate.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/run-operate.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html" class="on" aria-current="page">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Related<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>Run it</span>
+        <h1>Upgrades and backups</h1>
+        <p class="lede">Everything a server trusts is in one volume, <code class="inline">config</code>,
+          and on RabbitMQ in Postgres beside it. Back those up, and an upgrade is a change of
+          image followed by a restart.</p>
+      </div>
+      </header>
+
+      <section class="band" id="upgrade">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>Upgrading</p>
+          <h2>Moving to a new release</h2>
+          <ol class="plain">
+            <li>Back up, as the next section says.</li>
+            <li>Read the <a href="https://github.com/agent-messaging/agent-messaging-server/releases">release
+              notes</a> for anything to do before or after.</li>
+            <li>Name the new release's images and restart. From the Compose folder:
+<pre class="code"><span class="c"># the newest release; set VERSION by hand to choose another</span>
+VERSION=$(curl -fsS https://api.github.com/repos/agent-messaging/agent-messaging-server/releases \
+  | grep -o '"tag_name": "server-v[0-9.]*"' | head -1 | grep -o '[0-9][0-9.]*')
+export SERVER_IMAGE=ghcr.io/agent-messaging/agent-messaging-server:$VERSION
+export GATEWAY_IMAGE=ghcr.io/agent-messaging/agent-messaging-a2a-gateway:$VERSION
+docker compose up -d
+docker compose exec server /entrypoint.sh mesh-admin status</pre>
+              The status names the release on its second line, as
+              <code>Server: Agent Messaging Server</code> and its number. If you build from a clone
+              instead, pull the new release and run <code>docker compose up -d --build</code>.</li>
+          </ol>
+          <p>First-run never runs twice: it sees that setup is done and changes nothing. On
+            RabbitMQ the server applies its Postgres schema at every start, which only adds what
+            a new release brings, and on NATS it makes any stream a new release needs. To go
+            back, name the old images and restart. If a release says a step cannot be undone,
+            restore the backup instead. On Kubernetes, change the image lines in
+            <code>mesh.yaml</code> and apply it; the server uses the <code>Recreate</code>
+            strategy, so two servers never run against one mesh.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="backup">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>Backups</p>
+          <h2>Backing up, and restoring</h2>
+          <h3 class="step">On NATS</h3>
+          <p>The <code>config</code> volume is the whole mesh: the keys, the settings, JetStream's
+            data and the audit log. Stop the broker so JetStream's files are consistent, copy the
+            volume, and start again. The mesh is down for as long as the copy takes.</p>
+<pre class="code">docker compose stop server nats
+docker run --rm -v agent-messaging-nats_config:/config -v "$PWD":/backup busybox \
+  tar czf /backup/config-2026-10-12.tgz -C /config .
+docker compose start nats server</pre>
+          <h3 class="step">On RabbitMQ with Postgres</h3>
+          <p>Dump Postgres while it runs, and copy the <code>config</code> volume at the same
+            time:</p>
+<pre class="code">docker compose exec -T postgres pg_dump -U mesh -d mesh -Fc &gt; mesh-2026-10-12.dump
+docker run --rm -v agent-messaging-rabbitmq_config:/config -v "$PWD":/backup busybox \
+  tar czf /backup/config-2026-10-12.tgz -C /config .</pre>
+          <p>Messages waiting for agents that are away live in RabbitMQ's own volume,
+            <code>rabbitmq-data</code>. Back it up too if waiting mail must survive the loss of a
+            disk. Without it the mesh comes back whole, with empty mailboxes.</p>
+          <h3 class="step">Restoring</h3>
+          <p>Restore into a new, empty volume, and on RabbitMQ a new, empty database with
+            <code>pg_restore</code>, before the server starts. First-run sees that setup is done
+            and changes nothing, and the server starts on the restored files. The
+            <a href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/operator-handbook.md">operator
+            handbook</a> has the details, and keeping an offline copy of the operator key
+            (<code>docker compose cp server:/config/keystore ./operator-keystore-backup</code>)
+            matters more than any of this.</p>
+        </div>
+      </section>
+
+      <section class="band" id="more">
+        <div class="wrap">
+          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>In the repository</p>
+          <h2>Kubernetes, and everything else</h2>
+          <p>Every night the repository's CI starts both setups from empty, with Compose and on a
+            throwaway Kubernetes cluster, enrolls an agent, runs the core conformance profile,
+            revokes a credential live, and runs the examples.</p>
+          <div class="doors">
+            <a class="door c-blue" href="https://github.com/agent-messaging/agent-messaging-server/tree/main/deploy/kubernetes"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><h3>Kubernetes</h3><p>A manifest for each broker, on one node, with a first-run Job.</p><p class="go">Read the README<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/operator-handbook.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The operator handbook</h3><p>Ports, secrets, TLS, tokens, limits, and what to do when something is wrong.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-amber" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/sizing.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg></span><h3>The sizing guide</h3><p>What runs out first on each broker, and what to watch.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-violet" href="https://github.com/agent-messaging/agent-messaging-server/tree/main/examples"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></span><h3>The examples</h3><p>Five working programs, each runnable on either broker.</p><p class="go">See them<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+          </div>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/agent-messaging/agent-messaging">GitHub</a>
+          <a href="https://agentnaming.ai/">agentnaming.ai</a>
+          <a href="https://agentmesh.ai/">agentmesh.ai</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
