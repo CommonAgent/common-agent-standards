@@ -565,7 +565,7 @@ conversation.
 **Standard offering name**: `role-facilitator`.
 
 The same job also exists as an abstract agent in the
-[Agent Catalog](https://github.com/jeffrschneider/agentcatalog)
+[Agent Catalog](https://agentcatalog.com/)
 (`facilitator v1`, taking activities in
 `ref/gm/run-a-working-session`). The two describe one job from two
 sides: the abstract agent is the job description inside a process, and

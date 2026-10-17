@@ -8,10 +8,15 @@
 # rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
 # and renders that one standard at /<version>/ and at the root.
 #
-# Publishing is off. The steps that upload a site are written below and run
-# only when the repository variable DEPLOY_SITES is true, which needs Workload
-# Identity Federation first. To switch it on, set these repository variables
-# (Settings, Secrets and variables, Actions, Variables):
+# Publishing runs when the repository variable DEPLOY_SITES is true, and only
+# for a push to main (the /draft/ copies) or a tag (that standard's version and
+# its root), never for a pull request or another branch. Each standard is
+# uploaded to its own bucket only. The workflow signs in to Google Cloud through
+# Workload Identity Federation, whose provider accepts a token from this
+# repository only, and only for main or a tag; the service account may write
+# the three site buckets and clear the CDN of their two load balancers, and
+# nothing else.
+# The repository variables (Settings, Secrets and variables, Actions, Variables):
 #   DEPLOY_SITES        true
 #   GCP_WIF_PROVIDER    projects/<number>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
 #   GCP_DEPLOY_SA       the service account that may write the site buckets and clear the CDN
@@ -22,7 +27,8 @@
 #   <ID>_BUCKET         gs://<bucket>
 #   <ID>_URLMAP         the load balancer's URL map
 #   <ID>_HOSTS          the hosts to clear, separated by spaces
-# Until then every run renders and checks the sites and uploads nothing.
+# With DEPLOY_SITES unset, every run renders and checks the sites and uploads
+# nothing. A workflow_dispatch on a tag publishes that tag again.
 name: Standards
 
 on:
@@ -88,7 +94,7 @@ jobs:
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
     env:
       MODE: ${{ needs.plan.outputs.mode }}
-      PUBLISH: ${{ github.event_name != 'pull_request' && vars.DEPLOY_SITES == 'true' }}
+      PUBLISH: ${{ github.event_name != 'pull_request' && vars.DEPLOY_SITES == 'true' && (github.ref == 'refs/heads/main' || github.ref_type == 'tag') }}
     steps:
       - uses: actions/checkout@v4
         with:

@@ -6,7 +6,7 @@
     "sender_seed": "SUAEGDPNTWXACIF45CA23BUY36RIMWZXW5LEHSEOK2ONS5JWJ7PBC2EWBA",
     "sender": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
     "recipient": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
-    "comment": "The same published test vectors budget.json, commerce.json and signature-tags.json use, deliberately: they are not real identities and control nothing, and reusing them keeps any new private-key-shaped string out of the repository. Here the sender key plays the SIGNING OWNER and the recipient key plays the counterparty's agent. Only one seed is published, so only one of the two 6 signatures can be really signed; the both-roles case is pinned as prose in `not_covered` rather than by adding a second seed."
+    "comment": "The same published test vectors budget.json, commerce.json and signature-tags.json in messaging/conformance use, deliberately: they are not real identities and control nothing, and reusing them keeps any new private-key-shaped string out of the repository. Here the sender key plays the SIGNING OWNER and the recipient key plays the counterparty's agent. Only one seed is published, so only one of the two 6 signatures can be really signed; the both-roles case is pinned as prose in `not_covered` rather than by adding a second seed."
   },
   "arrangement": {
     "comment": "5.5: every engagement MUST declare exactly one pricing arrangement, in the price clause's `arrangement` field. There is NO undeclared default - a price clause naming no arrangement is a validation error and a runtime MUST refuse an engagement proposal that carries one. That refusal is the load-bearing one for the 0.3.0 -> 0.4.0 break: documents written against 0.3.0 name no arrangement and MUST NOT be silently read as fixed_fee. 0.6.0 added the third value, `no_charge`, so work a provider chooses not to charge for has an arrangement it can declare honestly rather than a fixed fee of zero, which encodes the decision in a magic value.",
@@ -1559,7 +1559,7 @@
     ]
   },
   "task_state": {
-    "comment": "5.5.5: a task in flight when the cap is reached also ends `exhausted`, with whatever artifacts exist attached, billed no further than the cap. In the mesh SDKs that makes `exhausted` a ninth Task state (SPEC.md 7.3), terminal and NOT cancelable - conformance/cancel.json's `not_cancelable_from` carries it for that reason.",
+    "comment": "5.5.5: a task in flight when the cap is reached also ends `exhausted`, with whatever artifacts exist attached, billed no further than the cap. In the mesh SDKs that makes `exhausted` a ninth Task state (Agent Messaging, messaging/SPEC.md 7.3), terminal and NOT cancelable - messaging/conformance/cancel.json's `not_cancelable_from` carries it for that reason.",
     "state": "exhausted",
     "terminal": true,
     "is_failure": false,
@@ -3081,7 +3081,7 @@
           "base": 5,
           "amount": 1
         },
-        "why": "BRIDGE-A2A.md 9.2's example. The deployment rounds a margin up, so ten percent of a 5 credit rate is 1 credit and not 0. Under 0.9.0-draft that cannot be stated as a percentage, because a percentage floors. It is stated as the fixed charge it is, against the same base, which is what 5.5.8 tells an operator with a finer rate to do and which discloses strictly more than the percentage would."
+        "why": "Section 9.2's example in the A2A Bridge (messaging/bindings/a2a-bridge.md). The deployment rounds a margin up, so ten percent of a 5 credit rate is 1 credit and not 0. Under 0.9.0-draft that cannot be stated as a percentage, because a percentage floors. It is stated as the fixed charge it is, against the same base, which is what 5.5.8 tells an operator with a finer rate to do and which discloses strictly more than the percentage would."
       },
       {
         "case": "a fixed charge",
