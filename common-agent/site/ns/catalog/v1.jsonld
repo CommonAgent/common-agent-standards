@@ -1,0 +1,17 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "ca": "https://commonagent.net/ns/catalog#",
+    "ca:profile": { "@id": "ca:profile" },
+    "ca:subject": { "@id": "ca:subject", "@type": "@id" },
+    "ca:agentdoc": { "@id": "ca:agentdoc", "@type": "@json" },
+    "ca:offers": { "@id": "ca:offers", "@type": "@json" },
+    "ca:liveness": { "@id": "ca:liveness", "@type": "@json" },
+    "ca:audience": { "@id": "ca:audience" },
+    "ca:reputation": { "@id": "ca:reputation", "@type": "@json" },
+    "ca:lastSeen": { "@id": "ca:lastSeen", "@type": "@json" },
+    "ca:evidence": { "@id": "ca:evidence", "@type": "@json" },
+    "ca:fields": { "@id": "ca:fields", "@type": "@json" },
+    "proof": { "@id": "https://w3id.org/security#proof", "@type": "@json" }
+  }
+}

@@ -103,6 +103,13 @@ fi
 : "${BUCKET:?BUCKET names the bucket}" "${URLMAP:?URLMAP names the load balancer}" "${PROJECT:?PROJECT names the Google Cloud project}" "${HOSTS:?HOSTS lists the hosts}"
 GCLOUD="${GCLOUD:-gcloud}"
 "$GCLOUD" storage rsync -r "$OUT" "$BUCKET" --exclude='^media/' --cache-control="public, max-age=300" --project "$PROJECT"
+# A JSON-LD context must be served as application/ld+json, which the rsync
+# does not guess from the .jsonld extension, so each one is uploaded again with
+# that content type.
+(cd "$STAGE" && find . -name '*.jsonld' -not -path './media/*') | while read -r f; do
+  rel="${f#./}"
+  "$GCLOUD" storage cp "$(win "$STAGE/$rel")" "$BUCKET/$rel" --content-type="application/ld+json" --cache-control="public, max-age=300" --project "$PROJECT"
+done
 for h in $HOSTS; do
   "$GCLOUD" compute url-maps invalidate-cdn-cache "$URLMAP" --path "/*" --host "$h" --project "$PROJECT" --async
 done

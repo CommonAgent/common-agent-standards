@@ -17,7 +17,10 @@
       "status": "Working Draft",
       "tag": "common-agent-v0.28.0-draft",
       "builder": "common-agent/site/tools/build-spec.mjs",
-      "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it."
+      "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
+      "parts": [
+        { "name": "The catalog profile", "path": "common-agent/CATALOG-PROFILE.md", "version": "0.1.0-draft" }
+      ]
     },
     {
       "id": "messaging",

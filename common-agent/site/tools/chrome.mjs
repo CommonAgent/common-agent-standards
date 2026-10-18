@@ -58,6 +58,7 @@ export function rail(active) {
           ${a("/spec.html", "The specification", "spec")}
           ${a("/descriptor.html", "The Agent Descriptor", "descriptor")}
           ${a("/package.html", "The Agent Package", "package")}
+          ${a("/catalog.html", "The catalog profile", "catalog")}
           ${a("/versions.html", "Versions and changelog", "versions")}
           ${a("/conformance.html", "Conformance", "conformance")}
           ${a(REPO_URL, "The source on GitHub", "", true)}
@@ -88,6 +89,7 @@ export const footer = `<footer class="sitefoot">
           <a href="/spec.html">The specification</a>
           <a href="/descriptor.html">The Agent Descriptor</a>
           <a href="/package.html">The Agent Package</a>
+          <a href="/catalog.html">The catalog profile</a>
           <a href="/versions.html">Versions and changelog</a>
           <a href="/conformance.html">Conformance</a>
           <a href="${REPO_URL}">The source on GitHub</a>

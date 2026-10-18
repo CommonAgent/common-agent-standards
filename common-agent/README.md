@@ -22,6 +22,12 @@ one network binding of the agent it defines (Section 11).
   repository (Section 13). Readable at <https://commonagent.net/spec.html>.
 - **[CHANGELOG.md](CHANGELOG.md)**: every version and what it changed, newest
   first.
+- **[CATALOG-PROFILE.md](CATALOG-PROFILE.md)**: the catalog profile, version
+  0.1.0-draft, a part of the specification with a version of its own. It adds
+  optional metadata to an ARD entry: offers derived from signed standing
+  proposals, reputation and liveness pointers, evidence labels, signed
+  entries, audience, publish and fetch calls, and a link to the agent's
+  AgentDoc. Readable at <https://commonagent.net/catalog.html>.
 - **[conformance/](conformance/)**: the fixtures that pin the byte-exact
   obligations this specification owns. Section 14 says how conformance is
   checked.
