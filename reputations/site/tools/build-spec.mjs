@@ -24,6 +24,10 @@
 // it was rendered from in place of the canonical-source and family lines.
 // A relative link to another Markdown file of the standard goes to that
 // file's page on this site, or to the file on GitHub when it has no page here.
+// The sections of both documents keep, beside their numbered ids (s4,
+// s4-4), the ids the hand-copied pages of the old site gave them
+// (#4-evidence-and-the-ledger and the rest), so links made to the old pages
+// still land.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, resolve, posix } from "node:path";
@@ -71,10 +75,21 @@ marked.setOptions({ gfm: true, breaks: false });
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const plain = (html) => html.replace(/<[^>]+>/g, "").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#39;/g, "'");
 
+// The ids the old hand-copied spec.html and spec-a2a-reputation.html gave
+// the sections. A2A's Changelog heading kept the id it had.
+const OLD_SPEC_IDS = { s1: "1-terminology", s2: "2-layering", s3: "3-enrollment", "s3-1": "3-1-states", "s3-2": "3-2-enrolling", "s3-3": "3-3-withdrawing",
+  s4: "4-evidence-and-the-ledger", "s4-1": "4-1-the-ledger", "s4-2": "4-2-facts", "s4-3": "4-3-probes", "s4-4": "4-4-engagements-as-an-evidence-source", "s4-5": "4-5-attribution",
+  s5: "5-outcomes", s6: "6-attestations", "s6-1": "6-1-form", "s6-2": "6-2-eligibility", "s6-3": "6-3-conflicts", "s6-4": "6-4-exclusions", "s6-5": "6-5-evaluators-are-subjects-too", "s6-6": "6-6-value-judgments",
+  s7: "7-scoring", "s7-1": "7-1-the-pool", "s7-2": "7-2-decay", "s7-3": "7-3-the-posterior", "s7-4": "7-4-unproven", "s7-5": "7-5-priors-from-the-portfolio", "s7-6": "7-6-the-weight-of-a-value-judgment",
+  s8: "8-reports", "s8-1": "8-1-the-report", "s8-2": "8-2-mandatory-context", "s8-3": "8-3-facts-only-reports", "s8-4": "8-4-verification-levels",
+  s9: "9-promises", s10: "10-bureau-obligations", s11: "11-trust-model", s12: "12-security-considerations", "s12-1": "12-1-attacks-and-where-they-break", "s12-2": "12-2-what-this-spec-refuses-to-do",
+  s13: "13-out-of-scope", s14: "14-reference-implementation" };
+const OLD_A2A_IDS = { s1: "1-terminology", s2: "2-extension-uri", s3: "3-the-declaration", s4: "4-why-no-report", s5: "5-verification",
+  s6: "6-reading-the-report", s7: "7-honesty-rules", s8: "8-security-considerations", s9: "9-out-of-scope", s10: "10-relationship" };
 // Headings get stable ids: a numbered heading is s and its number ("4.4.
 // Engagements as an evidence source" is s4-4), anything else a slug of its
 // words. The h2s make the table of contents.
-function anchor(html) {
+function anchor(html, old = {}) {
   const seen = new Map();
   const toc = [];
   const out = html.replace(/<h([2-4])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
@@ -86,7 +101,8 @@ function anchor(html) {
     seen.set(id, n + 1);
     if (n) id = `${id}-${n}`;
     if (lvl === "2") toc.push({ id, text: words });
-    return `<h${lvl} id="${id}">${inner}<a class="hl" href="#${id}" aria-label="Link to this section">#</a></h${lvl}>`;
+    const alias = old[id] ? `<span class="alias" id="${old[id]}"></span>` : "";
+    return `${alias}<h${lvl} id="${id}">${inner}<a class="hl" href="#${id}" aria-label="Link to this section">#</a></h${lvl}>`;
   });
   return { html: out, toc };
 }
@@ -164,7 +180,7 @@ const SPEC = header("SPEC.md");
 const VERSION = SPEC.fields.version, DATE = SPEC.fields.date;
 if (VERSION !== ENTRY.version) throw new Error(`SPEC.md carries ${VERSION} and standards.json says ${ENTRY.version}`);
 {
-  const { html, toc } = anchor(relink(marked.parse(SPEC.rest), "SPEC.md"));
+  const { html, toc } = anchor(relink(marked.parse(SPEC.rest), "SPEC.md"), OLD_SPEC_IDS);
   write("spec.html", page({
     file: "spec.html", active: "spec",
     title: `${SPEC.title} ${VERSION}`,
@@ -182,7 +198,7 @@ if (VERSION !== ENTRY.version) throw new Error(`SPEC.md carries ${VERSION} and s
   const A2A = header(rel);
   const part = (ENTRY.parts ?? []).find((p) => p.path === `reputations/${rel}`);
   if (part && part.version !== A2A.fields.version) throw new Error(`${rel} carries ${A2A.fields.version} and standards.json says ${part.version}`);
-  const { html, toc } = anchor(relink(marked.parse(A2A.rest), rel));
+  const { html, toc } = anchor(relink(marked.parse(A2A.rest), rel), OLD_A2A_IDS);
   write("spec-a2a-reputation.html", page({
     file: "spec-a2a-reputation.html", active: "spec-a2a-reputation",
     title: `${A2A.title} ${A2A.fields.version}`,
