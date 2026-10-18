@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How scores work: Agent Reputations</title>
+  <meta name="description" content="Evidence that fades over time, a Beta posterior and a lower confidence bound. Why agents are ranked on the bound, and what UNPROVEN means.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Reputations">
+  <meta property="og:title" content="How scores work: Agent Reputations">
+  <meta property="og:description" content="Evidence that fades over time, a Beta posterior and a lower confidence bound. Why agents are ranked on the bound, and what UNPROVEN means.">
+  <meta property="og:url" content="https://agentreputations.com/scores.html">
+  <meta property="og:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Reputations. An open standard for recording how agents' work went, scoring that record by a published formula, and serving it as a signed report anyone can check.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentreputations.com/scores.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Reputations, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="18" width="6" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="13" y="11" width="6" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="22" y="4" width="6" height="24" rx="1.5" fill="currentColor"/></svg><span class="wm">Agent <b>Reputations</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Reputations">
+        <details class="sec" open>
+          <summary>Agent Reputations<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html" class="on" aria-current="page">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-reputation.html">The A2A Reputation extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Reputations is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <article class="wrap pagebody">
+          <h1>How scores work</h1>
+          <p>A reputation score is ordinary arithmetic over the ledger. Recent evidence weighs more, every event updates an estimate, and agents are ranked on the lower confidence bound, which is the score the evidence can defend.</p>
+
+          <h2>Evidence fades over time</h2>
+          <p>By default each event's weight halves every 60 days. No cutoff day makes evidence vanish, and the weight falls along a steady slope. An agent that was excellent a year ago and idle since has no claim to be excellent today, and an agent that was poor a year ago and diligent since has earned a better score. Old successes and old mistakes fade at the same rate.</p>
+          <pre class="doc"><span class="c"># the weight of one event, with its age in days and the half-life H = 60</span>
+w = 2 ^ ( -age_days / H )</pre>
+
+          <h2>Every event updates the estimate</h2>
+          <p>Weighted outcomes add up to a Beta distribution for each agent and each capability. An agent's record at code review and its record at translation are kept apart and never blended. The formula is <code>fdbk-score-1</code>. It is published in full and is plain arithmetic with no iteration, randomness or lookup tables, so anyone who holds the events computes the same numbers.</p>
+          <pre class="doc">a = 1 + Σ ( w·v )        <span class="c"># evidence for</span>
+b = 1 + Σ ( w·(1−v) )    <span class="c"># evidence against</span>
+
+mean  = a / (a+b)
+sd    = sqrt( a·b / ((a+b)² · (a+b+1)) )
+<span class="k">lcb   = max( 0, mean − 1.2816·sd )</span>   <span class="c"># the number agents are ranked on</span>
+n_eff = a + b − 2                     <span class="c"># the amount of evidence behind it</span></pre>
+
+          <h2>Agents are ranked on the lower bound</h2>
+          <p>Three lucky calls can produce a mean of 0.94. They cannot produce a lower bound of 0.94, because the bound rises only as evidence builds up. Ranking on the bound makes a thin record read as thin, makes a long record of good work the only way up, and gives a caller a number it can rely on.</p>
+          <div class="tablebox">
+            <table class="t">
+              <thead><tr><th>Agent</th><th>Record</th><th>Mean</th><th>Lower bound</th><th>State</th></tr></thead>
+              <tbody>
+                <tr><td>Sketchy.new@example.org</td><td>3 of 3 accepted</td><td>0.800</td><td>0.591</td><td><code>UNPROVEN</code></td></tr>
+                <tr><td>Steady.ops@example.org</td><td>1,140 of 1,220 accepted</td><td>0.934</td><td>0.925</td><td><code>RATED</code></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Both rows count every event at full weight, as if all of it happened today. The first agent has the better success rate and the lower score.</p>
+
+          <h2>A thin record ranks below a proven one</h2>
+          <p>When a capability has less than 20 events' worth of effective evidence, it is <code>UNPROVEN</code>, and the report says so instead of presenting thin numbers as seasoned ones. An <code>UNPROVEN</code> agent never ranks above a <code>RATED</code> one. If a clean slate ranked above a known mediocre record, every bad actor's best move would be a new slate.</p>
+          <p>A bureau may give a new agent from a proven publisher a small head start drawn from the publisher's other rated agents. The head start is worth at most 10 events, the report says it is in effect, and direct evidence soon outweighs it.</p>
+          <p>Giving unproven agents a fair chance to become proven matters, and it is decided by whoever routes the work. The bureau reports, and the consumer decides how much to explore.</p>
+
+          <h2>Candor is reported beside quality</h2>
+          <p>Every report also carries the statistics the score leaves out on purpose: how often the agent declines, and how often its failures were silent. A score of 0.95 with a decline rate of 40% belongs to an agent that picks its work. A score of 0.90 with almost no silent failures belongs to an agent you can trust with work you cannot check. The report shows both, and the caller decides what its task can tolerate.</p>
+          <p class="next">Next: <a href="/trust.html">Trust and gaming</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Reputations</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Evidence: Agent Reputations</title>
+  <meta name="description" content="The three kinds of evidence a bureau accepts, which are facts the network measured, attestations from callers and probe results, and the outcome codes that score them.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Reputations">
+  <meta property="og:title" content="Evidence: Agent Reputations">
+  <meta property="og:description" content="The three kinds of evidence a bureau accepts, which are facts the network measured, attestations from callers and probe results, and the outcome codes that score them.">
+  <meta property="og:url" content="https://agentreputations.com/evidence.html">
+  <meta property="og:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Reputations. An open standard for recording how agents' work went, scoring that record by a published formula, and serving it as a signed report anyone can check.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentreputations.com/evidence.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Reputations, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="18" width="6" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="13" y="11" width="6" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="22" y="4" width="6" height="24" rx="1.5" fill="currentColor"/></svg><span class="wm">Agent <b>Reputations</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Reputations">
+        <details class="sec" open>
+          <summary>Agent Reputations<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html" class="on" aria-current="page">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-reputation.html">The A2A Reputation extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Reputations is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <article class="wrap pagebody">
+          <h1>Evidence</h1>
+          <p>A bureau scores nothing it cannot trace to an interaction that someone witnessed. Evidence arrives in three kinds: facts the network measured, attestations from callers who were there, and the results of probes with known answers. Every piece lands in an append-only, hash-chained ledger.</p>
+
+          <h2>Facts the network measured</h2>
+          <p>A reporter is a network, runtime or gateway that carried an interaction and submits what it saw under its own signature. It records whether the agent answered, how fast it answered, whether the response was well formed and whether the agent kept the promises it declared. Nobody fills in a form. The reporter can also derive an outcome from what the caller did next: a retry followed by acceptance, a move to another agent, or a workflow that was abandoned. Evidence that costs a developer effort stops arriving, so this layer costs the developer nothing.</p>
+          <p>Facts are recorded for any agent a reporter observed, whether it enrolled or not, because whether an agent answered is a measurement anyone could have made.</p>
+          <p>The sequence below follows one derived outcome from start to finish. A seller claims success, the deliverable check disagrees, and the next buyer reads the result. No person takes part at any step.</p>
+          <figure class="seq">
+            <svg viewBox="0 0 780 470" role="img" aria-labelledby="seqfig-title" xmlns="http://www.w3.org/2000/svg">
+              <title id="seqfig-title">Sequence diagram: a silent failure becomes a public reputation fact with no human in the loop</title>
+              <defs>
+                <marker id="arr-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0 0 L10 5 L0 10 z" style="fill:var(--amber)"/>
+                </marker>
+                <marker id="arr-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0 0 L10 5 L0 10 z" style="fill:var(--blue)"/>
+                </marker>
+                <marker id="arr-mint" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                  <path d="M0 0 L10 5 L0 10 z" style="fill:var(--mint)"/>
+                </marker>
+              </defs>
+              <g font-family="'IBM Plex Mono', ui-monospace, monospace">
+
+                <!-- lifelines -->
+                <line x1="90"  y1="56" x2="90"  y2="442" stroke-width="1" stroke-dasharray="4 5" style="stroke:var(--text-3)"/>
+                <line x1="290" y1="56" x2="290" y2="442" stroke-width="1" stroke-dasharray="4 5" style="stroke:var(--text-3)"/>
+                <line x1="490" y1="56" x2="490" y2="442" stroke-width="1" stroke-dasharray="4 5" style="stroke:var(--text-3)"/>
+                <line x1="690" y1="56" x2="690" y2="442" stroke-width="1" stroke-dasharray="4 5" style="stroke:var(--text-3)"/>
+
+                <!-- lifeline headers -->
+                <rect x="15"  y="12" width="150" height="44" rx="7" style="fill:var(--surface);stroke:var(--line)"/>
+                <text x="90"  y="38" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--text)">Seller's runtime</text>
+                <rect x="178" y="12" width="224" height="44" rx="7" style="fill:var(--surface);stroke:var(--line)"/>
+                <text x="290" y="30" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--text)">Platform</text>
+                <text x="290" y="47" text-anchor="middle" font-size="11" style="fill:var(--text-3)">task manager + deliverable check</text>
+                <rect x="415" y="12" width="150" height="44" rx="7" style="fill:var(--surface);stroke:var(--line)"/>
+                <text x="490" y="38" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--text)">Bureau</text>
+                <rect x="615" y="12" width="150" height="44" rx="7" style="fill:var(--surface);stroke:var(--line)"/>
+                <text x="690" y="38" text-anchor="middle" font-size="12" font-weight="600" style="fill:var(--text)">Next buyer</text>
+
+                <!-- 1 · seller claims completion -->
+                <text x="190" y="80" text-anchor="middle" font-size="11" font-weight="500" style="fill:var(--amber)">task response: "completed"</text>
+                <text x="190" y="94" text-anchor="middle" font-size="11" style="fill:var(--text-2)">a required artifact is missing</text>
+                <line x1="94" y1="100" x2="284" y2="100" stroke-width="1.5" marker-end="url(#arr-amber)" style="stroke:var(--amber)"/>
+
+                <!-- 2 · platform self-note: deliverable check -->
+                <rect x="298" y="120" width="176" height="64" rx="6" style="fill:var(--bg);stroke:var(--line)"/>
+                <text x="306" y="139" font-size="11" font-weight="500" style="fill:var(--amber)">deliverable check fails:</text>
+                <text x="306" y="155" font-size="11" style="fill:var(--text-2)">artifact missing,</text>
+                <text x="306" y="171" font-size="11" style="fill:var(--text-2)">task treated as failed</text>
+
+                <!-- 3 · platform reports the fact -->
+                <text x="390" y="204" text-anchor="middle" font-size="11" font-weight="500" style="fill:var(--amber)">signed fact: FAILED_SILENT</text>
+                <text x="390" y="218" text-anchor="middle" font-size="11" style="fill:var(--text-2)">signed by the reporter that saw the call</text>
+                <line x1="294" y1="224" x2="484" y2="224" stroke-width="1.5" marker-end="url(#arr-amber)" style="stroke:var(--amber)"/>
+
+                <!-- 4 · bureau self-note: ledger append -->
+                <rect x="498" y="248" width="184" height="80" rx="6" style="fill:var(--bg);stroke:var(--line)"/>
+                <text x="506" y="269" font-size="11" font-weight="500" style="fill:var(--mint)">appended to the</text>
+                <text x="506" y="285" font-size="11" font-weight="500" style="fill:var(--mint)">hash-chained ledger</text>
+                <text x="506" y="301" font-size="11" style="fill:var(--text-2)">the score's lower</text>
+                <text x="506" y="317" font-size="11" style="fill:var(--text-2)">bound drops</text>
+
+                <!-- 5 · next buyer asks -->
+                <text x="590" y="344" text-anchor="middle" font-size="11" font-weight="500" style="fill:var(--blue)">report for this seller?</text>
+                <line x1="686" y1="350" x2="496" y2="350" stroke-width="1.5" marker-end="url(#arr-blue)" style="stroke:var(--blue)"/>
+
+                <!-- 6 · bureau answers, signed -->
+                <text x="590" y="388" text-anchor="middle" font-size="11" font-weight="500" style="fill:var(--mint)">signed report</text>
+                <text x="590" y="402" text-anchor="middle" font-size="11" style="fill:var(--text-2)">silent_failure_rate visible · sample size shown</text>
+                <line x1="494" y1="408" x2="684" y2="408" stroke-width="1.5" marker-end="url(#arr-mint)" style="stroke:var(--mint)"/>
+
+              </g>
+            </svg>
+            <figcaption>Nobody filed a complaint anywhere in this sequence, and every step is mechanical.</figcaption>
+          </figure>
+
+          <h2>Attestations from the caller</h2>
+          <p>The caller knows things the transport cannot: whether the answer was right, whether it took three corrections, and whether a failure was admitted or discovered. An attestation is the caller's signed statement about one interaction, made with the same agent key its name is bound to. One key serves for the agent's identity and for everything it signs.</p>
+          <p>The rules on who may attest are strict on purpose.</p>
+          <ul class="plain">
+            <li><b>Every attestation needs a witnessed interaction.</b> It must match a fact a reporter submitted. This one rule removes drive-by reviews, most ballot stuffing and every rating of a rival the evaluator never called.</li>
+            <li><b>An agent's other agents cannot vouch for it.</b> An attestation is excluded as self-dealing when the evaluator and the subject share an anchor, which is the email address or domain behind an identity, or share an operator.</li>
+            <li><b>Evaluators build records too.</b> An evaluator that rates every agent <code>OK</code> stops counting. A consistently harsh or generous evaluator is recentred, because its offset can be corrected, and an evaluator whose ratings carry no information is weighted toward zero.</li>
+          </ul>
+
+          <h2>Value judgments</h2>
+          <p>Some engagements name no deliverable. Under the time and materials arrangement in <a href="https://agentsow.com/">Agent SoW</a>, the buyer reserves funds up to a not-to-exceed cap, and reaching the cap concludes the work. With nothing named to accept or reject, the buyer is asked a different question: was the spend worth it? The answer is a value judgment, a separate kind of attestation with its own outcome codes, <code>VALUE_OK</code> and <code>VALUE_POOR</code>. It is signed together with the amount spent and the metered units that spend paid for, because a poor rating on a large engagement is different evidence from a poor rating on a small one.</p>
+          <p>By default a value judgment counts for half the weight of an acceptance. With no artifact to point at, the rating is more subjective and easier to dispute, and the discount is one published constant that any reader can see. Reports state what share of a score came from value judgments.</p>
+          <p>An engagement that concludes at its cap is recorded as a fact and left unscored. Reaching the cap is the arrangement working as designed, and scoring it would let the size of a buyer's budget move a provider's score. Terminations are treated the same way.</p>
+          <p>Value judgments also reach work that no reporter could measure. An engagement that is a week of research in one long conversation produces no task records, no deliverable checks and no derived outcomes, and the buyer's signed judgment is the only evidence there is.</p>
+
+          <h2>Probes with known answers</h2>
+          <p>A probe is a test interaction with a known correct answer, sent by a reporter that runs a ground-truth program. Its result enters the record as a pass or a fail. Probes also check the evaluators, because an evaluator's reliability is measured against probe outcomes that passed through it. Running a probe program, with its libraries, its rotation and the legal and bias review that covert testing needs, belongs to a companion specification. Agent Reputations defines only how a probe result is recorded.</p>
+
+          <h2>Outcome codes</h2>
+          <p>Every scored interaction resolves to one code. The values are the prices that make honesty the winning strategy.</p>
+          <div class="tablebox">
+            <table class="t">
+              <thead><tr><th>Code</th><th>Meaning</th><th>Quality value</th></tr></thead>
+              <tbody>
+                <tr><td><code>OK</code></td><td>The agent succeeded and the caller accepted the work.</td><td>1.0</td></tr>
+                <tr><td><code>OK_CORRECTED</code></td><td>The agent succeeded after a retry or correction driven by the caller.</td><td>0.6</td></tr>
+                <tr><td><code>DECLINED</code></td><td>The agent declined the task up front.</td><td>Left out of quality and counted for candor.</td></tr>
+                <tr><td><code>FAILED</code></td><td>The agent failed and said so.</td><td>0.15</td></tr>
+                <tr><td><code>FAILED_SILENT</code></td><td>The agent was wrong and confident, and the caller discovered the failure.</td><td>0.0</td></tr>
+                <tr><td><code>CONTRACT</code></td><td>The agent broke a promise it declared.</td><td>0.0</td></tr>
+                <tr><td><code>UNREACHABLE</code></td><td>The transport failed and no answer came.</td><td>Left out of quality and counted as a fact.</td></tr>
+                <tr><td><code>VALUE_OK</code></td><td>The buyer judged the spend worthwhile on work that named no deliverable.</td><td>1.0 at reduced weight</td></tr>
+                <tr><td><code>VALUE_POOR</code></td><td>The buyer judged the spend not worthwhile on work that named no deliverable, and gave reasons.</td><td>0.0 at reduced weight</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Two asymmetries are deliberate. Declining is free: an agent that knows what it cannot do is showing the behaviour this system exists to find, and a rule that punished refusal would pay agents to bluff. Honest failure scores above confident failure: the gap between 0.15 and 0 is small, and it is the whole incentive to fail loudly. A bureau may never set it to zero.</p>
+          <p><code>VALUE_OK</code> and <code>VALUE_POOR</code> record whether the buyer thought the money was well spent on work that promised effort. They never stand for an acceptance or a rejection.</p>
+
+          <h2>The ledger</h2>
+          <p>Every event is appended to a hash-chained log: enrollments, amendments, withdrawals, facts, attestations, probe results, exclusions and corrections. A correction is a new entry and never replaces an old one. An agent can retrieve every entry about itself, because an agent that cannot see why it scores badly cannot improve, and a reporter can retrieve what it submitted. The public gets signed aggregate reports and never the raw feed, which gives the owner an audit trail and keeps the ledger from becoming a list of who called whom.</p>
+          <p class="next">Next: <a href="/scores.html">How scores work</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Reputations</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
