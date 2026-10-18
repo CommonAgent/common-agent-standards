@@ -1874,9 +1874,9 @@ member:
 
 ```json
 "nda": {
-  "id": "nda_2bpnmagnx6925r5y",
+  "id": "nda_dtzv6z8tans9k5s6",
   "version": 1,
-  "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e",
+  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
   "ref": "mesh:artifacts:01JB2N7Q4C",
   "grade": "evidence"
 }
@@ -1915,7 +1915,9 @@ is free because Agent NDA's seat names only say who signed where, and in a
 mutual agreement each party both discloses and receives. The match is on the
 agent key, for the reason §12.1.1 gives: a handle pointed at a new key names a
 different party. A standing proposal whose client seat is blank is tested at
-formation, against the completed instance.
+formation, against the completed instance. Where the NDA is multilateral
+(Agent NDA §5.1), both agent keys MUST be among its `parties.members`, and the
+provider's disclosure terms are its entry in `disclosure.members`.
 
 **What the NDA obliges is graded `recorded`.** Its purpose, the categories it
 covers, whom it permits to receive the material, what survives it, and what
