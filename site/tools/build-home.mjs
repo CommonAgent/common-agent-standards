@@ -55,8 +55,8 @@ const folderUrl = (s) => `${SUITE_REPO}/tree/main/${s.folder}`;
 // files, and the link check of a rendered site does not look for them in it.
 const MEDIA = `${SITE}/media`;
 const VIDEOS = [
-  { title: "The Common Agent, Part 1", file: "common-agent-part-1", length: "about 9 min", colour: "c-violet" },
-  { title: "The Common Agent, Part 2", file: "common-agent-part-2", length: "about 4½ min", colour: "c-mint" },
+  { title: "The Common Agent, Part 1", file: "common-agent-part-1", length: "9:15", colour: "c-violet" },
+  { title: "The Common Agent, Part 2", file: "common-agent-part-2", length: "4:44", colour: "c-mint" },
 ];
 function video(v) {
   const mp4 = `${MEDIA}/${v.file}.mp4`;
