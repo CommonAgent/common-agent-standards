@@ -207,6 +207,9 @@ export function renderHome({ draft = false } = {}) {
           <h2>Each standard covers one part of the work</h2>
           <p>A name and a way to reach an agent come first. Authority to act comes next, and
             then the documents two parties exchange to agree on work and to record how it went.
+            Those documents cover services that one party's agents do for another, and agent
+            commerce protocols such as the <a href="https://www.agenticcommerce.dev/">Agentic Commerce Protocol</a>
+            and the <a href="https://ucp.dev/">Universal Commerce Protocol</a> cover buying products.
             Roles and processes describe the jobs agents hold and how a piece of work runs.
             Each card gives the standard's version and status, its own site, and its folder in
             the repository.</p>
