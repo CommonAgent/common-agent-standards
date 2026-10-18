@@ -828,10 +828,10 @@ is. It carries a `gate` member:
       "grade": "recorded"
     },
     "nda": {
-      "id": "nda_2bpnmagnx6925r5y",
+      "id": "nda_dtzv6z8tans9k5s6",
       "version": 1,
-      "digest": "sha256:df5b2088327462b8b6de173990d3e587e5b905701adf1ed7c81fb7a7a8e0e53b",
-      "ref": "https://board.example/nda/nda_2bpnmagnx6925r5y",
+      "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6",
+      "ref": "https://board.example/nda/nda_dtzv6z8tans9k5s6",
       "grade": "evidence"
     },
     "body": {
@@ -1052,9 +1052,9 @@ and three rules follow from that.
      "version": 1,
      "body": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
      "nda": {
-       "id": "nda_2bpnmagnx6925r5y",
+       "id": "nda_dtzv6z8tans9k5s6",
        "version": 1,
-       "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e"
+       "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
      },
      "released_to": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
      "at": "2026-10-22T09:13:05Z"
@@ -1090,9 +1090,9 @@ reference shape of Agent NDA §8 with the digest of the completed document:
 
 ```json
 "nda": {
-  "id": "nda_2bpnmagnx6925r5y",
+  "id": "nda_dtzv6z8tans9k5s6",
   "version": 1,
-  "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e",
+  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
   "grade": "evidence"
 }
 ```
