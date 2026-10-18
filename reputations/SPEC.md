@@ -1,4 +1,4 @@
-# Agent Reputations: Agent Reputation Specification
+# Agent Reputations Specification
 
 **Version:** 0.4.0-draft
 **Date:** 2026-10-18
