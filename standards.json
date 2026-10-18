@@ -102,6 +102,7 @@
       "version": "0.23.0-draft",
       "status": "Working Draft",
       "tag": "sow-v0.23.0-draft",
+      "builder": "sow/site/tools/build-spec.mjs",
       "summary": "An Agent SoW is a statement of work between two parties whose agents do recurring work together, written so that software can grade its clauses. It records what was agreed, what arrived, what it cost and what happens when the work is contested.",
       "parts": [
         { "name": "A2A Terms extension", "path": "sow/SPEC-A2A-TERMS.md", "version": "0.1.0-draft" },

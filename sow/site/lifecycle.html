@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How a document becomes binding: Agent SoW</title>
+  <meta name="description" content="The states an Agent SoW passes through, from an unsigned template to an active engagement, and the optional stages before and after the work.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent SoW">
+  <meta property="og:title" content="How a document becomes binding: Agent SoW">
+  <meta property="og:description" content="The states an Agent SoW passes through, from an unsigned template to an active engagement, and the optional stages before and after the work.">
+  <meta property="og:url" content="https://agentsow.com/lifecycle.html">
+  <meta property="og:image" content="https://agentsow.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent SoW. A statement of work between two parties whose agents do recurring work together, with every clause graded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentsow.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentsow.com/lifecycle.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent SoW, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="6.5" y="3.5" width="19" height="25" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 11h10" stroke="var(--mint)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 16h10" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 21h6" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round"/></svg><span class="wm">Agent <b>SoW</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent SoW">
+        <details class="sec" open>
+          <summary>Agent SoW<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/clauses.html">What goes in the document</a>
+          <a href="/pricing.html">How the work is priced</a>
+          <a href="/signing.html">Who is allowed to sign</a>
+          <a href="/lifecycle.html" class="on" aria-current="page">How a document becomes binding</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Examples and uses<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/example.html">Example: a bookkeeping engagement</a>
+          <a href="/example-changes.html">Example: changes, disputes and signatures</a>
+          <a href="/internal.html">Internal SoWs</a>
+          <a href="/catalog.html">Agent catalogs</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-terms.html">A2A Terms extension</a>
+          <a href="/spec-a2a-interview.html">A2A Interview extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/sow/conformance">Conformance fixtures<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/sow">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent SoW is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>How a document becomes binding</h1>
+          <p>The same document passes through named states, and each name answers one question: does this bind anyone yet? The work has its own stages around those signatures, and the two at the edges are the ones most often skipped.</p>
+
+          <h2>Document states</h2>
+          <ul class="plain">
+            <li><b>Template SoW.</b> The document is complete and unsigned, and it binds nobody. Sent to a specific counterparty for consideration, it is a SoW proposal.</li>
+            <li><b>Standing proposal SoW.</b> The seller has signed, and the counterparty seat is blank. This is what a provider publishes once for each offering, and what a catalog listing is derived from. It still binds nobody.</li>
+            <li><b>Directed standing proposal.</b> This is a standing proposal that names one party as the only one entitled to countersign it. The seat is still blank, so it still binds nobody, but it is an offer to that party alone. It gets no catalog listing, it must state when it ends, and it is used up by the deal it forms. This is how a seller quotes one buyer a price below its list price without publishing that price to everyone.</li>
+            <li><b>Request to form.</b> The buyer has countersigned a standing proposal. That fills in the buyer's seat and the start date and produces an instance carrying one signature, the buyer's. A document with one signature has no force, whoever signed it. The seller's runtime completes formation by signing the finished instance, and it must refuse a buyer who does not meet a qualification the offer states.</li>
+            <li><b>Agreed.</b> Both owners' signatures sit over the same bytes, and the start date has not arrived. The deal exists, and nothing is in force yet.</li>
+            <li><b>Active.</b> The deal is agreed and the start date has arrived. From then on the runtimes enforce it, until it ends, is amended or is terminated.</li>
+            <li><b>Amendment proposed.</b> A full replacement at the next version number is open with one signature on it. It has no force either. The current version keeps governing every task until the replacement is approved, denied, withdrawn or lapses.</li>
+            <li><b>Amended, exhausted, lapsed or terminated.</b> An engagement ends when a higher version replaces it, when its not-to-exceed cap is reached, when its end date passes, or when either owner ends it. At the gate all of these are treated the same way: the counterparty goes back to the general admission rules.</li>
+          </ul>
+          <p>The start and end are ordinary fields of the document. A signed deal that has not started yet grants nothing. The states are listed in <a href="/spec.html#s7-1">section 7.1 of the specification</a>, and the request to form in <a href="/spec.html#s12-1">section 12.1</a>.</p>
+
+          <h2>The working lifecycle</h2>
+          <p>The states describe the document. Before anyone signs, the buyer can send real sample files as a marked trial run and find out whether the fit is there at all, while walking away still costs nothing. After the work is delivered, the buyer can put a judgment on the record: accepted, or rejected with a stated reason. Neither stage is required.</p>
+          <figure class="docbox" aria-label="The working lifecycle: validate, agree, deliver and review">
+            <div class="bar"><span>The working lifecycle</span><span>section 7.2</span></div>
+<pre class="doc"><span class="gr">validate</span>   <span class="c">(13)</span>   before signatures: probe the fit with real files, walk away for free
+<span class="ge">agree</span>      <span class="c">(7.1)</span>  countersign; the seller's runtime completes formation (12.1)
+<span class="ge">deliver</span>           tasks run; problems are raised and resolved in place (14)
+<span class="gr">review</span>     <span class="c">(15)</span>   at completion: acceptance or rejection, with reasons, on the record</pre>
+            <figcaption class="cap"><b>Both outer stages are optional.</b> An engagement that skipped validation has no probe record to cite, and one that was never reviewed has no acceptance to advertise. Neither absence may be presented as if the stage had happened. The stages are set out in <a href="/spec.html#s7-2">section 7.2 of the specification</a>.</figcaption>
+          </figure>
+          <p class="next">Next: <a href="/example.html">Example: a bookkeeping engagement</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent SoW</a>
+          <a href="/clauses.html">What goes in the document</a>
+          <a href="/pricing.html">How the work is priced</a>
+          <a href="/example.html">Example: a bookkeeping engagement</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/sow">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
