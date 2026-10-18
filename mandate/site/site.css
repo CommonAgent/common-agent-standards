@@ -184,6 +184,16 @@ figure.docbox{ margin:24px 0 8px; background:var(--bg); border:1px solid var(--l
 .docbox figcaption b{ color:var(--text); }
 .docbox figcaption code{ font-size:.88em; color:var(--accent); background:var(--accent-tint); border-radius:5px; padding:1px 5px; overflow-wrap:anywhere; }
 
+/* a signed document shown as labeled rows, in place of its JSON */
+.docbox .doc{ margin:0; padding:4px 20px 8px; }
+.docbox .doc .row{ display:grid; grid-template-columns:130px minmax(0,1fr) auto; gap:4px 18px; align-items:baseline;
+  padding:13px 0; border-top:1px solid var(--line); }
+.docbox .doc .row:first-child{ border-top:0; }
+.docbox .doc dt{ font-family:var(--disp); font-weight:600; color:var(--text); }
+.docbox .doc dd{ margin:0; color:var(--text-2); line-height:1.55; }
+.docbox .doc dd .sub{ display:grid; grid-template-columns:112px minmax(0,1fr); gap:0 10px; margin-top:6px; }
+.docbox .doc dd .lbl{ padding-top:2px; font-size:.9rem; font-weight:600; color:var(--text-3); }
+
 /* the three grades of a claim */
 .grade{ display:inline-block; font-family:var(--wire); font-size:.82em; font-weight:600; line-height:1.4; color:var(--c);
   background:var(--ct); border-radius:6px; padding:1px 7px; white-space:nowrap; }
@@ -267,6 +277,10 @@ a.door p{ margin:0; font-size:.97rem; color:var(--text-2); line-height:1.5; }
   .tablebox table.t{ min-width:600px; }
   .lede{ font-size:1.2rem; }
   .docbox pre{ font-size:.82rem; padding:14px; }
+  .docbox .doc{ padding:2px 14px 6px; }
+  .docbox .doc .row{ grid-template-columns:minmax(0,1fr); }
+  .docbox .doc .row .grade{ justify-self:start; }
+  .docbox .doc dd .sub{ grid-template-columns:minmax(0,1fr); }
   .spec h2{ font-size:1.45rem; margin-top:40px; }
   .spec h3{ font-size:1.12rem; }
   .spec pre{ padding:12px 14px; }

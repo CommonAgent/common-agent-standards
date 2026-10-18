@@ -98,40 +98,23 @@
           <p>Root keys are for constituting the organization, and they stay out of daily work. On the same day, Ruth signs the company's first mandate. It delegates bounded purchasing authority to <b>Marisol Vega</b>, who runs logistics. Marisol is the person behind <b>Petrel</b>, the agent that buys bookkeeping in the Agent SoW example and posts the freight-audit RFP in the Agent RFP example. This document is what entitles her to do those things in Harbor &amp; Line's name.</p>
           <figure class="docbox">
             <div class="bar"><b>mnd_3f8c1n6z9v4b7q2m &middot; v1 &middot; in force</b><span>signed by root authority, threshold 1</span></div>
-            <pre>{
-  <span class="k">"mandate"</span>: "v1",
-  <span class="k">"id"</span>: "mnd_3f8c1n6z9v4b7q2m",
-  <span class="k">"version"</span>: 1,
-  <span class="k">"organization"</span>: "org_7k2m9q4w1x8e5r3t",
-  <span class="k">"issuer"</span>: { <span class="k">"kind"</span>: <span class="b">"root"</span> },
-  <span class="k">"holder"</span>: {
-    <span class="k">"account"</span>: "acct_2c9f7e1a",
-    <span class="k">"person"</span>: "mari@harborandline.example",
-    <span class="k">"key"</span>: "UBVGA3E6TKZQ2W7XJMB5CNHY4DPSLF3OAU6IR5TQLXW2MKEAZJ7B4CDR"
-  },
-  <span class="k">"powers"</span>: ["form", "amend", "terminate", "award"],
-  <span class="k">"ceiling"</span>: {
-    <span class="k">"currency"</span>: "XCR",
-    <span class="k">"per_engagement"</span>: 50000000,
-    <span class="k">"per_month"</span>: 200000000
-  },
-  <span class="k">"scope"</span>: { <span class="k">"offerings"</span>: ["audit-freight-*"], <span class="k">"note"</span>: "logistics purchasing only" },
-  <span class="k">"settlement"</span>: { <span class="k">"payer"</span>: <span class="b">"organization"</span> },
-  <span class="k">"sub_delegation"</span>: { <span class="k">"allowed"</span>: true, <span class="k">"max_depth"</span>: 1 },
-  <span class="k">"starts_at"</span>: "2026-08-01T00:00:00Z",
-  <span class="k">"expires_at"</span>: "2027-08-01T00:00:00Z",
-  <span class="k">"signatures"</span>: [
-    { <span class="k">"role"</span>: "root",
-      <span class="k">"key"</span>: "UAHLN4Q7KMZJ2W5XETB6CVGY3DPSRF2OAU5IR7TQLXW4MKEAZJ6B2CDH",
-      <span class="k">"signed_at"</span>: "2026-08-01T00:00:00Z",
-      <span class="k">"sig"</span>: "rF8wY4kJqZ3vX6mRbC9fL2aG7pDsE5uVoI8nK4jHxAyPzW3eM6rSdUgB4hF7lC2vJ5mX8bZkQ9wNtR6yDfG==" }
-  ]
-}</pre>
-            <figcaption><b>Signed bytes:</b> <code>agent-mandate-v1</code>, a newline, then the JCS canonical JSON without <code>signatures</code>. One root signature meets the charter's threshold. Issuance is evidence, because the signature is the record. The holder block carries Marisol's public key, which is required here because this mandate permits sub-delegation.</figcaption>
+            <dl class="doc">
+              <div class="row"><dt>Organization</dt><dd>Harbor &amp; Line Outfitters, under its charter</dd><span></span></div>
+              <div class="row"><dt>Issuer</dt><dd>Root authority</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Holder</dt><dd><b>Marisol Vega</b>, mari@harborandline.example<span class="sub"><span class="lbl">Account</span>acct_2c9f7e1a</span><span class="sub"><span class="lbl">Key</span>her public key, named here because she may sub-delegate</span></dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Powers</dt><dd>Form, amend, terminate and award</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Ceilings</dt><dd>Up to 50,000,000 XCR per engagement, and at most 200,000,000 XCR a month</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Scope</dt><dd>Offerings matching audit-freight-*, for logistics purchasing only</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Payer</dt><dd>The organization. Engagements she approves settle from Harbor &amp; Line&rsquo;s balance</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Sub-delegation</dt><dd>Allowed, one level deep</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Term</dt><dd>From 1 August 2026 until 1 August 2027</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Signed</dt><dd>By Ruth Calloway with a root key, on 1 August 2026</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption>Ruth&rsquo;s signature covers every line above, and one root signature meets the charter&rsquo;s threshold. Issuance is evidence, because the signature is the record. The holder line names Marisol&rsquo;s public key, which is required here because this mandate permits sub-delegation.</figcaption>
           </figure>
           <p>Each bound means one plain thing.</p>
           <ul class="plain">
-            <li>The <b>powers</b> say what kinds of act she may approve. <code>form</code> covers countersigning an engagement into existence, <code>amend</code> covers approving amendments, <code>terminate</code> covers ending engagements, and <code>award</code> covers awarding an RFP posting. That is why her September 9 award of Caldera's response in the Agent RFP example is in order.</li>
+            <li>The <b>powers</b> say what kinds of act she may approve. The power to form covers countersigning an engagement into existence, the power to amend covers approving amendments, the power to terminate covers ending engagements, and the power to award covers awarding an RFP posting. That is why her September 9 award of Caldera's response in the Agent RFP example is in order.</li>
             <li>The <b>ceilings</b> say how much. No single engagement she approves may carry a committed price above 50,000,000 XCR, and no more than 200,000,000 XCR of formed commitments may fall in any calendar month. Both are checked at approval time.</li>
             <li>The <b>scope</b> says over what. It covers only engagements whose offerings match <code>audit-freight-*</code>, so she cannot buy bookkeeping under this document.</li>
             <li>The <b>term</b> says until when. After one year the mandate has no force, and renewing it takes a fresh signature.</li>
@@ -144,44 +127,28 @@
           <p>Marisol does not approve every formation herself. On August 6 she issues a narrower mandate to <b>Tom Okafor</b>, a purchasing manager on her team. The issuer of this document is her own mandate.</p>
           <figure class="docbox">
             <div class="bar"><b>mnd_6d2p9r4s7t1v8w3z &middot; v1 &middot; sub-mandate</b><span>signed by the holder of mnd_3f8c1n6z9v4b7q2m</span></div>
-            <pre>{
-  <span class="k">"mandate"</span>: "v1",
-  <span class="k">"id"</span>: "mnd_6d2p9r4s7t1v8w3z",
-  <span class="k">"version"</span>: 1,
-  <span class="k">"organization"</span>: "org_7k2m9q4w1x8e5r3t",
-  <span class="k">"issuer"</span>: { <span class="k">"kind"</span>: <span class="b">"mandate"</span>, <span class="k">"mandate"</span>: "mnd_3f8c1n6z9v4b7q2m" },
-  <span class="k">"holder"</span>: {
-    <span class="k">"account"</span>: "acct_9b4d2f7c",
-    <span class="k">"person"</span>: "tom@harborandline.example"
-  },
-  <span class="k">"powers"</span>: ["form"],
-  <span class="k">"ceiling"</span>: {
-    <span class="k">"currency"</span>: "XCR",
-    <span class="k">"per_engagement"</span>: 10000000,
-    <span class="k">"per_month"</span>: 40000000
-  },
-  <span class="k">"scope"</span>: { <span class="k">"offerings"</span>: ["audit-freight-*"], <span class="k">"note"</span>: "logistics purchasing only" },
-  <span class="k">"settlement"</span>: { <span class="k">"payer"</span>: <span class="b">"organization"</span> },
-  <span class="k">"sub_delegation"</span>: { <span class="k">"allowed"</span>: false },
-  <span class="k">"starts_at"</span>: "2026-08-06T00:00:00Z",
-  <span class="k">"expires_at"</span>: "2026-11-04T00:00:00Z",
-  <span class="k">"signatures"</span>: [
-    { <span class="k">"role"</span>: "issuer",
-      <span class="k">"key"</span>: "UBVGA3E6TKZQ2W7XJMB5CNHY4DPSLF3OAU6IR5TQLXW2MKEAZJ7B4CDR",
-      <span class="k">"signed_at"</span>: "2026-08-06T14:30:00Z",
-      <span class="k">"sig"</span>: "tG3wZ7kJqZ5vX4mRbC2fL8aG4pDsE9uVoI6nK3jHxAyPzW8eM5rSdUgB7hF2lC6vJ3mX2bZkQ7wNtR4yEhJ==" }
-  ]
-}</pre>
-            <figcaption><b>The issuer is a mandate.</b> Marisol's own key signs it. It is the same key that signed the RFP posting, and the same key her own mandate names as its <code>holder.key</code>. That match is what a verifier checks: the signature on this document must be by the holder key of the mandate its <code>issuer</code> field names. The chain resolves from there, through her mandate to the charter's root authority. Tom's mandate carries no holder key, because it permits no sub-delegation and so will never be an issuer.</figcaption>
+            <dl class="doc">
+              <div class="row"><dt>Organization</dt><dd>Harbor &amp; Line Outfitters, under its charter</dd><span></span></div>
+              <div class="row"><dt>Issuer</dt><dd>Marisol Vega&rsquo;s mandate</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Holder</dt><dd><b>Tom Okafor</b>, tom@harborandline.example<span class="sub"><span class="lbl">Account</span>acct_9b4d2f7c</span><span class="sub"><span class="lbl">Key</span>none, because he may not sub-delegate</span></dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Powers</dt><dd>Form only</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Ceilings</dt><dd>Up to 10,000,000 XCR per engagement, and at most 40,000,000 XCR a month</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Scope</dt><dd>Offerings matching audit-freight-*, for logistics purchasing only</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Payer</dt><dd>The organization</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Sub-delegation</dt><dd>Not allowed</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Term</dt><dd>From 6 August 2026 until 4 November 2026</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Signed</dt><dd>By Marisol Vega with the key her own mandate names, on 6 August 2026 at 14:30 UTC</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption><b>The issuer is a mandate.</b> Marisol&rsquo;s own key signs it. It is the same key that signed the RFP posting, and the same key her own mandate names as its holder key. That match is what a verifier checks: the signature on this document must be by the holder key of the mandate it names as issuer. The chain resolves from there, through her mandate to the charter&rsquo;s root authority. Tom&rsquo;s mandate carries no holder key, because it permits no sub-delegation and so will never be an issuer.</figcaption>
           </figure>
           <p>Before hosting the sub-mandate, the registry applied the <b>narrowing rule</b>: every dimension must be at most as broad as the issuer's mandate.</p>
           <ul class="plain">
-            <li>The powers are a subset: <code>form</code> alone, out of her four.</li>
+            <li>The powers are a subset: the power to form alone, out of her four.</li>
             <li>The ceilings are lower: 10,000,000 per engagement and 40,000,000 per month, against her 50,000,000 and 200,000,000.</li>
             <li>The scope is the same pattern and no wider.</li>
             <li>The expiry, 90 days out on November 4, falls inside her August 2027.</li>
             <li>The payer stays the organization. She may pass that down only because her own mandate names it, since nobody can grant a draw on a treasury they do not hold.</li>
-            <li>Her <code>max_depth</code> of 1 is spent by this document, so Tom's <code>sub_delegation.allowed</code> is false and he can pass nothing further down.</li>
+            <li>Her limit of one level of sub-delegation is spent by this document, so Tom's mandate allows no sub-delegation and he can pass nothing further down.</li>
           </ul>
           <p>A registry refuses a sub-mandate that widens anything, and the refusal is <span class="grade c-mint">enforced</span>. Authority narrows going down.</p>
 

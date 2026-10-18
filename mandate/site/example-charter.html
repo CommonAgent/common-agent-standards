@@ -101,54 +101,27 @@
           </div>
 
           <h2>The organization publishes its charter</h2>
-          <p>In the Agent SoW and Agent RFP examples, Harbor &amp; Line appears as an owner string. The line <code>"owner": "Harbor &amp; Line Outfitters"</code> is prose and identifies nothing. Nothing binds the accounts, the agents or the signed documents to the legal entity whose name is typed there.</p>
+          <p>In the Agent SoW and Agent RFP examples, Harbor &amp; Line appears only as an owner name, the words &ldquo;Harbor &amp; Line Outfitters&rdquo; typed into the document. That name is prose and identifies nothing. Nothing binds the accounts, the agents or the signed documents to the legal entity whose name is typed there.</p>
           <p>On August 1 the company closes that gap. Ruth Calloway, who owns the company, and Owen Vance, who runs its finances, hold the root keys as the charter's <b>allocators</b>. They are the two people entitled to commit Harbor &amp; Line's money. Dana Reyes, their systems contractor, set up the keys and files the record as <b>administrator</b>, a role with no authority to spend or delegate. The charter is anchored to <b>harborandline.example</b>.</p>
           <figure class="docbox">
             <div class="bar"><b>org_7k2m9q4w1x8e5r3t &middot; v1 &middot; anchored</b><span>signed by both allocators</span></div>
-            <pre>{
-  <span class="k">"charter"</span>: "v1",
-  <span class="k">"id"</span>: "org_7k2m9q4w1x8e5r3t",
-  <span class="k">"version"</span>: 1,
-  <span class="k">"domain"</span>: "harborandline.example",
-  <span class="k">"name"</span>: "Harbor &amp; Line Outfitters",
-  <span class="k">"legal"</span>: {
-    <span class="k">"jurisdiction"</span>: "Delaware, US",
-    <span class="k">"registration"</span>: "SR-20241102-88417",
-    <span class="k">"grade"</span>: <span class="a">"recorded"</span>
-  },
-  <span class="k">"root_authority"</span>: {
-    <span class="k">"keys"</span>: [
-      "UAHLN4Q7KMZJ2W5XETB6CVGY3DPSRF2OAU5IR7TQLXW4MKEAZJ6B2CDH",
-      "UBHLN7Q2KMZJ4W6XETB3CVGY5DPSRF6OAU2IR4TQLXW7MKEAZJ5B3CDJ"
-    ],
-    <span class="k">"threshold"</span>: 1,
-    <span class="k">"grade"</span>: <span class="b">"evidence"</span>
-  },
-  <span class="k">"administrator"</span>: {
-    <span class="k">"keys"</span>: [
-      "UCHLN9Q5KMZJ8W2XETB4CVGY7DPSRF3OAU8IR2TQLXW5MKEAZJ4B6CDK"
-    ]
-  },
-  <span class="k">"created_at"</span>: "2026-08-01T00:00:00Z",
-  <span class="k">"signatures"</span>: [
-    { <span class="k">"role"</span>: "root",
-      <span class="k">"key"</span>: "UAHLN4Q7KMZJ2W5XETB6CVGY3DPSRF2OAU5IR7TQLXW4MKEAZJ6B2CDH",
-      <span class="k">"signed_at"</span>: "2026-08-01T00:00:00Z",
-      <span class="k">"sig"</span>: "kQ2wV9mJrZ4tYx6cNbF7fL3aG5pDsE8uVoI2nK7jTqHxAyPzW6eM4rSdUgB2hF9lC3vJ8mX5bZkQ4wNtR7yB==" },
-    { <span class="k">"role"</span>: "root",
-      <span class="k">"key"</span>: "UBHLN7Q2KMZJ4W6XETB3CVGY5DPSRF6OAU2IR4TQLXW7MKEAZJ5B3CDJ",
-      <span class="k">"signed_at"</span>: "2026-08-01T00:00:00Z",
-      <span class="k">"sig"</span>: "nL5wT2kJqZ7vX9mRbC6fL4aG8pDsE3uVoI5nK2jHxAyPzW7eM3rSdUgB9hF4lC8vJ2mX7bZkQ5wNtR3yCdE==" }
-  ]
-}</pre>
-            <figcaption><b>Signed bytes:</b> <code>agent-charter-v1</code>, a newline, then the JCS canonical JSON without <code>signatures</code>. The id is derived separately: remove both <code>id</code> and <code>signatures</code> from the version-1 document, hash what remains with SHA-256, encode the digest as lowercased Crockford base32 and keep the first 16 characters. Both allocators signed the constitutive record. The threshold of 1 means that either signature alone carries an act of root authority from here on. Dana's administrator key filed the document and does not appear in the signatures, because filing is custody and carries no authority.</figcaption>
+            <dl class="doc">
+              <div class="row"><dt>Domain</dt><dd><b>harborandline.example</b>, checked by the registry</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Name</dt><dd>Harbor &amp; Line Outfitters</dd><span></span></div>
+              <div class="row"><dt>Legal</dt><dd>Registered in Delaware, US, under registration SR-20241102-88417</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Root authority</dt><dd>Two allocator keys, held by Ruth Calloway and Owen Vance. Either key alone is enough for an act of root authority</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Administrator</dt><dd>One key, held by Dana Reyes, for maintaining the record only. It can never carry an act of root authority on its own</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Created</dt><dd>1 August 2026</dd><span></span></div>
+              <div class="row"><dt>Signed</dt><dd>By Ruth Calloway and Owen Vance with the two root keys, on 1 August 2026</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption>Both allocators signed the charter, and their signatures cover every line above. The threshold of one signature means that either of them alone carries an act of root authority from here on. Dana&rsquo;s administrator key filed the document and does not appear among the signatures, because filing is custody and carries no authority.</figcaption>
           </figure>
 
           <h2>The registry checks the domain</h2>
           <p>Before hosting this charter, the registry verified one thing: <b>domain control</b>. A well-known HTTPS path on harborandline.example names the charter id, and anyone can re-check it at any time. If the proof ever disappears, the charter is suspended and kept. That binding is <span class="grade c-mint">enforced</span>.</p>
-          <p>The <code>legal</code> block is a statement that nobody verified. No runtime checked the Delaware registration, so its grade is <span class="grade c-amber">recorded</span>, always, and it is shown that way.</p>
-          <p>The <code>root_authority</code> block names the two allocator keys as the organization's highest authority in this system. It is graded <span class="grade c-blue">evidence</span>, because the signatures are the record. The <code>administrator</code> block names Dana's key for maintenance only. The registry refuses any act of root authority carried by that key alone, and the refusal is <span class="grade c-mint">enforced</span>.</p>
-          <p>The <code>name</code> field is prose. Every renderer shows the domain with at least equal prominence, because the domain is the part that was verified.</p>
+          <p>The legal line is a statement that nobody verified. No runtime checked the Delaware registration, so its grade is <span class="grade c-amber">recorded</span>, always, and it is shown that way.</p>
+          <p>The root authority line names the two allocator keys as the organization's highest authority in this system. It is graded <span class="grade c-blue">evidence</span>, because the signatures are the record. The administrator line names Dana's key for maintenance only. The registry refuses any act of root authority carried by that key alone, and the refusal is <span class="grade c-mint">enforced</span>.</p>
+          <p>The name is prose. Every renderer shows the domain with at least equal prominence, because the domain is the part that was verified.</p>
           <p class="next">Next: <a href="/example-mandates.html">Example: two mandates</a></p>
       </article>
 

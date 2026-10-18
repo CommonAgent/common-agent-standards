@@ -99,40 +99,42 @@
           <p>Under Agent SoW rules alone, that confirmation proves a verified human was present. Because Tom's account holds a mandate, the platform also runs the five checks of section 7 of the specification. All five are <span class="grade c-mint">enforced</span> here, because the platform holds the act pending.</p>
           <ol class="plain">
             <li>His account holds a mandate for the organization that the engagement's party names.</li>
-            <li>The mandate is in force. It has started, it has not expired or been revoked, and its chain verifies through <code>mnd_3f8c1n6z9v4b7q2m</code> to the charter's root authority, with each hop checked against the holder key of the mandate above it.</li>
-            <li>The act is formation, and <code>form</code> is among his powers.</li>
-            <li>The committed price of 1,400,000 XCR is within his <code>per_engagement</code> ceiling of 10,000,000. His month-to-date formed total was 6,200,000 XCR before this act, and it stays within 40,000,000.</li>
+            <li>The mandate is in force. It has started, it has not expired or been revoked, and its chain verifies through Marisol&rsquo;s mandate to the charter's root authority, with each hop checked against the holder key of the mandate above it.</li>
+            <li>The act is formation, and the power to form is among his powers.</li>
+            <li>The committed price of 1,400,000 XCR is within his per-engagement ceiling of 10,000,000. His month-to-date formed total was 6,200,000 XCR before this act, and it stays within 40,000,000.</li>
             <li>The offering <code>audit-freight-invoices</code> falls within <code>audit-freight-*</code>.</li>
           </ol>
           <p>All five pass, and the countersign completes. His mandate names the organization as payer, so the engagement settles from Harbor &amp; Line's balance and the 1,400,000 XCR counts against his draw on it.</p>
           <figure class="docbox">
-            <div class="bar"><b>approval record &middot; excerpt</b><span>inside the engagement's signed bytes</span></div>
-            <pre>{
-  <span class="k">"approval"</span>: {
-    <span class="k">"role"</span>: "client",
-    <span class="k">"person"</span>: "tom@harborandline.example",
-    <span class="k">"method"</span>: "passkey",
-    <span class="k">"at"</span>: "2026-09-24T15:41:07Z",
-    <span class="k">"mandate"</span>: <span class="b">"mnd_6d2p9r4s7t1v8w3z"</span>
-  }
-}</pre>
-            <figcaption><b>The mandate id sits beside the person confirmation</b>, inside signed bytes, so the counterparty's copy carries it. The party block carries <code>"organization": "org_7k2m9q4w1x8e5r3t"</code> beside the owner prose in the same way.</figcaption>
+            <div class="bar"><b>approval record &middot; excerpt</b><span>mnd_6d2p9r4s7t1v8w3z</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Role</dt><dd>Client</dd><span></span></div>
+              <div class="row"><dt>Person</dt><dd><b>Tom Okafor</b>, tom@harborandline.example</dd><span></span></div>
+              <div class="row"><dt>Method</dt><dd>Passkey</dd><span></span></div>
+              <div class="row"><dt>When</dt><dd>24 September 2026, 15:41 UTC</dd><span></span></div>
+              <div class="row"><dt>Mandate</dt><dd>Tom&rsquo;s mandate, under Marisol&rsquo;s</dd><span class="grade c-mint">enforced</span></div>
+            </dl>
+            <figcaption><b>The mandate sits beside the person&rsquo;s confirmation</b>, inside what the parties signed, so the counterparty&rsquo;s copy carries it. The party line names the organization by its charter, org_7k2m9q4w1x8e5r3t, beside the owner name in the same way.</figcaption>
           </figure>
           <p>Here is what changes for Caldera. Before, an approval said that a verified human confirmed. Now it also says that the human held current, sufficient authority traceable to the organization's root authority, as far as Harbor &amp; Line's own signed delegations are concerned. Caldera's runtime can walk the chain itself and verify every signature. What a court would say about the delegations stays outside the system, and the specification grades the legal layer <span class="grade c-amber">recorded</span>.</p>
 
           <h2>A missing power stops an amendment</h2>
-          <p>In October, Caldera proposes an amendment that raises the daily volume and the price. Tom tries to approve it with the same passkey, and the platform refuses, naming the failing check. The act requires the <code>amend</code> power, and the powers of <code>mnd_6d2p9r4s7t1v8w3z</code> are <code>["form"]</code>. A power that is not listed is not held. The amendment waits for Marisol, whose mandate holds <code>amend</code>, and she approves it the next morning. The organization's own signed delegation stopped an employee at the edge of his authority before the counterparty ever saw an approval.</p>
+          <p>In October, Caldera proposes an amendment that raises the daily volume and the price. Tom tries to approve it with the same passkey, and the platform refuses, naming the failing check. The act requires the power to amend, and Tom&rsquo;s mandate grants only the power to form. A power that is not listed is not held. The amendment waits for Marisol, whose mandate holds the power to amend, and she approves it the next morning. The organization's own signed delegation stopped an employee at the edge of his authority before the counterparty ever saw an approval.</p>
 
           <h2>Marisol revokes the mandate when Tom leaves</h2>
           <p>In mid-October Tom resigns. There is no membership list to edit. There is a mandate to revoke, and Marisol, as its issuer, signs a resolve act.</p>
           <figure class="docbox">
             <div class="bar"><b>resolve act &middot; revoke</b><span>signed by the issuer</span></div>
-            <pre>{ <span class="k">"mandate"</span>: "mnd_6d2p9r4s7t1v8w3z", <span class="k">"action"</span>: <span class="b">"revoke"</span>,
-  <span class="k">"at"</span>: "2026-10-16T09:00:00Z" }</pre>
-            <figcaption><b>Signed bytes:</b> <code>agent-mandate-resolve-v1</code>, a newline, then the JCS canonical JSON of the act body. The action is named inside the signed bytes, so a relay cannot turn one act into another. Revoking a mandate revokes every mandate issued under it. Tom's permitted no sub-delegation, so nothing sits below it.</figcaption>
+            <dl class="doc">
+              <div class="row"><dt>Mandate</dt><dd>Tom Okafor&rsquo;s mandate, mnd_6d2p9r4s7t1v8w3z</dd><span></span></div>
+              <div class="row"><dt>Action</dt><dd>Revoke</dd><span></span></div>
+              <div class="row"><dt>When</dt><dd>16 October 2026, 09:00 UTC</dd><span></span></div>
+              <div class="row"><dt>Signed</dt><dd>By Marisol Vega, as the mandate&rsquo;s issuer</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption>The action is part of what Marisol signed, so nobody passing the act along can turn a revocation into a different act. Revoking a mandate revokes every mandate issued under it. Tom&rsquo;s permitted no sub-delegation, so nothing sits below it.</figcaption>
           </figure>
           <p>From the moment the act is recorded, future acts under Tom's mandate are refused, and the refusal is <span class="grade c-mint">enforced</span> at the registry. The engagement he validly formed on September 24 stands. Revocation stops future acts and leaves formed contracts in place, so personnel changes do not touch the organization's engagements.</p>
-          <p>His account drops out of Harbor &amp; Line's membership on its own, because membership is the set of accounts holding mandates in force. The question a dispute would ask later, who approved what under which authority, was answered at approval time. Every approval record names its mandate id inside signed bytes, written before anyone thought to ask.</p>
+          <p>His account drops out of Harbor &amp; Line's membership on its own, because membership is the set of accounts holding mandates in force. The question a dispute would ask later, who approved what under which authority, was answered at approval time. Every approval record names its mandate inside what the parties signed, written before anyone thought to ask.</p>
           <p>The people, keys, amounts and signatures in this example are invented. Harbor &amp; Line, Marisol, Petrel and Caldera also appear in the examples of <a href="https://agentsow.com/example.html">Agent SoW</a> and <a href="https://agentrfp.net/example.html">Agent RFP</a>.</p>
           <p class="next">Next: <a href="/faq.html">Questions and answers</a></p>
       </article>
