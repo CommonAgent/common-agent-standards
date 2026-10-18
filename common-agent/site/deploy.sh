@@ -17,6 +17,11 @@
 # checks every page in it before anything is uploaded, and --dry-run stops
 # there. The upload adds and replaces files and never deletes any, so the copies
 # of earlier versions stay where they are.
+#
+# /media/ in the bucket holds the front page's explainer videos and their
+# posters. They are uploaded by hand and kept out of git, and this script never
+# touches them: the upload skips media/ and deletes nothing, and a rendered site
+# that holds a media/ folder of its own is refused before anything is uploaded.
 set -euo pipefail
 
 MODE="${1:-}"
@@ -63,6 +68,12 @@ case "$MODE" in
   *) usage ;;
 esac
 
+# The videos in the bucket's /media/ are never overwritten from here.
+if [ -e "$STAGE/media" ]; then
+  echo "deploy refused: the rendered site has a media/ folder; /media/ in the bucket holds the hand-uploaded videos." >&2
+  exit 1
+fi
+
 # Every piece of text on every page must clear 4.5:1 in both themes.
 if ! node "$TOOLS/contrast-gate.mjs" --root "$OUT"; then
   echo "deploy refused: text below 4.5:1 contrast (listed above)." >&2
@@ -80,6 +91,6 @@ if [ "$DRY" = "--dry-run" ]; then
 fi
 [ -n "$PROJECT" ] || { echo "deploy refused: set PROJECT to the Google Cloud project." >&2; exit 1; }
 
-"$GCLOUD" storage rsync -r "$OUT" "$BUCKET" --cache-control="public, max-age=300" --project "$PROJECT"
+"$GCLOUD" storage rsync -r "$OUT" "$BUCKET" --exclude='^media/' --cache-control="public, max-age=300" --project "$PROJECT"
 "$GCLOUD" compute url-maps invalidate-cdn-cache "$URLMAP" --path "/*" --project "$PROJECT" --async
 echo "deployed $MODE to $BUCKET"

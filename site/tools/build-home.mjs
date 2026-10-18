@@ -12,7 +12,8 @@
 // The page leads with the Common Agent Specification, the base, then gives a
 // card per Common Agent Standard and per guide: its version, its status, its
 // own site and its folder on GitHub. Nothing on it is written by hand except
-// the few sentences below that say what the suite is.
+// the few sentences below that say what the suite is, and the two explainer
+// videos just below the hero (VIDEOS).
 import { cpSync, mkdirSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -30,6 +31,7 @@ const ICONS = {
   heart: '<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
   compass: '<path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/><circle cx="12" cy="12" r="10"/>',
   arrow: '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
+  play: '<path d="m10 8 6 4-6 4Z"/><circle cx="12" cy="12" r="10"/>',
   // one per standard, from the Lucide set the rest of the site uses
   messaging: '<rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/>',
   naming: '<circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/>',
@@ -45,6 +47,27 @@ const ICONS = {
 const COLOURS = ["c-mint", "c-blue", "c-violet", "c-amber"];
 const ext = `<span class="ext" aria-hidden="true">↗</span>`;
 const folderUrl = (s) => `${SUITE_REPO}/tree/main/${s.folder}`;
+
+// The explainer videos, side by side just below the hero. The MP4s and their
+// posters are not in this repository: they are uploaded to /media/ in the
+// site's bucket, which deploy.sh never writes or deletes. Their addresses are
+// absolute, so the /draft/ and /<version>/ copies of this page play the same
+// files, and the link check of a rendered site does not look for them in it.
+const MEDIA = `${SITE}/media`;
+const VIDEOS = [
+  { title: "The Common Agent, Part 1", file: "common-agent-part-1", length: "9:15", colour: "c-violet" },
+  { title: "The Common Agent, Part 2", file: "common-agent-part-2", length: "4:44", colour: "c-mint" },
+];
+function video(v) {
+  const mp4 = `${MEDIA}/${v.file}.mp4`;
+  return `<li class="vid ${v.colour}">
+              <video controls preload="metadata" playsinline poster="${MEDIA}/${v.file}.jpg" width="1920" height="1080" aria-label="${esc(v.title)}">
+                <source src="${mp4}" type="video/mp4">
+                <a href="${mp4}">${esc(v.title)} (MP4)</a>
+              </video>
+              <div class="cap"><h3>${esc(v.title)}</h3><p class="meta"><span>length <b>${esc(v.length)}</b></span></p></div>
+            </li>`;
+}
 
 function card(s, i) {
   const colour = COLOURS[i % COLOURS.length];
@@ -131,6 +154,18 @@ export function renderHome({ draft = false } = {}) {
         </div>
       </div>
       </header>
+
+      <section class="band tinted" id="videos">
+        <div class="wrap">
+          <p class="kicker">${ico(ICONS.play)}Two short videos</p>
+          <h2>The Common Agent, explained</h2>
+          <p>Part 1 looks at a single agent from the outside. Part 2 puts that agent on a
+            network, among many others.</p>
+          <ol class="vids">
+            ${VIDEOS.map(video).join("\n            ")}
+          </ol>
+        </div>
+      </section>
 
       <section class="band" id="base">
         <div class="wrap">
