@@ -24,8 +24,8 @@
 // menu. A relative link to another Markdown
 // file of the standard goes to that file's page on this site (or to the file
 // on GitHub when it has no page here), and the guides' links to the old
-// homes of Agent Work Patterns and Agent Collab, which moved after the guides
-// were written, go to the sites those standards have now.
+// home of Agent Collab, which moved after the guides were written, go to the
+// site it has now.
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, resolve, posix } from "node:path";
@@ -60,7 +60,6 @@ const PAGE_OF = {
   "examples/marketing-catalog.md": "/marketing-catalog.html",
 };
 const MOVED = {
-  "https://github.com/jeffrschneider/agentworkpatterns": "https://agentworkpatterns.com/",
   "https://github.com/jeffrschneider/agentcollab": "https://agentcollab.dev/",
   "https://github.com/jeffrschneider/agentprocesses": REPO_URL,
   "https://agentprocesses.ai": "/",

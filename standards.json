@@ -144,24 +144,11 @@
       "spec": "processes/SPEC.md",
       "domain": "agentprocesses.ai",
       "site": "https://agentprocesses.ai/",
-      "version": "0.4.0-draft",
+      "version": "0.5.0-draft",
       "status": "Working Draft",
-      "tag": "processes-v0.4.0-draft",
+      "tag": "processes-v0.5.0-draft",
       "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
-    },
-    {
-      "id": "work-patterns",
-      "name": "Agent Work Patterns",
-      "kind": "standard",
-      "folder": "work-patterns",
-      "spec": "work-patterns/README.md",
-      "domain": "agentworkpatterns.com",
-      "site": "https://agentworkpatterns.com/",
-      "version": "v1",
-      "status": "Draft",
-      "tag": "work-patterns-v1",
-      "summary": "Agent Work Patterns gives reusable shapes for a whole job. Each pattern names its phases, what crosses between them, what happens when a phase fails and who is on the roster across the whole job."
     },
     {
       "id": "collab",

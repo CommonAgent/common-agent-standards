@@ -1,10 +1,21 @@
 # Agent Processes Specification
 
-**Version:** 0.4.0-draft
+**Version:** 0.5.0-draft
 **Status:** Working Draft
-**Date:** 2026-09-17
+**Date:** 2026-10-18
 
-**This revision.** A phase held by somebody else's agent can now cite the
+**This revision.** A phase can now be handed to an agent that runs its
+own loop, written `harness: <what the agent works out>` (Section 6.3).
+This is harness-led orchestration: the process names what has to come
+out, the agent decides how to get there, and the phase closes with one
+record shaped like a run's own close (Section 13.3), so a run reads the
+same however the agent worked. The form replaces `runs <pattern>:`,
+which named a work pattern from a separate library that has been
+retired. Documents written in the earlier form stay readable: a
+runtime reads `runs <name>:` as a `harness:` phase (Section 6.3), so no
+document in the corpus fails anything new.
+
+**0.4.0-draft.** A phase held by somebody else's agent can now cite the
 agreement it runs under (Section 6.4.1). A document says who does each
 part and has never had anywhere to say on what terms, which is the
 question a reader asks as soon as a phase is held outside the
@@ -93,6 +104,11 @@ to a close, owned by an organization and in force from a date.
 blank, published to be adopted rather than run. Specified in section 15.
 
 **Run.** One execution of a process, from its trigger firing to its close.
+
+**Harness.** An agent running its own loop: it decides the steps, does
+them or convenes others to do them, and stops when the output it was
+asked for exists or when it cannot go on. A `harness:` phase hands one
+phase to a harness (Section 6.3).
 
 **Inner run.** A run of another process that a phase of this one starts
 and waits for. The run that phase belongs to is the outer run
@@ -528,10 +544,22 @@ why.
 A phase MUST resolve to exactly one of five forms, and it MUST name that
 form immediately after the dash.
 
-**`runs <pattern>:`** The phase is a whole sub-job with its own plan and
-its own close, running a work pattern. The process names what comes out
-of it and MUST NOT reach inside it. The corpus writes
-`runs assessment:`, `runs collect-and-report:`, `runs build-by-talent:`.
+**`harness: <what the agent works out>`** The phase goes to one agent
+that runs its own loop until the output exists. The agent decides the
+steps, and it may convene rooms, contract other agents or call systems
+on the way. The process names what comes out of the phase and MUST NOT
+reach inside it: the document states no steps for the agent, and a
+runtime MUST NOT hold the agent to steps the document does not state.
+The phase's `owner:` names the agent, or the role, that leads the loop.
+The agent MUST hand back the output the phase names, and the phase MUST
+leave the closing record Section 13.3 requires.
+
+```
+  draft-media-plan  - harness: a media plan for the quarter, inside
+                      the budget the brief sets
+                      owner: media-planner   after: approve-brief
+                      by: 3 days             automation: supervised
+```
 
 **`runs process <id> v<n>:`** The phase starts a run of another process
 and waits for that run to close. The process names what comes out of it
@@ -553,12 +581,22 @@ corpus are `human:` against 164 `system:`. A format with no way to
 describe those steps makes authors write down something other than what
 happens.
 
-The same pattern name MAY appear after `runs` in one phase and after
-`convenes` in another. `roll-call`, `assessment`, `bake-off` and
-`decide-and-announce` all do in the corpus. A translator MUST NOT infer
-the family of a pattern from its name; the verb says which family is
-meant. The word `process` after `runs` always marks the fifth form, and
-a translator MUST NOT read it as a work pattern named `process`.
+A translator MUST take the form from the word after the dash and never
+from the name that follows it. `harness:`, `convenes`, `system:` and
+`human:` each mark one form. The word `process` after `runs` always
+marks a phase that runs another process.
+
+**The earlier form, `runs <name>:`.** Documents written against
+0.4.0-draft and earlier hand a phase to a sub-job by naming a work
+pattern after `runs`, as in `runs assessment:` and
+`runs collect-and-report:`, and the corpus does so throughout. A
+runtime MUST read `runs` followed by any name other than `process` as a
+`harness:` phase. The name is then the approach the agent is asked to
+take, the text after the colon is the output, and the phase leaves the
+record a `harness:` phase leaves. A new document, and a new version of
+an existing one, SHOULD write `harness:` instead. The same name MAY
+still appear after `convenes` in another phase, and there it names a
+collab playbook.
 
 ### 6.3.1 A phase that runs another process
 
@@ -739,7 +777,7 @@ A phase held by an agent belonging to somebody other than the process
 owner MAY cite the agreement it runs under:
 
 ```
-  check-conformance  - runs evaluate: the package checked against its
+  check-conformance  - harness: the package checked against its
                        own declarations
                        owner: agentevaluator   under: eng_7c1f
                        after: deploy-the-agent   automation: autonomous
@@ -791,8 +829,8 @@ prevent.
 **A phase MUST NOT begin before its inbound handoff exists.** For every
 handoff line `x -> y`, phase `y` MUST NOT begin until what that line
 says crosses the edge and contains what the line says it must contain.
-For a phase that runs a work pattern, the handoff is that sub-job's
-declared output, which means it is checkable before anything starts. For
+For a `harness:` phase, the handoff is the output the phase names, which
+means what has to cross is stated before anything starts. For
 a `system:` phase, the handoff is whatever the system wrote, and the
 phase after it names where to find it. `after:` says when a phase is
 allowed to start; the handoff says what has to be there when it does,
@@ -1605,14 +1643,16 @@ A run-scoped line resolves to one of the forms a phase does, except
 running a process, and it names an owner. A run-scoped line MUST NOT run
 a process: a process that ought to run on a cadence while this one is
 live has a trigger of its own (Section 5), and nothing in this graph
-waits for it. Quoted from `ref/mkt/display-retargeting`:
+waits for it. From `ref/mkt/display-retargeting`, written in the form
+this version uses:
 
 ```
 run-scoped:
-  spend     - runs allocate-and-reconcile      owner: media-buyer
+  spend     - harness: spend held under the cap and reconciled
+              against the invoices                owner: media-buyer
               cap: <n>/day
               from: launch   until: run close
-  frequency - runs collect-and-report          owner: analytics
+  frequency - harness: a frequency report         owner: analytics
               every: <cadence>
               from: launch   until: run close
 ```
@@ -1871,8 +1911,9 @@ here (Section 10.3).
 
 Policy is the set of rules a run is held to for legal, compliance or
 brand reasons, rather than for coordination. Coordination rules travel
-with the pattern and apply everywhere the pattern is used. Policy rules
-are the organization's own and apply here.
+with the playbook a room runs, or with the agent that leads its own
+loop, and apply wherever they are used. Policy rules are the
+organization's own and apply here.
 
 "Every claim ships with a citation in the claims register" is policy.
 "One agent holds the pen during synthesis" is coordination.
@@ -2075,7 +2116,7 @@ Each phase leaves the record its own level produces:
 
 | The phase | What it leaves |
 |---|---|
-| `runs <work pattern>` | the sub-job's plan and its `JOB DONE` |
+| `harness: <what the agent works out>` | one closing record, shaped like a run's close (below) |
 | `runs process <id> v<n>` | one line naming the inner run, the version it ran under and its outcome; the inner run keeps its own records (Section 6.3.1) |
 | `convenes <collab pattern>` | that pattern's `CONVENED` and `DONE` records |
 | `system: <action>` | one line: what happened, when, and what did it |
@@ -2085,6 +2126,24 @@ A phase whose records are not written is not complete. A runtime MUST
 NOT mark such a phase complete, MUST NOT treat it as satisfying an
 `after:` edge, and MUST NOT treat a handoff out of it as existing
 (Section 8.4).
+
+A `harness:` phase closes with:
+
+```
+HARNESS DONE: draft-media-plan · mkt/media-plan v3 · run 12
+led by: <the agent that ran the loop>
+outcome: <completed | abandoned>
+result: <the output the phase names, and where it is>
+open: <what the agent did not finish, and who may close it>
+```
+
+The agent MAY keep its own records of the steps it took, and a runtime
+MAY keep them beside the run. The process requires only this one, so a
+run reads the same whether a phase was led by a person, a room or an
+agent's own loop. `abandoned` is a legitimate outcome here for the same
+reason it is at the close of a run (Section 13.5). A phase written in
+the earlier form `runs <name>:` leaves this record too, and MAY also
+keep the plan and the `JOB DONE` record its pattern produced.
 
 The one-line records matter more than they look. Most real processes
 have steps where nobody collaborates with anybody, and a format that
@@ -2278,8 +2337,7 @@ failure edge says what it costs.
 ## 15. The reference profile
 
 A **reference process** is a process document published to be adopted
-rather than run. Its shape is filled in and its specifics are blank. It
-stands to a process the way a work pattern stands to a work plan: the
+rather than run. Its shape is filled in and its specifics are blank. The
 walk through the work is done, and the parts that belong to an
 organization are left for that organization to supply.
 
@@ -2418,8 +2476,7 @@ version of the reference process obliges an adopter to do nothing.
 
 Where an adopter's amendment teaches the reference process something
 every adopter needs, it MAY flow back as a new version of the reference
-process, the same way a plan that keeps being copied becomes a work
-pattern.
+process.
 
 ---
 
@@ -2470,6 +2527,11 @@ translator that reports nothing is usually a translator that lost these:
   survive as a schema. Why they are required does not.
 - **The measures.** A runtime that reports its own cycle time is not
   reporting the same thing the document asked to be measured.
+- **A `harness:` phase.** Most runtimes can express a step given to an
+  agent. Fewer can express that the agent chooses its own steps and
+  owes only the output. A translator that writes the agent's loop out as
+  fixed steps has reached inside the phase, and SHOULD render it as one
+  step whose result is the output the phase names.
 - **A phase that runs a process.** A translator that copies the inner
   document's phases into the outer graph has reached inside it, dropped
   the version the phase cites, and merged two runs' records into one.
@@ -2534,6 +2596,8 @@ A conforming process document:
   declared in the same document or a counterparty role named in the
   roster (Section 19.2), and a receiving side that is either a declared
   phase or a destination outside this process (Section 8.2);
+- for every `harness:` phase, names the output the agent hands back
+  (Section 6.3);
 - for every phase that runs a process, cites the inner document by id
   and version, names as its output something the inner document's goal
   says exists, names nothing inside the inner document, and starts no
@@ -2581,7 +2645,7 @@ with its own id, a version 1 and a `from:` line (section 15.6).
 
 A runtime is whatever carries out a run: a workflow engine, an agent, a
 person with the document open, or any combination (section 2). It
-conforms by what it does with five sets of obligations.
+conforms by what it does with six sets of obligations.
 
 **The graph (section 6).** A runtime MUST NOT begin a phase before every
 phase its `after:` line names has closed. A runtime MUST allow phases
@@ -2611,6 +2675,13 @@ phase finishes has skipped the part where somebody was watching.
 requires, and MUST record the version of the document the run ran under.
 A runtime MUST NOT alter a record afterwards, including when the
 document changes (section 18).
+
+**Harness phases (section 6.3).** A runtime MUST give a `harness:`
+phase only when the handoffs it takes in exist, MUST NOT
+hold the agent to steps the document does not state, MUST NOT treat the
+phase as complete before its closing record exists, and MUST read a
+phase written `runs <name>:`, with any name other than `process`, as a
+`harness:` phase.
 
 **Inner runs (section 6.3.1).** A runtime MUST start an inner run only
 when the handoff its phase takes in exists, fill the inner run's cast

@@ -76,7 +76,6 @@
           <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
-          <a href="https://agentworkpatterns.com/">Agent Work Patterns<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -113,15 +112,15 @@
           <p>The steps and their order, which the specification calls the phase graph, come from each step's <code>after:</code> line. A step starts when every step it names has finished. The three middle steps name only the trigger, so they start together, and close-out names all three, so it waits for all three.</p>
 
           <h2>The process, written out</h2>
-<pre class="doc"><span class="k">PROCESS:</span> employee offboarding          <span class="k">id:</span> hr/offboarding   <span class="v">v3</span>
-<span class="k">owner:</span> Head of People Operations       <span class="k">effective:</span> 2026-09-01
+<pre class="doc"><span class="k">PROCESS:</span> employee offboarding          <span class="k">id:</span> hr/offboarding   <span class="v">v4</span>
+<span class="k">owner:</span> Head of People Operations       <span class="k">effective:</span> 2026-10-18
 <span class="k">trigger:</span> HR records a leaving date for an employee
 <span class="k">concurrency:</span> runs may overlap, one for each person leaving
 <span class="k">goal:</span> every account revoked, final pay made, equipment returned,
       and the file signed closed by a named person
 <span class="k">phases:</span>
-  revoke-access - runs divide-and-integrate: revoke every account
-                  on the access list, one system at a time
+  revoke-access - harness: every account on the access list
+                  revoked, one system at a time
                   <span class="k">owner:</span> IT operations     <span class="k">after:</span> trigger
                   <span class="k">automation:</span> <span class="v">supervised</span>
   final-pay     - system: the payroll run makes the final payment
@@ -144,7 +143,8 @@
   closing-record - the version run, the three handoffs, and who
                    signed the close and when
 <span class="k">amendments:</span>
-  v3 - revoke-access moved from assisted to supervised after a debrief</pre>
+  v3 - revoke-access moved from assisted to supervised after a debrief
+  v4 - revoke-access written as a harness: phase, led by one agent</pre>
           <p>Each part of this text is explained on <a href="/writing.html">Writing a process</a>.</p>
           <p class="next">Next: <a href="/catalog.html">The catalog</a></p>
       </article>
