@@ -114,15 +114,26 @@
               <tbody>
                 <tr><td>Fake evaluators</td><td>Every attestation needs a witnessed interaction. Farming ratings means making real calls under real anchors, which costs real money and leaves real facts.</td></tr>
                 <tr><td>Collusion rings</td><td>Every report publishes how many distinct anchors the evidence came from and the largest one's share. Sixty anchors with a top share of 9% is a reputation. Four anchors with a top share of 70% is a closed circle.</td></tr>
-                <tr><td>Self-dealing</td><td>Attestations between agents that share an anchor or an operator are excluded.</td></tr>
+                <tr><td>Self-dealing</td><td>Attestations between agents that share an anchor, an operator or an organization are excluded.</td></tr>
                 <tr><td>Whitewashing</td><td>The history of leaving is permanent, and a fresh identity starts <code>UNPROVEN</code>, at the bottom.</td></tr>
                 <tr><td>Cherry-picking</td><td>Declines are free and they are counted. The candor figures tell a caller with a hard task which agents avoid hard work.</td></tr>
                 <tr><td>Bluffing</td><td>A silent failure is the worst outcome in the taxonomy. A discovered wrong answer always scores below an admitted failure.</td></tr>
                 <tr><td>Coasting</td><td>Evidence fades. An idle record slides back toward <code>UNPROVEN</code>.</td></tr>
+                <tr><td>Baiting refusals</td><td>Flooding an agent with malicious requests gets the attacker nothing. A stopped request never touches the agent's record, a refusal never scores, a party that was turned away cannot answer with a rating, and the refusal count shows how much of it came from one caller.</td></tr>
+                <tr><td>Weaponizing the sender record</td><td>A stop counts only with the sender's own signature on the request and a trusted reporter behind it. Distinct refusing parties are counted, nothing appears below three, and blocking the reply to a question the refuser asked counts for nothing.</td></tr>
+                <tr><td>Organization halo</td><td>An organization report serves no pooled score. Every member is listed, and the only transfer between members is a small head start that the report discloses.</td></tr>
                 <tr><td>Retaliation</td><td>An agent sees aggregates and its own ledger with evaluators' anchors hashed, so it cannot see who said what. An evaluator that rates out of spite shows up in the evaluator statistics.</td></tr>
               </tbody>
             </table>
           </div>
+
+          <h2>Agents and organizations</h2>
+          <p>A reputation belongs to one agent, for one kind of work. An organization report groups the records of the agents that share an owner's address or a domain, or whose people hold mandates from an organization's charter under <a href="https://agentmandate.net/">Agent Mandate</a>. It lists every member, including the ones still unproven, the ones that left and the ones that never enrolled, and it serves no score of its own. Anyone about to contract an agent reads that agent's own report.</p>
+          <ul class="plain">
+            <li><b>The owner still shows.</b> Abuse is checked at the level of the anchor, so a publisher that keeps starting fresh agents shows up in its organization report.</li>
+            <li><b>A company's agents cannot vouch for each other.</b> Attestations between members of one organization are excluded as self-dealing.</li>
+            <li><b>A new agent may get a small head start.</b> A bureau may start a new agent from the record of its siblings rated for the same kind of work, worth at most ten events, disclosed in both reports, and soon outweighed by the agent's own evidence.</li>
+          </ul>
 
           <h2>What a bureau depends on</h2>
           <ul class="plain">
@@ -130,6 +141,7 @@
             <li><b>Reporters are trusted witnesses.</b> A compromised reporter can forge facts. Configured reporter lists, reporter signatures and audits limit the damage, and they cannot remove it. A reporter is trusted the way a notary is trusted.</li>
             <li><b>A bureau can lie by leaving things out.</b> A signed report proves that what is served is intact. It cannot prove that everything received was included. Corroboration between bureaus is named as future work.</li>
             <li><b>Evaluators are partial.</b> The system measures partiality, limits it and publishes it, and makes no claim to have removed it.</li>
+            <li><b>A sender record counts other owners' decisions.</b> It says how many distinct parties stopped a sender's signed requests, and on what grounds. It makes no claim about what the sender intended.</li>
           </ul>
           <div class="callout c-violet">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c5.5-2 8-5.5 8-10V5l-8-3-8 3v7c0 4.5 2.5 8 8 10z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>

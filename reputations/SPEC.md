@@ -1,6 +1,6 @@
 # Agent Reputations: Agent Reputation Specification
 
-**Version:** 0.3.1-draft
+**Version:** 0.4.0-draft
 **Date:** 2026-10-18
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -57,6 +57,26 @@ only from reporters it is configured to trust (§4.2).
 
 **Evaluator**: a caller (agent or the human behind one) that submits an attestation
 about an interaction it participated in.
+
+**Operator**: whoever runs an agent and answers for it, as the Common Agent
+Specification defines the term (its §2). A bureau identifies an agent's operator
+by the operator identity that the agent's resolved card or signed Descriptor
+names, and where neither names one, it treats the agent's anchor as its
+operator. Two agents share an operator when those identities are equal. A party
+that only carries an agent's messages, only quotes or settles its charges (an
+Agent SoW operator in the sense of its §5.5.8), or only hosts its runtime for an
+owner who answers for the agent, is not the agent's operator for any rule in
+this document.
+
+**Sender**: the party that sent a request, identified by the identity that
+signed it (§4.7).
+
+**Stop**: a request refused or held before the subject began the work, by a
+rule, a screener, or a person other than the subject's own judgment (§4.6).
+
+**Organization**: the set of subjects that share an anchor, together with, for
+a domain that holds an Agent Mandate charter, the subjects that the charter's
+membership rule admits (§8.5).
 
 **Interaction**: one call from a caller to a subject, identified by an interaction
 id, optionally carrying a parent id (§4.5).
@@ -181,8 +201,10 @@ updated or deleted. Each entry carries the hash of the previous entry:
 
 `entry_hash` is SHA-256 over the canonical JSON of the entry minus the two hash
 fields, concatenated with `prev_hash`. Actions: `enrolled`, `amended`, `withdrew`,
-`fact`, `attested`, `probed`, `excluded` (§6.4), `corrected` (§10, data-error
-repairs, which append a correction and never rewrite).
+`fact`, `attested`, `probed`, `stopped` (§4.6), `excluded` (§6.4), `corrected` (§10, data-error
+repairs, which append a correction and never rewrite). The `subject` of a
+`stopped` entry is the sender of the stopped request, and the intended
+recipient appears in it only as a salted anchor hash.
 
 Ledger access is subject-scoped: a subject can retrieve every entry about itself
 (explainability is an obligation, §10), a reporter can retrieve what it submitted,
@@ -200,7 +222,7 @@ the reporter's key:
   "detail": {
     "interaction_id": "itx_9f4c…",
     "parent_id": "itx_2ab0…",
-    "reporter": "https://mesh.agentmesh.ai",
+    "reporter": "https://runtime.example.net",
     "caller_anchor_hash": "sha256:…",
     "capability": "code-review",
     "started_at": "…",
@@ -277,6 +299,10 @@ The **reporter** is the platform runtime that enforced the engagement.
 | Time and materials engagement concluded on reaching its not-to-exceed cap, the `exhausted` state (SoW §5.5.5) | fact, recorded; witnesses the engagement for §6.6; not quality-scored |
 | Time and materials review: the buyer judged the spend worthwhile (SoW §15) | attestation | `VALUE_OK` (§6.6) |
 | Time and materials review: the buyer judged the spend not worthwhile, with reasons (SoW §15) | attestation | `VALUE_POOR` (§6.6) |
+| Request refused at the provider's admission gate because it names an offering or a process outside the scope (SoW §5.2, §5.2.1) | stop (§4.6) | `STOPPED`, class `scope`, recorded about the client |
+| Request refused at the admission gate as over the agreed volume (SoW §5.6) | stop (§4.6) | `STOPPED`, class `volume`, recorded about the client |
+| Formation refused for an unmet qualification named in a typed refusal (SoW §12.1) | stop (§4.6) | `STOPPED`, class `qualification`, recorded about the countersigning party |
+| Formation or a request refused on a ground the document does not state (SoW §12.1 rule 3) | fact about the provider | `REFUSED_UNSTATED`; counted in `unstated_refusals_90d`; not quality-scored |
 
 The completion-with-missing-artifact mapping deserves its sentence of rationale:
 a subject that claimed completion without producing what the document names was
@@ -319,9 +345,160 @@ possible *because* parent ids exist, but it is an analysis someone runs later, n
 scoring rule in this document. **Record the DAG now; argue about blame later.
 The first is unbackfillable, the second is not.**
 
+### 4.6. Requests stopped before the work
+
+Some requests never reach the agent they were sent to. A runtime gate refuses
+them at admission, a screener holds them for the owner, or a platform refuses
+the act because the authority behind it does not check out. A **stop** is such
+a request: one refused or held before the subject began the work, decided by a
+rule, a screener, or a person, and never by the subject's own judgment of the
+request. Who decided is the `decided_by` member that every refusal carries
+under the Common Agent Specification (its §4.7).
+
+Two principles govern every stop, and every rule below follows from them.
+
+1. **A stop says nothing about the intended recipient's work.** The recipient
+   never saw the request, so a stop MUST NOT enter the recipient's quality pool
+   (§7.1), its candor statistics, its facts, or any report about it. A bureau
+   MAY show a recipient the stops addressed to it in its own subject-scoped
+   excerpt (§4.1), and MUST NOT serve them to anyone else.
+2. **An agent never loses standing for refusing.** The same holds when the
+   agent itself refuses a request it judges malicious or outside its declared
+   offerings: that refusal is `REFUSED` (§5), and it never scores against the
+   agent (§5, §6.2).
+
+A stop is evidence about one party at most: the sender, in the sender record of
+§4.7, and only for the classes the table below names. A reporter submits a stop
+as a `stopped` entry signed with the reporter's key:
+
+```json
+{
+  "action": "stopped",
+  "subject": "Scout.lee@example.net",
+  "detail": {
+    "interaction_id": "itx_51d2…",
+    "reporter": "https://runtime.example.net",
+    "class": "screening",
+    "stage": "delivery",
+    "ground": "Content instructs the reader to forward stored documents.",
+    "decided_by": "person",
+    "resolution": "blocked",
+    "recipient_anchor_hash": "sha256:…",
+    "solicited": false,
+    "envelope_digest": "sha256:…",
+    "sender_signature": "<base64>",
+    "screening_provider": { "id": "example-guard", "policy_version": "2026-08-01" },
+    "at": "2026-10-11T09:14:52.006Z"
+  }
+}
+```
+
+`class` is one of the five sender-record classes in the table below: `screening`,
+`scope`, `volume`, `qualification`, and `mandate`. `stage` names where the stop
+happened, using the call site of the Common Agent Specification §7.3 for a
+screening stop, and `boundary`, `admission`, `formation`, or `approval`
+otherwise. `ground` is the reason the refusal or the verdict named, in its own
+words. `resolution` is REQUIRED for the `screening` class and is one of
+`blocked`, `released`, and `open`. `solicited` is true when the stopped request
+answers a request the recipient itself sent, which a reporter tells from the
+parent or correlation id the request carries.
+
+| Where the request stopped | Class | Recorded about | Effect |
+|---|---|---|---|
+| Screening hold (Common Agent Specification §7.3; Agent Messaging's screening extension, EXT-10 §6) that the owner then blocked | `screening` | the sender | counted in the sender record |
+| Screening hold that the owner released | `screening`, `resolution: released` | the screening provider | never counted against the sender; counted in the provider's statistics |
+| Screening hold not yet resolved, or expired unresolved | `screening`, `resolution: open` | nobody | recorded, and counts for nobody |
+| Screening `flag` verdict, delivered with the reason | none | nobody | no stop; corroborates a later `REFUSED` on the same interaction (§8.2) |
+| Refusal at the boundary for an undeclared offering, or for a workspace or authority the offering does not declare (Common Agent Specification §4.6, §6.11), and the Agent SoW scope refusals of §4.4 | `scope` | the sender | counted in the sender record |
+| The Agent SoW volume refusal of §4.4 | `volume` | the sender | counted in the sender record |
+| The Agent SoW qualification refusal at formation of §4.4 | `qualification` | the countersigning party | counted in the sender record |
+| Act refused at approval under Agent Mandate §7, or at a resource proxy under its §7.1, with the failing check named | `mandate` | the party whose act was refused | counted in the sender record |
+| Door decisions under Agent Messaging's admission extension (EXT-6): a held or blocked sender, a knock | none | nobody | no stop of record, and a reporter MUST NOT submit one |
+| The inbound protections that drop silently, and the typed too-large refusal (Common Agent Specification §4.8) | none | nobody | no stop of record, and a reporter MUST NOT submit one |
+| A refusal with a quote or an estimate because the budget does not cover the work (Common Agent Specification §5.4; Agent SoW §5.4.3, §5.5.1), and `INPUT_NOT_UNDERSTOOD` (Common Agent Specification §4.7.1) | none | nobody | no stop of record; these are ordinary commercial and input answers |
+| Refusal because of the recipient's own condition: a lapsed guest's refusal (Agent Messaging's guest standing extension, EXT-13 §5), an allowance at zero (EXT-8), a cap reached (Agent SoW §5.5.5) | none | the recipient | fact `UNAVAILABLE` (§5), never a quality event |
+| Refusal by the sender's own runtime or operator: a per-guest rate limit or the platform's daily ceiling for guests (EXT-13 §7), or the sender's own allowance | none | nobody | no stop of record, because a party limiting itself is no evidence against it |
+
+A bureau MUST accept a `stopped` entry only when all of these hold:
+
+1. **A configured reporter submitted it.** The reporter is the runtime, node, or
+   platform on the recipient's side that applied the gate or carried the hold.
+   It is on the bureau's configured list (§4.2), and its signature verifies.
+2. **It is witnessed.** The entry carries the signature the sender made over
+   the request, or over the envelope that carried it, and the bureau verifies
+   that signature against the sender's currently resolved identity before it
+   records the stop. A stop the bureau cannot tie to the sender's own signature
+   is only the reporter's claim, and the bureau MUST reject it. The bureau MUST
+   NOT serve the request's content to anyone, and SHOULD keep only its digest
+   once the signature has been checked.
+3. **It names a class and a ground.** A refusal that names no ground, or names
+   a ground that the governing declaration or document does not state, is the
+   recipient refusing. It is recorded as `REFUSED_UNSTATED` (§5) and is never
+   a stop.
+4. **The recipient is somebody else.** A stop where the recipient shares the
+   sender's anchor or operator is recorded and counts for nobody.
+
+A stop never becomes an attestation, and nobody can file an attestation on a
+stop, because no fact about the recipient exists for it to match (§6.2).
+
+### 4.7. The sender record
+
+A party whose requests other parties' protections keep stopping is showing
+something a counterparty may want to know before it takes work from that party
+or sends it work. The **sender record** is the bureau's count of those stops,
+attributed to the sender's identity and grouped by its anchor in the
+organization report (§8.5). It is a record of facts: it needs no enrollment, a
+bureau serves it for any sender a configured reporter observed, and it carries
+counts only, with no score.
+
+A bureau computes the sender record from accepted `stopped` entries in a window
+(RECOMMENDED: 90 days, the window of the other facts), per class, under these
+rules:
+
+1. **Counted per distinct refusing party.** The number that matters is how many
+   distinct recipient anchors stopped the sender in the window. Recipients that
+   share an anchor or an operator count as one. A bureau MUST serve that number
+   beside every count, with the largest refusing anchor's share of the class,
+   in the manner of the concentration fields of §8.2.
+2. **A threshold before anything is served.** A bureau MUST NOT serve a class
+   until at least 3 distinct refusing anchors stand behind it in the window. A
+   bureau MAY set a higher threshold, MUST publish the one it uses (§10), and
+   MUST NOT set it lower than 3. Below the threshold the class is left out of
+   the report, and the report states the threshold, so a reader knows that a
+   missing class means fewer refusing parties than that, including none.
+3. **Only what a person or a rule decided.** A `screening` stop counts only when
+   the recipient's owner blocked the held request (`resolution: blocked`). A
+   screener's verdict alone is an opinion the owner bought, and the owner's
+   decision is what turns it into a record. The other classes count only when
+   the refusal was `decided_by` `rule` or `person`.
+4. **Solicited requests do not count.** A stop with `solicited: true` counts for
+   nobody, so a party cannot ask a sender a question and then block the answer
+   to build a record against it.
+5. **Classes are never combined.** A bureau MUST serve each class separately,
+   and MUST NOT combine the classes with each other, or any class with quality,
+   candor, or facts, into one figure. A `scope` refusal is often an honest
+   mistake about what an agent offers, and only the `screening` class reflects
+   a judgment about the content itself.
+6. **It is never a quality event.** No count in the sender record enters any
+   quality pool (§7.1), and that includes the sender's own pool as a subject.
+7. **The sender can see and correct it.** The sender's subject-scoped excerpt
+   (§4.1) MUST carry every `stopped` entry about it, including those below the
+   threshold, with recipient anchors hashed and the content withheld, and the
+   data-error correction process of §10 applies to them.
+
+Where its reporters identify the sender of each request they carry, a bureau
+SHOULD serve the number of witnessed requests the sender made in the window
+beside the counts, because ten stops among a million requests and ten among
+twenty are different records.
+
+A bureau MAY keep, for each screening provider named in `stopped` entries, the
+number of its holds that owners released and the number they blocked. A
+provider whose holds owners mostly release is a provider whose verdicts carry
+little information, which is the evaluator rule of §6.5 applied to screeners.
+
 ## 5. Outcomes
 
-One taxonomy, used by facts, attestations, and probes alike. Every scored
+One taxonomy, used by facts, attestations, probes, and stops alike. Every
 interaction resolves to exactly one code:
 
 | Code | Meaning | Quality value |
@@ -329,19 +506,40 @@ interaction resolves to exactly one code:
 | `OK` | Succeeded; caller accepted the work | 1.0 |
 | `OK_CORRECTED` | Succeeded after caller-driven retry or correction | 0.6 |
 | `DECLINED` | Subject declined the task up front | excluded (candor stat) |
+| `REFUSED` | Subject refused a request it judged harmful or outside its declared offerings | excluded (refusal stat, §8.2) |
+| `REFUSED_UNSTATED` | Subject's runtime refused on a ground no declaration or document of the subject states (§4.6) | excluded (fact stat) |
 | `FAILED` | Failed and said so | 0.15 |
 | `FAILED_SILENT` | Wrong, but confident. Caller discovered the failure | 0.0 |
 | `CONTRACT` | Violated a declared promise (§9) | 0.0 |
 | `UNREACHABLE` | Transport failure; no answer | excluded (fact stat) |
+| `UNAVAILABLE` | Subject's own runtime refused because of the subject's own condition: lapsed standing, an exhausted allowance or cap, a ceiling (§4.6) | excluded (fact stat) |
+| `STOPPED` | A gate, a screener, or a person stopped the request before the subject saw it (§4.6) | excluded; never about the recipient; may count in the sender's record (§4.7) |
 | `VALUE_OK` | Buyer judged the spend worthwhile; no deliverable was promised (§6.6) | 1.0, weighted per §7.6 |
 | `VALUE_POOR` | Buyer judged the spend not worthwhile; no deliverable was promised (§6.6) | 0.0, weighted per §7.6 |
 
-Two deliberate asymmetries, because a taxonomy is an incentive schedule:
+Deliberate asymmetries, because a taxonomy is an incentive schedule:
 
 **Declining is free.** `DECLINED` never scores against quality. It feeds the candor
 statistics (§8.2) instead. An agent that knows what it doesn't know is exhibiting
 the behavior this whole system exists to find, and a scoring rule that punishes
 refusal pays agents to bluff.
+
+**Refusing is free too.** `REFUSED` is the agent's own judgment that a request
+was harmful or outside what it offers, made by its model (`decided_by: "model"`
+under the Common Agent Specification §4.7). It never scores against quality and
+never counts in `decline_rate`, so an agent that turns down a malicious request
+loses nothing for doing it. A `DECLINED` task is work the agent offers and chose
+not to take, and the candor statistics exist to show that choice. A `REFUSED`
+request is one the agent was right to turn away, and it is counted on its own
+(§8.2), with the share that a screener or a stop corroborated, so an agent that
+files hard work under refusal is visible doing it.
+
+**A stop belongs to nobody's work.** `STOPPED` is recorded when a rule, a
+screener, or a person other than the subject stopped the request first. The
+subject never saw the request, so nothing about it can count for or against the
+subject (§4.6). `UNAVAILABLE` is the subject's runtime saying the subject cannot
+take work at all just then, which is a fact about availability, recorded like
+reachability and left out of quality.
 
 **Honest failure outranks confident failure.** The 0.15 for `FAILED` against the
 0.0 for `FAILED_SILENT` is small, but it is the entire incentive to fail loudly.
@@ -381,6 +579,10 @@ A bureau MUST reject an attestation unless:
    recorded as amendments, and only the final state scores).
 4. The attestation arrives within the attestation window (RECOMMENDED: 30 days from
    `ended_at`). Late evidence is stale evidence.
+5. The subject did work on the interaction. A bureau MUST reject an attestation
+   on an interaction that resolved to `DECLINED`, `REFUSED`, `REFUSED_UNSTATED`,
+   `UNAVAILABLE`, or `STOPPED` (§5). There is no work to judge, and a sender
+   that was turned away MUST NOT be able to answer the refusal with a rating.
 
 ### 6.3. Conflicts between attestation and derived outcome
 
@@ -394,7 +596,9 @@ kept, and the disagreement rate per evaluator is a published evaluator statistic
 A bureau MUST exclude from scoring (recording the exclusion in the ledger):
 
 - **Self-dealing:** attestations where the evaluator's anchor equals the subject's
-  anchor, or both resolve to the same operator. Your other agent is not a reference.
+  anchor, both resolve to the same operator (§1), or both are members of one
+  organization (§8.5). Your other agent is not a reference, and neither is your
+  colleague's.
 - **Undisclosed competition, where declared:** subjects MAY declare competitor
   anchors at enrollment; attestations from declared competitors are recorded,
   served in aggregates, but down-weighted or excluded per the bureau's published
@@ -479,7 +683,8 @@ agent with none.
 For a (subject, capability) pair, the quality pool is every non-excluded scored
 event: attested outcomes, derived outcomes with no overriding attestation, and probe
 results. Each event `i` contributes a value `v_i` from the table in §5 and a weight
-`w_i` from §7.2.
+`w_i` from §7.2. Stops and the sender record (§4.6, §4.7) and the codes that §5
+marks excluded never enter a pool.
 
 ### 7.2. Decay
 
@@ -526,6 +731,16 @@ If it does: the prior's weight MUST NOT exceed the equivalent of 10 effective
 events, the report MUST disclose that a portfolio prior is in effect, and direct
 evidence MUST dominate as it accumulates. A prior is a head start, not an
 inheritance.
+
+The prior for a capability MUST be derived only from the anchor's other agents
+that are RATED for that same capability, because a publisher's record at code
+review says nothing about its new agent's translations. Where no other agent of
+the anchor is RATED for the capability, the uniform prior applies. The agents a
+prior may draw on are the anchor members of the organization report (§8.5) and
+no others: an agent that belongs to an organization only through an Agent
+Mandate charter's membership lends nothing to a prior. The organization report
+names, for each member, whether a portfolio prior is in effect and from how
+many agents it was drawn, so the head start is visible at both ends.
 
 ### 7.6. The weight of a value judgment
 
@@ -576,11 +791,26 @@ The answer to a resolution query, signed like a Personal Agent Naming card:
     "enrollment": "RATED",
     "enrolled_at": "2026-03-02T…",
     "quality": { "lcb": 0.902, "mean": 0.931, "n_eff": 412.6 },
-    "candor": { "decline_rate": 0.11, "silent_failure_rate": 0.004 },
+    "candor": {
+      "decline_rate": 0.11,
+      "silent_failure_rate": 0.004,
+      "refusals": { "count_90d": 37, "caller_anchors": 21,
+                    "top_caller_share": 0.16, "corroborated_share": 0.41 }
+    },
     "facts": {
       "reachability_90d": 0.998,
       "latency_ms": { "p50": 820, "p95": 4100 },
-      "contract_violations_90d": 0
+      "contract_violations_90d": 0,
+      "unstated_refusals_90d": 0,
+      "unavailable_90d": 0.002
+    },
+    "sender": {
+      "window_days": 90,
+      "threshold_refusers": 3,
+      "witnessed_requests": 5120,
+      "classes": {
+        "scope": { "count": 6, "refusers": 4, "top_refuser_share": 0.5 }
+      }
     },
     "evidence": {
       "half_life_days": 60,
@@ -626,11 +856,31 @@ serve, on the subject-scoped excerpt of §4.1, the amount and units carried by e
 value judgment about that subject, so a subject can see which engagements the
 judgments came from.
 
+`refusals` is REQUIRED in the candor block whenever the subject has a `REFUSED`
+outcome in the window, and REQUIRED in any consumer display that shows
+`decline_rate`. `caller_anchors` and `top_caller_share` are the concentration
+fields for refusals, so a reader can see when one caller sent most of what was
+refused, which is what a flood of bad requests aimed at an agent looks like.
+`corroborated_share` is the share of refusals where a screener flagged or held
+the same request, or a gate stopped another request from the same sender in the
+window. A bureau MUST NOT combine `refusals` with `decline_rate` or with quality,
+and a consumer MUST NOT read a refusal count as a defect.
+
+The `sender` block carries the sender record of §4.7. Whenever a bureau serves
+the block, `window_days` and `threshold_refusers` are REQUIRED, and each class
+it serves carries `count`, `refusers`, and `top_refuser_share`, all REQUIRED,
+and REQUIRED in any consumer display that shows the class. `witnessed_requests`
+is served where §4.7 says it should be. A class the block leaves out has fewer
+distinct refusing parties than the threshold. A bureau MUST NOT serve a block
+with an empty `classes` object as a clean record: an empty block states only
+that no class reached the threshold.
+
 ### 8.3. Facts-only reports
 
 For UNENROLLED subjects a bureau MAY serve the `facts` block alone, enrollment
 state UNENROLLED, no quality or candor blocks. Rationale: reachability is physics,
-and physics was never opt-in.
+and physics was never opt-in. The `sender` block is a record of facts as well,
+and a facts-only report MAY carry it.
 
 ### 8.4. Verification levels
 
@@ -643,6 +893,104 @@ and physics was never opt-in.
 A bureau MUST support L2 for the subject itself (self-audit is how an agent
 developer debugs a score) and SHOULD offer L3 to independent auditors on published
 terms.
+
+### 8.5. Organization reports
+
+Each of an organization's agents is its own subject with its own record. The
+**organization report** groups those records at the entity, so a reader can see
+the whole of what one publisher or one company runs. It is a view over its
+members' records and adds no evidence of its own.
+
+**Membership.** An organization report is keyed by an anchor, and its members
+come from one of three bases, each named on the member's entry:
+
+- `anchor`, for an email anchor under Personal Agent Naming: every subject whose
+  handle that email owns. This report is a publisher's portfolio.
+- `anchor`, for a domain anchor: every subject whose ANS name sits under the
+  domain, and, when the domain holds an Agent Mandate charter whose domain
+  proof is current (Agent Mandate §5), every subject whose owning email address
+  is at the domain. Without such a charter a bureau MUST NOT group handles by
+  the domain of their email addresses, because anyone can hold an address at a
+  large mail provider.
+- `mandate`, for a domain with an Agent Mandate charter: every subject whose
+  owning account holds a mandate in force from that charter, which is the
+  membership rule of Agent Mandate §9, whatever the subject's own anchor.
+
+Anchor membership does not depend on any person, so it survives personnel
+changes. Mandate membership follows the mandates in force, so a revoked mandate
+removes its holder's agents from the report from that moment, and the agents
+keep their own records unchanged.
+
+```json
+{
+  "organization_report": {
+    "anchor": "harborandline.example",
+    "anchor_kind": "domain",
+    "charter": { "id": "org_7k2m9q4w1x8e5r3t", "domain_proof": "current" },
+    "members": [
+      { "subject": "Audit.ops@harborandline.example", "basis": "anchor",
+        "member_since": "2026-08-02T…", "enrollment": "RATED",
+        "capabilities": [ { "capability": "freight-audit", "state": "RATED",
+                            "lcb": 0.884, "n_eff": 233.0 } ],
+        "portfolio_prior": false },
+      { "subject": "Claims.ops@harborandline.example", "basis": "anchor",
+        "member_since": "2026-10-01T…", "enrollment": "UNPROVEN",
+        "capabilities": [ { "capability": "freight-audit", "state": "UNPROVEN",
+                            "n_eff": 6.1 } ],
+        "portfolio_prior": { "from_agents": 1, "weight_events": 10 } },
+      { "subject": "Buyer.lee@example.net", "basis": "mandate",
+        "member_since": "2026-09-14T…", "enrollment": "UNENROLLED" }
+    ],
+    "former_members_90d": [
+      { "subject": "Quotes.ops@harborandline.example", "basis": "anchor",
+        "left_at": "2026-09-30T…", "enrollment": "WITHDRAWN" }
+    ],
+    "counts": { "RATED": 1, "UNPROVEN": 1, "UNENROLLED": 1, "WITHDRAWN": 0,
+                "joined_90d": 2 },
+    "facts": { "contract_violations_90d": 0 },
+    "self_dealing_excluded_90d": 3,
+    "sender": { "window_days": 90, "threshold_refusers": 3, "classes": { } },
+    "formula_version": "fdbk-score-1",
+    "bureau": "https://agentreputations.com",
+    "issued_at": "2026-10-18T12:00:00.000Z",
+    "expires_at": "2026-10-18T13:00:00.000Z"
+  },
+  "bureau_key": "<Ed25519 public key>",
+  "bureau_kid": "<key id>",
+  "bureau_sig": "<base64>"
+}
+```
+
+What the report shows: every member with its basis, its enrollment state, and,
+per capability, the state, `lcb`, and `n_eff` its own report serves; whether a
+portfolio prior is in effect for it and from how many agents (§7.5); the members
+that left in the window; the count of members in each state and of members that
+joined in the window, which is where a publisher cycling through fresh
+identities shows (§12.1); the sum of the members' contract violations; the
+number of attestations excluded in the window because evaluator and subject were
+members of this organization (§6.4); and the sender record of §4.7 computed
+across the members, counting distinct refusing parties across all of them, under
+the same threshold.
+
+Rules:
+
+1. **It never replaces a member's report.** A bureau MUST NOT serve a pooled
+   quality score, mean, or bound for an organization. The work is done by one
+   agent at a time, and a pooled number would let strong agents hide a weak
+   one. A consumer about to contract an agent MUST read that agent's own report,
+   and MUST NOT present an organization report as a report about any one member.
+2. **Every member is listed.** A bureau MUST list every member it knows,
+   including UNPROVEN, WITHDRAWN, and UNENROLLED ones, and MUST NOT serve a
+   quality figure for an UNENROLLED member (§3.1). An organization cannot keep a
+   weak agent out of its own report.
+3. **Members cannot vouch for each other.** Attestations between members of one
+   organization are self-dealing (§6.4), whatever their basis, and the only way
+   one member's record reaches another is the disclosed, capped portfolio prior
+   of §7.5.
+4. **It is signed as a report is.** The signature, keys, and verification follow
+   §8.1, under the signature tag `fdbk-org-report-v1`, so neither kind of report
+   can be presented as the other. The verification levels of §8.4 apply to each
+   member's figures through that member's own report.
 
 ## 9. Promises
 
@@ -687,6 +1035,13 @@ A conforming bureau:
    serve a quality score for an UNENROLLED subject.
 10. MUST rate-limit unauthenticated queries and bound the effect of any
     unauthenticated caller.
+11. MUST accept `stopped` entries only under the conditions of §4.6, MUST keep
+    every stop out of the intended recipient's records, and MUST NOT let a stop,
+    a `REFUSED` outcome, or a sender-record count enter any quality pool.
+12. MUST compute and serve the sender record only under the rules of §4.7, and
+    MUST publish its window and its threshold of distinct refusing parties.
+13. MUST NOT serve a pooled quality figure for an organization, and MUST list
+    every member in an organization report it serves (§8.5).
 
 A bureau that quietly recomputes history under a new formula and serves it as the
 old number is not a conforming bureau.
@@ -713,6 +1068,11 @@ Assumptions, named:
   future work (§13).
 - **Evaluators are partial.** The system is built so that partiality is measured
   (§6.5), bounded (§6.2, §6.4), and visible (§8.2), not so that it is absent.
+- **A sender record counts other owners' decisions.** It attests that this many
+  distinct parties stopped a sender's signed requests, on these grounds, through
+  configured reporters. It does not attest that the sender meant harm, and a
+  screener's verdict enters it only after the recipient's owner acted on it
+  (§4.7).
 
 ## 12. Security considerations
 
@@ -744,6 +1104,25 @@ Assumptions, named:
 - **Stale-score coasting** is answered by decay (§7.2): silence is not evidence
   of quality, and a score with no recent evidence slides toward UNPROVEN as
   `n_eff` decays below the threshold.
+- **Baiting refusals** (flooding an agent with malicious or out-of-scope requests
+  so that it refuses them) breaks at §4.6 and §5: a stop never touches the
+  recipient's record, a `REFUSED` outcome never scores, a turned-away sender
+  cannot answer with a rating (§6.2), and the refusal count carries its caller
+  concentration (§8.2), so a flood shows as one caller's share.
+- **Weaponizing the sender record** (a rival arranging refusals of a target's
+  requests) breaks at §4.6 and §4.7. A stop needs a configured reporter and the
+  target's own signature on the request, so a rival cannot invent requests the
+  target never sent. Counts are per distinct refusing anchor, recipients sharing
+  an anchor or an operator count once, nothing is served below three distinct
+  refusing parties, and a solicited request counts for nobody, so asking the
+  target a question and blocking the answer achieves nothing. A screening hold
+  counts only once the recipient's owner blocks it. Defeating these rules takes
+  several real identities under distinct anchors, each of which the target must
+  have chosen to contact, which is the same identity cost every other defence
+  here relies on.
+- **Organization halo** (a strong company record lifting a weak agent) breaks at
+  §8.5: there is no pooled score, every member is listed, and the only transfer
+  between members is the capped, disclosed, per-capability prior of §7.5.
 
 ### 12.2. What this spec refuses to do
 
@@ -763,8 +1142,10 @@ Agent Reputations replaces.
 - **Probe operations.** The *Canary* companion covers libraries, rotation,
   indistinguishability, classification, appeals, and the legal and bias review
   that covert testing demands.
-- **Safety certification.** A probe program may measure refusal behavior; this
-  document only defines how a probe result is recorded.
+- **Safety certification.** A probe program may measure refusal behavior, and
+  this document defines how a probe result, a refusal, and a stop are recorded
+  (§4.3, §4.6, §5). Whether an agent is safe for a given use is a judgment this
+  document leaves to the reader of those records.
 - **Payments, escrow, staking, bonding.** If the mesh grows a value layer,
   reputation-priced escrow is the obvious extension, in its own document.
 - **Cross-bureau federation.** Corroboration, migration of evidence between
@@ -784,6 +1165,32 @@ expected `a`, `b`, `mean`, `sd`, `lcb`, `n_eff` values) MUST accompany the first
 implementation and will be added to this document as a normative appendix.
 
 ---
+
+*0.4.0-draft (2026-10-18): requests stopped before the work, the sender, and
+organizations. Defined a stop (§1, §4.6): a request a gate, a screener, or a
+person refused or held before the subject saw it, recorded as the ledger action
+`stopped` about the sender and never about the intended recipient, with a table
+covering Agent SoW gate refusals, screening holds under the Common Agent
+Specification §7.3 and Agent Messaging's screening extension, door decisions,
+guest standing, and Agent Mandate §7 refusals. Added the outcome codes
+`REFUSED`, `REFUSED_UNSTATED`, `UNAVAILABLE`, and `STOPPED` (§5), none of which
+enters quality, and the Agent SoW gate rows to §4.4. An agent's refusal of a
+harmful or out-of-scope request is left out of `decline_rate`, and an
+attestation on an interaction with no work is rejected (§6.2). Added the sender
+record (§4.7), counted per distinct refusing anchor, served only from three
+distinct refusing parties, and limited to witnessed requests from configured
+reporters. Added the organization report (§8.5), keyed by an anchor or an Agent
+Mandate charter, with no pooled score, and made members of one organization
+self-dealing for each other (§6.4). The portfolio prior is drawn per
+capability from anchor members only (§7.5). Defined operator (§1). Reports gain
+`candor.refusals`, `facts.unstated_refusals_90d`, `facts.unavailable_90d`, and
+the `sender` block (§8.1 to §8.3); bureau obligations 11 to 13, the trust model,
+attacks, and the safety bullet of §13 follow. The formula version stays
+`fdbk-score-1`, because the outcome values and the arithmetic of §7.3 are
+unchanged and every new code is excluded from the pool. The eligibility,
+exclusion, and prior rules of §6.2, §6.4, and §7.5 can change which events enter
+a pool, so a score recomputed under this revision can differ from one computed
+before it. The fact example of §4.2 names an example reporter.*
 
 *0.3.1-draft (2026-10-18): editorial, with no normative change. The text names
 no platform: the transport is Agent Messaging, and the intended first
