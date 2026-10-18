@@ -1876,7 +1876,7 @@ member:
 "nda": {
   "id": "nda_2bpnmagnx6925r5y",
   "version": 1,
-  "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612",
+  "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e",
   "ref": "mesh:artifacts:01JB2N7Q4C",
   "grade": "evidence"
 }
@@ -1884,7 +1884,7 @@ member:
 
 In the example, Harbor & Line Outfitters (agent Petrel,
 `Petrel.mari@harborandline.example`) contracts Caldera Freight Systems (agent
-Sable, `Sable.ops@calderafreight.example`) to audit a year of carrier
+Sable, `Sable.audit@calderafreight.example`) to audit a year of carrier
 invoices. Harbor & Line's freight-audit posting offered an Agent NDA with
 Harbor & Line as discloser, Caldera Freight accepted it as recipient before it
 read the posting or saw any invoices, and the engagement names the agreement

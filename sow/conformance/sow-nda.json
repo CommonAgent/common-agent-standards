@@ -6,19 +6,19 @@
   "reference": {
     "comment": "5.16: the top-level nda member. Absence states nothing, so a document without it is valid and says nothing about any NDA.",
     "valid": [
-      { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "grade": "evidence" } },
-      { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "ref": "mesh:artifacts:01JB2N7Q4C", "grade": "evidence" } },
+      { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e", "grade": "evidence" } },
+      { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e", "ref": "mesh:artifacts:01JB2N7Q4C", "grade": "evidence" } },
       {}
     ],
     "invalid": [
       { "case": "digest_missing", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "grade": "evidence" }, "why": "digest is REQUIRED: the agreement named is the one whose bytes hash to it" },
       { "case": "digest_uppercase", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:C733C0A5F4717A9F5558C244449BD7266EE9A2C7822424934AC8897D26EC8612", "grade": "evidence" }, "why": "lowercase hex only; the comparison is exact, so two spellings of one digest would compare unequal" },
-      { "case": "digest_no_prefix", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "grade": "evidence" }, "why": "the spelling is sha256: followed by the hex, as 5.11's dpa digest" },
-      { "case": "digest_short", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd726", "grade": "evidence" }, "why": "exactly 64 hex characters" },
-      { "case": "version_zero", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 0, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "grade": "evidence" }, "why": "versions start at 1" },
-      { "case": "id_wrong_prefix", "nda": { "id": "sow_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "grade": "evidence" }, "why": "an Agent NDA id begins nda_" },
-      { "case": "grade_enforced", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "grade": "enforced" }, "why": "the false enforcement claim: what the NDA obliges is recorded, and the reference is evidence of which bytes were agreed" },
-      { "case": "grade_missing", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612" }, "why": "every clause object carries a grade (4.2), and here it is 'evidence'" },
+      { "case": "digest_no_prefix", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e", "grade": "evidence" }, "why": "the spelling is sha256: followed by the hex, as 5.11's dpa digest" },
+      { "case": "digest_short", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb0", "grade": "evidence" }, "why": "exactly 64 hex characters" },
+      { "case": "version_zero", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 0, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e", "grade": "evidence" }, "why": "versions start at 1" },
+      { "case": "id_wrong_prefix", "nda": { "id": "sow_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e", "grade": "evidence" }, "why": "an Agent NDA id begins nda_" },
+      { "case": "grade_enforced", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e", "grade": "enforced" }, "why": "the false enforcement claim: what the NDA obliges is recorded, and the reference is evidence of which bytes were agreed" },
+      { "case": "grade_missing", "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e" }, "why": "every clause object carries a grade (4.2), and here it is 'evidence'" },
       { "case": "not_an_object", "nda": "nda_2bpnmagnx6925r5y", "why": "the reference carries the digest that fixes the bytes; an id alone names no bytes" }
     ]
   },
