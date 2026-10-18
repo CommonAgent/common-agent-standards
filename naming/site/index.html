@@ -5,11 +5,11 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Personal Agent Naming</title>
-  <meta name="description" content="Personal Agent Naming is an open standard for naming personal agents: a name you choose, on the email you already have, bound to your agent's key, and resolvable to where it can be reached.">
+  <meta name="description" content="Personal Agent Naming gives your agent a name using only your email address, with no domain, no DNS records and nothing to host. The name leads to your agent wherever it runs.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Personal Agent Naming">
   <meta property="og:title" content="Personal Agent Naming">
-  <meta property="og:description" content="Personal Agent Naming is an open standard for naming personal agents: a name you choose, on the email you already have, bound to your agent's key, and resolvable to where it can be reached.">
+  <meta property="og:description" content="Personal Agent Naming gives your agent a name using only your email address, with no domain, no DNS records and nothing to host. The name leads to your agent wherever it runs.">
   <meta property="og:url" content="https://agentnaming.ai/">
   <meta property="og:image" content="https://agentnaming.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -22,22 +22,36 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/site.css">
   <style>
-    .handle-fig{ margin:34px 0 4px; background:var(--panel); border:1px solid var(--line); border-radius:12px;
-      overflow:hidden; box-shadow:0 30px 70px -40px rgba(0,0,0,.9); }
-    .handle-fig .bar{ display:flex; align-items:center; gap:8px; padding:11px 16px; border-bottom:1px solid var(--line);
-      font-family:var(--wire); font-size:.74rem; color:var(--dim); background:rgba(255,255,255,.015); }
-    .handle-fig .bar .lamp{ width:8px; height:8px; border-radius:50%; background:var(--verify); box-shadow:0 0 10px var(--verify); }
-    .handle-fig pre{ margin:0; padding:20px 18px; font-family:var(--wire); font-size:.86rem; line-height:1.95; color:var(--paper); overflow-x:auto; }
-    .handle-fig pre .name{ color:var(--signal); }
-    .handle-fig pre .k{ color:var(--faint); }
-    .handle-fig pre .ok{ color:var(--verify); }
-    .handle-fig pre .addr{ color:var(--address); }
-    .hero .subtitle{ font-family:var(--disp); font-weight:600; font-size:clamp(1.2rem,2.4vw,1.5rem);
-      color:var(--paper); margin:6px 0 12px; max-width:40ch; }
-    @media (max-width:700px){
-      .handle-fig .bar{ flex-wrap:wrap; row-gap:2px; }
-      .handle-fig .bar .name{ overflow-wrap:anywhere; }
-      .handle-fig pre{ padding:14px 12px; font-size:.74rem; }
+    .hero .lede{ color:var(--paper); font-size:1.2rem; max-width:56ch; }
+    section.band p{ font-size:1.05rem; }
+    ul.plain li{ font-size:1.05rem; }
+    ul.plain a{ color:var(--address); }
+    .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; }
+    /* the "Agent Naming" diagram: a wide drawing, and a stacked one for phones */
+    .fan-box{ margin:22px 0 0; max-width:1000px; }
+    .fan{ display:block; width:100%; height:auto; }
+    .fan-narrow{ display:none; max-width:420px; }
+    .fan text{ font-family:var(--body); }
+    .fan .fn-b{ fill:var(--surface); stroke:var(--blue); stroke-width:2; }
+    .fan .fn-b.ours{ fill:var(--amber-tint); stroke:var(--amber); stroke-width:3; }
+    .fan .fn-nm{ fill:var(--text); font-family:var(--disp); font-size:22px; font-weight:700; }
+    .fan .fn-ph{ fill:var(--text-2); font-size:19px; }
+    .fan .fn-c{ fill:var(--mint-tint); stroke:var(--mint); stroke-width:3; }
+    .fan .fn-ct{ fill:var(--text); font-family:var(--disp); font-size:26px; font-weight:700; }
+    .fan .fn-ln{ stroke:var(--text-3); stroke-width:2.5; }
+    .fan .fn-ah{ fill:var(--text-3); }
+    .prose{ margin-top:30px; max-width:68ch; }
+    .prose p{ margin:0 0 16px; }
+    .prose p a{ color:var(--address); }
+    .prose p a b{ color:inherit; }
+    .prose p.ours{ border-left:3px solid var(--accent); padding-left:14px; }
+    .prose p.close{ color:var(--paper); font-weight:600; margin-top:24px; }
+    @media (max-width:640px){
+      .fan-wide{ display:none; }
+      .fan-narrow{ display:block; }
+      .fan .fn-nm.n{ font-size:20px; }
+      .fan .fn-ph.n{ font-size:18px; }
+      .hero .lede{ font-size:1.08rem; }
     }
   </style>
   <link rel="stylesheet" href="/theme.css">
@@ -79,7 +93,7 @@
           </div>
         </details>
       </nav>
-      <div class="sn-foot">An open standard for naming personal agents.<br>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+      <div class="sn-foot">An open standard for naming personal agents, and one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
     </aside>
 
     <main class="main">
@@ -87,88 +101,71 @@
       <div class="wrap hero">
         <span class="eyebrow"><span class="tag">pan</span> · personal agent naming</span>
         <h1>Personal Agent Naming</h1>
-        <p class="subtitle">An open standard for naming personal agents.</p>
-        <p class="lede">A name you choose, on the email you already have, bound to your
-          agent's key, and resolvable to where it can be reached.</p>
+        <p class="lede">Personal Agent Naming gives your agent a name, such as
+          <span class="mono amber">scout.raj@example.com</span>, using only your email address. You
+          need no domain, no DNS records and nothing to host, so anyone can have one. The name leads
+          to your agent wherever the agent runs.</p>
         <div class="cta">
           <a class="btn btn-signal" href="/get-a-name.html">Get a name →</a>
           <a class="btn btn-ghost" href="/spec.html">Read the specification</a>
         </div>
-
-        <div class="handle-fig">
-          <div class="bar"><span class="lamp"></span> resolve · <span class="name">PublicAgent.ann@gmail.com</span></div>
-<pre><span class="k">handle </span> <span class="name">PublicAgent.ann@gmail.com</span>
-<span class="k">bound  </span> <span class="ok">✓ agent-key</span>       <span class="k">presence</span> <span class="ok">online</span>
-<span class="k">reach  </span> <span class="addr">agentmesh</span> · agent <span class="addr">UD653KLV…</span> @ node <span class="addr">UB2FF…</span></pre>
-        </div>
       </div>
 
-      <!-- WHAT A HANDLE IS -->
       <section class="band">
         <div class="wrap">
-          <p class="kicker">the shape</p>
-          <h2>A handle is a name on your email</h2>
-          <p>A handle is one string: a name you pick, a dot, and the email you already
-            own. <span class="mono amber">PublicAgent.ann@gmail.com</span> is the agent
-            called PublicAgent, run by whoever controls that inbox. Looking a handle up
-            matches the whole string, and nothing parses it into parts, so any name works,
-            dots included. Each handle has one owner, and the first to claim it gets it.</p>
-        </div>
-      </section>
-
-      <!-- WHY EMAIL -->
-      <section class="band">
-        <div class="wrap">
-          <p class="kicker">the anchor</p>
-          <h2>Why names are anchored to email</h2>
-          <p>Most people who run a personal agent have an email address and nothing
-            else: no domain, no certificates, no operations team. So Personal Agent Naming
-            roots every name in the one credential they already hold. Whoever controls the
-            inbox controls the names under it, and a handle lasts as long as its owner can
-            keep proving that control. An email is also how people already know each other,
-            so a handle tells a reader something true at a glance: which mailbox stands
-            behind this agent.</p>
-          <p>A handle gives your agent an address. Carrying messages to that address is the
-            job of the protocol behind it, such as <a href="https://agentmessaging.ai/">Agent
-            Messaging</a>.</p>
-        </div>
-      </section>
-
-      <!-- TRUST IN BRIEF -->
-      <section class="band">
-        <div class="wrap">
-          <p class="kicker">trust, in brief</p>
-          <h2>You can check who is behind a name</h2>
-          <p>A resolved handle comes back as a card: the agent's verified address, the
-            operator's public display name, and the binding that ties the name to the
-            agent's own key. The registrar signs every card, so a client can check that a
-            card is genuine, and clients remember what they saw, so a change in the agent
-            behind a name shows up instead of passing silently. The
-            <a href="/trust.html">trust page</a> says exactly what a handle proves and what
-            it does not.</p>
-        </div>
-      </section>
-
-      <!-- OPEN -->
-      <section class="band">
-        <div class="wrap">
-          <p class="kicker">an open standard</p>
-          <h2>Anyone can run a registrar</h2>
-          <p>A registrar witnesses claims, keeps the record and answers lookups. The
-            <a href="/spec.html">specification</a> is open, any registrar that follows it can
-            hold names, and a name can move from one registrar to another without changing.
-            Someone who owns the domain in their address can serve their own records, and
-            those records outrank any registrar's.</p>
-          <p>AgentMesh, the sponsor of the standard, runs a registrar today. Its software is open source, so anyone can run one too: the <a href="https://github.com/AgentNaming/pan-registrar">Personal Agent Naming registrar</a>, under the Apache 2.0 license.</p>
-          <div class="cta">
-            <a class="btn btn-signal" href="/get-a-name.html">Get a name →</a>
-            <a class="btn btn-ghost" href="/implementers.html">For implementers</a>
+          <h2>There are several ways to name an agent</h2>
+          <figure class="fan-box">
+            <svg class="fan fan-wide" viewBox="0 0 1100 554" aria-hidden="true" focusable="false"><defs><marker id="fa-w" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fn-ah"/></marker></defs><line class="fn-ln" x1="550.0" y1="288.0" x2="550.0" y2="112" marker-end="url(#fa-w)"/><line class="fn-ln" x1="435.0" y1="300" x2="344" y2="194.0" marker-end="url(#fa-w)"/><line class="fn-ln" x1="435.0" y1="333.5" x2="344" y2="344.0" marker-end="url(#fa-w)"/><line class="fn-ln" x1="435.0" y1="360" x2="344" y2="494.0" marker-end="url(#fa-w)"/><line class="fn-ln" x1="665.0" y1="300" x2="756" y2="194.0" marker-end="url(#fa-w)"/><line class="fn-ln" x1="665.0" y1="333.5" x2="756" y2="344.0" marker-end="url(#fa-w)"/><line class="fn-ln" x1="665.0" y1="360" x2="756" y2="494.0" marker-end="url(#fa-w)"/><rect class="fn-c" x="435.0" y="288.0" width="230" height="84" rx="16"/><text class="fn-ct" x="550.0" y="330.0" text-anchor="middle" dominant-baseline="central">Agent Naming</text><rect class="fn-b ours" x="382.0" y="2" width="336" height="108" rx="14"/><text class="fn-nm" x="550.0" y="42.5" text-anchor="middle" dominant-baseline="central">Personal Agent Naming</text><text class="fn-ph" x="550.0" y="69.5" text-anchor="middle" dominant-baseline="central">with only an email address</text><rect class="fn-b" x="2" y="142" width="336" height="108" rx="14"/><text class="fn-nm" x="170.0" y="169.0" text-anchor="middle" dominant-baseline="central">did:web and</text><text class="fn-nm" x="170.0" y="196.0" text-anchor="middle" dominant-baseline="central">A2A agent cards</text><text class="fn-ph" x="170.0" y="223.0" text-anchor="middle" dominant-baseline="central">for an organization&#x27;s own domain</text><rect class="fn-b" x="2" y="292" width="336" height="108" rx="14"/><text class="fn-nm" x="170.0" y="332.5" text-anchor="middle" dominant-baseline="central">ANS</text><text class="fn-ph" x="170.0" y="359.5" text-anchor="middle" dominant-baseline="central">domain names backed by a registry</text><rect class="fn-b" x="2" y="442" width="336" height="108" rx="14"/><text class="fn-nm" x="170.0" y="482.5" text-anchor="middle" dominant-baseline="central">SPIFFE</text><text class="fn-ph" x="170.0" y="509.5" text-anchor="middle" dominant-baseline="central">inside your own infrastructure</text><rect class="fn-b" x="762" y="142" width="336" height="108" rx="14"/><text class="fn-nm" x="930.0" y="169.0" text-anchor="middle" dominant-baseline="central">Registries, such as</text><text class="fn-nm" x="930.0" y="196.0" text-anchor="middle" dominant-baseline="central">the MCP registry</text><text class="fn-ph" x="930.0" y="223.0" text-anchor="middle" dominant-baseline="central">to be listed and found</text><rect class="fn-b" x="762" y="292" width="336" height="108" rx="14"/><text class="fn-nm" x="930.0" y="332.5" text-anchor="middle" dominant-baseline="central">ENS and ERC-8004</text><text class="fn-ph" x="930.0" y="359.5" text-anchor="middle" dominant-baseline="central">ownership on a blockchain</text><rect class="fn-b" x="762" y="442" width="336" height="108" rx="14"/><text class="fn-nm" x="930.0" y="482.5" text-anchor="middle" dominant-baseline="central">did:key</text><text class="fn-ph" x="930.0" y="509.5" text-anchor="middle" dominant-baseline="central">just a key, no name</text></svg>
+            <svg class="fan fan-narrow" viewBox="0 0 360 735" aria-hidden="true" focusable="false"><defs><marker id="fa-n" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="fn-ah"/></marker></defs><line class="fn-ln" x1="22" y1="70" x2="22" y2="695.5"/><line class="fn-ln" x1="22" y1="131.5" x2="44" y2="131.5" marker-end="url(#fa-n)"/><line class="fn-ln" x1="22" y1="230.0" x2="44" y2="230.0" marker-end="url(#fa-n)"/><line class="fn-ln" x1="22" y1="328.5" x2="44" y2="328.5" marker-end="url(#fa-n)"/><line class="fn-ln" x1="22" y1="413.5" x2="44" y2="413.5" marker-end="url(#fa-n)"/><line class="fn-ln" x1="22" y1="512.0" x2="44" y2="512.0" marker-end="url(#fa-n)"/><line class="fn-ln" x1="22" y1="610.5" x2="44" y2="610.5" marker-end="url(#fa-n)"/><line class="fn-ln" x1="22" y1="695.5" x2="44" y2="695.5" marker-end="url(#fa-n)"/><rect class="fn-c" x="2" y="2" width="356" height="66" rx="16"/><text class="fn-ct n" x="180.0" y="35.0" text-anchor="middle" dominant-baseline="central">Agent Naming</text><rect class="fn-b ours" x="48" y="96" width="310" height="71" rx="14"/><text class="fn-nm n" x="203.0" y="118.0" text-anchor="middle" dominant-baseline="central">Personal Agent Naming</text><text class="fn-ph n" x="203.0" y="145.0" text-anchor="middle" dominant-baseline="central">with only an email address</text><rect class="fn-b" x="48" y="181" width="310" height="98" rx="14"/><text class="fn-nm n" x="203.0" y="203.0" text-anchor="middle" dominant-baseline="central">did:web and</text><text class="fn-nm n" x="203.0" y="230.0" text-anchor="middle" dominant-baseline="central">A2A agent cards</text><text class="fn-ph n" x="203.0" y="257.0" text-anchor="middle" dominant-baseline="central">for an organization&#x27;s own domain</text><rect class="fn-b" x="48" y="293" width="310" height="71" rx="14"/><text class="fn-nm n" x="203.0" y="315.0" text-anchor="middle" dominant-baseline="central">ANS</text><text class="fn-ph n" x="203.0" y="342.0" text-anchor="middle" dominant-baseline="central">domain names backed by a registry</text><rect class="fn-b" x="48" y="378" width="310" height="71" rx="14"/><text class="fn-nm n" x="203.0" y="400.0" text-anchor="middle" dominant-baseline="central">SPIFFE</text><text class="fn-ph n" x="203.0" y="427.0" text-anchor="middle" dominant-baseline="central">inside your own infrastructure</text><rect class="fn-b" x="48" y="463" width="310" height="98" rx="14"/><text class="fn-nm n" x="203.0" y="485.0" text-anchor="middle" dominant-baseline="central">Registries, such as</text><text class="fn-nm n" x="203.0" y="512.0" text-anchor="middle" dominant-baseline="central">the MCP registry</text><text class="fn-ph n" x="203.0" y="539.0" text-anchor="middle" dominant-baseline="central">to be listed and found</text><rect class="fn-b" x="48" y="575" width="310" height="71" rx="14"/><text class="fn-nm n" x="203.0" y="597.0" text-anchor="middle" dominant-baseline="central">ENS and ERC-8004</text><text class="fn-ph n" x="203.0" y="624.0" text-anchor="middle" dominant-baseline="central">ownership on a blockchain</text><rect class="fn-b" x="48" y="660" width="310" height="71" rx="14"/><text class="fn-nm n" x="203.0" y="682.0" text-anchor="middle" dominant-baseline="central">did:key</text><text class="fn-ph n" x="203.0" y="709.0" text-anchor="middle" dominant-baseline="central">just a key, no name</text></svg>
+            <ul class="sr-only">
+              <li>Personal Agent Naming: with only an email address.</li>
+              <li>did:web and A2A agent cards: for an organization's own domain.</li>
+              <li>ANS: domain names backed by a registry.</li>
+              <li>SPIFFE: inside your own infrastructure.</li>
+              <li>Registries, such as the MCP registry: to be listed and found.</li>
+              <li>ENS and ERC-8004: ownership on a blockchain.</li>
+              <li>did:key: just a key, no name.</li>
+            </ul>
+          </figure>
+          <div class="prose">
+            <p class="ours"><a href="/spec.html"><b>Personal Agent Naming</b></a> gives an agent a name
+              built from its owner's email address, such as <span class="mono">scout.raj@example.com</span>.
+              It is the right choice when people need to say the name, pass it on and reach the agent with it,
+              and it works with any email address, personal or company.</p>
+            <p><a href="https://w3c-ccg.github.io/did-method-web/"><b>did:web</b></a> puts an agent's identifier on a website
+              domain, and an <a href="https://a2a-protocol.org/"><b>A2A agent card</b></a> is a file at a standard address on
+              that domain that describes the agent. Both suit an organization that runs its own domain and
+              wants to publish its agents there.</p>
+            <p><a href="https://datatracker.ietf.org/doc/draft-narajala-courtney-ansv2/"><b>ANS</b></a>, the Agent Name Service, builds an agent's name on its owner's domain and
+              registers it with an ANS registry. The registry checks that the owner controls the domain and
+              issues certificates for the agent, so it suits organizations that want that check behind their
+              agents' names.</p>
+            <p><a href="https://spiffe.io/"><b>SPIFFE</b></a> gives each running service an identity inside one
+              organization's infrastructure, backed by short-lived credentials. It is the right choice when
+              your own services need to identify each other.</p>
+            <p>Registries, such as the <a href="https://registry.modelcontextprotocol.io/"><b>MCP registry</b></a>, list agents
+              and tools so that others can find them. Use one when being found matters, alongside whatever name
+              the agent already has.</p>
+            <p><a href="https://ens.domains/"><b>ENS</b></a> names and <a href="https://eips.ethereum.org/EIPS/eip-8004"><b>ERC-8004</b></a>
+              entries are recorded on a blockchain, where the account that holds a name owns it. They suit owners
+              who want ownership on a public ledger.</p>
+            <p><a href="https://w3c-ccg.github.io/did-key-spec/"><b>did:key</b></a> is an identifier made directly from a
+              public key. It suits software that only needs to check an agent's signatures, when nobody needs a
+              name to remember.</p>
+            <p class="close">One agent can have several of these names, and all of them lead to the same agent.</p>
           </div>
-          <div class="docs">
-            <a href="/why-names.html"><div class="h">/ why</div><h3>Why names</h3><p>Personal agents are the most numerous agents there are, and almost none has a name.</p></a>
-            <a href="/reach.html"><div class="h">/ resolve</div><h3>How a name is resolved</h3><p>A handle resolves to a signed card that lists where the agent can be reached.</p></a>
-            <a href="/trust.html"><div class="h">/ trust</div><h3>Trust and privacy</h3><p>What a handle proves, what it does not, and why the log is private.</p></a>
-          </div>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <h2>Anyone with an email address can get a name</h2>
+          <ul class="plain">
+            <li><a href="/get-a-name.html">Get a name</a> for your agent.</li>
+            <li><a href="/spec.html">Read the specification</a> to see exactly how names work.</li>
+            <li><a href="/reach.html">See how a name is resolved</a> to the places your agent can be reached.</li>
+            <li><a href="https://commonagent.net/">Visit the Common Agent Standards</a>, the family this standard belongs to.</li>
+          </ul>
         </div>
       </section>
 
@@ -180,9 +177,8 @@
           <a href="/implementers.html">For implementers</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/naming">The specification's source</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/naming/site">This site's source</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
           <a href="https://agentmessaging.ai/">agentmessaging.ai</a>
-          <a href="https://agentmesh.ai/">agentmesh.ai</a>
-          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
         </div>
       </footer>
 

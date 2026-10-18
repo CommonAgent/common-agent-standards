@@ -15,6 +15,11 @@ export const SITE_REPO_URL = "https://github.com/CommonAgent/common-agent-standa
 
 const chev = `<svg class="sn-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
+// The front page names the standard's family and leaves the sponsor to the
+// other pages, so it reads as a neutral introduction to agent naming.
+const FOOT = `An open standard for naming personal agents.<br>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.`;
+const HOME_FOOT = `An open standard for naming personal agents, and one of the <a href="https://commonagent.net/">Common Agent Standards</a>.`;
+
 export function rail(active) {
   const a = (href, label, key) =>
     `<a${key && key === active ? ' class="on"' : ""} href="${href}">${label}</a>`;
@@ -48,9 +53,22 @@ export function rail(active) {
           `<a href="https://agentmessaging.ai/">Agent Messaging ↗</a>`,
         ])}
       </nav>
-      <div class="sn-foot">An open standard for naming personal agents.<br>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+      <div class="sn-foot">${active === "home" ? HOME_FOOT : FOOT}</div>
     </aside>`;
 }
+
+export const footerFor = (active) => active === "home" ? `<footer>
+        <div class="wrap">
+          <span>Personal Agent Naming</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/get-a-name.html">Get a name</a>
+          <a href="/implementers.html">For implementers</a>
+          <a href="${SPEC_REPO_URL}">The specification's source</a>
+          <a href="${SITE_REPO_URL}">This site's source</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <a href="https://agentmessaging.ai/">agentmessaging.ai</a>
+        </div>
+      </footer>` : footer;
 
 export const footer = `<footer>
         <div class="wrap">
@@ -74,7 +92,7 @@ export const PAGES = {
 
 export function apply(html, active) {
   const a = html.replace(/<aside class="rail sidenav"[\s\S]*?<\/aside>/, rail(active));
-  return a.replace(/<footer>[\s\S]*?<\/footer>/, footer);
+  return a.replace(/<footer>[\s\S]*?<\/footer>/, footerFor(active));
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
