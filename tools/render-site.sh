@@ -7,7 +7,7 @@
 #
 # <id> is a standards.json entry. common-agent has its own script,
 # common-agent/site/deploy.sh, because commonagent.net also carries the suite's
-# front page; this script renders the others (messaging, naming, processes and rfp):
+# front page; this script renders the others (messaging, naming, processes, rfp and sow):
 #
 #   1. copies the hand-written pages of <folder>/site (everything but tools/)
 #      into the staging folder,

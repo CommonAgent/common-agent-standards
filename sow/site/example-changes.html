@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example: changes, disputes and signatures: Agent SoW</title>
+  <meta name="description" content="The second half of the bookkeeping example: change control, termination, disputes, review, confidentiality and the owners' signatures.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent SoW">
+  <meta property="og:title" content="Example: changes, disputes and signatures: Agent SoW">
+  <meta property="og:description" content="The second half of the bookkeeping example: change control, termination, disputes, review, confidentiality and the owners' signatures.">
+  <meta property="og:url" content="https://agentsow.com/example-changes.html">
+  <meta property="og:image" content="https://agentsow.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent SoW. A statement of work between two parties whose agents do recurring work together, with every clause graded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentsow.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentsow.com/example-changes.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent SoW, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="6.5" y="3.5" width="19" height="25" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 11h10" stroke="var(--mint)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 16h10" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 21h6" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round"/></svg><span class="wm">Agent <b>SoW</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent SoW">
+        <details class="sec" open>
+          <summary>Agent SoW<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/clauses.html">What goes in the document</a>
+          <a href="/pricing.html">How the work is priced</a>
+          <a href="/signing.html">Who is allowed to sign</a>
+          <a href="/lifecycle.html">How a document becomes binding</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Examples and uses<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/example.html">Example: a bookkeeping engagement</a>
+          <a href="/example-changes.html" class="on" aria-current="page">Example: changes, disputes and signatures</a>
+          <a href="/internal.html">Internal SoWs</a>
+          <a href="/catalog.html">Agent catalogs</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-terms.html">A2A Terms extension</a>
+          <a href="/spec-a2a-interview.html">A2A Interview extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/sow/conformance">Conformance fixtures<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/sow">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent SoW is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>Example: changes, disputes and signatures</h1>
+          <p>This page continues the countersigned Agent SoW between Granite and Petrel from <a href="/example.html">Example: a bookkeeping engagement</a>. These clauses say how the document changes, how it ends, what happens when the work is contested, and how it was signed.</p>
+          <div class="doc-meta">
+            <span>document <b>sow_k7m2q4x9w3e6r8t1</b></span>
+            <span>version <b>1</b>, with no amendments</span>
+            <span>state <b>active</b></span>
+          </div>
+
+          <section class="clause" id="change-control">
+            <div>
+              <h2><span class="num">8</span>Change control</h2>
+              <p>Either owner may propose an amendment, and an amendment replaces this whole document at the next version number. The replacement carries one signature, the proposer's. One signature makes it a change request: it has no force, and version 1 keeps governing every task while the request is open. Only one may be open at a time.</p>
+              <p>The other owner resolves it in one of four ways. <b>Approve</b>, by countersigning the proposed bytes exactly. <b>Deny</b>, with a stated reason, because a denial without a reason is not recorded as a denial at all. <b>Counter-propose</b>, which is how to accept the scope change while refusing the price change, since there are no partial approvals. Or leave it, and it lapses after <b>7 days</b> while version 1 continues. The proposer may withdraw it before any of that happens, and the withdrawal is recorded like the other outcomes.</p>
+              <p>This document also states who is allowed to do the signing:</p>
+              <div class="tablebox">
+                <table class="t">
+                  <thead><tr><th>Act</th><th>Authority</th><th>What that means here</th></tr></thead>
+                  <tbody>
+                    <tr><td>formation</td><td><code>agent</code></td><td>Petrel's agent countersigned Granite's standing terms on its own, and Marisol was not at a keyboard.</td></tr>
+                    <tr><td>amendment</td><td><code>person</code></td><td>A new rate or a wider scope waits for the approving owner to confirm it personally, with a credential that attests they were present: Marisol for Petrel, and D. Okafor for Stonework.</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <p class="sub">In the signed document this is one line inside the change control clause, <code>"approval": { "formation": "agent", "amendment": "person" }</code>, which is what the specification assumes when a document says nothing. What the confirmation proves is bounded: a verified human was present and confirmed. It does not prove they read the document or understood it.</p>
+              <p class="sub">Amendments raise the version number, and every earlier version stays on record. Where an amendment moves the price or the scope, the settlement instruments are re-derived at approval, so work admitted under version 1 stays priced under version 1.</p>
+            </div>
+            <aside class="machine">
+              <p class="mt">What the machine does</p>
+              <p class="note"><span class="grade c-mint">enforced</span><br>Nothing changes on a node until its own side signs. A runtime never applies a version its owner has not signed.</p>
+              <p class="note"><span class="grade c-mint">enforced</span><br>An amendment approval is held pending on the approving side's node until the human confirms it. When Granite proposes a new rate, that is Marisol's node. Unconfirmed, the approval lapses with the same 7-day window. Where a deployment cannot hold an approval pending, the confirmation is only a record and the grade drops to evidence.</p>
+            </aside>
+          </section>
+
+          <section class="clause" id="termination">
+            <div>
+              <h2><span class="num">9</span>Termination</h2>
+              <ul>
+                <li><b>For convenience</b>, with 24 hours' notice. Tasks already in flight run to completion and are paid.</li>
+                <li><b>Immediately</b>, on a failed obligation, such as an unpaid settlement, repeated malformed deliverables or misuse of the shared receipts folder. Tasks in flight are canceled, and the reason for the cancellation is recorded.</li>
+              </ul>
+            </div>
+            <aside class="machine">
+              <p class="mt">What the machine does</p>
+              <p class="note"><span class="grade c-mint">enforced</span><br>Termination takes effect at the next message. The engagement's grants stop applying, and the sender is back at the limits for strangers. Cancellation reasons come from a fixed vocabulary.</p>
+            </aside>
+          </section>
+
+          <section class="clause" id="disputes">
+            <div>
+              <h2><span class="num">10</span>Disputes</h2>
+              <p>The parties chose one of the four dispute postures the specification defines:</p>
+              <ul class="enum">
+                <li><span class="opt">none</span>Payments are final, and a disagreement ends the engagement at most.</li>
+                <li class="chosen"><span class="opt">refund_on_failed_task</span>A task that fails, or completes without its named deliverables in the agreed forms, is refunded in full through clearing. No argument about quality is required, because the machine's completion check decides.</li>
+                <li><span class="opt">escalate_to_owners</span>The owners read the signed task history together and settle it as people.</li>
+                <li><span class="opt">arbiter</span>Both parties name an independent arbiter agent in the document and commit in advance to accept its verdict on the disputed amount.</li>
+              </ul>
+              <p class="sub">Judgment about quality, beyond the form of the work, belongs to review and to reputation, which read the same evidence.</p>
+            </div>
+            <aside class="machine">
+              <p class="mt">What the machine does</p>
+              <p class="note"><span class="grade c-blue">evidence</span><br>Every envelope is signed, the task history is intact, and each agent keeps a tamper-evident audit chain with an export that can be verified offline. A dispute is settled by reading the records.</p>
+              <p class="note"><span class="grade c-blue">evidence</span><br>Under section 8.2 of the specification, the refund is graded enforced only where clearing reverses a payment on signed evidence without the provider's cooperation. This deployment's clearing does not, so the grade is evidence.</p>
+            </aside>
+          </section>
+
+          <section class="clause" id="review">
+            <div>
+              <h2><span class="num">11</span>Review and acceptance</h2>
+              <p>Clause 10 covers failure. This clause covers judgment, which is a different thing: a task can arrive complete and on time, with both artifacts in the agreed formats, and still be wrong about the business.</p>
+              <p>At the end of any task, and at the end of the engagement, Marisol may record a <b>review</b>: acceptance, or rejection with a stated reason. A review is signed, it names the task or engagement it judges, and it is append-only. If she changes her mind, she records a second review, and the first stays as it was. A rejection without a reason is not a review and carries no weight anywhere.</p>
+              <p>A review never stands in for the facts. "Rejected, but both artifacts arrived on the 3rd in the agreed formats" is a legible state, and anything that renders this engagement shows both halves.</p>
+              <p class="sub">Petrel is not obliged to review anything, and silence is not acceptance. An unreviewed month has not been accepted, and no runtime may count it as a satisfied one. The specification keeps review outside the clause list (<a href="/spec.html#s15">section 15 of the specification</a>) because the judgment is made after the work, while the clauses are agreed before it. It appears here because these two parties said they would use it.</p>
+            </div>
+            <aside class="machine">
+              <p class="mt">What the machine does</p>
+              <p class="note"><span class="grade c-blue">evidence</span><br>Reviews are signed by the owner and appended to the same evidence chain as the task history, so a later reader sees the judgment next to the form check that came before it.</p>
+              <p class="note"><span class="grade c-blue">evidence</span><br>A missing review is evidence of nothing. A conforming runtime must not turn Petrel's silence into implied acceptance, and settlement under clause 10 is unaffected either way.</p>
+            </aside>
+          </section>
+
+          <section class="clause" id="confidentiality">
+            <div>
+              <h2><span class="num">12</span>Confidentiality and retention</h2>
+              <p>Two kinds of protection apply, and this document states which is which.</p>
+              <p><b>The runtime enforces</b> that all traffic under this engagement is sealed between the two agents, so intermediaries carry bytes they cannot read. Both parties retain task content for at most <b>30 days</b> after the task completes. Retention beyond the default must be declared, and here neither party declares it.</p>
+              <p><b>The provider promises</b> that client data is not used to train models, is not shared with any third party, and is not read by any person except during a dispute under clause 10. The machine cannot check these promises. They are recorded in the signed document, and a broken recorded promise is what reputation exists to punish.</p>
+            </div>
+            <aside class="machine">
+              <p class="mt">What the machine does</p>
+              <p class="note"><span class="grade c-mint">enforced</span><br>Pairwise sealing is on for this pair. Content is ephemeral by default, so the 30-day retention is a declared exception.</p>
+              <p class="note"><span class="grade c-amber">recorded</span><br>No training, no sharing with third parties and no reading by people. These are signed, timestamped and citable, and their breach is answered by consequence in reputation, since no code can stop it.</p>
+            </aside>
+          </section>
+
+          <section class="clause solo" id="signatures">
+            <div>
+              <h2><span class="num">13</span>Signatures</h2>
+              <p class="sub">The owners sign the canonical form of this document with their account keys. Each agent's node holds the countersigned copy and enforces from it, and there is no central contract server.</p>
+              <div class="sigs">
+                <div class="sig">
+                  <div class="who">D. Okafor, for Stonework Analytics (provider)</div>
+                  signed 2026-08-04T14:02:11Z<br>
+                  key UAOKF5W2QMZJ7X3TENB4CVHY6DSLGP2RAU5IRQT4LXW3MKEAZJ6B7CDM<br>
+                  sig kQ7vX2mZhJ4tYw9cRbN8fL3aG6pDsE1uVoI5nK0jTqHxAyPzW8eM4rSdUgB2hF7lC9vJ3mX6bZkQ0wNtR5yA==
+                </div>
+                <div class="sig">
+                  <div class="who">Marisol Vega, for Harbor &amp; Line Outfitters (client)</div>
+                  signed 2026-08-04T16:47:36Z<br>
+                  key UBVGA3E6TKZQ2W7XJMB5CNHY4DPSLF3OAU6IR5TQLXW2MKEAZJ7B4CDR<br>
+                  sig Xw3nT8kJqZ5vY2mRbC9fL4aG7pDsE0uVoI6nK1jHxAyPzW9eM5rSdUgB3hF8lC0vJ4mX7bZkQ1wNtR6yAdQ==
+                </div>
+              </div>
+              <p class="sig-canonical">signed bytes: <b>agent-sow-v1</b> + newline + the JCS canonical JSON of this document without its signatures<br>
+              canonical sha-256: 8f4c1a9e2b7d6035e8a1f4c29b3d75e60a8f2c41d9b7e3506a2c8f14e9b3d726</p>
+            </div>
+          </section>
+
+          <p class="foot-note">This is an illustrative example of an Agent SoW, a statement of work between two agents in which every clause is labeled with what the runtime can do about it. Enforced clauses are refused mechanically when violated. Evidence clauses leave signed records. Recorded clauses are promises whose breach reputation punishes. The parties, keys, amounts and signatures on these two pages are invented.</p>
+          <p class="next">Next: <a href="/internal.html">Internal SoWs</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent SoW</a>
+          <a href="/clauses.html">What goes in the document</a>
+          <a href="/pricing.html">How the work is priced</a>
+          <a href="/example.html">Example: a bookkeeping engagement</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/sow">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
