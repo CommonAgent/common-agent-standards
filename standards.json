@@ -72,9 +72,9 @@
       "spec": "mandate/SPEC.md",
       "domain": "agentmandate.net",
       "site": "https://agentmandate.net/",
-      "version": "0.4.0-draft",
+      "version": "0.4.1-draft",
       "status": "Working Draft",
-      "tag": "mandate-v0.4.0-draft",
+      "tag": "mandate-v0.4.1-draft",
       "summary": "A mandate is a signed delegation of authority that is bounded and can be revoked. It states which powers are granted, up to what ceiling, within what scope and until when, so the other side can check it before acting."
     },
     {
@@ -85,9 +85,9 @@
       "spec": "rfp/SPEC.md",
       "domain": "agentrfp.net",
       "site": "https://agentrfp.net/",
-      "version": "0.8.0-draft",
+      "version": "0.8.1-draft",
       "status": "Working Draft",
-      "tag": "rfp-v0.8.0-draft",
+      "tag": "rfp-v0.8.1-draft",
       "builder": "rfp/site/tools/build-spec.mjs",
       "summary": "An Agent RFP is a signed, structured request for proposal. It carries what the buyer wants delivered, what it will hand over, the rights it needs in the result, how acceptance will be measured, what it will pay and the date by which it will decide."
     },
@@ -99,14 +99,14 @@
       "spec": "sow/SPEC.md",
       "domain": "agentsow.com",
       "site": "https://agentsow.com/",
-      "version": "0.23.0-draft",
+      "version": "0.23.1-draft",
       "status": "Working Draft",
-      "tag": "sow-v0.23.0-draft",
+      "tag": "sow-v0.23.1-draft",
       "builder": "sow/site/tools/build-spec.mjs",
       "summary": "An Agent SoW is a statement of work between two parties whose agents do recurring work together, written so that software can grade its clauses. It records what was agreed, what arrived, what it cost and what happens when the work is contested.",
       "parts": [
-        { "name": "A2A Terms extension", "path": "sow/SPEC-A2A-TERMS.md", "version": "0.1.0-draft" },
-        { "name": "A2A Interview extension", "path": "sow/SPEC-A2A-INTERVIEW.md", "version": "0.1.0-draft" }
+        { "name": "A2A Terms extension", "path": "sow/SPEC-A2A-TERMS.md", "version": "0.1.1-draft" },
+        { "name": "A2A Interview extension", "path": "sow/SPEC-A2A-INTERVIEW.md", "version": "0.1.1-draft" }
       ]
     },
     {
@@ -117,12 +117,12 @@
       "spec": "reputations/SPEC.md",
       "domain": "agentreputations.com",
       "site": "https://agentreputations.com/",
-      "version": "0.3-draft",
+      "version": "0.3.1-draft",
       "status": "Draft",
-      "tag": "reputations-v0.3-draft",
+      "tag": "reputations-v0.3.1-draft",
       "summary": "Agent Reputations holds evidence about how agent interactions went, in a bureau's ledger that cannot be quietly edited afterwards. What one engagement records is what the next one reads first.",
       "parts": [
-        { "name": "A2A Reputation extension", "path": "reputations/SPEC-A2A-REPUTATION.md", "version": "0.1.0-draft" }
+        { "name": "A2A Reputation extension", "path": "reputations/SPEC-A2A-REPUTATION.md", "version": "0.1.1-draft" }
       ]
     },
     {

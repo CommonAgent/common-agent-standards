@@ -1,13 +1,13 @@
 # Agent Mandate Specification
 
-**Version:** 0.4.0-draft
+**Version:** 0.4.1-draft
 **Status:** Working Draft
-**Date:** 2026-08-07
+**Date:** 2026-10-18
 
 A **mandate** is authority, delegated in writing: a principal states who may
 act on its behalf, for what, up to what limit, until when. An **Agent
 Mandate** is that document for organizations whose software agents do the
-work. It gives the organization itself a verifiable identity on the mesh,
+work. It gives the organization itself a verifiable identity on the network,
 and it gives the people who act for the organization signed, bounded,
 revocable authority to do so.
 
@@ -15,8 +15,8 @@ This specification is the corporate companion to the
 [Agent SoW](https://agentsow.com) and [Agent RFP](https://agentrfp.net)
 specifications. Those define how work is offered, asked for, and bound;
 this one defines who is entitled to bind an organization, and how a
-counterparty checks. It is transport-neutral, developed alongside Agent Messaging
-(formerly the AgentMesh Protocol); nothing here requires a particular network or vendor.
+counterparty checks. It is transport-neutral, developed alongside Agent Messaging;
+nothing here requires a particular network or vendor.
 
 ---
 
@@ -207,7 +207,7 @@ verify is.
 ## 5. The charter
 
 A charter exists to make the organization a principal a machine can
-check. It is written once, when the organization first comes to the mesh:
+check. It is written once, when the organization first comes to the network:
 the allocators sign it, the administrator files it with a registry, and
 the registry verifies domain control before hosting it. From then on it
 is the anchor everything else refers to: every mandate names the
@@ -558,7 +558,7 @@ keys, on their own domain, signed the delegations its people act under.
 ## 12. Out of scope
 
 - Org charts, titles, reporting lines, HR semantics. A title on a mandate
-  is prose. The mesh needs to know who may bind the entity and within
+  is prose. The network needs to know who may bind the entity and within
   what limits, and nothing else about the pyramid. The two roles this
   document does define, allocator and administrator, are positions the
   standard itself requires, not the start of an org chart.
@@ -682,3 +682,15 @@ which text a deployment was built against. Agent SoW 0.8.0-draft and Agent
 RFP 0.3.0-draft carry the same rule; Agent SoW additionally withdraws an
 instruction in its 0.7.0-draft entry that told implementations to re-derive
 stored identifiers.*
+
+*0.4.0-draft (2026-09-01): the check at a resource proxy (§7.1). A client
+agent answering a provider's requests under a proxy grant MAY require a
+mandate in force for any mutating act, checked as §7 checks it, which makes
+the mandate enforced at a resource boundary no vendor had to integrate
+with.*
+
+*0.4.1-draft (2026-10-18): editorial, with no normative change. The text names
+no platform: Agent Messaging is no longer given a former name, and "the
+mesh" reads "the network". The 0.4.0-draft entry above, missing from this
+text, is restored. No requirement, field, example, or section number
+changes.*
