@@ -43,8 +43,8 @@ The terms are these. The third column says who states each one, which decides wh
 | Term | What it carries | Stated by |
 |------|-----------------|-----------|
 | `ca:profile` | The version of this profile the entry follows, such as `"0.1.0-draft"`. | publisher |
-| `ca:subject` | The identity of the agent the entry describes (Section 11). | publisher |
-| `ca:agentdoc` | Where the agent's AgentDoc is served (Section 11). | publisher |
+| `ca:subject` | The identity of the agent the entry describes (Section 10). | publisher |
+| `ca:agentdoc` | Where the agent's AgentDoc is served (Section 10). | publisher |
 | `ca:offers` | The offers derived from the agent's standing proposals (Section 3). | publisher |
 | `ca:liveness` | Where to ask whether the agent is reachable (Section 5). | publisher |
 | `ca:audience` | Who may see the entry (Section 9). | publisher |
@@ -239,7 +239,19 @@ ARD leaves the signing procedure to the trust framework an entry declares in `tr
 3. **A catalog keeps the audience.** A catalog MUST NOT return an entry in search, list it in a manifest, return it through federation, or show it on a page to anyone outside its audience. It MUST NOT pass an entry to another registry with a wider audience than the entry states.
 4. **A directed offer stays private.** An offer from a directed standing proposal never appears on a `public` or `unlisted` entry (Section 3, rule 2).
 
-## 10. Conformance
+## 10. The link to the AgentDoc
+
+An entry describes a listing, and the agent's AgentDoc assembles everything checkable about the agent itself, each part with its source (the Common Agent Specification, Section 9). An entry for an agent SHOULD carry both of these members:
+
+- `ca:subject`: the agent's identity key, written as a `did:key`.
+- `ca:agentdoc`: `{ "url", "page" }`, where `url` serves the AgentDoc as JSON and `page` serves its human rendering (the Common Agent Specification, Sections 9.2 and 9.8).
+
+1. The AgentDoc's `subject.id` MUST denote the same key as `ca:subject`.
+2. An entry for an Agent Package MAY link the package AgentDoc, which has no subject (the Common Agent Specification, Section 13.4), and then MUST NOT carry `ca:subject`.
+3. An AgentDoc assembler MAY list the entry as a source of kind `listing` (the Common Agent Specification, Section 9.4). It fills `sells` from the standing proposals themselves, and treats the entry's offers as a projection of them.
+4. Where the entry and the AgentDoc disagree, for example where an offer quotes a rate the AgentDoc's `sells` does not, a reader MUST report the disagreement and MUST NOT merge the two.
+
+## 11. Conformance
 
 **A catalog** that follows this profile MUST:
 
@@ -259,21 +271,9 @@ ARD leaves the signing procedure to the trust framework an entry declares in `tr
 3. show a reputation figure only with its context (Section 4, rule 3);
 4. ask a presence source before relying on an agent being reachable, and never read `ca:lastSeen` as current (Section 5);
 5. remove the catalog annotations and ARD's result members before verifying an entry proof (Section 8), and verify a manifest proof against the catalog's own DID document;
-6. report a disagreement between an entry and the AgentDoc it links to, and keep the two apart (Section 11).
+6. report a disagreement between an entry and the AgentDoc it links to, and keep the two apart (Section 10).
 
 **A publisher** that follows this profile signs its entries as Section 8 says, states `ca:audience` on every entry it publishes, and derives every offer from its own signed standing proposal.
-
-## 11. The link to the AgentDoc
-
-An entry describes a listing, and the agent's AgentDoc assembles everything checkable about the agent itself, each part with its source (the Common Agent Specification, Section 9). An entry for an agent SHOULD carry both of these members:
-
-- `ca:subject`: the agent's identity key, written as a `did:key`.
-- `ca:agentdoc`: `{ "url", "page" }`, where `url` serves the AgentDoc as JSON and `page` serves its human rendering (the Common Agent Specification, Sections 9.2 and 9.8).
-
-1. The AgentDoc's `subject.id` MUST denote the same key as `ca:subject`.
-2. An entry for an Agent Package MAY link the package AgentDoc, which has no subject (the Common Agent Specification, Section 13.4), and then MUST NOT carry `ca:subject`.
-3. An AgentDoc assembler MAY list the entry as a source of kind `listing` (the Common Agent Specification, Section 9.4). It fills `sells` from the standing proposals themselves, and treats the entry's offers as a projection of them.
-4. Where the entry and the AgentDoc disagree, for example where an offer quotes a rate the AgentDoc's `sells` does not, a reader MUST report the disagreement and MUST NOT merge the two.
 
 ## 12. Example
 
