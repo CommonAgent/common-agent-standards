@@ -14,6 +14,8 @@
 //   descriptor.html   Section 6, the Agent Descriptor, as a page of its own
 //   package.html      Section 12, the Agent Package, as a page of its own
 //   versions.html     every version and the changelog
+//   catalog.html      the catalog profile, CATALOG-PROFILE.md, a part of the
+//                     specification with a version of its own
 // and fills the text of Section 14 into conformance.html. Nothing in the
 // repository is rewritten, so a build leaves the working tree clean.
 //
@@ -52,7 +54,9 @@ const REF = arg("--ref") ?? "";
 // are common-agent-v<version>, such as common-agent-v0.26.0-draft.
 const TAG_PREFIX = "common-agent-v";
 const DRAFT = process.argv.includes("--draft");
-const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "brand"];
+const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "brand", "ns"];
+// The catalog profile, a part of the specification with a version of its own.
+const PROFILE_MD = resolve(REPO, "CATALOG-PROFILE.md");
 
 let md = readFileSync(MD, "utf8").replace(/\r\n/g, "\n");
 
@@ -189,13 +193,14 @@ const GENERATED = new Date().toISOString().slice(0, 10);
 const refText = !REF ? "" : REF.startsWith(TAG_PREFIX) ? `, tag <span class="mono">${esc(REF)}</span>` : `, branch <span class="mono">${esc(REF)}</span>`;
 const stamp = `Rendered ${GENERATED} from <span class="mono">SPEC.md</span> in the <a href="${REPO_URL}">Common Agent Standards repository</a>${refText}${commit ? `, commit <span class="mono">${commit}</span>` : ""}.`
   + (DRAFT ? ` This copy follows the main branch, which can be ahead of the published version at <a href="${SITE}/">commonagent.net</a>.` : "");
-const metas = `<div class="metas">
-          <span>version <b>${esc(VERSION)}</b></span>
-          <span>status <b>${esc(STATUS)}</b></span>
-          <span>date <b>${DATE}</b></span>
+const metaLine = (version, status, date) => `<div class="metas">
+          <span>version <b>${esc(version)}</b></span>
+          <span>status <b>${esc(status)}</b></span>
+          <span>date <b>${date}</b></span>
         </div>`;
+const metas = metaLine(VERSION, STATUS, DATE);
 
-function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, extraHero = "", toc, body }) {
+function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, extraHero = "", toc, body, meta = metas }) {
   const url = file === "index.html" ? `${SITE}/` : `${SITE}/${file}`;
   const tocHtml = toc && toc.length
     ? `<nav class="toc" aria-label="Sections">\n            ${toc.map((t) => `<a href="#${t.id}">${t.title}</a>`).join("\n            ")}\n        </nav>`
@@ -232,7 +237,7 @@ function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, ext
         <span class="eyebrow">${eyebrow}</span>
         <h1>${h1}</h1>
         ${sub ? `<p class="sub">${sub}</p>` : ""}
-        ${metas}
+        ${meta}
         ${extraHero}
         ${tocHtml}
       </div>
@@ -272,7 +277,7 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
   let { html, toc } = render(bodySections, (lvl, num) => (num && SPEC_ALIASES[num] && lvl === 3 ? { aliases: SPEC_ALIASES[num] } : null));
   const NOTES = {
     s6: 'This chapter also has a page of its own: <a href="/descriptor.html">The Agent Descriptor</a>.',
-    s9: 'The AgentDoc has a site of its own, with its tools and examples, at <a href="https://agentdoc.net/">agentdoc.net</a>.',
+    s9: 'The AgentDoc has a site of its own, with its tools and examples, at <a href="https://agentdoc.net/">agentdoc.net</a>. A catalog entry that follows the <a href="/catalog.html">catalog profile</a> links to the agent\'s AgentDoc.',
     s12: 'This chapter also has a page of its own: <a href="/package.html">The Agent Package</a>.',
   };
   for (const [id, note] of Object.entries(NOTES)) {
@@ -346,6 +351,37 @@ chapter({
   ids: (lvl, num) => (lvl === 3 && PACKAGE_IDS[num] ? { aliases: [PACKAGE_IDS[num]] } : null),
   tail: `\n<p class="chapnote">Where an agent is kept before it is packaged, and how somebody comes to run a copy of their own, is Section 13 of the <a href="/spec.html#s13">specification</a>, the agent repository.</p>`,
 });
+
+// ── catalog.html: the catalog profile ───────────────────────────────────────
+// CATALOG-PROFILE.md is a part of the specification with its own version
+// line, listed under the specification's parts in standards.json. It is
+// rendered whole, on one page, with its own version, status and date.
+{
+  let src = readFileSync(PROFILE_MD, "utf8").replace(/\r\n/g, "\n");
+  const ph = src.match(/^# (.+)\n+\*\*Version:\*\*\s*(.+)\n\*\*Status:\*\*\s*(.+)\n\*\*Date:\*\*\s*(.+)\n(?:\*\*Applies to:\*\*\s*(.+)\n)?/);
+  if (!ph) throw new Error(`${PROFILE_MD} does not start with the title, Version, Status and Date lines`);
+  const [, pTitle, pVersion, pStatus, pDate, pApplies] = ph.map((x) => x?.trim());
+  src = src.slice(ph[0].length);
+  let pCommit = "";
+  if (commit) { try { git("diff", "--quiet", "HEAD", "--", "CATALOG-PROFILE.md"); pCommit = commit; } catch { /* uncommitted */ } }
+  const pStamp = `Rendered ${GENERATED} from <span class="mono">CATALOG-PROFILE.md</span> in the <a href="${REPO_URL}">Common Agent Standards repository</a>${refText}${pCommit ? `, commit <span class="mono">${pCommit}</span>` : ""}.`
+    + (DRAFT ? ` This copy follows the main branch, which can be ahead of the published version at <a href="${SITE}/">commonagent.net</a>.` : "");
+  const { html, toc } = render(src);
+  const applies = pApplies ? `<p class="canon">It applies to ${esc(pApplies.replace(/\s*·\s*/g, ", "))}.</p>` : "";
+  write("catalog.html", page({
+    file: "catalog.html", active: "catalog",
+    title: `${pTitle} ${pVersion}`,
+    ogTitle: pTitle,
+    description: "The Common Agent catalog profile: offers derived from signed standing proposals, reputation pointers, liveness pointers, evidence labels, signed entries, audience, and publish and fetch calls, as optional metadata on an ARD entry.",
+    eyebrow: "A part of the specification",
+    h1: esc(pTitle),
+    sub: "Optional metadata on an ARD entry that tells a buyer what an agent charges, what others have recorded about it, where to ask whether it is reachable, and who signed the listing.",
+    meta: metaLine(pVersion, pStatus.split(/[,.]/)[0].trim(), (pDate.match(/\d{4}-\d{2}-\d{2}/) ?? [pDate])[0]),
+    extraHero: `${applies}<p class="canon">${pStamp}${DRAFT ? "" : " This page is the normative text of the profile."}</p>`,
+    toc: toc.filter((t) => t.lvl === 2),
+    body: html,
+  }));
+}
 
 // ── versions.html ───────────────────────────────────────────────────────────
 {

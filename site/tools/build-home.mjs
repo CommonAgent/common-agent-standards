@@ -180,7 +180,7 @@ export function renderHome({ draft = false } = {}) {
               <p class="sum">Every Common Agent Standard builds on it. Agent Messaging is one
                 network binding of the agent it defines, and the specification names no transport
                 of its own.</p>
-              <p class="links"><a href="/spec.html">${ico(ICONS.book)}The specification</a><a href="/descriptor.html">${ico(ICONS.rfp)}The Agent Descriptor</a><a href="/package.html">${ico(ICONS.processes)}The Agent Package</a><a href="/versions.html">${ico(ICONS.compass)}Versions</a><a href="/conformance.html">${ico(ICONS.mandate)}Conformance</a><a href="${esc(folderUrl(base))}">${ico(ICONS.branch)}${esc(base.folder)}/ on GitHub${ext}</a></p>
+              <p class="links"><a href="/spec.html">${ico(ICONS.book)}The specification</a><a href="/descriptor.html">${ico(ICONS.rfp)}The Agent Descriptor</a><a href="/package.html">${ico(ICONS.processes)}The Agent Package</a><a href="/catalog.html">${ico(ICONS.layers)}The catalog profile</a><a href="/versions.html">${ico(ICONS.compass)}Versions</a><a href="/conformance.html">${ico(ICONS.mandate)}Conformance</a><a href="${esc(folderUrl(base))}">${ico(ICONS.branch)}${esc(base.folder)}/ on GitHub${ext}</a></p>
             </div>
             <div class="quick">
               <div class="bar">${ico(ICONS.question)}The five questions every agent answers</div>
