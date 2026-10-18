@@ -147,6 +147,7 @@
       "version": "0.4.0-draft",
       "status": "Working Draft",
       "tag": "processes-v0.4.0-draft",
+      "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
     },
     {
