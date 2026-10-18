@@ -1,10 +1,10 @@
 # Agent Reputations: Agent Reputation Specification
 
-**Version:** 0.3-draft
-**Date:** 2026-08-07
-**Status:** Draft; first bureau implementation in progress alongside the AgentMesh stack
-**Canonical source:** SPEC-FEEDBACK.md (this document). Hosted at https://agentreputations.com.
-**Family:** AgentMesh (transport), PAN (naming), ANS (domain identity), Agent SoW (engagements), Agent Reputations (reputation)
+**Version:** 0.3.1-draft
+**Date:** 2026-10-18
+**Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
+**Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
+**Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent Reputations (reputation)
 
 *Naming note: the protocol was drafted under the working name Feedback, and the
 signed tag prefixes (`fdbk-enroll-v1`, `fdbk-attest-v1`, `fdbk-score-1`, …) keep
@@ -13,7 +13,7 @@ and bureau name is Agent Reputations.*
 
 ---
 
-PAN says who an agent is. AgentMesh carries what it says. Agent Reputations records how it went.
+Personal Agent Naming says who an agent is. Agent Messaging carries what it says. Agent Reputations records how it went.
 
 Agent Reputations is a small protocol for agent reputation. It defines how evidence about
 agent interactions is collected, how it is stored so it cannot be quietly rewritten,
@@ -40,16 +40,16 @@ be interpreted as described in RFC 2119.
 
 ## 1. Terminology
 
-**Subject**: an agent about which a bureau holds evidence. Identified by its PAN
+**Subject**: an agent about which a bureau holds evidence. Identified by its Personal Agent Naming
 handle (e.g. `Coder.ana@example.org`) or ANS name. Agent Reputations does not mint identities;
 it binds evidence to identities minted elsewhere.
 
-**Anchor**: the identity root behind a subject or evaluator, as defined by PAN (the
+**Anchor**: the identity root behind a subject or evaluator, as defined by Personal Agent Naming (the
 email that owns the handle) or ANS (the domain). A bureau uses anchors to detect
 self-dealing (§6.4) and to group a publisher's portfolio (§12.1).
 
 **Bureau**: a service that ingests evidence, maintains the ledger, computes scores,
-and answers queries with signed reports. The role parallels PAN's registrar.
+and answers queries with signed reports. The role parallels Personal Agent Naming's registrar.
 
 **Reporter**: a mesh, runtime, or gateway that observed interactions firsthand and
 submits interaction facts to a bureau under its own signature. A bureau accepts facts
@@ -82,7 +82,7 @@ parse them.
 **Ledger**: the bureau's append-only, hash-chained event log (§4). Evidence lands
 here; nothing else does.
 
-**Report**: the signed answer to a reputation query (§8). The role parallels PAN's
+**Report**: the signed answer to a reputation query (§8). The role parallels Personal Agent Naming's
 card.
 
 **Enrollment**: a subject's opt-in to the quality layer, with the states defined in
@@ -91,7 +91,7 @@ card.
 ## 2. Layering
 
 Agent Reputations does one thing: it turns interaction evidence into a signed, recomputable
-reputation report. It does not transport messages (AgentMesh), name agents (PAN,
+reputation report. It does not transport messages (Agent Messaging), name agents (Personal Agent Naming,
 ANS), discover agents (ARD), route or select agents (a consumer concern), move money,
 or arbitrate quality disputes.
 
@@ -100,9 +100,9 @@ interaction facts to a bureau MUST emit them in the forms defined here. Nothing 
 the mesh requires a bureau to exist. An agent network without a bureau still runs;
 it just doesn't remember.
 
-A bureau consumes PAN/ANS in the usual way: it resolves handles, verifies cards, and
-pins keys per PAN §5.3. Attestations are signed with the same agent key a subject or
-evaluator bound in PAN §4. One key, one identity, every layer.
+A bureau consumes Personal Agent Naming and ANS in the usual way: it resolves handles, verifies cards, and
+pins keys per Personal Agent Naming §5.3. Attestations are signed with the same agent key a subject or
+evaluator bound in Personal Agent Naming §4. One key, one identity, every layer.
 
 ## 3. Enrollment
 
@@ -134,7 +134,7 @@ Enrollment is a signed act by the subject's key:
 
     fdbk-enroll-v1:<subject>:<bureau-url>:<ISO-8601 timestamp>
 
-signed with the agent key bound to the handle in PAN. The bureau MUST verify the
+signed with the agent key bound to the handle in Personal Agent Naming. The bureau MUST verify the
 signature against the currently resolved card and MUST record the enrollment in the
 ledger.
 
@@ -186,7 +186,7 @@ repairs, which append a correction and never rewrite).
 
 Ledger access is subject-scoped: a subject can retrieve every entry about itself
 (explainability is an obligation, §10), a reporter can retrieve what it submitted,
-and the public gets aggregate reports (§8), not the raw feed. Rationale mirrors PAN
+and the public gets aggregate reports (§8), not the raw feed. Rationale mirrors Personal Agent Naming
 §6: audit for the owner, privacy against enumeration.
 
 ### 4.2. Facts
@@ -365,7 +365,7 @@ An attestation is the evaluator's signed statement about one interaction:
 
     fdbk-attest-v1:<interaction_id>:<subject>:<capability>:<outcome>:<ISO-8601 timestamp>
 
-signed with the evaluator's PAN-bound agent key, submitted with an optional
+signed with the evaluator's agent key bound under Personal Agent Naming, submitted with an optional
 free-text note (stored, never scored, because text is for the subject's
 remediation and not for the formula).
 
@@ -376,7 +376,7 @@ A bureau MUST reject an attestation unless:
 1. The `interaction_id` matches a fact from a configured reporter. **No attestation
    without a witnessed interaction.** This single rule removes drive-by reviews,
    most ballot stuffing, and all rating of rivals one has never called.
-2. The evaluator's signature verifies against its currently resolved PAN card.
+2. The evaluator's signature verifies against its currently resolved Personal Agent Naming card.
 3. It is the evaluator's first attestation for that interaction (later ones are
    recorded as amendments, and only the final state scores).
 4. The attestation arrives within the attestation window (RECOMMENDED: 30 days from
@@ -438,7 +438,7 @@ resolves to `VALUE_OK` or `VALUE_POOR`:
 
     fdbk-value-v1:<interaction_id>:<subject>:<capability>:<outcome>:<amount>:<currency>:<units>:<ISO-8601 timestamp>
 
-signed with the evaluator's PAN-bound agent key. `amount` and `currency` are the
+signed with the evaluator's agent key bound under Personal Agent Naming. `amount` and `currency` are the
 settled spend; `units` is the metered quantity that spend paid for, in the units
 of the engagement's meter. Both SHOULD be present, and they are signed rather than
 attached as commentary so a reader can trust them. A poor rating on a large
@@ -566,7 +566,7 @@ arithmetic of §7.3 MUST issue a new formula version rather than reuse this one.
 
 ### 8.1. The report
 
-The answer to a resolution query, signed like a PAN card:
+The answer to a resolution query, signed like a Personal Agent Naming card:
 
 ```json
 {
@@ -605,7 +605,7 @@ The answer to a resolution query, signed like a PAN card:
 }
 ```
 
-Signature, key sets, rotation, and pinning follow PAN §5.3 verbatim, with
+Signature, key sets, rotation, and pinning follow Personal Agent Naming §5.3 verbatim, with
 `use: "fdbk-report-signing"`. A consumer MUST verify the signature and MUST discard
 a report whose signature fails or is absent.
 
@@ -675,7 +675,7 @@ A conforming bureau:
 4. MUST version formula changes (`fdbk-score-2`, …) and re-serve historical queries
    under the version that was current at the time, on request.
 5. MUST verify every signature it relies on (enrollments, attestations, reporter
-   facts) against currently resolved PAN/ANS identities, and pin keys per PAN §5.3.
+   facts) against currently resolved Personal Agent Naming or ANS identities, and pin keys per Personal Agent Naming §5.3.
 6. MUST enforce §6.2 eligibility and §6.4 exclusions, and record both in the ledger.
 7. MUST give every subject access to its own evidence (subject-scoped ledger
    excerpt) and an L2 recompute path. A subject that cannot see why it scores badly
@@ -701,12 +701,12 @@ that the subject will perform tomorrow.
 Assumptions, named:
 
 - **Identity cost lives upstream.** Every sybil, whitewash, and carousel defense in
-  this document leans on PAN/ANS making identities stable and anchors meaningful.
+  this document leans on Personal Agent Naming and ANS making identities stable and anchors meaningful.
   Reputation on top of free, disposable identity is decoration. This is a stated
   dependency, not a solved problem.
 - **Reporters are trusted witnesses.** A compromised reporter can forge facts.
   Configured reporter lists, reporter signatures, and L3 audits bound the damage;
-  they do not eliminate it. This is the same trust shape as PAN's registrar: a
+  they do not eliminate it. This is the same trust shape as Personal Agent Naming's registrar: a
   notary, not an oracle.
 - **The bureau can lie by omission.** Signed reports prove integrity of what is
   served, not completeness of what was ingested. Cross-bureau corroboration is
@@ -777,13 +777,21 @@ Agent Reputations replaces.
 
 ## 14. Reference implementation
 
-None yet. The intended first implementation is a bureau alongside the AgentMesh
-reference stack, with the mesh runtime as first configured reporter and PAN as the
+None yet. The intended first implementation is a bureau alongside a reference
+mesh stack, with the mesh runtime as first configured reporter and Personal Agent Naming as the
 identity resolver. Test vectors for `fdbk-score-1` (a set of event pools with
 expected `a`, `b`, `mean`, `sd`, `lcb`, `n_eff` values) MUST accompany the first
 implementation and will be added to this document as a normative appendix.
 
 ---
+
+*0.3.1-draft (2026-10-18): editorial, with no normative change. The text names
+no platform: the transport is Agent Messaging, and the intended first
+implementation sits beside a reference mesh stack. Personal Agent Naming is written out
+rather than abbreviated, the Agent Name Service is named on first use, and the
+canonical source names this file. The A2A Reputation extension moves to
+0.1.1-draft for the same edits. No requirement, field, example, or section
+number changes.*
 
 *0.3-draft (2026-08-07): added the time and materials mappings to §4.4. An
 engagement that concludes on reaching its not-to-exceed cap is recorded as a fact

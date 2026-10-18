@@ -1,8 +1,8 @@
 # Agent SoW: A2A Interview Extension
 
-**Version:** 0.1.0-draft
+**Version:** 0.1.1-draft
 **Status:** Working Draft
-**Date:** 2026-08-11
+**Date:** 2026-10-18
 
 The terms extension lets an A2A Agent Card commit to signed standing terms.
 A committed document proves what was declared; it cannot prove that the
@@ -324,7 +324,7 @@ Four things are deliberately not in this document:
 ## 12. Relationship to other work
 
 This extension is the A2A binding of the five questions defined in the
-AgentMesh specification (its section 3.3.1), whose mesh binding is the
+Agent Messaging specification (its section 3.3.1), whose mesh binding is the
 describe operation and public-block machinery there (its section 10.14);
 the two bindings must stay answer-compatible, so that an agent reachable
 both ways gives the same answers from the same declarations. The sentence
@@ -341,6 +341,10 @@ declaration nor interview can.
 ---
 
 ## Changelog
+
+**0.1.1-draft** (2026-10-18). Editorial, with no normative change.
+Section 12 and the entry below name Agent Messaging, where the five questions
+are defined, rather than a platform.
 
 **0.1.0-draft** (2026-08-11). Ask, then diff.
 
@@ -363,7 +367,7 @@ from marketing into conformance. The same choice is the security argument:
 no free text in, no free text out, a closed method set, refusals assembled
 from declared ids, so nothing an interviewer sends can make the agent
 think. The consistency rule and the claim-versus-evidence distinction are
-carried over from the mesh's five questions unchanged, and the honesty
+carried over from Agent Messaging's five questions unchanged, and the honesty
 rules add the boundary reputation will need: conformance is not
 competence, and a passed interview is not a good agent, only an honest
 card.

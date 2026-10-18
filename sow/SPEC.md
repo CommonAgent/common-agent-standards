@@ -1,11 +1,11 @@
 # Agent SoW Specification
 
-**Version:** 0.23.0-draft
+**Version:** 0.23.1-draft
 **Status:** Working Draft
-**Date:** 2026-09-17
+**Date:** 2026-10-18
 
 A **statement of work** (SoW) is the legal agreement businesses sign when
-they hire a service firm: it lists the work, what each side provides, the
+they contract a service firm: it lists the work, what each side provides, the
 deliverables, the price, and the end date. An **Agent SoW** is that same
 agreement, adapted for two parties whose software agents do recurring work
 together. It states who the parties are, what work is in scope, what each
@@ -21,7 +21,7 @@ punished by reputation, not code). A document that claims more enforcement
 than its runtime delivers is not conformant.
 
 This specification is transport-neutral. It was developed alongside Agent Messaging
-(formerly the AgentMesh Protocol) and borrows its task lifecycle from the A2A Task model, but
+and borrows its task lifecycle from the A2A Task model, but
 nothing here requires a particular network, message bus, or vendor.
 
 ---
@@ -504,8 +504,8 @@ reputation.
 
 Most engagements are a service: the provider does work, the client reads the
 output, and nobody has to say who owns what because nothing outlives the task.
-Some are not. When the client is commissioning a thing to keep and operate — a
-model, a corpus, a configured agent, a codebase — the artifact outlives the
+Some are not. When the client is commissioning a thing to keep and operate (a
+model, a corpus, a configured agent, a codebase), the artifact outlives the
 engagement, and the parties can sign a delivery while disagreeing completely
 about whether the provider may sell the same thing to a competitor next week.
 
@@ -541,9 +541,9 @@ any right to pass it on.
 
 **`self_operable`** is a **declared property, not a requirement**. True means
 the client can run the artifact without the provider's continued service; false
-means they cannot. Both are legitimate — a delivered model that needs the
+means they cannot. Both are legitimate (a delivered model that needs the
 provider's runtime is a real arrangement, and so is a container the client runs
-alone — but which one it is decides whether a purchase is a purchase or a
+alone), but which one it is decides whether a purchase is a purchase or a
 rental wearing a purchase's clothes, and the client is entitled to know before
 signing rather than after the provider's service lapses. This specification
 does not require self-operability and does not judge a `false`; it requires
@@ -600,7 +600,7 @@ resolve to bytes matching `digest` when the client asserts a result.
 
 **A result is a statement about work, and declares what it rested on.** An
 acceptance result computed from a test set MUST carry that set's digest in
-`rests_on` (AgentMesh SPEC.md §5.6, or the equivalent in whatever carries the
+`rests_on` (Agent Messaging §5.6, or the equivalent in whatever carries the
 result). A result whose test set has since changed is stale, which is a
 different fact from wrong, and the distinction matters exactly here: a provider
 whose passing result was computed against the agreed bytes has not become a
@@ -608,7 +608,7 @@ liar because the client later assembled a different set.
 
 **`deemed_accepted_after_days`** bounds the other failure: a client who simply
 never answers. When present, silence past the window is acceptance. When
-absent, **silence is not acceptance** — the default refuses to invent an
+absent, **silence is not acceptance**: the default refuses to invent an
 agreement neither party stated.
 
 Grade: `evidence`. The commitment is in the signed bytes and the result is
@@ -659,7 +659,7 @@ request names the prior task: a `revises` member carrying the prior task's
 identifier, and the prior task's job manifest, the signed record the
 provider attached to the prior completion listing every delivered piece
 with its artifact reference and its SHA-256 digest. The manifest format is
-defined by the Common Agent Specification (https://agentdoc.net); this
+defined by the Common Agent Specification (https://commonagent.net/spec.html); this
 clause cites it and does not restate it. The prior task stays completed.
 Nothing about it is edited: its record, its settlement, and any review it
 carries are untouched.
@@ -923,7 +923,7 @@ A pass-through line MUST NOT be priced above the upstream cost. A provider
 that wants a margin on resold work prices that work as its own metered line
 instead. This is the honest meaning of "materials": at cost, with proof.
 
-The proof is usually free. An agent that hires another agent to do part of
+The proof is usually free. An agent that contracts another agent to do part of
 the job has already produced a receipt chain by doing so, because the
 upstream engagement settles and issues its own record. The receipt the buyer
 is owed is one the provider already holds.
@@ -1755,7 +1755,7 @@ either way.
 
 ### 5.15 Subcontracting
 
-A buyer hiring an agent is entitled to know who actually does the work. The
+A buyer contracting an agent is entitled to know who actually does the work. The
 subcontracting clause is where the provider says whether it delegates, to
 whom, and under what rule, and its first principle is the one everything
 else hangs from: **the buyer's contract is with the prime, full stop.**
@@ -2093,7 +2093,7 @@ The task lifecycle and artifact model align with the A2A protocol's Task and
 AgentCard: `input_required` is A2A's mid-task discovery of missing inputs,
 turned into an up-front declared clause; declared media types per skill
 become declared media types per deliverable; skill examples become scope
-examples. Agent Messaging (formerly the AgentMesh Protocol) provides a reference enforcement
+examples. Agent Messaging provides a reference enforcement
 environment: signed envelopes, admission gates, metering, sealed transport,
 tamper-evident audit chains, and a clearing service. Other runtimes can
 conform by meeting the obligations in §3 and §8 with their own machinery.
@@ -2468,6 +2468,17 @@ facts and a motivated judge are present.
 
 ## Changelog
 
+**0.23.1-draft** (2026-10-18). Editorial, with no normative change.
+
+The text names no platform: Agent Messaging is no longer given a former name,
+and the reference for `rests_on` names Agent Messaging §5.6 rather than a
+platform's document. "Hire" reads "contract", and em dashes become colons,
+commas, and parentheses. The A2A Terms and A2A Interview extensions move to
+0.1.1-draft for the same edits. The reference for the job manifest points at
+the Common Agent Specification's own address, and the missing 0.21.0-draft
+entry below, whose rules §5.3.1 already carries, is restored. No requirement,
+field, example, or section number changes.
+
 **0.23.0-draft** (2026-09-17). A process as the scope.
 
 Section 5.2.1 lets scope name one published process at one version instead of
@@ -2516,6 +2527,12 @@ standing proposal carry the same clause.
 The clause is optional. No grade changes, no signed bytes change, and every
 0.21.0-draft document remains valid.
 
+**0.21.0-draft** (2026-09-01). The `proxy` grant mechanism: the client's own
+agent answers the provider's requests, so nothing leaves and revoking is
+ceasing to answer. And a rule the table was missing: a grant whose mechanism
+supports audience and expiry binding SHOULD be bound to the engagement and its
+term, so end-of-engagement revocation is a property rather than a chore.
+
 **0.20.0-draft** (2026-08-30). What a grant is, and where a processor is.
 
 Section 5.3 has always been able to say a client furnishes a shared resource,
@@ -2531,8 +2548,8 @@ is the only input that is still true after the work is finished.
 
 Section 5.11 gains an OPTIONAL `processed_in` on a processor entry, which must
 be a subset of the clause-level member where both are present. The clause
-already forbade the interesting failure — content transiting an undeclared
-service breaks it while every promise boolean is true — but a declared
+already forbade the interesting failure (content transiting an undeclared
+service breaks it while every promise boolean is true), but a declared
 processor could still sit beside a jurisdiction promise with no way to see
 whether the two were coherent. Absence states nothing here as everywhere else;
 the member exists so that inheritance is never assumed.
@@ -2735,7 +2752,7 @@ container the client runs alone; which one it is decides whether a purchase is
 a purchase or a rental wearing a purchase's clothes, and the client is entitled
 to know before signing rather than when the provider's service lapses. Absence
 grants nothing: an unstated right is not a granted right. Grade `recorded`, and
-deliberately so — no runtime stops a provider reselling something, and claiming
+deliberately so: no runtime stops a provider reselling something, and claiming
 otherwise is the pretend-enforcement §3 exists to refuse.
 
 New §5.4.2. `acceptance` moves an agreed slice of quality onto the judgeable

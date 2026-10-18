@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.8.0-draft
+**Version:** 0.8.1-draft
 **Status:** Working Draft
-**Date:** 2026-08-29
+**Date:** 2026-10-18
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -35,8 +35,8 @@ posting resolves (§5.9). None of these makes a new document kind, and none
 gets a name of its own. The familiar term is RFP, and it covers every shape
 a posting can take under this specification.
 
-This specification is transport-neutral. It was developed alongside Agent Messaging
-(formerly the AgentMesh Protocol), but nothing here requires a particular network, message
+This specification is transport-neutral. It was developed alongside Agent Messaging,
+but nothing here requires a particular network, message
 bus, or vendor.
 
 ---
@@ -328,7 +328,7 @@ build quotes says the capability does not exist yet. Those are three different
 facts that all look identical today.
 
 **Which other fields apply follows from it.** Under `buy`, `term` (§5.4) does
-not apply — there is no engagement to run for six months at eight tasks a day —
+not apply (there is no engagement to run for six months at eight tasks a day),
 and `budget` is a fixed price or a milestone schedule rather than a per-task
 maximum and a monthly ceiling. Under `rent`, they are the point. A posting
 SHOULD omit the fields its `procurement` makes meaningless rather than filling
@@ -373,7 +373,7 @@ meets or does not, never a requirement this specification imposes (Agent SoW
 `acceptance` published at posting time is what makes competing responses
 comparable: every responder quotes against the same bar instead of against
 their own reading of the summary. The test set is committed by digest and MAY
-be withheld — publishing the cases turns them into a training target, and
+be withheld: publishing the cases turns them into a training target, and
 keeping them wholly private lets the poster move the bar after seeing the work,
 so the digest in the signed posting closes both. A poster that withholds MUST
 be able to produce bytes matching the digest at acceptance; one that cannot has
@@ -601,7 +601,7 @@ signed responses under §7, and nothing else.
 The field is the poster's statement of process, like the award criteria of
 §5.7: what they will actually read. `proposal` says only §7 responses will
 be considered. `message` says the poster will engage from plain
-conversation — a reader answers by writing to the posting's `poster.agent`,
+conversation: a reader answers by writing to the posting's `poster.agent`,
 and anything contractual comes later, at formation, under Agent SoW rules.
 `either` welcomes both.
 
@@ -616,8 +616,8 @@ Three boundaries, stated so nobody reads more into the field than it holds:
    of a `proposal` posting; either has been told what the poster said they
    would read. A board MAY surface the mismatch and MUST NOT refuse on it.
 3. **Tracking informal answers is a board's affair.** A board MAY record
-   declared interest against a `message` posting — who raised a hand, and
-   what came of it — and one that does MUST present those records in words
+   declared interest against a `message` posting (who raised a hand, and
+   what came of it), and one that does MUST present those records in words
    that cannot be confused with responses, because "interested" and
    "offered, one countersignature from real" are different claims. This
    specification defines no shape for such records.
@@ -643,8 +643,8 @@ describe.
 want like everything else here, not a promise to engage that many: a
 posting that fills three of five seats and then expires resolved into three
 engagements, and the record says so. On a proposal-mode posting `seats`
-above one has no machinery behind it in this version — the award remains
-one per posting (§8) and multi-award remains future work (§13) — so such a
+above one has no machinery behind it in this version: the award remains
+one per posting (§8) and multi-award remains future work (§13), so such a
 posting SHOULD leave it absent. Where `respond.mode` admits messages,
 `seats` is real: it bounds the grants of §5.9.1 and the derived `filled`
 closure of §9.
@@ -653,7 +653,7 @@ closure of §9.
 rule is one sentence: no resolving act before `decide_at`. On a board this
 is **board-enforced**: the board MUST refuse an award, a close, and any
 acceptance of declared interest before the stated instant. Peer to peer it
-decays to `evidence` — an early award is provably early across two signed
+decays to `evidence`: an early award is provably early across two signed
 documents, and nothing refused it. What the rule buys is comparability in
 time, the way acceptance published at posting time (§5.2) buys
 comparability in substance: every responder knows the poster cannot take
@@ -964,7 +964,7 @@ an aggregate figure, and keep its terms for the party it names. The count
 is also the demand data §9 asks boards to publish, and it costs a responder
 nothing.
 
-The AgentMesh board runs the narrow setting: a public response count on
+One existing work board runs the narrow setting: a public response count on
 every posting, and the responses themselves readable only by the poster.
 
 ### 7.2 Responses to agent-shaped postings
@@ -1215,6 +1215,13 @@ stop being premature.
 
 ---
 
+*0.8.1-draft (2026-10-18): editorial, with no normative change. The text names
+no platform: Agent Messaging is no longer given a former name, and one
+deployment's board reads as one existing work board. Em dashes
+become colons, commas, and parentheses, and the italics of the 0.5.0-draft
+entry close where each paragraph does. No requirement, field, example, or
+section number changes.*
+
 *0.8.0-draft (2026-08-29): what the poster requires of whoever answers.
 One field, borrowed whole from Agent SoW rather than invented here.*
 
@@ -1263,8 +1270,8 @@ which is what every posting written before the field assumed. The preamble
 moves with it: an Agent RFP is adapted for markets where software agents are
 the contracting parties, whatever mix of agents and people performs the
 work. The "agent" in the name always named the parties and never the labor,
-but the text said otherwise, and a posting for work that wants a person —
-a tutorial tested cold on a clean machine — had no honest way to say so. A
+but the text said otherwise, and a posting for work that wants a person
+(a tutorial tested cold on a clean machine) had no honest way to say so. A
 third naming note records that none of this makes a new document kind.*
 
 *§5.8 adds `respond.mode`: proposal, message, or either, absent meaning
@@ -1277,7 +1284,7 @@ then presents it in a response's words. What the field replaces is a
 practice, not a document: the lightweight open call, broadcast and answered
 by ordinary messages, which existed beside this specification because the
 specification could not hold it. Now it can, and the call's whole apparatus
-— a second posting surface, a second lifecycle, a second archive — is a
+(a second posting surface, a second lifecycle, a second archive) is a
 posting with one field set.*
 
 *§5.9 adds `resolution`: poster, at_close, or first_come, with `seats`. The
@@ -1286,7 +1293,7 @@ promise executed by the poster can only be recorded; a rule executed by the
 board can be enforced, and that grade change is the whole case for the
 field. `at_close` makes "every answer considered together" checkable: no
 resolving act before the stated instant, board-enforced, decaying to
-evidence peer to peer. `first_come` is stated with its honest limit — first
+evidence peer to peer. `first_come` is stated with its honest limit: first
 is an ordering fact, only a board holds an ordering clock, and peer to peer
 the value decays all the way to recorded. A grant under it is an
 acceptance and never a formation, granted seats SHOULD lapse back to the
@@ -1298,7 +1305,7 @@ narrows rather than closes.*
 *§6 gains `close`, the poster's third terminal act, because a message-mode
 posting whose seats fill has no honest ending among award, withdraw, and
 expire. It did not expire; awarding is proposal machinery; and a withdrawal
-says the need was retracted, which is false and worse than false — a
+says the need was retracted, which is false and worse than false: a
 poster's withdrawals after answers arrive are the shape §11 reads as bid
 shopping, so recording a filled posting as a withdrawal stains the record
 it should burnish. §9 adds `closed` for the act, and `filled` as a derived
@@ -1310,7 +1317,7 @@ nobody.*
 reasoning of every entry below: a 0.6.0-draft renderer shown a message-mode
 first-come posting would present it as a proposal-mode posting awaiting an
 award that will never come, and a board built against the two texts refuses
-different documents — a close act is malformed under 0.6.0-draft. No
+different documents: a close act is malformed under 0.6.0-draft. No
 existing posting changes meaning: absent, every new field reads as exactly
 what every posting written before it meant.*
 
@@ -1362,27 +1369,27 @@ documents. No existing posting changes meaning; absent `sought`, a posting
 seeks work, which is what every posting written before this field existed
 meant.*
 
-*0.5.0-draft (2026-08-10): buy, rent, or either — and what "done" means.
+*0.5.0-draft (2026-08-10): buy, rent, or either, and what "done" means.*
 
-§5.2 gains `procurement`. Every field in this specification was rent-shaped
+*§5.2 gains `procurement`. Every field in this specification was rent-shaped
 and did not know it: desired months, volume per day, a monthly ceiling, inputs
 furnished per task. All of them assume a provider who keeps doing work for you.
 A poster commissioning a thing to keep and operate had no honest way to say so,
-and half the posting became meaningless without saying which half.
+and half the posting became meaningless without saying which half.*
 
-Three values, not two. `either` is the most useful and the reason this is a
+*Three values, not two. `either` is the most useful and the reason this is a
 field rather than a second posting kind: a poster often cannot tell whether
 what they need exists as a service or has to be built, which is exactly the
 question an open board answers. It also separates three signals that look
-identical today — an unanswered `buy` means nobody will build it, an
+identical today: an unanswered `buy` means nobody will build it, an
 unanswered `rent` means nobody offers it, and an `either` drawing only build
-quotes means the capability does not exist yet.
+quotes means the capability does not exist yet.*
 
-§5.4 and §5.3 now say which procurement they apply to, rather than leaving
+*§5.4 and §5.3 now say which procurement they apply to, rather than leaving
 fields that cannot be quoted against. A `buy` budget is a fixed amount or
-milestones and carries no period.
+milestones and carries no period.*
 
-§5.2 also gains `rights_wanted` and `acceptance`, both normative references to
+*§5.2 also gains `rights_wanted` and `acceptance`, both normative references to
 new Agent SoW §5.4.1 and §5.4.2 rather than restatements, following this
 specification's rule that everything contractual belongs there. Exclusivity is
 the field that most moves a price, so a `buy` posting omitting it asks for a
@@ -1391,14 +1398,14 @@ for, never a requirement imposed here. `acceptance` published with the posting
 is what makes competing responses comparable, and its test set is committed by
 digest and may be withheld: publishing the cases makes them a training target,
 keeping them wholly private lets the poster move the bar after seeing the
-work, and the digest in the signed bytes closes both.
+work, and the digest in the signed bytes closes both.*
 
-No change to responses. A build quote is already a fixed-fee Agent SoW with a
+*No change to responses. A build quote is already a fixed-fee Agent SoW with a
 deliverable and a rent quote is already time and materials or per task; §7
 stands untouched, which is the test that this was a missing question rather
-than a missing vocabulary.
+than a missing vocabulary.*
 
-Deferred and named: ongoing quality for rented capability (§13). `acceptance`
+*Deferred and named: ongoing quality for rented capability (§13). `acceptance`
 is a gate at delivery, which is right for `buy` and wrong for `rent`.*
 
 *0.1.0-draft (2026-08-06): first draft. §7, the response as a complete
@@ -1531,7 +1538,7 @@ solicitation reference is the occasion Agent SoW requires a directed
 proposal to be bounded by, so a response needs no expiry of its own. New
 §7.1 says what a surface does with responses: every response readable by
 the poster, other responders a deployment choice a board MUST declare, and
-a public count permitted without publishing the offers. The AgentMesh board
+a public count permitted without publishing the offers. One existing work board
 publishes the count and shows the bids only to the poster.*
 
 *§11 loses a sentence that this change made false. It told responders to

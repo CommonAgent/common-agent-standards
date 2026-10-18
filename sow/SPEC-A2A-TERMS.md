@@ -1,8 +1,8 @@
 # Agent SoW: A2A Terms Extension
 
-**Version:** 0.1.0-draft
+**Version:** 0.1.1-draft
 **Status:** Working Draft
-**Date:** 2026-08-11
+**Date:** 2026-10-18
 
 An A2A Agent Card answers who an agent is and what it can do. Nothing in the
 card answers on what terms: no price, no data-use posture, no jurisdiction, no
@@ -262,7 +262,7 @@ Compliance Gate method), tracing, timestamps, and routing. All of them act
 at or after request time. None of them publish what a provider is offering
 and on what standing terms, which is the gap this extension fills, with a
 vocabulary that already existed rather than a new one. The Agent SoW
-specification was developed alongside the AgentMesh platform and is
+specification was developed alongside Agent Messaging and is
 transport-neutral; this extension inherits both properties, and requires
 nothing of an A2A deployment beyond serving one JSON document and one card
 entry.
@@ -270,6 +270,9 @@ entry.
 ---
 
 ## Changelog
+
+**0.1.1-draft** (2026-10-18). Editorial, with no normative change.
+Section 10 names Agent Messaging rather than a platform.
 
 **0.1.0-draft** (2026-08-11). The card learns to answer "on what terms".
 

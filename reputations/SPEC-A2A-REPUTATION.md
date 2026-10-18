@@ -1,8 +1,8 @@
 # Agent Reputations: A2A Reputation Extension
 
-**Version:** 0.1.0-draft
+**Version:** 0.1.1-draft
 **Status:** Working Draft
-**Date:** 2026-08-11
+**Date:** 2026-10-18
 
 An A2A Agent Card is the agent's own account of itself. Reputation is,
 definitionally, the account other parties give, and it cannot ride in the
@@ -34,7 +34,7 @@ interpreted as described in RFC 2119.
   answers queries with signed reports (Agent Reputations specification,
   section 1).
 - **Subject**: an agent about which a bureau holds evidence, identified by
-  the identifier the bureau resolves: a PAN handle or ANS name (Agent
+  the identifier the bureau resolves: a Personal Agent Naming handle or an Agent Name Service (ANS) name (Agent
   Reputations specification, section 1).
 - **Report**: the bureau's signed answer to a resolution query (Agent
   Reputations specification, section 8). Reports carry `issued_at` and
@@ -124,13 +124,13 @@ A consumer uses a listed entry in three steps:
 2. **Verify the report's signature** with the bureau's pinned signing key,
    as the Agent Reputations specification section 8.1 requires: the key is
    published by the bureau (this bureau publishes it on its developers page
-   and pins it per PAN section 5.3, signing `fdbk-report-v1` plus a newline
+   and pins it per Personal Agent Naming section 5.3, signing `fdbk-report-v1` plus a newline
    plus the canonical JSON of the `report` object). A consumer MUST verify
    the signature and MUST discard a report whose signature fails, is
    absent, or is made by a key other than the one the bureau pins.
 3. **Check the binding.** The report answers for `subject`. A consumer MUST
    confirm that this subject identifier actually denotes the agent the card
-   describes, by resolving the identifier in its own system (PAN or ANS)
+   describes, by resolving the identifier in its own system (Personal Agent Naming or ANS)
    and comparing the identity it binds, its key or its domain, against the
    agent the card presents. Where the consumer cannot confirm that binding,
    the report states nothing about this card's agent.
@@ -239,13 +239,17 @@ payments, credentials, compliance verdicts, tracing, timestamps, and
 routing; none of it carries reputation, and the nearest thing, traceability,
 records what happened in a task rather than what a population of
 counterparties concluded across many. The Agent Reputations bureau was
-developed alongside the AgentMesh platform, and nothing in this extension
-requires that platform: any bureau meeting the referenced specification's
+developed alongside Agent Messaging, and nothing in this extension
+requires it: any bureau meeting the referenced specification's
 obligations, and any A2A agent able to add one card entry, can use it.
 
 ---
 
 ## Changelog
+
+**0.1.1-draft** (2026-10-18). Editorial, with no normative change.
+Personal Agent Naming is written out, the Agent Name Service is named on first
+use, and section 10 names Agent Messaging rather than a platform.
 
 **0.1.0-draft** (2026-08-11). The card points at the record it cannot carry.
 
