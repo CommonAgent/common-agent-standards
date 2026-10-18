@@ -75,6 +75,7 @@
       "version": "0.4.1-draft",
       "status": "Working Draft",
       "tag": "mandate-v0.4.1-draft",
+      "builder": "mandate/site/tools/build-spec.mjs",
       "summary": "A mandate is a signed delegation of authority that is bounded and can be revoked. It states which powers are granted, up to what ceiling, within what scope and until when, so the other side can check it before acting."
     },
     {

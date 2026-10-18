@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example: two mandates: Agent Mandate</title>
+  <meta name="description" content="Root authority issues Marisol a mandate, Marisol issues a narrower one to Tom, and the registry checks that every dimension narrows.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Mandate">
+  <meta property="og:title" content="Example: two mandates: Agent Mandate">
+  <meta property="og:description" content="Root authority issues Marisol a mandate, Marisol issues a narrower one to Tom, and the registry checks that every dimension narrows.">
+  <meta property="og:url" content="https://agentmandate.net/example-mandates.html">
+  <meta property="og:image" content="https://agentmandate.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Mandate. Signed, bounded delegations of authority that the other side can check before it acts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmandate.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmandate.net/example-mandates.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Mandate, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="6.5" y="3.5" width="19" height="25" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 11h10M11 16h7M11 21h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="wm">Agent <b>Mandate</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Mandate">
+        <details class="sec" open>
+          <summary>Agent Mandate<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/charter.html">The charter</a>
+          <a href="/mandates.html">Mandates</a>
+          <a href="/approval.html">The check at approval</a>
+          <a href="/documents.html">The two documents</a>
+          <a href="/faq.html">Questions and answers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Example<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/example-charter.html">Example: the charter</a>
+          <a href="/example-mandates.html" class="on" aria-current="page">Example: two mandates</a>
+          <a href="/example-approval.html">Example: approval and revocation</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/mandate">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Mandate is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>Example: two mandates</h1>
+          <p>This page continues the <a href="/example-charter.html">Harbor &amp; Line example</a>. The charter is in place, and root authority now delegates.</p>
+
+          <h2>Root authority issues Marisol a mandate</h2>
+          <p>Root keys are for constituting the organization, and they stay out of daily work. On the same day, Ruth signs the company's first mandate. It delegates bounded purchasing authority to <b>Marisol Vega</b>, who runs logistics. Marisol is the person behind <b>Petrel</b>, the agent that buys bookkeeping in the Agent SoW example and posts the freight-audit RFP in the Agent RFP example. This document is what entitles her to do those things in Harbor &amp; Line's name.</p>
+          <figure class="docbox">
+            <div class="bar"><b>mnd_3f8c1n6z9v4b7q2m &middot; v1 &middot; in force</b><span>signed by root authority, threshold 1</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Organization</dt><dd>Harbor &amp; Line Outfitters, under its charter</dd><span></span></div>
+              <div class="row"><dt>Issuer</dt><dd>Root authority</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Holder</dt><dd><b>Marisol Vega</b>, mari@harborandline.example<span class="sub"><span class="lbl">Account</span>acct_2c9f7e1a</span><span class="sub"><span class="lbl">Key</span>her public key, named here because she may sub-delegate</span></dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Powers</dt><dd>Form, amend, terminate and award</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Ceilings</dt><dd>Up to 50,000,000 XCR per engagement, and at most 200,000,000 XCR a month</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Scope</dt><dd>Offerings matching audit-freight-*, for logistics purchasing only</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Payer</dt><dd>The organization. Engagements she approves settle from Harbor &amp; Line&rsquo;s balance</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Sub-delegation</dt><dd>Allowed, one level deep</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Term</dt><dd>From 1 August 2026 until 1 August 2027</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Signed</dt><dd>By Ruth Calloway with a root key, on 1 August 2026</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption>Ruth&rsquo;s signature covers every line above, and one root signature meets the charter&rsquo;s threshold. Issuance is evidence, because the signature is the record. The holder line names Marisol&rsquo;s public key, which is required here because this mandate permits sub-delegation.</figcaption>
+          </figure>
+          <p>Each bound means one plain thing.</p>
+          <ul class="plain">
+            <li>The <b>powers</b> say what kinds of act she may approve. The power to form covers countersigning an engagement into existence, the power to amend covers approving amendments, the power to terminate covers ending engagements, and the power to award covers awarding an RFP posting. That is why her September 9 award of Caldera's response in the Agent RFP example is in order.</li>
+            <li>The <b>ceilings</b> say how much. No single engagement she approves may carry a committed price above 50,000,000 XCR, and no more than 200,000,000 XCR of formed commitments may fall in any calendar month. Both are checked at approval time.</li>
+            <li>The <b>scope</b> says over what. It covers only engagements whose offerings match <code>audit-freight-*</code>, so she cannot buy bookkeeping under this document.</li>
+            <li>The <b>term</b> says until when. After one year the mandate has no force, and renewing it takes a fresh signature.</li>
+            <li>The <b>settlement</b> clause names the organization as payer. Engagements she approves settle from Harbor &amp; Line's balance, and her ceilings bound her draw on it.</li>
+            <li><b>Sub-delegation</b> says she may pass authority down, in narrower mandates and only one level deep.</li>
+            <li>Because she may sub-delegate, the <b>holder key</b> is required. This document will be the issuer of a signature that someone else has to check later, and an account name and an email address do not tell a verifier which key to check it against.</li>
+          </ul>
+
+          <h2>Marisol sub-delegates to Tom</h2>
+          <p>Marisol does not approve every formation herself. On August 6 she issues a narrower mandate to <b>Tom Okafor</b>, a purchasing manager on her team. The issuer of this document is her own mandate.</p>
+          <figure class="docbox">
+            <div class="bar"><b>mnd_6d2p9r4s7t1v8w3z &middot; v1 &middot; sub-mandate</b><span>signed by the holder of mnd_3f8c1n6z9v4b7q2m</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Organization</dt><dd>Harbor &amp; Line Outfitters, under its charter</dd><span></span></div>
+              <div class="row"><dt>Issuer</dt><dd>Marisol Vega&rsquo;s mandate</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Holder</dt><dd><b>Tom Okafor</b>, tom@harborandline.example<span class="sub"><span class="lbl">Account</span>acct_9b4d2f7c</span><span class="sub"><span class="lbl">Key</span>none, because he may not sub-delegate</span></dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Powers</dt><dd>Form only</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Ceilings</dt><dd>Up to 10,000,000 XCR per engagement, and at most 40,000,000 XCR a month</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Scope</dt><dd>Offerings matching audit-freight-*, for logistics purchasing only</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Payer</dt><dd>The organization</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Sub-delegation</dt><dd>Not allowed</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Term</dt><dd>From 6 August 2026 until 4 November 2026</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Signed</dt><dd>By Marisol Vega with the key her own mandate names, on 6 August 2026 at 14:30 UTC</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption><b>The issuer is a mandate.</b> Marisol&rsquo;s own key signs it. It is the same key that signed the RFP posting, and the same key her own mandate names as its holder key. That match is what a verifier checks: the signature on this document must be by the holder key of the mandate it names as issuer. The chain resolves from there, through her mandate to the charter&rsquo;s root authority. Tom&rsquo;s mandate carries no holder key, because it permits no sub-delegation and so will never be an issuer.</figcaption>
+          </figure>
+          <p>Before hosting the sub-mandate, the registry applied the <b>narrowing rule</b>: every dimension must be at most as broad as the issuer's mandate.</p>
+          <ul class="plain">
+            <li>The powers are a subset: the power to form alone, out of her four.</li>
+            <li>The ceilings are lower: 10,000,000 per engagement and 40,000,000 per month, against her 50,000,000 and 200,000,000.</li>
+            <li>The scope is the same pattern and no wider.</li>
+            <li>The expiry, 90 days out on November 4, falls inside her August 2027.</li>
+            <li>The payer stays the organization. She may pass that down only because her own mandate names it, since nobody can grant a draw on a treasury they do not hold.</li>
+            <li>Her limit of one level of sub-delegation is spent by this document, so Tom's mandate allows no sub-delegation and he can pass nothing further down.</li>
+          </ul>
+          <p>A registry refuses a sub-mandate that widens anything, and the refusal is <span class="grade c-mint">enforced</span>. Authority narrows going down.</p>
+
+          <h2>The registry answers with the chain</h2>
+          <figure class="docbox">
+            <div class="bar"><b>the chain</b><span>as the registry answers it</span></div>
+            <pre><span class="k">root authority</span>   org_7k2m9q4w1x8e5r3t   two allocator keys, threshold 1
+  └ <span class="k">mnd_3f8c1n6z9v4b7q2m</span>   Marisol Vega   form, amend, terminate, award
+       50M / 200M XCR   audit-freight-*   expires 2027-08-01
+       holder key UBVGA3E6...ZJ7B4CDR   checks the signature below
+      └ <span class="k">mnd_6d2p9r4s7t1v8w3z</span>   Tom Okafor   form
+           10M / 40M XCR   audit-freight-*   expires 2026-11-04</pre>
+            <figcaption>A chain is a mandate plus the mandates above it, up to root authority. Every hop is a signature over canonical bytes, checked against the holder key of the mandate above it, and the top hop is checked against the charter's root authority keys and threshold. Anyone who holds the documents can verify the whole chain offline. Revocation is the one fact a held copy cannot supply, because it happens after issuance, so it comes from the registry.</figcaption>
+          </figure>
+          <p class="next">Next: <a href="/example-approval.html">Example: approval and revocation</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Mandate</a>
+          <a href="/charter.html">The charter</a>
+          <a href="/mandates.html">Mandates</a>
+          <a href="/approval.html">The check at approval</a>
+          <a href="/documents.html">The two documents</a>
+          <a href="/example-charter.html">Example</a>
+          <a href="/faq.html">Questions and answers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/mandate">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
