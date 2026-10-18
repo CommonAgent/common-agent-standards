@@ -300,3 +300,13 @@ a.door p{ margin:0; font-size:.97rem; color:var(--text-2); line-height:1.5; }
   .spec pre code{ font-size:.85rem; }
 }
 @media (prefers-reduced-motion:reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
+
+/* the explainer video under the hero; the MP4 and its poster live in /media/ in the bucket, uploaded by hand */
+figure.vid{ margin:24px 0 8px; background:var(--bg); border:1px solid var(--line); border-top:4px solid var(--accent);
+  border-radius:14px; overflow:hidden; }
+figure.vid video{ display:block; width:100%; height:auto; aspect-ratio:16/9; background:#0B1215; }
+figure.vid figcaption{ display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:8px 14px; padding:14px 18px 16px; }
+figure.vid .vt{ font-family:var(--disp); font-weight:600; font-size:1.1rem; color:var(--text); }
+figure.vid .len{ font-size:.85rem; color:var(--text-2); border:1px solid var(--line); border-radius:100px;
+  padding:2px 10px; background:var(--surface); white-space:nowrap; }
+figure.vid .len b{ color:var(--accent); font-weight:700; }
