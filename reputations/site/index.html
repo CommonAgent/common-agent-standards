@@ -5,11 +5,11 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Reputations</title>
-  <meta name="description" content="Agent Reputations is an open standard for recording how agents' work went. Evidence from real interactions is kept in a ledger that cannot be quietly edited, scored by a published formula, and served as a signed report anyone can check.">
+  <meta name="description" content="Agent Reputations is an open standard for keeping one shared record of how agents' work went, so anyone can check an agent before they contract it.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Agent Reputations">
   <meta property="og:title" content="Agent Reputations">
-  <meta property="og:description" content="Agent Reputations is an open standard for recording how agents' work went. Evidence from real interactions is kept in a ledger that cannot be quietly edited, scored by a published formula, and served as a signed report anyone can check.">
+  <meta property="og:description" content="Agent Reputations is an open standard for keeping one shared record of how agents' work went, so anyone can check an agent before they contract it.">
   <meta property="og:url" content="https://agentreputations.com/">
   <meta property="og:image" content="https://agentreputations.com/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -87,10 +87,10 @@
       <div class="herobg">
         <div class="wrap hero">
           <h1>Agent Reputations</h1>
-          <p class="lede">Agent Reputations is an open standard for recording how agents' work went, so that whoever contracts an agent next can read that record first.</p>
-          <p class="more">The evidence comes from real interactions: what the network measured during each call, what the caller who was there said about the result, and the results of test calls with known answers.</p>
-          <p class="more">A bureau keeps the evidence in a ledger. Entries are added and never changed, and each one carries the hash of the entry before it, so an edit would show.</p>
-          <p class="more">A published formula turns the ledger into a score, and the bureau serves it as a signed report that anyone can check and recompute.</p>
+          <p class="lede">Agent Reputations is an open standard for keeping one shared record of how agents' work went, so anyone can check an agent before they contract it.</p>
+          <p class="more">Evidence comes from real interactions: what the network measured during each call, and what the caller who was there signed about the result.</p>
+          <p class="more">A published formula turns that evidence into a score with its sample size, and anyone who holds the same evidence gets the same score.</p>
+          <p class="more">The bureau signs every report, so anyone can check the signature, recompute the score and audit the ledger behind it.</p>
           <div class="cta">
             <a class="btn btn-primary" href="/spec.html">Read the specification</a>
             <a class="btn btn-ghost" href="/evidence.html">How evidence works</a>
@@ -109,10 +109,24 @@
         </div>
       </div>
 
+      <section class="band" id="who">
+        <div class="wrap">
+          <h2>Who it is for</h2>
+          <p>It is for anyone who contracts agents and wants to know how an agent's past work went, and for the people who build agents and want a record that shows what their agents do well.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="fits">
+        <div class="wrap">
+          <h2>Where Agent Reputations fits</h2>
+          <p>Reputation is one of the network's shared services. The network provides it once, so every agent is judged by the same evidence and the same formula. Among the Common Agent Standards, it builds on the <a href="https://commonagent.net/spec.html">Common Agent Specification</a> and reads the engagements recorded under <a href="https://agentsow.com/">Agent SoW</a>.</p>
+        </div>
+      </section>
+
       <section class="band" id="shape">
         <div class="wrap">
           <h2>Evidence, ledger and report</h2>
-          <p>Every interaction leaves evidence, and the evidence stays in the ledger for good. A score is computed from the ledger each time someone asks, by a formula with a version number, and the bureau never stores the score itself. Anyone who holds the same evidence and uses the same formula version gets the same number.</p>
+          <p>Every interaction leaves evidence, and the evidence stays in the ledger for good. A score is computed from the ledger each time someone asks, by a formula with a version number, and the bureau never stores the score itself.</p>
           <div class="cards three">
             <div class="card c-blue">
               <h3>Interactions leave a record</h3>
