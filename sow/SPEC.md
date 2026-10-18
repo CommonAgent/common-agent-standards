@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.23.1-draft
+**Version:** 0.24.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -243,6 +243,7 @@ verify is.
   "termination": { ... },    // §5.9
   "disputes": { ... },       // §5.10
   "confidentiality": { ... },// §5.11
+  "nda": { ... },            // §5.16, optional
   "signatures": [ ... ]      // §6
 }
 ```
@@ -1661,7 +1662,8 @@ where the parties bound it, mutually, in the signed bytes.
   "cap": { "multiple_of_fees": 2 },
   "carve_outs": [
     "willful misconduct",
-    "breach of the confidentiality clause (5.11)"
+    "breach of the confidentiality clause (5.11)",
+    "breach of the referenced Agent NDA (5.16)"
   ],
   "indemnification": {
     "by_provider": ["third-party IP claims arising from the deliverables"],
@@ -1678,7 +1680,12 @@ where the parties bound it, mutually, in the signed bytes.
 - `carve_outs` lists what the cap does NOT cover, in words a court reads.
   Prose entries, deliberately: nothing here refuses or gates on a carve-out,
   so a closed vocabulary would buy determinism nothing needs, and the
-  sentence a judge reads is the operative artifact.
+  sentence a judge reads is the operative artifact. The list covers breach
+  of the referenced Agent NDA (§5.16) in the same way it covers §5.11: where
+  a document carries `nda`, a carve-out naming the confidentiality clause
+  SHOULD name the referenced NDA beside it, as the example does, because
+  confidential material that moved under the NDA is governed by the NDA and
+  sits outside §5.11's text.
 - `indemnification` carries each party's hold-harmless statements, prose
   again, same reasoning.
 - **Grade: `recorded`, and this is the clause the grade vocabulary exists
@@ -1850,6 +1857,131 @@ about conduct beyond the mesh's sight, with breach as its consequence
 rather than detection as its guarantee. Absence states nothing: a document
 without this clause has said nothing about delegation either way, and a
 reader MUST NOT infer a posture.
+
+### 5.16 The Agent NDA the engagement runs under
+
+Confidential material often changes hands before any statement of work
+exists. A validation probe (§13) runs on the client's real inputs, and while
+the parties negotiate they exchange rate sheets, sample files, and details of
+the systems the work would touch. One nondisclosure agreement also commonly
+covers a relationship across many statements of work. A clause inside this
+document cannot reach material that moved before the document was signed, or
+material that belongs to the relationship as a whole. Agent NDA
+(https://agentnda.net) is the companion specification for that agreement. An
+Agent NDA is its own signed document with its own parties, term, and grades,
+and an engagement names the one it runs under with one optional top-level
+member:
+
+```json
+"nda": {
+  "id": "nda_2bpnmagnx6925r5y",
+  "version": 1,
+  "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612",
+  "ref": "mesh:artifacts:01JA2M7K4R",
+  "grade": "evidence"
+}
+```
+
+In the example, Harbor & Line Outfitters (agent Petrel,
+`Petrel.mari@harborandline.example`) contracts Caldera Freight Systems (agent
+Sable, `Sable.ops@calderafreight.example`) to audit a year of carrier
+invoices. Harbor & Line's freight-audit posting offered an Agent NDA with
+Harbor & Line as discloser, Caldera Freight accepted it as recipient before it
+read the posting or saw any invoices, and the engagement names the agreement
+that acceptance completed. The `digest` is computed over the signed bytes of
+that completed agreement as Agent NDA defines them, so it names the recipient.
+
+- `id` and `version` name the agreement and the version of it, in the
+  identifier form Agent NDA defines. The member follows the shape Agent NDA
+  §8 gives for documents that refer to an agreement.
+- `digest` is REQUIRED. It carries the same `sha256:` spelling and the same
+  exact-comparison rule as §5.11's `dpa` member, and it is computed over the
+  signed bytes of the named version as Agent NDA defines them. Because the
+  digest sits inside this document's signed bytes, the NDA the engagement
+  runs under is the one whose bytes hash to it, and neither party can later
+  substitute another.
+- The member names an agreement both parties signed. Agent NDA lets a
+  discloser sign an open offer with the recipient seat empty, and the digest
+  of an open offer is computed over the offer bytes, which name no recipient.
+  A member whose digest is an open offer's names no agreement with the
+  counterparty, and the member MUST name the completed agreement.
+- `ref` SHOULD resolve to the agreement for both parties.
+- `grade` is `evidence`.
+
+**The parties are the engagement's parties.** The agent keys in the NDA's
+`parties.discloser` and `parties.recipient` MUST be the agent keys in this
+document's `parties.provider` and `parties.client`, in either order. The order
+is free because Agent NDA's seat names only say who signed where, and in a
+mutual agreement each party both discloses and receives. The match is on the
+agent key, for the reason §12.1.1 gives: a handle pointed at a new key names a
+different party. A standing proposal whose client seat is blank is tested at
+formation, against the completed instance.
+
+**What the NDA obliges is graded `recorded`.** Its purpose, the categories it
+covers, whom it permits to receive the material, what survives it, and what
+must be returned or destroyed are obligations that courts and reputation
+answer for, exactly as the contents of a DPA are under §5.11. What is
+mechanical is which bytes were agreed, and that is the `evidence` this member
+carries. A conforming renderer MUST NOT present any obligation of the NDA as
+enforced because an engagement names it.
+
+**§5.11 stays the data-handling clause of the engagement.** Where the
+engagement's content is concerned, §5.11 governs retention and the NDA never
+lengthens it. Content that reached the provider under this engagement is kept
+no longer than §5.11's ceiling, whatever period the NDA's return and
+destruction terms would otherwise allow, and its deletion follows §5.11.
+Agent NDA §5.8 states the same rule from its side.
+
+**The engagement discloses no more than the NDA permits.** Agent NDA §5.5
+says who may receive the material, in the same `processors` and
+`processed_in` shape §5.11 uses, under `disclosure.recipient` for the party
+in the recipient seat and, in a mutual agreement, under `disclosure.discloser`
+for the party in the discloser seat. The provider's disclosure terms are the
+member for the seat the provider holds in the NDA. The engagement's own
+declarations MUST fit inside them, by two tests over declared structure:
+
+1. Every entry in §5.11's `processors` MUST be declared in the NDA's
+   disclosure terms for the provider, matched on `service` and `domain`. An
+   entry that carries no `domain` matches only an entry that carries none. An
+   NDA that names no processors for the provider permits none, and any
+   processor this document declares fails the test.
+2. Where the NDA states `processed_in` for the provider, §5.11's
+   `processed_in` MUST be stated and MUST be a subset of it. An unstated
+   `processed_in` here fails a stated one there, for the reason §5.11 gives:
+   an unstated jurisdiction may be any jurisdiction. Where the NDA states no
+   `processed_in`, it has stated nothing, and this test has nothing to
+   compare.
+
+Where the NDA is one-way and the provider is its discloser, the NDA covers
+what the provider discloses and none of the client's content. Neither test
+applies, and a renderer MUST NOT present the NDA as covering the client's
+content.
+
+**A runtime that holds the NDA checks it.** A runtime that holds the bytes of
+the referenced NDA version, and has confirmed that they hash to `digest`,
+MUST refuse to form an engagement whose parties do not match the NDA's or
+whose declarations fail either test above, and the refusal MUST be typed and
+MUST name the test that failed. The same holds for an amendment (§5.8) that
+would make an agreed engagement fail them. Bytes that do not hash to `digest`
+are a different document and MUST NOT be used for these tests.
+
+A runtime that does not hold the bytes cannot run the tests. The member is
+still `evidence` of which bytes were agreed. That the engagement's
+declarations fit inside the NDA is then the provider's statement, graded
+`recorded`, and a renderer MUST say that the engagement has not been checked
+against the NDA it names.
+
+**Changing or ending the NDA.** Naming a different NDA, or a later version of
+the same one, is an amendment under §5.8 like any other change of terms. An
+NDA that ends does not end the engagement, whose ending §5.9 governs. A breach
+of the NDA that arises in the engagement may be raised under this document's
+dispute posture (§5.10), as Agent NDA §5.9 provides, and the records it leaves
+are the same records reputation reads.
+
+**Absence states nothing.** A document without `nda` says nothing about any
+nondisclosure agreement between the parties. It does not say that they have
+none, and it does not say that the engagement's content is protected only by
+§5.11. A reader MUST NOT infer either.
 
 ## 6. Signatures
 
@@ -2266,6 +2398,14 @@ was made, and §12.1 rule 3 already makes what happens at this gate a fact
 reputation systems read. What a surface MUST NOT do is present a lapsed
 offer as open.
 
+**A response to a gated posting names the NDA.** Agent RFP lets a posting
+gate its body behind an Agent NDA, so a provider reads the solicitation only
+after it has accepted the NDA the posting offers. A response to a gated Agent
+RFP posting SHOULD carry the `nda` member (§5.16) naming the completed
+agreement the provider accepted, so that the engagement the response forms
+runs under the agreement the parties signed when the material first changed
+hands.
+
 **What a surface may do with it.** §12.2 requires that a public listing be
 derived from a standing proposal. It does not follow that every standing
 proposal yields a listing, and a directed one yields none.
@@ -2365,6 +2505,10 @@ A **validation probe** is a trial task with three properties, all REQUIRED:
    pass or fail per named input, each failure carrying a problem report
    (§14). The record is signed by the provider's runtime and held by both
    parties.
+
+Probe material is commonly covered by an Agent NDA (§5.16) signed before
+the probe, since no statement of work exists yet to carry a confidentiality
+clause.
 
 The probe record is what a standing proposal's qualifications (§12.1) can
 point at: "countersign requires a passed probe" is checkable because the
@@ -2467,6 +2611,38 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.24.0-draft** (2026-10-18). The Agent NDA an engagement runs under.
+
+Confidential material changes hands in a validation probe (§13) and during
+negotiation, before any statement of work exists, and one nondisclosure
+agreement often covers a relationship across many statements of work. A clause
+inside this document cannot cover that material, so Agent NDA
+(https://agentnda.net) is its own signed document, and section 5.16 lets an
+engagement name the one it runs under with an optional top-level `nda` member:
+the agreement's id and version, a REQUIRED digest over that version's signed
+bytes in the same spelling and exact comparison as §5.11's `dpa`, an optional
+locator, and the grade `evidence`.
+
+The NDA's parties MUST be the engagement's two parties by agent key, in either
+seat order. What the NDA obliges is graded `recorded`; which bytes were agreed
+is the evidence. Section 5.11 stays the data-handling clause, with its text
+unchanged: for the engagement's content it governs retention, and the NDA never
+lengthens it. The engagement's §5.11 processors MUST be declared in the NDA's
+disclosure terms for the provider, and a §5.11 `processed_in` MUST be stated
+and a subset of the NDA's wherever the NDA states one. A runtime holding the
+referenced NDA's bytes MUST refuse to form an engagement that fails these
+tests; where no runtime holds them, the fit is the provider's statement, graded
+`recorded`, and a renderer says the engagement was not checked.
+
+Section 5.13's carve-out list covers breach of the referenced NDA as it covers
+§5.11, and the example names it. Section 12.1.1 says that a response to a gated
+Agent RFP posting SHOULD carry the `nda` member, and section 13 notes that
+probe material is commonly covered by an Agent NDA signed before the probe. The
+fixture `conformance/sow-nda.json` pins the reference shape and the two tests.
+
+The member is optional and absence states nothing. No grade changes, no section
+is renumbered, and every 0.23.1-draft document remains valid.
 
 **0.23.1-draft** (2026-10-18). Editorial, with no normative change.
 
