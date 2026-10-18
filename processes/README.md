@@ -17,51 +17,52 @@ Site: https://agentprocesses.ai
 |---|---|
 | [Writing down a process](./process.md) | the format for one process: trigger, phase graph, automation level, bindings, policy, amendments |
 | [The process catalog](./process-catalog.md) | the index of all of them: the row, ids, the dependency graph, what to automate first |
-| [A worked process](./examples/social-campaign.md) | one process written out in full, with its runs and its failure edges |
-| [A worked catalog](./examples/marketing-catalog.md) | a marketing department's eleven processes, and where it would start |
+| [An example process](./examples/social-campaign.md) | one process written out in full, with its runs and its failure edges |
+| [An example catalog](./examples/marketing-catalog.md) | a marketing department's eleven processes, and where it would start |
 
 ## Where this sits
 
-Three libraries, and each one names the one below it:
+Agents work together in three ways, and Agent Processes covers the
+first:
 
-- [Agent Collab](https://agentcollab.dev) covers what happens inside one
-  room: who may speak, who holds the pen, what the record is.
-- [Agent Work Patterns](https://agentworkpatterns.com) covers the shape
-  of a whole job: the phases, what crosses between them, and what happens
-  when a phase fails. Its patterns are reusable and belong to nobody.
-- **Agent Processes** covers your organization's own work. A process
-  names work patterns and collaboration patterns for its phases, and adds
-  what only you can supply: your trigger, your systems, your legal gate,
-  your owner.
+- **Process-led orchestration.** A written process leads, and an
+  orchestrator follows it. This is Agent Processes.
+- **Harness-led orchestration.** An agent's own loop leads. A process
+  hands one phase to a harness by writing it as a `harness:` phase. The
+  phase names what has to come out, and the process never reaches
+  inside.
+- **Choreography.** Nobody leads. Agents react to the same events, and
+  an event carried by Agent Messaging can start a process.
 
-The dependency points one way. Processes cite work patterns and
-collaboration patterns; neither of those knows this library exists.
+[Agent Collab](https://agentcollab.dev) covers what happens inside one
+room: who may speak, who holds the pen, what the record is. A process
+names a collab playbook for each phase that convenes a room. The
+dependency points one way, and Agent Collab does not know this library
+exists.
 
-## Why a process is not a work pattern
+## A process and a harness
 
-A work pattern is generic and belongs to nobody. Train and certify is the
-same shape at your company and at your competitor, which is why there are
-only a few of them and why one earns its place by recurring across
-organizations.
+A harness is an agent working out a job as it goes. It suits open-ended
+work where nobody knows the steps yet, and when it finishes it leaves
+one closing record saying what it produced.
 
-A process is yours. It has your brand rules in it, your compliance gate,
-your systems, and a person's name on it. A department usually has
-somewhere between ten and forty of them. You would never have forty work
-patterns.
+A process is yours, and its steps are known. It has your brand rules in
+it, your compliance gate, your systems, and a person's name on it. A
+department usually has somewhere between ten and forty of them.
 
-They also last different lengths of time. You pick up a work pattern
-when you need it and put it down again. A process is a standing document:
-it gets amended a few times a year, runs hundreds of times, and outlives
-everyone who wrote it. That is
-why it carries a version, an owner, an effective date, and an amendment
-history, and why every run records which version it ran under.
+They also last different lengths of time. A harness takes up one job
+and puts it down again. A process is a standing document: it gets
+amended a few times a year, runs hundreds of times, and outlives
+everyone who wrote it. That is why it carries a version, an owner, an
+effective date, and an amendment history, and why every run records
+which version it ran under.
 
 ## What this is for
 
 Writing a process down is worth doing for its own sake, but the reason to
 use this format is that agents can run from it. A phase says which
-pattern it convenes, what it may touch, and whether a person has to
-approve the result. That is enough for an agent to take a phase, and
+playbook it convenes or which agent leads it, what it may touch, and
+whether a person has to approve the result. That is enough for an agent to take a phase, and
 enough for a person to check afterwards that it did what it was supposed
 to.
 

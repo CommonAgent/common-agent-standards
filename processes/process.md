@@ -8,23 +8,17 @@ This document is the format. Every process in your
 [catalog](./process-catalog.md) uses the same headings, so a reader who
 knows one can read all of them.
 
-## A process, a pattern, and a run
+## A process and a run
 
-Three different things get muddled together, and each has its own owner:
+Two different things get muddled together:
 
-- A **work pattern** is a reusable shape, and belongs to nobody. Train and
-  certify is the same shape at your company and at your competitor. There
-  are few of these, and one earns its place by recurring across
-  organizations. They live in
-  [Agent Work Patterns](https://github.com/jeffrschneider/agentworkpatterns).
 - A **process** is yours. It has your legal gate in it, your brand rules,
   your systems, and a person's name on it. A department has ten to forty.
 - A **run** is one execution of a process. Run 47 of the social campaign
   process is a different thing from the process itself, and both need
   records.
 
-The distinction that matters most is the last one: the process is the
-definition, and a run is an instance. A process document is amended a few
+The process is the definition, and a run is an instance. A process document is amended a few
 times a year; a run happens this afternoon and is finished by Friday.
 
 ## The format
@@ -111,9 +105,13 @@ security one.
 
 A phase resolves to exactly one of five things:
 
-- **`runs <work pattern>`** - the phase is a whole sub-job with its own
-  plan and its own close. The process names what comes out and never
-  reaches inside.
+- **`harness: <what the agent works out>`** - the phase goes to one
+  agent that runs its own loop. The agent decides the steps, and it may
+  convene rooms, contract other agents or call systems on the way. The
+  process names what comes out and never reaches inside, and the phase
+  closes with one `HARNESS DONE` record. Documents written before
+  0.5.0-draft write this as `runs <name>:`, and that form is still read
+  the same way.
 - **`runs process <id> v<n>`** - the phase starts a run of another of
   your processes and waits for that run to close. It names what comes
   out, which has to be something the other process's goal says a run
@@ -179,10 +177,9 @@ learns who notices when a run goes quiet.
 
 ## Handoffs
 
-The same rule as a work plan: name what crosses each edge and what it has
-to contain. For a phase that runs a work pattern, the handoff is that
-sub-job's declared output, which means it can be checked before anything
-starts. For a `system:` phase, the handoff is whatever the system wrote,
+Name what crosses each edge and what it has to contain. For a
+`harness:` phase, the handoff is the output the phase names, which means
+it can be checked before anything starts. For a `system:` phase, the handoff is whatever the system wrote,
 and the phase after it should say where to find it.
 
 ## Bindings
@@ -206,8 +203,9 @@ nobody should still be working out what the agents are allowed to do.
 
 Policy rules exist for legal, compliance, or brand reasons rather than
 for coordination. The difference matters: coordination rules live in the
-pattern and apply everywhere the pattern is used, while policy rules are
-yours and apply only here.
+playbook a room runs, or with the agent that leads its own loop, and
+apply wherever they are used, while policy rules are yours and apply
+only here.
 
 "Every claim ships with a citation in the claims register" is policy.
 "One agent holds the pen during synthesis" is coordination. If you find a
@@ -255,8 +253,9 @@ trigger: <the record that fired it>
 
 Each phase then leaves the record its own level produces. A phase that
 convenes a collab pattern leaves that pattern's `CONVENED` and `DONE`
-records. A phase that runs a work pattern leaves its plan and its
-`JOB DONE`. A `system:` or `human:` phase leaves one line saying what
+records. A `harness:` phase leaves one `HARNESS DONE` record, shaped
+like the run's own close: who led the loop, the outcome, the result and
+what is still open. A `system:` or `human:` phase leaves one line saying what
 happened, when, and who or what did it. Run-scoped lines leave records
 too, at their cadence or as their events fire, and a run is not complete
 until each of them has closed. The run closes with:
@@ -275,7 +274,7 @@ who acted and when, nobody has to reconstruct any of it afterwards.
 
 ## Failure edges at the process level
 
-A work plan's failure edges cover a phase that does not produce its
+A phase's own failure edges cover a phase that does not produce its
 output. A process has four more that no single phase can see:
 
 - **A phase misses its deadline.** Say what happens: the run continues
@@ -293,8 +292,8 @@ output. A process has four more that no single phase can see:
 
 ## What a process is not
 
-A process is not a work pattern. Do not publish yours as one unless the
-shape recurs beyond your organization, with your specifics removed.
+Do not publish your process as a reference process unless the shape
+recurs beyond your organization, with your specifics removed.
 
 A process is not a diagram. The graph is written as `after:` lines
 because text is something a person, an agent, and an auditor can all

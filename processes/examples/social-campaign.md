@@ -4,11 +4,12 @@ This is one row of the [marketing catalog](./marketing-catalog.md), with
 every blank filled in. Version 6 rewrote it around the thirteen
 activities a social media manager actually does, after walking the full
 activity list against the earlier draft and finding how much it had
-compressed or left out.
+compressed or left out. Version 7 hands its sub-jobs to agents that run
+their own loops, written as `harness:` phases.
 
 ```
-PROCESS: social campaign              id: mkt/social-campaign   v6
-owner: Head of Social                 effective: 2026-08-20
+PROCESS: social campaign              id: mkt/social-campaign   v7
+owner: Head of Social                 effective: 2026-10-18
 trigger: a campaign brief is approved in mkt/campaign-planning
 concurrency: runs may overlap - up to six live at once, one per campaign
 goal: a campaign launched on every channel the brief names, run for its
@@ -30,8 +31,8 @@ phases:
                      chosen, with the reasons said out loud
                      owner: Manager           after: brief-creatives
                      by: 5 days               automation: supervised
-  produce-posts    - runs build-by-talent: copy, images and video,
-                     each sized and worded for its platform
+  produce-posts    - harness: copy, images and video, each sized and
+                     worded for its platform
                      owner: Manager           after: settle-direction
                      by: 5 days               automation: supervised
   get-sign-offs    - convenes approval: brand and legal sign, as named
@@ -58,8 +59,8 @@ phases:
                      creative that has gone stale
                      owner: Media buyer       after: launch
                      automation: assisted
-  wrap-up          - runs collect-and-report: the numbers from every
-                     channel, reported against the brief
+  wrap-up          - harness: the numbers from every channel,
+                     reported against the brief
                      owner: Manager
                      after: watch + engage + optimize
                      automation: assisted
@@ -67,10 +68,11 @@ phases:
                      owner: Manager           after: wrap-up
                      automation: assisted
 run-scoped:
-  spend  - runs allocate-and-reconcile       owner: Manager
+  spend  - harness: spend reconciled against the budget
+           owner: Manager
            from: set-parameters   until: run close
            automation: assisted
-  status - runs collect-and-report           owner: Manager
+  status - harness: a status report        owner: Manager
            every: 7 days
            from: launch   until: run close
            automation: assisted
@@ -120,6 +122,9 @@ amendments:
        does. Setting parameters, the practical side, the launch
        decision, the live window and the learnings had been compressed
        into six phases or left out entirely (activity walk, 2026-08-20)
+  v7 - produce-posts, wrap-up, spend and status written as harness:
+       phases, each led by one agent that owes its output and a closing
+       record (Agent Processes 0.5.0-draft, 2026-10-18)
 ```
 
 ## What the graph says
@@ -154,21 +159,22 @@ carries the date, which is what an auditor reads a year later.
 ## The records a run produces
 
 ```
-RUN: mkt/social-campaign v6 · run 52
-started: 2026-08-20 by Manager
+RUN: mkt/social-campaign v7 · run 52
+started: 2026-10-19 by Manager
 trigger: campaign brief CB-118, approved in mkt/campaign-planning run 9
 ```
 
 Each activity leaves whatever record its own kind of work produces. The
 briefing, the bake-off, the approval and the debrief leave their
-CONVENED and DONE records. Produce-posts and wrap-up leave a plan and a
-JOB DONE each, because they run work patterns. The `human:` activities
+CONVENED and DONE records. Produce-posts and wrap-up leave one HARNESS
+DONE record each, naming the agent that led the loop and what it handed
+back. The `human:` activities
 leave one line each saying what happened and who did it. The run-scoped
 lines leave records at their own pace: a status report every week, and
 the spend line's reconciliation at close. The run closes:
 
 ```
-RUN DONE: mkt/social-campaign v6 · run 52
+RUN DONE: mkt/social-campaign v7 · run 52
 outcome: completed
 result: the campaign ran its window on 4 channels; posts reached v3;
         reported against the brief

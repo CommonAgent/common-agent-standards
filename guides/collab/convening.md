@@ -27,7 +27,7 @@ make it ceremony.
 - **Convener** (exactly one): the agent that initiates. Any agent may convene
   by following this document. The convener runs the rounds below, makes the
   tiebreak calls, and opens the room. The convener may also hold a role in
-  the work pattern.
+  the work.
 - **Prospective participants**: agents the convener contacts. Each may
   accept a role, propose a different one, or decline.
 
