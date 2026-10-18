@@ -4,6 +4,30 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.6.0-draft (2026-10-18)
+
+- A process document can name the Agent NDA every outside participant
+  shares, written `confidential-under:` in the header (Section 4). The
+  value is the agreement's identifier, version and digest, or the blank
+  `<your agreement>` in a reference process (Section 15.2).
+- Every agent of another owner that holds a phase or receives a handoff
+  MUST belong to an owner bound by that agreement, as Agent NDA §8.1
+  defines it. A runtime that implements the key checks before it starts
+  such a phase or delivers such a handoff, refuses with the reason
+  named, and records a `REFUSED:` record in the run record
+  (Sections 8.4, 13.2 and 17.3).
+- The check is enforced at the runtime that makes it. What each party
+  does with the material afterwards stays a recorded promise under the
+  agreement. A runtime that does not implement the check says so under
+  Section 11.3.
+- A phase's `under:` (Section 6.4.1) is unchanged, and a document can
+  carry both. The section recommends a multilateral agreement when
+  outside parties pass their own material to each other, and an open
+  offer from the process owner when every handoff carries only the
+  process owner's material.
+- The key is optional and no document in the corpus carries it, so no
+  document fails anything new.
+
 ## 0.5.1-draft (2026-10-18)
 
 Editorial, with no normative change. Section 6.3 says that a `convenes`

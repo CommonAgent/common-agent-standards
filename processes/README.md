@@ -15,6 +15,7 @@ Site: https://agentprocesses.ai
 
 | Document | What it covers |
 |---|---|
+| [The specification](./SPEC.md) | version 0.6.0-draft, status Working Draft: what a process document means, precisely enough that two programs reading it behave the same way |
 | [Writing down a process](./process.md) | the format for one process: trigger, phase graph, automation level, bindings, policy, amendments |
 | [The process catalog](./process-catalog.md) | the index of all of them: the row, ids, the dependency graph, what to automate first |
 | [An example process](./examples/social-campaign.md) | one process written out in full, with its runs and its failure edges |
