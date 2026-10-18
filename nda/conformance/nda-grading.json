@@ -1,0 +1,582 @@
+{
+  "comment": "Agent NDA grading (agentnda.net 0.1.0-draft, 3, 5, 7.1, 11). An NDA asks the recipient to do things in private, so its promises are 'recorded', the facts around them (parties, instants, signatures, acts) are 'evidence', and NOTHING in an agreement is 'enforced': a clause graded 'enforced' is refused as the false enforcement claim (Agent SoW 3 rule 1). The one enforced step, a board releasing a gated body after a valid acceptance, is defined in Agent RFP 5.11 and does not appear in an agreement. Also pinned: the closed lists and what absence means in each (a category, activity, exclusion or need_to_know value left out is not covered and MUST NOT be inferred; absent subcontractors means none; absent survival is no survival period, never a default), and the derivation of the lifecycle state from signatures, acts and instants. Each case edits the base document: an edit maps a dotted path to its new value, and the value \"<removed>\" deletes the member. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
+  "version": 1,
+  "spec": "Agent NDA 0.1.0-draft: 3 (gradient), 5 (clauses), 7.1 (states), 11 (conformance)",
+  "grades": {
+    "comment": "11: the grade each clause MUST carry. Any other grade does not validate; 'enforced' on any clause is reported as the false enforcement claim.",
+    "fixed": {
+      "parties": "evidence",
+      "purpose": "recorded",
+      "covers": "recorded",
+      "disclosure": "recorded",
+      "survival": "recorded",
+      "exclusions": "recorded",
+      "compelled": "recorded",
+      "at_end": "recorded",
+      "termination": "evidence"
+    },
+    "false_enforcement_message": "an Agent NDA clause cannot be enforced: no runtime can refuse a recipient's private use of what it holds (Agent NDA 3)",
+    "render_rule": "A renderer shows every clause's grade and never presents a promise as enforced, even for a body released by an enforced board step."
+  },
+  "closed_lists": {
+    "categories": [
+      "solicitation",
+      "agreement_terms",
+      "relationship",
+      "inputs",
+      "deliverables",
+      "own_material"
+    ],
+    "activities": [
+      "evaluate_solicitation",
+      "validation_probe",
+      "negotiation",
+      "perform_engagements"
+    ],
+    "exclusions": [
+      "public",
+      "already_known",
+      "independently_developed",
+      "third_party"
+    ],
+    "need_to_know": [
+      "personnel",
+      "advisers"
+    ],
+    "subcontractors": [
+      "none",
+      "bound"
+    ],
+    "at_end_action": [
+      "return",
+      "destroy",
+      "return_or_destroy"
+    ],
+    "direction": [
+      "one_way",
+      "mutual"
+    ]
+  },
+  "absence": {
+    "comment": "What a reader may conclude from a member or value that is not there. The weak meaning throughout: nothing is inferred.",
+    "cases": [
+      {
+        "member": "covers.categories without own_material",
+        "reading": "the recipient's duties do not reach the discloser's methods or other own material"
+      },
+      {
+        "member": "purpose.activities without perform_engagements",
+        "reading": "an Agent SoW that names this agreement is outside its purpose; a node SHOULD warn"
+      },
+      {
+        "member": "exclusions absent",
+        "reading": "no exclusion applies"
+      },
+      {
+        "member": "subcontractors absent",
+        "reading": "none"
+      },
+      {
+        "member": "need_to_know empty",
+        "reading": "no person beyond the agent named in the seat"
+      },
+      {
+        "member": "survival absent",
+        "reading": "duties end when the agreement ends; no default period"
+      },
+      {
+        "member": "at_end absent",
+        "reading": "no promise to return or destroy; engagement content still follows its Agent SoW 5.11 retention"
+      },
+      {
+        "member": "compelled absent",
+        "reading": "compelled disclosure is still no breach; no promise of notice"
+      },
+      {
+        "member": "disclosure.recipient.processors empty",
+        "reading": "material goes to no processor"
+      },
+      {
+        "member": "disclosure.recipient.processors absent",
+        "reading": "states nothing"
+      }
+    ]
+  },
+  "base": {
+    "comment": "The valid agreement every case below edits: Caldera Freight Systems' acceptance of Harbor & Line Outfitters' open offer (see nda-offer.json).",
+    "document": {
+      "nda": "v1",
+      "id": "nda_2bpnmagnx6925r5y",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_hl4q8m2x6t9w3k7r"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UZRYTIHPC2HJSMSQD2QDS7GRKNMM2SNZ7D6PD5HZ3IRM2Z2OJYWZRYTI",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "<base64>",
+          "mandate": "mnd_mv7c2k9q4x8t1w3e"
+        },
+        {
+          "role": "recipient",
+          "key": "UZY4CFRW6EMRLTJXJ53RSYFDCH42KGA5MWFPC7JRPVNLRQ737ACZY4CF",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "<base64>"
+        }
+      ]
+    }
+  },
+  "valid": [
+    {
+      "case": "acceptance",
+      "edit": {},
+      "why": "the base document"
+    },
+    {
+      "case": "mutual",
+      "edit": {
+        "direction": "mutual"
+      },
+      "why": "either direction is valid; in a mutual agreement each party is both discloser and recipient"
+    },
+    {
+      "case": "no_survival",
+      "edit": {
+        "survival": "<removed>"
+      },
+      "why": "survival is optional; absent means no survival period"
+    },
+    {
+      "case": "processed_in_equal_to_require",
+      "edit": {
+        "disclosure.recipient.processed_in": [
+          "us",
+          "ca"
+        ]
+      },
+      "why": "a subset may be the whole set"
+    },
+    {
+      "case": "empty_processors",
+      "edit": {
+        "disclosure.recipient.processors": []
+      },
+      "why": "an empty list is itself a statement: no processor"
+    }
+  ],
+  "invalid": [
+    {
+      "case": "purpose_enforced",
+      "edit": {
+        "purpose.grade": "enforced"
+      },
+      "error": "false_enforcement",
+      "why": "the false enforcement claim"
+    },
+    {
+      "case": "covers_enforced",
+      "edit": {
+        "covers.grade": "enforced"
+      },
+      "error": "false_enforcement",
+      "why": "no runtime can see what a recipient does with covered material"
+    },
+    {
+      "case": "disclosure_enforced",
+      "edit": {
+        "disclosure.grade": "enforced"
+      },
+      "error": "false_enforcement",
+      "why": "a node may refuse to send to an undeclared processor as its own policy; the clause stays recorded"
+    },
+    {
+      "case": "at_end_enforced",
+      "edit": {
+        "at_end.grade": "enforced"
+      },
+      "error": "false_enforcement",
+      "why": "destruction happens in private; a governing Agent SoW retention window is enforced under that specification, and nothing here adds to it"
+    },
+    {
+      "case": "parties_recorded",
+      "edit": {
+        "parties.grade": "recorded"
+      },
+      "error": "wrong_grade",
+      "why": "parties are evidence"
+    },
+    {
+      "case": "purpose_evidence",
+      "edit": {
+        "purpose.grade": "evidence"
+      },
+      "error": "wrong_grade",
+      "why": "a purpose is a promise"
+    },
+    {
+      "case": "termination_recorded",
+      "edit": {
+        "termination.grade": "recorded"
+      },
+      "error": "wrong_grade",
+      "why": "termination acts and notice instants are evidence"
+    },
+    {
+      "case": "unknown_category",
+      "edit": {
+        "covers.categories": [
+          "solicitation",
+          "trade_secrets"
+        ]
+      },
+      "error": "closed_list",
+      "why": "a category outside the closed list cannot be compared"
+    },
+    {
+      "case": "duplicate_category",
+      "edit": {
+        "covers.categories": [
+          "inputs",
+          "inputs"
+        ]
+      },
+      "error": "closed_list",
+      "why": "no value twice"
+    },
+    {
+      "case": "empty_categories",
+      "edit": {
+        "covers.categories": []
+      },
+      "error": "closed_list",
+      "why": "an agreement that covers nothing"
+    },
+    {
+      "case": "unknown_activity",
+      "edit": {
+        "purpose.activities": [
+          "marketing"
+        ]
+      },
+      "error": "closed_list",
+      "why": "activities are closed"
+    },
+    {
+      "case": "unknown_exclusion",
+      "edit": {
+        "exclusions.allowed": [
+          "public",
+          "feedback"
+        ]
+      },
+      "error": "closed_list",
+      "why": "exclusions are closed"
+    },
+    {
+      "case": "unknown_need_to_know",
+      "edit": {
+        "disclosure.need_to_know": [
+          "personnel",
+          "investors"
+        ]
+      },
+      "error": "closed_list",
+      "why": "need_to_know is closed"
+    },
+    {
+      "case": "bad_direction",
+      "edit": {
+        "direction": "two_way"
+      },
+      "error": "closed_list",
+      "why": "one_way or mutual"
+    },
+    {
+      "case": "processed_in_outside_require",
+      "edit": {
+        "disclosure.recipient.processed_in": [
+          "us",
+          "eu"
+        ]
+      },
+      "error": "require_subset",
+      "why": "the declared jurisdictions must be a subset of require.processed_in"
+    },
+    {
+      "case": "processed_in_unstated",
+      "edit": {
+        "disclosure.recipient.processed_in": "<removed>"
+      },
+      "error": "require_subset",
+      "why": "silence fails a stated requirement"
+    },
+    {
+      "case": "processor_outside_party_set",
+      "edit": {
+        "disclosure.recipient.processors.0.processed_in": [
+          "ca"
+        ]
+      },
+      "error": "processor_subset",
+      "why": "Agent SoW 5.11: a processor's processed_in must be a subset of the party's"
+    },
+    {
+      "case": "survival_zero",
+      "edit": {
+        "survival.days": 0
+      },
+      "error": "positive_whole_number",
+      "why": "days is a positive whole number"
+    },
+    {
+      "case": "within_days_fraction",
+      "edit": {
+        "at_end.within_days": 7.5
+      },
+      "error": "positive_whole_number",
+      "why": "days is a positive whole number"
+    },
+    {
+      "case": "bad_at_end_action",
+      "edit": {
+        "at_end.action": "archive"
+      },
+      "error": "closed_list",
+      "why": "return, destroy or return_or_destroy"
+    },
+    {
+      "case": "offer_without_expiry",
+      "edit": {
+        "offer.expires_at": "<removed>"
+      },
+      "error": "offer",
+      "why": "an open offer MUST carry expires_at"
+    },
+    {
+      "case": "offer_names_posting",
+      "edit": {
+        "purpose.named": [
+          {
+            "rfp": "rfp_7f3k9w2q5m8t4x6c",
+            "version": 1
+          }
+        ]
+      },
+      "error": "offer",
+      "why": "an open offer MUST NOT name the posting that gates on it; the posting commits to the offer digest, so the reference runs one way"
+    },
+    {
+      "case": "ends_before_effective",
+      "edit": {
+        "effective_at": "2028-01-01T00:00:00Z"
+      },
+      "error": "instants",
+      "why": "ends_at before a non-null effective_at"
+    }
+  ],
+  "states": {
+    "comment": "7.1: the state is derived from signatures, acts and instants, never stored. 'now' is the instant of the reading. The offer expires 2026-11-20T00:00:00Z and the agreement ends 2027-11-30T00:00:00Z.",
+    "cases": [
+      {
+        "case": "unsigned",
+        "signatures": [],
+        "now": "2026-10-21T00:00:00Z",
+        "state": "draft"
+      },
+      {
+        "case": "open_offer",
+        "signatures": [
+          "discloser over offer"
+        ],
+        "recipient": null,
+        "now": "2026-10-21T00:00:00Z",
+        "state": "offered"
+      },
+      {
+        "case": "open_offer_after_expiry",
+        "signatures": [
+          "discloser over offer"
+        ],
+        "recipient": null,
+        "now": "2026-11-21T00:00:00Z",
+        "state": "lapsed"
+      },
+      {
+        "case": "open_offer_withdrawn",
+        "signatures": [
+          "discloser over offer"
+        ],
+        "recipient": null,
+        "acts": [
+          "withdraw at 2026-10-25T00:00:00Z"
+        ],
+        "now": "2026-10-26T00:00:00Z",
+        "state": "withdrawn"
+      },
+      {
+        "case": "accepted",
+        "signatures": [
+          "discloser over offer",
+          "recipient at 2026-10-22T09:12:40Z"
+        ],
+        "effective_at": null,
+        "now": "2026-10-23T00:00:00Z",
+        "state": "in force"
+      },
+      {
+        "case": "accepted_after_expiry",
+        "signatures": [
+          "discloser over offer",
+          "recipient at 2026-11-21T00:00:00Z"
+        ],
+        "now": "2026-11-22T00:00:00Z",
+        "state": "lapsed",
+        "why": "an acceptance signed after offer.expires_at is not an agreement (6.1 step 3); the offer itself has lapsed"
+      },
+      {
+        "case": "bilateral_one_signature",
+        "signatures": [
+          "recipient"
+        ],
+        "now": "2026-10-23T00:00:00Z",
+        "state": "offered",
+        "why": "a renderer MUST NOT show one signature as in force"
+      },
+      {
+        "case": "countersigned_future_start",
+        "signatures": [
+          "discloser",
+          "recipient"
+        ],
+        "effective_at": "2026-12-01T00:00:00Z",
+        "now": "2026-11-01T00:00:00Z",
+        "state": "countersigned"
+      },
+      {
+        "case": "past_end",
+        "signatures": [
+          "discloser over offer",
+          "recipient at 2026-10-22T09:12:40Z"
+        ],
+        "now": "2027-12-01T00:00:00Z",
+        "state": "expired",
+        "why": "covers no new disclosure; duties continue for 730 days from 2027-11-30 for material disclosed while in force"
+      },
+      {
+        "case": "terminated",
+        "signatures": [
+          "discloser over offer",
+          "recipient at 2026-10-22T09:12:40Z"
+        ],
+        "acts": [
+          "terminate at 2027-03-01T12:00:00Z"
+        ],
+        "now": "2027-04-01T00:00:00Z",
+        "state": "terminated",
+        "why": "notice_days 30: the termination takes effect at 2027-03-31T12:00:00Z, and survival runs from then"
+      }
+    ]
+  }
+}

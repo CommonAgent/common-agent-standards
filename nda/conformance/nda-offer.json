@@ -1,0 +1,265 @@
+{
+  "comment": "Agent NDA identity, offer bytes and digests (agentnda.net 0.1.0-draft, 4.1, 6, 6.1, 8). Harbor & Line Outfitters signs an open offer to gate its freight-audit posting; Caldera Freight Systems accepts it. Pins the bytes where two implementations drift: the identifier hashes the version-1 offer minus id and signatures, with no prefix; the signed bytes are 'agent-nda-v1', one newline, then the JCS of the document minus signatures (id included); the offer bytes are re-derived from the completed document by setting parties.recipient and disclosure.recipient back to null; the offer digest and the agreement digest are 'sha256:' and 64 lowercase hex over those signed bytes. The keys are stand-ins in the family's key spelling, the language hash is the hash of a stand-in template, and the sig values are placeholders: signatures are excluded from every byte string here. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "version": 1,
+  "spec": "Agent NDA 0.1.0-draft: 4.1 (identity), 6 (signed bytes), 6.1 (open offers), 8 (references)",
+  "offer": {
+    "document": {
+      "nda": "v1",
+      "id": "nda_2bpnmagnx6925r5y",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_hl4q8m2x6t9w3k7r"
+        },
+        "recipient": null,
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": null,
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UZRYTIHPC2HJSMSQD2QDS7GRKNMM2SNZ7D6PD5HZ3IRM2Z2OJYWZRYTI",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "<base64>",
+          "mandate": "mnd_mv7c2k9q4x8t1w3e"
+        }
+      ]
+    },
+    "hashed_for_id": "{\"at_end\":{\"action\":\"return_or_destroy\",\"certify\":true,\"grade\":\"recorded\",\"within_days\":30},\"compelled\":{\"grade\":\"recorded\",\"notice\":true},\"covers\":{\"categories\":[\"solicitation\",\"agreement_terms\",\"relationship\",\"inputs\",\"deliverables\"],\"grade\":\"recorded\"},\"direction\":\"one_way\",\"disclosure\":{\"grade\":\"recorded\",\"need_to_know\":[\"personnel\",\"advisers\"],\"recipient\":null,\"require\":{\"processed_in\":[\"us\",\"ca\"]},\"subcontractors\":\"bound\"},\"effective_at\":null,\"ends_at\":\"2027-11-30T00:00:00Z\",\"exclusions\":{\"allowed\":[\"public\",\"already_known\",\"independently_developed\",\"third_party\"],\"grade\":\"recorded\"},\"language\":{\"id\":\"agent-nda-standard-language\",\"sha256\":\"32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31\",\"version\":1},\"nda\":\"v1\",\"offer\":{\"expires_at\":\"2026-11-20T00:00:00Z\",\"open_to\":\"any\"},\"parties\":{\"discloser\":{\"agent\":\"U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q\",\"handle\":\"Petrel.mari@harborandline.example\",\"organization\":\"org_hl4q8m2x6t9w3k7r\",\"owner\":\"Harbor & Line Outfitters\"},\"grade\":\"evidence\",\"recipient\":null},\"purpose\":{\"activities\":[\"evaluate_solicitation\",\"validation_probe\",\"negotiation\",\"perform_engagements\"],\"grade\":\"recorded\",\"statement\":\"Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.\"},\"survival\":{\"days\":730,\"grade\":\"recorded\"},\"termination\":{\"grade\":\"evidence\",\"notice_days\":30},\"version\":1}",
+    "id": "nda_2bpnmagnx6925r5y",
+    "signed_bytes": "agent-nda-v1\n{\"at_end\":{\"action\":\"return_or_destroy\",\"certify\":true,\"grade\":\"recorded\",\"within_days\":30},\"compelled\":{\"grade\":\"recorded\",\"notice\":true},\"covers\":{\"categories\":[\"solicitation\",\"agreement_terms\",\"relationship\",\"inputs\",\"deliverables\"],\"grade\":\"recorded\"},\"direction\":\"one_way\",\"disclosure\":{\"grade\":\"recorded\",\"need_to_know\":[\"personnel\",\"advisers\"],\"recipient\":null,\"require\":{\"processed_in\":[\"us\",\"ca\"]},\"subcontractors\":\"bound\"},\"effective_at\":null,\"ends_at\":\"2027-11-30T00:00:00Z\",\"exclusions\":{\"allowed\":[\"public\",\"already_known\",\"independently_developed\",\"third_party\"],\"grade\":\"recorded\"},\"id\":\"nda_2bpnmagnx6925r5y\",\"language\":{\"id\":\"agent-nda-standard-language\",\"sha256\":\"32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31\",\"version\":1},\"nda\":\"v1\",\"offer\":{\"expires_at\":\"2026-11-20T00:00:00Z\",\"open_to\":\"any\"},\"parties\":{\"discloser\":{\"agent\":\"U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q\",\"handle\":\"Petrel.mari@harborandline.example\",\"organization\":\"org_hl4q8m2x6t9w3k7r\",\"owner\":\"Harbor & Line Outfitters\"},\"grade\":\"evidence\",\"recipient\":null},\"purpose\":{\"activities\":[\"evaluate_solicitation\",\"validation_probe\",\"negotiation\",\"perform_engagements\"],\"grade\":\"recorded\",\"statement\":\"Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.\"},\"survival\":{\"days\":730,\"grade\":\"recorded\"},\"termination\":{\"grade\":\"evidence\",\"notice_days\":30},\"version\":1}",
+    "offer_digest": "sha256:df5b2088327462b8b6de173990d3e587e5b905701adf1ed7c81fb7a7a8e0e53b"
+  },
+  "acceptance": {
+    "document": {
+      "nda": "v1",
+      "id": "nda_2bpnmagnx6925r5y",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_hl4q8m2x6t9w3k7r"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UZRYTIHPC2HJSMSQD2QDS7GRKNMM2SNZ7D6PD5HZ3IRM2Z2OJYWZRYTI",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "<base64>",
+          "mandate": "mnd_mv7c2k9q4x8t1w3e"
+        },
+        {
+          "role": "recipient",
+          "key": "UZY4CFRW6EMRLTJXJ53RSYFDCH42KGA5MWFPC7JRPVNLRQ737ACZY4CF",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "<base64>"
+        }
+      ]
+    },
+    "signed_bytes": "agent-nda-v1\n{\"at_end\":{\"action\":\"return_or_destroy\",\"certify\":true,\"grade\":\"recorded\",\"within_days\":30},\"compelled\":{\"grade\":\"recorded\",\"notice\":true},\"covers\":{\"categories\":[\"solicitation\",\"agreement_terms\",\"relationship\",\"inputs\",\"deliverables\"],\"grade\":\"recorded\"},\"direction\":\"one_way\",\"disclosure\":{\"grade\":\"recorded\",\"need_to_know\":[\"personnel\",\"advisers\"],\"recipient\":{\"processed_in\":[\"us\"],\"processors\":[{\"domain\":\"anthropic.com\",\"processed_in\":[\"us\"],\"purpose\":\"model inference, zero-retention tier\",\"service\":\"Anthropic API\"}]},\"require\":{\"processed_in\":[\"us\",\"ca\"]},\"subcontractors\":\"bound\"},\"effective_at\":null,\"ends_at\":\"2027-11-30T00:00:00Z\",\"exclusions\":{\"allowed\":[\"public\",\"already_known\",\"independently_developed\",\"third_party\"],\"grade\":\"recorded\"},\"id\":\"nda_2bpnmagnx6925r5y\",\"language\":{\"id\":\"agent-nda-standard-language\",\"sha256\":\"32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31\",\"version\":1},\"nda\":\"v1\",\"offer\":{\"expires_at\":\"2026-11-20T00:00:00Z\",\"open_to\":\"any\"},\"parties\":{\"discloser\":{\"agent\":\"U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q\",\"handle\":\"Petrel.mari@harborandline.example\",\"organization\":\"org_hl4q8m2x6t9w3k7r\",\"owner\":\"Harbor & Line Outfitters\"},\"grade\":\"evidence\",\"recipient\":{\"agent\":\"U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB\",\"handle\":\"Sable.audit@calderafreight.example\",\"owner\":\"Caldera Freight Systems\"}},\"purpose\":{\"activities\":[\"evaluate_solicitation\",\"validation_probe\",\"negotiation\",\"perform_engagements\"],\"grade\":\"recorded\",\"statement\":\"Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.\"},\"survival\":{\"days\":730,\"grade\":\"recorded\"},\"termination\":{\"grade\":\"evidence\",\"notice_days\":30},\"version\":1}",
+    "agreement_digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e",
+    "offer_bytes_rederived_equal": true,
+    "reference": {
+      "id": "nda_2bpnmagnx6925r5y",
+      "version": 1,
+      "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e",
+      "grade": "evidence"
+    }
+  },
+  "traps": [
+    {
+      "case": "hash_signed_bytes_for_id",
+      "why": "the id hashes the bytes minus id AND signatures, without the prefix; hashing the signed bytes gives a different id"
+    },
+    {
+      "case": "digest_includes_signatures",
+      "why": "digests are over the signed bytes, which exclude signatures; adding a signature never changes a digest"
+    },
+    {
+      "case": "offer_digest_for_agreement",
+      "why": "an Agent SoW names the agreement digest (recipient filled); the offer digest is what a gated posting names"
+    },
+    {
+      "case": "uppercase_hex",
+      "why": "digests are lowercase hex and compared exactly"
+    },
+    {
+      "case": "changed_term_at_acceptance",
+      "why": "any change beyond parties.recipient and disclosure.recipient makes the re-derived offer bytes differ, and the discloser's signature fails"
+    }
+  ]
+}

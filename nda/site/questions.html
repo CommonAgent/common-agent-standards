@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Questions and answers: Agent NDA</title>
+  <meta name="description" content="Practical questions about Agent NDA: what enforced means, mutual agreements, breach, retention, many statements of work and what the document leaves out.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent NDA">
+  <meta property="og:title" content="Questions and answers: Agent NDA">
+  <meta property="og:description" content="Practical questions about Agent NDA: what enforced means, mutual agreements, breach, retention, many statements of work and what the document leaves out.">
+  <meta property="og:url" content="https://agentnda.net/questions.html">
+  <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent NDA. A signed non-disclosure agreement between two parties whose agents work together, with every clause graded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentnda.net/questions.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent NDA, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path d="M9 3.5h10l6 6V26a2.5 2.5 0 0 1-2.5 2.5H9A2.5 2.5 0 0 1 6.5 26V6A2.5 2.5 0 0 1 9 3.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M19 3.5V9.5h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 14h10" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 19h5" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round"/><circle cx="20.5" cy="22.5" r="2.6" fill="var(--violet)"/></svg><span class="wm">Agent <b>NDA</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent NDA">
+        <details class="sec" open>
+          <summary>Agent NDA<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html" class="on" aria-current="page">Questions and answers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda/conformance">Conformance fixtures<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent NDA is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>Questions and answers</h1>
+          <p>These are the questions business readers and implementers ask first. Each answer points to the part of the <a href="/spec.html">specification</a> that settles it.</p>
+
+          <div class="qa">
+            <h2>Is an Agent NDA a legal opinion?</h2>
+            <p>No. The specification describes what the document records: who signed, which terms they signed, and when. It is not legal advice, and it says nothing about what a court would make of a particular agreement. Whether an agreement is enforceable, and what a breach is worth, are questions for the law that governs it and for the parties' own counsel.</p>
+
+            <h2>What does enforced mean here?</h2>
+            <p>Enforced means a machine refuses a violation before it happens. In the Common Agent Standards that grade is reserved for refusals a runtime actually performs. No clause of an Agent NDA is enforced, because nothing a recipient does with material inside its own walls can be refused by software. The one enforced step is in <a href="https://agentrfp.net/">Agent RFP</a>: a board releases the sealed body of a gated posting only to a provider whose acceptance it has verified. A renderer must never present a promise of an agreement as enforced, whatever enforced step came before it.</p>
+
+            <h2>What does a signature prove?</h2>
+            <p>A countersignature proves that each owner key signed these exact terms at the stated instant. It does not prove that the recipient kept any promise, and no part of the system can show that it did. What the signatures provide is a record neither party can later dispute about what was agreed and who agreed to it.</p>
+
+            <h2>Can an NDA be mutual?</h2>
+            <p>Yes. The direction is either one-way or mutual. In a one-way agreement only the discloser's material is protected and only the recipient takes on duties. In a mutual agreement each party is both a discloser and a recipient, every duty applies to each party for the other's material, and the seat names only say who signed where. In a mutual agreement each party declares its own processors and jurisdictions.</p>
+
+            <h2>Can one NDA cover many statements of work?</h2>
+            <p>Yes, and that is one of the reasons it is a separate document. Each Agent SoW names the agreement it runs under by identifier, version and digest, and the agreement keeps its own term. It covers performing those engagements when its purpose lists the activity <code>perform_engagements</code>. If the purpose leaves that activity out, an engagement that names the agreement is not covered by it, and a node should warn about the mismatch.</p>
+
+            <h2>What if the NDA and the SoW disagree on retention?</h2>
+            <p>The statement of work wins for its own content. An Agent NDA never lengthens retention: material that is content of an engagement is deleted when that engagement's Agent SoW says so, even while the agreement remains in force. The return-or-destroy clause of the agreement is an outer limit for material no engagement governs, such as a solicitation body, negotiation drafts or probe samples that led to no engagement.</p>
+
+            <h2>What happens on breach?</h2>
+            <p>The specification defines no remedy and no machine that decides one. Where the breach arises in an engagement that names the agreement, it is a breach under that engagement, and the engagement's dispute clause governs how it is raised and settled. An Agent SoW liability clause may also carve breach of the agreement out of its limits. Either party may file evidence with a bureau under <a href="https://agentreputations.com/">Agent Reputations</a>, and a report there is evidence about how an interaction went, never a finding of breach. Beyond that, a breach is settled between the owners or before a court or arbitrator reading the signed document.</p>
+
+            <h2>What is left out if a category is not listed?</h2>
+            <p>It is not covered. The list of confidential categories is closed, and a reader must not infer that a category the parties left out is protected. Material that fits no category is not covered by an Agent NDA at all. Parties who need to protect it state it in a related agreement or write a different document. The same rule runs through the agreement: an activity, an exclusion or a kind of person left out of its list does not apply.</p>
+
+            <h2>What if the agreement says nothing about survival or exclusions?</h2>
+            <p>Then it states none, and a reader must not supply a default. Without a survival period the duties end when the agreement ends. Without exclusions, none apply. The specification invents no default, because a default would be a number or a rule neither party wrote.</p>
+
+            <h2>Can a buyer choose who accepts its open offer?</h2>
+            <p>Yes. An open offer is open either to any party or to a list of named handles. An offer to any party lets anyone who can sign read the gated body, so a buyer that cares who reads it lists the entitled handles, or signs agreements one at a time with the providers it chooses. An open offer also always has an expiry instant, and after it no acceptance forms an agreement.</p>
+
+            <h2>Why does a gated posting not appear in its own NDA?</h2>
+            <p>The posting names the offer by its digest, so the offer must exist and be signed before the posting is. An offer that named its posting could not be completed before the posting existed. The offer covers the posting through the activity <code>evaluate_solicitation</code>, which reaches any posting whose gate names the offer.</p>
+
+            <h2>How is an agreement changed or ended?</h2>
+            <p>An agreement is amended by a complete replacement at the next version, with the same identifier and parties, signed by both. A proposed replacement with one signature has no force. Either party may terminate on the notice the agreement states, by a separately signed act, and termination starts the survival period. An open offer is changed by withdrawing it and signing a new one.</p>
+
+            <h2>Who signs for a company?</h2>
+            <p>The owner of each party signs. A seat may name the organization it acts for, and a signature may name the mandate under which the signing person acted. A counterparty can check that mandate under <a href="https://agentmandate.net/">Agent Mandate</a>. A runtime that does not perform those checks must not present the agreement as mandate-verified.</p>
+
+            <h2>Does a board see the confidential material?</h2>
+            <p>The board holds the sealed body, and it is trusted to show it to nobody but the poster and the providers it released it to. That trust is outside the agreement, which binds the two parties only. A poster that does not want to trust a board can release bodies itself, applying the same checks.</p>
+          </div>
+
+          <p class="next">Next: <a href="/spec.html">The specification</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent NDA</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gated RFPs: Agent NDA</title>
+  <meta name="description" content="How a gated Agent RFP posting keeps a public summary and a sealed body, how a provider accepts the poster's open offer, and how a board verifies the acceptance and releases the body.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent NDA">
+  <meta property="og:title" content="Gated RFPs: Agent NDA">
+  <meta property="og:description" content="How a gated Agent RFP posting keeps a public summary and a sealed body, how a provider accepts the poster's open offer, and how a board verifies the acceptance and releases the body.">
+  <meta property="og:url" content="https://agentnda.net/gated.html">
+  <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent NDA. A signed non-disclosure agreement between two parties whose agents work together, with every clause graded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentnda.net/gated.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent NDA, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path d="M9 3.5h10l6 6V26a2.5 2.5 0 0 1-2.5 2.5H9A2.5 2.5 0 0 1 6.5 26V6A2.5 2.5 0 0 1 9 3.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M19 3.5V9.5h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 14h10" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 19h5" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round"/><circle cx="20.5" cy="22.5" r="2.6" fill="var(--violet)"/></svg><span class="wm">Agent <b>NDA</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent NDA">
+        <details class="sec" open>
+          <summary>Agent NDA<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html" class="on" aria-current="page">Gated RFPs</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda/conformance">Conformance fixtures<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent NDA is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>Gated RFPs</h1>
+          <p>A public request for proposal cannot carry the information that would let a provider price it, such as which carriers a retailer uses and what it pays them. A posting that leaves that information out cannot be priced. <a href="https://agentrfp.net/">Agent RFP</a> resolves this with the gated posting, which splits the posting in two: a public document anyone can read, and a sealed body that a board releases to a provider only after the provider has accepted the poster's Agent NDA.</p>
+          <p>Agent RFP defines the gate: how a posting names the agreement and the body, what a board checks before it releases the body, and what it keeps. Agent NDA defines the agreement itself, and the open offer and acceptance a gate relies on.</p>
+
+          <h2>A gated posting has a public summary and a sealed body</h2>
+          <p>The public posting is signed by its poster like any posting. It keeps what a board needs to apply the mechanical rules and what a provider needs to decide whether to accept the agreement: who is posting, when the posting expires, how to respond and how the poster will decide. In place of the need, it carries a gate.</p>
+          <figure class="figure" aria-label="The gate of Harbor &amp; Line's freight-audit posting">
+            <div class="bar"><span class="lamp"></span>rfp_7f3k9w2q5m8t4x6c · v1 · gated<span class="grow">signed by the poster's owner</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Summary</dt><dd>An audit of twelve months of inbound carrier invoices against contracted rates, for a retailer that ships with three carriers.<span class="sub"><span class="lbl">Sought</span>work, rented, performed by an agent</span></dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Agreement</dt><dd>The poster's open offer <b>nda_2bpnmagnx6925r5y</b>, version 1, named by the digest of its offer bytes<span class="sub"><span class="lbl">Digest</span><code>sha256:df5b2088…e0e53b</code></span></dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Sealed body</dt><dd>Named by the digest of its exact bytes, and served only to a party entitled to it<span class="sub"><span class="lbl">Digest</span><code>sha256:ef507dc4…99bf434</code></span></dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Release rule</dt><dd>The board gives the body to a provider only after it has verified that provider's acceptance of the named offer</dd><span class="grade c-mint">enforced</span></div>
+            </dl>
+            <figcaption class="cap">Both digests sit inside the posting's signed bytes, so neither the body nor the terms can be swapped after the poster signs. Neither the body nor the offer names the posting: the reference runs one way, from the posting to the documents it gates.</figcaption>
+          </figure>
+          <p>The sealed body is its own document. It holds the need, the budget, the term, the award intentions and the handling the poster requires, in the same shapes and with the same grades an ordinary posting gives them. A member is either public or sealed, never both, so a reader never has to ask which of two copies governs. The body carries no signatures of its own: bytes that hash to the digest in the poster's signed posting are the body the poster signed for, and any other bytes are not.</p>
+
+          <h2>The provider accepts the poster's open offer</h2>
+          <p>The poster signs its Agent NDA as an open offer: a complete agreement with the recipient seat left empty, an expiry instant, and either any party or a list of named handles entitled to accept. The offer carries one signature, the discloser's, over the offer bytes.</p>
+          <p>A provider that wants to read the body writes the completed document. It fills two members and changes nothing else: the recipient seat, with its own agent key, handle and owner, and its own declaration of the processors and jurisdictions it will use. It keeps the discloser's signature, marked as made over the offer, and its owner signs the completed document. That acceptance is an agreement between the two parties. Each acceptance of the same offer keeps the offer's identifier and is told apart from the others by its recipient and its digest.</p>
+          <p>An open offer commits the discloser to every acceptance that passes the checks below. That is deliberate. The terms are the discloser's own, written to protect it, so each acceptance binds the recipient to them. A discloser that wants to choose who reads the body lists the entitled handles in the offer.</p>
+
+          <h2>The board verifies the acceptance and releases the body</h2>
+          <p>The provider presents the completed agreement to the board. The board releases the body to that one provider only when every one of these holds:</p>
+          <ol class="steps">
+            <li><b>The acceptance is valid.</b> The discloser's signature verifies over the offer bytes, which the board re-derives by setting the two recipient members back to empty. The recipient's signature verifies over the completed document. The recipient signed before the offer expired and before any withdrawal. Where the offer lists handles, the recipient is one of them. Where the offer requires jurisdictions, the recipient's declaration falls within them.</li>
+            <li><b>The offer is the poster's.</b> The discloser seat names the posting's own agent.</li>
+            <li><b>The offer is the one the posting names.</b> The digest of the offer bytes equals the digest in the gate, and the identifier and version match.</li>
+            <li><b>The recipient is the provider asking.</b> The recipient seat names the agent key the board verified on the request.</li>
+            <li><b>The agreement still stands.</b> The board holds no termination of it.</li>
+            <li><b>The posting allows it.</b> The posting is open, and where it is directed, the provider is one of its addressees.</li>
+          </ol>
+          <p>A board that refuses a release says which check failed, so the provider learns what to fix. A board records every release as evidence: the posting and its version, the body digest released, the agreement with the digest of the completed document, the recipient and the instant. The poster and the recipient can both read that record. The board shows the body, and anything derived from it, to nobody except the poster and the providers it released the body to, and on a gated posting it shows each response to the poster only.</p>
+          <p>The provider then checks that the bytes it received hash to the body digest in the posting. Bytes that do not match are not the posting's body, and a provider does not respond to them as though they were.</p>
+
+          <h2>The gate is enforced, and what follows it is a recorded promise</h2>
+          <div class="cards two">
+            <div class="card c-mint">
+              <span class="grade c-mint">enforced</span>
+              <h3>At the board</h3>
+              <p>The board holds the body and gives it to nobody who fails a check. The refusal is mechanical and happens before the provider holds anything. Peer to peer, the poster's own runtime holds the body, and the release is enforced there when that runtime applies the same checks. Where nothing applies them, the grade falls to evidence at best, and a renderer shows the grade that actually holds.</p>
+            </div>
+            <div class="card c-amber">
+              <span class="grade c-amber">recorded</span>
+              <h3>After release</h3>
+              <p>From release on, what the provider does with the body is governed by the agreement it accepted. Using it only for the purpose and showing it only to the people the agreement names are promises no runtime can see kept. The release record is the evidence that the promise was made and the body was given.</p>
+            </div>
+          </div>
+
+          <h2>A response names the agreement it was read under</h2>
+          <p>A response to a gated posting is an ordinary Agent RFP response, and the award and formation proceed as they do for any posting. The response should name the agreement under which its responder read the body, in the <code>nda</code> member Agent SoW defines, with the digest of the completed document. That puts the agreement inside the responder's signed bytes, so the engagement formed from the response names the confidentiality terms the parties already hold. A board may refuse a response to a gated posting from a provider it has no release record for.</p>
+          <p>When a poster replaces a gated posting with a new version that names the same offer, a provider that accepted it is entitled to the new body under the same agreement. A new version that names a different offer needs a new acceptance. A closed posting releases no more bodies, and its archive keeps the public document with the body still sealed.</p>
+
+          <p>The gate, the body and the release are in <a href="https://agentrfp.net/spec.html#s5-11">section 5.11 of the Agent RFP specification</a>. The open offer and its acceptance are in <a href="/spec.html#s6-1">section 6.1 of this specification</a>.</p>
+          <p class="next">Next: <a href="/example.html">An example</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent NDA</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent NDA</title>
+  <meta name="description" content="An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together, written so that software can read it and grade each clause.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent NDA">
+  <meta property="og:title" content="Agent NDA">
+  <meta property="og:description" content="An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together, written so that software can read it and grade each clause.">
+  <meta property="og:url" content="https://agentnda.net/">
+  <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent NDA. A signed non-disclosure agreement between two parties whose agents work together, with every clause graded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentnda.net/">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent NDA, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path d="M9 3.5h10l6 6V26a2.5 2.5 0 0 1-2.5 2.5H9A2.5 2.5 0 0 1 6.5 26V6A2.5 2.5 0 0 1 9 3.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M19 3.5V9.5h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 14h10" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 19h5" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round"/><circle cx="20.5" cy="22.5" r="2.6" fill="var(--violet)"/></svg><span class="wm">Agent <b>NDA</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent NDA">
+        <details class="sec" open>
+          <summary>Agent NDA<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/" class="on" aria-current="page">What it is</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda/conformance">Conformance fixtures<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent NDA is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <div class="herobg">
+        <div class="wrap hero">
+          <h1>Agent NDA</h1>
+          <p class="lede">An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together, written so that software can read it and grade each clause.</p>
+          <p class="more">Organizations often make a provider sign a non-disclosure agreement before it may even see a request for proposal, because the RFP holds strategic information: what the organization plans to change, what it spends today and which suppliers it is unhappy with. Confidential material also changes hands in an Agent SoW validation probe, where a client sends real sample inputs before anyone has signed a statement of work, and during negotiation, while drafts and prices pass back and forth. And one non-disclosure agreement often covers a whole relationship, across many statements of work signed over years.</p>
+          <p class="more">A clause inside an <a href="https://agentsow.com/">Agent SoW</a> cannot cover any of that. Before a statement of work exists there is no document for the clause to sit in, and once several exist, each would carry its own copy of the same promises with its own start and end. So Agent NDA is its own signed document, and the documents that depend on it name it by its identifier and digest.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/spec.html">Read the specification</a>
+            <a class="btn btn-ghost" href="/example.html">See an example</a>
+          </div>
+          <p class="version"><!-- spec:version -->The specification is at version 0.1.0-draft.<!-- /spec:version --></p>
+
+          <figure class="docbox" aria-label="Six clauses of a signed Agent NDA, each with its grade">
+            <div class="bar"><span>nda_2bpnmagnx6925r5y · version 1 · in force</span><span>both owners signed</span></div>
+<pre class="doc"><span class="k">parties</span>   Harbor &amp; Line discloses, Caldera receives <span class="gv">[EVIDENCE]</span> <span class="c">keys and owners, signed</span>
+<span class="k">term</span>      in force until 30 November 2027           <span class="gv">[EVIDENCE]</span> <span class="c">instants in the signed bytes</span>
+<span class="k">survival</span>  the duties last 730 days after the end    <span class="gr">[RECORDED]</span> <span class="c">a promise no runtime checks</span>
+<span class="k">purpose</span>   the RFP, probes, talks and engagements    <span class="gr">[RECORDED]</span> <span class="c">use for this and nothing else</span>
+<span class="k">covers</span>    the RFP body, inputs, terms and more      <span class="gr">[RECORDED]</span> <span class="c">a closed list of categories</span>
+<span class="k">at end</span>    return or destroy within 30 days          <span class="gr">[RECORDED]</span> <span class="c">with a signed confirmation</span></pre>
+            <figcaption class="cap"><b>No clause of an Agent NDA is labeled enforced.</b> The promises are recorded and the signatures are evidence. The one step software performs is a board's release of a gated RFP's sealed body, and Agent RFP defines it.</figcaption>
+          </figure>
+        </div>
+      </div>
+
+      <section class="band tinted" id="moments">
+        <div class="wrap">
+          <h2>One agreement covers three moments</h2>
+          <p>A non-disclosure agreement is usually signed early and outlives the first piece of work. An Agent NDA is built for the three points where confidential material changes hands between agents.</p>
+          <figure class="figure tl-fig" role="img" aria-label="A timeline. First, a provider accepts the poster's Agent NDA and the board releases the sealed body of the RFP. Second, the provider runs a validation probe on real samples and the parties negotiate. Third, several statements of work follow, each naming the NDA. One Agent NDA is in force across all three.">
+            <div class="bar"><span class="lamp"></span>one relationship, from the first look to the last contract<span class="grow">nda_2bpnmagnx6925r5y</span></div>
+            <svg class="tl" viewBox="0 0 960 240" aria-hidden="true" focusable="false">
+              <line class="axis" x1="30" y1="118" x2="930" y2="118"/>
+              <text class="num" x="170" y="34">1</text>
+              <text class="ev" x="170" y="58">Before an RFP is shown</text>
+              <text class="evs" x="170" y="78">the provider accepts the open offer,</text>
+              <text class="evs" x="170" y="96">and the board releases the sealed body</text>
+              <circle class="dot" cx="170" cy="118" r="8"/>
+              <text class="num" x="455" y="34">2</text>
+              <text class="ev" x="455" y="58">During a probe and a negotiation</text>
+              <text class="evs" x="455" y="78">sample invoices, methods and draft</text>
+              <text class="evs" x="455" y="96">terms pass under the same NDA</text>
+              <circle class="dot" cx="455" cy="118" r="8"/>
+              <text class="num" x="770" y="34">3</text>
+              <text class="ev" x="770" y="58">Across many contracts</text>
+              <text class="evs" x="770" y="78">each Agent SoW names the NDA</text>
+              <text class="evs" x="770" y="96">by its identifier and digest</text>
+              <circle class="dot" cx="770" cy="118" r="8"/>
+              <line class="span" x1="170" y1="150" x2="915" y2="150"/>
+              <text class="lab" x="170" y="178">One Agent NDA in force, from the recipient's signature to the end of its term</text>
+              <rect class="sow" x="645" y="196" width="76" height="28" rx="6"/><text class="sowt" x="683" y="215">SoW 1</text>
+              <rect class="sow" x="732" y="196" width="76" height="28" rx="6"/><text class="sowt" x="770" y="215">SoW 2</text>
+              <rect class="sow" x="819" y="196" width="76" height="28" rx="6"/><text class="sowt" x="857" y="215">SoW 3</text>
+            </svg>
+          </figure>
+          <ol class="moments">
+            <li><span class="n">1</span><h3>Before an RFP is shown</h3><p>A buyer publishes a gated posting under <a href="https://agentrfp.net/">Agent RFP</a>: a public summary anyone can read, and a sealed body held back. The posting names the buyer's Agent NDA, signed as an open offer. A provider accepts by signing, and the board releases the body only after it has verified that acceptance.</p></li>
+            <li><span class="n">2</span><h3>During a probe and a negotiation</h3><p>Before anyone signs a statement of work, a provider can run an Agent SoW validation probe on the buyer's real inputs to show it can do the work, and the two sides trade drafts and prices. The same agreement covers all of it.</p></li>
+            <li><span class="n">3</span><h3>Across many contracts</h3><p>When work begins, each Agent SoW names the agreement it runs under by identifier and digest. The agreement keeps its own term, so it outlives any one engagement and covers the next.</p></li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band" id="grades">
+        <div class="wrap">
+          <h2>Every clause says what backs it up</h2>
+          <p>The Common Agent Standards label every clause with one of three grades: enforced, evidence or recorded. A non-disclosure agreement asks the recipient to do things in private: to use material only for a purpose, to show it only to certain people, to destroy it at the end. No runtime can watch any of that. So an Agent NDA uses only two of the grades, and a document that labels any of its clauses enforced does not validate.</p>
+          <div class="cards three">
+            <div class="card c-blue">
+              <span class="grade c-blue">evidence</span>
+              <h3>Who signed, and when</h3>
+              <p>The parties, their keys and owners, the instants the agreement starts and ends, and the signatures themselves. Anyone can verify them from the signed bytes, and a dispute starts from that record.</p>
+            </div>
+            <div class="card c-amber">
+              <span class="grade c-amber">recorded</span>
+              <h3>What the recipient promised</h3>
+              <p>The purpose, what is confidential, who may receive it, the exclusions, compelled disclosure, how long the duties survive, and return or destruction. They are signed and citable, and a breach is settled between the owners, under a related engagement or before a court.</p>
+            </div>
+            <div class="card c-mint">
+              <span class="grade c-mint">enforced</span>
+              <h3>One step, outside the document</h3>
+              <p>A board releases the sealed body of a gated posting only to a provider whose acceptance it has verified. That refusal happens before the provider holds anything, so it is enforced at the board. Agent RFP defines it, and <a href="/gated.html">Gated RFPs</a> walks through it.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band tinted" id="who">
+        <div class="wrap">
+          <h2>Who it is for</h2>
+          <ul class="plain">
+            <li><b>Buyers and their counsel</b> who already require a non-disclosure agreement before they share an RFP or sample data, and want their agents to ask for one and check it.</li>
+            <li><b>Providers</b> whose agents read RFPs, run validation probes and negotiate, and who want to accept an agreement without a person retyping it into another system.</li>
+            <li><b>Implementers of boards and runtimes</b> that host gated postings or hold confidential inputs, and need a document they can parse, verify and cite by digest.</li>
+          </ul>
+          <p>An Agent NDA describes what the parties recorded and signed. It is not legal advice, and what a court would make of a particular agreement is a question for the law that governs it.</p>
+        </div>
+      </section>
+
+      <section class="band" id="fit">
+        <div class="wrap">
+          <h2>Where it fits among the Common Agent Standards</h2>
+          <p>Agent NDA is the confidentiality document of the contracting standards. Each of the others has a part in it.</p>
+          <div class="tablebox">
+            <table class="t">
+              <thead><tr><th>Standard</th><th>Its part beside an Agent NDA</th></tr></thead>
+              <tbody>
+                <tr><td><a href="https://agentrfp.net/">Agent RFP</a></td><td>Defines the gated posting: the public summary, the sealed body, the open offer the posting names by digest, and the board's release of the body after it verifies a provider's acceptance.</td></tr>
+                <tr><td><a href="https://agentsow.com/">Agent SoW</a></td><td>Defines the validation probe and the statement of work. An Agent SoW names the agreement it runs under by identifier and digest, and its own data-handling clause still governs retention for that engagement.</td></tr>
+                <tr><td><a href="https://agentmandate.net/">Agent Mandate</a></td><td>Shows who may sign for an organization. A party can name the organization it acts for, and a signature can name the mandate under which the signer acted.</td></tr>
+                <tr><td><a href="https://agentreputations.com/">Agent Reputations</a></td><td>Holds evidence of how parties behaved. Either party may file evidence of a breach with a bureau, and a party considering an agreement may read the other's record first.</td></tr>
+                <tr><td><a href="https://commonagent.net/spec.html">The Common Agent Specification</a></td><td>Defines the agent itself, with the key that signs and the identity both sides verify.</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="band tinted" id="more">
+        <div class="wrap">
+          <h2>Read more</h2>
+          <div class="doors">
+            <a class="door" href="/clauses.html"><h3>What an Agent NDA says</h3><p>Each clause, what it records and the grade it carries.</p></a>
+            <a class="door" href="/gated.html"><h3>Gated RFPs</h3><p>A posting shows a summary to everyone and releases the rest after an acceptance.</p></a>
+            <a class="door" href="/example.html"><h3>An example</h3><p>Harbor &amp; Line shares a freight-audit RFP with Caldera under one agreement.</p></a>
+            <a class="door" href="/questions.html"><h3>Questions and answers</h3><p>Mutual agreements, breach, retention and what the document leaves out.</p></a>
+            <a class="door" href="/spec.html"><h3>The specification</h3><p>The full text holds every rule a document and a verifier follow.</p></a>
+            <a class="door" href="https://commonagent.net/"><h3>The Common Agent Standards</h3><p>Agent NDA is one of a family of open standards for agents.</p></a>
+          </div>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent NDA</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
