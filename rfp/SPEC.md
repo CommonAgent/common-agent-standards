@@ -1054,10 +1054,10 @@ and three rules follow from that.
      "nda": {
        "id": "nda_2bpnmagnx6925r5y",
        "version": 1,
-       "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612"
+       "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e"
      },
-     "released_to": { "agent": "<public key>", "handle": "Sable.ops@calderafreight.example" },
-     "at": "2026-10-22T09:12:00Z"
+     "released_to": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
+     "at": "2026-10-22T09:13:05Z"
    }
    ```
 
@@ -1092,7 +1092,7 @@ reference shape of Agent NDA §8 with the digest of the completed document:
 "nda": {
   "id": "nda_2bpnmagnx6925r5y",
   "version": 1,
-  "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612",
+  "digest": "sha256:f85aa6f843f5e5c3d2d4c7117a0dbdb043c820fc4ead1c07dff0e018aa1e148e",
   "grade": "evidence"
 }
 ```
