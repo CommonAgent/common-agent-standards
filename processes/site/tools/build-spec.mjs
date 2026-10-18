@@ -6,19 +6,22 @@
 // It writes, into the output folder:
 //   spec.html               processes/SPEC.md, the specification
 //   versions.html           processes/CHANGELOG.md, every version and the changelog
-//   process.html            processes/process.md, the guide to writing a process
-//   catalog.html            processes/process-catalog.md, the guide to the catalog
+//   guide-process.html      processes/process.md, the guide to writing down a process
+//   guide-catalog.html      processes/process-catalog.md, the guide to the catalog
 //   social-campaign.html    processes/examples/social-campaign.md
 //   marketing-catalog.html  processes/examples/marketing-catalog.md
 //
 // tools/render-site.sh at the repository root copies the hand-written pages
-// (index.html, 404.html, site.css and the rest) beside them, moves every link
+// (index.html, automation.html, offboarding.html, catalog.html, writing.html,
+// 404.html, site.css and the rest) beside them, moves every link
 // under the base (/draft/ or /<version>/), checks contrast and publishes. The
 // pages are never committed and never edited by hand: the Markdown is the
 // source, and this builder is the only thing that turns it into pages.
 //
-// The text is rendered as written, with two exceptions that change where a
-// link goes and nothing a reader is told. A relative link to another Markdown
+// The text is rendered as written, with three exceptions that change no rule.
+// The examples' titles read "Example:" where the Markdown says "Worked
+// example:", and the guides' titles start "Guide:", so that they match the
+// menu. A relative link to another Markdown
 // file of the standard goes to that file's page on this site (or to the file
 // on GitHub when it has no page here), and the guides' links to the old
 // homes of Agent Work Patterns and Agent Collab, which moved after the guides
@@ -51,8 +54,8 @@ const PAGE_OF = {
   "SPEC.md": "/spec.html",
   "CHANGELOG.md": "/versions.html#changelog",
   "README.md": "/",
-  "process.md": "/process.html",
-  "process-catalog.md": "/catalog.html",
+  "process.md": "/guide-process.html",
+  "process-catalog.md": "/guide-catalog.html",
   "examples/social-campaign.md": "/social-campaign.html",
   "examples/marketing-catalog.md": "/marketing-catalog.html",
 };
@@ -99,7 +102,7 @@ function anchor(html) {
   return { html: out, toc };
 }
 
-function page({ file, active, title, description, eyebrow, h1, sub, metas = "", canon = "", toc = [], body, type = "article" }) {
+function page({ file, active, title, description, h1, metas = "", canon = "", toc = [], body, type = "article" }) {
   const tocHtml = toc.length > 2 ? `<nav class="toc" aria-label="Sections">\n            ${toc.map((t) => `<a href="#${t.id}">${esc(t.text)}</a>`).join("\n            ")}\n          </nav>` : "";
   return `<!DOCTYPE html>
 <html lang="en">
@@ -131,9 +134,7 @@ function page({ file, active, title, description, eyebrow, h1, sub, metas = "", 
     <main class="main" id="top">
 
       <div class="wrap spec-hero">
-        <span class="eyebrow">${esc(eyebrow)}</span>
         <h1>${esc(h1)}</h1>
-        ${sub ? `<p class="sub">${sub}</p>` : ""}
         ${metas}
         ${canon ? `<p class="canon">${canon}</p>` : ""}
         ${tocHtml}
@@ -170,9 +171,7 @@ const chip = (k, v) => `<span>${k} <b>${esc(v)}</b></span>`;
     file: "spec.html", active: "spec",
     title: `${TITLE} ${VERSION}`,
     description: `The full text of the Agent Processes specification, version ${VERSION}: the process document, its steps and their order, automation levels, handoffs, records, the reference profile, conformance and versioning.`,
-    eyebrow: "The specification",
     h1: TITLE,
-    sub: "What a process document means, precisely enough that two people reading the same document reach the same conclusion and two programs reading it behave the same way.",
     metas: `<div class="metas">${chip("version", VERSION)}${chip("status", STATUS)}${chip("date", DATE)}</div>`,
     canon: `${stamp("SPEC.md")} Every version and what it changed are on <a href="/versions.html">Versions and changelog</a>.`,
     toc, body: html,
@@ -217,9 +216,7 @@ ${relink(entries, "CHANGELOG.md")}`;
     file: "versions.html", active: "versions",
     title: "Versions and changelog: Agent Processes",
     description: "Every version of the Agent Processes specification, with its date and what it changed.",
-    eyebrow: "Versions and changelog",
     h1: "Versions and changelog",
-    sub: "Each version of the Agent Processes specification, the date it carries, and what it changed.",
     canon: stamp("CHANGELOG.md"),
     body,
   }));
@@ -227,26 +224,26 @@ ${relink(entries, "CHANGELOG.md")}`;
 
 // ── the guides and the worked examples ──────────────────────────────────────
 const GUIDES = [
-  { src: "process.md", file: "process.html", active: "process", eyebrow: "Guide",
+  { src: "process.md", file: "guide-process.html", active: "guide-process", h1: "Guide: writing down a process",
     description: "How to write down one process: the trigger, the steps and their order, the automation level of each step, handoffs, bindings, policy, measures and amendments." },
-  { src: "process-catalog.md", file: "catalog.html", active: "catalog", eyebrow: "Guide",
+  { src: "process-catalog.md", file: "guide-catalog.html", active: "guide-catalog", h1: "Guide: the process catalog",
     description: "The process catalog: one table per department with a row for each process, and how to use it to decide what to automate first." },
-  { src: "examples/social-campaign.md", file: "social-campaign.html", active: "social-campaign", eyebrow: "Worked example",
+  { src: "examples/social-campaign.md", file: "social-campaign.html", active: "social-campaign",
     description: "A social campaign process written out in full: thirteen steps, the handoffs between them, the automation level of each, and its failure edges." },
-  { src: "examples/marketing-catalog.md", file: "marketing-catalog.html", active: "marketing-catalog", eyebrow: "Worked example",
+  { src: "examples/marketing-catalog.md", file: "marketing-catalog.html", active: "marketing-catalog",
     description: "A marketing department's catalog of eleven processes, the graph of what feeds what, and where the department would start automating." },
 ];
 for (const g of GUIDES) {
   const md = read(g.src);
   const t = md.match(/^# (.+)\n/);
   if (!t) throw new Error(`${g.src} does not start with a title`);
-  const h1 = t[1].trim();
+  const h1 = g.h1 ?? t[1].trim().replace(/^Worked example:/, "Example:");
   const { html, toc } = anchor(relink(marked.parse(md.slice(t[0].length)), g.src));
   write(g.file, page({
     file: g.file, active: g.active,
     title: `${h1}: Agent Processes`,
     description: g.description,
-    eyebrow: g.eyebrow, h1,
+    h1,
     canon: `${stamp(g.src)} The <a href="/spec.html">specification</a> is the normative text.`,
     toc, body: html,
   }));
@@ -261,7 +258,7 @@ for (const g of GUIDES) {
     const s = readFileSync(p, "utf8");
     const re = /(<!-- spec:version -->)[\s\S]*?(<!-- \/spec:version -->)/;
     if (!re.test(s)) throw new Error("index.html: no spec:version markers");
-    writeFileSync(p, s.replace(re, () => `<!-- spec:version -->The specification, version ${esc(VERSION)}, dated ${esc(DATE)}.<!-- /spec:version -->`));
+    writeFileSync(p, s.replace(re, () => `<!-- spec:version -->The specification is at version ${esc(VERSION)}, dated ${esc(DATE)}.<!-- /spec:version -->`));
     console.log("index.html: spec:version filled");
   }
 }

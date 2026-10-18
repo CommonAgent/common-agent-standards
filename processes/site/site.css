@@ -302,6 +302,19 @@ a.door p{ margin:0; font-size:.97rem; color:var(--text-2); line-height:1.5; }
 .spec td:first-child{ color:var(--text); }
 .spec hr{ border:0; border-top:1px solid var(--line); margin:40px 0; }
 
+
+/* ── the topic pages: people and automation, the example, the catalog, writing ── */
+.pagebody{ padding-top:56px; padding-bottom:64px; }
+.pagebody h1{ font-size:clamp(2rem,4vw,2.7rem); margin:0 0 18px; }
+.pagebody h2{ font-size:1.5rem; margin:44px 0 12px; }
+.pagebody > p{ color:var(--text-2); max-width:70ch; }
+.pagebody p code, .pagebody li code{ font-size:.88em; color:var(--accent); background:var(--accent-tint); border-radius:5px; padding:1px 5px; overflow-wrap:anywhere; }
+.pagebody .card h3{ font-size:1.15rem; margin:0 0 8px; }
+.pagebody .ladder span{ font-size:.95rem; }
+.next{ margin:48px 0 0; padding-top:18px; border-top:1px solid var(--line); font-weight:600; color:var(--text) !important; }
+.lede{ max-width:46ch; }
+.hero p.more{ max-width:64ch; }
+
 /* the four colours, after every rule that sets a default */
 .c-mint{ --c:var(--mint); --ct:var(--mint-tint); }
 .c-blue{ --c:var(--blue); --ct:var(--blue-tint); }

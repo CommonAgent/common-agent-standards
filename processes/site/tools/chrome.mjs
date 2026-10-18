@@ -1,7 +1,7 @@
 // chrome.mjs: the parts every page of agentprocesses.ai shares: the head links,
 // the theme bootstrap, the left menu, the footer and the closing script.
 // tools/build-spec.mjs uses it for the pages it writes; `node tools/chrome.mjs`
-// rewrites the same parts of the hand-written pages (index.html, 404.html)
+// rewrites the same parts of the hand-written pages (listed in PAGES below)
 // between their marker comments, so a menu change is made here once. The
 // layout follows agentmessaging.ai and commonagent.net.
 //
@@ -54,19 +54,22 @@ export function rail(active) {
           <summary>Agent Processes${chev}</summary>
           <div class="items">
           ${a("/", "What it is", "home")}
-          ${a("/spec.html", "The specification", "spec")}
-          ${a("/versions.html", "Versions and changelog", "versions")}
-          ${a("/process.html", "Writing down a process", "process")}
-          ${a("/catalog.html", "The process catalog", "catalog")}
-          ${a(REPO_URL, "The source on GitHub", "", true)}
+          ${a("/automation.html", "People and automation", "automation")}
+          ${a("/offboarding.html", "Example: employee offboarding", "offboarding")}
+          ${a("/catalog.html", "The catalog", "catalog")}
+          ${a("/writing.html", "Writing a process", "writing")}
           </div>
         </details>
         <details class="sec" open>
-          <summary>Worked examples${chev}</summary>
+          <summary>Reference${chev}</summary>
           <div class="items">
-          ${a("/#example", "Employee offboarding", "")}
-          ${a("/social-campaign.html", "A social campaign", "social-campaign")}
-          ${a("/marketing-catalog.html", "A marketing catalog", "marketing-catalog")}
+          ${a("/spec.html", "The specification", "spec")}
+          ${a("/versions.html", "Versions and changelog", "versions")}
+          ${a("/guide-process.html", "Guide: writing down a process", "guide-process")}
+          ${a("/guide-catalog.html", "Guide: the process catalog", "guide-catalog")}
+          ${a("/social-campaign.html", "Example: a social campaign", "social-campaign")}
+          ${a("/marketing-catalog.html", "Example: a marketing catalog", "marketing-catalog")}
+          ${a(REPO_URL, "The source on GitHub", "", true)}
           </div>
         </details>
         <details class="sec suite" open>
@@ -84,10 +87,12 @@ export function rail(active) {
 export const footer = `<footer class="sitefoot">
         <div class="wrap">
           <a href="/">Agent Processes</a>
+          <a href="/automation.html">People and automation</a>
+          <a href="/offboarding.html">Example: employee offboarding</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/writing.html">Writing a process</a>
           <a href="/spec.html">The specification</a>
           <a href="/versions.html">Versions and changelog</a>
-          <a href="/process.html">Writing down a process</a>
-          <a href="/catalog.html">The process catalog</a>
           <a href="${REPO_URL}">The source on GitHub</a>
           <a href="${FAMILY}">The Common Agent Standards</a>
         </div>
@@ -105,7 +110,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "404.html": "" };
+const PAGES = { "index.html": "home", "automation.html": "automation", "offboarding.html": "offboarding", "catalog.html": "catalog", "writing.html": "writing", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {

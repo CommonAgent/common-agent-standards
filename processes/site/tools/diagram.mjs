@@ -65,7 +65,7 @@ const panel = (cls, title, line, drawing, best, tag = "") => `<div class="way${c
 const figure = `<figure class="coord" aria-labelledby="coord-title">
           <p class="ctitle" id="coord-title">How agents work together</p>
           <div class="coord-grid">
-            ${panel(" here", "Process-led orchestration", "A written process leads.", p1, "Best for recurring work that must run the same way every time.", `<span class="here-tag">What Agent Processes covers</span>`)}
+            ${panel(" here", "Process-led orchestration", "A written process leads.", p1, "Best for recurring work that must run the same way every time.", `<span class="here-tag">Agent Processes</span>`)}
             ${panel("", "Harness-led orchestration", "An agent's own loop leads.", p2, "Best for open-ended work where nobody knows the steps yet.")}
             ${panel("", "Choreography", "Nobody leads.", p3, "Best for loosely connected teams that each react to the same news.")}
           </div>
