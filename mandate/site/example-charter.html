@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example: the charter: Agent Mandate</title>
+  <meta name="description" content="Harbor & Line Outfitters publishes its charter: two allocators hold the root keys, an administrator files the record, and the registry verifies the domain.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Mandate">
+  <meta property="og:title" content="Example: the charter: Agent Mandate">
+  <meta property="og:description" content="Harbor & Line Outfitters publishes its charter: two allocators hold the root keys, an administrator files the record, and the registry verifies the domain.">
+  <meta property="og:url" content="https://agentmandate.net/example-charter.html">
+  <meta property="og:image" content="https://agentmandate.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Mandate. Signed, bounded delegations of authority that the other side can check before it acts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmandate.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmandate.net/example-charter.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Mandate, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="6.5" y="3.5" width="19" height="25" rx="2.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M11 11h10M11 16h7M11 21h4" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg><span class="wm">Agent <b>Mandate</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Mandate">
+        <details class="sec" open>
+          <summary>Agent Mandate<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/charter.html">The charter</a>
+          <a href="/mandates.html">Mandates</a>
+          <a href="/approval.html">The check at approval</a>
+          <a href="/documents.html">The two documents</a>
+          <a href="/faq.html">Questions and answers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Example<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/example-charter.html" class="on" aria-current="page">Example: the charter</a>
+          <a href="/example-mandates.html">Example: two mandates</a>
+          <a href="/example-approval.html">Example: approval and revocation</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/mandate">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Mandate is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>Example: the charter</h1>
+          <p>This example follows one company, Harbor &amp; Line Outfitters, through a charter, two mandates, an approval, a refusal and a revocation. The people, keys, amounts and signatures are invented. Harbor &amp; Line also appears in the examples of <a href="https://agentsow.com/example.html">Agent SoW</a> and <a href="https://agentrfp.net/example.html">Agent RFP</a>.</p>
+          <div class="metas">
+            <span>organization <b>org_7k2m9q4w1x8e5r3t</b></span>
+            <span>domain <b>harborandline.example</b></span>
+            <span>charter <b>active</b></span>
+            <span>anchored <b>2026-08-01</b></span>
+          </div>
+
+          <h2>The organization publishes its charter</h2>
+          <p>In the Agent SoW and Agent RFP examples, Harbor &amp; Line appears as an owner string. The line <code>"owner": "Harbor &amp; Line Outfitters"</code> is prose and identifies nothing. Nothing binds the accounts, the agents or the signed documents to the legal entity whose name is typed there.</p>
+          <p>On August 1 the company closes that gap. Ruth Calloway, who owns the company, and Owen Vance, who runs its finances, hold the root keys as the charter's <b>allocators</b>. They are the two people entitled to commit Harbor &amp; Line's money. Dana Reyes, their systems contractor, set up the keys and files the record as <b>administrator</b>, a role with no authority to spend or delegate. The charter is anchored to <b>harborandline.example</b>.</p>
+          <figure class="docbox">
+            <div class="bar"><b>org_7k2m9q4w1x8e5r3t &middot; v1 &middot; anchored</b><span>signed by both allocators</span></div>
+            <pre>{
+  <span class="k">"charter"</span>: "v1",
+  <span class="k">"id"</span>: "org_7k2m9q4w1x8e5r3t",
+  <span class="k">"version"</span>: 1,
+  <span class="k">"domain"</span>: "harborandline.example",
+  <span class="k">"name"</span>: "Harbor &amp; Line Outfitters",
+  <span class="k">"legal"</span>: {
+    <span class="k">"jurisdiction"</span>: "Delaware, US",
+    <span class="k">"registration"</span>: "SR-20241102-88417",
+    <span class="k">"grade"</span>: <span class="a">"recorded"</span>
+  },
+  <span class="k">"root_authority"</span>: {
+    <span class="k">"keys"</span>: [
+      "UAHLN4Q7KMZJ2W5XETB6CVGY3DPSRF2OAU5IR7TQLXW4MKEAZJ6B2CDH",
+      "UBHLN7Q2KMZJ4W6XETB3CVGY5DPSRF6OAU2IR4TQLXW7MKEAZJ5B3CDJ"
+    ],
+    <span class="k">"threshold"</span>: 1,
+    <span class="k">"grade"</span>: <span class="b">"evidence"</span>
+  },
+  <span class="k">"administrator"</span>: {
+    <span class="k">"keys"</span>: [
+      "UCHLN9Q5KMZJ8W2XETB4CVGY7DPSRF3OAU8IR2TQLXW5MKEAZJ4B6CDK"
+    ]
+  },
+  <span class="k">"created_at"</span>: "2026-08-01T00:00:00Z",
+  <span class="k">"signatures"</span>: [
+    { <span class="k">"role"</span>: "root",
+      <span class="k">"key"</span>: "UAHLN4Q7KMZJ2W5XETB6CVGY3DPSRF2OAU5IR7TQLXW4MKEAZJ6B2CDH",
+      <span class="k">"signed_at"</span>: "2026-08-01T00:00:00Z",
+      <span class="k">"sig"</span>: "kQ2wV9mJrZ4tYx6cNbF7fL3aG5pDsE8uVoI2nK7jTqHxAyPzW6eM4rSdUgB2hF9lC3vJ8mX5bZkQ4wNtR7yB==" },
+    { <span class="k">"role"</span>: "root",
+      <span class="k">"key"</span>: "UBHLN7Q2KMZJ4W6XETB3CVGY5DPSRF6OAU2IR4TQLXW7MKEAZJ5B3CDJ",
+      <span class="k">"signed_at"</span>: "2026-08-01T00:00:00Z",
+      <span class="k">"sig"</span>: "nL5wT2kJqZ7vX9mRbC6fL4aG8pDsE3uVoI5nK2jHxAyPzW7eM3rSdUgB9hF4lC8vJ2mX7bZkQ5wNtR3yCdE==" }
+  ]
+}</pre>
+            <figcaption><b>Signed bytes:</b> <code>agent-charter-v1</code>, a newline, then the JCS canonical JSON without <code>signatures</code>. The id is derived separately: remove both <code>id</code> and <code>signatures</code> from the version-1 document, hash what remains with SHA-256, encode the digest as lowercased Crockford base32 and keep the first 16 characters. Both allocators signed the constitutive record. The threshold of 1 means that either signature alone carries an act of root authority from here on. Dana's administrator key filed the document and does not appear in the signatures, because filing is custody and carries no authority.</figcaption>
+          </figure>
+
+          <h2>The registry checks the domain</h2>
+          <p>Before hosting this charter, the registry verified one thing: <b>domain control</b>. A well-known HTTPS path on harborandline.example names the charter id, and anyone can re-check it at any time. If the proof ever disappears, the charter is suspended and kept. That binding is <span class="grade c-mint">enforced</span>.</p>
+          <p>The <code>legal</code> block is a statement that nobody verified. No runtime checked the Delaware registration, so its grade is <span class="grade c-amber">recorded</span>, always, and it is shown that way.</p>
+          <p>The <code>root_authority</code> block names the two allocator keys as the organization's highest authority in this system. It is graded <span class="grade c-blue">evidence</span>, because the signatures are the record. The <code>administrator</code> block names Dana's key for maintenance only. The registry refuses any act of root authority carried by that key alone, and the refusal is <span class="grade c-mint">enforced</span>.</p>
+          <p>The <code>name</code> field is prose. Every renderer shows the domain with at least equal prominence, because the domain is the part that was verified.</p>
+          <p class="next">Next: <a href="/example-mandates.html">Example: two mandates</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Mandate</a>
+          <a href="/charter.html">The charter</a>
+          <a href="/mandates.html">Mandates</a>
+          <a href="/approval.html">The check at approval</a>
+          <a href="/documents.html">The two documents</a>
+          <a href="/example-charter.html">Example</a>
+          <a href="/faq.html">Questions and answers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/mandate">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
