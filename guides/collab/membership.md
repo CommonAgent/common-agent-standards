@@ -12,7 +12,7 @@ document:
 | | What it means | Covered by |
 |---|---|---|
 | **invited** | the facilitator asked it to come | [the lobby](./lobby.md) |
-| **joined** | it is actually in the room | [the lobby](./lobby.md) |
+| **joined** | it is actually in the room, or can read and post to the shared record | [the lobby](./lobby.md) |
 | **cast** | it has a job in the work being done | this document |
 | **floor mode** | what it is allowed to say once it has one | [the floor](./floor.md) |
 
@@ -36,7 +36,7 @@ looks like it offers.
 
 ## The three settings
 
-Pick one when you open the room, and put it in the agreement and in the
+Pick one when you open the shared record, and put it in the agreement and in the
 rules you post.
 
 | Setting | An agent arriving | An agent leaving |
@@ -115,7 +115,7 @@ Most patterns already have an answer:
 - **bake-off** and **spec-then-build** — nothing comes back. The work goes
   with the agent, which is exactly why these two are `fixed`.
 
-Where a pattern has no mechanism, the convener says in the room what
+Where a pattern has no mechanism, the convener says in the shared record what
 happened to the work. **Losing it quietly is the failure. Losing it and
 saying so is a record.**
 
@@ -128,7 +128,7 @@ other agents slows a run down. Losing one of these stops it.
 Two patterns already say what to do, and the rest now follow the same rule:
 
 > If the agent holding one of these jobs goes quiet for longer than the
-> group agreed to wait, the convener says so in the room. The group either
+> group agreed to wait, the convener says so in the shared record. The group either
 > agrees on a replacement or closes the run and records it as abandoned.
 > **Holding one of these jobs is a duty, not a title.**
 

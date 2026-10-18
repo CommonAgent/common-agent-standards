@@ -1,0 +1,229 @@
+/* =======================================================================
+   Agent Collab - pattern simulations
+   Shared visual grammar. Extends THE WIRE token system from the main site;
+   tokens are re-declared on .acsim so a sim can be embedded on any page.
+
+   THE GRAMMAR (identical in every simulation)
+     violet  chair    the convener / facilitator: keeps time, never produces
+     amber   pen      whoever holds the pen or the verdict
+     mint    peer     contributors: critics, runners, proposers, sources
+     blue    object   things, not agents: the artifact, the board, the spec
+   ======================================================================= */
+
+.acsim{
+  --ink:#0A1417; --panel:#0F1D22; --line:#1C2E33;
+  --paper:#E7EFEC; --dim:#7C918C; --faint:#4A5D5A;
+  --signal:#F2A93B; --verify:#43D6A6; --address:#6BA8FF; --broadcast:#B69CFF;
+  --disp:'Space Grotesk', sans-serif;
+  --body:'IBM Plex Sans', system-ui, sans-serif;
+  --wire:'IBM Plex Mono', ui-monospace, monospace;
+
+  --chair:var(--broadcast); --pen:var(--signal);
+  --peer:var(--verify);     --object:var(--address);
+
+  display:block; border:1px solid var(--line); border-radius:14px;
+  background:var(--panel); overflow:hidden; color:var(--paper);
+  font-family:var(--body); container-type:inline-size;
+}
+.acsim *{ box-sizing:border-box; }
+
+/* -- header ---------------------------------------------------------- */
+.acsim-head{ position:relative; padding:16px 188px 14px 20px;
+  border-bottom:1px solid var(--line);
+  border-top:2px solid var(--hue,var(--broadcast)); }
+.acsim-tag{ font-family:var(--wire); font-size:.66rem; letter-spacing:.09em;
+  text-transform:uppercase; color:var(--hue,var(--broadcast)); }
+.acsim-name{ font-family:var(--disp); font-weight:700; font-size:1.08rem;
+  letter-spacing:-.02em; margin:3px 0 0; }
+.acsim-line{ color:var(--dim); font-size:.9rem; margin:7px 0 0; max-width:74ch; }
+.acsim-meta{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin:11px 0 0;
+  font-family:var(--wire); font-size:.68rem; }
+.acsim-status{ color:var(--verify); }
+.acsim-status.live{ color:var(--hue,var(--broadcast)); font-weight:600; }
+.acsim-status.planned{ color:var(--faint); }
+.acsim-grade{ color:var(--faint); }
+/* Top-right of the card, filled with the pattern's own colour so it reads
+   as the one thing to click. Dark text on the fill for contrast. */
+.acsim-doc{ position:absolute; top:15px; right:18px; z-index:2;
+  font-family:var(--wire); font-size:.7rem; font-weight:600; letter-spacing:.02em;
+  white-space:nowrap; text-decoration:none;
+  background:var(--hue,var(--broadcast)); color:var(--ink);
+  border-radius:7px; padding:7px 12px;
+  box-shadow:0 8px 20px -12px var(--hue,var(--broadcast));
+  transition:transform .16s ease, box-shadow .2s ease, filter .16s ease; }
+.acsim-doc:hover{ transform:translateY(-1px); filter:brightness(1.1);
+  box-shadow:0 12px 26px -12px var(--hue,var(--broadcast)); }
+.acsim-doc:focus-visible{ outline:2px solid var(--paper); outline-offset:2px; }
+
+/* A card can sit inside a page that has its own h3 and p rules (the site's
+   section.band styles beat a bare class), so win those explicitly. */
+.acsim h3.acsim-name{ font-size:1.08rem; margin:3px 0 0; }
+.acsim p.acsim-line{ max-width:74ch; margin:7px 0 0; color:var(--dim); }
+.acsim p.acsim-note{ max-width:78ch; margin:5px 0 0; color:var(--dim); }
+.acsim p.acsim-pp{ max-width:72ch; margin:0 0 15px; color:var(--paper); }
+
+/* -- body: stage + transcript ---------------------------------------- */
+.acsim-body{ display:grid; grid-template-columns:1fr 248px; align-items:stretch; }
+@container (max-width: 660px){ .acsim-body{ grid-template-columns:1fr; } }
+@container (max-width: 560px){
+  .acsim-head{ padding:16px 20px 14px; }
+  .acsim-doc{ position:static; display:inline-block; margin-top:12px; } }
+
+.acsim-stage{ position:relative; min-width:0; }
+.acsim-stage svg{ display:block; width:100%; height:auto;
+  background-image:
+    linear-gradient(var(--grid, var(--line)) 1px, transparent 1px),
+    linear-gradient(90deg, var(--grid, var(--line)) 1px, transparent 1px);
+  background-size:33px 33px; background-position:-1px -1px; }
+
+/* The transcript floats in its own absolute layer so its length never
+   stretches the row: the stage alone decides how tall a simulation is. */
+.acsim-log{ border-left:1px solid var(--line); background:var(--surface-2); position:relative; }
+.acsim-log-in{ position:absolute; inset:0; overflow-y:auto; padding:12px 0; scrollbar-width:thin; }
+@container (max-width: 660px){
+  .acsim-log{ border-left:0; border-top:1px solid var(--line); }
+  .acsim-log-in{ position:static; max-height:190px; } }
+.acsim-log-h{ font-family:var(--wire); font-size:.6rem; letter-spacing:.17em;
+  text-transform:uppercase; color:var(--faint); padding:0 14px 8px; }
+.acsim-log-l{ font-family:var(--wire); font-size:.665rem; line-height:1.5;
+  color:var(--dim); padding:4px 14px 4px 12px; border-left:2px solid transparent;
+  display:flex; gap:7px; opacity:0; transform:translateY(-3px);
+  transition:opacity .3s ease, transform .3s ease; }
+.acsim-log-l.in{ opacity:1; transform:none; }
+.acsim-log-l.now{ border-left-color:var(--k,var(--broadcast)); color:var(--paper);
+  background:rgba(255,255,255,.03); }
+.acsim-log-w{ color:var(--k,var(--broadcast)); flex:0 0 auto; font-weight:600; }
+.acsim-log-t{ min-width:0; word-break:break-word; white-space:pre-wrap; }
+
+/* -- caption --------------------------------------------------------- */
+.acsim-cap{ padding:13px 20px; border-top:1px solid var(--line); min-height:76px; }
+.acsim-phase{ font-family:var(--wire); font-size:.64rem; letter-spacing:.15em;
+  text-transform:uppercase; color:var(--hue,var(--broadcast)); }
+.acsim-note{ color:var(--dim); font-size:.85rem; margin:5px 0 0; max-width:78ch; }
+.acsim-note b{ color:var(--paper); font-weight:600; }
+
+/* -- controls -------------------------------------------------------- */
+.acsim-ctl{ display:flex; align-items:center; gap:9px; padding:10px 20px 12px;
+  border-top:1px solid var(--line); background:var(--surface-2); }
+.acsim-btn{ font-family:var(--wire); font-size:.78rem; color:var(--dim);
+  background:transparent; border:1px solid var(--line); border-radius:7px;
+  padding:5px 9px; cursor:pointer; line-height:1; min-width:29px;
+  transition:color .16s, border-color .16s; }
+.acsim-btn:hover:not(:disabled){ color:var(--paper); border-color:var(--dim); }
+.acsim-btn:disabled{ opacity:.34; cursor:default; }
+.acsim-btn.play{ color:var(--paper); border-color:var(--dim); min-width:34px; }
+.acsim-scrub{ flex:1; display:flex; gap:3px; align-items:center; min-width:40px; }
+.acsim-tick{ flex:1; height:15px; padding:0; background:transparent; border:0;
+  cursor:pointer; position:relative; }
+.acsim-tick::after{ content:""; position:absolute; inset:6px 0; border-radius:2px;
+  background:var(--line); transition:background .2s ease; }
+.acsim-tick.seen::after{ background:var(--faint); }
+.acsim-tick.now::after{ background:var(--hue,var(--broadcast)); inset:4px 0; }
+.acsim-tick:hover::after{ background:var(--dim); }
+.acsim-count{ font-family:var(--wire); font-size:.68rem; color:var(--faint);
+  flex:0 0 auto; font-variant-numeric:tabular-nums; }
+
+/* -- stage: agent nodes ---------------------------------------------- */
+.acn{ transition:opacity .45s ease; }
+.acn-disc{ fill:var(--panel); stroke:var(--c); stroke-width:1.5; }
+.acn-mono{ font-family:var(--wire); font-size:12.5px; font-weight:600; fill:var(--c);
+  text-anchor:middle; dominant-baseline:central; letter-spacing:.04em; }
+.acn-name{ font-family:var(--body); font-size:11px; font-weight:500; fill:var(--paper);
+  text-anchor:middle; }
+.acn-role{ font-family:var(--wire); font-size:8.4px; fill:var(--c); text-anchor:middle;
+  letter-spacing:.11em; text-transform:uppercase; }
+.acn-ring{ fill:none; stroke:var(--c); stroke-width:1.4; opacity:0;
+  transition:opacity .3s ease; }
+/* Drawn state marks. visibility (not opacity) keeps a hidden one out of the
+   copy and accessibility trees; the shapes keep glyphs out of both entirely. */
+.acn-badge{ opacity:0; visibility:hidden; transition:opacity .35s ease; }
+.acn-badge line, .acn-badge path{ stroke:currentColor; fill:none;
+  stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
+.acn-badge circle{ fill:currentColor; stroke:none; }
+
+/* the five states an agent can be in - the same in every pattern */
+.acn[data-s="floor"] .acn-ring{ opacity:.85; }
+.acn[data-s="floor"] .acn-disc{ fill:color-mix(in srgb, var(--c) 13%, var(--panel)); }
+.acn[data-s="speaking"] .acn-ring{ opacity:1; }
+.acn[data-s="speaking"] .acn-disc{ fill:color-mix(in srgb, var(--c) 24%, var(--panel)); }
+.acn[data-s="muted"]{ opacity:.36; }
+.acn[data-s="muted"] .acn-disc{ stroke-dasharray:2 3; }
+.acn[data-s="muted"] .acn-badge.mute{ opacity:1; visibility:visible; color:var(--dim); }
+.acn[data-s="working"] .acn-disc{ stroke-dasharray:5 4; animation:acn-spin 3.4s linear infinite; }
+.acn[data-s="working"] .acn-badge.work{ opacity:1; visibility:visible; color:var(--c); }
+.acn[data-s="done"] .acn-disc{ fill:color-mix(in srgb, var(--verify) 16%, var(--panel));
+  stroke:var(--verify); }
+.acn[data-s="done"] .acn-badge.done{ opacity:1; visibility:visible; color:var(--verify); }
+.acn[data-s="out"]{ opacity:.18; }
+@keyframes acn-spin{ to{ stroke-dashoffset:-54; } }
+
+.acn-flash{ fill:none; stroke:var(--c); stroke-width:2; opacity:0; }
+.acn.hit .acn-flash{ animation:acn-hit .8s ease-out; }
+@keyframes acn-hit{ 0%{ opacity:.9; r:25px; } 100%{ opacity:0; r:38px; } }
+
+/* -- stage: props (artifact, board, spec, note) ---------------------- */
+.acp-box{ fill:rgba(107,168,255,.05); stroke:var(--object); stroke-width:1.2; }
+.acp-kind{ font-family:var(--wire); font-size:8.2px; fill:var(--object);
+  letter-spacing:.13em; text-transform:uppercase; }
+.acp-label{ font-family:var(--body); font-size:11px; font-weight:500; fill:var(--paper); }
+.acp-ver{ font-family:var(--wire); font-size:9.6px; fill:var(--dim); }
+.acp-row{ font-family:var(--wire); font-size:9px; fill:var(--dim); }
+.acp-row.open{ fill:var(--dim); }
+.acp-row.claimed{ fill:var(--signal); }
+.acp-row.done{ fill:var(--verify); }
+.acp-row.gone{ fill:var(--faint); }
+.acp-frozen{ font-family:var(--wire); font-size:8.2px; fill:var(--signal);
+  letter-spacing:.1em; opacity:0; transition:opacity .45s ease; }
+.acp[data-frozen="1"] .acp-frozen{ opacity:1; }
+.acp[data-frozen="1"] .acp-box{ stroke:var(--signal); fill:rgba(242,169,59,.05); }
+.acp-bump{ fill:none; stroke:var(--signal); stroke-width:2; opacity:0; }
+.acp.bumped .acp-bump{ animation:acp-bump .9s ease-out; }
+@keyframes acp-bump{ 0%{ opacity:.85; } 100%{ opacity:0; } }
+.acp.bumped .acp-ver{ animation:acp-ver .9s ease-out; }
+@keyframes acp-ver{ 0%,45%{ fill:var(--signal); } 100%{ fill:var(--dim); } }
+
+/* -- stage: messages ------------------------------------------------- */
+.acm-pill{ fill:color-mix(in srgb, var(--k) 18%, var(--ink)); stroke:var(--k);
+  stroke-width:1.1; }
+.acm-text{ font-family:var(--wire); font-size:9.2px; font-weight:500; fill:var(--k);
+  text-anchor:middle; dominant-baseline:central; letter-spacing:.02em; }
+.acm-wave{ fill:none; stroke:var(--broadcast); stroke-width:1.3; opacity:0; }
+.acm-wave.on{ animation:acm-wave 1.1s cubic-bezier(.2,.7,.4,1); }
+@keyframes acm-wave{ 0%{ opacity:.5; r:16px; } 100%{ opacity:0; r:280px; } }
+
+/* -- stage: framing panels (the brief, and what came out) ------------ */
+.acsim-panel{ position:absolute; inset:0; padding:17px 22px 20px; overflow-y:auto;
+  background:linear-gradient(150deg, var(--surface), var(--panel) 62%);
+  display:none; scrollbar-width:thin; animation:acsim-fade .45s ease; }
+.acsim-panel.on{ display:block; }
+@keyframes acsim-fade{ from{ opacity:0; } to{ opacity:1; } }
+.acsim-ph{ font-family:var(--wire); font-size:.62rem; letter-spacing:.18em;
+  text-transform:uppercase; color:var(--hue,var(--broadcast)); margin-bottom:7px; }
+.acsim-ph2{ font-family:var(--wire); font-size:.58rem; letter-spacing:.16em;
+  text-transform:uppercase; color:var(--faint); margin-bottom:7px; }
+.acsim-pp{ color:var(--paper); font-size:.92rem; line-height:1.5; margin:0 0 15px;
+  max-width:72ch; }
+.acsim-pp b{ color:var(--paper); }
+.acsim-pnote{ color:var(--dim); font-size:.85rem; margin:14px 0 0; }
+.acsim-pcols{ display:grid; grid-template-columns:1fr 1.15fr 1.15fr; gap:20px; }
+@container (max-width: 660px){ .acsim-pcols{ grid-template-columns:1fr; gap:14px; } }
+.acsim-pl{ font-family:var(--wire); font-size:.665rem; line-height:1.55; color:var(--dim);
+  margin:0 0 5px; }
+.acsim-pl b{ color:var(--paper); font-weight:600; }
+.acsim-mem{ color:var(--hue,var(--broadcast)); }
+.acsim-who{ display:flex; gap:8px; align-items:baseline; margin:0 0 7px; }
+.acsim-who .m{ font-family:var(--wire); font-size:.66rem; font-weight:600; color:var(--c);
+  border:1px solid var(--c); border-radius:4px; padding:1px 4px; flex:0 0 auto; }
+.acsim-who .t{ font-size:.8rem; color:var(--paper); line-height:1.3; }
+.acsim-who .t em{ display:block; font-family:var(--wire); font-size:.6rem; font-style:normal;
+  letter-spacing:.1em; text-transform:uppercase; color:var(--c); }
+.acsim-pout .acsim-pl{ font-size:.72rem; margin-bottom:7px; }
+
+/* -- stage: room frame ----------------------------------------------- */
+.acr-frame{ fill:none; stroke:var(--line); stroke-width:1; }
+.acr-label{ font-family:var(--wire); font-size:8.4px; fill:var(--faint);
+  letter-spacing:.16em; text-transform:uppercase; }
+
+@media (prefers-reduced-motion: reduce){
+  .acn-disc, .acp-bump, .acm-wave, .acn-flash{ animation:none !important; }
+}

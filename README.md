@@ -26,8 +26,8 @@ The suite's home is <https://commonagent.net>.
 | [Agent SoW](sow/) | A Common Agent Standard | 0.23.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
 | [Agent Reputations](reputations/) | A Common Agent Standard | 0.3-draft | Draft | [agentreputations.com](https://agentreputations.com/) |
 | [Agent Roles](roles/) | A Common Agent Standard | 0.14.0-draft | Working Draft | [agentroles.ai](https://agentroles.ai/) |
-| [Agent Processes](processes/) | A Common Agent Standard | 0.5.0-draft | Working Draft | [agentprocesses.ai](https://agentprocesses.ai/) |
-| [Agent Collab](guides/collab/) | A guide | v1 | Guide | [agentcollab.dev](https://agentcollab.dev/) |
+| [Agent Processes](processes/) | A Common Agent Standard | 0.5.1-draft | Working Draft | [agentprocesses.ai](https://agentprocesses.ai/) |
+| [Agent Collab](guides/collab/) | A guide | v1.1 | Guide | [agentcollab.dev](https://agentcollab.dev/) |
 
 Agent Messaging's extensions are in [messaging/extensions/](messaging/extensions/),
 and its bindings, the A2A Bridge and the RabbitMQ binding, are in

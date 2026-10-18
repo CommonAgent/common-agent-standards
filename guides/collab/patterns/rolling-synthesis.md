@@ -39,7 +39,7 @@ MEMBERSHIP
 ```
 
 A source arriving late is pure gain: it answers the current gaps with material
-nobody in the room had. A source leaving costs only what it had not sent yet.
+nobody in the cast had. A source leaving costs only what it had not sent yet.
 
 The integrator cannot be swapped. The single voice is one agent's editorial
 hand, and changing hands mid-run gives you two half-written syntheses instead
@@ -112,7 +112,7 @@ missed, and closes the run.
 
 The integrator then closes the segment with the shared record
 ([convening](../convening.md)). `FINAL` settles the artifact; this settles
-the period of the room:
+the period of the shared record:
 
 ```
 DONE · pattern: rolling-synthesis v1 · room: <room-ref>
