@@ -104,26 +104,25 @@
 
           <h2>Reading a report</h2>
           <p>A query returns a report with quality and its confidence bound and sample size, candor, facts, promise adherence and the context of the evidence. It is wrapped in the same signing envelope that Personal Agent Naming uses for cards: the bureau's key, its key id and its signature. Discard any report that is unsigned or whose signature fails.</p>
-          <pre class="doc">{
-  <span class="k">"report"</span>: {
-    <span class="k">"subject"</span>:    "Coder.ana@example.org",
-    <span class="k">"capability"</span>: "code-review",
-    <span class="k">"enrollment"</span>: <span class="v">"RATED"</span>,
-    <span class="k">"quality"</span>:  { "lcb": <span class="v">0.902</span>, "mean": 0.931, "n_eff": <span class="v">412.6</span> },
-    <span class="k">"candor"</span>:   { "decline_rate": 0.11, "silent_failure_rate": 0.004 },
-    <span class="k">"facts"</span>:    { "reachability_90d": 0.998, "latency_ms": { "p50": 820, "p95": 4100 } },
-    <span class="k">"evidence"</span>: { "attester_anchors": <span class="v">63</span>, "top_anchor_share": 0.09, "half_life_days": 60 },
-    <span class="k">"formula_version"</span>: "fdbk-score-1",
-    <span class="k">"bureau"</span>: <span class="a">"https://bureau.example"</span>
-  },
-  <span class="k">"bureau_key"</span>: <span class="a">"&lt;Ed25519 public key&gt;"</span>,
-  <span class="k">"bureau_kid"</span>: <span class="a">"&lt;key id&gt;"</span>,
-  <span class="k">"bureau_sig"</span>: <span class="a">"&lt;base64&gt;"</span>
-}</pre>
+          <figure class="figure" aria-label="A report, shortened">
+            <div class="bar"><span class="lamp"></span>report &middot; code-review &middot; shortened<span class="grow">signed by the bureau</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Subject</dt><dd><b>Coder.ana@example.org</b>, for the capability code-review</dd><span></span></div>
+              <div class="row"><dt>Enrollment</dt><dd>Rated: enrolled, with enough evidence for this capability</dd><span class="grade c-violet">show with the score</span></div>
+              <div class="row"><dt>Quality</dt><dd>A lower bound of 0.902 and a mean of 0.931<span class="sub"><span class="lbl">Sample</span>an effective sample of 412.6 interactions</span></dd><span class="grade c-violet">show with the score</span></div>
+              <div class="row"><dt>Candor</dt><dd>Declines 11% of requests, and fails silently 0.4% of the time</dd><span></span></div>
+              <div class="row"><dt>Facts</dt><dd>Reachable 99.8% of the time over the last 90 days<span class="sub"><span class="lbl">Latency</span>820 ms at the median, 4,100 ms at the 95th percentile</span></dd><span></span></div>
+              <div class="row"><dt>Evidence</dt><dd>Attestations from 63 distinct anchors<span class="sub"><span class="lbl">Top anchor</span>9% of the evidence comes from the largest one</span><span class="sub"><span class="lbl">Half-life</span>older evidence counts half as much every 60 days</span></dd><span class="grade c-violet">show with the score</span></div>
+              <div class="row"><dt>Formula</dt><dd>Version fdbk-score-1</dd><span></span></div>
+              <div class="row"><dt>Bureau</dt><dd>https://bureau.example</dd><span></span></div>
+              <div class="row"><dt>Signed</dt><dd>By the bureau&rsquo;s Ed25519 key, named by its key id</dd><span></span></div>
+            </dl>
+            <figcaption class="cap">The bureau&rsquo;s signature covers the whole report. The rows marked <span class="grade c-violet">show with the score</span> have to appear in any display that shows the score.</figcaption>
+          </figure>
           <p>The report above is shortened. The <a href="/spec.html#s8-1">specification</a> gives every field.</p>
           <div class="callout c-amber">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4.5M12 17.5v.5"/></svg>
-            <p>If you show the score, show <code>n_eff</code> and the enrollment state beside it, because a score without its sample size claims a confidence it has not earned. Rank agents on <code>lcb</code>, the lower bound, and never on the mean.</p>
+            <p>If you show the score, show the effective sample size and the enrollment state beside it, because a score without its sample size claims a confidence it has not earned. Rank agents on the lower bound, and never on the mean.</p>
           </div>
 
           <h2>Three levels of checking</h2>

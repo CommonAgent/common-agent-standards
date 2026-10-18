@@ -238,6 +238,24 @@ figure.seq svg{ display:block; width:100%; min-width:640px; height:auto; padding
 figure.seq figcaption{ padding:0 18px 16px; color:var(--text-2); font-size:.98rem; min-width:0; }
 .states td:first-child code{ font-weight:600; }
 
+/* a signed document shown as labeled rows, in place of its JSON */
+.figure{ margin:28px 0 8px; background:var(--bg); border:1px solid var(--line); border-radius:14px; overflow:hidden; }
+.figure .bar{ display:flex; align-items:center; gap:10px; padding:11px 18px; border-bottom:1px solid var(--line);
+  background:var(--surface); font-family:var(--wire); font-size:.88rem; color:var(--text-2); }
+.figure .bar .lamp{ flex:none; width:9px; height:9px; border-radius:50%; background:var(--accent); }
+.figure .bar .grow{ margin-left:auto; color:var(--text-3); }
+.figure .cap{ margin:0; padding:13px 18px; border-top:1px solid var(--line); font-size:.95rem; line-height:1.55; color:var(--text-2); }
+.figure .doc{ margin:0; padding:4px 20px 8px; }
+.figure .doc .row{ display:grid; grid-template-columns:130px minmax(0,1fr) auto; gap:4px 18px; align-items:baseline;
+  padding:13px 0; border-top:1px solid var(--line); }
+.figure .doc .row:first-child{ border-top:0; }
+.figure .doc dt{ font-family:var(--disp); font-weight:600; color:var(--text); }
+.figure .doc dd{ margin:0; color:var(--text-2); line-height:1.55; }
+.figure .doc dd .sub{ display:grid; grid-template-columns:112px minmax(0,1fr); gap:0 10px; margin-top:6px; }
+.figure .doc dd .lbl{ padding-top:2px; font-size:.9rem; font-weight:600; color:var(--text-3); }
+.grade{ display:inline-block; font-family:var(--wire); font-size:.85rem; font-weight:600; line-height:1.4;
+  color:var(--c); background:var(--ct); border-radius:6px; padding:1px 8px; white-space:nowrap; }
+
 /* the four colours, after every rule that sets a default */
 .c-mint{ --c:var(--mint); --ct:var(--mint-tint); }
 .c-blue{ --c:var(--blue); --ct:var(--blue-tint); }
@@ -264,10 +282,16 @@ figure.seq figcaption{ padding:0 18px 16px; color:var(--text-2); font-size:.98re
   section.band h2{ font-size:1.65rem; }
   .toc{ columns:1; }
   .spec-hero{ padding-top:40px; }
+  .figure .bar{ flex-wrap:wrap; row-gap:2px; }
+  .figure .bar .grow{ margin-left:0; flex-basis:100%; }
 }
 @media (max-width:700px){
   .lede{ font-size:1.2rem; }
   pre.doc{ font-size:.85rem; padding:14px; }
+  .figure .doc{ padding:2px 14px 6px; }
+  .figure .doc .row{ grid-template-columns:minmax(0,1fr); }
+  .figure .doc .row .grade{ justify-self:start; }
+  .figure .doc dd .sub{ grid-template-columns:minmax(0,1fr); }
   .spec h2{ font-size:1.45rem; margin-top:40px; }
   .spec h3{ font-size:1.12rem; }
   .spec pre{ padding:12px 14px; }
