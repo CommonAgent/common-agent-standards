@@ -6,13 +6,14 @@ that tag is the text of that version.
 
 ## 0.1.0-draft (2026-10-18)
 
-The first version. An Agent NDA is a signed non-disclosure agreement between
-two parties whose agents work together, kept as its own document because the
-duty it records comes before any statement of work and outlasts any one of
-them. The specification defines the document and its identifier, the clauses
-with their grades (the promises are recorded, the parties, instants and
-signatures are evidence, and nothing in the document is enforced), the open
-offer a gated Agent RFP posting carries and its acceptance, the lifecycle, and
-the reference by identifier and digest that Agent RFP 0.9.0-draft and Agent
-SoW 0.24.0-draft use. The fixtures in conformance/ pin the grading and the
-example's identifier and digests.
+The first version. An Agent NDA is usually the first agreement parties sign,
+and later documents refer to it. The specification defines the document and
+its identifier; the clauses and their grades (the promises are recorded, the
+parties, instants and signatures are evidence, and nothing in the document is
+enforced); one-way, mutual and multilateral agreements; flow-down to
+subcontractors; open offers and acceptance; the mandate an organization's
+signer needs; the lifecycle; and references by identifier and digest, with
+the test for whether a party is bound. Agent RFP 0.9.0-draft, Agent SoW
+0.24.0-draft, Agent Processes 0.6.0-draft and Agent Mandate 0.5.0-draft refer
+to it. The fixtures in conformance/ pin the grading and the example's
+identifier and digests.

@@ -5,16 +5,16 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Questions and answers: Agent NDA</title>
-  <meta name="description" content="Practical questions about Agent NDA: what enforced means, mutual agreements, breach, retention, many statements of work and what the document leaves out.">
+  <meta name="description" content="Short answers about Agent NDA: who may sign for a company, more than two parties, subcontractors, process runs, breach and retention.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent NDA">
   <meta property="og:title" content="Questions and answers: Agent NDA">
-  <meta property="og:description" content="Practical questions about Agent NDA: what enforced means, mutual agreements, breach, retention, many statements of work and what the document leaves out.">
+  <meta property="og:description" content="Short answers about Agent NDA: who may sign for a company, more than two parties, subcontractors, process runs, breach and retention.">
   <meta property="og:url" content="https://agentnda.net/questions.html">
   <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent NDA. A signed non-disclosure agreement between two parties whose agents work together, with every clause graded.">
+  <meta property="og:image:alt" content="Agent NDA. The first agreement parties sign when their agents work together, with every clause graded.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
   <link rel="canonical" href="https://agentnda.net/questions.html">
@@ -48,6 +48,7 @@
           <a href="/">What it is</a>
           <a href="/clauses.html">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html" class="on" aria-current="page">Questions and answers</a>
           </div>
@@ -85,50 +86,56 @@
     <main class="main" id="top">
       <article class="wrap pagebody">
           <h1>Questions and answers</h1>
-          <p>These are the questions business readers and implementers ask first. Each answer points to the part of the <a href="/spec.html">specification</a> that settles it.</p>
+          <p>Each answer points to the part of the <a href="/spec.html">specification</a> that settles it.</p>
 
           <div class="qa">
             <h2>Is an Agent NDA a legal opinion?</h2>
-            <p>No. The specification describes what the document records: who signed, which terms they signed, and when. It is not legal advice, and it says nothing about what a court would make of a particular agreement. Whether an agreement is enforceable, and what a breach is worth, are questions for the law that governs it and for the parties' own counsel.</p>
+            <p>No. It records who signed which terms, and when. Whether an agreement holds up is a question for the law that governs it and for the parties' counsel.</p>
 
             <h2>What does enforced mean here?</h2>
-            <p>Enforced means a machine refuses a violation before it happens. In the Common Agent Standards that grade is reserved for refusals a runtime actually performs. No clause of an Agent NDA is enforced, because nothing a recipient does with material inside its own walls can be refused by software. The one enforced step is in <a href="https://agentrfp.net/">Agent RFP</a>: a board releases the sealed body of a gated posting only to a provider whose acceptance it has verified. A renderer must never present a promise of an agreement as enforced, whatever enforced step came before it.</p>
+            <p>A machine refuses a violation before it happens. No clause of an Agent NDA is enforced, because software cannot refuse what a recipient does inside its own walls. The enforced checks run before material moves, at a board, a process runtime or a platform.</p>
 
             <h2>What does a signature prove?</h2>
-            <p>A countersignature proves that each owner key signed these exact terms at the stated instant. It does not prove that the recipient kept any promise, and no part of the system can show that it did. What the signatures provide is a record neither party can later dispute about what was agreed and who agreed to it.</p>
+            <p>It proves that an owner key signed these exact terms at a stated instant. It does not prove that anyone kept a promise.</p>
+
+            <h2>Who may sign for a company?</h2>
+            <p>A signer who holds a mandate from the company with the <code>nda</code> power, under <a href="https://agentmandate.net/">Agent Mandate</a>. When a seat names an organization, its signature must name that mandate. A platform that holds the signature until the mandate checks out enforces the rule, and elsewhere the counterparty can verify it.</p>
 
             <h2>Can an NDA be mutual?</h2>
-            <p>Yes. The direction is either one-way or mutual. In a one-way agreement only the discloser's material is protected and only the recipient takes on duties. In a mutual agreement each party is both a discloser and a recipient, every duty applies to each party for the other's material, and the seat names only say who signed where. In a mutual agreement each party declares its own processors and jurisdictions.</p>
+            <p>Yes. In a mutual agreement each party is both a discloser and a recipient, and each declares its own processors.</p>
+
+            <h2>Can more than two parties sign one NDA?</h2>
+            <p>Yes. A multilateral agreement has 3 to 16 members, and each is a discloser and a recipient to every other. It is in force when every member has signed. See <a href="/parties.html">Many parties</a>.</p>
+
+            <h2>What if a party brings in a subcontractor?</h2>
+            <p>It may do so only when the agreement allows bound subcontractors. It then signs its own Agent NDA with the subcontractor, naming the agreement it flows from. That agreement must be at least as strict in every field, or it does not bind the subcontractor.</p>
+
+            <h2>How does a process run make sure every participant is bound?</h2>
+            <p>The process document names the agreement in <code>confidential-under:</code>. Before the runtime starts a phase held by an outside agent, or delivers a handoff to one, it checks that the agent's owner is bound. When the owner is not bound, it refuses and names the reason.</p>
 
             <h2>Can one NDA cover many statements of work?</h2>
-            <p>Yes, and that is one of the reasons it is a separate document. Each Agent SoW names the agreement it runs under by identifier, version and digest, and the agreement keeps its own term. It covers performing those engagements when its purpose lists the activity <code>perform_engagements</code>. If the purpose leaves that activity out, an engagement that names the agreement is not covered by it, and a node should warn about the mismatch.</p>
+            <p>Yes. Each Agent SoW names the agreement it runs under, and the agreement keeps its own term. Its purpose must list <code>perform_engagements</code>.</p>
 
             <h2>What if the NDA and the SoW disagree on retention?</h2>
-            <p>The statement of work wins for its own content. An Agent NDA never lengthens retention: material that is content of an engagement is deleted when that engagement's Agent SoW says so, even while the agreement remains in force. The return-or-destroy clause of the agreement is an outer limit for material no engagement governs, such as a solicitation body, negotiation drafts or probe samples that led to no engagement.</p>
+            <p>The statement of work wins for its own content. An Agent NDA never lengthens retention. Its return-or-destroy clause covers material no engagement governs.</p>
 
             <h2>What happens on breach?</h2>
-            <p>The specification defines no remedy and no machine that decides one. Where the breach arises in an engagement that names the agreement, it is a breach under that engagement, and the engagement's dispute clause governs how it is raised and settled. An Agent SoW liability clause may also carve breach of the agreement out of its limits. Either party may file evidence with a bureau under <a href="https://agentreputations.com/">Agent Reputations</a>, and a report there is evidence about how an interaction went, never a finding of breach. Beyond that, a breach is settled between the owners or before a court or arbitrator reading the signed document.</p>
+            <p>The specification defines no remedy. A breach in an engagement falls under that engagement's dispute clause, and a party may file evidence under <a href="https://agentreputations.com/">Agent Reputations</a>. Otherwise the owners settle it, or a court or arbitrator does.</p>
 
-            <h2>What is left out if a category is not listed?</h2>
-            <p>It is not covered. The list of confidential categories is closed, and a reader must not infer that a category the parties left out is protected. Material that fits no category is not covered by an Agent NDA at all. Parties who need to protect it state it in a related agreement or write a different document. The same rule runs through the agreement: an activity, an exclusion or a kind of person left out of its list does not apply.</p>
-
-            <h2>What if the agreement says nothing about survival or exclusions?</h2>
-            <p>Then it states none, and a reader must not supply a default. Without a survival period the duties end when the agreement ends. Without exclusions, none apply. The specification invents no default, because a default would be a number or a rule neither party wrote.</p>
+            <h2>What if a category, survival period or exclusion is not listed?</h2>
+            <p>Then it does not apply. The lists are closed, and a reader must not supply a default the parties did not write.</p>
 
             <h2>Can a buyer choose who accepts its open offer?</h2>
-            <p>Yes. An open offer is open either to any party or to a list of named handles. An offer to any party lets anyone who can sign read the gated body, so a buyer that cares who reads it lists the entitled handles, or signs agreements one at a time with the providers it chooses. An open offer also always has an expiry instant, and after it no acceptance forms an agreement.</p>
+            <p>Yes. The offer can list the handles entitled to accept. Every open offer also has an expiry instant.</p>
 
             <h2>Why does a gated posting not appear in its own NDA?</h2>
-            <p>The posting names the offer by its digest, so the offer must exist and be signed before the posting is. An offer that named its posting could not be completed before the posting existed. The offer covers the posting through the activity <code>evaluate_solicitation</code>, which reaches any posting whose gate names the offer.</p>
+            <p>The posting names the offer by digest, so the offer must be signed first. The offer covers the posting through the activity <code>evaluate_solicitation</code>.</p>
 
             <h2>How is an agreement changed or ended?</h2>
-            <p>An agreement is amended by a complete replacement at the next version, with the same identifier and parties, signed by both. A proposed replacement with one signature has no force. Either party may terminate on the notice the agreement states, by a separately signed act, and termination starts the survival period. An open offer is changed by withdrawing it and signing a new one.</p>
-
-            <h2>Who signs for a company?</h2>
-            <p>The owner of each party signs. A seat may name the organization it acts for, and a signature may name the mandate under which the signing person acted. A counterparty can check that mandate under <a href="https://agentmandate.net/">Agent Mandate</a>. A runtime that does not perform those checks must not present the agreement as mandate-verified.</p>
+            <p>A new version replaces it, signed by every party. A party ends it by a signed termination on the stated notice, and survival starts then. An open offer is withdrawn and replaced.</p>
 
             <h2>Does a board see the confidential material?</h2>
-            <p>The board holds the sealed body, and it is trusted to show it to nobody but the poster and the providers it released it to. That trust is outside the agreement, which binds the two parties only. A poster that does not want to trust a board can release bodies itself, applying the same checks.</p>
+            <p>Yes. The board holds the sealed body and is trusted to show it only to the poster and the providers it released it to. A poster that does not trust a board can release bodies itself.</p>
           </div>
 
           <p class="next">Next: <a href="/spec.html">The specification</a></p>
@@ -140,6 +147,7 @@
           <a href="/">Agent NDA</a>
           <a href="/clauses.html">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html">Questions and answers</a>
           <a href="/spec.html">Specification</a>

@@ -5,16 +5,16 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>What an Agent NDA says: Agent NDA</title>
-  <meta name="description" content="The clauses of an Agent NDA, what each one records, and the grade each one carries: evidence or recorded.">
+  <meta name="description" content="The clauses of an Agent NDA, the grade each carries, flow-down to subcontractors and who may sign for an organization.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent NDA">
   <meta property="og:title" content="What an Agent NDA says: Agent NDA">
-  <meta property="og:description" content="The clauses of an Agent NDA, what each one records, and the grade each one carries: evidence or recorded.">
+  <meta property="og:description" content="The clauses of an Agent NDA, the grade each carries, flow-down to subcontractors and who may sign for an organization.">
   <meta property="og:url" content="https://agentnda.net/clauses.html">
   <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent NDA. A signed non-disclosure agreement between two parties whose agents work together, with every clause graded.">
+  <meta property="og:image:alt" content="Agent NDA. The first agreement parties sign when their agents work together, with every clause graded.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
   <link rel="canonical" href="https://agentnda.net/clauses.html">
@@ -48,6 +48,7 @@
           <a href="/">What it is</a>
           <a href="/clauses.html" class="on" aria-current="page">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html">Questions and answers</a>
           </div>
@@ -85,86 +86,103 @@
     <main class="main" id="top">
       <article class="wrap pagebody">
           <h1>What an Agent NDA says</h1>
-          <p>An Agent NDA has the clauses a non-disclosure agreement between two businesses usually has, written as fields of one signed JSON document. Each clause carries a grade, and the specification fixes which grade each clause carries. A document whose clause carries any other grade does not validate.</p>
+          <p>An Agent NDA has the clauses a business NDA usually has. Each is a field of one signed JSON document. The specification fixes each clause's grade, and a document with any other grade does not validate.</p>
 
           <figure class="figure" aria-label="The clauses of an Agent NDA, each with its grade">
             <div class="bar"><span class="lamp"></span>the clauses of an Agent NDA<span class="grow">grades fixed by the specification</span></div>
             <dl class="doc">
-              <div class="row"><dt>Parties and direction</dt><dd>Two seats, the discloser and the recipient, each with the agent's key, its handle and the accountable owner, and optionally the organization it signs for. The direction is one-way or mutual.</dd><span class="grade c-blue">evidence</span></div>
-              <div class="row"><dt>Term</dt><dd>When the duties begin and when the agreement stops covering new disclosures. With no start instant, the agreement takes effect when it is countersigned.</dd><span class="grade c-blue">evidence</span></div>
-              <div class="row"><dt>Survival</dt><dd>How many days the duties continue, after the agreement ends, for material disclosed while it was in force.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>Purpose</dt><dd>What the recipient may use the material for, as a sentence a person reads and a closed list of activities software can compare.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>What is confidential</dt><dd>A closed list of categories, such as the solicitation, the inputs and the terms of related agreements. A category left out is not covered.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>Who may receive it</dt><dd>The processors and jurisdictions each receiving party declares, whether subcontractors may be told, and which people may see the material because they need to know.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>Exclusions</dt><dd>Material the duties do not reach even inside a covered category, such as material that is already public. Only the exclusions listed apply.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>Compelled disclosure</dt><dd>Whether the recipient promises to give notice before a disclosure the law requires, and to disclose no more than it must.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>Return or destruction</dt><dd>Whether the material is returned, destroyed or either, within how many days, and whether the recipient confirms it in a signed statement.</dd><span class="grade c-amber">recorded</span></div>
-              <div class="row"><dt>Termination</dt><dd>The days of notice either party must give to end the agreement. The act of terminating is signed separately.</dd><span class="grade c-blue">evidence</span></div>
-              <div class="row"><dt>Signatures</dt><dd>The owner of each party signs. In an open offer the discloser signs first with the recipient seat empty, and the recipient signs the completed document.</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Parties and direction</dt><dd>Two seats, or 3 to 16 members. Each names the agent's key, its handle, its owner and any organization it signs for. The direction is one-way, mutual or multilateral.</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Term</dt><dd>When the duties begin, and when the agreement stops covering new disclosures.</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Survival</dt><dd>How many days the duties last after the agreement ends. There is none unless it is stated.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Purpose</dt><dd>What the material may be used for: a sentence, and a closed list of activities.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>What is confidential</dt><dd>A closed list of categories.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Who may receive it</dt><dd>Each party's processors and jurisdictions, the people who need to know, and whether subcontractors may be told.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Exclusions</dt><dd>Material the duties do not reach, such as public material.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Compelled disclosure</dt><dd>Whether the recipient gives notice before a disclosure the law requires.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Return or destruction</dt><dd>What happens to the material at the end, and within how many days.</dd><span class="grade c-amber">recorded</span></div>
+              <div class="row"><dt>Termination</dt><dd>The notice a party gives to end the agreement.</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Signatures</dt><dd>The owner of each party signs. A signer for an organization names its mandate.</dd><span class="grade c-blue">evidence</span></div>
             </dl>
-            <figcaption class="cap">Breach has no clause of its own and no grade. The specification defines no remedy and no machine that decides one, and says where a breach goes instead.</figcaption>
+            <figcaption class="cap">Breach has no clause and no grade. A breach goes to a related engagement's dispute clause, to <a href="https://agentreputations.com/">Agent Reputations</a> as evidence, or to the owners and the courts.</figcaption>
           </figure>
 
-          <h2>The promises are recorded, the signatures are evidence, and one step is enforced</h2>
-          <p>Everything an Agent NDA asks of the recipient happens inside the recipient's own walls, where no runtime can see. Using material only for the purpose, showing it only to the people the agreement names and destroying it at the end are promises. They are written in the signed document and graded <span class="grade c-amber">recorded</span>, and whether they were kept is established outside the system.</p>
-          <p>The facts around the promises are <span class="grade c-blue">evidence</span>. Who the parties are, when the agreement took effect and when it ends, and that each owner signed these exact terms at a stated instant are carried in signed bytes that either side can export and anyone can verify.</p>
-          <p>No clause of an Agent NDA is <span class="grade c-mint">enforced</span>, and a document that grades one enforced is the false enforcement claim the Common Agent Standards forbid. The one enforced step sits outside the document, in <a href="https://agentrfp.net/">Agent RFP</a>: a board that hosts a gated posting releases the sealed body only after it has verified a valid acceptance of the poster's agreement. That refusal happens before the provider holds anything. From the moment of release, the provider's handling of the body is a recorded promise like every other. <a href="/gated.html">Gated RFPs</a> describes the release step by step.</p>
+          <h2>The promises are recorded, and the facts are evidence</h2>
+          <p>An NDA's promises are kept inside the recipient's own walls, where no runtime can see. So they are <span class="grade c-amber">recorded</span>. Who signed, which terms and when are in signed bytes anyone can verify, so they are <span class="grade c-blue">evidence</span>.</p>
+          <p>No clause is <span class="grade c-mint">enforced</span>. The enforced checks run outside the document, before material moves: at a board releasing a <a href="/gated.html">gated RFP</a> body, at a process runtime admitting an <a href="/parties.html">outside participant</a>, and at a platform checking a signer's mandate.</p>
 
-          <h2>Parties and direction</h2>
-          <p>Each seat has the same shape as one seat of an Agent SoW parties clause: the agent's public key, an optional handle and the accountable owner. A seat may also name the organization it signs for, under <a href="https://agentmandate.net/">Agent Mandate</a>. In a one-way agreement only the discloser's material is protected, and only the recipient takes on the duties. In a mutual agreement each party is both a discloser and a recipient, and the seat names only say who signed where.</p>
-          <p>A node should treat material as covered only when the agent it received the material from, or sent it to, is the agent named in the matching seat.</p>
+          <h2>The seats name the parties and the direction</h2>
+          <p>Each seat holds the agent's public key, an optional handle and the accountable owner. A seat may also name the organization it signs for.</p>
+          <ul>
+            <li><b>One-way.</b> Only the discloser's material is protected, and only the recipient takes on duties.</li>
+            <li><b>Mutual.</b> Two parties, each a discloser and a recipient.</li>
+            <li><b>Multilateral.</b> Three to sixteen members. Each is a discloser and a recipient to every other. It is in force when every member has signed the same bytes. Adding or removing a member means a new version signed by every member. <a href="/parties.html">Many parties</a> shows how a process run uses it.</li>
+          </ul>
 
-          <h2>Term and survival</h2>
-          <p>The start and end instants are fields of the document. After the end, the agreement covers no new disclosures. The survival period then keeps the duties alive for material disclosed while it was in force, counted in whole days from the day it ended, whether it reached its end instant or was terminated earlier. An agreement that states no survival period has none, and a reader must not supply one.</p>
-
-          <h2>Purpose</h2>
-          <p>The purpose is the heart of the agreement, because the main duty is that the recipient uses the material for this and for nothing else. The statement is the sentence a person reads. The activities are a closed list, so that software can tell which documents fall inside the purpose:</p>
+          <h2>The purpose limits what the material is used for</h2>
+          <p>The recipient uses the material for the purpose and nothing else. The activities are a closed list, and one left out is outside the purpose.</p>
           <div class="tablebox">
             <table class="t">
               <thead><tr><th>Activity</th><th>What it covers</th></tr></thead>
               <tbody>
-                <tr><td><code>evaluate_solicitation</code></td><td>Evaluating and responding to any Agent RFP posting whose gate names this agreement or the offer it was accepted from.</td></tr>
+                <tr><td><code>evaluate_solicitation</code></td><td>Evaluating and answering an Agent RFP posting whose gate names this agreement or its offer.</td></tr>
                 <tr><td><code>validation_probe</code></td><td>Running Agent SoW validation probes between the parties.</td></tr>
-                <tr><td><code>negotiation</code></td><td>Negotiating terms between the parties, including drafts and proposals that are never signed.</td></tr>
-                <tr><td><code>perform_engagements</code></td><td>Performing any Agent SoW between the parties that names this agreement.</td></tr>
+                <tr><td><code>negotiation</code></td><td>Negotiating terms, including drafts that are never signed.</td></tr>
+                <tr><td><code>perform_engagements</code></td><td>Performing an Agent SoW between the parties that names this agreement.</td></tr>
+                <tr><td><code>process_runs</code></td><td>Performing phases of an Agent Processes run whose document names this agreement.</td></tr>
               </tbody>
             </table>
           </div>
-          <p>The purpose may also list existing documents by identifier. An activity left out of the list is outside the purpose, so an agreement without <code>perform_engagements</code> does not cover an engagement merely because the engagement names it. An open offer never names the posting that gates on it, because the posting names the offer by its digest and the reference runs one way.</p>
 
-          <h2>What is confidential</h2>
-          <p>The parties choose from a closed list of categories. A category left out is not covered, and a reader must not infer that it is.</p>
+          <h2>A closed list says what is confidential</h2>
+          <p>A category left out is not covered, and a reader must not assume it is.</p>
           <div class="tablebox">
             <table class="t">
               <thead><tr><th>Category</th><th>What it covers</th></tr></thead>
               <tbody>
-                <tr><td><code>solicitation</code></td><td>A solicitation the discloser makes available, such as the sealed body of a gated posting, and anything released with it.</td></tr>
-                <tr><td><code>agreement_terms</code></td><td>The terms of any related agreement: Agent SoW documents, proposals, responses, drafts and prices, signed or not, and this agreement's own terms.</td></tr>
-                <tr><td><code>relationship</code></td><td>The fact that the parties are in a relationship, are negotiating, or have signed this agreement.</td></tr>
-                <tr><td><code>inputs</code></td><td>Material the discloser furnishes for the work, including sample inputs for a validation probe.</td></tr>
-                <tr><td><code>deliverables</code></td><td>What the recipient produces for the discloser under a related engagement.</td></tr>
-                <tr><td><code>own_material</code></td><td>Each party's own methods, tools, prompts, pricing models and system designs disclosed in evaluation, probing or negotiation.</td></tr>
+                <tr><td><code>solicitation</code></td><td>A solicitation, such as the sealed body of a gated posting.</td></tr>
+                <tr><td><code>agreement_terms</code></td><td>The terms of related agreements, signed or not, including prices and drafts.</td></tr>
+                <tr><td><code>relationship</code></td><td>The fact that the parties work together or are negotiating.</td></tr>
+                <tr><td><code>inputs</code></td><td>Material furnished for the work, including probe samples.</td></tr>
+                <tr><td><code>deliverables</code></td><td>What a recipient produces for the discloser or the owner of a process run.</td></tr>
+                <tr><td><code>own_material</code></td><td>A party's own methods, tools, prompts, pricing models and designs.</td></tr>
               </tbody>
             </table>
           </div>
 
-          <h2>Who may receive it</h2>
-          <p>The recipient may pass confidential material only to the people and services this clause names, and only so far as the purpose needs. The declared processors and jurisdictions have exactly the shape Agent SoW uses for an engagement's data handling, so an agreement and an engagement that runs under it can be compared field by field. An engagement may not go beyond what the agreement declares for the provider. A discloser may require jurisdictions, and a party's declaration must then fall within them.</p>
-          <p>Subcontractors are either not told at all, or told only when bound by written terms at least as strict. The people who may see the material are the party's own personnel and its professional advisers, each only where listed. A node can check a processor against the list and should refuse to send covered material to an undeclared one, and that refusal is the node's own policy. It does not change the grade, because a recipient can always pass material on by a route the node does not see.</p>
+          <h2>The agreement names who may receive the material</h2>
+          <p>Each receiving party declares its processors and jurisdictions in the shape Agent SoW uses, so an engagement can be compared with the agreement. A discloser may require certain jurisdictions. The people who need to know are the party's personnel, its advisers, or both.</p>
 
-          <h2>Exclusions</h2>
-          <p>The agreement lists which exclusions apply: material that is or becomes public through no breach, material the recipient already held without a duty of confidence, material it develops independently, and material it receives from a third party free to share it. An exclusion left out does not apply, and an agreement with no exclusions states none. The recipient bears the burden of showing that an exclusion applies.</p>
+          <h2>A subcontractor is bound by a flow-down agreement</h2>
+          <p>When subcontractors are allowed, a party binds each one with its own Agent NDA that names the agreement it flows from. It must be at least as strict, field by field:</p>
+          <ul>
+            <li>it covers every upstream category, and allows no activity the upstream one leaves out;</li>
+            <li>the subcontractor's processors and jurisdictions fall within the party's own upstream declaration;</li>
+            <li>survival is at least as long, and return or destruction is at least as fast;</li>
+            <li>its exclusions and people who need to know are no wider.</li>
+          </ul>
+          <p>A flow-down agreement that fails the test does not bind the subcontractor.</p>
 
-          <h2>Compelled disclosure</h2>
-          <p>A recipient required by law, a court or a regulator to disclose material does not breach the agreement by doing so. Every Agent NDA records this rule, because no private agreement can forbid what law compels. With notice turned on, the recipient also promises to tell the discloser first where the law allows, and to disclose no more than it must.</p>
+          <h2>Three short clauses cover exclusions, the law and the end</h2>
+          <p><b>Exclusions.</b> The agreement lists which apply: public material, material already known, material developed independently, and material from a third party free to share it. One left out does not apply.</p>
+          <p><b>Compelled disclosure.</b> A disclosure the law requires is never a breach. With notice on, the recipient tells the discloser first where the law allows.</p>
+          <p><b>Return or destruction.</b> The recipient returns or destroys the material within a stated number of days. An Agent NDA never lengthens retention, and an engagement's Agent SoW retention rules still apply to its content.</p>
 
-          <h2>Return or destruction</h2>
-          <p>At the end, or when the discloser asks, the recipient returns the material, destroys it, or chooses between the two, within a stated number of days, and may promise to confirm it in a signed statement. An Agent NDA never lengthens retention. Where the material is also content of an engagement, that engagement's Agent SoW retention rules apply and the material is deleted when they say so, even while the agreement remains in force. The days in this clause are an outer limit for material no engagement governs, such as a solicitation body, negotiation drafts or probe samples that led to no engagement.</p>
+          <h2>A signer for an organization needs a mandate</h2>
+          <p>When a seat names an organization, its signature must name a mandate of that organization that holds the <code>nda</code> power under <a href="https://agentmandate.net/">Agent Mandate</a>. That holds for every act, from signing to withdrawing. A mandate may limit which categories its holder may agree to. A seat with no organization needs no mandate.</p>
+          <div class="cards two">
+            <div class="card c-mint">
+              <span class="grade c-mint">enforced</span>
+              <h3>A platform holds the act for the check.</h3>
+              <p>A platform or board holds the signature until the mandate checks out, and refuses it otherwise.</p>
+            </div>
+            <div class="card c-blue">
+              <span class="grade c-blue">evidence</span>
+              <h3>Elsewhere the counterparty checks.</h3>
+              <p>The counterparty can verify the mandate chain itself, but nothing refused the act.</p>
+            </div>
+          </div>
 
-          <h2>Breach</h2>
-          <p>The specification defines no remedy for breach. Where a breach arises in an engagement that names the agreement, it is a breach under that engagement, and the engagement's dispute clause governs how it is raised and settled. Either party may also file evidence with a bureau under <a href="https://agentreputations.com/">Agent Reputations</a>. A report is evidence about how an interaction went, and a renderer must not present it as a finding of breach. Anything else is settled where any breach of a private agreement is settled: between the owners, or before a court or arbitrator reading the signed document.</p>
-
-          <p>Every clause, with its fields and the rules for each, is in <a href="/spec.html#s5">section 5 of the specification</a>.</p>
+          <p>Every clause and its rules are in <a href="/spec.html#s5">section 5 of the specification</a>.</p>
           <p class="next">Next: <a href="/gated.html">Gated RFPs</a></p>
       </article>
 
@@ -174,6 +192,7 @@
           <a href="/">Agent NDA</a>
           <a href="/clauses.html">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html">Questions and answers</a>
           <a href="/spec.html">Specification</a>

@@ -8,7 +8,7 @@
 //   versions.html  nda/CHANGELOG.md, every version and the changelog
 //
 // tools/render-site.sh at the repository root copies the hand-written pages
-// (index.html, clauses.html, gated.html, example.html, questions.html,
+// (index.html, clauses.html, gated.html, parties.html, example.html, questions.html,
 // 404.html, site.css and the rest) beside them, moves every link under the
 // base (/draft/ or /<version>/), checks contrast and publishes. The pages are
 // never committed and never edited by hand: the Markdown is the source, and

@@ -125,7 +125,7 @@
       "status": "Working Draft",
       "tag": "nda-v0.1.0-draft",
       "builder": "nda/site/tools/build-spec.mjs",
-      "summary": "An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together. It records what is confidential, what it may be used for, who may receive it and for how long, so that one document can cover an RFP before it is shown, a validation probe, and every statement of work the parties sign afterwards."
+      "summary": "An Agent NDA is a signed non-disclosure agreement between parties whose agents work together. It is usually the first agreement they sign, and later documents refer to it: an Agent RFP posting, an Agent SoW and an Agent Processes run."
     },
     {
       "id": "reputations",

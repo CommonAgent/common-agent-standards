@@ -59,6 +59,7 @@ export function rail(active) {
           ${a("/", "What it is", "home")}
           ${a("/clauses.html", "What an Agent NDA says", "clauses")}
           ${a("/gated.html", "Gated RFPs", "gated")}
+          ${a("/parties.html", "Many parties", "parties")}
           ${a("/example.html", "An example", "example")}
           ${a("/questions.html", "Questions and answers", "questions")}
           </div>
@@ -89,6 +90,7 @@ export const footer = `<footer class="sitefoot">
           <a href="/">Agent NDA</a>
           <a href="/clauses.html">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html">Questions and answers</a>
           <a href="/spec.html">Specification</a>
@@ -112,7 +114,8 @@ export const tailScript = `<script>
 
 // Rewrite the marked regions of the hand-written pages.
 const PAGES = {
-  "index.html": "home", "clauses.html": "clauses", "gated.html": "gated", "example.html": "example",
+  "index.html": "home", "clauses.html": "clauses", "gated.html": "gated", "parties.html": "parties",
+  "example.html": "example",
   "questions.html": "questions", "404.html": "",
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

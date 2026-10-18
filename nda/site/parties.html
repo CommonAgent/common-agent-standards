@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Many parties: Agent NDA</title>
+  <meta name="description" content="How one multilateral Agent NDA binds every outside participant in an Agent Processes run, and how the runtime checks it before it hands over work.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent NDA">
+  <meta property="og:title" content="Many parties: Agent NDA">
+  <meta property="og:description" content="How one multilateral Agent NDA binds every outside participant in an Agent Processes run, and how the runtime checks it before it hands over work.">
+  <meta property="og:url" content="https://agentnda.net/parties.html">
+  <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent NDA. The first agreement parties sign when their agents work together, with every clause graded.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentnda.net/parties.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent NDA, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><path d="M9 3.5h10l6 6V26a2.5 2.5 0 0 1-2.5 2.5H9A2.5 2.5 0 0 1 6.5 26V6A2.5 2.5 0 0 1 9 3.5z" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M19 3.5V9.5h6" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><path d="M11 14h10" stroke="var(--blue)" stroke-width="2.4" stroke-linecap="round"/><path d="M11 19h5" stroke="var(--amber)" stroke-width="2.4" stroke-linecap="round"/><circle cx="20.5" cy="22.5" r="2.6" fill="var(--violet)"/></svg><span class="wm">Agent <b>NDA</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent NDA">
+        <details class="sec" open>
+          <summary>Agent NDA<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html" class="on" aria-current="page">Many parties</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda/conformance">Conformance fixtures<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent NDA is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+      <article class="wrap pagebody">
+          <h1>Many parties</h1>
+          <p>An <a href="https://agentprocesses.ai/">Agent Processes</a> run can bring several outside parties together. Their agents pass material to each other as the run moves from phase to phase. One multilateral Agent NDA can bind them all, and the runtime checks it before it hands any outside agent work.</p>
+
+          <h2>One agreement binds every member</h2>
+          <p>A multilateral agreement has 3 to 16 members. Each member is a discloser and a recipient to every other, and owes each of them the same duties.</p>
+          <ul>
+            <li>Every member signs the same bytes. The agreement is in force only when all of them have signed.</li>
+            <li>Each member declares its own processors and jurisdictions.</li>
+            <li>Adding or removing a member means a new version, signed by every member of that version.</li>
+            <li>A member that terminates ends its own part. The agreement stays in force among the others while at least two remain.</li>
+            <li>A multilateral agreement has no open offer.</li>
+          </ul>
+
+          <h2>The process document names the agreement</h2>
+          <p>A process document carries a header key, <code>confidential-under:</code>. It names one Agent NDA by identifier, version and digest, or names an open offer by its offer digest. A reference process leaves it as a marked blank for the adopter to fill.</p>
+          <pre><code>confidential-under: nda_7k3pxw9c2r4tmq8d v1 sha256:&lt;64 hex digits&gt;</code></pre>
+          <p>A phase can still name its own engagement with <code>under:</code>. The two keys do different jobs and can appear together.</p>
+
+          <h2>The runtime checks before it hands over work</h2>
+          <p>Every agent that holds a phase or receives a handoff, and belongs to an owner other than the process owner, must belong to an owner bound by the named agreement. A runtime that implements the key checks this before it starts such a phase or delivers such a handoff. When the check fails, it refuses and names the reason. A runtime that does not run the check must say so.</p>
+
+          <h2>A party is bound in one of three ways</h2>
+          <ol class="steps">
+            <li><b>It signed.</b> Its owner's key signed a seat of the named agreement, which is in force.</li>
+            <li><b>It accepted.</b> The named reference is an open offer, and the party holds a valid acceptance of it.</li>
+            <li><b>It is bound by flow-down.</b> It is a subcontractor under a flow-down agreement that passes the strictness test, from a party that is bound itself. The check repeats hop by hop.</li>
+          </ol>
+          <p>Where a seat names an organization, the signer's mandate must also check out.</p>
+
+          <h2>The check is enforced, and what follows is recorded</h2>
+          <div class="cards two">
+            <div class="card c-mint">
+              <span class="grade c-mint">enforced</span>
+              <h3>The runtime refuses first.</h3>
+              <p>The refusal happens before the outside agent holds anything, so it is enforced at that runtime.</p>
+            </div>
+            <div class="card c-amber">
+              <span class="grade c-amber">recorded</span>
+              <h3>The handling afterwards is a promise.</h3>
+              <p>What each party does with the material once it arrives stays a recorded promise under the agreement.</p>
+            </div>
+          </div>
+
+          <h2>Pick the agreement that fits the run</h2>
+          <p>Use a multilateral agreement when outside parties pass their own material to each other. When every handoff carries only the process owner's material, an open offer from the process owner is enough.</p>
+
+          <p>Multilateral agreements are in <a href="/spec.html#s5-1">section 5.1 of the specification</a>, and whether a party is bound is in <a href="/spec.html#s8-1">section 8.1</a>.</p>
+          <p class="next">Next: <a href="/example.html">An example</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent NDA</a>
+          <a href="/clauses.html">What an Agent NDA says</a>
+          <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
+          <a href="/example.html">An example</a>
+          <a href="/questions.html">Questions and answers</a>
+          <a href="/spec.html">Specification</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/nda">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

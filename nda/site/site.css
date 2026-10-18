@@ -364,23 +364,23 @@ footer.sitefoot .sponsor{ flex-basis:100%; }
 @media (prefers-reduced-motion:reduce){ *{ transition:none !important; scroll-behavior:auto !important; } }
 
 
-/* ── the three moments, on one timeline (the home page) ── */
+/* ── one agreement, named by the documents that follow (the home page) ── */
 .figure svg.tl{ display:block; width:100%; height:auto; padding:14px 10px 6px; }
-.tl .axis{ stroke:var(--text-3); stroke-width:1.6; }
-.tl .span{ stroke:var(--violet); stroke-width:6; stroke-linecap:round; }
-.tl .tick{ stroke:var(--text-3); stroke-width:1.4; }
-.tl .dot{ fill:var(--bg); stroke:var(--accent); stroke-width:2.4; }
-.tl .num{ font:700 13px var(--wire); fill:var(--accent); text-anchor:middle; }
-.tl .ev{ font:600 13.5px var(--body); fill:var(--text); text-anchor:middle; }
-.tl .evs{ font:400 12.5px var(--body); fill:var(--text-2); text-anchor:middle; }
-.tl .lab{ font:600 12.5px var(--wire); fill:var(--violet); }
-.tl .sow{ fill:var(--surface); stroke:var(--line); }
-.tl .sowt{ font:600 12px var(--wire); fill:var(--text-2); text-anchor:middle; }
-.moments{ list-style:none; padding:0; margin:22px 0 0; display:grid; gap:14px; grid-template-columns:repeat(3,minmax(0,1fr)); }
+.tl .nda{ fill:var(--violet-tint); stroke:var(--violet); stroke-width:2; }
+.tl .bt{ font:700 20px var(--disp); fill:var(--text); text-anchor:middle; }
+.tl .bs{ font:500 13.5px var(--body); fill:var(--text-2); text-anchor:middle; }
+.tl .box{ fill:var(--surface); stroke:var(--line); stroke-width:1.4; }
+.tl .box.dash{ stroke-dasharray:5 4; stroke:var(--text-3); fill:none; }
+.tl .bx{ font:600 14px var(--body); fill:var(--text); text-anchor:middle; }
+.tl .bx.dim{ fill:var(--text-2); font-weight:500; }
+.tl .arr{ fill:none; stroke:var(--text-3); stroke-width:1.6; }
+.tl .arr.dash{ stroke-dasharray:5 4; }
+.tl .ah{ fill:var(--text-3); }
+.tl .lab{ font:600 12.5px var(--wire); fill:var(--violet); text-anchor:middle; }
+.moments{ list-style:none; padding:0; margin:22px 0 0; display:grid; gap:14px; grid-template-columns:repeat(2,minmax(0,1fr)); }
 .moments li{ background:var(--bg); border:1px solid var(--line); border-top:4px solid var(--accent); border-radius:14px; padding:18px 20px; }
-.moments .n{ font-family:var(--wire); font-size:.85rem; font-weight:600; color:var(--accent); }
-.moments h3{ font-size:1.15rem; margin:4px 0 8px; }
-section.band .moments h3{ margin:4px 0 8px; }
+.moments h3{ font-size:1.12rem; margin:0 0 8px; }
+section.band .moments h3{ margin:0 0 8px; }
 .moments p{ margin:0; font-size:1rem; line-height:1.55; color:var(--text-2); }
 
 /* ── a numbered sequence of steps (the gated page) ── */
@@ -400,6 +400,6 @@ ol.steps li b{ color:var(--text); }
   .moments{ grid-template-columns:minmax(0,1fr); }
 }
 @media (max-width:700px){
-  /* the timeline's words are too small at this width; the three cards below it say the same */
+  /* the drawing's words are too small at this width; the four cards below it say the same */
   .tl-fig{ display:none; }
 }
