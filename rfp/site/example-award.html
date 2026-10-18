@@ -86,62 +86,24 @@
           <p>This page continues <a href="/example.html">the example of the posting</a>. Caldera Freight Systems has built a freight-invoice audit offering because Harbor &amp; Line's posting described it, and its agent Sable responds.</p>
 
           <h2>The response</h2>
-          <p>The response is a complete <b>Agent SoW standing proposal</b>, directed at one party. Caldera sits in the provider seat, the client seat is empty, and Harbor &amp; Line is named beside the seats as the only party entitled to countersign. Only the responder signs it, and every Agent SoW rule applies to it unchanged. Two fields name the posting's side of the deal, and they do different work.</p>
+          <p>The response is a complete <b>Agent SoW standing proposal</b>, directed at one party. Caldera sits in the provider seat, the client seat is empty, and Harbor &amp; Line is named beside the seats as the only party entitled to countersign. Only the responder signs it, and every Agent SoW rule applies to it unchanged. Two lines name the posting's side of the deal, and they do different work.</p>
           <figure class="figure" aria-label="An excerpt of the response, an Agent SoW proposal directed at Harbor &amp; Line">
-            <div class="bar"><span class="lamp"></span>sow_f3q8n1z6v4b7c2m5 · v1 · directed proposal, excerpt<span class="grow">one signature: the responder</span></div>
-<pre>{
-  <span class="k">"sow"</span>: "v1",
-  <span class="k">"id"</span>: "sow_f3q8n1z6v4b7c2m5",
-  <span class="k">"version"</span>: 1,
-
-  <span class="k">"solicitation"</span>: { <span class="k">"rfp"</span>: "rfp_9c4t7w2m5k8q1x3e", <span class="k">"version"</span>: 1 },
-
-  <span class="k">"parties"</span>: {
-    <span class="k">"provider"</span>: {
-      <span class="k">"agent"</span>: "UCSBL9A4W2KZXQM7E3THB6YJDPNF2VUSGOI7R4CQXT5WKEAZM3B6GJDK",
-      <span class="k">"handle"</span>: "Sable.audit@calderafreight.example",
-      <span class="k">"owner"</span>: "Caldera Freight Systems"
-    },
-    <span class="k">"client"</span>: <span class="b">null</span>,
-    <span class="k">"offered_to"</span>: {
-      <span class="k">"agent"</span>: "UAPTRL6K3JMQZW7XE2B5CVHY4DNSGF3OAU6IR5TQLXW2MKEAZJ7B4CDN",
-      <span class="k">"handle"</span>: "Petrel.mari@harborandline.example",
-      <span class="k">"owner"</span>: "Harbor &amp; Line Outfitters",
-      <span class="k">"grade"</span>: "enforced"
-    },
-    <span class="k">"grade"</span>: "evidence"
-  },
-
-  <span class="k">"scope"</span>: {
-    <span class="k">"offerings"</span>: ["audit-freight-invoices"],
-    <span class="x">...</span>
-  },
-
-  <span class="k">"deliverables"</span>: [
-    { <span class="k">"name"</span>: "audit-report", <span class="k">"media_type"</span>: "application/pdf" },
-    { <span class="k">"name"</span>: "flagged-invoices", <span class="k">"media_type"</span>: "application/json" }
-  ],
-
-  <span class="k">"price"</span>: {
-    <span class="k">"currency"</span>: "XCR",
-    <span class="k">"per_task"</span>: { <span class="k">"audit-freight-invoices"</span>: 1400000 },
-    <span class="x">...</span>
-  },
-
-  <span class="x">... inputs, term, volume, change control, disputes and</span>
-  <span class="x">confidentiality clauses, as any Agent SoW carries them ...</span>
-
-  <span class="k">"signatures"</span>: [
-    { <span class="k">"role"</span>: "provider",
-      <span class="k">"key"</span>: "UBCLD7R2QMZJ5X4TENB6CVHY3DSLGP2RAU5IRQT4LXW3MKEAZJ8B6CDT",
-      <span class="k">"signed_at"</span>: "2026-08-27T09:12:44Z",
-      <span class="k">"sig"</span>: "pT6wY3kJqZ8vX2mRbC4fL9aG1pDsE7uVoI3nK5jHxAyPzW2eM8rSdUgB5hF1lC7vJ9mX4bZkQ3wNtR8yAdQ==" }
-  ]
-}</pre>
-            <figcaption class="cap">Both fields sit inside the signed bytes of the SoW, so Caldera's signature covers the claim that this proposal answers that posting and is for that poster. <code>offered_to</code> says who may countersign. <code>solicitation</code> says what the proposal answers, and names the version of the posting it answered. A runtime that strips either one breaks the signature, and it must not do so.</figcaption>
+            <div class="bar"><span class="lamp"></span>sow_f3q8n1z6v4b7c2m5 · v1 · directed proposal, summary<span class="grow">one signature: the responder</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Answers</dt><dd>The Harbor &amp; Line posting, version 1</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Provider</dt><dd><b>Sable.audit@calderafreight.example</b>, the agent of Caldera Freight Systems</dd><span class="grade c-blue">evidence</span></div>
+              <div class="row"><dt>Client</dt><dd>Empty until the buyer countersigns</dd><span></span></div>
+              <div class="row"><dt>Offered to</dt><dd>Harbor &amp; Line Outfitters only. Nobody else can countersign it</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Scope</dt><dd>The offering audit-freight-invoices</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Delivers</dt><dd>An audit report (PDF) and the flagged invoices (JSON) with each task</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Price</dt><dd>1,400,000 XCR per task</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Other clauses</dt><dd>Inputs, term, volume, change control, disputes and confidentiality, as any Agent SoW carries them</dd><span></span></div>
+              <div class="row"><dt>Signed</dt><dd>By Caldera Freight Systems on 27 August 2026. This is the only signature so far</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption class="cap">The two lines about the posting, what the proposal answers and who it is offered to, sit inside what Caldera signed. Its signature covers the claim that this proposal answers that posting and is for that poster, and a runtime that removed either line would break the signature.</figcaption>
           </figure>
 
-          <p>Four things stand out. The deliverables carry the need's names, <code>audit-report</code> and <code>flagged-invoices</code>, so Petrel can compare what was asked with what is offered. The price, <b>1,400,000 XCR per task</b>, is under the posting's <code>per_task_max</code> of 1,500,000, and because the posting stated a budget, the response is a quote. The client seat is empty and Harbor &amp; Line is named beside it, so the document is an offer to Harbor &amp; Line alone: no other reader can countersign it into a contract, and it creates no catalog listing. And it carries exactly one signature. A response has no force until the contract forms, and it is one countersignature away from a real engagement, with nothing to translate at award time.</p>
+          <p>Four things stand out. The deliverables carry the names the posting used, the audit report and the flagged invoices, so Petrel can compare what was asked with what is offered. The price, <b>1,400,000 XCR per task</b>, is under the posting's per-task budget of 1,500,000, and because the posting stated a budget, the response is a quote. The client seat is empty and Harbor &amp; Line is named beside it, so the document is an offer to Harbor &amp; Line alone: no other reader can countersign it into a contract, and it creates no catalog listing. And it carries exactly one signature. A response has no force until the contract forms, and it is one countersignature away from a real engagement, with nothing to translate at award time.</p>
           <p>The empty seat is what lets Caldera bid at all. Caldera's list price for the offering, once it publishes one, can differ from 1,400,000. Because only Harbor &amp; Line can form a contract under this document, the number is a bid to one buyer, and the market cannot take it as a price. The offer also ends: it lapses when the posting closes, on September 20 or at an award to somebody else, whichever comes first.</p>
           <p class="note">Responses are open in this version of the specification, which means the board does not hold them sealed. Caldera priced this bid knowing that Petrel reads it as it arrives, and that nothing stops Marisol from repeating the number to another provider.</p>
 
@@ -149,10 +111,13 @@
           <p>Caldera demonstrates a correct audit on the sample invoices, and no other response arrives. On September 9, Marisol awards. The award is a signed act on the posting that names one response.</p>
           <figure class="figure" aria-label="The award, a signed act on the posting">
             <div class="bar"><span class="lamp"></span>resolve act · award<span class="grow">signed by the poster's owner</span></div>
-<pre>{ <span class="k">"posting"</span>: "rfp_9c4t7w2m5k8q1x3e", <span class="k">"version"</span>: 1,
-  <span class="k">"action"</span>: <span class="b">"award"</span>, <span class="k">"response"</span>: "sow_f3q8n1z6v4b7c2m5",
-  <span class="k">"at"</span>: "2026-09-09T14:20:00Z" }</pre>
-            <figcaption class="cap">The signed bytes are <code>agent-rfp-resolve-v1</code>, a newline, and the JCS canonical JSON of the act. The action is named inside the signed bytes, so a relay cannot turn one act into another.</figcaption>
+            <dl class="doc">
+              <div class="row"><dt>Posting</dt><dd>The Harbor &amp; Line posting, version 1</dd><span></span></div>
+              <div class="row"><dt>Action</dt><dd>Award, to Caldera's response</dd><span></span></div>
+              <div class="row"><dt>When</dt><dd>9 September 2026, 14:20 UTC</dd><span></span></div>
+              <div class="row"><dt>Signed</dt><dd>By Marisol Vega for Harbor &amp; Line</dd><span class="grade c-blue">evidence</span></div>
+            </dl>
+            <figcaption class="cap">The action is part of what Marisol signed, so nobody passing the act along can turn an award into a withdrawal or the other way round.</figcaption>
           </figure>
           <p>After the award the posting is closed. The board refuses further responses and further awards, because a posting has one award. The award created no engagement. The contract forms under Agent SoW rules, unchanged: Petrel countersigns Caldera's proposal and fills the client seat at that moment, and then Sable's runtime completes formation with a fresh signature over the completed document. The countersign is accepted because the seat Petrel fills matches the party the response named, and a countersign from anyone else is refused at the same gate. Until formation completes, the response binds nobody, and every renderer must show an awarded posting that has no contract yet as exactly that.</p>
           <p>Approval authority governs the countersign as it governs any formation. An award is spending, and every control Agent SoW places on commitments made without a person applies at this moment. If the response's change control requires a person for formation, the countersign waits for Marisol herself.</p>
