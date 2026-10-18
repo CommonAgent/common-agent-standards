@@ -7,7 +7,7 @@
 #
 # <id> is a standards.json entry. common-agent has its own script,
 # common-agent/site/deploy.sh, because commonagent.net also carries the suite's
-# front page; this script renders the others (messaging and naming):
+# front page; this script renders the others (messaging, naming and processes):
 #
 #   1. copies the hand-written pages of <folder>/site (everything but tools/)
 #      into the staging folder,
@@ -18,6 +18,12 @@
 #   5. runs the contrast gate over every page, and
 #   6. uploads, only without --dry-run and only with BUCKET, URLMAP, PROJECT
 #      and HOSTS set (the workflow sets them from repository variables).
+#
+# The upload adds and replaces files and never deletes any, so the copies of
+# earlier versions, and any file put in a bucket by hand, stay where they are.
+# /media/ in a bucket is kept for hand-uploaded files such as videos, as on
+# commonagent.net: the upload skips it, and a rendered site that has a media/
+# folder of its own is refused before anything is uploaded.
 #
 # KEEP=<folder> keeps a copy of the staging folder. Nothing in the working tree
 # is changed.
@@ -81,6 +87,10 @@ case "$MODE" in
   *) usage ;;
 esac
 
+if [ -e "$STAGE/media" ] || [ -e "$STAGE/draft/media" ]; then
+  echo "render refused: the rendered site has a media/ folder; /media/ in the bucket holds hand-uploaded files." >&2; exit 1
+fi
+
 if ! node "$(win "$TOOLS/contrast-gate.mjs")" --root "$OUT"; then
   echo "render refused: text below 4.5:1 contrast (listed above)." >&2; exit 1
 fi
@@ -92,7 +102,7 @@ if [ "$DRY" = "--dry-run" ]; then
 fi
 : "${BUCKET:?BUCKET names the bucket}" "${URLMAP:?URLMAP names the load balancer}" "${PROJECT:?PROJECT names the Google Cloud project}" "${HOSTS:?HOSTS lists the hosts}"
 GCLOUD="${GCLOUD:-gcloud}"
-"$GCLOUD" storage rsync -r "$OUT" "$BUCKET" --cache-control="public, max-age=300" --project "$PROJECT"
+"$GCLOUD" storage rsync -r "$OUT" "$BUCKET" --exclude='^media/' --cache-control="public, max-age=300" --project "$PROJECT"
 for h in $HOSTS; do
   "$GCLOUD" compute url-maps invalidate-cdn-cache "$URLMAP" --path "/*" --host "$h" --project "$PROJECT" --async
 done

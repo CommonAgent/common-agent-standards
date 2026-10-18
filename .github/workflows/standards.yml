@@ -3,7 +3,7 @@
 #
 # A pull request and a push to main check every standard: the registry against
 # the specifications, the links in each standard's folder, and, for each
-# standard with a builder (common-agent, messaging and naming), its site
+# standard with a builder (common-agent, messaging, naming and processes), its site
 # rendered at /draft/, the contrast gate over every page, and the links in the
 # rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
 # and renders that one standard at /<version>/ and at the root.
@@ -14,8 +14,8 @@
 # uploaded to its own bucket only. The workflow signs in to Google Cloud through
 # Workload Identity Federation, whose provider accepts a token from this
 # repository only, and only for main or a tag; the service account may write
-# the three site buckets and clear the CDN of their two load balancers, and
-# nothing else.
+# the site buckets and clear the CDN of their load balancers, and nothing
+# else.
 #
 # What the deployment is called stays out of this public repository and its
 # public logs: the project, the provider, the service account, the buckets and
@@ -25,7 +25,8 @@
 #   DEPLOY_SITES          true to publish
 #   <ID>_HOSTS            for each standard with a builder other than
 #                         common-agent, with <ID> its id in capitals (MESSAGING,
-#                         NAMING): the hosts to clear, separated by spaces
+#                         NAMING, PROCESSES): the hosts to clear, separated by
+#                         spaces
 # Repository secrets:
 #   GCP_PROJECT           the Google Cloud project that holds the sites
 #   GCP_PROJECT_NUMBER    its number, masked because the provider's name holds it

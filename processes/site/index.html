@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Processes: an open format for your organization's recurring work</title>
+  <meta name="description" content="Agent Processes is an open format for writing down your organization's recurring work, so agents and people can run it together. A process says what starts the work, the steps and their order, who owns each step and how far each step is automated.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Processes">
+  <meta property="og:title" content="Agent Processes">
+  <meta property="og:description" content="An open format for writing down your organization's recurring work, so agents and people can run it together.">
+  <meta property="og:url" content="https://agentprocesses.ai/">
+  <meta property="og:image" content="https://agentprocesses.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Processes. An open format for writing down your organization's recurring work, so agents and people can run it together.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentprocesses.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentprocesses.ai/">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Processes, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><circle cx="5.5" cy="16" r="3" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="12.5" y="4" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="12.5" y="20" width="8" height="8" rx="2" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="26.5" cy="16" r="3" fill="currentColor"/><path d="M8.2 14.2 12.4 10M8.2 17.8l4.2 4.2M20.6 10l3.6 4M20.6 22l3.6-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="wm">Agent <b>Processes</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Processes">
+        <details class="sec" open>
+          <summary>Agent Processes<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/" class="on" aria-current="page">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/process.html">Writing down a process</a>
+          <a href="/catalog.html">The process catalog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/processes">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Worked examples<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/#example">Employee offboarding</a>
+          <a href="/social-campaign.html">A social campaign</a>
+          <a href="/marketing-catalog.html">A marketing catalog</a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentworkpatterns.com/">Agent Work Patterns<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Processes is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="herobg">
+        <div class="wrap hero">
+          <div class="hero-grid">
+            <div>
+              <span class="eyebrow"><a href="https://commonagent.net/">One of the Common Agent Standards</a></span>
+              <h1>Agent Processes</h1>
+              <p class="lede">Agent Processes is an open format for writing down your organization's recurring work, so agents and people can run it together.</p>
+              <p class="more">A process is a workflow written in plain text. It says what starts the work, the steps and their order, who owns each step, and what each step hands to the next.</p>
+              <p class="more">An orchestrator, the software that runs a process, reads it and runs it. It starts each step when its turn comes and gives the step to an agent, a system or a person.</p>
+              <p class="more">You decide step by step how far to automate, from a person doing the work to an agent doing it unattended, and some steps stay with a person for good.</p>
+              <div class="cta">
+                <a class="btn btn-primary" href="/spec.html">Read the specification</a>
+                <a class="btn btn-ghost" href="#example">See a worked example</a>
+              </div>
+              <p class="version"><!-- spec:version -->The specification, version 0.4.0-draft, dated 2026-09-17.<!-- /spec:version --></p>
+            </div>
+            <aside class="says" aria-labelledby="says-title">
+              <h2 id="says-title">What a process says</h2>
+              <ol>
+                <li><span><b>What starts it</b>A trigger, written as a plain sentence: a leaving date is recorded, or the quarter opens.</span></li>
+                <li><span><b>The steps and their order</b>Each step names the steps it waits for. Steps that wait for nothing else run at the same time.</span></li>
+                <li><span><b>Who owns each step</b>A role, a team or an agent answers for every step.</span></li>
+                <li><span><b>What passes between steps</b>What each step hands on, and what it has to contain.</span></li>
+                <li><span><b>How far each step is automated</b>One of five levels for each step, from manual to autonomous, or never.</span></li>
+                <li><span><b>What a run leaves behind</b>The records that show who did what, and when.</span></li>
+              </ol>
+            </aside>
+          </div>
+        </div>
+      </div>
+
+      <section class="band" id="who">
+        <div class="wrap">
+          <p class="kicker">Who it is for</p>
+          <h2>The people who own the work, and the people who build what runs it</h2>
+          <div class="cards two">
+            <div class="card c-amber">
+              <h3>Operations leads and process owners</h3>
+              <p>You get your department's recurring work written down in one format, with a named owner on every process and on every step.</p>
+              <ul>
+                <li>A catalog of your department's processes, one row for each.</li>
+                <li>Each process written once, clearly enough for a newcomer to follow.</li>
+                <li>A map of what can be automated, what should move one level at a time, and what stays with a person.</li>
+              </ul>
+            </div>
+            <div class="card c-blue">
+              <h3>Builders of orchestrators and agents</h3>
+              <p>You get one format to run. Every process states its trigger, its steps and their order, the owner and automation level of each step, what passes between steps and what a run must record.</p>
+              <p>An orchestrator that reads the format can run any organization's processes. An agent that holds a step knows what it receives, what it must hand on, and whether a person approves its result.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band tinted" id="fits">
+        <div class="wrap">
+          <p class="kicker">Coordination</p>
+          <h2>Where Agent Processes fits</h2>
+          <p>Agents work together in three ways. A written process can lead, an agent's own loop can lead, or nobody leads and each agent reacts to the same news. This site covers the first, process-led orchestration, where an orchestrator follows a process that someone wrote down.</p>
+
+        <!-- figure:coord -->
+        <figure class="coord" aria-labelledby="coord-title">
+          <p class="ctitle" id="coord-title">How agents work together</p>
+          <div class="coord-grid">
+            <div class="way here">
+              <span class="here-tag">What Agent Processes covers</span><h3>Process-led orchestration</h3>
+              <p class="line">A written process leads.</p>
+              <svg viewBox="66 98 268 294" aria-hidden="true" focusable="false"><defs><marker id="ah-p1" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" class="d-head"/></marker></defs><rect x="154" y="108" width="92" height="64" rx="10" class="d-card"/><path d="M174 126h52M174 140h52M174 154h34" class="d-ic"/><path d="M170 174L124 208" class="d-arr" marker-end="url(#ah-p1)"/><path d="M230 174L276 208" class="d-arr" marker-end="url(#ah-p1)"/><path d="M138 272L160 318" class="d-arr" marker-end="url(#ah-p1)"/><path d="M262 272L240 318" class="d-arr" marker-end="url(#ah-p1)"/><polygon points="110,216 139.4,233 139.4,267 110,284 80.6,267 80.6,233" class="d-hex"/><polygon points="290,216 319.4,233 319.4,267 290,284 260.6,267 260.6,233" class="d-hex"/><polygon points="200,311 229.4,328 229.4,362 200,379 170.6,362 170.6,328" class="d-hex"/></svg>
+              <p class="best">Best for recurring work that must run the same way every time.</p>
+            </div>
+            <div class="way">
+              <h3>Harness-led orchestration</h3>
+              <p class="line">An agent's own loop leads.</p>
+              <svg viewBox="52 82 318 302" aria-hidden="true" focusable="false"><defs><marker id="ah-p2" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" class="d-head"/></marker></defs><path d="M182 183.5L286 125" class="d-arr" marker-end="url(#ah-p2)"/><path d="M182 215L286 215" class="d-arr" marker-end="url(#ah-p2)"/><path d="M182 246.5L286 305" class="d-arr" marker-end="url(#ah-p2)"/><path d="M130 277V319" class="d-arr" marker-end="url(#ah-p2)"/><rect x="68" y="327" width="124" height="50" rx="10" class="d-card"/><text x="130" y="360" class="d-text" text-anchor="middle">record</text><polygon points="130,159 178.5,187 178.5,243 130,271 81.5,243 81.5,187" class="d-hex" style="stroke-width:4.2"/><circle cx="84" cy="165" r="22" class="d-loopbg"/><g transform="translate(84 165)" class="d-loop"><path d="M12 -8A14 14 0 1 0 14 6"/><path d="M4 -14l9 6-6 9"/></g><polygon points="330,91 359.4,108 359.4,142 330,159 300.6,142 300.6,108" class="d-hex"/><polygon points="330,181 359.4,198 359.4,232 330,249 300.6,232 300.6,198" class="d-hex"/><polygon points="330,271 359.4,288 359.4,322 330,339 300.6,322 300.6,288" class="d-hex"/></svg>
+              <p class="best">Best for open-ended work where nobody knows the steps yet.</p>
+            </div>
+            <div class="way">
+              <h3>Choreography</h3>
+              <p class="line">Nobody leads.</p>
+              <svg viewBox="38 92 324 316" aria-hidden="true" focusable="false"><defs><marker id="ah-p3" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1L8 5L1 9" class="d-head"/></marker></defs><circle cx="200" cy="240" r="62" class="d-ring d-r3"/><circle cx="200" cy="240" r="40" class="d-ring d-r2"/><circle cx="200" cy="240" r="16" class="d-dot"/><polygon points="85,102 122.2,123.5 122.2,166.5 85,188 47.8,166.5 47.8,123.5" class="d-react"/><polygon points="85,111 114.4,128 114.4,162 85,179 55.6,162 55.6,128" class="d-hex"/><polygon points="315,102 352.2,123.5 352.2,166.5 315,188 277.8,166.5 277.8,123.5" class="d-react"/><polygon points="315,111 344.4,128 344.4,162 315,179 285.6,162 285.6,128" class="d-hex"/><polygon points="200,312 237.2,333.5 237.2,376.5 200,398 162.8,376.5 162.8,333.5" class="d-react"/><polygon points="200,321 229.4,338 229.4,372 200,389 170.6,372 170.6,338" class="d-hex"/></svg>
+              <p class="best">Best for loosely connected teams that each react to the same news.</p>
+            </div>
+          </div>
+          <p class="mix">They mix: a process can hand one step to a harness, and an event can start either.</p>
+        </figure>
+        <!-- /figure:coord -->
+
+          <h3>How they combine</h3>
+          <ul class="combine">
+            <li><b>A process can hand a step to a harness.</b>A harness is an agent running its own loop to work out a job. In a process, that is a step an agent works out on its own, written <code>runs &lt;work pattern&gt;</code>. The process names what must come out of the step and leaves the inside to the agent. <a href="https://agentworkpatterns.com/">Agent Work Patterns</a> describes the shapes such a step can take.</li>
+            <li><b>An event can start a process.</b>A trigger names something that happens, and that can be an event another agent or a system announces, carried by <a href="https://agentmessaging.ai/">Agent Messaging</a>.</li>
+            <li><b>Choreography sits beside processes.</b>Agents that each react to the same news can work alongside a process without being part of it.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band" id="automation">
+        <div class="wrap">
+          <p class="kicker">People and automation</p>
+          <h2>You decide how far each step is automated</h2>
+          <p>Every step carries one automation level. The level says who does the work and who decides, and it is set for each step on its own, because automation arrives one step at a time.</p>
+          <div class="tablebox">
+            <table class="t levels">
+              <thead><tr><th>Level</th><th>Who does the work</th><th>Who decides</th></tr></thead>
+              <tbody>
+                <tr><td class="lvl"><code>manual</code></td><td>People</td><td>People</td></tr>
+                <tr><td class="lvl"><code>assisted</code></td><td>An agent drafts or gathers</td><td>A person decides and acts</td></tr>
+                <tr><td class="lvl"><code>supervised</code></td><td>An agent</td><td>A person approves the result before it moves on</td></tr>
+                <tr><td class="lvl"><code>autonomous</code></td><td>An agent</td><td>Nobody in the loop, and the record is the check</td></tr>
+                <tr class="never"><td class="lvl"><code>never</code></td><td>People, permanently</td><td>People</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="callout c-amber">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c5.5-2 8-5.5 8-10V5l-8-3-8 3v7c0 4.5 2.5 8 8 10z"/><path d="M12 8v5M12 16.5v.5"/></svg>
+            <p><code>never</code> is permanently human. It marks a step that stays with a person however capable agents become, because a regulator, a contract, a customer relationship or an act that cannot be undone requires it. No setting, override or timeout can move it. Only a new version of the process, made by its owner, can.</p>
+          </div>
+
+          <h3>Three kinds of human handoff</h3>
+          <div class="cards three">
+            <div class="card c-amber">
+              <span class="tag">human:</span>
+              <h3>A person's step</h3>
+              <p>Some steps are done by a person: collecting a laptop, signing a contract, calling a customer. The process names the step and who holds it, and the record names the person who did it and when.</p>
+            </div>
+            <div class="card c-violet">
+              <span class="tag">supervised</span>
+              <h3>A supervised approval</h3>
+              <p>An agent does the work and a named person approves the result before it moves on. A message nobody answers, or a timer that runs out, never counts as an approval.</p>
+            </div>
+            <div class="card c-blue">
+              <span class="tag">handoffs:</span>
+              <h3>What passes between steps</h3>
+              <p>Each handoff says what one step leaves for the next and what it has to contain. A person picking up from an agent, or an agent picking up from a person, knows what to expect.</p>
+            </div>
+          </div>
+
+          <h3>Raising a level is a dated, versioned change</h3>
+          <p>Moving a step up a level is an amendment to the process. It gets the next version number and an effective date, and every run records the version it ran under. A year later anyone can see when a step moved from a person to an agent, who made the change, and how the runs went on either side of it.</p>
+          <p class="ladder" aria-label="The four levels a step moves through, and never, which stays apart"><span>manual</span><i aria-hidden="true">→</i><span>assisted</span><i aria-hidden="true">→</i><span>supervised</span><i aria-hidden="true">→</i><span>autonomous</span><span class="apart">never stays with a person</span></p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="example">
+        <div class="wrap">
+          <p class="kicker">A worked example</p>
+          <h2>Employee offboarding</h2>
+          <p>When someone leaves, three things have to happen: their access is closed, their final pay is made and their equipment comes back. None of them waits for the others, so they start together. When all three are done, a person checks the results and signs the file closed.</p>
+
+          <figure class="flow" aria-label="Employee offboarding: a trigger starts three steps that run side by side, and a person's approval closes the run once all three are done">
+            <div class="flow-row">
+              <div class="fnode trig"><span class="name">trigger</span><p>HR records a leaving date</p></div>
+              <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+              <div class="par">
+                <p class="parnote">These three start together and run side by side</p>
+                <div class="fnode c-blue"><span class="name">revoke-access</span><p>Close every account on the access list.</p><div class="chips"><span>a system's step</span><span>autonomous</span></div></div>
+                <div class="fnode c-blue"><span class="name">final-pay</span><p>Make the final payment in an off-cycle payroll run.</p><div class="chips"><span>a system's step</span><span>supervised: payroll approves it</span></div></div>
+                <div class="fnode c-amber"><span class="name">equipment</span><p>Collect the laptop, phone and badge.</p><div class="chips"><span>a person's step</span><span>manual</span></div></div>
+              </div>
+              <div class="arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 12h15M13 6l6 6-6 6"/></svg></div>
+              <div class="fnode close c-violet"><span class="name">close-out</span><p>Check the three results and sign the file closed. This closes the run.</p><div class="chips"><span>an approval to close</span><span>never</span></div></div>
+            </div>
+            <div class="legend">
+              <span class="c-blue"><i></i>A system acts</span>
+              <span class="c-amber"><i></i>A person acts</span>
+              <span class="c-violet"><i></i>A person approves and closes the run</span>
+            </div>
+          </figure>
+
+          <p>The steps and their order, which the specification calls the phase graph, come from each step's <code>after:</code> line. A step starts when every step it names has finished, and the steps that name only the trigger start together. Close-out names all three, so it waits for all three.</p>
+          <p>The process behind this picture is written out in full under <a href="#format">Start with these</a>, below.</p>
+        </div>
+      </section>
+
+      <section class="band" id="catalog">
+        <div class="wrap">
+          <p class="kicker">The catalog</p>
+          <h2>One table for each department</h2>
+          <p>A catalog lists every process a department runs, one row each: what it is called, who owns it, what starts it, how often it runs, and the least automated step in it. Every value is copied from the process itself, so the catalog keeps nothing of its own.</p>
+          <p>It is worth making before anyone writes a full process. A first pass takes a few hours and shows what work exists, who owns each piece, what depends on what, and where automation would pay off first. Here is a marketing department's first pass.</p>
+          <div class="tablebox">
+            <table class="t catalog">
+              <thead><tr><th>Process</th><th>Owner</th><th>What starts it</th><th>How often</th><th>Least automated step</th></tr></thead>
+              <tbody>
+                <tr><td><b>campaign planning</b><code>mkt/campaign-planning</code></td><td>VP Marketing</td><td>The quarter opens</td><td>4 a year</td><td>assisted</td></tr>
+                <tr><td><b>strategic competitor review</b><code>mkt/competitor-review</code></td><td>Product Marketing</td><td>Monthly, or a competitor announcement</td><td>About 16 a year</td><td>supervised</td></tr>
+                <tr><td><b>social campaign</b><code>mkt/social-campaign</code></td><td>Head of Social</td><td>A campaign brief is approved</td><td>About 40 a quarter</td><td>never</td></tr>
+                <tr><td><b>email campaign</b><code>mkt/email-campaign</code></td><td>Lifecycle Marketing</td><td>A campaign brief is approved</td><td>About 20 a quarter</td><td>never</td></tr>
+                <tr><td><b>website update</b><code>mkt/website-update</code></td><td>Web Lead</td><td>A change request is filed</td><td>About 30 a quarter</td><td>supervised</td></tr>
+                <tr><td><b>inbound lead routing</b><code>mkt/lead-routing</code></td><td>Demand Gen</td><td>A form is submitted</td><td>About 400 a week</td><td>autonomous</td></tr>
+                <tr><td><b>claims register upkeep</b><code>mkt/claims-register</code></td><td>Product Marketing</td><td>A new claim is proposed</td><td>About 10 a quarter</td><td>never</td></tr>
+                <tr><td><b>brand guideline review</b><code>mkt/brand-review</code></td><td>Brand Lead</td><td>Twice a year, or on request</td><td>2 a year</td><td>assisted</td></tr>
+                <tr><td><b>trade show and event</b><code>mkt/event</code></td><td>Events Lead</td><td>An event is committed to</td><td>About 6 a year</td><td>manual</td></tr>
+                <tr><td><b>agency brief and review</b><code>mkt/agency-brief</code></td><td>Head of Social</td><td>Work is sent to an agency</td><td>About 8 a quarter</td><td>manual</td></tr>
+                <tr><td><b>quarterly readout</b><code>mkt/quarterly-readout</code></td><td>VP Marketing</td><td>The quarter closes</td><td>4 a year</td><td>supervised</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Read across the rows and a plan falls out. The claims register and the competitor review run rarely, yet most of the other work depends on them, so they come first. Lead routing runs about 400 times a week and is already autonomous, so it is left alone. The social and email campaigns both wait on the same legal reviewer, so the thing to fix there is how that review is staffed.</p>
+          <p>The whole example, with the graph of what feeds what, is on <a href="/marketing-catalog.html">A marketing catalog</a>. How to build one is in <a href="/catalog.html">The process catalog</a>.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="format">
+        <div class="wrap">
+          <p class="kicker">The format</p>
+          <h2>Start with these</h2>
+          <p>A process is plain text that a person, an agent and an auditor can all read. A useful one needs only a handful of fields, and you add the rest when the work calls for them.</p>
+          <div class="format-grid">
+            <ol class="core">
+              <li><span><b>The header</b>The process's name, its id and version, its owner, and the date this version took effect.</span></li>
+              <li><span><b>The trigger</b>What starts a run, as a plain sentence, and whether two runs may overlap.</span></li>
+              <li><span><b>Named steps</b>Each step has a name, a kind, an owner, and an <code>after:</code> line naming the steps it waits for.</span></li>
+              <li><span><b>The closing step</b>The step that closes the run, and a goal line saying what is true once it has.</span></li>
+              <li><span><b>One automation level for each step</b><code>manual</code>, <code>assisted</code>, <code>supervised</code>, <code>autonomous</code> or <code>never</code>.</span></li>
+              <li><span><b>Basic handoffs</b>What each step hands to the next, and what it has to contain.</span></li>
+              <li><span><b>A records list</b>What a finished run leaves behind, so anyone can check it later.</span></li>
+              <li><span><b>A version</b>Every change that alters how a run goes gets the next version and a new effective date, with a line saying why.</span></li>
+            </ol>
+            <div class="docbox">
+              <p class="bar"><span>The offboarding process, written out</span><span class="mono">hr/offboarding v3</span></p>
+<pre class="doc"><span class="k">PROCESS:</span> employee offboarding          <span class="k">id:</span> hr/offboarding   <span class="v">v3</span>
+<span class="k">owner:</span> Head of People Operations       <span class="k">effective:</span> 2026-09-01
+<span class="k">trigger:</span> HR records a leaving date for an employee
+<span class="k">concurrency:</span> runs may overlap, one for each person leaving
+<span class="k">goal:</span> every account closed, final pay made, equipment back,
+      and the file signed closed by a named person
+<span class="k">phases:</span>
+  revoke-access - system: close every account on the access list
+                  <span class="k">owner:</span> IT operations     <span class="k">after:</span> trigger
+                  <span class="k">automation:</span> <span class="v">autonomous</span>
+  final-pay     - system: the off-cycle payroll run
+                  <span class="k">owner:</span> Payroll           <span class="k">after:</span> trigger
+                  <span class="k">automation:</span> <span class="v">supervised</span>
+  equipment     - human: collect the laptop, phone and badge
+                  <span class="k">owner:</span> line manager      <span class="k">after:</span> trigger
+                  <span class="k">automation:</span> <span class="v">manual</span>
+  close-out     - human: check the three results, sign the file closed
+                  <span class="k">owner:</span> Head of People Operations
+                  <span class="k">after:</span> revoke-access + final-pay + equipment
+                  <span class="k">automation:</span> <span class="v">never</span>
+<span class="k">handoffs:</span>
+  revoke-access -> close-out: each closed account, and when it closed
+  final-pay -> close-out: the payslip, the amount, and who approved it
+  equipment -> close-out: the return receipt, signed by the leaver
+<span class="k">records:</span>
+  closing-record - the version run, the three results, and who
+                   signed the close and when
+<span class="k">amendments:</span>
+  v3 - final-pay moved from assisted to supervised after a debrief</pre>
+            </div>
+          </div>
+
+          <h3>Kinds of step</h3>
+          <ul class="kinds">
+            <li><b>A person's step</b><code>human:</code> A person acts outside any system.</li>
+            <li><b>A system's step</b><code>system:</code> A system does something, such as a payroll run, a scheduled post or a record written.</li>
+            <li><b>A step an agent works out on its own</b><code>runs &lt;work pattern&gt;:</code> The harness case described under <a href="#fits">Where Agent Processes fits</a>.</li>
+            <li><b>A step worked in a shared room</b><code>convenes &lt;collab pattern&gt;:</code> Agents and people work the step together in one room, following an <a href="https://agentcollab.dev/">Agent Collab</a> playbook.</li>
+          </ul>
+
+          <h3>Add these when you need them</h3>
+          <p>The specification defines more. Each of these serves a situation some processes have, and none is needed to start.</p>
+          <ul class="later">
+            <li><a href="/spec.html#s6-6">Deadlines</a> on a step, with <code>by:</code> and <code>not-before:</code>.</li>
+            <li><a href="/spec.html#s6-3-1">A step that runs another process</a> and waits for it to close.</li>
+            <li><a href="/spec.html#s6-5-1">Exception and deviation edges</a>, for where a run goes when a step cannot finish.</li>
+            <li><a href="/spec.html#s9">Work that lasts the whole run</a>, such as a weekly status report or a budget watch.</li>
+            <li><a href="/spec.html#s10">Bindings</a>: who holds each role, which systems a run may touch, and what it reads.</li>
+            <li><a href="/spec.html#s11">Policy</a>: the legal, compliance and brand rules a run is held to.</li>
+            <li><a href="/spec.html#s12">Measures</a>: what a good run looks like.</li>
+            <li><a href="/spec.html#s8-6">Keys for handoffs</a> and <a href="/spec.html#s13-7">records</a>, for software that stores them.</li>
+            <li><a href="/spec.html#s14">Failure edges</a>, and what to undo when a run is abandoned.</li>
+            <li><a href="/spec.html#s15">Reference processes</a>, published with blanks for an organization to adopt.</li>
+            <li><a href="/spec.html#s6-4-1">The agreement a step runs under</a>, when an outside agent holds it.</li>
+            <li><a href="/spec.html#s19">Processes that span two organizations</a>.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band" id="more">
+        <div class="wrap">
+          <p class="kicker">Read further</p>
+          <h2>The specification, the guides and the examples</h2>
+          <div class="doors">
+            <a class="door" href="/spec.html"><h3>The specification</h3><p>The full text, with every rule a process document and an orchestrator follow.</p></a>
+            <a class="door" href="/process.html"><h3>Writing down a process</h3><p>A guide to each part of a process, from the trigger to the amendments.</p></a>
+            <a class="door" href="/catalog.html"><h3>The process catalog</h3><p>How to build a department's catalog and use it to choose what to automate.</p></a>
+            <a class="door" href="/social-campaign.html"><h3>A social campaign</h3><p>A thirteen-step process written out in full, with its handoffs and failure edges.</p></a>
+            <a class="door" href="/versions.html"><h3>Versions and changelog</h3><p>Each version of the specification and what it changed.</p></a>
+            <a class="door" href="https://github.com/CommonAgent/common-agent-standards/tree/main/processes"><h3>The source on GitHub</h3><p>The specification, the guides and the examples, in the Common Agent Standards repository.</p></a>
+          </div>
+          <p>Agent Processes is one of the <a href="https://commonagent.net/">Common Agent Standards</a>. The others cover what an agent is, how agents reach and name each other, and how work between them is delegated, contracted and recorded.</p>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Processes</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/process.html">Writing down a process</a>
+          <a href="/catalog.html">The process catalog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/processes">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
