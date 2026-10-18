@@ -54,7 +54,7 @@ const REF = arg("--ref") ?? "";
 // are common-agent-v<version>, such as common-agent-v0.26.0-draft.
 const TAG_PREFIX = "common-agent-v";
 const DRAFT = process.argv.includes("--draft");
-const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "brand", "ns"];
+const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "ga.js", "brand", "ns"];
 // The catalog profile, a part of the specification with a version of its own.
 const PROFILE_MD = resolve(REPO, "CATALOG-PROFILE.md");
 
@@ -209,6 +209,7 @@ function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, ext
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
