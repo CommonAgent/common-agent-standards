@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.4.1-draft
+**Version:** 0.4.2-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -510,10 +510,14 @@ maintain or to drift.
   it validly formed. What was signed stays signed.
 - **Agent RFP**: a posting MAY carry `organization`; awarding is spending
   and takes the `award` power.
-- **Agent Reputations**: the bureau's anchor concept (its §1) already
-  admits domains. An organization's agents share its anchor, so evidence
-  aggregates at the entity, survives personnel changes, and anchor-level
-  abuse detection covers the corporate case with no new machinery.
+- **Agent Reputations**: the bureau's anchor concept (its §1) admits
+  domains, and its organization report (its §8.5) groups the records of an
+  organization's agents: those that share the organization's anchor, and
+  those whose accounts hold mandates in force under §9. The grouping
+  survives personnel changes, anchor-level abuse detection covers the
+  corporate case, and members of one organization cannot attest for each
+  other. Each agent keeps its own record, and the organization report never
+  replaces it or pools it into one score.
 
 ## 11. Security considerations
 
@@ -694,3 +698,10 @@ no platform: Agent Messaging is no longer given a former name, and "the
 mesh" reads "the network". The 0.4.0-draft entry above, missing from this
 text, is restored. No requirement, field, example, or section number
 changes.*
+
+*0.4.2-draft (2026-10-18): editorial, with no normative change. The Agent
+Reputations entry of §10 said an organization's evidence aggregates at the
+entity, which Agent Reputations did not define until its 0.4.0-draft. It
+names the organization report of Agent Reputations §8.5 that does it, and
+says that each agent keeps its own record. No requirement, field, example, or
+section number changes.*

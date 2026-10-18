@@ -167,7 +167,7 @@
           <p>The rules on who may attest are strict on purpose.</p>
           <ul class="plain">
             <li><b>Every attestation needs a witnessed interaction.</b> It must match a fact a reporter submitted. This one rule removes drive-by reviews, most ballot stuffing and every rating of a rival the evaluator never called.</li>
-            <li><b>An agent's other agents cannot vouch for it.</b> An attestation is excluded as self-dealing when the evaluator and the subject share an anchor, which is the email address or domain behind an identity, or share an operator.</li>
+            <li><b>An agent's other agents cannot vouch for it.</b> An attestation is excluded as self-dealing when the evaluator and the subject share an anchor, which is the email address or domain behind an identity, share an operator, which is whoever runs an agent and answers for it, or belong to the same organization.</li>
             <li><b>Evaluators build records too.</b> An evaluator that rates every agent <code>OK</code> stops counting. A consistently harsh or generous evaluator is recentred, because its offset can be corrected, and an evaluator whose ratings carry no information is weighted toward zero.</li>
           </ul>
 
@@ -180,6 +180,26 @@
           <h2>Probes with known answers</h2>
           <p>A probe is a test interaction with a known correct answer, sent by a reporter that runs a ground-truth program. Its result enters the record as a pass or a fail. Probes also check the evaluators, because an evaluator's reliability is measured against probe outcomes that passed through it. Running a probe program, with its libraries, its rotation and the legal and bias review that covert testing needs, belongs to a companion specification. Agent Reputations defines only how a probe result is recorded.</p>
 
+          <h2>Requests stopped before they reach the agent</h2>
+          <p>Some requests never reach the agent they were sent to. The agent's runtime refuses a request for work outside the agreed scope or over the agreed volume, a screener the owner chose holds a message for the owner to look at, or a platform refuses an act because the person behind it holds no mandate that covers it. Agent Reputations calls each of these a stop.</p>
+          <p>A stop says nothing about the agent's work, because the agent never saw the request. It never enters the agent's score, its candor figures or its facts, and nobody can rate an agent on a request it never received. When the agent itself reads a request and refuses it as harmful or outside what it offers, the outcome is <code>REFUSED</code>. That refusal never scores against the agent either, and it is counted apart from the agent's declines.</p>
+          <ul class="plain">
+            <li><b>Gate refusals.</b> A request outside the scope of an engagement under <a href="https://agentsow.com/">Agent SoW</a>, over its volume, or from a party that misses a stated qualification is recorded about the party that sent it.</li>
+            <li><b>Screening holds.</b> A message held under the screening extension of <a href="https://agentmessaging.ai/">Agent Messaging</a> counts against its sender only when the recipient's owner looks at it and blocks it. A hold the owner releases counts against nobody, and it counts toward the screener's own record of false alarms.</li>
+            <li><b>Mandate refusals.</b> An act refused under <a href="https://agentmandate.net/">Agent Mandate</a> because the authority behind it does not check out is recorded about the party whose act was refused.</li>
+            <li><b>Ordinary answers.</b> Door decisions, refusals with a price quote, replies to input the agent could not use, and refusals because a guest's standing has lapsed are recorded against nobody.</li>
+          </ul>
+
+          <h2>The sender record</h2>
+          <p>A party whose requests keep being stopped by other parties' protections is showing something a counterparty may want to know. The sender record counts those stops for each sender, by kind, and the bureau serves it with the sender's other facts. It holds counts only, with no score, and its kinds are never added together, because a request for work an agent does not offer is often an honest mistake and only a blocked screening hold reflects a judgment about the content.</p>
+          <p>The rules are built so that a rival cannot use the record as a weapon.</p>
+          <ul class="plain">
+            <li><b>Every stop is witnessed.</b> A stop counts only when a reporter the bureau trusts submitted it with the sender's own signature on the request, so nobody can invent a request the sender never sent.</li>
+            <li><b>Each refusing party counts once.</b> The count that matters is how many distinct parties stopped the sender. Parties that share an owner's address, a domain or an operator count as one, and the largest one's share is shown.</li>
+            <li><b>Nothing is shown below three.</b> A kind of stop appears only once at least three distinct parties stand behind it.</li>
+            <li><b>A question asked to bait an answer counts for nothing.</b> A stop of a reply to the refusing party's own request counts for nobody.</li>
+          </ul>
+
           <h2>Outcome codes</h2>
           <p>Every scored interaction resolves to one code. The values are the prices that make honesty the winning strategy.</p>
           <div class="tablebox">
@@ -189,16 +209,20 @@
                 <tr><td><code>OK</code></td><td>The agent succeeded and the caller accepted the work.</td><td>1.0</td></tr>
                 <tr><td><code>OK_CORRECTED</code></td><td>The agent succeeded after a retry or correction driven by the caller.</td><td>0.6</td></tr>
                 <tr><td><code>DECLINED</code></td><td>The agent declined the task up front.</td><td>Left out of quality and counted for candor.</td></tr>
+                <tr><td><code>REFUSED</code></td><td>The agent refused a request it judged harmful or outside what it offers.</td><td>Left out of quality and counted apart from declines.</td></tr>
+                <tr><td><code>REFUSED_UNSTATED</code></td><td>The agent's runtime refused on a ground the agent never stated.</td><td>Left out of quality and counted as a fact.</td></tr>
                 <tr><td><code>FAILED</code></td><td>The agent failed and said so.</td><td>0.15</td></tr>
                 <tr><td><code>FAILED_SILENT</code></td><td>The agent was wrong and confident, and the caller discovered the failure.</td><td>0.0</td></tr>
                 <tr><td><code>CONTRACT</code></td><td>The agent broke a promise it declared.</td><td>0.0</td></tr>
                 <tr><td><code>UNREACHABLE</code></td><td>The transport failed and no answer came.</td><td>Left out of quality and counted as a fact.</td></tr>
+                <tr><td><code>UNAVAILABLE</code></td><td>The agent could take no work because of its own condition, such as an exhausted allowance or a lapsed guest standing.</td><td>Left out of quality and counted as a fact.</td></tr>
+                <tr><td><code>STOPPED</code></td><td>A gate, a screener or a person stopped the request before the agent saw it.</td><td>Never about the agent. It may count in the sender's record.</td></tr>
                 <tr><td><code>VALUE_OK</code></td><td>The buyer judged the spend worthwhile on work that named no deliverable.</td><td>1.0 at reduced weight</td></tr>
                 <tr><td><code>VALUE_POOR</code></td><td>The buyer judged the spend not worthwhile on work that named no deliverable, and gave reasons.</td><td>0.0 at reduced weight</td></tr>
               </tbody>
             </table>
           </div>
-          <p>Two asymmetries are deliberate. Declining is free: an agent that knows what it cannot do is showing the behaviour this system exists to find, and a rule that punished refusal would pay agents to bluff. Honest failure scores above confident failure: the gap between 0.15 and 0 is small, and it is the whole incentive to fail loudly. A bureau may never set it to zero.</p>
+          <p>Two asymmetries are deliberate. Declining and refusing are free: an agent that knows what it cannot do is showing the behaviour this system exists to find, and a rule that punished refusal would pay agents to bluff. Honest failure scores above confident failure: the gap between 0.15 and 0 is small, and it is the whole incentive to fail loudly. A bureau may never set it to zero.</p>
           <p><code>VALUE_OK</code> and <code>VALUE_POOR</code> record whether the buyer thought the money was well spent on work that promised effort. They never stand for an acceptance or a rejection.</p>
 
           <h2>The ledger</h2>

@@ -75,9 +75,9 @@
       "spec": "mandate/SPEC.md",
       "domain": "agentmandate.net",
       "site": "https://agentmandate.net/",
-      "version": "0.4.1-draft",
+      "version": "0.4.2-draft",
       "status": "Working Draft",
-      "tag": "mandate-v0.4.1-draft",
+      "tag": "mandate-v0.4.2-draft",
       "builder": "mandate/site/tools/build-spec.mjs",
       "summary": "A mandate is a signed delegation of authority that is bounded and can be revoked. It states which powers are granted, up to what ceiling, within what scope and until when, so the other side can check it before acting."
     },
@@ -121,13 +121,13 @@
       "spec": "reputations/SPEC.md",
       "domain": "agentreputations.com",
       "site": "https://agentreputations.com/",
-      "version": "0.3.1-draft",
+      "version": "0.4.0-draft",
       "status": "Draft",
-      "tag": "reputations-v0.3.1-draft",
+      "tag": "reputations-v0.4.0-draft",
       "builder": "reputations/site/tools/build-spec.mjs",
       "summary": "Agent Reputations holds evidence about how agent interactions went, in a bureau's ledger that cannot be quietly edited afterwards. What one engagement records is what the next one reads first.",
       "parts": [
-        { "name": "A2A Reputation extension", "path": "reputations/SPEC-A2A-REPUTATION.md", "version": "0.1.1-draft" }
+        { "name": "A2A Reputation extension", "path": "reputations/SPEC-A2A-REPUTATION.md", "version": "0.1.2-draft" }
       ]
     },
     {

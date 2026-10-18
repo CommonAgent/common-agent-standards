@@ -1,6 +1,6 @@
 # Agent Reputations: A2A Reputation Extension
 
-**Version:** 0.1.1-draft
+**Version:** 0.1.2-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -161,6 +161,13 @@ because a card-mediated reader is the most likely to get them wrong:
    bureau's specification authorizes refusing, admitting, or ranking an
    agent mechanically on a report alone. A consumer weighs the report as
    one input, with the sample size and evidence context in view.
+4. **A report about the agent's organization is about the organization.** The
+   bureau's organization report (Agent Reputations specification, section
+   8.5) groups the records of several agents and serves no score of its own. A
+   consumer MUST NOT present it, or any member's report, as the report of the
+   agent this card describes. The same holds for the sender block of a report
+   (section 4.7): it counts other parties' refusals of the agent's requests and
+   is never a quality score.
 
 ## 7. Honesty rules
 
@@ -208,6 +215,11 @@ because a card-mediated reader is the most likely to get them wrong:
   identifier from an earlier card MAY still query the bureau; enrollment
   history at the bureau is permanent, and `WITHDRAWN` is served as
   `WITHDRAWN`. The card controls the pointer, never the ledger.
+- **Organization borrowing.** A card can name, as its `subject`, a
+  well-rated sibling, or an organization's anchor in place of an agent. The
+  binding check of section 5 step 3 refuses both, because neither resolves to
+  the key the card presents, and section 6 rule 4 keeps an organization report
+  from standing in for the agent's own.
 - **Cherry-picked bureaus.** An agent enrolled with three bureaus can list
   only the flattering one. The extension cannot prevent that and does not
   claim to; it is one more reason the report is advisory and the consumer's
@@ -246,6 +258,12 @@ obligations, and any A2A agent able to add one card entry, can use it.
 ---
 
 ## Changelog
+
+**0.1.2-draft** (2026-10-18). Restates two rules of Agent Reputations
+0.4.0-draft for card readers, with no change to the payload or the
+verification rule: an organization report or a sender block is never the
+report of the card's agent (section 6 rule 4), and the binding check refuses
+a card that names a sibling or an anchor as its subject (section 8).
 
 **0.1.1-draft** (2026-10-18). Editorial, with no normative change.
 Personal Agent Naming is written out, the Agent Name Service is named on first
