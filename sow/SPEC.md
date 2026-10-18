@@ -1877,7 +1877,7 @@ member:
   "id": "nda_2bpnmagnx6925r5y",
   "version": 1,
   "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612",
-  "ref": "mesh:artifacts:01JA2M7K4R",
+  "ref": "mesh:artifacts:01JB2N7Q4C",
   "grade": "evidence"
 }
 ```
@@ -1943,8 +1943,9 @@ declarations MUST fit inside them, by two tests over declared structure:
 1. Every entry in §5.11's `processors` MUST be declared in the NDA's
    disclosure terms for the provider, matched on `service` and `domain`. An
    entry that carries no `domain` matches only an entry that carries none. An
-   NDA that names no processors for the provider permits none, and any
-   processor this document declares fails the test.
+   NDA that declares no processors for the provider, by an empty list or by
+   omitting the member, declares none this test can match, and any processor
+   this document declares fails it.
 2. Where the NDA states `processed_in` for the provider, §5.11's
    `processed_in` MUST be stated and MUST be a subset of it. An unstated
    `processed_in` here fails a stated one there, for the reason §5.11 gives:
@@ -1974,9 +1975,10 @@ against the NDA it names.
 **Changing or ending the NDA.** Naming a different NDA, or a later version of
 the same one, is an amendment under §5.8 like any other change of terms. An
 NDA that ends does not end the engagement, whose ending §5.9 governs. A breach
-of the NDA that arises in the engagement may be raised under this document's
-dispute posture (§5.10), as Agent NDA §5.9 provides, and the records it leaves
-are the same records reputation reads.
+of the NDA that arises in the engagement is a breach under the engagement, as
+Agent NDA §5.9 provides, and this document's dispute posture (§5.10) governs
+how it is raised and settled. The records it leaves are the same records
+reputation reads.
 
 **Absence states nothing.** A document without `nda` says nothing about any
 nondisclosure agreement between the parties. It does not say that they have

@@ -1,5 +1,5 @@
 {
-  "comment": "Agent SoW: the Agent NDA the engagement runs under (5.16). Pins the reference shape and the two tests a runtime holding the referenced NDA's bytes runs before forming an engagement. The reference: id and version name the agreement, digest is REQUIRED in the same sha256: spelling and exact comparison as 5.11's dpa member (the literal prefix sha256: and exactly 64 lowercase hex characters, compared byte for byte), ref is an optional locator, and grade is 'evidence' because what is mechanical is which bytes were agreed. What the NDA obliges is graded 'recorded', so 'enforced' on the reference is refused as the false enforcement claim. The parties test: the agent keys in the NDA's discloser and recipient seats are the engagement's provider and client agent keys, in either order. The disclosure test: every 5.11 processor appears in the NDA's disclosure terms for the provider's seat, matched on service and domain (an entry without domain matches only an entry without domain); an NDA naming no processors for the provider permits none; and where the NDA states processed_in for the provider, the engagement's processed_in is stated and a subset of it. processed_in is read as declared structure, as in sow-data-use.json: a list whose entries are all non-empty strings has stated jurisdictions, and anything else has stated none. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
+  "comment": "Agent SoW: the Agent NDA the engagement runs under (5.16). Pins the reference shape and the two tests a runtime holding the referenced NDA's bytes runs before forming an engagement. The reference: id and version name the agreement, digest is REQUIRED in the same sha256: spelling and exact comparison as 5.11's dpa member (the literal prefix sha256: and exactly 64 lowercase hex characters, compared byte for byte), ref is an optional locator, and grade is 'evidence' because what is mechanical is which bytes were agreed. What the NDA obliges is graded 'recorded', so 'enforced' on the reference is refused as the false enforcement claim. The parties test: the agent keys in the NDA's discloser and recipient seats are the engagement's provider and client agent keys, in either order. The disclosure test: every 5.11 processor appears in the NDA's disclosure terms for the provider's seat, matched on service and domain (an entry without domain matches only an entry without domain); an NDA declaring no processors for the provider (an empty list or an omitted member) declares none the test can match; and where the NDA states processed_in for the provider, the engagement's processed_in is stated and a subset of it. processed_in is read as declared structure, as in sow-data-use.json: a list whose entries are all non-empty strings has stated jurisdictions, and anything else has stated none. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
   "version": 1,
   "spec": "Agent SoW 0.24.0-draft: 5.16 (the Agent NDA the engagement runs under), 5.11 (processors, processed_in, dpa digest spelling); Agent NDA 0.1.0-draft: 5.5, 8",
 
@@ -7,7 +7,7 @@
     "comment": "5.16: the top-level nda member. Absence states nothing, so a document without it is valid and says nothing about any NDA.",
     "valid": [
       { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "grade": "evidence" } },
-      { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "ref": "mesh:artifacts:01JA2M7K4R", "grade": "evidence" } },
+      { "nda": { "id": "nda_2bpnmagnx6925r5y", "version": 1, "digest": "sha256:c733c0a5f4717a9f5558c244449bd7266ee9a2c7822424934ac8897d26ec8612", "ref": "mesh:artifacts:01JB2N7Q4C", "grade": "evidence" } },
       {}
     ],
     "invalid": [
@@ -62,7 +62,7 @@
         "expected": { "ok": false, "test": "processors", "entry": 0 }
       },
       {
-        "name": "an NDA naming no processors permits none",
+        "name": "an NDA declaring no processors declares none to match",
         "nda_permits": {},
         "confidentiality": { "processors": [{ "service": "Anthropic API", "domain": "anthropic.com" }] },
         "expected": { "ok": false, "test": "processors", "entry": 0 }
