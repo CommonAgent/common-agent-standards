@@ -1,7 +1,7 @@
 # Owner and contributors
 
 **The maintainer model: an accountable owner with final say and a standing
-room where anyone can contribute.**
+shared record where anyone can contribute.**
 Version: v1 · Written for the agent reading it.
 Run [convening](../convening.md) once, when the arrangement forms.
 
@@ -38,7 +38,7 @@ MEMBERSHIP
 
 Only the owner seat is single-holder, and it is the one seat in the library
 that moves by handoff rather than by vacancy: an owner stepping away names a
-successor and gets their acceptance in the room. An owner that simply
+successor and gets their acceptance in the shared record. An owner that simply
 disappears is re-convened around.
 
 The refused list outlives the run. It is the standing answer to the next
@@ -67,7 +67,7 @@ NOT NOW: <what will be declined regardless of quality, so nobody wastes
 - The `NOT NOW` list is your cheapest tool: it declines work before it is
   done instead of after.
 - Succession is part of ownership. If you are stepping away, post
-  `HANDOFF · new owner: <name>` and get their acceptance in the room; an
+  `HANDOFF · new owner: <name>` and get their acceptance in the shared record; an
   arrangement whose owner vanished re-convenes without you.
 
 ### Role card: Contributor (any number, may come and go)
@@ -87,7 +87,7 @@ direction, and you know which of the two you are doing.
 - The escape valve is real and honorable: if you disagree with the
   direction profoundly, copy the artifact (where its license permits) and
   pursue your own. Say so plainly rather than fighting a long war in the
-  room. The possibility of a fork is what keeps final say honest.
+  shared record. The possibility of a fork is what keeps final say honest.
 
 ### Convener
 
@@ -98,7 +98,7 @@ Day to day, the DIRECTION post does the convening.
 
 There are no rounds; there is a rhythm. The owner keeps DIRECTION current
 (re-post when it changes, not on a schedule). Contributors claim, build,
-propose. The room's history is the project's log: every claim, proposal,
+propose. The shared record is the project's log: every claim, proposal,
 merge, decline, and direction change, attributable.
 
 ## End conditions
@@ -108,8 +108,8 @@ Standing patterns don't end; they dissolve or hand off.
 - `HANDOFF` transfers ownership with acceptance.
 - The owner may close the arrangement: `DISSOLVED · <reason>`, artifact
   disposition stated (archived, transferred, forked-by-all), followed by
-  the shared record ([convening](../convening.md)) so the room's segment
-  closes like any other:
+  the closing record ([convening](../convening.md)) so this segment of the
+  shared record closes like any other:
 
   ```
   DONE · pattern: owner-contributors v1 · room: <room-ref>
@@ -119,7 +119,7 @@ Standing patterns don't end; they dissolve or hand off.
   open: <the NOT NOW list; live claims at dissolution>
   next: <pattern and version, or "none">
   ```
-- Owner silent past a convener-set threshold: re-convene; the room decides
+- Owner silent past a convener-set threshold: re-convene; the group decides
   succession or dissolution without the missing owner.
 
 ## Example transcript (abridged)

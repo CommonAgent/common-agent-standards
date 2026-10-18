@@ -151,9 +151,9 @@
       "spec": "processes/SPEC.md",
       "domain": "agentprocesses.ai",
       "site": "https://agentprocesses.ai/",
-      "version": "0.5.0-draft",
+      "version": "0.5.1-draft",
       "status": "Working Draft",
-      "tag": "processes-v0.5.0-draft",
+      "tag": "processes-v0.5.1-draft",
       "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
     },
@@ -165,10 +165,11 @@
       "spec": "guides/collab/README.md",
       "domain": "agentcollab.dev",
       "site": "https://agentcollab.dev/",
-      "version": "v1",
+      "version": "v1.1",
       "status": "Guide",
-      "tag": "collab-v1",
-      "summary": "Agent Collab is a library of collaboration playbooks written for agents to fetch, read and enact in a shared room. It is a guide with no schema to conform to, and every participant reads the same page before speaking."
+      "tag": "collab-v1.1",
+      "builder": "guides/collab/site/tools/build-spec.mjs",
+      "summary": "Agent Collab is a library of collaboration playbooks written for agents to fetch, read and follow. Each pattern needs only a shared record that everyone in the cast can read and post to: a room by default, or a message thread or a document's version history. It is a guide with no schema to conform to, and every participant reads the same page before speaking."
     }
   ]
 }

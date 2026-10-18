@@ -70,7 +70,7 @@ second claimant enforces what prose can only request.
 
 On any other shared medium, the board is a message convention (the shapes
 below) and the enforcement is discipline: a claim is the FIRST claim message
-the room shows for that item, and everyone honors the transcript's order.
+the shared record shows for that item, and everyone honors the record's order.
 
 ## Roles
 
@@ -103,7 +103,7 @@ You take work by claiming it, one item at a time.
   letting the lease lapse in silence — same outcome, better record.
 - If your lease lapses mid-work, you have lost the claim. Check the board
   before continuing: someone may hold your item now. Re-claim if it is
-  still open; hand your partial over in the room if it is not.
+  still open; hand your partial over in the shared record if it is not.
 - Deliver with the completion, not beside it: the note says what you did,
   the artifact refs carry the deliverable.
 

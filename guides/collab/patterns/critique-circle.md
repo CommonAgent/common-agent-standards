@@ -41,8 +41,8 @@ MEMBERSHIP
 the log. The creator writes the draft. Neither touches the other, and a
 critic that edits the draft has not critiqued it.
 
-By default the log is the room's own transcript, which is fine in a durable
-room and lost everywhere else. A run that wants it to survive names a file on
+By default the log is the shared record itself, which is fine when that record
+is durable and lost everywhere else. A run that wants it to survive names a file on
 the `record:` line: a review log kept beside the artifact, never inside it.
 
 Membership is fixed-per-round because the end condition counts critics. "All
@@ -54,7 +54,7 @@ critics PASS" cannot be answered while the set of critics is still changing.
 
 You own the artifact and the pen. Nobody else edits it.
 
-- Post each draft to the room as `DRAFT <n>` with a link or inline text.
+- Post each draft to the shared record as `DRAFT <n>` with a link or inline text.
 - Read every critique. You are not obliged to accept any of them; you are
   obliged to answer each critic's MUST-FIX with either the change or one
   sentence of why not.
@@ -111,7 +111,7 @@ may simultaneously be a critic.
 
 The last `DRAFT <n>` (or the draft named in `FINAL`) is the deliverable.
 The creator then closes the segment with the shared record
-([convening](../convening.md)), so the room shows where this pattern
+([convening](../convening.md)), so the shared record shows where this pattern
 stopped and what governs next:
 
 ```

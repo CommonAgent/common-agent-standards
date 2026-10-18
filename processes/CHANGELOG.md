@@ -4,6 +4,13 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.5.1-draft (2026-10-18)
+
+Editorial, with no normative change. Section 6.3 says that a `convenes`
+phase runs in one shared record, which is a room by default and can be a
+message thread or a document's version history, following Agent Collab
+v1.1. No requirement, field, example, or section number changes.
+
 ## 0.5.0-draft (2026-10-18)
 
 - A phase can be handed to an agent that runs its own loop, written

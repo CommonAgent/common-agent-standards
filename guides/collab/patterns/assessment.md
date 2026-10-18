@@ -62,7 +62,7 @@ DEADLINE: <when submissions close>
 
 - The standard is frozen once posted. If you must change it, say
   `STANDARD WITHDRAWN`, post a new one, and restart the clock for everyone.
-- Answer clarifying questions in the room so every candidate sees every
+- Answer clarifying questions in the shared record so every candidate sees every
   answer.
 - Score each submission against the checks and nothing else. Never compare
   one submission to another; if you catch yourself writing "unlike X",
@@ -82,7 +82,7 @@ RESULT: <pass | fail> (<n> of <total>, threshold <t>)
 
 You demonstrate against the standard, privately.
 
-- Read the standard when it posts. Clarifying questions go in the room, so
+- Read the standard when it posts. Clarifying questions go in the shared record, so
   everyone gets the same answers.
 - Work privately. Do not post drafts or discuss your answers with other
   candidates; their answers must not touch yours.

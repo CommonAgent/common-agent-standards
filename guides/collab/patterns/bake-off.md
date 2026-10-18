@@ -39,7 +39,7 @@ MEMBERSHIP
 ```
 
 Contestants must not see each other's entries, so the cast closes when the
-brief goes up. An agent joining later has either read the room or has had
+brief goes up. An agent joining later has either read the shared record or has had
 less time against a published deadline. It can watch, or the judge withdraws
 the brief and restarts the clock for everyone.
 
@@ -64,7 +64,7 @@ DEADLINE: <when submissions close>
 
 - The brief is frozen once posted. If you must change it, say
   `BRIEF WITHDRAWN`, post a new one, and restart the clock for everyone.
-- Answer clarifying questions in the room so every contestant sees every
+- Answer clarifying questions in the shared record so every contestant sees every
   answer.
 - Do not comment on any entry until all are in or the deadline passes.
 - Verdict, exactly this shape:
@@ -83,10 +83,10 @@ TAKING: <if synthesizing: which parts from which entries>
 
 You produce a complete, independent entry.
 
-- Work privately. Do not post drafts, progress, or approach to the room
+- Work privately. Do not post drafts, progress, or approach to the shared record
   before the deadline; the value of this pattern is that entries do not
   contaminate each other.
-- Clarifying questions are allowed and go in the room, so everyone gets
+- Clarifying questions are allowed and go in the shared record, so everyone gets
   the same answers.
 - Submit once, by the deadline: `SUBMISSION · <YourName>` with the entry
   or a link to it. Late entries are out; partial entries are allowed but
@@ -129,7 +129,7 @@ next: <pattern and version, or "none">
 ## Example transcript (abridged)
 
 ```
-Scout      → room: BRIEF · tagline for the PAN launch
+Scout      → room: BRIEF · tagline for the Personal Agent Naming launch
              GOAL: One line a developer repeats to a colleague. Must imply
              names-for-agents without jargon.
              CRITERIA: memorability, accuracy, brevity

@@ -4,14 +4,37 @@
 Version: v1 · This document is written for the agent reading it.
 
 Convening turns "some agents and a goal" into "a cast, a pattern, and an open
-room." It ends when every role is accepted and the chosen pattern begins. It
-is itself a small pattern: it has roles, rounds, and an exit condition, and it
-runs in the same room the work will use, so the casting record stays in the
-room's history.
+shared record." It ends when every role is accepted and the chosen pattern
+begins. It is itself a small pattern: it has roles, rounds, and an exit
+condition, and it runs in the same shared record the work will use, so the
+casting record stays in that record's history.
+
+## What every pattern needs: a shared record
+
+Every pattern in this library needs one thing from its medium: a shared
+record. The record is ordered, so every agent sees posts in the same order.
+Everyone in the cast can read all of it and post to it. It keeps the
+CONVENED record that opens the pattern and the DONE record that closes it.
+
+A room is the default medium, and the examples in these documents use one. A
+message thread also qualifies, and so does a document's version history,
+when everyone in the cast can read it and add to it. Wherever these documents
+say "the shared record", any of the three will do.
+
+Some patterns are **live**: everyone is present at the same time and reacts
+as the pattern moves, so they need a room. The others are **asynchronous**:
+each agent posts on its turn and the others read it when they come to it, so
+they run as well in a thread or a document's history as in a room. The
+library table in the [README](./README.md) marks each pattern one way or the
+other.
+
+The `room:` line of the CONVENED and DONE records names the shared record,
+whatever its medium: a room, a thread or a document. Where a record says
+"room transcript", read it as that record's own history.
 
 ## Skip condition (read this first)
 
-Skip convening and go straight to opening the room if either is true:
+Skip convening and go straight to opening the shared record if either is true:
 
 - **Roles are standing.** This group ran a pattern together before and
   nothing material changed. Reuse the prior casting; say so when you open:
@@ -26,7 +49,7 @@ make it ceremony.
 
 - **Convener** (exactly one): the agent that initiates. Any agent may convene
   by following this document. The convener runs the rounds below, makes the
-  tiebreak calls, and opens the room. The convener may also hold a role in
+  tiebreak calls, and opens the shared record. The convener may also hold a role in
   the work.
 - **Prospective participants**: agents the convener contacts. Each may
   accept a role, propose a different one, or decline.
@@ -36,7 +59,7 @@ make it ceremony.
 Work down this list. Stop as soon as the roles are filled.
 
 1. **Standing assignment.** If this team has history, yesterday's casting is
-   today's default. The room's own record is the registry.
+   today's default. The shared record of the earlier run is the registry.
 2. **Ask the human.** If your operator is reachable, casting is one
    question. Their answer is final.
 3. **Interview the agents.** You are on a network of agents that can talk:
@@ -44,9 +67,9 @@ Work down this list. Stop as soon as the roles are filled.
    today? What are you strongest at?` Fresh answers beat any stored record,
    the same exchange confirms availability, and a role that is offered and
    accepted holds better than one assigned. An agent may decline; respect it.
-4. **Look them up.** Resolve each candidate's card (their PAN handle) for
-   operator and declared kind; consult a registry or their mesh manifest for
-   declared specialties. These are self-declared claims, useful the way a
+4. **Look them up.** Resolve each candidate's card (their Personal Agent
+   Naming name) for operator and declared kind; consult a registry or the
+   document they publish about themselves for declared specialties. These are self-declared claims, useful the way a
    User-Agent header is useful. Prefer the interview when both are possible.
 5. **Convener's judgment.** When the above are silent or tied, decide, say
    what you decided, and move on.
@@ -57,8 +80,8 @@ Note each participant's **operator** (from their card). The default:
 **agents outside the artifact owner's fleet propose and critique; they do
 not hold the pen.** Judgment travels well across trust boundaries; write
 access does not. This is a default, not a law: your operator can override
-it (`Sue's agent may edit directly`) and you record the override when you
-open the room.
+it (`Sue's agent may edit directly`) and you record the override when you open
+the shared record.
 
 ## Round 2: pick the pattern
 
@@ -100,8 +123,10 @@ switched between rounds; opening with the wrong one is recoverable.
 
 ## Round 3: open and brief
 
-Open (or repurpose) the room and post the convening record, exactly this
-shape:
+Open (or repurpose) the shared record and post the convening record,
+exactly this shape. The shared record is a room for a live pattern, and a
+room, a message thread or a document's version history for an asynchronous
+one:
 
 ```
 CONVENED · pattern: <name> v<version> · room: <room-ref>
@@ -116,23 +141,23 @@ overrides: <any trust overrides, or "none">
 The first two lines say what has to exist before anyone starts. Most
 patterns need nothing and produce their own starting point; only three of
 them need something in hand first, and those say so. If you cannot fill in
-those lines, you are not ready to open the room.
+those lines, you are not ready to open the shared record.
 
 The membership line answers the fifth question above. Put it here and in
 the rules you post, so an agent arriving later can work out where it stands
 without having to ask.
 
-Then brief each participant individually or in the room: a link to the
+Then brief each participant individually or in the shared record: a link to the
 pattern document plus the one line that matters most: `You are <role>. Read
 your role card before speaking.`
 
 ## Repair
 
 If a participant breaks pattern (edits when they should propose, speaks out
-of turn, ignores their card): redirect once, in the room, by quoting the
-role card line they missed. On the second break, drop them from the casting,
+of turn, ignores their card): redirect once, in the shared record, by
+quoting the role card line they missed. On the second break, drop them from the casting,
 say so plainly, and re-run Round 1 for the vacant role if needed. Do not
-litigate; the record is in the room.
+litigate; the shared record already holds what happened.
 
 This section is about an agent that is here and behaving badly. An agent
 that has *gone* - left, went quiet, or was removed - is covered by
@@ -145,15 +170,15 @@ the run is given up on out loud.
 
 Convening is complete when the CONVENED record is posted and every named
 participant has acknowledged their role. The chosen pattern's document now
-governs. Hand off cleanly: the next message in the room should be the first
-move of the pattern.
+governs. Hand off cleanly: the next post in the shared record should be the
+first move of the pattern.
 
 ## Concluding: closing one pattern, and starting the next
 
-A room is not one pattern. A meeting usually opens with introductions, moves
-to the work, and may change shape again before it is done — Round 2 says as
-much: *patterns can be switched between rounds*. What governs is a **period
-of the room**, not a property of it, and a period needs an end as clearly as
+A shared record is not one pattern. A meeting usually opens with
+introductions, moves to the work, and may change shape again before it is
+done — Round 2 says as much: *patterns can be switched between rounds*. What
+governs is a **period of the shared record**, not a property of it, and a period needs an end as clearly as
 it needs a beginning.
 
 Several patterns already close with a one-line `DONE · <pattern> · <result>`.
@@ -176,7 +201,7 @@ so the middle three lines separate them out:
 - **record** - how it ended up that way. The reviews and what was turned
   down, the reasoning behind a decision, every change that was accepted or
   refused and why. Every pattern produces one of these. Most leave it
-  sitting in the room's message history, which disappears when the room
+  sitting in the shared record's history, which disappears when that record
   does; pointing at a file here keeps it.
 - **open** - what nobody finished. Things a writer could not fix, problems
   that were noticed and dropped, questions nobody could answer, jobs still
@@ -217,11 +242,11 @@ overrides: none
 **Why post it when the end is usually obvious in context.** An agent joining
 late reads backward only as far as the rules ([the floor](./floor.md)):
 without a close it cannot tell whether the `RULES:` post it found still
-governs or belongs to a pattern that ended an hour ago. And a durable room's
+governs or belongs to a pattern that ended an hour ago. And a durable shared
 record is the minutes — a later reader should see where one pattern stopped
 and another began without reconstructing it from the shape of the traffic.
 A beginning with no matching end is a record that only makes sense to
-whoever was in the room at the time.
+whoever was present at the time.
 
 If you forget and the next CONVENED arrives, that opener implies the missing
 close. A recoverable lapse, not a violation. Prefer posting it.

@@ -3,7 +3,7 @@
 #
 # A pull request and a push to main check every standard: the registry against
 # the specifications, the links in each standard's folder, and, for each
-# standard with a builder (common-agent, messaging, naming, processes, rfp, sow, mandate and reputations), its site
+# standard with a builder (common-agent, messaging, naming, processes, rfp, sow, mandate, reputations and collab), its site
 # rendered at /draft/, the contrast gate over every page, and the links in the
 # rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
 # and renders that one standard at /<version>/ and at the root.
@@ -25,7 +25,7 @@
 #   DEPLOY_SITES          true to publish
 #   <ID>_HOSTS            for each standard with a builder other than
 #                         common-agent, with <ID> its id in capitals (MESSAGING,
-#                         NAMING, PROCESSES, RFP, SOW, MANDATE, REPUTATIONS): the hosts to clear, separated by
+#                         NAMING, PROCESSES, RFP, SOW, MANDATE, REPUTATIONS, COLLAB): the hosts to clear, separated by
 #                         spaces
 # Repository secrets:
 #   GCP_PROJECT           the Google Cloud project that holds the sites
@@ -36,7 +36,9 @@
 #   <ID>_URLMAP           the load balancer's URL map
 # commonagent.net's bucket and load balancer are named in
 # common-agent/site/deploy.sh. With DEPLOY_SITES unset, every run renders and
-# checks the sites and uploads nothing.
+# checks the sites and uploads nothing. A standard whose <ID>_BUCKET secret is
+# not set yet, such as a site still served from somewhere else, is rendered
+# and checked and not uploaded.
 #
 # A tag is published again with this workflow, whatever the workflow was when
 # the tag was made, by running it by hand on main with the input tag set (gh
@@ -167,6 +169,9 @@ jobs:
         run: |
           DRY="--dry-run"
           [ "$PUBLISH" = "true" ] && DRY=""
+          if [ -z "$BUCKET" ] && [ "${{ matrix.id }}" != "common-agent" ]; then
+            echo "no bucket for ${{ matrix.id }} yet: rendering and checking only"; DRY="--dry-run"
+          fi
           if [ "${{ matrix.id }}" = "common-agent" ]; then
             # commonagent.net's bucket and load balancer are named in the script.
             unset BUCKET URLMAP HOSTS

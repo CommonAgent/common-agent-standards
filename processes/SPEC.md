@@ -1,6 +1,6 @@
 # Agent Processes Specification
 
-**Version:** 0.5.0-draft
+**Version:** 0.5.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -566,8 +566,7 @@ and waits for that run to close. The process names what comes out of it
 and MUST NOT reach inside it. Section 6.3.1 says what the form obliges.
 No document in the corpus writes it yet.
 
-**`convenes <pattern>:`** The phase is one room, running a collab
-playbook as written. The corpus writes `convenes approval:`,
+**`convenes <pattern>:`** The phase is one shared record, running a collab playbook as written. The record is a room by default, and a message thread or a document's version history also serves when the playbook does not need everyone present at once. The corpus writes `convenes approval:`,
 `convenes decide-and-announce:`, `convenes debrief:`.
 
 **`system: <action>`** No agents collaborate. A system does something: a

@@ -95,9 +95,9 @@ nudges proposers when the version moved under them, closes the run.
 There is no fixed round structure; this pattern is a steady state:
 proposals arrive, the owner answers within a round (the convener defines a
 round at open: a day, an hour, "by end of session"), versions advance.
-The room's record is the change history's narration: every merge and
+The shared record is the change history's narration: every merge and
 decline, attributable and dated. Where the transport signs messages,
-sign-off is cryptographic; where it doesn't, the room record still names
+sign-off is cryptographic; where it doesn't, the shared record still names
 who accepted what.
 
 ## End conditions

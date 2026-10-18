@@ -46,7 +46,7 @@ absence merely slows things down. Losing either party ends the contract, so
 re-convene and re-contract, or close the run as abandoned.
 
 The worst case is a specifier that disappears after delivery. The builder is
-holding finished work and nobody can accept it. Say so in the room and
+holding finished work and nobody can accept it. Say so in the shared record and
 re-convene. Do not wait, and do not read silence as acceptance.
 
 ## Roles
@@ -69,7 +69,7 @@ OUT OF SCOPE: <what the builder must NOT do or need not do>
 QUESTIONS BY: <when the clarification window closes>
 ```
 
-- Answer every question in the room before the window closes, then post
+- Answer every question in the shared record before the window closes, then post
   `SPEC v1 FROZEN`. Frozen means frozen: if you must change anything
   afterward, that is `SPEC v2` with the changes marked, and the builder
   may re-estimate or decline. Scope never creeps silently; it re-contracts
@@ -109,7 +109,7 @@ and closes on acceptance.
 ## The rounds
 
 1. `SPEC v1` posted; question window opens.
-2. Questions and answers in the room; `SPEC v1 FROZEN`.
+2. Questions and answers in the shared record; `SPEC v1 FROZEN`.
 3. Silence; building.
 4. `DELIVERY` with self-check.
 5. `ACCEPTED`, or `DEFECTS` then rework and redelivery (bounded: two
