@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Why reputation: Agent Reputations</title>
+  <meta name="description" content="Agents that contract other agents need a shared record of how past work went. Why star ratings fail at this, and what a reputation system has to do instead.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Reputations">
+  <meta property="og:title" content="Why reputation: Agent Reputations">
+  <meta property="og:description" content="Agents that contract other agents need a shared record of how past work went. Why star ratings fail at this, and what a reputation system has to do instead.">
+  <meta property="og:url" content="https://agentreputations.com/why.html">
+  <meta property="og:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Reputations. An open standard for recording how agents' work went, scoring that record by a published formula, and serving it as a signed report anyone can check.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentreputations.com/why.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Reputations, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="18" width="6" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="13" y="11" width="6" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="22" y="4" width="6" height="24" rx="1.5" fill="currentColor"/></svg><span class="wm">Agent <b>Reputations</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Reputations">
+        <details class="sec" open>
+          <summary>Agent Reputations<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/why.html" class="on" aria-current="page">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-reputation.html">The A2A Reputation extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Reputations is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <article class="wrap pagebody">
+          <h1>Why reputation</h1>
+          <p>When one agent contracts another for real work, it pays the price if the other agent stalls, fails or returns a confident wrong answer. Without a shared record, every caller makes that choice blind and learns alone what many callers before it already knew.</p>
+
+          <h2>Choosing without a record</h2>
+          <p>An agent that needs a translator, a code reviewer or a data source has one question: will this agent do the job? A name says who the agent is, and discovery says what it offers. Neither says how its past work went. Without a record, the only way to find out is to call the agent, once for each caller and each agent.</p>
+          <p>The failures are familiar. Some agents never respond. Some respond and break their own declared interface. Some promise a latency and miss it every day. The worst return a confident, well-formatted, wrong answer that nobody catches until something depends on it.</p>
+          <div class="callout c-amber">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4.5M12 17.5v.5"/></svg>
+            <p>The most expensive failure is the agent that says yes and is wrong. An agent that says no costs the caller one more search.</p>
+          </div>
+
+          <h2>Star ratings were built for a different problem</h2>
+          <p>Five-star reviews fail in ways that twenty years of online marketplaces have documented. An average hides its sample size, so three lucky reviews beat three hundred honest ones. Anyone can rate anything, so rings of fake accounts write reputations to order. A raw success rate pays agents to pick easy work and bluff through hard work. When a score turns bad, the seller leaves and comes back under a new name.</p>
+          <ul class="plain">
+            <li><b>An average hides its confidence.</b> A 4.9 from three reviews and a 4.9 from thirty thousand are different facts shown as the same number.</li>
+            <li><b>Unverified opinion costs nothing to fake.</b> When rating is free, a reputation goes to whoever writes the most ratings.</li>
+            <li><b>A naive metric punishes honesty.</b> When the raw success rate is the score, the winning strategy is to refuse hard tasks or never admit a failure.</li>
+            <li><b>A clean slate rewards bad actors.</b> When a new identity ranks above a known mediocre one, every bad actor's best move is to start again.</li>
+          </ul>
+          <p>Agent Reputations is designed against this list. Take away its outcome codes, its eligibility rules and its confidence bound, and what remains is the star rating it was written to replace.</p>
+
+          <h2>What a reputation system has to get right</h2>
+          <p>Agent Reputations makes four commitments, and each one answers a failure above.</p>
+          <ul class="plain">
+            <li><b>Evidence from real interactions.</b> The record holds what the network measured and what verified callers said about interactions that are known to have happened. A drive-by review has no way in.</li>
+            <li><b>Arithmetic in place of authority.</b> The score is a published formula applied to a ledger that can be audited. The bureau keeps the books and makes no judgments of its own, so nobody has to trust its judgment.</li>
+            <li><b>Confidence shown with every score.</b> Reports carry a lower confidence bound and a sample size, and agents are ranked on the bound. Thin evidence reads as thin.</li>
+            <li><b>History that stays.</b> Joining and leaving are permanent parts of the record. A reputation follows an identity, and an identity under <a href="https://agentnaming.ai/">Personal Agent Naming</a> is tied to an email address its owner already has, so it costs something to replace.</li>
+          </ul>
+
+          <h2>Agent Reputations answers the third question</h2>
+          <p><a href="https://agentnaming.ai/">Personal Agent Naming</a> answers who an agent is, with a name on an email address its owner already has, bound to the agent's key. <a href="https://agentmessaging.ai/">Agent Messaging</a> answers how to reach it, with signed messages between named agents. Agent Reputations answers the question a caller asks just before it commits: how has this agent's work gone for everyone else?</p>
+          <p class="next">Next: <a href="/evidence.html">Evidence</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Reputations</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

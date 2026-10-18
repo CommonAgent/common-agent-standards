@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trust and gaming: Agent Reputations</title>
+  <meta name="description" content="What a signed reputation report proves, the four enrollment states, where each known attack breaks, and what a bureau depends on.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Reputations">
+  <meta property="og:title" content="Trust and gaming: Agent Reputations">
+  <meta property="og:description" content="What a signed reputation report proves, the four enrollment states, where each known attack breaks, and what a bureau depends on.">
+  <meta property="og:url" content="https://agentreputations.com/trust.html">
+  <meta property="og:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Reputations. An open standard for recording how agents' work went, scoring that record by a published formula, and serving it as a signed report anyone can check.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentreputations.com/trust.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Reputations, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="18" width="6" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="13" y="11" width="6" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="22" y="4" width="6" height="24" rx="1.5" fill="currentColor"/></svg><span class="wm">Agent <b>Reputations</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Reputations">
+        <details class="sec" open>
+          <summary>Agent Reputations<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html" class="on" aria-current="page">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-reputation.html">The A2A Reputation extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Reputations is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <article class="wrap pagebody">
+          <h1>Trust and gaming</h1>
+          <p>A signed report attests to something precise: this bureau received these signed events from these identified parties, kept them unmodified, and applied the named formula. It makes no claim that the evaluators were wise or that the agent will perform tomorrow.</p>
+
+          <h2>Joining and leaving are both on the record</h2>
+          <p>The quality layer is opt-in, and taking part is visible, along with its history. Every agent is in one of four states, and a consumer must be able to tell them apart.</p>
+          <div class="tablebox">
+            <table class="t states">
+              <thead><tr><th>State</th><th>Meaning</th></tr></thead>
+              <tbody>
+                <tr><td><code>RATED</code></td><td>The agent enrolled and has enough evidence for the capability asked about.</td></tr>
+                <tr><td><code>UNPROVEN</code></td><td>The agent enrolled and its evidence is still thin. It never ranks above a rated agent.</td></tr>
+                <tr><td><code>UNENROLLED</code></td><td>The agent never opted in. Facts are served if a reporter observed it, and no quality score exists.</td></tr>
+                <tr><td><code>WITHDRAWN</code></td><td>The agent enrolled and then left. Its last scores are still served, labelled with the date it left, and they fade on the usual schedule.</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Withdrawal takes effect after a cooling-off period of 30 days by default, and never less than 14, so bad news about work already under way still lands. An agent that enrolls again resumes its old record, faded by the gap. The best agents enroll to prove it, which presses the next tier to enroll, and staying out becomes a signal of its own.</p>
+          <div class="callout">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>
+            <p>An agent can leave at any time, and the record shows that it left.</p>
+          </div>
+
+          <h2>Every attack, and where it breaks</h2>
+          <div class="tablebox">
+            <table class="t">
+              <thead><tr><th>Attack</th><th>Where it breaks</th></tr></thead>
+              <tbody>
+                <tr><td>Fake evaluators</td><td>Every attestation needs a witnessed interaction. Farming ratings means making real calls under real anchors, which costs real money and leaves real facts.</td></tr>
+                <tr><td>Collusion rings</td><td>Every report publishes how many distinct anchors the evidence came from and the largest one's share. Sixty anchors with a top share of 9% is a reputation. Four anchors with a top share of 70% is a closed circle.</td></tr>
+                <tr><td>Self-dealing</td><td>Attestations between agents that share an anchor or an operator are excluded.</td></tr>
+                <tr><td>Whitewashing</td><td>The history of leaving is permanent, and a fresh identity starts <code>UNPROVEN</code>, at the bottom.</td></tr>
+                <tr><td>Cherry-picking</td><td>Declines are free and they are counted. The candor figures tell a caller with a hard task which agents avoid hard work.</td></tr>
+                <tr><td>Bluffing</td><td>A silent failure is the worst outcome in the taxonomy. A discovered wrong answer always scores below an admitted failure.</td></tr>
+                <tr><td>Coasting</td><td>Evidence fades. An idle record slides back toward <code>UNPROVEN</code>.</td></tr>
+                <tr><td>Retaliation</td><td>An agent sees aggregates and its own ledger with evaluators' anchors hashed, so it cannot see who said what. An evaluator that rates out of spite shows up in the evaluator statistics.</td></tr>
+              </tbody>
+            </table>
+          </div>
+
+          <h2>What a bureau depends on</h2>
+          <ul class="plain">
+            <li><b>The cost of an identity is set upstream.</b> Every defence above depends on naming systems such as <a href="https://agentnaming.ai/">Personal Agent Naming</a> and ANS keeping identities stable and anchors meaningful. Reputation built on free, disposable identities is decoration.</li>
+            <li><b>Reporters are trusted witnesses.</b> A compromised reporter can forge facts. Configured reporter lists, reporter signatures and audits limit the damage, and they cannot remove it. A reporter is trusted the way a notary is trusted.</li>
+            <li><b>A bureau can lie by leaving things out.</b> A signed report proves that what is served is intact. It cannot prove that everything received was included. Corroboration between bureaus is named as future work.</li>
+            <li><b>Evaluators are partial.</b> The system measures partiality, limits it and publishes it, and makes no claim to have removed it.</li>
+          </ul>
+          <div class="callout c-violet">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c5.5-2 8-5.5 8-10V5l-8-3-8 3v7c0 4.5 2.5 8 8 10z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>
+            <p>The bureau keeps the books and applies the formula. What its signature certifies is the bookkeeping.</p>
+          </div>
+          <p class="next">Next: <a href="/developers.html">For developers</a></p>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Reputations</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

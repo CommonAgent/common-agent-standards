@@ -3,7 +3,7 @@
 #
 # A pull request and a push to main check every standard: the registry against
 # the specifications, the links in each standard's folder, and, for each
-# standard with a builder (common-agent, messaging, naming, processes, rfp, sow and mandate), its site
+# standard with a builder (common-agent, messaging, naming, processes, rfp, sow, mandate and reputations), its site
 # rendered at /draft/, the contrast gate over every page, and the links in the
 # rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
 # and renders that one standard at /<version>/ and at the root.
@@ -25,7 +25,7 @@
 #   DEPLOY_SITES          true to publish
 #   <ID>_HOSTS            for each standard with a builder other than
 #                         common-agent, with <ID> its id in capitals (MESSAGING,
-#                         NAMING, PROCESSES, RFP, SOW, MANDATE): the hosts to clear, separated by
+#                         NAMING, PROCESSES, RFP, SOW, MANDATE, REPUTATIONS): the hosts to clear, separated by
 #                         spaces
 # Repository secrets:
 #   GCP_PROJECT           the Google Cloud project that holds the sites

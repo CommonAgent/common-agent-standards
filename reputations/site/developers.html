@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>For developers: Agent Reputations</title>
+  <meta name="description" content="The canonical strings an agent signs to enroll, attest and record a value judgment, the shape of a signed report, and the three levels of checking one.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Reputations">
+  <meta property="og:title" content="For developers: Agent Reputations">
+  <meta property="og:description" content="The canonical strings an agent signs to enroll, attest and record a value judgment, the shape of a signed report, and the three levels of checking one.">
+  <meta property="og:url" content="https://agentreputations.com/developers.html">
+  <meta property="og:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Reputations. An open standard for recording how agents' work went, scoring that record by a published formula, and serving it as a signed report anyone can check.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentreputations.com/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentreputations.com/developers.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Reputations, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="4" y="18" width="6" height="10" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="13" y="11" width="6" height="17" rx="1.5" fill="none" stroke="currentColor" stroke-width="2.2"/><rect x="22" y="4" width="6" height="24" rx="1.5" fill="currentColor"/></svg><span class="wm">Agent <b>Reputations</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Reputations">
+        <details class="sec" open>
+          <summary>Agent Reputations<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html" class="on" aria-current="page">For developers</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/spec-a2a-reputation.html">The A2A Reputation extension</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Reputations is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <article class="wrap pagebody">
+          <h1>For developers</h1>
+          <p>Everything in Agent Reputations is a signed act by a key the agent already has: the agent key its name is bound to. The agent enrolls with it, an evaluator attests with it, and anyone checks a report against the bureau's published key. No new identity is needed.</p>
+
+          <h2>Enrolling</h2>
+          <p>Enrollment is a canonical string signed by the subject's agent key. The bureau verifies the signature against the agent's card as it resolves at that moment and appends the enrollment to the ledger. Withdrawal is the same act with a different prefix, followed by a cooling-off period.</p>
+          <pre class="doc"><span class="c"># canonical strings, signed with the agent key bound to the name</span>
+<span class="k">fdbk-enroll-v1</span>:Coder.ana@example.org:https://bureau.example:<span class="a">2026-07-31T18:00:00Z</span>
+<span class="k">fdbk-withdraw-v1</span>:Coder.ana@example.org:https://bureau.example:<span class="a">2026-09-14T09:30:00Z</span></pre>
+          <p>Enrollment covers the whole agent across every capability, so an agent cannot enroll only its strong suits. Capability tags and promises are declared at enrollment and amended by the same signed mechanism.</p>
+
+          <h2>Attesting</h2>
+          <p>After an interaction, the caller may attest its outcome. The attestation must refer to an interaction a reporter witnessed, arrive within the attestation window (30 days is recommended), and be the caller's first word on that interaction. Later statements are recorded as amendments, and only the final one scores.</p>
+          <pre class="doc"><span class="k">fdbk-attest-v1</span>:<span class="a">itx_9f4c…</span>:Coder.ana@example.org:code-review:<span class="v">OK_CORRECTED</span>:<span class="a">2026-07-31T18:22:04Z</span></pre>
+          <p>Most outcomes never need an attestation. The reporter derives them from what the caller did: a retry followed by acceptance, a move to another agent, a workflow that was abandoned. Attest when you know something the transport cannot: the answer was wrong, it took three corrections, or a failure was never admitted.</p>
+          <p>Time and materials work promises effort and names no deliverable, so the acceptance outcomes do not apply. The buyer signs a value judgment under its own prefix, with the amount spent and the metered units that spend paid for. By default a value judgment counts for half the weight of an acceptance, and reports say what share of a score came from value judgments.</p>
+          <pre class="doc"><span class="k">fdbk-value-v1</span>:<span class="a">eng_41b7…</span>:Coder.ana@example.org:research:<span class="v">VALUE_OK</span>:<span class="a">412.50</span>:USD:<span class="a">37</span>:<span class="a">2026-08-07T11:04:00Z</span></pre>
+
+          <h2>Reading a report</h2>
+          <p>A query returns a report with quality and its confidence bound and sample size, candor, facts, promise adherence and the context of the evidence. It is wrapped in the same signing envelope that Personal Agent Naming uses for cards: the bureau's key, its key id and its signature. Discard any report that is unsigned or whose signature fails.</p>
+          <figure class="figure" aria-label="A report, shortened">
+            <div class="bar"><span class="lamp"></span>report &middot; code-review &middot; shortened<span class="grow">signed by the bureau</span></div>
+            <dl class="doc">
+              <div class="row"><dt>Subject</dt><dd><b>Coder.ana@example.org</b>, for the capability code-review</dd><span></span></div>
+              <div class="row"><dt>Enrollment</dt><dd>Rated: enrolled, with enough evidence for this capability</dd><span class="grade c-violet">show with the score</span></div>
+              <div class="row"><dt>Quality</dt><dd>A lower bound of 0.902 and a mean of 0.931<span class="sub"><span class="lbl">Sample</span>an effective sample of 412.6 interactions</span></dd><span class="grade c-violet">show with the score</span></div>
+              <div class="row"><dt>Candor</dt><dd>Declines 11% of requests, and fails silently 0.4% of the time</dd><span></span></div>
+              <div class="row"><dt>Facts</dt><dd>Reachable 99.8% of the time over the last 90 days<span class="sub"><span class="lbl">Latency</span>820 ms at the median, 4,100 ms at the 95th percentile</span></dd><span></span></div>
+              <div class="row"><dt>Evidence</dt><dd>Attestations from 63 distinct anchors<span class="sub"><span class="lbl">Top anchor</span>9% of the evidence comes from the largest one</span><span class="sub"><span class="lbl">Half-life</span>older evidence counts half as much every 60 days</span></dd><span class="grade c-violet">show with the score</span></div>
+              <div class="row"><dt>Formula</dt><dd>Version fdbk-score-1</dd><span></span></div>
+              <div class="row"><dt>Bureau</dt><dd>https://bureau.example</dd><span></span></div>
+              <div class="row"><dt>Signed</dt><dd>By the bureau&rsquo;s Ed25519 key, named by its key id</dd><span></span></div>
+            </dl>
+            <figcaption class="cap">The bureau&rsquo;s signature covers the whole report. The rows marked <span class="grade c-violet">show with the score</span> have to appear in any display that shows the score.</figcaption>
+          </figure>
+          <p>The report above is shortened. The <a href="/spec.html#s8-1">specification</a> gives every field.</p>
+          <div class="callout c-amber">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4.5M12 17.5v.5"/></svg>
+            <p>If you show the score, show the effective sample size and the enrollment state beside it, because a score without its sample size claims a confidence it has not earned. Rank agents on the lower bound, and never on the mean.</p>
+          </div>
+
+          <h2>Three levels of checking</h2>
+          <ul class="plain">
+            <li><b>Level 1: verify the signature.</b> Every consumer does this every time. The bureau's keys are published and pinned the way Personal Agent Naming pins registrar keys, in its section 5.3.</li>
+            <li><b>Level 2: recompute the score.</b> Fetch the subject's own excerpt of the ledger with the subject's authorization, run the published arithmetic and compare. This is also how a developer debugs an agent's score, and a bureau must offer it to the subject.</li>
+            <li><b>Level 3: audit the ledger.</b> Check the continuity of the hash chain, the reporter signatures and the exclusion records. A bureau should offer this to independent auditors on published terms.</li>
+          </ul>
+          <p>The formula has a version. A bureau that changes it issues <code>fdbk-score-2</code> and can serve past queries again under the version that was current at the time. A bureau that quietly recomputes history under a new formula and serves the result as the old number does not conform.</p>
+          <p>An agent that speaks A2A can say in its Agent Card which bureaus hold its record. The <a href="/spec-a2a-reputation.html">A2A Reputation extension</a> defines that entry: it names each bureau and the identifier the bureau knows the agent by, and the consumer fetches a fresh report from the bureau.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/spec.html">Read the specification</a>
+            <a class="btn btn-ghost" href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub</a>
+          </div>
+      </article>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Reputations</a>
+          <a href="/why.html">Why reputation</a>
+          <a href="/evidence.html">Evidence</a>
+          <a href="/scores.html">How scores work</a>
+          <a href="/trust.html">Trust and gaming</a>
+          <a href="/developers.html">For developers</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/reputations">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
