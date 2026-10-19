@@ -1,10 +1,27 @@
 # Agent Processes Specification
 
-**Version:** 0.5.1-draft
+**Version:** 0.6.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
-**This revision.** A phase can now be handed to an agent that runs its
+**This revision.** A process document can name the Agent NDA that every
+participant from outside the process owner shares, written
+`confidential-under:` in the header (Section 4). Every agent of another
+owner that holds a phase or receives a handoff MUST belong to an owner
+bound by that agreement, as Agent NDA §8.1 defines it, and the process
+owner MUST be a party to it. A runtime that
+implements the key checks before it starts such a phase or delivers
+such a handoff, refuses with the reason named, and records the refusal
+in the run record. A phase that runs another process passes the
+agreement on to the inner run, and an inner document that names its
+own agreement adds to the outer one and cannot drop it. An agent that a
+harness contracts on its own is bound by flow-down only. A runtime that does not implement the check says so
+under Section 11.3. A phase's `under:` (Section 6.4.1) is unchanged. The
+key is optional, and no document in the corpus fails anything new. The
+matching change is in the Agent NDA specification, which adds
+multilateral agreements and flow-down to subcontractors.
+
+**0.5.0-draft.** A phase can now be handed to an agent that runs its
 own loop, written `harness: <what the agent works out>` (Section 6.3).
 This is harness-led orchestration: the process names what has to come
 out, the agent decides how to get there, and the phase closes with one
@@ -315,6 +332,175 @@ key exists to make visible.
 `bounded-by:` binds the run, not any phase in it. It does not close the
 run and it does not stop a phase; the close is what Section 6.8 says it
 is.
+
+No document in the corpus carries the key today, which is why it is
+OPTIONAL.
+
+### `confidential-under:`
+
+`confidential-under:` is OPTIONAL. It names one Agent NDA, and every
+participant in a run from outside the process owner MUST be bound by it.
+
+```
+confidential-under: nda_7k3pxw9c2r4tmq8d v1 sha256:<64 hex digits>
+```
+
+The value has three fields separated by spaces: the agreement's
+identifier, its version written `v<n>`, and its digest. The digest is
+`sha256:` followed by 64 lowercase hex digits, and it is the digest
+Agent NDA §8 defines. For a countersigned agreement it is the digest of
+the agreement's signed bytes. For an open offer it is the offer digest
+(Agent NDA §6.1). The identifier and the version are for the reader.
+The digest is what a runtime compares, and the comparison is exact.
+
+A document MUST NOT carry the key more than once. In a reference
+process the value MUST be a marked blank (Section 15.2):
+
+```
+confidential-under: <your agreement>
+```
+
+**Who the key binds.** The process owner is the organization the
+document belongs to, the one whose `owner:` answers for it
+(Section 19.1). Every agent that holds a phase of a run, or receives a
+handoff in one, and belongs to an owner other than the process owner
+MUST belong to an owner bound by the named agreement. Agent NDA §8.1
+defines whether an owner is bound. It is bound when it is a member of a
+multilateral agreement in force, when it is the recipient of an
+acceptance in force of the named open offer, or when it is bound by a
+flow-down agreement whose `flows_from` names an agreement the party
+above it is bound by. The process owner MUST itself be a party to the
+named agreement, as the discloser of the open offer or as one of the
+members. A runtime that implements the key checks this before it
+starts a run, and it MUST NOT start a run whose process owner is not a
+party.
+
+The rule covers the agent a phase goes to and the agent a handoff is
+delivered to. An agent that a `harness:` phase contracts on its own is
+the holder's to bind, and Agent NDA §5.5 says how the holder does so.
+That agent is bound by flow-down only, and the runtime does not check
+it, because the runtime never delivers anything to it.
+
+**A phase that runs another process.** The inner run inherits the outer
+document's `confidential-under:` (Section 6.3.1). Where the inner
+document carries no `confidential-under:` of its own, a runtime holds
+every phase and handoff of the inner run to the outer agreement, exactly
+as it holds the outer run's own. Where the inner document names its own
+agreement, that agreement MUST be at least as strict as the outer one,
+and the check shows how: the runtime checks each agent of an owner other
+than the outer process owner against both agreements, and that owner
+MUST be bound by each of them. The inner document can add an agreement
+in this way, and it cannot drop the outer one. The handoff into the
+phase is checked as any other handoff is.
+
+**The check.** A runtime that implements the key MUST check, before it
+starts a run, that the process owner is a party to the named
+agreement. It MUST then make the check at two moments: before it
+starts a phase held by an agent of another owner, and before it
+delivers a handoff to an agent of another owner. It checks that the
+agent's owner is bound by the named agreement at that moment, and in an
+inner run by each agreement the paragraph above names. Where the check fails, the runtime MUST refuse. It MUST
+NOT start the phase or deliver the handoff, and it MUST name the
+reason. The reason says which agent, which owner, and which test of
+Agent NDA §8.1 failed: no seat or acceptance names the owner, the
+agreement is not in force, or the digest does not match. The runtime
+MUST record the refusal in the run record (Section 13.2):
+
+```
+REFUSED: start load-rates · ops/audit-inbound-freight v3 · run 18
+to: Kestrel.rates@northgaterates.example   owner: Northgate Rate Data
+agreement: nda_7k3pxw9c2r4tmq8d v1 sha256:<64 hex digits>
+reason: the agreement is not in force; Tidewater Customs Brokers has not signed
+```
+
+A refused phase has not started. A refused handoff does not exist for
+the phase that receives it (Section 8.4). The runtime MUST NOT deliver
+the material by another route, and it MUST NOT give the phase to
+another holder on its own. Whether the run waits for the owner to be
+bound, takes a bound holder from the roster, or closes as abandoned is
+the document's decision, stated in its failure edges (Section 14) or
+its policy (Section 11). A runtime MUST NOT start a run from a document
+whose `confidential-under:` is still a blank.
+
+**What the key enforces.** The check is enforced at the runtime that
+makes it. Through that runtime, the process owner's material and each
+participant's material reach only owners bound by the named agreement.
+What each party does with the material afterwards stays a recorded
+promise under the agreement, held by its terms and by the records each
+side keeps (Agent NDA §3). A runtime that does not implement the check
+MUST say so under Section 11.3, where the person running the process
+will see it, before it starts the first phase held by an agent of
+another owner.
+
+**The key and `under:`.** A phase's `under:` (Section 6.4.1) is
+unchanged. It names the engagement between the process owner and the
+owner of the agent holding that phase. `confidential-under:` names the
+confidentiality terms every participant in the run shares. A document
+MAY carry both.
+
+**Which agreement to name.** Use a multilateral agreement (Agent NDA
+§5.1) when outside parties pass their own material to each other. Each
+of them is then a discloser, and every other participant has to be
+bound to it. An open offer from the process owner is enough when every
+handoff carries only the process owner's material, because the process
+owner is then the only discloser.
+
+**Example.** Harbor & Line Outfitters audits the freight charges on its
+inbound shipments with three outside agents. Northgate Rate Data
+supplies the lane rates, Caldera Freight Systems audits the freight
+bills against them, and Tidewater Customs Brokers checks the customs
+entries against the audited charges:
+
+```
+PROCESS: audit inbound freight charges   id: ops/audit-inbound-freight   v3
+owner: Head of Logistics                 effective: 2026-10-20
+confidential-under: nda_7k3pxw9c2r4tmq8d v1 sha256:<64 hex digits>
+trigger: a month of inbound freight bills closes
+concurrency: one run per month
+goal: every overcharge in the month's bills claimed or written off, with
+      the bill, the rate and the entry each claim rests on
+phases:
+  load-rates      - harness: the contracted lane rates for the month's
+                    shipments, at a version
+                    owner: rate-source         after: trigger
+                    automation: autonomous
+  audit-charges   - harness: each freight bill checked against the lane
+                    rates, with every overcharge listed
+                    owner: freight-auditor     after: load-rates
+                    automation: supervised
+  check-entries   - harness: each customs entry checked against the
+                    commercial invoice and the audited charges
+                    owner: customs-broker      after: audit-charges
+                    automation: supervised
+  approve-claims  - human: the overcharge claims approved for filing
+                    owner: logistics finance lead (person)
+                    after: check-entries       automation: never
+handoffs:
+  load-rates -> audit-charges: Northgate's lane rate table at a version
+  audit-charges -> check-entries: the audited charges, with every
+    overcharge and the bill it came from
+  check-entries -> approve-claims: the claims list, with the entries
+    each claim rests on
+bindings:
+  roster:  rate-source: Kestrel.rates@northgaterates.example
+           freight-auditor: Sable.audit@calderafreight.example
+           customs-broker: Heron.desk@tidewatercustoms.example
+           logistics finance lead: <named person>
+```
+
+Northgate's rate table goes to Caldera, and Caldera's audit goes to
+Tidewater. Outside parties pass their own material to each other, so
+the document names a multilateral agreement with four members: Harbor &
+Line, Northgate, Caldera and Tidewater. Before `load-rates` starts, the
+runtime checks that Northgate Rate Data holds a member seat of that
+agreement and that the agreement is in force. It checks Caldera before
+it delivers the rate table, and Tidewater before it delivers the
+audited charges. A multilateral agreement is in force only when every
+member has signed (Agent NDA §5.1). A missing signature from any one of
+them therefore stops the run at its first outside phase, and the
+refusal record says whose signature is missing. Had every handoff
+carried only Harbor & Line's own bills, an open offer from Harbor &
+Line would have been enough.
 
 No document in the corpus carries the key today, which is why it is
 OPTIONAL.
@@ -660,6 +846,16 @@ firing to a run already in flight, that run's cast governs, whatever
 filled it, and a runtime MUST record that the phase waits on a run it did
 not cast.
 
+**Confidentiality.** Where the outer document carries
+`confidential-under:`, the inner run inherits it. An inner document
+with no `confidential-under:` of its own is held to the outer
+agreement, and an inner document that names its own is held to both
+(Section 4). Where the firing joins a run already in flight, that run
+was not started under the outer agreement, so a runtime MUST check its
+outside participants against the outer agreement before it delivers
+the handoff into it, and MUST refuse the join when any of them is not
+bound.
+
 **What comes out, and nothing else.** What the outer document names as
 coming out of the phase MUST be something the inner document's `goal:`
 says exists when a run closes. The outer document MUST NOT reach inside
@@ -799,6 +995,11 @@ relationship runs the other way as well: that document names this one by
 id and version, and lists every phase held by another owner's agent as a
 subcontractor. `under:` on a phase is the smaller, per-phase case, for a
 process that is not itself the subject of an agreement.
+
+`under:` names an engagement with one owner. The header key
+`confidential-under:` (Section 4) names the confidentiality terms that
+every outside participant in the run shares. The two answer different
+questions, and a document MAY carry both.
 
 ### 6.5 `after:`
 
@@ -1580,6 +1781,11 @@ A handoff out of a phase the run never entered is not owed, and this
 rule does not hold the receiving phase for it. Section 6.5.2 says what a
 run never entering a phase means and how a document marks such a phase.
 
+Where the document carries `confidential-under:` (Section 4), a handoff
+to an agent of another owner is delivered only after the runtime has
+checked that the owner is bound by the named agreement. A handoff the
+runtime refused to deliver does not exist for the receiving phase.
+
 ### 8.5. A handoff is a thing, not a conversation
 
 What a handoff names MUST be something a later reader can point at: a
@@ -1971,6 +2177,12 @@ The same obligation falls on a translator that renders the document
 into another form: a policy line it cannot carry MUST be reported, not
 dropped.
 
+The same obligation covers the header key `confidential-under:`
+(Section 4). A runtime that does not check whether each outside
+participant is bound by the named agreement MUST say so in the same
+way, before it starts the first phase held by an agent of another
+owner.
+
 ### 11.4. Repeated policy belongs somewhere else
 
 A policy rule that appears in every process in a department SHOULD live
@@ -2108,6 +2320,13 @@ process is amended. An auditor reads a run's records against the
 version that was effective at the time, not against today's page. A run
 record that follows the document forward destroys the only evidence of
 what the run was actually held to.
+
+Where the document carries `confidential-under:`, the run record also
+holds every refusal the runtime made under it, each as a `REFUSED:`
+record naming the phase or handoff, the agent, its owner, the agreement
+and the reason (Section 4). A refusal is a record of the run, and a run
+whose refusals are missing from its record cannot show that its
+material reached only bound parties.
 
 ### 13.3. What each phase leaves
 
@@ -2387,6 +2606,9 @@ specifics blank. "Nothing publishes unsigned" is a rule the shape of the
 work produces. Which regulator, which contract and which brand standard
 apply is the adopter's, and appears as a blank.
 
+A reference process MUST NOT name an agreement. Where it carries
+`confidential-under:`, the value MUST be the blank `<your agreement>`.
+
 A reference process MUST NOT carry run records and MUST NOT cite a run.
 
 The absences are what make the profile enforceable. An owner, a date or
@@ -2644,7 +2866,7 @@ with its own id, a version 1 and a `from:` line (section 15.6).
 
 A runtime is whatever carries out a run: a workflow engine, an agent, a
 person with the document open, or any combination (section 2). It
-conforms by what it does with six sets of obligations.
+conforms by what it does with seven sets of obligations.
 
 **The graph (section 6).** A runtime MUST NOT begin a phase before every
 phase its `after:` line names has closed. A runtime MUST allow phases
@@ -2689,6 +2911,17 @@ level and the outer phase's level, close the phase only when the inner
 run closes having reached its goal, refuse an inner run whose document
 is already in the chain of runs that started it, and MUST NOT leave an
 inner run open when the outer run is abandoned.
+
+**Confidentiality (section 4).** Where a document carries
+`confidential-under:`, a runtime that implements the key MUST check,
+before it starts a phase held by an agent of another owner and before
+it delivers a handoff to one, that the agent's owner is bound by the
+named agreement. It MUST NOT start a run whose process owner is not a
+party to the agreement. It MUST hold an inner run to the outer
+agreement, and to the inner document's own as well where the inner
+document names one. It MUST refuse when a check fails, name the reason,
+and record the refusal in the run record. A runtime that does not
+implement the check MUST say so under section 11.3.
 
 Nothing in this specification enforces a run. A process is not
 enforceable, and nothing holds a run to the graph except the records it
