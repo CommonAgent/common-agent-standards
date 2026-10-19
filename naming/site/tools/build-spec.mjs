@@ -170,7 +170,7 @@ const page = `<!DOCTYPE html>
           <span>date <b>${meta.date}</b></span>
         </div>
         <p class="canon">The normative specification of Personal Agent Naming, an open standard for
-          naming personal agents, sponsored by <a href="https://agentmesh.ai/">AgentMesh</a> and a
+          naming personal agents and a
           companion to <a href="https://agentmessaging.ai/">Agent Messaging</a>.
           Rendered ${generated}${commit ? ` from commit <span class="mono">${commit}</span>` : ""}.
           The published specification is this page, and its source is SPEC-NAMING.md in

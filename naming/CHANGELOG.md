@@ -4,6 +4,13 @@ Versions of Personal Agent Naming tagged in this repository, newest first. A ver
 tagged as `naming-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from AgentNaming/personal-agent-naming.
 
+## 0.10.1 (2026-10-18)
+
+Editorial, with no normative change. The specification names no platform: the header,
+the introduction, Sections 3.1, 8 and 11 speak of the reference deployment and the
+reference implementation, and the examples of Section 5 use `example.com` addresses.
+No requirement, field, wire value or section number changes.
+
 ## 0.10 (2026-10-13)
 
 The first version tagged in the Common Agent Standards repository, as

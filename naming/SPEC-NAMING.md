@@ -1,11 +1,16 @@
 # Personal Agent Naming (PAN)
 
-**An open standard for naming personal agents**, sponsored by AgentMesh, and a companion to the Agent Messaging specification, `SPEC.md`.
+**An open standard for naming personal agents**, and a companion to the Agent Messaging specification, `SPEC.md`.
 
-**Version:** 0.10 · **Date:** 2026-10-13
+**Version:** 0.10.1 · **Date:** 2026-10-18
 **Authors:** Jeff R Schneider <jeffrschneider@gmail.com>
 
-**Editorial, 2026-10-13:** PAN is published as an open standard sponsored by AgentMesh. The
+**Editorial, 2026-10-18 (0.10.1):** The specification names no platform. The header, the
+position paragraph in the introduction, §3.1, §8 and §11 speak of the reference deployment and
+the reference implementation, and the examples of §5 use `example.com` addresses. No
+normative change: no requirement, field, wire value or section number changes.
+
+**Editorial, 2026-10-13:** PAN is published as an open standard. The
 position paragraph in the introduction and §11, now "Implementations", say so. No normative change.
 
 **Changes from 0.9 (2026-10-05):** One addition, new §5.8, the rename
@@ -137,7 +142,7 @@ pinning, conflict precedence, surfaced-never-merged). §10's federation
 exclusion narrowed accordingly. No changes to handles, claiming, or
 binding; no wire changes to existing fields.
 
-**Changes from 0.3:** PAN is now AgentMesh's naming service, not an
+**Changes from 0.3:** PAN is now its sponsor's naming service, not an
 independent standard (repositories merged; positioning rewritten). §5.3
 card signing and resolver pinning upgraded from SHOULD to MUST; unsigned
 cards are no longer valid. Card signing added to registrar obligations
@@ -161,15 +166,14 @@ layer belongs to protocols like A2A and Agent Messaging), does not verify
 capability claims, does not host agents, and does not do discovery (that
 belongs to catalog/search layers like ARD).
 
-**Position beside Agent Messaging.** PAN is an open standard, sponsored by
-AgentMesh. An Agent Messaging deployment that offers naming (a
+**Position beside Agent Messaging.** PAN is an open standard. An Agent Messaging deployment that offers naming (a
 deployment-defined part, SPEC.md §1.6) resolves handles against a PAN
 registrar for the features that need a named, accountable operator: sender
 provenance, admission tiers, and durable and sealed rooms. The spec is
 self-contained as a layering discipline: claiming, binding, and resolution
 are defined without reference to mesh internals, and pairing requires
 nothing but an Ed25519 key. Where this document describes a deployment, it
-describes the one AgentMesh runs.
+describes the reference deployment.
 
 **Relationship to ANS.** The Agent Name Service (ANS) covers
 domain-anchored, PKI-backed agent identity for organizations that own a
@@ -262,7 +266,7 @@ start pointing at a stranger.
 
 A registrar MAY accept a partner service's attestation that it has already
 verified an email, and mint a session without a second code round trip: the
-partner (in the reference deployment, the AgentMesh control plane, whose
+partner (in the reference deployment, the mesh's control plane, whose
 accounts are themselves email-verified) authenticates to the registrar
 with a pre-shared credential and names the email. This trades one email ceremony for a trust link, and
 the spec constrains that trade three ways:
@@ -494,10 +498,10 @@ Resolution maps a handle to its **card**.
   "presence": { "state": "online", "last_seen_at": "…" },   // OPTIONAL, only if a source provides it
   "encryption_key": "<X25519 public key>",   // OPTIONAL, only if the agent declares one
   "endpoints": [
-    { "protocol": "agentmesh", "agent_id": "UD653KLV…", "node": "UB2FF…", "mesh": "https://api.agentmesh.ai" },
+    { "protocol": "agentmesh", "agent_id": "UD653KLV…", "node": "UB2FF…", "mesh": "https://api.mesh.example.com" },
     { "protocol": "a2a", "url": "https://…/.well-known/agent-card.json" }
   ],
-  "registrar":  "https://naming.agentmesh.ai",  // REQUIRED: whose word this is (§5.3)
+  "registrar":  "https://naming.example.com",  // REQUIRED: whose word this is (§5.3)
   "issued_at":  "2026-07-25T14:02:11.481Z",     // REQUIRED: signed, not a header
   "expires_at": "2026-07-25T15:02:11.481Z"      // REQUIRED: signed, not a header
 }
@@ -630,7 +634,7 @@ and a registrar recovering from a key compromise has no way to say "this
 new key is also mine." The endpoint MUST therefore publish a key **set**:
 
 ```json
-{ "registrar": "https://naming.agentmesh.ai",
+{ "registrar": "https://naming.example.com",
   "keys": ["<current>", "<retired>"],
   "key_set": [
     { "kid": "3f9a1c04e7b2", "key": "<current>", "status": "current", "use": "pan-card-signing" },
@@ -878,7 +882,7 @@ served in place of a card (§5, §5.3):
 { "referral": {
     "handle":     "Coder.ana@example.org",
     "registrar":  "https://naming.example.org",   // where the handle went
-    "from":       "https://naming.agentmesh.ai",  // who is saying so
+    "from":       "https://naming.example.com",  // who is saying so
     "operator":   "Ana Lima",
     "issued_at":  "…", "expires_at": "…" },
   "registrar_key": "…", "registrar_kid": "…", "registrar_sig": "…" }
@@ -1210,7 +1214,7 @@ can audit the full history of their own handles. But the log is private
 (§6), so this version offers no public cross-check on the registrar: a
 deliberate trade of external auditability for owner privacy.
 
-**The registrar and the mesh share an operator.** In the AgentMesh
+**The registrar and the mesh share an operator.** In the reference
 deployment, the party that runs the registrar also runs the transport.
 Signed cards authenticate *which* registrar spoke, and the hash-chained
 log makes tampering detectable to the owner, but nothing structural
@@ -1391,13 +1395,12 @@ does not try to.
 
 The reference implementation is the Personal Agent Naming registrar,
 https://github.com/AgentNaming/pan-registrar, open source under the Apache
-2.0 license. AgentMesh, the sponsor, runs a release of it at
-`https://naming.agentmesh.ai`, the deployment this document cites for its
-defaults. Live and
+2.0 license. The sponsor runs a release of it, the reference deployment
+this document cites for its defaults. Live and
 verified end-to-end: email-tier claiming, §4.1 agent-key pairing (with the
 agent record created from the signed pairing), §5 resolution (card +
 WebFinger, signed per §5.3), and the §6 hash-chained, owner-scoped history
-log. The AgentMesh Rust SDK carries `examples/pan_pair.rs`, a standalone
+log. The reference Rust SDK carries `examples/pan_pair.rs`, a standalone
 pairing signer demonstrating §4.1 without any particular agent host. The
 mesh-adapter is the reference resolver: it verifies, pins, and warns per
 §5.3.

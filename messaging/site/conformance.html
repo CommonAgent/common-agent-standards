@@ -117,8 +117,8 @@
           <ul class="plain">
             <li><b>Core.</b> What every Agent Messaging server must pass. A server that runs
               only the core profile runs these as its health check.</li>
-            <li><b>Platform.</b> Parts that section 1.6 makes deployment-defined and that
-              AgentMesh offers. A core server may leave these out.</li>
+            <li><b>Platform.</b> Parts that section 1.6 makes deployment-defined, as the
+              reference deployment offers them. A core server may leave these out.</li>
             <li><b>Naming.</b> Tests of Agent Naming registrars, which are not messaging
               servers. They belong to Agent Naming's own suite and run here until they move
               there.</li>
@@ -147,7 +147,7 @@ MESH_WS_URL=wss://mesh.example.com MESH_CREDS_FILE=~/mesh.creds \
             board and prints the specification version and the profile it tested. A test
             whose setting is missing reports env-skip and names the setting. The adapter
             tests (c12, c13 and c15) also need the reference adapter, which comes with
-            the AgentMesh SDKs.</p>
+            the reference SDKs.</p>
           <ul class="plain">
             <li><b>MESH_WS_URL</b> is the server's NATS WebSocket address. Every live test
               needs it.</li>
@@ -165,13 +165,13 @@ MESH_WS_URL=wss://mesh.example.com MESH_CREDS_FILE=~/mesh.creds \
               ECHO_TARGET, the suite starts its own echo agent with the reference
               adapter.</li>
           </ul>
-<pre class="code">node run.mjs --profile platform   <span class="c"># the deployment-defined parts AgentMesh offers</span>
+<pre class="code">node run.mjs --profile platform   <span class="c"># the deployment-defined parts</span>
 node run.mjs --profile naming     <span class="c"># the registrar tests</span>
 node run.mjs --profile all        <span class="c"># everything</span>
 node run.mjs --only c05           <span class="c"># one test</span>
 node run.mjs --ci                 <span class="c"># fail on a regression against expectations.json</span>
 node run.mjs --update             <span class="c"># record this run as the new baseline</span></pre>
-          <p>Outside the core profile, an address you leave unset falls back to AgentMesh's
+          <p>Outside the core profile, an address you leave unset falls back to the
             reference deployment, and the run prints a banner naming each one that did. The
             <a href="https://github.com/agent-messaging/agent-messaging/blob/main/conformance/README.md">README</a>
             lists every setting.</p>
@@ -234,7 +234,7 @@ node run.mjs --update             <span class="c"># record this run as the new b
             <tr><td>t05</td><td>An agent's describe document can be read before admission, over the network.</td><td>8.7, 10.14</td></tr>
             <tr><td>t06a</td><td>A resolver discards a card that is not signed.</td><td>naming 5.3</td></tr>
             <tr><td>t06b</td><td>The card from a handle's anchor domain wins over the registrar's card.</td><td>naming 5.2, 5.5</td></tr>
-            <tr><td>t09</td><td>Trust attestations verify offline, with or without AgentMesh's code.</td><td>9.7, 21</td></tr>
+            <tr><td>t09</td><td>Trust attestations verify offline, with or without the reference code.</td><td>9.7, 21</td></tr>
             <tr><td>t14</td><td>A signed card whose key the authority does not publish is discarded.</td><td>naming 5.3</td></tr>
           </table>
         </div>
@@ -244,11 +244,11 @@ node run.mjs --update             <span class="c"># record this run as the new b
         <div class="wrap">
           <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>Platform profile</p>
           <h2>The 5 tests of deployment-defined parts</h2>
-          <p>These check parts that a server may leave out under section 1.6, as AgentMesh
-            offers them.</p>
+          <p>These check parts that a server may leave out under section 1.6, as the
+            reference deployment offers them.</p>
           <table class="tests">
             <tr><th>test</th><th>what it checks</th><th>sections</th></tr>
-            <tr><td>c08</td><td>AgentMesh's retired no-signup doors answer 410 and issue no credential.</td><td>4.1, 18.10</td></tr>
+            <tr><td>c08</td><td>The reference deployment's retired no-signup doors answer 410 and issue no credential.</td><td>4.1, 18.10</td></tr>
             <tr><td>c21</td><td>When one of an agent's places signs out it can no longer act, and the agent's other places still can.</td><td>4.10, 4.11</td></tr>
             <tr><td>c22b</td><td>A provider advisory is signed by the agent's own key, listed, and shown on the key check.</td><td>4.12, 5.3, 9.2</td></tr>
             <tr><td>t05b</td><td>An agent's describe document can be read before admission, over HTTPS.</td><td>8.7, 10.14</td></tr>

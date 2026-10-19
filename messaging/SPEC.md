@@ -2,11 +2,11 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.1-draft
+**Version:** 0.9.2-draft
 **Status:** Working Draft
-**Date:** 2026-10-17
+**Date:** 2026-10-18
 
-> The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6). AgentMesh, the sponsor, runs a network that claims the full specification.
+> The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
 > Revision notes for this draft are kept in the [Change History](#change-history) at the end of this document.
 
@@ -64,12 +64,12 @@ Agent Messaging is designed to compose with the emerging agent ecosystem, not re
 
 - *Own (boundary):* the cryptographic root of trust, which is per-agent Ed25519 keys, the operator/node/agent attestation chain, DNS-anchored operator identity, and always-signed envelopes. This is what neither ARD nor A2A provides on its own. Agent Messaging's *on-mesh* trust stays signature-chain based; it does **not** adopt X.509/CA machinery internally.
 - *Cede:* the **auth-advertisement format** to A2A's Agent Card, and cross-ecosystem *catalog* naming to ARD's `urn:air:<publisher>:<namespace>:<agent>` scheme (with the operator's DNS domain as the `publisher`).
-- *Own (naming):* human-handleable **naming** is no longer ceded outward. AgentMesh ships its own naming service, **PAN**, specified normatively in the companion **`SPEC-NAMING.md`**: a handle anchored to a verified email, bound to the agent's Ed25519 key, resolving to a registrar-signed card that consumers verify and pin.
+- *Own (naming):* human-handleable **naming** is no longer ceded outward. Agent Messaging has its own naming standard, **Personal Agent Naming** (PAN), specified normatively in the companion **`SPEC-NAMING.md`**: a handle anchored to a verified email, bound to the agent's Ed25519 key, resolving to a registrar-signed card that consumers verify and pin.
 - *Leverage / express:* the same Ed25519 identity is intended to be expressed as a `did:key` and carried in ARD's TrustManifest (the attestation chain as its `attestations`); a signed Agent Messaging manifest is, by construction, a signed A2A Agent Card. For *cross-organizational* trust, an agent MAY additionally carry a domain-anchored **ANS** identity: Agent Messaging's operator DNS anchor (§4.1) aligns with ANS's domain anchoring, `did:key` bridges the two (ANS accepts a DID as a principal binding), and ANS's domain-anchored model plus its SCITT transparency log are directly relevant to Federation (§21). *(Open decisions: whether to adopt `did:key`, `urn:air:`, and/or an ANS identity as external expressions. SPIFFE is a different model, workload identity via a trust domain, and is not currently planned.)*
 
 **Payments and commerce** cut across the economic layer the way identity cuts across discovery. Four specifications divide that space cleanly: UCP answers *what can I buy*, ACP answers *how do I check out safely*, AP2 answers *what is this agent allowed to spend*, and x402 answers *how does value move, machine to machine*. Agent Messaging answers none of those questions, on purpose. Its economic surface is deliberately thin: cost expression as an extension field (Section 17), budget and allowance registration (EXT-8), and one typed refusal, *payment required*, whose data names the price and the **accepted settlement methods** as an extensible array. Everything below that line is settlement, and settlement is ceded. What Agent Messaging contributes is the layer none of the four define: **metering and netting**. Agent-to-agent obligations are high-frequency and sub-cent, a regime where per-transaction settlement on any external rail (card or chain) pays overhead that dwarfs the amounts; an instance therefore clears them on an internal ledger and settles at the edges, in lumps. The ledger is an operator service, not protocol surface: the protocol defines the shape of the demand, never the movement of the money. No card data, wallet key, or mandate ever crosses the mesh surface.
 
-- **x402**: machine-to-machine payment demands over HTTP 402, settled in stablecoins. *Leverage:* the interaction shape, a typed payment-required refusal that carries how-to-pay, machine-readably. AgentMesh's gateway refusal (BRIDGE-A2A.md §9.1) is deliberately the same shape, and its `accepted` array is designed so an x402 method entry (chain, asset, address) drops in beside the platform-ledger entry without changing any consumer. *Cede:* on-chain settlement, wallet custody, transaction construction and verification. x402 is the authority for value movement machine-to-machine. *Boundary:* netting; x402 is a top-up and payout rail at the ledger's edge, never the per-call mechanism.
+- **x402**: machine-to-machine payment demands over HTTP 402, settled in stablecoins. *Leverage:* the interaction shape, a typed payment-required refusal that carries how-to-pay, machine-readably. The A2A Bridge's gateway refusal (BRIDGE-A2A.md §9.1) is deliberately the same shape, and its `accepted` array is designed so an x402 method entry (chain, asset, address) drops in beside the platform-ledger entry without changing any consumer. *Cede:* on-chain settlement, wallet custody, transaction construction and verification. x402 is the authority for value movement machine-to-machine. *Boundary:* netting; x402 is a top-up and payout rail at the ledger's edge, never the per-call mechanism.
 - **AP2 (Agent Payments Protocol)**: cryptographically scoped, revocable spending mandates over established fiat rails. *Leverage:* the mandate model as the reference for portable spending authority; EXT-8 allowances are the mesh-native, platform-registered analogue (visibility, not enforcement). *Cede:* fiat settlement, its regulatory envelope, and mandate issuance, verification, and revocation. AP2 is the authority for authorized spending on banking rails. *Boundary:* identity-bound refusal and in-envelope budget expression; honoring a verified AP2 mandate as an EXT-8 allowance is edge-mapping work in the BRIDGE-A2A pattern, not core surface.
 - **UCP (Universal Commerce Protocol)**, discovery-to-cart for goods commerce, is an explicit **non-overlap**, like MCP: the mesh registry catalogs *capabilities*, not SKUs, and carts, variants, and inventory never enter this protocol. UCP traffic rides opaquely in payloads. What Agent Messaging offers a UCP-speaking merchant agent is reach, identity, and presence. It offers nothing about shopping.
 - **ACP (Agentic Commerce Protocol)**, checkout execution via scoped shared payment tokens, is likewise a **non-overlap** in core. It intersects only at an instance's funding edge: where an operator sells ledger credit for money, an ACP-style checkout is a natural funding method behind the ledger's `purchase` postings. Its tokens are between buyer, merchant, and processor; the mesh never sees one.
@@ -107,7 +107,7 @@ Two kinds of party implement this specification. Agents, nodes and SDKs carry th
 There are two profiles:
 
 - **The core profile** is what every Agent Messaging server MUST implement. A server that implements it MAY say that it implements "Agent Messaging 0.8, core profile".
-- **The full specification** is the core profile together with every deployment-defined part below, each implemented as this document describes it. The Agent Messaging Server, the reference implementation, implements the core profile. AgentMesh, the sponsor, runs a network that claims the full specification.
+- **The full specification** is the core profile together with every deployment-defined part below, each implemented as this document describes it. The Agent Messaging Server, the reference implementation, implements the core profile.
 
 A part is **deployment-defined** when the core profile does not require it, either because it depends on things a server need not have (human accounts, organizations, a naming service, a billing provider) or because the way it is met is the deployment's choice. Three rules apply:
 
@@ -166,7 +166,7 @@ The identity parts above (§4.12's stop signals, §4.14 to §4.16, `identity_sou
 
 ## 2. Terminology
 
-- **Agent Messaging:** The open protocol defined by this specification: a signed, mesh-native protocol for agent-to-agent communication that provides identity, discovery, request/response, events, presence, and a task model over a messaging transport. "Agent Messaging" names the *protocol*; a **Mesh** (below) is a running network that speaks it, and an **instance** is one operator's deployment of that network. The Agent Messaging Server is its reference implementation, and AgentMesh is its sponsor. Some wire identifiers carry the AgentMesh name (the `agentmesh-` signature tags and the `mesh.` subjects among them).
+- **Agent Messaging:** The open protocol defined by this specification: a signed, mesh-native protocol for agent-to-agent communication that provides identity, discovery, request/response, events, presence, and a task model over a messaging transport. "Agent Messaging" names the *protocol*; a **Mesh** (below) is a running network that speaks it, and an **instance** is one operator's deployment of that network. The Agent Messaging Server is its reference implementation. Some wire identifiers keep the names they were drafted under (the `agentmesh-` signature tags and the `mesh.` subjects among them).
 - **Agent:** An autonomous software entity that communicates via Agent Messaging. Agents are opaque: the protocol does not require knowledge of their internal implementation. An agent has its own cryptographic keypair; its public key is its **agent ID**. An agent is always **hosted by a Node**. An agent answers for itself: the five questions and the consistency rule of §3.3.1 are what distinguish an agent from a tool.
 - **Node:** A host that maintains a transport connection to the mesh and serves one or more agents over it. The Node holds the transport credential and **vouches** for the agents it hosts (see Section 4). A Node has its own keypair (the **node ID**). One always-on host (e.g. a personal gateway or a machine running an agent fleet) is one Node hosting N agents.
 - **Mesh Server:** The infrastructure role a node's connection terminates at. A mesh server routes messages, verifies node credentials at connection time, enforces subject-level authorization and tenant isolation on every operation, and provides durable delivery, the task store, and the presence substrate. It is run by the instance's operator, hosts no agents, and vouches for nothing. A mesh server is the opposite of a node in almost every respect. In the reference binding a mesh server is a NATS server (Section 18.2); its client↔server wire protocol is defined by the binding, not by this document (§18.1).
@@ -4341,7 +4341,7 @@ For critical operations (task state transitions, artifact delivery):
 
 A client should never need to ship with transport addresses. A mesh **instance**
 (§2) is identified by one stable name, its control plane's HTTPS origin (its
-*mesh home*, e.g. `https://api.agentmesh.ai`), and everything else is learned
+*mesh home*, e.g. `https://api.mesh.example.com`), and everything else is learned
 from it at credential time.
 
 Every credential-issuing response of the control plane (app connect, app
@@ -4352,15 +4352,15 @@ where an instance offers a sandbox, §4.1) MUST include a `mesh` object:
 {
   "jwt": "…", "seed": "…", "publicKey": "…",
   "mesh": {
-    "name": "agentmesh.ai",
+    "name": "mesh.example.com",
     "protocol": "0.3",
     "endpoints": [
-      "nats://mesh.agentmesh.ai:4222",
-      "ws://mesh.agentmesh.ai:4443"
+      "nats://nats.mesh.example.com:4222",
+      "ws://nats.mesh.example.com:4443"
     ],
     "nats_endpoints": [
-      "nats://mesh.agentmesh.ai:4222",
-      "ws://mesh.agentmesh.ai:4443"
+      "nats://nats.mesh.example.com:4222",
+      "ws://nats.mesh.example.com:4443"
     ]
   }
 }
@@ -4397,7 +4397,7 @@ not a NATS address.
 *Addressing note (federation seam, §21):* because agent keys are self-minted
 and portable, an agent ID alone does not name a location; **agent ID + mesh
 instance** does. The RECOMMENDED written form for cross-context handles is
-`<agent-public-key>@<mesh-name>` (e.g. `UAB4K2…@agentmesh.ai`). Within a single
+`<agent-public-key>@<mesh-name>` (e.g. `UAB4K2…@mesh.example.com`). Within a single
 instance the domain part is implicit and MAY be omitted.
 
 ---
@@ -6283,8 +6283,8 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > version stays `0.3.0` (§20.1). The note under the title, §1.6 and the
 > definition of Agent Messaging in §2 now name the Agent Messaging Server as
 > the reference implementation, which implements the core profile, and
-> AgentMesh as the sponsor, which runs a network that claims the full
-> specification. The wire identifiers that carry the AgentMesh name keep it.
+> the sponsor, which runs a network that claims the full specification.
+> The wire identifiers that carry the sponsor's name keep it.
 
 > **2026-10-13: Agent Messaging 0.8 (Version 0.8.0). Bring your own identity.**
 > New §4.13 states seven rules that no identity system changes: every
@@ -6377,3 +6377,11 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > `conformance/audience.json` gains the door's cases and a pre-flight case
 > for each `acts_for`, and its checker states the new rules. The wire version
 > stays `0.3.0` (§20.1).
+
+> **2026-10-18: Version 0.9.2-draft. Editorial.** The specification names no
+> platform: the note under the title, §1.6 and the definition of Agent
+> Messaging in §2 name the Agent Messaging Server as the reference
+> implementation and no sponsor, the §1.3 notes on naming and on x402 name
+> Personal Agent Naming and the A2A Bridge, and the examples of §18.10 use
+> `mesh.example.com`. No requirement, field, wire identifier or section
+> number changes. The wire version stays `0.3.0` (§20.1).

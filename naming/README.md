@@ -6,7 +6,7 @@ Personal Agent Naming is a Common Agent Standard, kept in the [Common Agent Stan
 
 ## What is here
 
-- [SPEC-NAMING.md](SPEC-NAMING.md): the specification, version 0.10, status Published.
+- [SPEC-NAMING.md](SPEC-NAMING.md): the specification, version 0.10.1, status Published.
 - [conformance/](conformance/): the conformance fixtures and checks.
 - [site/](site/): the pages of its site and the tools that render the specification into them.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
@@ -14,7 +14,7 @@ Personal Agent Naming is a Common Agent Standard, kept in the [Common Agent Stan
 ## Versions
 
 Each version is tagged as `naming-v` followed by the version, such as
-`naming-v0.10`, and has a release on GitHub. The site of the standard is
+`naming-v0.10.1`, and has a release on GitHub. The site of the standard is
 <https://agentnaming.ai/>.
 
 ## Licence
