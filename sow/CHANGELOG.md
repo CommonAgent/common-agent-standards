@@ -4,6 +4,19 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.28.0-draft (2026-10-20)
+
+A lost void is recovered. In the formation of
+§5.8 the acknowledgement and the receipt were re-sent and the void was not,
+so a counterparty that never received a void went on applying the voided
+version while the proposer applied the current one. The counterparty now
+sends a receipt for every copy of a void, the proposer re-sends the void at
+least daily until it holds that receipt, and the proposer answers any request
+that names the voided version with the void itself, in place of admitting
+it. `conformance/sow-amendment-formation.json` gains a lost void recovered
+by each of the two means. The minor version moves because a proposer built
+against 0.27.0-draft does neither.
+
 ## 0.27.0-draft (2026-10-20)
 
 Which review window governs a proposal, and

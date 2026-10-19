@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.27.0-draft
+**Version:** 0.28.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -1376,7 +1376,9 @@ and each side knows at every moment which version governs for it:
    receipt of it. It sends a receipt again for every copy of the
    acknowledgement it receives.
 3. **The void.** A proposer that holds no receipt when the acknowledgement's
-   deadline passes sends a signed void, and the formation is undone.
+   deadline passes sends a signed void, and the formation is undone. The
+   counterparty sends the proposer a signed receipt of every copy of the
+   void it receives, as it does for an acknowledgement.
 
 What governs on each side:
 
@@ -1384,7 +1386,7 @@ What governs on each side:
 |---|---|---|
 | Proposer | the approval and its own acknowledgement, no receipt | **formed, unacknowledged**: the new version for any request that names it, the current version for its own new acts |
 | Proposer | the receipt | the new version |
-| Proposer | no receipt at the deadline | the current version, and it sends the void |
+| Proposer | no receipt at the deadline | the current version; it sends the void, re-sends it daily until it holds a receipt of it, and answers any request that names the voided version with the void |
 | Counterparty | no acknowledgement | the current version |
 | Counterparty | the acknowledgement | the new version, until it holds a void |
 | Counterparty | a void | the current version, from the instant it receives it |
@@ -1396,8 +1398,22 @@ work the counterparty sent under the new version, before a receipt arrived
 or after one was lost, is honoured as sent. The proposer MUST re-send the
 acknowledgement at least once a day until it holds a receipt or the deadline
 passes, so one lost message does not undo a formation that both sides
-wanted. A void undoes the formation for work admitted after the counterparty
-receives it. Work admitted under the new version before then stays
+wanted.
+
+A void can be lost too, and a counterparty that never receives it would go
+on applying the voided version while the proposer applies the current one.
+Two rules close that:
+
+- The proposer MUST re-send the void at least once a day until it holds the
+  counterparty's receipt of the void.
+- The proposer MUST answer any request that names the voided version with a
+  copy of the void, in place of admitting it. A counterparty that receives
+  the void that way applies the current version from then on, and may send
+  the request again under it.
+
+So the counterparty learns of the void at the latest when it next sends work
+under the voided version, and the proposer never admits that work. A void
+undoes the formation for work admitted after the counterparty receives it. Work admitted under the new version before then stays
 evidenced and priced under the new version, as §5.8 keeps work admitted
 under any version.
 
@@ -2932,6 +2948,17 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.28.0-draft** (2026-10-20). A lost void is recovered. In the formation of
+§5.8 the acknowledgement and the receipt were re-sent and the void was not,
+so a counterparty that never received a void went on applying the voided
+version while the proposer applied the current one. The counterparty now
+sends a receipt for every copy of a void, the proposer re-sends the void at
+least daily until it holds that receipt, and the proposer answers any request
+that names the voided version with the void itself, in place of admitting
+it. `conformance/sow-amendment-formation.json` gains a lost void recovered
+by each of the two means. The minor version moves because a proposer built
+against 0.27.0-draft does neither.
 
 **0.27.0-draft** (2026-10-20). Which review window governs a proposal, and
 what governs while a formation is acknowledged.

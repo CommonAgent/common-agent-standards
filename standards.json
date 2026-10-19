@@ -114,9 +114,9 @@
       "spec": "sow/SPEC.md",
       "domain": "agentsow.com",
       "site": "https://agentsow.com/",
-      "version": "0.27.0-draft",
+      "version": "0.28.0-draft",
       "status": "Working Draft",
-      "tag": "sow-v0.27.0-draft",
+      "tag": "sow-v0.28.0-draft",
       "builder": "sow/site/tools/build-spec.mjs",
       "summary": "An Agent SoW is a statement of work between two parties whose agents do recurring work together, written so that software can grade its clauses. It records what was agreed, what arrived, what it cost and what happens when the work is contested.",
       "parts": [
