@@ -4,6 +4,24 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.29.0-draft (2026-10-20)
+
+The bytes of the formation messages. §5.8
+named the acknowledgement, the receipt and the void and did not define them.
+Each is now a JSON object with a closed set of members: `kind`,
+`engagement`, `version`, the `digest` of the approved replacement's signed
+bytes, `formed` on an acknowledgement, `deadline` on a formed acknowledgement
+and on a void, `of` on a receipt, `by`, `key`, `signed_at` and `sig`. Its
+signed bytes are the prefix `agent-sow-formation-v1`, one newline, and the
+JCS of the message without `sig`, so a message signature can never be read
+as a document signature. An acknowledgement and a void come from the
+proposer's seat and a receipt from the counterparty's, each signed with that
+seat's `owner_key`, and `sig` is the canonical padded base64 of §6. A new
+fixture, `conformance/sow-formation-messages.json`, pins the bytes with real
+signatures, the four valid messages and an unformed acknowledgement, and ten
+refusals. The minor version moves because a runtime built against
+0.28.0-draft does not produce or check these bytes.
+
 ## 0.28.0-draft (2026-10-20)
 
 A lost void is recovered. In the formation of

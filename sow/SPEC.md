@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.28.0-draft
+**Version:** 0.29.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -1416,6 +1416,54 @@ under the voided version, and the proposer never admits that work. A void
 undoes the formation for work admitted after the counterparty receives it. Work admitted under the new version before then stays
 evidenced and priced under the new version, as §5.8 keeps work admitted
 under any version.
+
+**The bytes of a formation message.** Each of the three messages is a JSON
+object, signed on its own:
+
+```json
+{
+  "kind": "acknowledgement",
+  "engagement": "sow_k7m2q4x9w3e6r8t1",
+  "version": 4,
+  "digest": "sha256:62df3950499510461ab8d7bb2976e1824df3bb88a4b37c5eb6f8fde5f90c403a",
+  "formed": true,
+  "deadline": "2026-09-23T12:00:00Z",
+  "by": "provider",
+  "key": "<owner public key>",
+  "signed_at": "2026-09-16T12:00:05Z",
+  "sig": "<base64>"
+}
+```
+
+- `kind` is `acknowledgement`, `receipt` or `void`.
+- `engagement` and `version` name the engagement and the proposed version.
+- `digest` is `sha256:` and the 64 lowercase hex digits of the SHA-256 of
+  the signed bytes (§6) of the approved replacement, the bytes the
+  counterparty countersigned. Every message about one approval names the
+  same digest.
+- `formed` appears on an acknowledgement only, and says whether the version
+  formed.
+- `deadline` appears on an acknowledgement whose `formed` is true, where it
+  is REQUIRED, and on a void, which names the deadline it voids at. It
+  appears on no other message.
+- `of` appears on a receipt only, and says what it receives: `acknowledgement`
+  or `void`.
+- `by` is the seat that sends the message, `provider` or `client`. An
+  acknowledgement and a void come from the proposer's seat and a receipt from
+  the counterparty's. `key` is that seat's `owner_key` (§5.1), and a message
+  signed with any other key is refused.
+- `signed_at` is the instant the sender signed. The rules of §5.8 count
+  from the instants each side receives messages, so `signed_at` is a record
+  and counts nothing.
+- `sig` is the Ed25519 signature over the message's signed bytes, in the
+  canonical padded base64 of §6.
+
+A message carries only these members, and a runtime MUST refuse one that
+carries any other or that breaks a rule above. Its **signed bytes** are the
+ASCII prefix `agent-sow-formation-v1`, one newline, and the JCS canonical
+JSON of the message with `sig` removed. The prefix differs from the
+document's `agent-sow-v1` (§6), so a signature over a formation message can
+never be read as a signature over a document, and the reverse.
 
 The proposer MAY withdraw an open proposal before it is resolved; withdrawal
 is recorded like the other outcomes.
@@ -2948,6 +2996,22 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.29.0-draft** (2026-10-20). The bytes of the formation messages. §5.8
+named the acknowledgement, the receipt and the void and did not define them.
+Each is now a JSON object with a closed set of members: `kind`,
+`engagement`, `version`, the `digest` of the approved replacement's signed
+bytes, `formed` on an acknowledgement, `deadline` on a formed acknowledgement
+and on a void, `of` on a receipt, `by`, `key`, `signed_at` and `sig`. Its
+signed bytes are the prefix `agent-sow-formation-v1`, one newline, and the
+JCS of the message without `sig`, so a message signature can never be read
+as a document signature. An acknowledgement and a void come from the
+proposer's seat and a receipt from the counterparty's, each signed with that
+seat's `owner_key`, and `sig` is the canonical padded base64 of §6. A new
+fixture, `conformance/sow-formation-messages.json`, pins the bytes with real
+signatures, the four valid messages and an unformed acknowledgement, and ten
+refusals. The minor version moves because a runtime built against
+0.28.0-draft does not produce or check these bytes.
 
 **0.28.0-draft** (2026-10-20). A lost void is recovered. In the formation of
 §5.8 the acknowledgement and the receipt were re-sent and the void was not,

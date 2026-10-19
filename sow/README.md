@@ -6,7 +6,7 @@ Agent SoW is a Common Agent Standard, kept in the [Common Agent Standards reposi
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.28.0-draft, status Working Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.29.0-draft, status Working Draft.
 - [SPEC-A2A-TERMS.md](SPEC-A2A-TERMS.md): A2A Terms extension, version 0.1.1-draft.
 - [SPEC-A2A-INTERVIEW.md](SPEC-A2A-INTERVIEW.md): A2A Interview extension, version 0.1.1-draft.
 - [conformance/](conformance/): the test fixtures for the clauses on pricing, data use, the Agent NDA reference, disputes, reporting, subcontracting, liability and service floors, which software that grades an Agent SoW checks itself against.
