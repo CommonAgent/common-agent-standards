@@ -17,6 +17,8 @@
 //   standards.html   every Common Agent Standard and guide, under the groups
 //                    standards.json lists, one card each with its version, its
 //                    status, its own site and its folder on GitHub
+//   purchase-order.html  why there is no Agent Purchase Order: where each job
+//                    of a purchase order lives in the suite instead
 //
 // The cards are made from standards.json. What is written by hand is the few
 // sentences that say what the suite is, the sentence under each group's name
@@ -396,6 +398,85 @@ export function renderAgent({ draft = false } = {}) {
   });
 }
 
+/** purchase-order.html: why the suite has no Agent Purchase Order, and where
+ *  each job of a purchase order lives instead. */
+export function renderPurchaseOrder({ draft = false } = {}) {
+  const title = "Agent Purchase Order";
+  const description = "There is no separate Agent Purchase Order specification. The authority to spend lives in Agent Mandate, the commitment to a provider is the formation of an Agent SoW engagement, the money is set aside by the engagement's reservation, and the client's purchase order number travels on every record as the buyer's reference.";
+  const MANDATE = "https://agentmandate.net/spec.html";
+  const SOW = "https://agentsow.com/spec.html";
+  const jobs = [
+    { key: "Authority", icon: "mandate", colour: "c-violet",
+      p: `The authority to spend lives in <a href="https://agentmandate.net/">Agent Mandate</a>. A mandate puts one line of spending authority in writing: who may commit the organization, to which kinds of act, and up to how much per engagement and per month (<a href="${MANDATE}#s6">Section 6</a>). The platform checks it every time its holder approves an act (<a href="${MANDATE}#s7">Section 7</a>).` },
+    { key: "Commitment", icon: "sow", colour: "c-blue",
+      p: `The commitment to a provider is the formation of an <a href="https://agentsow.com/">Agent SoW</a> engagement. Both owners sign the same document, which fixes the scope, the deliverables, the price and the term (<a href="${SOW}#s12-1">Section 12.1</a> and <a href="${SOW}#s6">Section 6</a>).` },
+    { key: "Funds", icon: "layers", colour: "c-mint",
+      p: `The money is set aside when a time and materials engagement forms. The engagement reserves its full cap for a stated window, and the Agent SoW specification describes that arrangement as a purchase order (<a href="${SOW}#s5-5-4">Section 5.5.4</a>). Where a mandate names the organization as payer, the money comes from the organization's treasury (<a href="${MANDATE}#s8">Agent Mandate Section 8</a>).` },
+    { key: "Reference", icon: "rfp", colour: "c-amber",
+      p: `The client's own purchase order number travels as the engagement's optional <code>buyer_reference</code>. The client sets it when it signs, and every settlement record and receipt issued under the engagement carries it unchanged (<a href="${SOW}#s5-17">Section 5.17</a>).` },
+  ];
+  return shell({
+    file: "purchase-order.html", active: "purchase-order", title: `${title}: ${SUITE.suite}`, description, ogType: "article",
+    body: `      <header class="herobg">
+      <div class="wrap hero">
+        <h1>${esc(title)}</h1>
+        <p class="lede">The Common Agent Standards have no separate Agent Purchase Order
+          specification. A purchase order does three jobs, and each of them already has a home
+          in the suite. The one thing a company's books still need, its own purchase order
+          number, travels with every charge.</p>
+        <p class="version">${stampFor(draft)}</p>
+      </div>
+      </header>
+
+      <section class="band tinted" id="jobs">
+        <div class="wrap">
+          <h2>A purchase order does three jobs, and each one has a home</h2>
+          <p>In a company, a purchase order gives someone the authority to commit money, commits
+            the company to one provider for defined work, and sets the money aside before any
+            invoice arrives. Its number then lets the accounting system match every invoice
+            back to it. When agents contract work under the Common Agent Standards, each of
+            those things happens in one of the places below.</p>
+          <ol class="problems">
+            ${jobs.map((x) => `<li class="${x.colour}"><h3 class="key">${ico(ICONS[x.icon])}${x.key}</h3><p>${x.p}</p></li>`).join("\n            ")}
+          </ol>
+        </div>
+      </section>
+
+      <section class="band" id="reference">
+        <div class="wrap">
+          <h2>The buyer's reference carries the purchase order number</h2>
+          <p>Many clients match each charge to a purchase order before they pay it. An Agent SoW
+            engagement can carry the client's own reference, such as
+            <code>PO-2026-004417</code>, in its optional <code>buyer_reference</code> member. The
+            client supplies it when it signs, both signatures cover it, and it changes only by
+            amendment. The platform that runs the engagement does not interpret it. It copies the
+            reference unchanged onto every settlement record and onto every task receipt for work
+            admitted under the engagement, so the client's accounting system can match each
+            charge without asking the provider. The rules are in
+            <a href="${SOW}#s5-17">Section 5.17 of Agent SoW</a>, and the task receipt that carries
+            it is in Section 19.2 of <a href="https://agentmessaging.ai/">Agent Messaging</a>.</p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="why">
+        <div class="wrap">
+          <h2>A separate purchase order document would repeat what the others already say</h2>
+          <p>A purchase order document would restate the authority that the mandate grants, the
+            commitment that the engagement records and the funds that its reservation holds. Two
+            documents that state the same commitment can disagree, and then a reader has to decide
+            which one governs. With each job kept in one place, there is one signed answer to
+            each question: who may spend, what was agreed, how much is held, and which purchase
+            order a charge belongs to.</p>
+          <p>The contracting standards are described together on
+            <a href="/standards.html#contracting">every standard</a>, where
+            <a href="https://agentrfp.net/">Agent RFP</a>, <a href="https://agentnda.net/">Agent NDA</a>
+            and <a href="https://agentreputations.com/">Agent Reputations</a> sit beside the two named
+            here.</p>
+        </div>
+      </section>`,
+  });
+}
+
 /** standards.html: every entry of standards.json, under its group. */
 export function renderStandards({ draft = false } = {}) {
   const standards = SUITE.standards.filter((s) => s.kind === "standard");
@@ -483,6 +564,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   writeFileSync(resolve(out, "index.html"), renderHome({ draft }));
   writeFileSync(resolve(out, "agent.html"), renderAgent({ draft }));
   writeFileSync(resolve(out, "standards.html"), renderStandards({ draft }));
+  writeFileSync(resolve(out, "purchase-order.html"), renderPurchaseOrder({ draft }));
   copySuiteAssets(out);
-  console.log(`index.html, agent.html and standards.html written to ${out}`);
+  console.log(`index.html, agent.html, standards.html and purchase-order.html written to ${out}`);
 }
