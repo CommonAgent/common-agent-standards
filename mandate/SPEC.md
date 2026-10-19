@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.6.1-draft
+**Version:** 0.7.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -289,6 +289,13 @@ Rules:
    and rendered as such.
 5. `name` is prose. Anything that displays a charter MUST display the
    domain with at least equal prominence: the domain is the verified part.
+6. `domain` is fixed for the life of a charter. An amendment at version N+1
+   MAY change anything else, and MUST NOT change `domain`. An organization
+   that moves to a new domain writes a new charter, with its own
+   identifier and its own domain proof, because the domain is the part a
+   counterparty verified, and a charter whose domain could change would
+   carry a verification it never had. A registry MUST refuse an amendment
+   that changes `domain`. Grade: `enforced` at the registry.
 
 ## 6. The mandate
 
@@ -362,8 +369,12 @@ Rules:
    `scope.nda_categories` (rule 8), no wider means this: where the
    issuer's mandate carries the list, the sub-mandate MUST carry it too,
    and every category in it MUST appear in the issuer's list. Where the
-   issuer's mandate carries no list, the sub-mandate MAY carry one. A
-   registry MUST refuse a sub-mandate that widens anything. Authority narrows going
+   issuer's mandate carries no list, the sub-mandate MAY carry one.
+   `scope.resources` (rule 9) narrows the same way: where the issuer's
+   mandate carries the list, the sub-mandate MUST carry it too, and every
+   pattern in it MUST be covered by a pattern in the issuer's list, as rule 9
+   defines covering. A registry MUST refuse a sub-mandate that widens
+   anything. Authority narrows going
    down; it never widens. Grade: `enforced` at the registry.
 4. **Powers.** `form` covers countersigning an engagement into existence;
    `amend` covers approving amendments; `terminate` covers ending
@@ -404,6 +415,20 @@ Rules:
    is present, it MUST be non-empty, MUST contain only Agent NDA §5.4
    categories, and MUST NOT repeat one. The check that reads it is §7.2's,
    and so is its grade.
+9. **Resources.** A mandate MAY carry `scope.resources`, a list of patterns
+   over the resource names a grant made `via: "proxy"` uses (Agent SoW
+   §5.3.1), in the style of `scope.offerings`. A pattern is a resource name,
+   which matches that name exactly, or a prefix followed by `*`, which
+   matches every name that begins with the prefix; `*` alone matches every
+   name. One pattern covers another when it matches every name the other
+   matches. The list narrows the `write` and `amend` powers for a mutating
+   act through a resource proxy to the resources its patterns match (§7.1).
+   A mandate without the list places no limit on resources, so mandates
+   written before this rule keep the authority they had. Where the list is
+   present it MUST be non-empty, each pattern MUST be a resource name or a
+   prefix followed by a single trailing `*`, and no pattern may repeat. A
+   registry MUST refuse a mandate whose list breaks those rules. Grade:
+   `enforced` at the registry, and the check that reads it is §7.1's.
 
 A chain verifies from the documents alone. A verifier holding the charter
 and every mandate in the chain checks each sub-mandate's signature against
@@ -446,7 +471,9 @@ that check:
    resource proxy, the power the grant names or `write` (§7.1).
 4. The engagement's committed price is within `per_engagement`, and the
    holder's month-to-date formed total stays within `per_month`.
-5. The engagement's offerings fall within the mandate's scope.
+5. The engagement's offerings fall within the mandate's scope, and, for a
+   mutating act through a resource proxy, the resource falls within
+   `scope.resources` where the mandate carries it (§6 rule 9, §7.1).
 
 If any check fails, the platform refuses with the failing check named.
 Where formation completes on a platform that can hold it pending, all
@@ -513,6 +540,15 @@ takes, and the proxy reads the answer from signed bytes. A grant whose
 caller the authority to form an engagement, award a posting, act on an Agent
 NDA or issue mandates. Grade: `enforced` at the proxy that runs the check, as
 above.
+
+**Which resources a mandate reaches.** The grant sets which power a write
+needs, and the caller's organization sets which resources its holder may
+write to at all. Where the caller's mandate carries `scope.resources` (§6
+rule 9), a proxy MUST answer a mutating act only when the resource the act
+targets matches one of the list's patterns, whichever power the act needs,
+`write` or `amend`, and MUST refuse it otherwise, naming the scope as the
+failing check. A mandate without the list reaches every resource its powers
+cover. A read is answered on the grant alone, so the list never limits it.
 
 Apart from which power a write needs, nothing new is defined here. The
 mandate, its chain, and its check are §6 and §7's; the proxy is simply a counterparty that chose to run it at the
@@ -933,3 +969,20 @@ and the example names a person by display name.*
 *The minor version moves because a registry built against 0.5.1-draft
 accepts a mandate holding `nda` without `holder.key`, which this version
 refuses.*
+
+*0.7.0-draft (2026-10-20): the resources a write may reach, and a fixed
+domain. A mandate MAY carry `scope.resources`, a list of patterns over the
+resource names a grant made `via: "proxy"` uses, in the style of
+`scope.offerings` (§6 rule 9). A proxy answers a mutating act, under `write`
+or `amend`, only on a resource the list matches (§7.1, §7 check 5), and a
+sub-mandate narrows the list as it narrows the rest of its scope (§6 rule
+3). Absent, the list places no limit, so earlier mandates keep their
+authority. Before, the `write` power reached every resource granted through
+a proxy to the holder's organization, and neither the organization nor a
+sub-mandate could narrow it. §5 rule 6 says that a charter amendment MUST
+NOT change `domain`: a new domain is a new charter. A new fixture,
+`conformance/mandate-scope.json`, pins the patterns, covering, narrowing and
+the registry's refusals, and `conformance/mandate-proxy.json` gains cases
+for the check at the proxy. The minor version moves because a checker built
+against 0.6.1-draft does not read `scope.resources`, and this version
+requires it to.*
