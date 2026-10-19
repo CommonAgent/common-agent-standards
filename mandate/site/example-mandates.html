@@ -103,7 +103,7 @@
               <div class="row"><dt>Organization</dt><dd>Harbor &amp; Line Outfitters, under its charter</dd><span></span></div>
               <div class="row"><dt>Issuer</dt><dd>Root authority</dd><span class="grade c-blue">evidence</span></div>
               <div class="row"><dt>Holder</dt><dd><b>Marisol Vega</b>, mari@harborandline.example<span class="sub"><span class="lbl">Account</span>acct_2c9f7e1a</span><span class="sub"><span class="lbl">Key</span>her public key, named here because she may sub-delegate</span></dd><span class="grade c-blue">evidence</span></div>
-              <div class="row"><dt>Powers</dt><dd>Form, amend, terminate and award</dd><span class="grade c-mint">enforced</span></div>
+              <div class="row"><dt>Powers</dt><dd>Form, amend, terminate, award and nda</dd><span class="grade c-mint">enforced</span></div>
               <div class="row"><dt>Ceilings</dt><dd>Up to 50,000,000 XCR per engagement, and at most 200,000,000 XCR a month</dd><span class="grade c-mint">enforced</span></div>
               <div class="row"><dt>Scope</dt><dd>Offerings matching audit-freight-*, for logistics purchasing only</dd><span class="grade c-mint">enforced</span></div>
               <div class="row"><dt>Payer</dt><dd>The organization. Engagements she approves settle from Harbor &amp; Line&rsquo;s balance</dd><span class="grade c-mint">enforced</span></div>
@@ -115,7 +115,7 @@
           </figure>
           <p>Each bound means one plain thing.</p>
           <ul class="plain">
-            <li>The <b>powers</b> say what kinds of act she may approve. The power to form covers countersigning an engagement into existence, the power to amend covers approving amendments, the power to terminate covers ending engagements, and the power to award covers awarding an RFP posting. That is why her September 9 award of Caldera's response in the Agent RFP example is in order.</li>
+            <li>The <b>powers</b> say what kinds of act she may approve. The power to form covers countersigning an engagement into existence, the power to amend covers approving amendments, the power to terminate covers ending engagements, and the power to award covers awarding an RFP posting. That is why her September 9 award of Caldera's response in the Agent RFP example is in order. The power named nda covers every act on an <a href="https://agentnda.net">Agent NDA</a> for the company, so she may sign the open offer that gates the freight-audit posting.</li>
             <li>The <b>ceilings</b> say how much. No single engagement she approves may carry a committed price above 50,000,000 XCR, and no more than 200,000,000 XCR of formed commitments may fall in any calendar month. Both are checked at approval time.</li>
             <li>The <b>scope</b> says over what. It covers only engagements whose offerings match <code>audit-freight-*</code>, so she cannot buy bookkeeping under this document.</li>
             <li>The <b>term</b> says until when. After one year the mandate has no force, and renewing it takes a fresh signature.</li>
@@ -157,7 +157,7 @@
           <figure class="docbox">
             <div class="bar"><b>the chain</b><span>as the registry answers it</span></div>
             <pre><span class="k">root authority</span>   org_7k2m9q4w1x8e5r3t   two allocator keys, threshold 1
-  └ <span class="k">mnd_3f8c1n6z9v4b7q2m</span>   Marisol Vega   form, amend, terminate, award
+  └ <span class="k">mnd_3f8c1n6z9v4b7q2m</span>   Marisol Vega   form, amend, terminate, award, nda
        50M / 200M XCR   audit-freight-*   expires 2027-08-01
        holder key UBVGA3E6...ZJ7B4CDR   checks the signature below
       └ <span class="k">mnd_6d2p9r4s7t1v8w3z</span>   Tom Okafor   form

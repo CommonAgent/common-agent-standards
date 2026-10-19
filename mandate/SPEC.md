@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.4.2-draft
+**Version:** 0.5.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -144,8 +144,9 @@ identifier there, writes it into `id`, and does not derive it again. From
 that moment the identifier is a handle, and other documents hold it by
 value: every mandate names its organization's `org_`, a sub-mandate names
 the mandate it was issued under, an Agent SoW party names `organization` and
-an approval record names `mandate` inside the SoW's signed bytes (§7), a
-draw record names the mandate it settled under (§8), and a revocation act
+an approval record names `mandate` inside the SoW's signed bytes (§7), an
+Agent NDA seat names `organization` and its signature record names
+`mandate` (§7.2), a draw record names the mandate it settled under (§8), and a revocation act
 names what it revokes (§13). Replacing a charter or a mandate at version N+1
 leaves the identifier alone.
 
@@ -298,7 +299,7 @@ the limits change. The delegation document. Tag: `agent-mandate-v1`.
     "person": "mari@harborandline.example",
     "key": "<holder public key>"
   },
-  "powers": ["form", "amend", "terminate", "award"],
+  "powers": ["form", "amend", "terminate", "award", "nda"],
   "ceiling": {
     "currency": "XCR",
     "per_engagement": 50000000,
@@ -334,14 +335,21 @@ Rules:
    mandate its `issuer` names. Grade: `enforced` at the registry.
 3. **Narrowing.** A sub-mandate MUST be at most as broad as its issuer's
    mandate in every dimension: powers a subset, ceilings no higher, scope
-   no wider, expiry no later, depth within `max_depth`. A registry MUST
-   refuse a sub-mandate that widens anything. Authority narrows going
+   no wider, expiry no later, depth within `max_depth`. For
+   `scope.nda_categories` (rule 8), no wider means this: where the
+   issuer's mandate carries the list, the sub-mandate MUST carry it too,
+   and every category in it MUST appear in the issuer's list. Where the
+   issuer's mandate carries no list, the sub-mandate MAY carry one. A
+   registry MUST refuse a sub-mandate that widens anything. Authority narrows going
    down; it never widens. Grade: `enforced` at the registry.
 4. **Powers.** `form` covers countersigning an engagement into existence;
    `amend` covers approving amendments; `terminate` covers ending
    engagements; `award` covers awarding an RFP posting (which leads to
-   `form`); `issue` is implied by `sub_delegation.allowed`. A power not
-   listed is not held.
+   `form`); `nda` covers every act on an Agent NDA for the organization:
+   signing an offer or an open offer, countersigning an offer or accepting
+   an open offer, joining a multilateral agreement, amending, terminating,
+   and withdrawing (§7.2); `issue` is implied by `sub_delegation.allowed`.
+   A power not listed is not held.
 5. **Ceilings.** Amounts use the engagement's price vocabulary (Agent SoW
    §5.5). `per_engagement` bounds a single document's committed price;
    `per_month` bounds the holder's total formed commitments per calendar
@@ -364,6 +372,13 @@ Rules:
    the signed bytes). Revoking a mandate revokes every mandate issued
    under it: a chain dies with its root. Grade: `enforced` at the
    registry from the moment the act is recorded.
+8. **Agent NDA categories.** A mandate MAY carry `scope.nda_categories`, a
+   list of the categories of Agent NDA §5.4. The list narrows the `nda`
+   power to agreements whose `covers.categories` all appear in it. A
+   mandate without the list places no limit on categories. Where the list
+   is present, it MUST be non-empty, MUST contain only Agent NDA §5.4
+   categories, and MUST NOT repeat one. The check that reads it is §7.2's,
+   and so is its grade.
 
 A chain verifies from the documents alone. A verifier holding the charter
 and every mandate in the chain checks each sub-mandate's signature against
@@ -401,7 +416,8 @@ that check:
    verifies up to the charter's root authority, each hop checked against
    the `holder.key` of the mandate above it (§6).
 3. The act is within the mandate's powers: `form` for formation, `amend`
-   for amendments, `terminate` for terminations, `award` for RFP awards.
+   for amendments, `terminate` for terminations, `award` for RFP awards,
+   `nda` for acts on an Agent NDA (§7.2).
 4. The engagement's committed price is within `per_engagement`, and the
    holder's month-to-date formed total stays within `per_month`.
 5. The engagement's offerings fall within the mandate's scope.
@@ -446,6 +462,85 @@ and §7's; the proxy is simply a counterparty that chose to run it at the
 resource boundary. Where it does, the mandate is `enforced` at that
 boundary, because the act does not happen without it, and the vendor behind
 the resource never needed to learn what a mandate is.
+
+### 7.2 The check for an Agent NDA
+
+The owners of its seats sign an Agent NDA (https://agentnda.net). A seat MAY
+name the organization it signs for, in `organization` (Agent NDA §5.1).
+Then a person signs the agreement in the organization's name, and this
+section says how a counterparty knows that the person may.
+
+When a seat carries `organization`, the signature record for that seat MUST
+carry `mandate`, and that mandate MUST hold the `nda` power. A runtime
+checks the signature against the mandate in four steps:
+
+1. The signer holds the mandate. The signing account is the mandate's
+   holder, the mandate is for the organization the seat names, and where
+   the mandate carries `holder.key`, the signature verifies under that key.
+   This is check 1 of §7.
+2. The mandate was in force when the person signed: started, unexpired,
+   unrevoked, and its chain verifies up to the charter's root authority,
+   each hop checked against the `holder.key` of the mandate above it (§6).
+   This is check 2 of §7.
+3. The mandate holds `nda`. This is check 3 of §7.
+4. Where the mandate carries `scope.nda_categories` (§6 rule 8), every
+   category in the agreement's `covers.categories` appears in that list. An
+   agreement whose `covers.categories` includes a category outside the list
+   fails the check.
+
+Checks 4 and 5 of §7 do not apply. An Agent NDA commits no price and names
+no offering, so there is no ceiling to read and no offering to match. A
+mandate's `ceiling` and `scope.offerings` place no limit on the `nda` power.
+
+The check applies to every act the seat signs on the agreement: the offer
+or the open offer, the countersignature or the acceptance, joining a
+multilateral agreement, an amendment, a termination, and a withdrawal. Each
+of those acts names the mandate it was signed under.
+
+A seat with no `organization` is an individual acting for themself. It
+needs no mandate.
+
+The grade depends on where the act passes. Where a platform or a board
+holds the act pending and refuses it when a check fails, the check is
+`enforced` there. Elsewhere the mandate reference is `evidence`: the
+counterparty holds the chain and can verify it, but nothing refused the
+act. A board that releases the sealed body of a gated Agent RFP posting
+(Agent RFP §5.11) SHOULD run this check on the recipient seat when that
+seat names an organization, and release nothing when it fails. Where the
+board runs it, the check is `enforced` at the board.
+
+The signature record names the mandate inside the agreement's signed bytes,
+and the counterparty's copy shows it. What it proves is what an approval
+record proves under §7: the person who signed held current, sufficient,
+traceable authority to sign for the organization, as far as the
+organization's own signed delegations are concerned. What a court would say
+about the delegations themselves remains outside the system (§3).
+
+In the Harbor & Line example, Marisol Vega signs Harbor & Line's open offer
+for its freight-audit posting under the mandate of §6, which holds `nda`:
+
+```json
+"parties": {
+  "discloser": { "agent": "<public key>",
+                 "handle": "Petrel.mari@harborandline.example",
+                 "owner": "Harbor & Line Outfitters",
+                 "organization": "org_7k2m9q4w1x8e5r3t" },
+  "recipient": null,
+  "grade": "evidence"
+},
+"signatures": [
+  { "role": "discloser", "over": "offer", "key": "<holder public key>",
+    "mandate": "mnd_3f8c1n6z9v4b7q2m",
+    "signed_at": "2026-10-20T15:00:00Z", "sig": "<base64>" }
+]
+```
+
+A mandate that lets its holder sign only agreements about solicitations and
+their terms carries the list in its scope:
+
+```json
+"scope": { "nda_categories": ["solicitation", "agreement_terms", "relationship"] }
+```
 
 ## 8. The treasury, in the abstract
 
@@ -510,6 +605,10 @@ maintain or to drift.
   it validly formed. What was signed stays signed.
 - **Agent RFP**: a posting MAY carry `organization`; awarding is spending
   and takes the `award` power.
+- **Agent NDA**: a seat's `organization` and a signature's `mandate`, per
+  §7.2. Every act on an agreement takes the `nda` power. A board releasing
+  the sealed body of a gated Agent RFP posting SHOULD run the check of §7.2
+  on the recipient seat when that seat names an organization.
 - **Agent Reputations**: the bureau's anchor concept (its §1) admits
   domains, and its organization report (its §8.5) groups the records of an
   organization's agents: those that share the organization's anchor, and
@@ -705,3 +804,24 @@ entity, which Agent Reputations did not define until its 0.4.0-draft. It
 names the organization report of Agent Reputations §8.5 that does it, and
 says that each agent keeps its own record. No requirement, field, example, or
 section number changes.*
+
+*0.5.0-draft (2026-10-18): who may sign an Agent NDA for an organization. A
+new power, `nda`, covers every act on an Agent NDA for the organization:
+signing an offer or an open offer, countersigning or accepting, joining a
+multilateral agreement, amending, terminating, and withdrawing. A new
+section, §7.2, states the check. When a seat carries `organization`, its
+signature record carries `mandate`, and that mandate holds `nda`. Checks 1
+to 3 of §7 apply. Checks 4 and 5 do not, because an Agent NDA commits no
+price and names no offering. A mandate MAY carry `scope.nda_categories` (§6
+rule 8), a list of Agent NDA §5.4 categories that narrows the power, and §6
+rule 3 says how a sub-mandate narrows it. The check is `enforced` where a
+platform or a board holds the act pending and refuses on failure, and
+`evidence` elsewhere. A board releasing a gated Agent RFP body SHOULD run it
+on the recipient seat. A seat with no `organization` needs no mandate. §4,
+§7 check 3 and §10 name the new pieces, and the example mandate of §6 holds
+`nda`.*
+
+*The minor version moves because the change adds a power and a field. A
+registry built against 0.4.2-draft does not know `nda` or
+`scope.nda_categories`, and a reader needs the version number to tell which
+text a deployment was built against.*
