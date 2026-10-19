@@ -59,7 +59,7 @@ export function rail(active) {
           `<a href="${SPEC_REPO_URL}">Its source on GitHub ↗</a>`,
         ])}
         ${sec("The Common Agent Standards", [
-          `<a href="${FAMILY}">Every standard ↗</a>`,
+          `<a href="${FAMILY}standards.html">Every standard ↗</a>`,
           ...SUITE.standards.filter((s) => !LEFT_OUT.has(s.id)).map((s) => `<a href="${s.site}">${s.name} ↗</a>`),
         ])}
       </nav>

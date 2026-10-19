@@ -83,7 +83,7 @@ export function rail(active) {
         <details class="sec suite" open>
           <summary>The Common Agent Standards${chev}</summary>
           <div class="items">
-          ${a(FAMILY, "Every standard", "", true)}
+          ${a(`${FAMILY}standards.html`, "Every standard", "", true)}
           ${others}
           </div>
         </details>
