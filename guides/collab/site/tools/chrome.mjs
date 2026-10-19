@@ -90,7 +90,7 @@ export function rail(active) {
         ${sec("Live patterns", list(PATTERNS.filter((p) => p.mode === "live")))}
         ${sec("Asynchronous patterns", list(PATTERNS.filter((p) => p.mode === "asynchronous")))}
         ${sec("Reference", [a("/versions.html", "Versions and changelog", "versions"), a(REPO_URL, "The source on GitHub", "", true)].join("\n          "))}
-        ${sec("The Common Agent Standards", [a(FAMILY, "Every standard", "", true), others].join("\n          "), true, "sec suite")}
+        ${sec("The Common Agent Standards", [a(`${FAMILY}standards.html`, "Every standard", "", true), others].join("\n          "), true, "sec suite")}
       </nav>
       <div class="foot">Agent Collab is a guide kept with the <a href="${FAMILY}">Common Agent Standards</a>.</div>
     </aside>`;
