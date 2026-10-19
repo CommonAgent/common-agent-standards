@@ -1,0 +1,2751 @@
+{
+  "comment": "Agent NDA signatures, acceptance, acts, states and the bound test, with real Ed25519 signatures (agentnda.net 0.1.2-draft, 6, 6.1, 7.1, 7.3, 8.1). The documents are the specification's example (Harbor & Line Outfitters' open offer and Caldera Freight Systems' acceptance, byte for byte as nda-offer.json pins them) and agreements built from it. Every signature is real: the keys are derived from the published seeds below, and Ed25519 is deterministic, so any implementation reproduces each sig byte for byte. The test seeds are public by design and sign nothing else. A sig is the padded base64 of the 64-byte signature. Every expected answer is written from the specification, not computed by an implementation. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "version": 1,
+  "spec": "Agent NDA 0.1.2-draft: 6 (signatures), 6.1 (acceptance), 6.2 (mandates), 7.1 (states), 7.3 (acts), 8 (references), 8.1 (whether a party is bound); Agent RFP 0.9.1-draft 5.11.3 checks 1 to 5",
+  "keys": {
+    "comment": "Each seed is the SHA-256 of its label, as UTF-8. seed_hex is the raw 32-byte Ed25519 seed and public the public key in the family's spelling. The seeds are given as hex only, so that no secret-shaped string sits in the fixture. The agent keys of Harbor & Line and Caldera Freight are the stand-ins the specification prints and have no seed; they never sign, because owners sign.",
+    "entries": {
+      "harbor-owner": {
+        "label": "Agent NDA conformance test key: harbor-owner",
+        "seed_hex": "74435d97efa3b4d7598539be941fdc5c7d85e4fae1afa0dda9b3833d338336ae",
+        "public": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C"
+      },
+      "caldera-owner": {
+        "label": "Agent NDA conformance test key: caldera-owner",
+        "seed_hex": "53b37d622d9f8ae525ed0d713b2f4a1a52e797de552bb1e75063529bee21d26b",
+        "public": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ"
+      },
+      "tidewater-owner": {
+        "label": "Agent NDA conformance test key: tidewater-owner",
+        "seed_hex": "d0f0a2b73c31277f2ae591778dc437c3206cb74d2335d3e608b12eb76bf11abe",
+        "public": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX"
+      },
+      "northgate-owner": {
+        "label": "Agent NDA conformance test key: northgate-owner",
+        "seed_hex": "044528e70946ec8ee5ac6559d1a7d9be110abd8a90fdc05e7d2af0685993310e",
+        "public": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y"
+      },
+      "ledgerline-owner": {
+        "label": "Agent NDA conformance test key: ledgerline-owner",
+        "seed_hex": "23ab19ed7df1e45003351cc0e6b7e0696fcfaa6987cb0a06a55d7fdc8809785d",
+        "public": "UBPTD7JMW6FRJFK6M2KZASOLWYTCZ34I3ZUEPQWG2ZISUV7VDGXZ3UD2"
+      },
+      "outsider-owner": {
+        "label": "Agent NDA conformance test key: outsider-owner",
+        "seed_hex": "97e08d6cc417ab5c80a6f171c46a69b9ab9524d2fb85a0824e564d8bd59a40d5",
+        "public": "UCLUA22X4K2N6XJK5XGIE3NQU6CX7SURYBDVWNWZSZCYL2NLAEFBQMZQ"
+      },
+      "tidewater-agent": {
+        "label": "Agent NDA conformance test key: tidewater-agent",
+        "seed_hex": "8bd8626fee171bf49d840e4fb1c2a33ad106141aa3f7fba0b494a369f13d20e1",
+        "public": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
+      },
+      "northgate-agent": {
+        "label": "Agent NDA conformance test key: northgate-agent",
+        "seed_hex": "aa80e167197e42d19f4576f34b88380c08124efe3561305970d1ab86a3840ec3",
+        "public": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
+      },
+      "ledgerline-agent": {
+        "label": "Agent NDA conformance test key: ledgerline-agent",
+        "seed_hex": "ed9edd3781bab4cea653ce91e386ab27ca0fa25dc39bbc66b91f673b29b4d530",
+        "public": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS"
+      },
+      "granite-agent": {
+        "label": "Agent NDA conformance test key: granite-agent",
+        "seed_hex": "59f1997868e7a370c5d2a81393b0a70dce4ff957662d945f1fd285560e327a75",
+        "public": "UCF426ILKTVMFLTJNT2NWIKEI5LDUISQMEBCELTZH2BKLV4S3HYPQYPZ"
+      }
+    },
+    "stand_ins": {
+      "harbor_agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+      "caldera_agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+    }
+  },
+  "documents": {
+    "offer": {
+      "nda": "v1",
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": null,
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": null,
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        }
+      ]
+    },
+    "acceptance": {
+      "nda": "v1",
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "6IqZjlkbI53EPScHpQa29SSqujoVPh+oFAIAsMpDPjwxDyMcgCyCMoTXS7IJBTmhbLA5NJnlDdkaTdMkifYjBg=="
+        }
+      ]
+    },
+    "named_offer": {
+      "nda": "v1",
+      "id": "nda_54cyphvge3sba8gv",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": null,
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": [
+          "Sable.audit@calderafreight.example"
+        ],
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": null,
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "/EqzdUMgn5sQ8aEl/8mTM0L/mN5FcQ4zXc830PEhWQFoJWPfAm386CsPfIrnl0maSLmcj2coMK5k4m+Z8fyhCQ==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        }
+      ]
+    },
+    "named_acceptance": {
+      "nda": "v1",
+      "id": "nda_54cyphvge3sba8gv",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": [
+          "Sable.audit@calderafreight.example"
+        ],
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "/EqzdUMgn5sQ8aEl/8mTM0L/mN5FcQ4zXc830PEhWQFoJWPfAm386CsPfIrnl0maSLmcj2coMK5k4m+Z8fyhCQ==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "ALeCwdJblu6YP9VJEjX4GcBpsJTbxfsgm0lqqqt7VaUMv5hh8kRr3MCNsEYdZG2HTRy9tJFplGUygFvLFC0zDQ=="
+        }
+      ]
+    },
+    "not_open_to_acceptance": {
+      "nda": "v1",
+      "id": "nda_jvbchzt5m1kqh8r5",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": [
+          "Heron.desk@tidewatercustoms.example"
+        ],
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "xFIw5FEZZxB1i9rY8z4a+XrFbs7+n2oS7Wkg3LHLiXgQ2iisj8EGYWFE+tbSwWNAJfoDm3x8ckwmDIj2zwodDA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "90bozKRpYbE/KwAgDHRgsrS+3rueW9B6woUKXRTvq1PQS7Q6GMIb+sc+7C2RWHtYGaicEM0lUumBqQ4shDEaDw=="
+        }
+      ]
+    },
+    "changed_term": {
+      "nda": "v1",
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 365,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "y7ElsOWFBZdoOz0t73rupYY0NwwNuxQr3unGMxERTtLg19XsgDwc0p/VtntL3+zVayoifHY6v4sl6PevUx3dBw=="
+        }
+      ]
+    },
+    "recipient_signed_offer_bytes": {
+      "nda": "v1",
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "TZLe03VewpSPjqDtZHDdvQOprukmnDpR/MUs09DZbkOIrFB8fEUqyY59oyxl5lRXvghCGT3as6NRUyZBbS1YAQ=="
+        }
+      ]
+    },
+    "signed_after_expiry": {
+      "nda": "v1",
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-11-21T00:00:00Z",
+          "sig": "6IqZjlkbI53EPScHpQa29SSqujoVPh+oFAIAsMpDPjwxDyMcgCyCMoTXS7IJBTmhbLA5NJnlDdkaTdMkifYjBg=="
+        }
+      ]
+    },
+    "outside_require": {
+      "nda": "v1",
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "offer": {
+        "open_to": "any",
+        "expires_at": "2026-11-20T00:00:00Z"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Evaluating and responding to Harbor & Line's freight-audit posting, which names this offer, and running validation probes, negotiating, and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "evaluate_solicitation",
+          "validation_probe",
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us",
+            "eu"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "over": "offer",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-20T15:00:00Z",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-22T09:12:40Z",
+          "sig": "x5KB/LOth4NkZ3OvN//bZYNF2f39gKVUg5FPtzQuQyI2Dw/4KXHLc/uQD151cjbWh1C4V14BNryARe0gFEAgBQ=="
+        }
+      ]
+    },
+    "bilateral": {
+      "nda": "v1",
+      "id": "nda_qmmaxw0jn7kwtvjr",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "mutual",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "effective_at": "2026-12-01T00:00:00Z",
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Negotiating and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded",
+        "discloser": {
+          "processors": [],
+          "processed_in": [
+            "us"
+          ]
+        }
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-10-28T10:00:00Z",
+          "sig": "rqhv5RGhRbUfwf8e5SoJzoCJzN5udJdKE0CZ7U/RoSjyIvQRzKXq5vr5BOsy/Lw3dGJixLT7oaT+OJLKTlheDQ==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-29T16:30:00Z",
+          "sig": "GdBHtA0GClaDq+TBatoFAfpb59xHisAruWfQjODKuJDPWpaQyrDC04PWd/E4bFsxolO+7bt/rkr8oBgzrUtDDw=="
+        }
+      ]
+    },
+    "bilateral_recipient_only": {
+      "nda": "v1",
+      "id": "nda_qmmaxw0jn7kwtvjr",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "mutual",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "effective_at": "2026-12-01T00:00:00Z",
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Negotiating and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded",
+        "discloser": {
+          "processors": [],
+          "processed_in": [
+            "us"
+          ]
+        }
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-29T16:30:00Z",
+          "sig": "GdBHtA0GClaDq+TBatoFAfpb59xHisAruWfQjODKuJDPWpaQyrDC04PWd/E4bFsxolO+7bt/rkr8oBgzrUtDDw=="
+        }
+      ]
+    },
+    "bilateral_v2": {
+      "nda": "v1",
+      "id": "nda_qmmaxw0jn7kwtvjr",
+      "version": 2,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "mutual",
+      "parties": {
+        "discloser": {
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "handle": "Petrel.mari@harborandline.example",
+          "owner": "Harbor & Line Outfitters",
+          "organization": "org_7k2m9q4w1x8e5r3t"
+        },
+        "recipient": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "grade": "evidence"
+      },
+      "effective_at": "2026-12-01T00:00:00Z",
+      "ends_at": "2028-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Negotiating and performing any Agent SoW between the parties that names this agreement.",
+        "activities": [
+          "negotiation",
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "require": {
+          "processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "recipient": {
+          "processors": [
+            {
+              "service": "Anthropic API",
+              "domain": "anthropic.com",
+              "purpose": "model inference, zero-retention tier",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel",
+          "advisers"
+        ],
+        "grade": "recorded",
+        "discloser": {
+          "processors": [],
+          "processed_in": [
+            "us"
+          ]
+        }
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known",
+          "independently_developed",
+          "third_party"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "return_or_destroy",
+        "within_days": 30,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "termination": {
+        "notice_days": 30,
+        "grade": "evidence"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2027-06-01T10:00:00Z",
+          "sig": "YCS9SMVuus7m26mn2xctUKdXvTvxya7FU/IanDmC8tSjJCW5ncn3QalOUETm/BN+LFM2Yuz9/063LZBCWv7OBQ==",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "recipient",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2027-06-02T10:00:00Z",
+          "sig": "MubJS3tkvgUt981nMbC2trIvf/+Neb8difuNRK6Y1yAKHkQYR8mzqRak05zemsBq0fJMKD24XqLXpXYoIHyfAA=="
+        }
+      ]
+    },
+    "multilateral": {
+      "nda": "v1",
+      "id": "nda_g1pfpfk34433ndq7",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "multilateral",
+      "parties": {
+        "members": [
+          {
+            "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_7k2m9q4w1x8e5r3t"
+          },
+          {
+            "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+            "handle": "Sable.audit@calderafreight.example",
+            "owner": "Caldera Freight Systems"
+          },
+          {
+            "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
+            "handle": "Heron.desk@tidewatercustoms.example",
+            "owner": "Tidewater Customs Brokers"
+          },
+          {
+            "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
+            "handle": "Kestrel.rates@northgaterates.example",
+            "owner": "Northgate Rate Data"
+          }
+        ],
+        "grade": "evidence"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Performing the phases of Harbor & Line's freight-audit process runs whose document names this agreement.",
+        "activities": [
+          "process_runs"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "inputs",
+          "deliverables",
+          "own_material",
+          "relationship"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "members": [
+          {
+            "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          }
+        ],
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "signatures": [
+        {
+          "role": "member",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "2xEs2qxdPWdDTOb801/1mfQCYQIdPzlnw2m3svrtOqOuCnKD5EFchF4PfyAUqkL1mLIt5jBzpNNCh8ymZxpYDw==",
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "member",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "DcrirPvBw2KgAZTdku7y9LK4rViPLK5yZjUOPgGYdIiC1tuKYpjIWcwTcxka7cszRg8KKesn83iBbRheeAemBg==",
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+        },
+        {
+          "role": "member",
+          "key": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "+MVf9HywwTFtTiQgKJZRGDjJKxWwcpc7z9Nu3wHCDT7hCYxnk8CqEgf9NhEqLrkxtFVom0+l1n++O2S+XeutAw==",
+          "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
+        },
+        {
+          "role": "member",
+          "key": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "O21cBVKEY7li2bwrQjv/udPzXZigCuvL1kPuqqrc15uNubqz5pq389UgaAJcsndbyRLYwlIJPpxkLo7cnXLmCg==",
+          "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
+        }
+      ]
+    },
+    "multilateral_three_signed": {
+      "nda": "v1",
+      "id": "nda_g1pfpfk34433ndq7",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "multilateral",
+      "parties": {
+        "members": [
+          {
+            "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_7k2m9q4w1x8e5r3t"
+          },
+          {
+            "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+            "handle": "Sable.audit@calderafreight.example",
+            "owner": "Caldera Freight Systems"
+          },
+          {
+            "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
+            "handle": "Heron.desk@tidewatercustoms.example",
+            "owner": "Tidewater Customs Brokers"
+          },
+          {
+            "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
+            "handle": "Kestrel.rates@northgaterates.example",
+            "owner": "Northgate Rate Data"
+          }
+        ],
+        "grade": "evidence"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Performing the phases of Harbor & Line's freight-audit process runs whose document names this agreement.",
+        "activities": [
+          "process_runs"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "inputs",
+          "deliverables",
+          "own_material",
+          "relationship"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "members": [
+          {
+            "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          }
+        ],
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "signatures": [
+        {
+          "role": "member",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "2xEs2qxdPWdDTOb801/1mfQCYQIdPzlnw2m3svrtOqOuCnKD5EFchF4PfyAUqkL1mLIt5jBzpNNCh8ymZxpYDw==",
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "member",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "DcrirPvBw2KgAZTdku7y9LK4rViPLK5yZjUOPgGYdIiC1tuKYpjIWcwTcxka7cszRg8KKesn83iBbRheeAemBg==",
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+        },
+        {
+          "role": "member",
+          "key": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "+MVf9HywwTFtTiQgKJZRGDjJKxWwcpc7z9Nu3wHCDT7hCYxnk8CqEgf9NhEqLrkxtFVom0+l1n++O2S+XeutAw==",
+          "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
+        }
+      ]
+    },
+    "flow_down": {
+      "nda": "v1",
+      "id": "nda_dahyf5s1662ab2yx",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "recipient": {
+          "agent": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS",
+          "handle": "Wren.ops@ledgerline.example",
+          "owner": "Ledgerline Data Services"
+        },
+        "grade": "evidence"
+      },
+      "flows_from": {
+        "id": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Extracting line items from Harbor & Line's carrier invoices for Caldera's freight audit.",
+        "activities": [
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "recipient": {
+          "processors": [],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "none",
+        "need_to_know": [
+          "personnel"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "destroy",
+        "within_days": 14,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-24T09:00:00Z",
+          "sig": "JXZcu9tcK5tUGfcarhso9+8mQHf0XU9JvGOOfUOE0DtJuV1lBleQk5oa50hsWXSb9WLqD6RS79w+Fbyms/YlCw=="
+        },
+        {
+          "role": "recipient",
+          "key": "UBPTD7JMW6FRJFK6M2KZASOLWYTCZ34I3ZUEPQWG2ZISUV7VDGXZ3UD2",
+          "signed_at": "2026-10-24T11:00:00Z",
+          "sig": "Tl9er8n3mPwrhJPOAb9nqIqd5az1jXZM45VM46KDb4El7f9fdHEhZeGG/V+SwFb6PcGWn8Yd91uC1+F9WR98DA=="
+        }
+      ]
+    },
+    "flow_down_weak": {
+      "nda": "v1",
+      "id": "nda_qnsh5wbxjm4k3251",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "recipient": {
+          "agent": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS",
+          "handle": "Wren.ops@ledgerline.example",
+          "owner": "Ledgerline Data Services"
+        },
+        "grade": "evidence"
+      },
+      "flows_from": {
+        "id": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Extracting line items from Harbor & Line's carrier invoices for Caldera's freight audit.",
+        "activities": [
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "recipient": {
+          "processors": [],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "none",
+        "need_to_know": [
+          "personnel"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 365,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "destroy",
+        "within_days": 14,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "signatures": [
+        {
+          "role": "discloser",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+          "signed_at": "2026-10-24T09:00:00Z",
+          "sig": "xU3xn/VtxXvnaLDR2O24P6KcdoJjuUVIhWSVvu728ZIh1vgmnRQOCRHsjFKfVEIw0t7oOKo+qR4alzGOYfZfBw=="
+        },
+        {
+          "role": "recipient",
+          "key": "UBPTD7JMW6FRJFK6M2KZASOLWYTCZ34I3ZUEPQWG2ZISUV7VDGXZ3UD2",
+          "signed_at": "2026-10-24T11:00:00Z",
+          "sig": "K32ufPLSdeNPY0MO6n2sNJEJbJbCbgmvLyuM2mGULYuAWZBdHEVOczTXClz7oSm8qEFcJ0SIxTFR+OEAoRolDg=="
+        }
+      ]
+    }
+  },
+  "acts": {
+    "withdraw_offer": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6",
+        "action": "withdraw",
+        "at": "2026-10-25T00:00:00Z",
+        "mandate": "mnd_3f8c1n6z9v4b7q2m"
+      },
+      "signature": {
+        "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+        "signed_at": "2026-10-25T00:00:00Z",
+        "sig": "DBHnAOxF1KXjb6+Y1g9C06ysGwn+R5a55FeujS8P5G/HDuC+0mjb2U63r+tHcaAqZXRiEDyrZJ6DSKSZhugxCw=="
+      }
+    },
+    "withdraw_offer_early": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6",
+        "action": "withdraw",
+        "at": "2026-10-21T00:00:00Z",
+        "mandate": "mnd_3f8c1n6z9v4b7q2m"
+      },
+      "signature": {
+        "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+        "signed_at": "2026-10-21T00:00:00Z",
+        "sig": "1mZQ6dBA8aqn4DzvEu/Ez3jhPT9So8zQQxztC34cDcXz4cdSG+A4xC4wHedY2p0VvLnrAqekmY6N4A9vQ/r0AQ=="
+      }
+    },
+    "terminate_acceptance": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+        "action": "terminate",
+        "at": "2027-03-01T12:00:00Z",
+        "reason": "The freight-audit engagement ended."
+      },
+      "signature": {
+        "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+        "signed_at": "2027-03-01T12:00:00Z",
+        "sig": "X6CvN1o/g+sfFjDpouoHR2bVCz+G+rN0vfRkOj4PKbRcxIpQq/6zLAshU4b/5U0aEkvKfk8gXi6BZ9Cu9Q8+Cg=="
+      }
+    },
+    "terminate_with_offer_digest": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6",
+        "action": "terminate",
+        "at": "2027-03-01T12:00:00Z"
+      },
+      "signature": {
+        "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+        "signed_at": "2027-03-01T12:00:00Z",
+        "sig": "NopTFbY9J6fZFJOS8ZmDL3EdAh5nzur8Ul8QY3ZRPURYWfJ2muqJq1T6WKL5c5LvnCwzCxIBCOs3tNWQioC/CQ=="
+      }
+    },
+    "terminate_by_outsider": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+        "action": "terminate",
+        "at": "2027-03-01T12:00:00Z"
+      },
+      "signature": {
+        "key": "UCLUA22X4K2N6XJK5XGIE3NQU6CX7SURYBDVWNWZSZCYL2NLAEFBQMZQ",
+        "signed_at": "2027-03-01T12:00:00Z",
+        "sig": "8OHGucCN2/xj9CRCKGkgHVBncO4XlyPV5hOQNx8AVunS64ydkOGQTouaEJy7KiMFmlugSAH9C2hHVNR/rMbQAg=="
+      }
+    },
+    "terminate_without_mandate": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+        "action": "terminate",
+        "at": "2027-03-01T12:00:00Z"
+      },
+      "signature": {
+        "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+        "signed_at": "2027-03-01T12:00:00Z",
+        "sig": "IFDIfzdZFkghLOybWJNStV4V+Na427ekZkCaC0TJrBeyjJX/Zd95QzOnM4PfjajUD2s7feXtB6btNXDk84fvBQ=="
+      }
+    },
+    "terminate_by_harbor": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+        "action": "terminate",
+        "at": "2027-03-01T12:00:00Z",
+        "mandate": "mnd_3f8c1n6z9v4b7q2m"
+      },
+      "signature": {
+        "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
+        "signed_at": "2027-03-01T12:00:00Z",
+        "sig": "dj6Yh9fTzJJPGwosho9sYHgqSCSMJYEynj0ti+/Yiymz4N9cuooVRX7PfkvRj5GY7gG+FZLnmZTsctnrhigjCQ=="
+      }
+    },
+    "northgate_leaves": {
+      "act": {
+        "nda": "nda_g1pfpfk34433ndq7",
+        "version": 1,
+        "digest": "sha256:0ee98c0a782f9120bf90c643b471e1b9716ecb25d48db59e6695f877d43378e9",
+        "action": "terminate",
+        "at": "2027-02-01T00:00:00Z"
+      },
+      "signature": {
+        "key": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y",
+        "signed_at": "2027-02-01T00:00:00Z",
+        "sig": "BwEeKVac3njxej7DeMzdmnR1lxJpH9cdaqBgNSygmPFQgrvXirw6H4qYg5E1JjoASQx6JyFZKzDPJo5hdmfUAg==",
+        "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
+      }
+    },
+    "tidewater_leaves": {
+      "act": {
+        "nda": "nda_g1pfpfk34433ndq7",
+        "version": 1,
+        "digest": "sha256:0ee98c0a782f9120bf90c643b471e1b9716ecb25d48db59e6695f877d43378e9",
+        "action": "terminate",
+        "at": "2027-03-01T00:00:00Z"
+      },
+      "signature": {
+        "key": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX",
+        "signed_at": "2027-03-01T00:00:00Z",
+        "sig": "Qj9yWKZiHPrWNQFvZcU6ygB3iRWW8iA/IL5/xeKxmJvGvSk1aCNh6gsfybgjIX17z5+lAIgDZ1gZxSGfGoMAAw==",
+        "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
+      }
+    },
+    "caldera_leaves": {
+      "act": {
+        "nda": "nda_g1pfpfk34433ndq7",
+        "version": 1,
+        "digest": "sha256:0ee98c0a782f9120bf90c643b471e1b9716ecb25d48db59e6695f877d43378e9",
+        "action": "terminate",
+        "at": "2027-04-01T00:00:00Z"
+      },
+      "signature": {
+        "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+        "signed_at": "2027-04-01T00:00:00Z",
+        "sig": "XAy4ihQ+tul81oaWyukPO0/nAMahZPSygx1TNhBxWGARJqB8M3PE2BpAGKKCABCKVUvyDW9gzXRYKCVWTo7XDA==",
+        "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+      }
+    },
+    "terminate_tampered": {
+      "act": {
+        "nda": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+        "action": "terminate",
+        "at": "2027-03-01T12:00:00Z",
+        "reason": "Changed after signing."
+      },
+      "signature": {
+        "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
+        "signed_at": "2027-03-01T12:00:00Z",
+        "sig": "X6CvN1o/g+sfFjDpouoHR2bVCz+G+rN0vfRkOj4PKbRcxIpQq/6zLAshU4b/5U0aEkvKfk8gXi6BZ9Cu9Q8+Cg=="
+      }
+    }
+  },
+  "signatures": {
+    "comment": "6: every signature record verifies over the signed bytes, except the discloser's on an acceptance, marked over: offer, which verifies over the offer bytes. A signature is checked against the key its record names.",
+    "cases": [
+      {
+        "case": "offer",
+        "document": "offer",
+        "index": 0,
+        "valid": true
+      },
+      {
+        "case": "acceptance_discloser_over_offer",
+        "document": "acceptance",
+        "index": 0,
+        "valid": true
+      },
+      {
+        "case": "acceptance_recipient",
+        "document": "acceptance",
+        "index": 1,
+        "valid": true
+      },
+      {
+        "case": "multilateral_member",
+        "document": "multilateral",
+        "index": 3,
+        "valid": true
+      },
+      {
+        "case": "recipient_over_offer_bytes",
+        "document": "recipient_signed_offer_bytes",
+        "index": 1,
+        "valid": false,
+        "why": "the recipient signs the completed document"
+      },
+      {
+        "case": "changed_term_discloser",
+        "document": "changed_term",
+        "index": 0,
+        "valid": false,
+        "why": "the offer bytes re-derived from a changed document are not the bytes the discloser signed"
+      }
+    ]
+  },
+  "acceptance": {
+    "comment": "6.1: the five checks a verifier runs on an acceptance, in order; the first that fails is reported. resolve maps a handle to the agent key it currently names, for step 4.",
+    "resolve": {
+      "Sable.audit@calderafreight.example": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+    },
+    "cases": [
+      {
+        "case": "valid",
+        "document": "acceptance",
+        "expected": {
+          "ok": true
+        }
+      },
+      {
+        "case": "valid_named_handle",
+        "document": "named_acceptance",
+        "expected": {
+          "ok": true
+        }
+      },
+      {
+        "case": "changed_term",
+        "document": "changed_term",
+        "expected": {
+          "ok": false,
+          "step": 1
+        },
+        "why": "any change beyond parties.recipient and disclosure.recipient breaks the discloser's signature"
+      },
+      {
+        "case": "recipient_signed_offer_bytes",
+        "document": "recipient_signed_offer_bytes",
+        "expected": {
+          "ok": false,
+          "step": 2
+        }
+      },
+      {
+        "case": "signed_after_expiry",
+        "document": "signed_after_expiry",
+        "expected": {
+          "ok": false,
+          "step": 3
+        }
+      },
+      {
+        "case": "signed_after_withdrawal",
+        "document": "acceptance",
+        "acts": [
+          "withdraw_offer_early"
+        ],
+        "expected": {
+          "ok": false,
+          "step": 3
+        },
+        "why": "the offer was withdrawn on 2026-10-21, and Caldera signed on 2026-10-22"
+      },
+      {
+        "case": "withdrawn_after_signing",
+        "document": "acceptance",
+        "acts": [
+          "withdraw_offer"
+        ],
+        "expected": {
+          "ok": true
+        },
+        "why": "a withdrawal leaves acceptances made before it standing"
+      },
+      {
+        "case": "not_open_to",
+        "document": "not_open_to_acceptance",
+        "expected": {
+          "ok": false,
+          "step": 4
+        }
+      },
+      {
+        "case": "handle_resolves_elsewhere",
+        "document": "named_acceptance",
+        "resolve": {
+          "Sable.audit@calderafreight.example": "UCF426ILKTVMFLTJNT2NWIKEI5LDUISQMEBCELTZH2BKLV4S3HYPQYPZ"
+        },
+        "expected": {
+          "ok": false,
+          "step": 4
+        }
+      },
+      {
+        "case": "outside_require",
+        "document": "outside_require",
+        "expected": {
+          "ok": false,
+          "step": 5
+        }
+      }
+    ]
+  },
+  "act_checks": {
+    "comment": "7.3: an act verifies under its own tag over its own body, names the agreement by id, version and digest (the offer digest for a withdrawn offer, the completed agreement's digest otherwise, since acceptances of one offer share an identifier), is signed by a key that signed the agreement, and carries a mandate where the acting seat names an organization (6.2). act_bytes pins the signed bytes of one act.",
+    "act_bytes": {
+      "act": "terminate_acceptance",
+      "bytes": "agent-nda-act-v1\n{\"action\":\"terminate\",\"at\":\"2027-03-01T12:00:00Z\",\"digest\":\"sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9\",\"nda\":\"nda_dtzv6z8tans9k5s6\",\"reason\":\"The freight-audit engagement ended.\",\"version\":1}"
+    },
+    "cases": [
+      {
+        "case": "terminate",
+        "document": "acceptance",
+        "act": "terminate_acceptance",
+        "valid": true
+      },
+      {
+        "case": "withdraw",
+        "document": "offer",
+        "act": "withdraw_offer",
+        "valid": true
+      },
+      {
+        "case": "terminate_with_mandate",
+        "document": "acceptance",
+        "act": "terminate_by_harbor",
+        "valid": true
+      },
+      {
+        "case": "member_terminates",
+        "document": "multilateral",
+        "act": "northgate_leaves",
+        "valid": true
+      },
+      {
+        "case": "tampered",
+        "document": "acceptance",
+        "act": "terminate_tampered",
+        "valid": false,
+        "why": "the reason changed after signing"
+      },
+      {
+        "case": "offer_digest_for_termination",
+        "document": "acceptance",
+        "act": "terminate_with_offer_digest",
+        "valid": false,
+        "why": "an act on one acceptance carries that acceptance's digest"
+      },
+      {
+        "case": "not_a_party",
+        "document": "acceptance",
+        "act": "terminate_by_outsider",
+        "valid": false,
+        "why": "the key signed no seat of the agreement"
+      },
+      {
+        "case": "organization_without_mandate",
+        "document": "acceptance",
+        "act": "terminate_without_mandate",
+        "valid": false,
+        "why": "Harbor & Line's seat names an organization, so its acts carry a mandate"
+      }
+    ]
+  },
+  "states": {
+    "comment": "7.1: the state derived from signatures, acts and instants at now. effective_at is when the duties began (effective_at, or the last required signature), ended_at when the agreement stopped covering new disclosures, duties_end_at that plus the survival period (5.2), counted in days of 86,400 seconds.",
+    "cases": [
+      {
+        "case": "draft",
+        "document": "offer",
+        "unsigned": true,
+        "now": "2026-10-21T00:00:00Z",
+        "expected": {
+          "state": "draft"
+        }
+      },
+      {
+        "case": "open_offer",
+        "document": "offer",
+        "now": "2026-10-21T00:00:00Z",
+        "expected": {
+          "state": "offered"
+        }
+      },
+      {
+        "case": "open_offer_after_expiry",
+        "document": "offer",
+        "now": "2026-11-21T00:00:00Z",
+        "expected": {
+          "state": "lapsed"
+        }
+      },
+      {
+        "case": "open_offer_withdrawn",
+        "document": "offer",
+        "acts": [
+          "withdraw_offer"
+        ],
+        "now": "2026-10-26T00:00:00Z",
+        "expected": {
+          "state": "withdrawn"
+        }
+      },
+      {
+        "case": "accepted",
+        "document": "acceptance",
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "state": "in force",
+          "effective_at": "2026-10-22T09:12:40Z",
+          "ended_at": "2027-11-30T00:00:00Z",
+          "duties_end_at": "2029-11-29T00:00:00Z"
+        }
+      },
+      {
+        "case": "accepted_after_expiry",
+        "document": "signed_after_expiry",
+        "now": "2026-11-22T00:00:00Z",
+        "expected": {
+          "state": "lapsed"
+        }
+      },
+      {
+        "case": "past_end",
+        "document": "acceptance",
+        "now": "2027-12-01T00:00:00Z",
+        "expected": {
+          "state": "expired",
+          "ended_at": "2027-11-30T00:00:00Z",
+          "duties_end_at": "2029-11-29T00:00:00Z"
+        }
+      },
+      {
+        "case": "termination_pending",
+        "document": "acceptance",
+        "acts": [
+          "terminate_acceptance"
+        ],
+        "now": "2027-03-15T00:00:00Z",
+        "expected": {
+          "state": "in force",
+          "termination_pending": "2027-03-31T12:00:00Z"
+        }
+      },
+      {
+        "case": "terminated",
+        "document": "acceptance",
+        "acts": [
+          "terminate_acceptance"
+        ],
+        "now": "2027-04-01T00:00:00Z",
+        "expected": {
+          "state": "terminated",
+          "ended_at": "2027-03-31T12:00:00Z",
+          "duties_end_at": "2029-03-30T12:00:00Z"
+        },
+        "why": "notice_days 30 from 2027-03-01T12:00:00Z; survival 730 days from then"
+      },
+      {
+        "case": "bilateral_one_signature",
+        "document": "bilateral_recipient_only",
+        "now": "2026-11-01T00:00:00Z",
+        "expected": {
+          "state": "offered"
+        },
+        "why": "a renderer MUST NOT show one signature as in force"
+      },
+      {
+        "case": "countersigned_future_start",
+        "document": "bilateral",
+        "now": "2026-11-01T00:00:00Z",
+        "expected": {
+          "state": "countersigned",
+          "effective_at": "2026-12-01T00:00:00Z"
+        }
+      },
+      {
+        "case": "bilateral_in_force",
+        "document": "bilateral",
+        "now": "2026-12-02T00:00:00Z",
+        "expected": {
+          "state": "in force"
+        }
+      },
+      {
+        "case": "amended",
+        "document": "bilateral",
+        "later_versions": [
+          "bilateral_v2"
+        ],
+        "now": "2027-06-03T00:00:00Z",
+        "expected": {
+          "state": "amended"
+        }
+      },
+      {
+        "case": "multilateral_three_of_four",
+        "document": "multilateral_three_signed",
+        "now": "2026-12-01T00:00:00Z",
+        "expected": {
+          "state": "offered"
+        }
+      },
+      {
+        "case": "multilateral_all_signed",
+        "document": "multilateral",
+        "now": "2026-12-01T00:00:00Z",
+        "expected": {
+          "state": "in force"
+        }
+      },
+      {
+        "case": "multilateral_one_leaves",
+        "document": "multilateral",
+        "acts": [
+          "northgate_leaves"
+        ],
+        "now": "2027-02-02T00:00:00Z",
+        "expected": {
+          "state": "in force",
+          "departed": [
+            "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
+          ]
+        }
+      },
+      {
+        "case": "multilateral_two_leave",
+        "document": "multilateral",
+        "acts": [
+          "northgate_leaves",
+          "tidewater_leaves"
+        ],
+        "now": "2027-03-02T00:00:00Z",
+        "expected": {
+          "state": "in force"
+        },
+        "why": "two members remain"
+      },
+      {
+        "case": "multilateral_three_leave",
+        "document": "multilateral",
+        "acts": [
+          "northgate_leaves",
+          "tidewater_leaves",
+          "caldera_leaves"
+        ],
+        "now": "2027-04-02T00:00:00Z",
+        "expected": {
+          "state": "terminated",
+          "ended_at": "2027-04-01T00:00:00Z"
+        },
+        "why": "the agreement stays in force among the others while at least two remain; after the third member left on 2027-04-01 one remained, and one member alone is no agreement"
+      }
+    ]
+  },
+  "bound": {
+    "comment": "8.1: is this party bound by the named agreement at now? rule 1, it signed a seat; rule 2, the reference is an open offer and it is the recipient of an acceptance that passes 6.1; rule 3, it is the subcontractor of a flow-down agreement that passes the strictness test of 5.5 and names an agreement binding the party above it. The agreement must be in force. documents lists what the caller holds.",
+    "cases": [
+      {
+        "case": "signed_a_seat",
+        "reference": {
+          "id": "nda_qmmaxw0jn7kwtvjr",
+          "version": 1,
+          "digest": "sha256:5fa52c7506fe19285e81d3813c928c32f302d7d8f5ddea287fa50958a699bbec"
+        },
+        "party": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+        },
+        "documents": [
+          "bilateral"
+        ],
+        "now": "2026-12-02T00:00:00Z",
+        "expected": {
+          "bound": true,
+          "rule": 1
+        }
+      },
+      {
+        "case": "not_yet_in_force",
+        "reference": {
+          "id": "nda_qmmaxw0jn7kwtvjr",
+          "version": 1,
+          "digest": "sha256:5fa52c7506fe19285e81d3813c928c32f302d7d8f5ddea287fa50958a699bbec"
+        },
+        "party": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+        },
+        "documents": [
+          "bilateral"
+        ],
+        "now": "2026-11-01T00:00:00Z",
+        "expected": {
+          "bound": false
+        }
+      },
+      {
+        "case": "accepted_the_offer",
+        "reference": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "party": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+        },
+        "documents": [
+          "offer",
+          "acceptance"
+        ],
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "bound": true,
+          "rule": 2
+        }
+      },
+      {
+        "case": "did_not_accept",
+        "reference": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "party": {
+          "agent": "UCF426ILKTVMFLTJNT2NWIKEI5LDUISQMEBCELTZH2BKLV4S3HYPQYPZ"
+        },
+        "documents": [
+          "offer",
+          "acceptance"
+        ],
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "bound": false
+        }
+      },
+      {
+        "case": "acceptance_terminated",
+        "reference": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "party": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+        },
+        "documents": [
+          "offer",
+          "acceptance"
+        ],
+        "acts": [
+          "terminate_acceptance"
+        ],
+        "now": "2027-04-01T00:00:00Z",
+        "expected": {
+          "bound": false
+        }
+      },
+      {
+        "case": "flow_down",
+        "reference": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "party": {
+          "agent": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS"
+        },
+        "documents": [
+          "offer",
+          "acceptance",
+          "flow_down"
+        ],
+        "now": "2026-10-25T00:00:00Z",
+        "expected": {
+          "bound": true,
+          "rule": 3
+        }
+      },
+      {
+        "case": "weak_flow_down",
+        "reference": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "party": {
+          "agent": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS"
+        },
+        "documents": [
+          "offer",
+          "acceptance",
+          "flow_down_weak"
+        ],
+        "now": "2026-10-25T00:00:00Z",
+        "expected": {
+          "bound": false
+        },
+        "why": "survival 365 days against 730 upstream"
+      },
+      {
+        "case": "multilateral_member",
+        "reference": {
+          "id": "nda_g1pfpfk34433ndq7",
+          "version": 1,
+          "digest": "sha256:0ee98c0a782f9120bf90c643b471e1b9716ecb25d48db59e6695f877d43378e9"
+        },
+        "party": {
+          "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
+        },
+        "documents": [
+          "multilateral"
+        ],
+        "now": "2026-12-01T00:00:00Z",
+        "expected": {
+          "bound": true,
+          "rule": 1
+        }
+      }
+    ]
+  },
+  "gate": {
+    "comment": "Agent RFP 0.9.1-draft 5.11.3, checks 1 to 5: what a board checks about the agreement before it releases a gated body. Check 6, that the posting is open and addresses the provider, is the board's own. The gate names the offer by its offer digest. poster is the posting's poster.agent; requester is the agent key on the request's transport identity.",
+    "cases": [
+      {
+        "case": "release",
+        "gate": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "presented": "acceptance",
+        "poster": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+        "requester": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "release": true
+        }
+      },
+      {
+        "case": "acceptance_fails",
+        "gate": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "presented": "changed_term",
+        "poster": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+        "requester": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "release": false,
+          "check": 1
+        }
+      },
+      {
+        "case": "not_the_poster",
+        "gate": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "presented": "acceptance",
+        "poster": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
+        "requester": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "release": false,
+          "check": 2
+        }
+      },
+      {
+        "case": "another_offer",
+        "gate": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "presented": "named_acceptance",
+        "poster": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+        "requester": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "release": false,
+          "check": 3
+        }
+      },
+      {
+        "case": "not_the_requester",
+        "gate": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "presented": "acceptance",
+        "poster": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+        "requester": "UCF426ILKTVMFLTJNT2NWIKEI5LDUISQMEBCELTZH2BKLV4S3HYPQYPZ",
+        "now": "2026-10-23T00:00:00Z",
+        "expected": {
+          "release": false,
+          "check": 4
+        }
+      },
+      {
+        "case": "terminated",
+        "gate": {
+          "id": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6"
+        },
+        "presented": "acceptance",
+        "acts": [
+          "terminate_acceptance"
+        ],
+        "poster": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
+        "requester": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+        "now": "2027-04-01T00:00:00Z",
+        "expected": {
+          "release": false,
+          "check": 5
+        }
+      }
+    ]
+  }
+}

@@ -133,9 +133,9 @@
       "spec": "nda/SPEC.md",
       "domain": "agentnda.net",
       "site": "https://agentnda.net/",
-      "version": "0.1.1-draft",
+      "version": "0.1.2-draft",
       "status": "Working Draft",
-      "tag": "nda-v0.1.1-draft",
+      "tag": "nda-v0.1.2-draft",
       "builder": "nda/site/tools/build-spec.mjs",
       "summary": "An Agent NDA is a signed non-disclosure agreement between parties whose agents work together. It is usually the first agreement they sign, and later documents refer to it: an Agent RFP posting, an Agent SoW and an Agent Processes run."
     },
