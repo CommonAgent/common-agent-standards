@@ -1,7 +1,7 @@
 {
-  "comment": "Agent RFP conformance file. Pins the identifier (crockford32 over the SHA-256 of the hashed bytes, which leave out id AND signatures), the signed bytes (the agent-rfp-v1 tag, a line feed, and the canonical JSON with signatures removed only), the act signatures (agent-rfp-resolve-v1, with the action inside the signed bytes), the lifecycle of section 9, the rules a response's own document must meet in section 7, and the split of a gated posting into a public document and a sealed body with its nonce in section 5.11. The keys are Ed25519 keys derived from the published test seeds under keys; signatures are padded base64. THE FILE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the file is believed wrong, change it only with a specification change alongside.",
+  "comment": "Agent RFP conformance file. Pins the identifier (crockford32 over the SHA-256 of the hashed bytes, which leave out id AND signatures), the signed bytes (the agent-rfp-v1 tag, a line feed, and the canonical JSON with signatures removed only), the act signatures (agent-rfp-resolve-v1, with the action inside the signed bytes), the lifecycle of section 9, the rules a response's own document must meet in section 7, the split of a gated posting into a public document and a sealed body with its nonce in section 5.11, and the rule that a gate's body ref never contains the posting's identifier (body_refs). The keys are Ed25519 keys derived from the published test seeds under keys; signatures are padded base64. THE FILE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the file is believed wrong, change it only with a specification change alongside.",
   "version": 1,
-  "spec": "Agent RFP 0.10.0-draft: 4.1 (identity), 5.11 (gated postings), 6 (signatures), 7 (responses), 9 (lifecycle)",
+  "spec": "Agent RFP 0.11.0-draft: 4.1 (identity), 5.11 (gated postings), 6 (signatures), 7 (responses), 9 (lifecycle)",
   "keys": {
     "poster": {
       "label": "Agent RFP conformance test key: poster",
@@ -680,5 +680,34 @@
       "award",
       "handling"
     ]
-  }
+  },
+  "body_refs": [
+    {
+      "case": "by_digest",
+      "posting_id": "rfp_0q45vp5652gb1zcz",
+      "ref": "https://board.example/rfp/bodies/sha256:f2a31ac7fb516ad585005ed6d5b5d1df18bfe678eb3c768531166a80ff8db239",
+      "valid": true,
+      "why": "addresses the body by its digest, which is known before the posting is assembled"
+    },
+    {
+      "case": "absent",
+      "posting_id": "rfp_0q45vp5652gb1zcz",
+      "valid": true,
+      "why": "ref is a SHOULD; a gate without one is valid"
+    },
+    {
+      "case": "names_the_posting",
+      "posting_id": "rfp_0q45vp5652gb1zcz",
+      "ref": "https://board.example/rfp/rfp_0q45vp5652gb1zcz/1/body",
+      "valid": false,
+      "why": "the ref sits inside the bytes the identifier is derived from, so it cannot contain the identifier (5.11.1)"
+    },
+    {
+      "case": "names_the_posting_in_the_query",
+      "posting_id": "rfp_0q45vp5652gb1zcz",
+      "ref": "https://board.example/rfp/body?posting=rfp_0q45vp5652gb1zcz",
+      "valid": false,
+      "why": "anywhere in the ref, not only in the path"
+    }
+  ]
 }
