@@ -15,7 +15,11 @@ NDA signature record cites sat inside the agreement's signed bytes. It did
 not, because Agent NDA removed the whole `signatures` array from the signed
 bytes. Agent NDA 0.2.0-draft signs each record, so the claim now holds. §7
 says where an Agent SoW approval record sits, in the `change_control` clause
-inside the signed bytes, so that its `mandate` is signed too. §7.2 check 2
+inside the signed bytes, so that its `mandate` is signed too. A new power,
+`write`, covers a mutating act through a resource proxy (§6 rule 4, §7.1),
+and an Agent SoW grant made `via: "proxy"` MAY name, in `writes`, the power
+each resource's mutating acts need instead; before, no power covered one. A
+new fixture, `conformance/mandate-proxy.json`, pins the rule. §7.2 check 2
 is also run at the instant the verifier received the signature, where it
 received it, because the signer writes the instant of signing. The minor
 version moves because a registry built against 0.5.1-draft accepts a mandate

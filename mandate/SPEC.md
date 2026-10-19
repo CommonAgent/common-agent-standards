@@ -350,8 +350,10 @@ Rules:
    `form`); `nda` covers every act on an Agent NDA for the organization:
    signing an offer or an open offer, countersigning an offer or accepting
    an open offer, joining a multilateral agreement, amending, terminating,
-   and withdrawing (§7.2); `issue` is implied by `sub_delegation.allowed`.
-   A power not listed is not held.
+   and withdrawing (§7.2); `write` covers a mutating act on a resource the
+   holder's party was granted through a resource proxy, where the grant
+   names no other power for that resource (§7.1); `issue` is implied by
+   `sub_delegation.allowed`. A power not listed is not held.
 5. **Ceilings.** Amounts use the engagement's price vocabulary (Agent SoW
    §5.5). `per_engagement` bounds a single document's committed price;
    `per_month` bounds the holder's total formed commitments per calendar
@@ -419,7 +421,8 @@ that check:
    the `holder.key` of the mandate above it (§6).
 3. The act is within the mandate's powers: `form` for formation, `amend`
    for amendments, `terminate` for terminations, `award` for RFP awards,
-   `nda` for acts on an Agent NDA (§7.2).
+   `nda` for acts on an Agent NDA (§7.2), and, for a mutating act through a
+   resource proxy, the power the grant names or `write` (§7.1).
 4. The engagement's committed price is within `per_engagement`, and the
    holder's month-to-date formed total stays within `per_month`.
 5. The engagement's offerings fall within the mandate's scope.
@@ -461,6 +464,24 @@ the caller presents a mandate in force whose powers and scope cover the act,
 checked exactly as §7 checks it: chain to the charter, unexpired, unrevoked,
 the act within powers, the resource within scope. A refusal names the
 failing check, like every refusal in this family.
+
+**Which power a mutating act needs.** The grant says. A `shared_resource`
+input granted `via: "proxy"` MAY carry `writes`, an object that names, for
+each resource the grant covers, the power a mutating act on it needs, from
+the powers of §6 rule 4 (Agent SoW §5.3.1):
+
+```json
+"writes": { "ledger": "amend", "receipts": "write" }
+```
+
+A mutating act on a resource the object names needs that power. A mutating
+act on a resource it does not name, or on any resource of a grant that
+carries no `writes`, needs `write`. The parties sign the grant inside the
+engagement, so both of them agreed which authority a write through it
+takes, and the proxy reads the answer from signed bytes rather than
+deciding it. A grant whose `writes` names a power §6 rule 4 does not list
+does not validate. Grade: `enforced` at the proxy that runs the check, as
+above.
 
 Nothing new is defined here. The mandate, its chain, and its check are §6
 and §7's; the proxy is simply a counterparty that chose to run it at the
@@ -850,6 +871,13 @@ removed the whole `signatures` array from the signed bytes. Agent NDA
 0.2.0-draft signs each record, so the claim now holds, and §7.2 says how. §7
 says where an Agent SoW approval record sits, in the `change_control` clause
 inside the signed bytes, so that its `mandate` is signed too.*
+
+*A new power, `write`, covers a mutating act through a resource proxy
+(§6 rule 4, §7.1). An Agent SoW grant made `via: "proxy"` MAY name, in
+`writes`, the power each resource's mutating acts need instead, from the
+same list. Before, §7.1 said a mandate's powers had to cover a mutating act
+and no power covered one. A new fixture, `conformance/mandate-proxy.json`,
+pins the rule.*
 
 *§7.2 check 2 is also run at the instant the verifier received the
 signature, where it received it, because the signer writes the instant of

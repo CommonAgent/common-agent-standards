@@ -1,0 +1,216 @@
+{
+  "comment": "Agent Mandate: which power a mutating act through a resource proxy needs (agentmandate.net 0.6.0-draft, 6 rule 4 and 7.1; Agent SoW 0.26.0-draft 5.3.1). A client agent answers a provider's requests against resources it granted via proxy. A read within the grant is answered on the grant alone. A mutating act on a resource the grant's writes names needs that power; on any other resource it needs write. The caller presents a mandate, checked as 7 checks it; mandate below is the answer a lookup gives at the instant of the act, with only the members these cases turn on. expected is allow, or refuse with the failing check: mandate (none presented), in_force, or powers. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "version": 1,
+  "spec": "Agent Mandate 0.6.0-draft: 6 rule 4 (powers), 7.1 (the check at a resource proxy); Agent SoW 0.26.0-draft: 5.3.1 (writes)",
+  "powers": [
+    "form",
+    "amend",
+    "terminate",
+    "award",
+    "nda",
+    "write",
+    "issue"
+  ],
+  "grant": {
+    "name": "ledger-and-receipts",
+    "kind": "shared_resource",
+    "access": "read-write",
+    "via": "proxy",
+    "when": "standing",
+    "writes": {
+      "ledger": "amend"
+    }
+  },
+  "cases": [
+    {
+      "case": "read_needs_no_mandate",
+      "act": {
+        "resource": "ledger",
+        "mutating": false
+      },
+      "mandate": null,
+      "expected": {
+        "allow": true
+      },
+      "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "write_named_power_held",
+      "act": {
+        "resource": "ledger",
+        "mutating": true
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "amend"
+        ]
+      },
+      "expected": {
+        "allow": true
+      },
+      "why": "writes names amend for the ledger",
+      "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "write_named_power_missing",
+      "act": {
+        "resource": "ledger",
+        "mutating": true
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "write"
+        ]
+      },
+      "expected": {
+        "allow": false,
+        "check": "powers"
+      },
+      "why": "the grant asks amend for the ledger, and write does not stand in for it",
+      "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "write_unnamed_resource_needs_write",
+      "act": {
+        "resource": "receipts",
+        "mutating": true
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "write"
+        ]
+      },
+      "expected": {
+        "allow": true
+      },
+      "why": "writes does not name receipts, so a mutating act on it needs write",
+      "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "write_unnamed_resource_without_write",
+      "act": {
+        "resource": "receipts",
+        "mutating": true
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "amend"
+        ]
+      },
+      "expected": {
+        "allow": false,
+        "check": "powers"
+      },
+      "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "write_without_a_mandate",
+      "act": {
+        "resource": "ledger",
+        "mutating": true
+      },
+      "mandate": null,
+      "expected": {
+        "allow": false,
+        "check": "mandate"
+      },
+      "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "mandate_not_in_force",
+      "act": {
+        "resource": "ledger",
+        "mutating": true
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2026-09-01T00:00:00Z",
+        "powers": [
+          "amend"
+        ]
+      },
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": false,
+        "check": "in_force"
+      }
+    },
+    {
+      "case": "grant_without_writes",
+      "grant": {
+        "name": "ledger-and-receipts",
+        "kind": "shared_resource",
+        "access": "read-write",
+        "via": "proxy",
+        "when": "standing"
+      },
+      "act": {
+        "resource": "ledger",
+        "mutating": true
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "write"
+        ]
+      },
+      "expected": {
+        "allow": true
+      },
+      "why": "a grant with no writes asks write for every resource",
+      "at": "2026-10-01T00:00:00Z"
+    }
+  ],
+  "validation": {
+    "comment": "A grant whose writes names a power 6 rule 4 does not list, or that carries writes without via proxy, does not validate.",
+    "invalid": [
+      {
+        "case": "unknown_power",
+        "grant": {
+          "name": "ledger-and-receipts",
+          "kind": "shared_resource",
+          "access": "read-write",
+          "via": "proxy",
+          "when": "standing",
+          "writes": {
+            "ledger": "admin"
+          }
+        }
+      },
+      {
+        "case": "writes_without_proxy",
+        "grant": {
+          "name": "ledger-and-receipts",
+          "kind": "shared_resource",
+          "access": "read-write",
+          "via": "mcp",
+          "when": "standing",
+          "writes": {
+            "ledger": "amend"
+          }
+        }
+      }
+    ]
+  }
+}

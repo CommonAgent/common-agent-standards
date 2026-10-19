@@ -62,6 +62,9 @@ The clarifications:
 - §5.9 says when each termination takes effect: for convenience when the
   notice has run, for cause at once and with a reason. It said "at the next
   message", which conflicted with the notice period.
+- §5.3.1 lets a grant made `via: "proxy"` name, in `writes`, the Agent
+  Mandate power a mutating act on each resource needs. A resource it does
+  not name needs the `write` power, which Agent Mandate 0.6.0-draft adds.
 
 ## 0.25.0-draft (2026-10-19)
 

@@ -438,6 +438,13 @@ made**:
 | `seat` | Provisions an account, seat, or role for the provider inside the client's system, which is then a user in the client's own audit log. |
 | `proxy` | Grants nothing that leaves: the client's own agent answers the provider's requests against the resource. Access is metered per request, every ask is a message the client's side can screen and log, and revoking is ceasing to answer. |
 
+A grant made `via: "proxy"` MAY also carry `writes`, naming for each
+resource it covers the Agent Mandate power a caller's mandate must hold for
+a mutating act on it, `{ "<resource>": "<power>" }`. A resource it does not
+name needs the `write` power. The proxy checks the caller's mandate against
+it (Agent Mandate §7.1). `writes` on a grant made any other way does not
+validate, and neither does a power Agent Mandate §6 rule 4 does not list.
+
 `via` is a closed vocabulary and absent means the parties have not said. A
 runtime MUST NOT infer `link` from silence, and MUST NOT render an input with
 no `via` as though it were the mildest one. This specification declines to
@@ -2916,6 +2923,9 @@ The clarifications:
 - §5.9 says when each termination takes effect: for convenience when the
   notice has run, for cause at once and with a reason. It said "at the next
   message", which conflicted with the notice period.
+- §5.3.1 lets a grant made `via: "proxy"` name, in `writes`, the Agent
+  Mandate power a mutating act on each resource needs. A resource it does
+  not name needs the `write` power, which Agent Mandate 0.6.0-draft adds.
 
 **0.25.0-draft** (2026-10-19). The buyer's reference, and contracted contact by the provider.
 
