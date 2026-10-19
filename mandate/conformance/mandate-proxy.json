@@ -1,7 +1,7 @@
 {
-  "comment": "Agent Mandate: which power a mutating act through a resource proxy needs (agentmandate.net 0.6.0-draft, 6 rule 4 and 7.1; Agent SoW 0.26.0-draft 5.3.1). A client agent answers a provider's requests against resources it granted via proxy. A read within the grant is answered on the grant alone. An act is mutating unless its operation is declared or known to read and change nothing (read_only: true); an operation with no declaration (read_only: null) is mutating. A mutating act on a resource the grant's writes names needs that power; on any other resource it needs write. The caller presents a mandate, checked as 7 checks it; mandate below is the answer a lookup gives at the instant of the act, with only the members these cases turn on. expected is allow, or refuse with the failing check: mandate (none presented), in_force, or powers. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "comment": "Agent Mandate: which power a mutating act through a resource proxy needs (agentmandate.net 0.6.0-draft, 6 rule 4 and 7.1; Agent SoW 0.26.0-draft 5.3.1). A client agent answers a provider's requests against resources it granted via proxy. A read within the grant is answered on the grant alone. An act is mutating unless its operation is declared or known to read and change nothing (read_only: true); an operation with no declaration (read_only: null) is mutating. A mutating act on a resource the grant's writes names needs that power; on any other resource it needs write. The caller presents a mandate, checked as 7 checks it; mandate below is the answer a lookup gives at the instant of the act, with only the members these cases turn on. Where the mandate carries scope.resources, the resource must match one of its patterns (6 rule 9). expected is allow, or refuse with the failing check: mandate (none presented), in_force, powers, or scope. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent Mandate 0.6.0-draft: 6 rule 4 (powers), 7.1 (the check at a resource proxy); Agent SoW 0.26.0-draft: 5.3.1 (writes)",
+  "spec": "Agent Mandate 0.7.0-draft: 6 rules 4 and 9 (powers, resources), 7.1 (the check at a resource proxy); Agent SoW 0.26.0-draft: 5.3.1 (writes)",
   "grant": {
     "name": "ledger-and-receipts",
     "kind": "shared_resource",
@@ -194,6 +194,121 @@
         "check": "mandate"
       },
       "why": "an operation that declares nothing is mutating, so it needs a mandate"
+    },
+    {
+      "case": "scope_matches_named_power",
+      "act": {
+        "resource": "ledger",
+        "operation": "post_entry",
+        "read_only": false
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "amend"
+        ],
+        "scope": {
+          "resources": [
+            "ledger*"
+          ]
+        }
+      },
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": true
+      }
+    },
+    {
+      "case": "scope_excludes_resource",
+      "act": {
+        "resource": "receipts",
+        "operation": "post_entry",
+        "read_only": false
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "write"
+        ],
+        "scope": {
+          "resources": [
+            "ledger*"
+          ]
+        }
+      },
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": false,
+        "check": "scope"
+      },
+      "why": "the holder may write, but its organization limited it to the ledger"
+    },
+    {
+      "case": "scope_limits_amend_too",
+      "act": {
+        "resource": "ledger",
+        "operation": "post_entry",
+        "read_only": false
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "amend"
+        ],
+        "scope": {
+          "resources": [
+            "receipts"
+          ]
+        }
+      },
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": false,
+        "check": "scope"
+      }
+    },
+    {
+      "case": "scope_never_limits_a_read",
+      "act": {
+        "resource": "receipts",
+        "operation": "get_entries",
+        "read_only": true
+      },
+      "mandate": null,
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": true
+      }
+    },
+    {
+      "case": "no_scope_no_limit",
+      "act": {
+        "resource": "receipts",
+        "operation": "post_entry",
+        "read_only": false
+      },
+      "mandate": {
+        "organization": "org_stonework",
+        "holder_key": "<the caller's key>",
+        "starts_at": "2026-08-01T00:00:00Z",
+        "expires_at": "2027-08-01T00:00:00Z",
+        "powers": [
+          "write"
+        ]
+      },
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": true
+      }
     }
   ],
   "validation": {
