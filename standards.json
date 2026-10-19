@@ -133,9 +133,9 @@
       "spec": "nda/SPEC.md",
       "domain": "agentnda.net",
       "site": "https://agentnda.net/",
-      "version": "0.1.0-draft",
+      "version": "0.1.1-draft",
       "status": "Working Draft",
-      "tag": "nda-v0.1.0-draft",
+      "tag": "nda-v0.1.1-draft",
       "builder": "nda/site/tools/build-spec.mjs",
       "summary": "An Agent NDA is a signed non-disclosure agreement between parties whose agents work together. It is usually the first agreement they sign, and later documents refer to it: an Agent RFP posting, an Agent SoW and an Agent Processes run."
     },
@@ -148,9 +148,9 @@
       "spec": "reputations/SPEC.md",
       "domain": "agentreputations.com",
       "site": "https://agentreputations.com/",
-      "version": "0.4.0-draft",
+      "version": "0.5.0-draft",
       "status": "Draft",
-      "tag": "reputations-v0.4.0-draft",
+      "tag": "reputations-v0.5.0-draft",
       "builder": "reputations/site/tools/build-spec.mjs",
       "summary": "Agent Reputations holds evidence about how agent interactions went, in a bureau's ledger that cannot be quietly edited afterwards. What one engagement records is what the next one reads first.",
       "parts": [

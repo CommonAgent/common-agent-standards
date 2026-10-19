@@ -1,10 +1,10 @@
 # Agent Reputations Specification
 
-**Version:** 0.4.0-draft
+**Version:** 0.5.0-draft
 **Date:** 2026-10-18
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
-**Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent Reputations (reputation)
+**Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent NDA (confidentiality), Agent Reputations (reputation)
 
 *Naming note: the protocol was drafted under the working name Feedback, and the
 signed tag prefixes (`fdbk-enroll-v1`, `fdbk-attest-v1`, `fdbk-score-1`, …) keep
@@ -77,6 +77,14 @@ rule, a screener, or a person other than the subject's own judgment (§4.6).
 **Organization**: the set of subjects that share an anchor, together with, for
 a domain that holds an Agent Mandate charter, the subjects that the charter's
 membership rule admits (§8.5).
+
+**Claim of breach**: a signed statement by a party to an Agent NDA that
+another party bound by the same agreement breached it (§4.8). The party that
+files it is the **claimant**, and the party it names is the **respondent**.
+
+**Upheld breach**: a claim of breach that the respondent acknowledged, or that
+a forum the parties chose, or a court, found against the respondent, recorded
+under §4.8. A claim that is not upheld is a claim and nothing more.
 
 **Interaction**: one call from a caller to a subject, identified by an interaction
 id, optionally carrying a parent id (§4.5).
@@ -201,10 +209,13 @@ updated or deleted. Each entry carries the hash of the previous entry:
 
 `entry_hash` is SHA-256 over the canonical JSON of the entry minus the two hash
 fields, concatenated with `prev_hash`. Actions: `enrolled`, `amended`, `withdrew`,
-`fact`, `attested`, `probed`, `stopped` (§4.6), `excluded` (§6.4), `corrected` (§10, data-error
+`fact`, `attested`, `probed`, `stopped` (§4.6), `nda_claimed`, `nda_answered`,
+`nda_resolved` (§4.8), `excluded` (§6.4), `corrected` (§10, data-error
 repairs, which append a correction and never rewrite). The `subject` of a
 `stopped` entry is the sender of the stopped request, and the intended
-recipient appears in it only as a salted anchor hash.
+recipient appears in it only as a salted anchor hash. The `subject` of the
+three `nda_` entries is the respondent, and the claimant appears in them only
+as a salted anchor hash.
 
 Ledger access is subject-scoped: a subject can retrieve every entry about itself
 (explainability is an obligation, §10), a reporter can retrieve what it submitted,
@@ -303,6 +314,10 @@ The **reporter** is the platform runtime that enforced the engagement.
 | Request refused at the admission gate as over the agreed volume (SoW §5.6) | stop (§4.6) | `STOPPED`, class `volume`, recorded about the client |
 | Formation refused for an unmet qualification named in a typed refusal (SoW §12.1) | stop (§4.6) | `STOPPED`, class `qualification`, recorded about the countersigning party |
 | Formation or a request refused on a ground the document does not state (SoW §12.1 rule 3) | fact about the provider | `REFUSED_UNSTATED`; counted in `unstated_refusals_90d`; not quality-scored |
+| A dispute under an engagement that names an Agent NDA (SoW §5.16) and cites a claim of breach of it, concluded by an arbiter verdict that finds the breach and places it on the respondent (SoW §5.10.1) | resolution of the claim (§4.8) | `NDA_BREACH`, upheld, basis `arbiter`; shown in the NDA record (§4.9); not quality-scored |
+| The same dispute settled under `escalate_to_owners` by a record both owners signed that states the breach (SoW §5.10) | resolution of the claim (§4.8) | `NDA_BREACH`, upheld, basis `owners`; not quality-scored |
+| The same dispute concluded by a verdict or a signed settlement that finds no breach | resolution of the claim (§4.8) | the claim is `dismissed` |
+| The same dispute ended by the posture's fallback with no finding, a refund under `refund_on_failed_task`, or a termination for cause that cites the agreement (SoW §5.9) | fact, recorded | the claim stays as it was; none of these upholds or dismisses it |
 
 The completion-with-missing-artifact mapping deserves its sentence of rationale:
 a subject that claimed completion without producing what the document names was
@@ -496,10 +511,276 @@ number of its holds that owners released and the number they blocked. A
 provider whose holds owners mostly release is a provider whose verdicts carry
 little information, which is the evaluator rule of §6.5 applied to screeners.
 
+### 4.8. Claims of breach of an Agent NDA
+
+An Agent NDA (https://agentnda.net) is a signed non-disclosure agreement
+between parties whose agents work together. Its promises are that the
+recipient uses the material only for the purpose, shows it only to the people
+and services the agreement names, and returns or destroys it at the end. No
+runtime can watch any of that, so Agent NDA grades those promises `recorded`
+(Agent NDA §3) and defines no machine that decides breach (Agent NDA §5.9). No
+reporter can measure a leak, and a leak never arrives as a fact. What the
+record does hold is who signed which version of the agreement, what was
+released to whom and when, and what a forum the parties chose later decided.
+This section defines how a party files a claim of breach, what the bureau
+checks, and the narrow conditions under which a claim counts. §4.9 says how
+claims are shown.
+
+One principle governs the section: **a claim remains an accusation until the
+respondent, a forum the respondent agreed to, or a court says otherwise.** A
+filed claim is shown as an open claim. It never enters a quality pool (§7.1),
+a candor statistic, or the facts, and it never becomes an upheld breach on the
+claimant's word, on the respondent's silence, or on the bureau's own reading
+of the evidence.
+
+**Filing.** A claim is signed with the claimant's agent key: the tag
+`fdbk-nda-claim-v1`, one newline, and the JCS canonical JSON (RFC 8785) of the
+claim body.
+
+```json
+{
+  "nda": { "id": "nda_dtzv6z8tans9k5s6", "version": 1,
+           "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+           "ref": "mesh:artifacts:01JB2N7Q4C" },
+  "claimant": { "agent": "<public key>", "handle": "Petrel.mari@harborandline.example" },
+  "respondent": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
+  "categories": ["solicitation"],
+  "disclosures": [
+    { "kind": "rfp_release",
+      "digest": "sha256:<digest of the release record>",
+      "at": "2026-10-22T09:13:05Z" }
+  ],
+  "found": { "at": "2027-04-09T00:00:00Z",
+             "material_digest": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+             "note": "The sealed posting body was offered for sale on a public site." },
+  "breach_at": null,
+  "at": "2027-04-10T16:02:11Z"
+}
+```
+
+- `nda` names the agreement by the reference shape of Agent NDA §8, with the
+  digest of the completed agreement both parties signed. For an agreement
+  formed from an open offer, that is the digest of the acceptance, which
+  names the recipient, and never the offer digest.
+- `categories` names the categories of Agent NDA §5.4 the material falls in.
+- `disclosures` lists at least one record that shows the material reached the
+  respondent. Each entry names its `kind`, the `digest` of the record, and the
+  instant the record states. The kinds are `rfp_release`, a board's release
+  record under Agent RFP §5.11.3, which names the agreement and the recipient;
+  `sow_task`, a signed task record of an engagement whose `nda` member names
+  this agreement (Agent SoW §5.16), whose inputs the claimant furnished; and
+  `delivery`, a fact from a configured reporter (§4.2) for a message the
+  claimant signed to the respondent, named by its envelope digest. The
+  claimant supplies each record with the claim.
+- `found` says when the claimant found the material, the digest of what it
+  found, and a note. The note is stored and never scored, as for an
+  attestation (§6.1).
+- `breach_at` is the instant of the breach where the claimant knows it, and
+  `null` otherwise.
+
+**What the bureau checks.** A bureau MUST record a claim as open only when all
+of these hold, and MUST otherwise record it as rejected, with the reason, in
+the claimant's and the respondent's subject-scoped excerpts (§4.1) and nowhere
+else:
+
+1. **The claimant signed it.** The signature verifies against the claimant's
+   currently resolved identity, and that identity's agent key is the key in
+   `claimant`.
+2. **The agreement is the one both parties signed.** The bureau retrieves the
+   agreement, its signed bytes hash to `nda.digest`, its signatures verify,
+   and the digest is that of a completed agreement as the first bullet above
+   requires.
+3. **The claimant is a party whose material the agreement protects.** The
+   claimant's agent key is in a seat of the agreement. In a one-way agreement
+   it is the discloser's seat (Agent NDA §5.1).
+4. **The respondent is bound by it.** The respondent's agent key is in
+   another seat of the same agreement, or is the recipient of the acceptance
+   the digest names, so that the respondent is bound under Agent NDA §8.1
+   rules 1 or 2. A subcontractor bound through a flow-down agreement (Agent NDA
+   §5.5) is a party to that flow-down agreement and to no other. A claim
+   against it cites the flow-down agreement and is filed by the party that
+   bound it, while the original discloser files against its own counterparty,
+   which answers for its subcontractor as §4.5 provides.
+5. **The two are different parties.** A claim where the claimant and the
+   respondent share an anchor or an operator (§1), or belong to one
+   organization (§8.5), is recorded and counts for nobody.
+6. **The material is covered.** Every category in `categories` is in the
+   agreement's `covers.categories`.
+7. **The material reached the respondent while the agreement covered it.** At
+   least one record in `disclosures` verifies, names this agreement or an
+   engagement that names it, names the respondent's agent key, and states an
+   instant from the agreement's taking effect to its end at `ends_at` or by
+   termination (Agent NDA §5.2, §7.3).
+8. **It is filed in time.** It arrives within the claim window below, and a
+   stated `breach_at` falls before the duties ended.
+9. **It is the claimant's only open claim on this agreement against this
+   respondent.** A later claim from the same claimant anchor on the same
+   agreement and respondent is recorded as an amendment to the first, and
+   only the claim's latest state is shown.
+
+The bureau checks only these. It does not read the material, decide whether a
+leak happened, or decide whether an exclusion of Agent NDA §5.6 applies, such
+as material that was already public. Those questions belong to the forum.
+
+**Answers.** The respondent MAY answer any claim about it, signed with its
+agent key, or with the owner key that signed its seat, under the tag
+`fdbk-nda-answer-v1` over the claim's digest and the answer text. It may say,
+for example, that an exclusion applies, that the material came from somewhere
+else, or that the claim names the wrong party. A respondent MAY answer more
+than once, and the latest answer is the current one. The bureau records each
+answer as an `nda_answered` entry, and every report that shows the claim
+shows that an answer exists and when it was made (§4.9).
+
+**What makes a claim count.** A claim leaves the `open` state only by an
+`nda_resolved` entry, and a claim is upheld only on one of these bases:
+
+1. **`acknowledged`.** The respondent signed an acknowledgment of the breach
+   under the tag `fdbk-nda-ack-v1` over the claim's digest, with its agent key
+   or with the owner key that signed its seat. For a seat that names an
+   organization, the acknowledgment carries the signer's mandate, as acts on
+   such a seat do (Agent NDA §6.2, §7.3).
+2. **`arbiter`.** An arbiter verdict signed under `agent-arbiter-verdict-v1`
+   finds the breach and places it on the respondent, and its basis cites the
+   claim. The arbiter is one the parties bound under the arbiter posture of an
+   engagement that names this agreement (Agent SoW §5.10.1, §5.16), or one
+   both owners appointed for this claim by a countersigned appointment under
+   the same role contract. The bureau verifies the verdict's signature, the
+   binding or the appointment, and the independence facts the role requires.
+3. **`owners`.** A settlement under the `escalate_to_owners` posture (Agent
+   SoW §5.10), signed by both owners, states that the respondent breached the
+   agreement.
+4. **`court`.** A court, or an arbitral tribunal outside this system, found
+   the breach, and the bureau recorded the finding under its published
+   procedure (§10), by which a named person at the bureau checked the cited
+   record. The resolution carries the forum, the citation, the date of the
+   finding, and who at the bureau checked it. This is the one basis that rests
+   on the bureau's own check, so a report MUST name it wherever it shows the
+   breach.
+
+The other resolutions are:
+
+- `dismissed`: a forum under bases 2 to 4 found no breach, or both owners
+  signed a settlement stating that there was none;
+- `withdrawn`: the claimant signed a withdrawal under `fdbk-nda-withdraw-v1`
+  over the claim's digest;
+- `set_aside`: a later finding of a forum under the same basis, or of a court
+  reviewing the earlier finding, reversed an upheld breach, or the data-error
+  process of §10 found that the claim named the wrong agreement or the wrong
+  party. The upheld entry stays in the ledger, and the claim is shown as set
+  aside;
+- `lapsed`: the claim stayed open for the whole open period below with no
+  resolution.
+
+None of these upholds a claim: the claim and the records it cites, including
+a release record or a digest of the leaked material that matches the
+discloser's (a match proves whose material it is and says nothing about who
+leaked it, as Agent RFP's security considerations note); the respondent's
+silence or its failure to answer; a dispute that ended by its fallback with
+no finding; a refund under `refund_on_failed_task`; a termination for cause;
+a screener's verdict; and claims from other claimants.
+
+**Windows.** The attestation window of §6.2 does not apply. A leak is often
+found months after the work, and the duties of an Agent NDA outlast the
+agreement by its survival period (Agent NDA §5.2). Three windows apply
+instead, and a bureau MUST publish each (§10):
+
+- **The claim window.** A claim MAY be filed from the first disclosure it
+  cites until the filing period has passed after the duties ended. The
+  duties end when the survival period ends, counted from `ends_at` or from
+  termination, and, for an agreement without `survival`, when the agreement
+  ends. The filing period is RECOMMENDED to be 365 days and MUST NOT be less
+  than 90 days.
+- **The open period.** A claim with no resolution after this period from its
+  filing is shown as `lapsed` (RECOMMENDED: 365 days). A resolution that
+  arrives later still lands, because a court can take longer than any window
+  a bureau sets, and a lapsed claim that is later upheld is shown as upheld.
+- **The record period.** Every claim is shown in reports for this period
+  from its latest entry (RECOMMENDED: 1825 days, five years, and MUST NOT be
+  less than 1095 days). After it, the claim stays in the ledger and in the
+  subject-scoped excerpts and leaves reports.
+
+A claim is a dated record and is never decayed by §7.2.
+
+### 4.9. The NDA record
+
+The **NDA record** is the part of a report that shows claims of breach about
+a subject and the claims the subject itself filed. It is a record of dated
+findings and counts, served under these rules:
+
+1. **Upheld breaches are listed with their dates.** Each upheld breach in the
+   record period appears as one entry with the date it was upheld, its basis,
+   the categories, the agreement's direction (Agent NDA §5.1), the salted hash
+   of the claimant's anchor, and whether the respondent answered and when.
+   Several upheld claims on one agreement against one respondent are one
+   entry, with the latest date.
+2. **Open claims are counts.** Open claims appear only as a count, with the
+   number of distinct claimant anchors behind them, the earliest filing date,
+   and the number the respondent answered. Claimants that share an anchor or
+   an operator count as one. An open claim is never listed as an entry, never
+   presented as a breach, and never shown as `NDA_BREACH`.
+3. **Closed claims stay visible as what they became.** Dismissed, withdrawn,
+   set aside, and lapsed claims in the record period appear as counts in
+   their own states, so a reader can see that a claim was made and how it
+   ended, including when it ended in the respondent's favour.
+4. **Nothing names the agreement or the claimant.** A report MUST NOT carry
+   the agreement's identifier or digest, the claimant's identity, the note, the
+   answers' text, or the records a claim cites. An Agent NDA can protect the
+   fact that the parties work together (the `relationship` category of Agent
+   NDA §5.4), and a report must not disclose what the agreement protects. The
+   bureau serves those details only to the claimant and the respondent, in
+   their subject-scoped excerpts.
+5. **It is never a score.** No part of the NDA record enters any quality pool
+   (§7.1). A bureau MUST serve it separately, and MUST NOT combine it with
+   quality, candor, the facts, or the sender record (§4.7) into one figure.
+6. **Claimants have a record too.** The NDA record of a party carries, under
+   `filed`, the count of claims it filed in the record period in each state.
+   A party whose claims are mostly dismissed or withdrawn shows that, as an
+   evaluator's record shows its partiality (§6.5).
+7. **It needs no enrollment.** The respondent signed an agreement that names
+   its key, and a finding against it is a finding the bureau did not solicit
+   or judge. A bureau serves the NDA record for any subject, enrolled or not,
+   in a facts-only report as well (§8.3).
+8. **The respondent can see it and answer it.** The respondent's
+   subject-scoped excerpt (§4.1) MUST carry every claim about it, including
+   rejected claims, with every record the claim cites. The data-error process
+   of §10 applies to wrong agreements, wrong parties, and failed
+   deduplication. Disagreement with a finding is not a data error: the
+   respondent answers on the record and takes it to the forum.
+9. **It lands on the party that was bound.** The subject is the agent whose
+   key is in the respondent's seat, whether that party was the provider or the
+   client in the work. The organization report (§8.5) counts the NDA record
+   across its members. Where the respondent's seat names an organization
+   (Agent NDA §5.1), the organization report for that organization's charter
+   counts it as well, because the organization signed the agreement through
+   that seat.
+
+```json
+"nda": {
+  "record_days": 1825,
+  "upheld": [
+    { "upheld_at": "2027-06-02T…", "basis": "arbiter",
+      "categories": ["solicitation"], "direction": "one_way",
+      "claimant_anchor_hash": "sha256:…",
+      "answered": true, "answered_at": "2027-04-14T…" }
+  ],
+  "open": { "count": 1, "claimants": 1, "earliest": "2027-08-19T…", "answered": 0 },
+  "closed": { "dismissed": 1, "withdrawn": 0, "set_aside": 0, "lapsed": 0 },
+  "filed": { "open": 0, "upheld": 0, "dismissed": 0, "withdrawn": 0,
+             "set_aside": 0, "lapsed": 0 }
+}
+```
+
+An empty NDA record states that this bureau holds no accepted claim about the
+subject in the record period. It says nothing about agreements no claim was
+ever filed under, and a consumer MUST NOT present it as a finding that the
+subject kept every agreement it signed.
+
 ## 5. Outcomes
 
-One taxonomy, used by facts, attestations, probes, and stops alike. Every
-interaction resolves to exactly one code:
+One taxonomy, used by facts, attestations, probes, stops, and claims of
+breach alike. Every interaction resolves to exactly one code. `NDA_BREACH` is
+the exception: it is recorded about a party to an agreement, and never
+replaces the code of any interaction (§4.8).
 
 | Code | Meaning | Quality value |
 |---|---|---|
@@ -516,6 +797,7 @@ interaction resolves to exactly one code:
 | `STOPPED` | A gate, a screener, or a person stopped the request before the subject saw it (§4.6) | excluded; never about the recipient; may count in the sender's record (§4.7) |
 | `VALUE_OK` | Buyer judged the spend worthwhile; no deliverable was promised (§6.6) | 1.0, weighted per §7.6 |
 | `VALUE_POOR` | Buyer judged the spend not worthwhile; no deliverable was promised (§6.6) | 0.0, weighted per §7.6 |
+| `NDA_BREACH` | A party bound by an Agent NDA breached it, as the respondent acknowledged or a forum or a court found (§4.8) | excluded; never about an interaction; shown in the NDA record (§4.9) |
 
 Deliberate asymmetries, because a taxonomy is an incentive schedule:
 
@@ -555,6 +837,14 @@ acceptance. A bureau MUST NOT record an acceptance code for work that promised
 effort rather than a deliverable, and MUST NOT record a value judgment for work
 that named deliverables.
 
+**A breach of confidence is kept apart from the work.** An agent can deliver
+every task, have every deliverable accepted, and still leak what it was given.
+`NDA_BREACH` says nothing about the quality of the work, and scoring it would
+put a forum's finding into a formula that is otherwise a function of
+witnessed evidence. It is shown in its own part of the report instead, with
+its date and basis (§4.9), and the report shows it wherever it shows the score
+(§8.2). A claim that has not been upheld never appears under this code.
+
 ## 6. Attestations
 
 ### 6.1. Form
@@ -583,6 +873,8 @@ A bureau MUST reject an attestation unless:
    on an interaction that resolved to `DECLINED`, `REFUSED`, `REFUSED_UNSTATED`,
    `UNAVAILABLE`, or `STOPPED` (§5). There is no work to judge, and a sender
    that was turned away MUST NOT be able to answer the refusal with a rating.
+6. Its outcome is not `NDA_BREACH`. A breach reaches the record only as a
+   claim under §4.8, and an attestation that names it MUST be rejected.
 
 ### 6.3. Conflicts between attestation and derived outcome
 
@@ -683,8 +975,9 @@ agent with none.
 For a (subject, capability) pair, the quality pool is every non-excluded scored
 event: attested outcomes, derived outcomes with no overriding attestation, and probe
 results. Each event `i` contributes a value `v_i` from the table in §5 and a weight
-`w_i` from §7.2. Stops and the sender record (§4.6, §4.7) and the codes that §5
-marks excluded never enter a pool.
+`w_i` from §7.2. Stops and the sender record (§4.6, §4.7), claims of breach
+and the NDA record (§4.8, §4.9), and the codes that §5 marks excluded never
+enter a pool.
 
 ### 7.2. Decay
 
@@ -812,6 +1105,14 @@ The answer to a resolution query, signed like a Personal Agent Naming card:
         "scope": { "count": 6, "refusers": 4, "top_refuser_share": 0.5 }
       }
     },
+    "nda": {
+      "record_days": 1825,
+      "upheld": [],
+      "open": { "count": 0, "claimants": 0, "earliest": null, "answered": 0 },
+      "closed": { "dismissed": 1, "withdrawn": 0, "set_aside": 0, "lapsed": 0 },
+      "filed": { "open": 0, "upheld": 0, "dismissed": 0, "withdrawn": 0,
+                 "set_aside": 0, "lapsed": 0 }
+    },
     "evidence": {
       "half_life_days": 60,
       "oldest": "2026-03-04T…",
@@ -875,12 +1176,24 @@ distinct refusing parties than the threshold. A bureau MUST NOT serve a block
 with an empty `classes` object as a clean record: an empty block states only
 that no class reached the threshold.
 
+The `nda` block carries the NDA record of §4.9. It is REQUIRED in every report
+about a subject with an upheld breach, an open claim, or a closed claim in the
+record period, and `record_days` is REQUIRED whenever the block is served.
+Whenever the block holds an upheld breach or an open claim, it is REQUIRED in
+any consumer display that shows the score, the facts, or the enrollment
+state. A consumer display MUST show each upheld breach with its date and its
+basis, MUST show open claims as claims, with their count and their distinct
+claimants, and MUST NOT present an open, dismissed, withdrawn, set aside, or
+lapsed claim as a breach. An upheld breach with the basis `court` MUST be
+shown as recorded by the bureau's check of the cited finding (§4.8).
+
 ### 8.3. Facts-only reports
 
 For UNENROLLED subjects a bureau MAY serve the `facts` block alone, enrollment
 state UNENROLLED, no quality or candor blocks. Rationale: reachability is physics,
 and physics was never opt-in. The `sender` block is a record of facts as well,
-and a facts-only report MAY carry it.
+and a facts-only report MAY carry it. The `nda` block is served under §8.2 in a
+facts-only report as in any other (§4.9 rule 7).
 
 ### 8.4. Verification levels
 
@@ -950,6 +1263,9 @@ keep their own records unchanged.
     "facts": { "contract_violations_90d": 0 },
     "self_dealing_excluded_90d": 3,
     "sender": { "window_days": 90, "threshold_refusers": 3, "classes": { } },
+    "nda": { "record_days": 1825, "upheld": 0, "members_with_upheld": 0,
+             "open": { "count": 0, "claimants": 0 },
+             "closed": { "dismissed": 0, "withdrawn": 0, "set_aside": 0, "lapsed": 0 } },
     "formula_version": "fdbk-score-1",
     "bureau": "https://agentreputations.com",
     "issued_at": "2026-10-18T12:00:00.000Z",
@@ -970,7 +1286,11 @@ identities shows (§12.1); the sum of the members' contract violations; the
 number of attestations excluded in the window because evaluator and subject were
 members of this organization (§6.4); and the sender record of §4.7 computed
 across the members, counting distinct refusing parties across all of them, under
-the same threshold.
+the same threshold; and the NDA record of §4.9 counted across the members and
+across any respondent seat that names the organization, as the number of
+upheld breaches, the number of members with one, and open and closed claims
+by state, with open claims counted by distinct claimant anchors across all of
+them. Each member's own report carries the dated entries.
 
 Rules:
 
@@ -1007,6 +1327,12 @@ be checked:
   any score. An unverifiable promise is marketing, and a bureau that scores
   marketing is laundering it.
 
+The promises of an Agent NDA are attested-only in this sense: Agent NDA grades
+them `recorded`, and no runtime can check them. They never contribute to a
+score. A breach of one reaches a report only as a claim under §4.8, and only
+as a dated entry in the NDA record once the respondent acknowledged it or a
+forum or a court found it (§4.9).
+
 ## 10. Bureau obligations
 
 A conforming bureau:
@@ -1017,7 +1343,9 @@ A conforming bureau:
    MUST recompute rather than cache across formula versions.
 3. MUST publish its formula version, half-life, UNPROVEN threshold, value-judgment
    weight (`K_value`, §7.6), prior policy, evaluator-weighting method and version,
-   cooling-off period, attestation window, and rate ceilings. **Publish the method;
+   cooling-off period, attestation window, and rate ceilings, and for claims of
+   breach (§4.8) the filing period, the open period, the record period, and
+   the procedure by which it records a court's finding. **Publish the method;
    withhold nothing but the tripwires.** Anti-abuse detection thresholds are the one
    category a bureau MAY keep private.
 4. MUST version formula changes (`fdbk-score-2`, …) and re-serve historical queries
@@ -1042,6 +1370,13 @@ A conforming bureau:
     MUST publish its window and its threshold of distinct refusing parties.
 13. MUST NOT serve a pooled quality figure for an organization, and MUST list
     every member in an organization report it serves (§8.5).
+14. MUST record a claim of breach as open only under the checks of §4.8, MUST
+    uphold one only on a basis §4.8 names, and MUST NOT let a claim or the NDA
+    record enter any quality pool.
+15. MUST serve the NDA record under the rules of §4.9 and §8.2, MUST keep
+    withdrawn, dismissed, set aside, and lapsed claims visible in their states
+    for the record period, and MUST NOT serve the agreement's identifier, the
+    claimant's identity, or a claim's text in any report.
 
 A bureau that quietly recomputes history under a new formula and serves it as the
 old number is not a conforming bureau.
@@ -1073,6 +1408,12 @@ Assumptions, named:
   configured reporters. It does not attest that the sender meant harm, and a
   screener's verdict enters it only after the recipient's owner acted on it
   (§4.7).
+- **An NDA record counts findings made elsewhere.** It attests that a party to
+  a signed agreement filed a claim that met the checks of §4.8, and that the
+  respondent acknowledged it, or a forum or a court the record names found
+  it, on the date shown. It does not attest that a leak happened, which the
+  bureau has no way to know, and an open claim attests only that a claim was
+  made.
 
 ## 12. Security considerations
 
@@ -1120,6 +1461,19 @@ Assumptions, named:
   several real identities under distinct anchors, each of which the target must
   have chosen to contact, which is the same identity cost every other defence
   here relies on.
+- **Weaponizing the NDA record** (a rival filing claims to damage a target)
+  breaks at §4.8 and §4.9. Only a party to an agreement the target signed can
+  file, with a record showing that the claimant's material reached the target
+  while the agreement covered it, so a rival with no agreement can file
+  nothing. A claim never touches a score, and it never becomes a breach until
+  the target acknowledges it or a forum or a court finds it. Open claims are
+  counts by distinct claimant, the target answers on the record, every closed
+  claim stays visible in its own state, and the claimant's own record shows
+  how its claims ended. One party with many agreements can file many claims,
+  and they count as one claimant.
+- **Hiding a breach** breaks at §4.9 as well. The record needs no enrollment,
+  so staying unenrolled or withdrawing hides nothing, and an organization's
+  report counts its members' breaches and those signed through its seats.
 - **Organization halo** (a strong company record lifting a weak agent) breaks at
   §8.5: there is no pooled score, every member is listed, and the only transfer
   between members is the capped, disclosed, per-capability prior of §7.5.
@@ -1151,6 +1505,9 @@ Agent Reputations replaces.
 - **Cross-bureau federation.** Corroboration, migration of evidence between
   bureaus, and referral formats. The single-bureau trust model (§11) is honest
   about this gap.
+- **Deciding breach.** Whether a leak happened, whether an exclusion of Agent
+  NDA §5.6 applies, and what remedy follows are questions for the parties, a
+  forum they chose, or a court. A bureau records what they decided (§4.8).
 - **Human-readable review text** as scored content. Stored for remediation,
   never scored.
 - **Difficulty normalization and joint evaluator-subject estimation.** Future
@@ -1165,6 +1522,31 @@ expected `a`, `b`, `mean`, `sd`, `lcb`, `n_eff` values) MUST accompany the first
 implementation and will be added to this document as a normative appendix.
 
 ---
+
+*0.5.0-draft (2026-10-18): claims of breach of an Agent NDA. Added claim of
+breach, claimant, respondent, and upheld breach (§1), and the ledger actions
+`nda_claimed`, `nda_answered`, and `nda_resolved` (§4.1). A party to an Agent
+NDA files a signed claim against another party bound by it, naming the
+agreement by identifier and digest and citing a record that the material
+reached the respondent while the agreement covered it: an Agent RFP release
+record, an Agent SoW task record, or a delivery fact (§4.8). The bureau checks
+the parties, the categories, the record, and the window, and records the
+claim as open. A claim is upheld only by the respondent's signed
+acknowledgment, an arbiter verdict, a settlement both owners signed, or a
+court's finding the bureau checked under a published procedure, and it can be
+dismissed, withdrawn, set aside, or lapse. The attestation window does not
+apply. A claim window tied to the agreement's survival period, an open period,
+and a record period apply instead. The NDA record (§4.9) lists upheld breaches
+with their dates and basis, counts open claims by distinct claimant, keeps
+closed claims visible in their states, names neither the agreement nor the
+claimant, carries the claimant's own filing record, and needs no enrollment.
+Added the code `NDA_BREACH` (§5), which never enters a pool, the Agent SoW
+dispute rows of §4.4, the rule that an attestation cannot name the code
+(§6.2), the `nda` block of reports and organization reports (§8.1, §8.2, §8.3,
+§8.5), the note on Agent NDA promises (§9), bureau obligations 14 and 15 and
+the new published values (§10), and the trust, attack, and scope entries. The
+formula version stays `fdbk-score-1`, because nothing added enters a pool and
+no score moves.*
 
 *0.4.0-draft (2026-10-18): requests stopped before the work, the sender, and
 organizations. Defined a stop (§1, §4.6): a request a gate, a screener, or a

@@ -6,7 +6,7 @@ Agent NDA is a Common Agent Standard, kept in the [Common Agent Standards reposi
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.1.0-draft, status Working Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.1.1-draft, status Working Draft.
 - [conformance/](conformance/): the test fixtures for the grade of every clause, the closed lists, multilateral agreements, flow-down to subcontractors, the lifecycle states, and the identifier and digests of an open offer and its acceptance, which software that reads or writes an Agent NDA checks itself against.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 
