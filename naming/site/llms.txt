@@ -1,4 +1,4 @@
-# Personal Agent Naming (PAN): agentnaming.ai
+# Personal Agent Naming: agentnaming.ai
 
 > Personal Agent Naming is an open standard for naming personal agents.
 > A handle is a name you choose on the email you
