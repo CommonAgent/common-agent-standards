@@ -19,7 +19,7 @@
 //                    status, its own site and its folder on GitHub
 //
 // The cards are made from standards.json. What is written by hand is the few
-// sentences that say what the suite is, the heading and sentence of each group
+// sentences that say what the suite is, the sentence under each group's name
 // (GROUPS), the explainer videos on agent.html (VIDEOS), and the drawings on
 // the front page's two doors (agentCell, standardsMap).
 //
@@ -90,25 +90,22 @@ function video(v) {
 }
 
 // The groups of standards.html, in the order standards.json lists them. Each
-// has a heading and one sentence; the cards under it are the entries whose
-// group is its id, in the order standards.json lists them unless the group
+// has its name from standards.json as its heading, then one sentence; the
+// cards under it are the entries whose group is its id, in the order standards.json lists them unless the group
 // gives an order of its own (contracting lists them in the order an engagement
 // uses them).
 const GROUPS = {
   "identity-and-reach": {
     icon: "agent",
-    heading: "Every agent has an identity, a name and a way to be reached",
     text: "The Common Agent Specification defines the agent and the key it signs with, Personal Agent Naming gives it a name on an email address its owner already has, and Agent Messaging carries messages to it even while it is offline.",
   },
   contracting: {
     icon: "contract",
     order: ["nda", "rfp", "sow", "mandate", "reputations"],
-    heading: "Two parties agree on work and record how it went",
     text: "The parties sign an Agent NDA before they share anything, the buyer asks for proposals with an Agent RFP, the agreed work is written down in an Agent SoW, an Agent Mandate bounds the authority each agent acts on, and Agent Reputations keeps the record of how the work went.",
   },
   "doing-the-work": {
     icon: "processes",
-    heading: "Agents hold roles and run the work together",
     text: "Agent Roles defines the jobs that recur on every network, Agent Processes writes down how a piece of work runs and who holds each phase, and the Agent Collab guide gives agents playbooks to follow when they work in a shared room.",
   },
 };
@@ -198,7 +195,6 @@ const stampFor = (draft) => draft
 
 const sponsorBand = `<section class="band" id="sponsor">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS.heart)}Sponsor</p>
           <h2>AgentMesh sponsors the Common Agent Standards</h2>
           <p><a href="${esc(SUITE.sponsor.url)}">AgentMesh</a> sponsors the suite and publishes
             this site. Nothing in any of the standards requires a particular network or vendor,
@@ -260,7 +256,6 @@ export function renderHome({ draft = false } = {}) {
       <div class="wrap hero">
         <div class="front-top">
           <div>
-            <span class="eyebrow">${ico(ICONS.layers)}A suite of open standards for agents</span>
             <h1>${esc(title)}</h1>
             <p class="lede">The Common Agent Standards are open specifications for agents that
               work for people and organizations.</p>
@@ -299,17 +294,16 @@ export function renderAgent({ draft = false } = {}) {
   const title = "The Common Agent";
   const description = "What an agent is from the outside and what any agent must be able to do: two explainer videos, the four problems agents meet across company lines, the Agent Descriptor, and the pages of the Common Agent Specification.";
   const problems = [
-    { key: "Find", icon: "find", colour: "c-blue", h: "Agents need to find each other", p: "Today every vendor keeps its own list." },
-    { key: "Reach", icon: "reach", colour: "c-mint", h: "Agents need to reach each other", p: "A message is lost if the other agent is offline." },
-    { key: "Trust", icon: "trust", colour: "c-violet", h: "Agents need to trust each other", p: "Nobody can tell who stands behind an agent." },
-    { key: "Control", icon: "control", colour: "c-amber", h: "Their owners need to control them", p: "Someone decides who gets in, what an agent spends, and how to stop one." },
+    { key: "Find", icon: "find", colour: "c-blue", p: "Agents need to find each other, and today every vendor keeps its own list." },
+    { key: "Reach", icon: "reach", colour: "c-mint", p: "Agents need to reach each other, and a message is lost if the other agent is offline." },
+    { key: "Trust", icon: "trust", colour: "c-violet", p: "Agents need to trust each other, and nobody can tell who stands behind an agent." },
+    { key: "Control", icon: "control", colour: "c-amber", p: "Their owners need to control them: who gets in, what an agent spends, and how to stop one." },
   ];
   return shell({
     file: "agent.html", active: "agent", title, description, ogType: "article",
     ogImage: "og-image.png", ogAlt: "The Common Agent Specification. The definition of the agent as a testable claim",
     body: `      <header class="herobg">
       <div class="wrap hero">
-        <span class="eyebrow">${ico(ICONS.agent)}The Common Agent Specification</span>
         <h1>${esc(title)}</h1>
         <p class="lede">${esc(base.summary)} A program can check every answer against what the operator
           signed, so calling something an agent becomes a claim anyone can test.</p>
@@ -323,7 +317,6 @@ export function renderAgent({ draft = false } = {}) {
 
       <section class="band tinted" id="videos">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS.play)}Two short videos</p>
           <h2>The Common Agent, explained</h2>
           <p>Part 1 looks at a single agent from the outside. Part 2 puts that agent on a
             network, among many others.</p>
@@ -335,12 +328,11 @@ export function renderAgent({ draft = false } = {}) {
 
       <section class="band" id="problems">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS.compass)}Four problems</p>
           <h2>Across company lines, agents struggle to find, reach, trust and control each other</h2>
           <p>Every person and every company is getting agents. The value comes when agents work
             with each other, and most of them still work only inside their own walls.</p>
           <ol class="problems">
-            ${problems.map((x) => `<li class="${x.colour}"><span class="key">${ico(ICONS[x.icon])}${x.key}</span><h3>${x.h}</h3><p>${x.p}</p></li>`).join("\n            ")}
+            ${problems.map((x) => `<li class="${x.colour}"><h3 class="key">${ico(ICONS[x.icon])}${x.key}</h3><p>${x.p}</p></li>`).join("\n            ")}
           </ol>
           <p>All four meet in one place: the outside of each agent, where others find it, reach it,
             check it and limit it. So every agent needs an outside that anyone can check, and that
@@ -350,7 +342,6 @@ export function renderAgent({ draft = false } = {}) {
 
       <section class="band tinted" id="descriptor">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS.rfp)}The Agent Descriptor</p>
           <h2>Every agent serves a bound, signed Descriptor</h2>
           <div class="basecard">
             <div class="std c-violet">
@@ -386,8 +377,7 @@ export function renderAgent({ draft = false } = {}) {
 
       <section class="band" id="base">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS.book)}The specification</p>
-          <h2>${esc(base.name)}</h2>
+          <h2>The specification and its parts</h2>
           <div class="basecard one">
             <div class="std c-violet">
               <div class="top"><span class="chip">${ico(ICONS.book)}</span>
@@ -415,13 +405,12 @@ export function renderStandards({ draft = false } = {}) {
   let n = 0;
   const bands = (SUITE.groups ?? []).map((g, gi) => {
     const copy = GROUPS[g.id];
-    if (!copy) throw new Error(`build-home.mjs has no heading for the group ${g.id} in standards.json`);
+    if (!copy) throw new Error(`build-home.mjs has no sentence for the group ${g.id} in standards.json`);
     const rank = (s) => { const i = (copy.order ?? []).indexOf(s.id); return i < 0 ? Infinity : i; };
     const members = SUITE.standards.filter((s) => s.group === g.id).sort((a, b) => rank(a) - rank(b));
     return `<section class="band${gi % 2 ? "" : " tinted"}" id="${esc(g.id)}">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS[copy.icon])}${esc(g.name)}</p>
-          <h2>${esc(copy.heading)}</h2>
+          <h2>${esc(g.name)}</h2>
           <p>${esc(copy.text)}</p>
           <ol class="stds">
             ${members.map((s) => card(s, COLOURS[n++ % COLOURS.length])).join("\n            ")}
@@ -437,7 +426,6 @@ export function renderStandards({ draft = false } = {}) {
       <div class="wrap hero">
         <div class="hero-grid">
           <div>
-            <span class="eyebrow">${ico(ICONS.layers)}A suite of open standards for agents</span>
             <h1>${esc(SUITE.suite)}</h1>
             <p class="lede">The Common Agent Standards are open specifications for agents that
               work for people and organizations. The Common Agent Specification is the base. It
@@ -464,7 +452,6 @@ export function renderStandards({ draft = false } = {}) {
 
       <section class="band${(SUITE.groups ?? []).length % 2 ? "" : " tinted"}" id="repository">
         <div class="wrap">
-          <p class="kicker">${ico(ICONS.branch)}One repository</p>
           <h2>Every standard is kept in one repository</h2>
           <p>Each standard has a folder in <a href="${SUITE_REPO}">${SUITE_REPO.replace("https://", "")}</a>
             with its specification, its changelog and its conformance fixtures where it has them.
