@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>PAN and ANS: Personal Agent Naming</title>
-  <meta name="description" content="PAN and ANS both name agents, for different people. ANS anchors organizations' agents to DNS domains and certificates. PAN anchors personal agents to the email their owner already has.">
+  <title>Personal Agent Naming and the Agent Name Service</title>
+  <meta name="description" content="Personal Agent Naming and the Agent Name Service (ANS) both name agents, for different people. ANS anchors organizations' agents to DNS domains and certificates. Personal Agent Naming anchors personal agents to the email their owner already has.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Personal Agent Naming">
-  <meta property="og:title" content="PAN and ANS: Personal Agent Naming">
-  <meta property="og:description" content="PAN and ANS both name agents, for different people. ANS anchors organizations' agents to DNS domains and certificates. PAN anchors personal agents to the email their owner already has.">
+  <meta property="og:title" content="Personal Agent Naming and the Agent Name Service">
+  <meta property="og:description" content="Personal Agent Naming and the Agent Name Service (ANS) both name agents, for different people. ANS anchors organizations' agents to DNS domains and certificates. Personal Agent Naming anchors personal agents to the email their owner already has.">
   <meta property="og:url" content="https://agentnaming.ai/comparison.html">
   <meta property="og:image" content="https://agentnaming.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -60,7 +60,7 @@
 
     <aside class="rail sidenav" id="sidenav">
       <div class="sn-head">
-        <a class="sn-brand" href="/"><span class="dot"></span>PAN</a>
+        <a class="sn-brand" href="/"><span class="dot"></span>Personal Agent Naming</a>
         <button class="sn-btn" id="theme-toggle" type="button" aria-label="Switch between light and dark"><span class="sn-to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="sn-to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="sn-to-dark">Dark</span><span class="sn-to-light">Light</span></button>
         <button class="sn-btn sn-menu" id="menu-toggle" type="button" aria-expanded="false" aria-controls="sidenav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
       </div>
@@ -72,7 +72,7 @@
           <a href="/why-names.html">Why names</a>
           <a href="/reach.html">How a name is resolved</a>
           <a href="/trust.html">Trust and privacy</a>
-          <a class="on" href="/comparison.html">PAN and ANS</a>
+          <a class="on" href="/comparison.html">Compared with the Agent Name Service</a>
           </div>
         </details>
         <details class="sn-sec" open>
@@ -107,16 +107,16 @@
     <main class="main">
 
       <div class="wrap hero">
-        <h1>PAN and ANS name agents for different people</h1>
-        <p class="lede">PAN and ANS both give agents names, and the names even look alike. They are built
-          for opposite ends of the same problem. ANS is a full identity layer for agents acting
-          across organizations. PAN is a light naming layer for personal agents. Each is built
+        <h1>Personal Agent Naming and the Agent Name Service name agents for different people</h1>
+        <p class="lede">Both give agents names, and the names even look alike. They are built
+          for opposite ends of the same problem. The Agent Name Service (ANS) is a full identity layer for agents acting
+          across organizations. Personal Agent Naming is a light naming layer for personal agents. Each is built
           for its own job, and neither is a smaller version of the other.</p>
       </div>
 
       <section class="band">
         <div class="wrap">
-          <h2>PAN and ANS are built for different weights on purpose</h2>
+          <h2>The two are built for different weights on purpose</h2>
           <p><a href="https://datatracker.ietf.org/doc/draft-narajala-courtney-ansv2/">ANS,
             the Agent Name Service</a>, anchors every agent to a DNS domain. A registration
             authority checks that you control the domain, has two X.509 certificates issued for
@@ -124,9 +124,9 @@
             event into an append-only transparency log.
             That suits autonomous agents settling financial or supply-chain transactions across
             company boundaries, and it is more than a person with an inbox and an agent can set
-            up. PAN starts from the credential that person already has, their email: one anchor
+            up. Personal Agent Naming starts from the credential that person already has, their email: one anchor
             and one signature, and a name takes minutes.</p>
-          <p>This page compares version 0.10 of the PAN specification with
+          <p>This page compares version 0.10 of the Personal Agent Naming specification with
             <a href="https://datatracker.ietf.org/doc/html/draft-narajala-courtney-ansv2-01">draft-narajala-courtney-ansv2-01</a>,
             the latest published revision of ANS, dated 13 April 2026. It replaced the original
             ANS draft,
@@ -141,7 +141,7 @@
           <div class="cmp-wrap">
             <table class="cmp">
               <thead>
-                <tr><th>Dimension</th><th>ANS</th><th class="pan">PAN</th></tr>
+                <tr><th>Dimension</th><th>ANS</th><th class="pan">Personal Agent Naming</th></tr>
               </thead>
               <tbody>
                 <tr>
@@ -229,7 +229,7 @@
               </ul>
             </div>
             <div class="w" style="--hue:var(--signal)">
-              <h3>A person should reach for PAN</h3>
+              <h3>A person should reach for Personal Agent Naming</h3>
               <ul>
                 <li>You have an agent and an email, and no PKI team.</li>
                 <li>You want a name to hand out, today, in minutes.</li>
@@ -239,7 +239,7 @@
             </div>
           </div>
           <div class="callout mint">
-            <p>The two are not mutually exclusive. One agent can carry a PAN handle for the
+            <p>The two are not mutually exclusive. One agent can carry a Personal Agent Naming handle for the
               people who reach it by name, and an ANS identity for the organizations that
               require CA-backed trust. They are different layers on the same agent.</p>
           </div>

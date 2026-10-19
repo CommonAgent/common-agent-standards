@@ -40,7 +40,7 @@ export function rail(active) {
         </details>`;
   return `<aside class="rail sidenav" id="sidenav">
       <div class="sn-head">
-        <a class="sn-brand" href="/"><span class="dot"></span>PAN</a>
+        <a class="sn-brand" href="/"><span class="dot"></span>Personal Agent Naming</a>
         <button class="sn-btn" id="theme-toggle" type="button" aria-label="Switch between light and dark"><span class="sn-to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="sn-to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="sn-to-dark">Dark</span><span class="sn-to-light">Light</span></button>
         <button class="sn-btn sn-menu" id="menu-toggle" type="button" aria-expanded="false" aria-controls="sidenav"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
       </div>
@@ -50,7 +50,7 @@ export function rail(active) {
           a("/why-names.html", "Why names", "why"),
           a("/reach.html", "How a name is resolved", "reach"),
           a("/trust.html", "Trust and privacy", "trust"),
-          a("/comparison.html", "PAN and ANS", "comparison"),
+          a("/comparison.html", "Compared with the Agent Name Service", "comparison"),
         ])}
         ${sec("The standard", [
           a("/spec.html", "The specification", "spec"),
