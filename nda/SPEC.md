@@ -626,7 +626,9 @@ agreement digest, so on an acceptance it never passes step 1 of §6.1.
 
    A decision that rides on the binding treats an unconfirmed owner as it
    treats a contradicted one, so failing to resolve an owner never does
-   better than resolving the wrong one. Such decisions are whether a party is
+   better than resolving the wrong one. The one exception is the recipient
+   of an open offer whose discloser chose `"owners": "any"` (§6.1), which
+   accepts an unconfirmed owner. A contradicted owner never counts. Such decisions are whether a party is
    bound (§8.1), a board's release of a gated body (Agent RFP §5.11.3), and a
    bureau's check of a claim of breach (Agent Reputations §4.8).
 2. For a seat with `organization`, the key is the `holder.key` of the mandate
@@ -655,6 +657,17 @@ one-way or mutual agreement with `parties.recipient` and
 
 - `open_to` is `"any"`, or a list of handles entitled to accept.
 - `expires_at` is REQUIRED. No acceptance is valid after it.
+- `owners` is OPTIONAL and says which recipient owners a decision that rides
+  on the binding accepts (§6, binding rule 1). `confirmed`, the value when
+  the member is absent, accepts only an owner confirmed against the
+  registry. `any` also accepts an unconfirmed owner. Neither accepts an owner
+  the registry contradicts. Most agents today run under an unattested
+  default owner, so a discloser that wants any of them to accept chooses
+  `any`. In doing so it accepts a risk, and should know it: a party can
+  unlist its agent, or never register an attested owner, so that its
+  `owner_key` reads as unconfirmed where it would otherwise read as
+  contradicted. `owners` sits in the offer, inside the offer bytes, so the
+  discloser's signature covers it.
 
 The **offer bytes** are the signed bytes of the offer, with both recipient
 members `null`. The **offer digest** is `sha256:` and the lowercase hex
@@ -696,7 +709,8 @@ step is not an agreement.
    Where the recipient seat names no organization and its owner is
    unconfirmed (§6, binding rule 1), the acceptance is an agreement, and a
    renderer MUST say that the recipient's owner is unconfirmed. A decision
-   that rides on the binding still treats that owner as not bound.
+   that rides on the binding still treats that owner as not bound, unless
+   the offer says `"owners": "any"`.
 3. Check that the recipient's `signed_at` is before `offer.expires_at`, and
    before any withdrawal of the offer took effect (§7.3). A verifier that
    received the acceptance itself, such as a board releasing a gated body,
@@ -923,7 +937,8 @@ answer is yes when one of these holds and the agreement is in force:
 Where a seat names an organization, the mandate check of §6.2 is part of
 whether that seat's signature counts. Where a seat names no organization, its
 signature counts here only when its owner is confirmed (§6, binding rule 1).
-An unconfirmed owner is not bound, as a contradicted one is not.
+An unconfirmed owner is not bound, as a contradicted one is not, except as
+the recipient of an open offer that says `"owners": "any"` (§6.1).
 
 A runtime that answers this question before material moves, and refuses when
 the answer is no, enforces that refusal (§3, point 4). It cannot enforce
@@ -1032,7 +1047,8 @@ A validator MUST refuse a document that:
    sharing an agent key, an `offer` member, or a `member` signature without
    `agent`;
 5. has a recipient seat of `null` without an `offer` member;
-6. has an open offer without `offer.expires_at`, or one that names a posting;
+6. has an open offer without `offer.expires_at`, one that names a posting, or
+   one whose `offer.owners` is neither `confirmed` nor `any`;
 7. breaks the processor subset rule of Agent SoW §5.11 or the `require`
    subset rule of §5.5;
 8. has a `survival.days` or `at_end.within_days` that is not a positive whole
@@ -1113,7 +1129,10 @@ them. It is breaking: a 0.1.x signature does not verify under it.
   Messaging §8.6) is the seat's `owner_key`. An unreachable registry, an
   unlisted agent or an unattested default owner leaves the owner
   unconfirmed: the agreement stands, and every decision that rides on the
-  binding treats the owner as not bound.
+  binding treats the owner as not bound. An open offer MAY say
+  `"owners": "any"` to accept unconfirmed recipients, for the agents that
+  run under an unattested default owner today, at the risk the discloser
+  accepts that a party unlists its agent to avoid a contradiction (§6.1).
 - **Closed member sets (§6, §7.3).** A signature record and an act carry
   only the members this specification defines, and `over` is valid only on
   the discloser's record of an open offer or its acceptance.

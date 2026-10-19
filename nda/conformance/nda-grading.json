@@ -551,6 +551,14 @@
       },
       "error": "signatures",
       "why": "over sits only on the discloser's record of a document with an offer member (6)"
+    },
+    {
+      "case": "offer_owners_other_value",
+      "edit": {
+        "offer.owners": "attested"
+      },
+      "error": "offer",
+      "why": "offer.owners is confirmed or any (6.1)"
     }
   ],
   "states": {

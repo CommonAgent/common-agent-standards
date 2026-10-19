@@ -551,7 +551,7 @@ claim body.
       "at": "2026-10-22T09:13:05Z" }
   ],
   "found": { "at": "2027-04-09T00:00:00Z",
-             "material_digest": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+             "material_digest": "sha256:1904a3f5b73cb54a8c22e36dc0844fbd4543a1605a62c6d6e33367710384304f",
              "note": "The sealed posting body was offered for sale on a public site." },
   "breach_at": null,
   "at": "2027-04-10T16:02:11Z"
@@ -594,7 +594,10 @@ else:
    registry, as the agreement's receiving verifier recorded it or, without
    that record, as the bureau resolves it. An unconfirmed owner fails this
    check as a contradicted one does, so a claim never does better because an
-   owner could not be resolved.
+   owner could not be resolved. The one exception is the recipient of an
+   acceptance of an open offer whose discloser chose `"owners": "any"`
+   (Agent NDA §6.1), which counts with an unconfirmed owner. A contradicted
+   owner never counts.
 3. **The claimant is a party whose material the agreement protects.** The
    claimant's agent key is in a seat of the agreement. In a one-way agreement
    it is the discloser's seat (Agent NDA §5.1).
@@ -1730,7 +1733,9 @@ each signature on the cited agreement is bound to its seat, as Agent NDA
 does not make a party to the agreement, and an owner the registry could not
 confirm fails the check as a contradicted one does. The example claim of §4.8 names the
 Agent NDA example by its new agreement digest, because that version added
-`owner_key` to the example's recipient seat. The minor version moves because
+`owner_key` to the example's recipient seat, and its material digest is the
+new digest of the Agent RFP example body, which now carries a nonce. The
+minor version moves because
 a bureau built against 0.6.0-draft accepts a claim whose agreement carries an
 unbound signature, which this version refuses.*
 

@@ -13,10 +13,11 @@ still be released the body. A board now records the instant it receives each
 completed agreement, checks expiry, withdrawal and each organization's
 mandate against that instant as well, and names it in the release record as
 `received_at`. A withdrawal takes effect at the later of its `at` and the
-instant the board received it. The board confirms the recipient's owner
+instant the board received it. The board resolves the recipient's owner
 against the registry at receipt, where the recipient seat names no
-organization, and releases nothing to an owner it could not confirm; the
-release record names the owner as it resolved it. The definition of the
+organization. It releases to an unconfirmed owner only where the poster's
+offer says `"owners": "any"`, never to one the registry contradicts, and
+the release record names the owner as it resolved it. The definition of the
 offer bytes in §5.11.1
 names both members that are set to `null`, `parties.recipient` and
 `disclosure.recipient`. Check 1 also
@@ -26,7 +27,7 @@ with the key the seat allows. The example release record carries the new
 agreement digest of the Agent NDA example, whose recipient seat now carries
 `owner_key`. The minor version moves because a board built against
 0.9.1-draft does not record the instant of receipt, which this version
-requires.
+requires. A sealed body carries a REQUIRED random `nonce` of at least 16 bytes (§5.11.2), because the body's digest is public and much of a body can be guessed; without it anyone could confirm a guessed body offline against the digest. A new fixture, `conformance/rfp-sealed-body.json`, pins the bytes, the digest and the nonce rule.
 
 ## 0.9.1-draft (2026-10-18)
 

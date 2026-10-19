@@ -35,7 +35,10 @@ does not verify under it.
   of its agent (Agent Messaging §8.6) is the seat's `owner_key`. An
   unreachable registry, an unlisted agent or an unattested default owner
   leaves the owner unconfirmed: the agreement stands, and every decision
-  that rides on the binding treats the owner as not bound (§6, §8.1).
+  that rides on the binding treats the owner as not bound (§6, §8.1). An
+  open offer MAY say `"owners": "any"` to accept unconfirmed recipients, at
+  the risk the discloser accepts that a party unlists its agent to avoid a
+  contradiction (§6.1).
 - A signature record and an act carry only the members this specification
   defines, and `over` is valid only on the discloser's record of an open
   offer or its acceptance (§6, §7.3).
