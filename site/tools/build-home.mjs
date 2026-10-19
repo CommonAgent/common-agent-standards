@@ -17,6 +17,8 @@
 //   standards.html   every Common Agent Standard and guide, under the groups
 //                    standards.json lists, one card each with its version, its
 //                    status, its own site and its folder on GitHub
+//   onboarding.html  agent onboarding and offboarding: two reference processes
+//                    in Agent Processes, and where each of their steps lives
 //   purchase-order.html  why there is no Agent Purchase Order: where each job
 //                    of a purchase order lives in the suite instead
 //
@@ -477,6 +479,110 @@ export function renderPurchaseOrder({ draft = false } = {}) {
   });
 }
 
+/** onboarding.html: agent onboarding and offboarding are reference processes
+ *  in Agent Processes, and this page says so and points at them. */
+export function renderOnboarding({ draft = false } = {}) {
+  const title = "Agent Onboarding and Offboarding";
+  const description = "Bringing an outside agent into an organization's work, and taking it out again, are written as two reference processes in Agent Processes. They are not specifications: every step is an act another Common Agent Standard already defines.";
+  const PROC = "https://agentprocesses.ai";
+  const ON = `${PROC}/onboard-an-agent.html`;
+  const OFF = `${PROC}/offboard-an-agent.html`;
+  const onboard = [
+    "Verify the agent against its signed Descriptor, its build, deployment and evaluation records, and its reputation report.",
+    "Interview it with the five questions, and compare each answer with what it signed.",
+    "Sign an Agent NDA where the work involves confidential material.",
+    "Agree the terms and form the Agent SoW engagement.",
+    "Grant a mandate no wider than the engagement needs.",
+    "Admit the agent and grant access that ends when the engagement ends.",
+    "Hand over the context it needs to start.",
+    "Run a trial against a pass line agreed in advance.",
+    "Decide on go-live, and put the agent into the work.",
+  ];
+  const offboard = [
+    "Hand over the work the agent has in flight.",
+    "End the engagement for convenience, for cause, or at its end date.",
+    "Revoke the agent's mandate, with every mandate under it.",
+    "Withdraw admission and every grant on the access list, and try each one.",
+    "Settle the money and release the reservation.",
+    "Get the agent's owner to confirm in writing what was returned and what was deleted.",
+    "File the outcome with the reputation bureau the engagement names.",
+    "Note the confidentiality terms that outlast the engagement.",
+    "Sign an exit record that says all of this happened.",
+  ];
+  const steps = (xs) => xs.map((x) => `<li><span>${esc(x)}</span></li>`).join("\n            ");
+  return shell({
+    file: "onboarding.html", active: "onboarding", title: `${title}: ${SUITE.suite}`, description, ogType: "article",
+    body: `      <header class="herobg">
+      <div class="wrap hero">
+        <h1>${esc(title)}</h1>
+        <p class="lede">An organization brings an outside agent into its work much as it brings in a
+          new employee or contractor, and takes it out again with the same care. The Common Agent
+          Standards write both as reference processes in Agent Processes. Neither one is a
+          specification, because every step is an act another standard already defines.</p>
+        <div class="cta">
+          <a class="btn btn-primary" href="${ON}">${ico(ICONS.processes)}Onboard an agent${ext}</a>
+          <a class="btn btn-ghost" href="${OFF}">${ico(ICONS.processes)}Offboard an agent${ext}</a>
+        </div>
+        <p class="version">${stampFor(draft)}</p>
+      </div>
+      </header>
+
+      <section class="band tinted" id="what">
+        <div class="wrap">
+          <h2>A reference process is a first draft for an organization to adopt</h2>
+          <p>A reference process has its shape filled in and its specifics left blank. The steps,
+            their order, the roles, what passes between the steps, the records a run leaves and
+            what to do when a step fails are all written down. The owner, the dates, the numbers
+            and who holds each role are left for the adopting organization to fill in. Adopting
+            one makes it that organization's own process at version 1, and from then on it is
+            theirs to change. <a href="${PROC}/spec.html">The Agent Processes specification</a>
+            defines the format.</p>
+        </div>
+      </section>
+
+      <section class="band" id="onboard">
+        <div class="wrap">
+          <h2>Onboarding brings the agent in before it touches the work</h2>
+          <p>The agent is checked and interviewed before anyone signs anything, and nothing
+            confidential reaches it before an NDA is in force. It is admitted only after its
+            engagement is formed and its mandate is granted, and every grant it receives ends
+            when the engagement ends.</p>
+          <ol class="floor">
+            ${steps(onboard)}
+          </ol>
+          <p><a href="${ON}">Read the onboarding reference process${ext}</a></p>
+        </div>
+      </section>
+
+      <section class="band tinted" id="offboard">
+        <div class="wrap">
+          <h2>Offboarding takes the agent out and proves it happened</h2>
+          <p>The work in flight gets a new holder before any access is withdrawn. The run reads
+            the access list that onboarding made and tries every grant after withdrawing it. It
+            stays open until the agent's owner confirms what happened to the data, and it closes
+            with an exit record that named people sign.</p>
+          <ol class="floor">
+            ${steps(offboard)}
+          </ol>
+          <p><a href="${OFF}">Read the offboarding reference process${ext}</a></p>
+        </div>
+      </section>
+
+      <section class="band" id="where">
+        <div class="wrap">
+          <h2>Each step points at the standard that defines it</h2>
+          <p>Verification and the interview come from the
+            <a href="/spec.html">Common Agent Specification</a> and
+            <a href="https://agentreputations.com/">Agent Reputations</a>. The NDA is
+            <a href="https://agentnda.net/">Agent NDA</a>, the engagement and its termination are
+            <a href="https://agentsow.com/">Agent SoW</a>, and the mandate and its revocation are
+            <a href="https://agentmandate.net/">Agent Mandate</a>. Each reference process ends with
+            a table that links every step to the section that specifies it.</p>
+        </div>
+      </section>`,
+  });
+}
+
 /** standards.html: every entry of standards.json, under its group. */
 export function renderStandards({ draft = false } = {}) {
   const standards = SUITE.standards.filter((s) => s.kind === "standard");
@@ -564,7 +670,8 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   writeFileSync(resolve(out, "index.html"), renderHome({ draft }));
   writeFileSync(resolve(out, "agent.html"), renderAgent({ draft }));
   writeFileSync(resolve(out, "standards.html"), renderStandards({ draft }));
+  writeFileSync(resolve(out, "onboarding.html"), renderOnboarding({ draft }));
   writeFileSync(resolve(out, "purchase-order.html"), renderPurchaseOrder({ draft }));
   copySuiteAssets(out);
-  console.log(`index.html, agent.html, standards.html and purchase-order.html written to ${out}`);
+  console.log(`index.html, agent.html, standards.html, purchase-order.html and onboarding.html written to ${out}`);
 }

@@ -20,6 +20,8 @@ Site: https://agentprocesses.ai
 | [The process catalog](./process-catalog.md) | the index of all of them: the row, ids, the dependency graph, what to automate first |
 | [An example process](./examples/social-campaign.md) | one process written out in full, with its runs and its failure edges |
 | [An example catalog](./examples/marketing-catalog.md) | a marketing department's eleven processes, and where it would start |
+| [Onboard an agent](./reference/onboard-an-agent.md) | a reference process for bringing an outside agent into an organization's work |
+| [Offboard an agent](./reference/offboard-an-agent.md) | a reference process for taking an outside agent out of it again |
 
 ## Where this sits
 

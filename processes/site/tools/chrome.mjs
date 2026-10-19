@@ -72,6 +72,13 @@ export function rail(active) {
           ${a(REPO_URL, "The source on GitHub", "", true)}
           </div>
         </details>
+        <details class="sec" open>
+          <summary>Reference processes${chev}</summary>
+          <div class="items">
+          ${a("/onboard-an-agent.html", "Onboard an agent", "onboard-an-agent")}
+          ${a("/offboard-an-agent.html", "Offboard an agent", "offboard-an-agent")}
+          </div>
+        </details>
         <details class="sec suite" open>
           <summary>The Common Agent Standards${chev}</summary>
           <div class="items">
@@ -91,6 +98,8 @@ export const footer = `<footer class="sitefoot">
           <a href="/offboarding.html">Example: employee offboarding</a>
           <a href="/catalog.html">The catalog</a>
           <a href="/writing.html">Writing a process</a>
+          <a href="/onboard-an-agent.html">Onboard an agent</a>
+          <a href="/offboard-an-agent.html">Offboard an agent</a>
           <a href="/spec.html">The specification</a>
           <a href="/versions.html">Versions and changelog</a>
           <a href="${REPO_URL}">The source on GitHub</a>
