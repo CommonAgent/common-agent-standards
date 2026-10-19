@@ -25,6 +25,7 @@ const HERE = dirname(fileURLToPath(import.meta.url));
 const SCORE_FILE = join(HERE, "fdbk-score-1.json");
 const REPORT_FILE = join(HERE, "fdbk-report-v1.json");
 const HEADS_FILE = join(HERE, "fdbk-heads-v1.json");
+const CASEFOLD_FILE = join(HERE, "casefolding-15.1.0.json");
 
 // ── §5, §7: the formula ─────────────────────────────────────────────────────
 // The quality value of each outcome code that enters a pool (§5). Every code
@@ -145,7 +146,19 @@ const H = (...parts) => { const h = createHash("sha256"); for (const x of parts)
 const ONE = Buffer.from([1]);
 export const EMPTY = [Buffer.alloc(32)];
 for (let i = 1; i <= 256; i++) EMPTY.push(H(ONE, EMPTY[i - 1], EMPTY[i - 1]));
-export const subjectKey = (subject) => createHash("sha256").update(subject.toLowerCase(), "utf8").digest();
+// A subject's slot key: SHA-256 over the UTF-8 of the subject after NFC,
+// Unicode full case folding (the C and F entries of CaseFolding.txt, Unicode
+// 15.1.0, in casefolding-15.1.0.json), and NFC again.
+const FOLD = JSON.parse(readFileSync(CASEFOLD_FILE, "utf8")).fold;
+export function foldSubject(subject) {
+  let out = "";
+  for (const ch of subject.normalize("NFC")) {
+    const hex = ch.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
+    out += FOLD[hex] ? String.fromCodePoint(...FOLD[hex].split(" ").map((h) => parseInt(h, 16))) : ch;
+  }
+  return out.normalize("NFC");
+}
+export const subjectKey = (subject) => createHash("sha256").update(foldSubject(subject), "utf8").digest();
 const bitOf = (key, i) => (key[i >> 3] >> (7 - (i & 7))) & 1;
 
 /** What a slot holds, as the JCS object its digest is taken over. */
@@ -204,6 +217,26 @@ export function rootFromProof(keyHex, slot, siblings) {
 export const HEADS_TAG = "fdbk-heads-v1";
 /** `prev` of the next commitment: SHA-256 over this commitment's signed bytes, in hex. */
 export const commitmentHash = (commitment) => createHash("sha256").update(signedBytes(HEADS_TAG, commitment)).digest("hex");
+
+/** Every tombstone in a commitment is dated no later than the commitment. */
+export function erasuresDated(commitment, tombstones) {
+  for (const t of tombstones) if (Date.parse(t.erased_at) > Date.parse(commitment.issued_at)) return `the erasure of ${t.key.slice(0, 12)}… is dated after the commitment`;
+  return "ok";
+}
+
+// A witness co-signs a commitment only when it extends the last one the
+// witness co-signed for that bureau: the first, with seq 1 and no prev, or the
+// next seq whose prev is the hash of the last. So a witness never co-signs two
+// commitments with one seq. It signs, under the tag fdbk-heads-cosign-v1, the
+// JCS of the bureau, the seq and the commitment's hash.
+export const COSIGN_TAG = "fdbk-heads-cosign-v1";
+export const cosignedObject = (commitment) => ({ bureau: commitment.bureau, commitment: commitmentHash(commitment), seq: commitment.seq });
+export function witnessCosigns(last, commitment) {
+  if (!last) return commitment.seq === 1 && commitment.prev === null ? "ok" : "the witness co-signs a bureau's first commitment first";
+  if (commitment.bureau !== last.bureau) return "another bureau";
+  if (commitment.seq !== last.seq + 1 || commitment.prev !== commitmentHash(last)) return "it does not extend the last commitment the witness co-signed";
+  return "ok";
+}
 
 /** A commitment follows another: the next sequence number, and `prev` naming the previous one's signed bytes. */
 export function followsFrom(prev, next) {
@@ -318,24 +351,41 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
   const file = JSON.parse(readFileSync(HEADS_FILE, "utf8"));
   const report = JSON.parse(readFileSync(REPORT_FILE, "utf8"));
   const { privateKey, key, kid } = keyFromSeed(report.test_key.seed_hex);
+  const witness = keyFromSeed(file.test_witness.seed_hex);
+  if (WRITE) Object.assign(file.test_witness, { public_key: witness.key, kid: witness.kid });
+  else if (file.test_witness.public_key !== witness.key) bad.push("heads: the witness seed gives another key");
+  for (const k of file.slot_keys) {
+    const ka = subjectKey(k.a).toString("hex"), kb = subjectKey(k.b).toString("hex");
+    if (WRITE) { k.folded = foldSubject(k.a); k.key = ka; continue; }
+    if (ka !== kb) bad.push(`slot key ${k.a} / ${k.b}: they take different slots`);
+    if (ka !== k.key || foldSubject(k.a) !== k.folded) bad.push(`slot key ${k.a}: differs from the vector`);
+  }
   const byName = Object.fromEntries(file.commitments.map((c) => [c.name, c]));
   let prev = null;
+  let lastCosigned = null;
   for (const c of file.commitments) {
     const slots = slotsOf(c.heads, c.tombstones);
     const root = smtRoot(slots);
     const commitment = { ...c.envelope.heads, seq: c.envelope.heads.seq, prev: prev ? commitmentHash(prev.envelope.heads) : null, root, subjects: c.heads.length, tombstones: c.tombstones.length };
     const bytes = signedBytes(HEADS_TAG, commitment);
     const sig = sign(null, bytes, privateKey).toString("base64");
+    const cosignBytes = signedBytes(COSIGN_TAG, cosignedObject(commitment));
+    const cosig = sign(null, cosignBytes, witness.privateKey).toString("base64");
     if (WRITE) {
-      c.slots = [...slots.values()].sort((a, b) => a.key.localeCompare(b.key)).map((s) => ({ key: s.key, digest: slotDigest(s).toString("hex") }));
+      c.slots = [...slots.values()].sort((x, y) => x.key.localeCompare(y.key)).map((x) => ({ key: x.key, digest: slotDigest(x).toString("hex") }));
       c.envelope = { heads: commitment, bureau_key: key, bureau_kid: kid, bureau_sig: sig };
       c.signed_bytes = bytes.toString("utf8");
       c.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
+      c.cosignature = { witness: file.key_set.witnesses[0].id, key: witness.key, kid: witness.kid, signed_bytes: cosignBytes.toString("utf8"), sig: cosig };
     } else {
       if (root !== c.envelope.heads.root) bad.push(`${c.name}: the root is ${root}, the vector says ${c.envelope.heads.root}`);
       if (bytes.toString("utf8") !== c.signed_bytes) bad.push(`${c.name}: the signed bytes differ from the vector's`);
       if (sig !== c.envelope.bureau_sig) bad.push(`${c.name}: the signature is ${sig}, the vector says ${c.envelope.bureau_sig}`);
       if (!verify(null, bytes, publicKeyOf(key), Buffer.from(c.envelope.bureau_sig, "base64"))) bad.push(`${c.name}: the commitment does not verify`);
+      if (erasuresDated(commitment, c.tombstones) !== "ok") bad.push(`${c.name}: ${erasuresDated(commitment, c.tombstones)}`);
+      const named = file.key_set.witnesses.find((w) => w.id === c.cosignature.witness && w.key === c.cosignature.key);
+      if (!named || !verify(null, cosignBytes, publicKeyOf(c.cosignature.key), Buffer.from(c.cosignature.sig, "base64"))) bad.push(`${c.name}: the co-signature of a named witness does not verify`);
+      if (witnessCosigns(lastCosigned, commitment) !== "ok") bad.push(`${c.name}: the witness would refuse it: ${witnessCosigns(lastCosigned, commitment)}`);
       if (prev) {
         const f = followsFrom(prev.envelope.heads, c.envelope.heads);
         if (f !== "ok") bad.push(`${c.name}: ${f}`);
@@ -344,6 +394,7 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       }
     }
     prev = c;
+    lastCosigned = commitment;
   }
   if (WRITE) file.empty_root = EMPTY[256].toString("hex");
   else if (EMPTY[256].toString("hex") !== file.empty_root) bad.push("heads: the root of no slots differs from the vector's");
@@ -374,10 +425,15 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       } else if (f.check === "extension") {
         const base = byName[f.after];
         res = carriesForward(slotsOf(base.heads, base.tombstones), slotsOf(f.heads, f.tombstones ?? []));
+      } else if (f.check === "erasure") {
+        res = erasuresDated({ ...byName[f.commitment].envelope.heads }, f.tombstones);
+      } else if (f.check === "witness") {
+        const next = { ...byName[f.commitment].envelope.heads, ...(f.set ?? {}) };
+        res = witnessCosigns(byName[f.after].envelope.heads, next);
       }
       if (res === "ok") bad.push(`must fail ${f.name}: it passed`);
     }
-    console.log(`fdbk-heads-v1: ${file.commitments.length} commitments, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
+    console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${file.commitments.length} commitments with their co-signatures, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
   }
 }
 

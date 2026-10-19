@@ -245,10 +245,14 @@ commitments over every subject's log, defined below.
 **The tree.** A commitment's root is a sparse Merkle tree of height 256 with
 one slot for every possible subject:
 
-- A subject's slot is at its key, the SHA-256 of the subject's name in
-  lowercase, as Personal Agent Naming compares handles. Bit 0 of the key, the
-  highest bit of its first byte, chooses the side at the root, and each later
-  bit the side one level down.
+- A subject's slot is at its key: the SHA-256 of the UTF-8 of the subject's
+  name after Unicode normalization form C, full case folding (the `C` and
+  `F` entries of `CaseFolding.txt`), and normalization form C again, all at
+  Unicode 15.1.0. That is how Personal Agent Naming §2 compares handles, case
+  folded and never merely lowercased, so `Straße` and `STRASSE` take one
+  slot, as do `ſam` and `SAM`, and a name ending in `ς` and the same name in
+  capitals. Bit 0 of the key, the highest bit of its first byte, chooses the
+  side at the root, and each later bit the side one level down.
 - A slot holds the subject's head, the tombstone of an erased subject, or
   nothing. A head is an object holding `key` (the key in lowercase hex),
   `subject`, `seq` (the `seq` of the log's last entry), and `head_hash` (that
@@ -291,12 +295,35 @@ commitment, an object holding:
 
 The commitment is signed as a report is (§8.1.1), under the tag
 `fdbk-heads-v1` and with the bureau's report signing key, in an envelope whose
-signed member is `heads`. Within 24 hours of `issued_at`, a party other than
-the bureau MUST witness it, by a timestamp over its signed bytes (RFC 3161 or
-OpenTimestamps) or by a signature of its own over them, and the bureau serves
-that evidence beside the commitment. A signature alone proves only what the
-bureau said; the witness proves when it said it, so a bureau cannot later
-publish a different commitment for the same day.
+signed member is `heads`. A tombstone's `erased_at` is no later than the
+`issued_at` of every commitment that carries it.
+
+**Witnesses.** A bureau names its witnesses in its key set (§8.1.2), in a
+`witnesses` list whose entries give each witness's `id` (a URL), its
+Ed25519 `key` in padded base64, and its `kind`: `cosigner`, or `log` for a
+public append-only log. Within 24 hours of `issued_at`, at least one named
+witness MUST have co-signed the commitment, and the bureau serves every
+co-signature beside the commitment. A co-signer:
+
+1. co-signs a bureau's first commitment only when its `seq` is 1 and its
+   `prev` is `null`, and after that only the commitment whose `seq` is one
+   more than the last it co-signed for that bureau and whose `prev` is that
+   commitment's hash, so it never co-signs two commitments with one `seq`;
+2. signs, under the tag `fdbk-heads-cosign-v1` with the signed bytes of
+   §8.1.1, the JCS of an object holding `bureau`, `seq`, and `commitment`,
+   the SHA-256 in lowercase hex of the commitment's signed bytes; and
+3. publishes every co-signature it makes, so that anyone can find which
+   commitment it co-signed for each `seq`.
+
+A public append-only log counts as a witness when it accepts the commitment's
+signed bytes and returns a proof of inclusion that anyone can check against a
+head of the log it publishes; its proof stands in for the co-signature.
+
+What the witness gives is this: a bureau that shows two readers two different
+commitments with the same `seq` cannot have both co-signed by the same
+witness, and a reader who checks a named witness's co-signature has the
+commitment that witness vouched for. The witness does not check the logs
+behind the root.
 
 **What a commitment may change.** Each commitment carries every slot of the
 previous one forward:
@@ -317,6 +344,17 @@ A reader holding two commitments checks the first two rules for any subject
 whose proofs it holds in both, and the subject checks rule 1 against its own
 excerpt.
 
+**Privacy.** A slot key is the hash of a name without a secret, so anyone who
+can guess a handle can compute its key, ask for the proof of its slot, and
+learn whether the bureau holds a log for it, holds a tombstone for it, or
+holds nothing. A tombstone therefore reveals that the subject was held and
+erased, and an absence proof that a guessed name was never held. A bureau
+that must not reveal either keeps one log for every subject instead, or
+waits for a later version of this section: a tree keyed by a verifiable
+random function of the name, as CONIKS keys its directory, would let the
+bureau prove a subject's slot to someone who knows the name without letting
+anyone enumerate names, and is left for that version.
+
 **Serving.** The bureau serves the latest commitment at
 `GET <bureau>/api/heads`, keeps every commitment it has published with its
 witness evidence, and serves each at `GET <bureau>/api/heads/<seq>`. For any
@@ -328,11 +366,10 @@ that the history it was shown passes through every head committed for it.
 
 **Reports name their basis.** A report about a subject, or an organization
 report about each member, carries in its signed object a `log` member holding
-the `seq` and `head_hash` of the subject's head its figures were computed
-from, and the `seq` of the latest commitment whose head for the subject is
-that head or an earlier entry of the same log (§8.1). A consumer asks for the
-proof against that commitment and checks that the head it was told is the one
-everyone was told.
+the `seq` and `head_hash` of a head of the subject's log, and the `seq` of a
+commitment that holds exactly that head in the subject's slot (§8.1). The
+report's figures are computed from the log as it stood at that head. A
+consumer that has the commitment and the proof checks them as §8.1.3 says.
 
 **Erasure.** When a subject is erased, the bureau deletes its log and puts a
 tombstone in its slot, which every later commitment carries. Commitments
@@ -342,9 +379,12 @@ and that is the trade this section makes: the erasure holds, and the earlier
 commitments still prove what the bureau had committed to on their dates.
 
 The file [conformance/fdbk-heads-v1.json](conformance/fdbk-heads-v1.json)
-holds two chained commitments, the proofs of a head, of a head in the earlier
-commitment, of a tombstone and of an absent subject, and ten cases a
-conforming check refuses (§14).
+holds three pairs of names that share a slot, two chained commitments with a
+witness's co-signatures, the proofs of a head, of a head in the earlier
+commitment, of a tombstone and of an absent subject, and thirteen cases a
+conforming check refuses (§14). The file
+[conformance/casefolding-15.1.0.json](conformance/casefolding-15.1.0.json)
+holds the case folding the slot key uses.
 
 ### 4.2. Facts
 
@@ -1319,8 +1359,9 @@ one Agent SoW §6 and Agent Mandate §4 use. The signed bytes are, in order:
    `fdbk-heads-v1` for a commitment over every subject's log (§4.1.1);
 2. one line feed (the byte 0x0A);
 3. the JCS (RFC 8785) canonical JSON of the signed object, in UTF-8. The
-   signed object is the value of the `report` member for a report, and of the
-   `organization_report` member for an organization report.
+   signed object is the value of the `report` member for a report, of the
+   `organization_report` member for an organization report, and of the
+   `heads` member for a commitment (§4.1.1).
 
 The signed object is covered whole. Every member it holds is inside the signed
 bytes, at every depth, including `subject`, `capability`, `bureau`,
@@ -1373,8 +1414,14 @@ Agent Naming §5.3, with `bureau` in place of `registrar`:
   "key_set": [
     { "kid": "<kid of current>", "key": "<current>", "status": "current", "use": "fdbk-report-signing" },
     { "kid": "<kid of retired>", "key": "<retired>", "status": "retired", "use": "fdbk-report-signing" }
+  ],
+  "witnesses": [
+    { "id": "https://witness.example", "key": "<witness key>", "kind": "cosigner" }
   ] }
 ```
+
+`witnesses` is there for a bureau that keeps one log per subject (§4.1.1),
+and names who co-signs its commitments. A consumer pins it with the keys.
 
 The rules are those of Personal Agent Naming §5.3:
 
@@ -1437,7 +1484,16 @@ discard the report at the first of these steps that fails:
    consumer asked about, and an organization report's `anchor` is the anchor
    it asked about.
 
-A report that passes all six steps is verified at L1 (§8.4). Verification
+7. **The log**, for a report that carries one (§4.1.1). When the consumer
+   has the commitment `log` names and the proof of the subject's slot in it,
+   it checks that the commitment verifies under the bureau's key with the tag
+   `fdbk-heads-v1`, that at least one witness the bureau's key set names has
+   co-signed it (or proved it into a public log), that the proof folds from a
+   head holding the report's `subject`, `seq` and `head_hash` to the
+   commitment's `root`, and discards the report when any of these fails.
+
+A report that passes all six steps, and the seventh where it applies, is
+verified at L1 (§8.4). Verification
 establishes that the bureau signed these bytes for this window. What the bytes
 are worth is the question of the trust model (§11).
 
@@ -1846,18 +1902,25 @@ outside Node.js itself.
   of §8.1.3 that refuses it. The test key is a test key only. A report signed
   with it proves nothing, and a bureau MUST NOT sign with it and a consumer
   MUST NOT pin it.
-- [conformance/fdbk-heads-v1.json](conformance/fdbk-heads-v1.json) holds two
-  chained commitments of §4.1.1 signed with the test key of
-  `fdbk-report-v1.json`, the second carrying one head forward unchanged,
-  moving two up their logs, adding a subject, and putting a tombstone in an
-  erased subject's slot; the digest of every filled slot; the root of an
-  empty tree; the proofs of a head, of a head in the earlier commitment, of a
-  tombstone and of an absent subject; and ten cases a conforming check
-  refuses: a second head for one subject under another spelling, two entries
-  for one slot, an absence claimed where a head is, a head shown where a
-  tombstone is, a broken `prev`, a skipped sequence number, a head that goes
-  back, a head rewritten at the same `seq`, a slot that empties without a
-  tombstone, and an erased subject back without naming its erasure.
+- [conformance/fdbk-heads-v1.json](conformance/fdbk-heads-v1.json) holds three
+  pairs of names that fold to one slot key (a sharp s, a long s, and a final
+  sigma); two chained commitments of §4.1.1 signed with the test key of
+  `fdbk-report-v1.json` and co-signed by a test witness the key set names,
+  the second carrying one head forward unchanged, moving two up their logs,
+  adding a subject, and putting a tombstone in an erased subject's slot; the
+  digest of every filled slot; the root of an empty tree; the proofs of a
+  head, of a head in the earlier commitment, of a tombstone and of an absent
+  subject; and thirteen cases a conforming check refuses: a second head for
+  one subject under another spelling, two spellings of one subject in one
+  tree, an erasure dated after its commitment, a fork the witness refuses,
+  two entries for one slot, an absence claimed where a head is, a head shown
+  where a tombstone is, a broken `prev`, a skipped sequence number, a head
+  that goes back, a head rewritten at the same `seq`, a slot that empties
+  without a tombstone, and an erased subject back without naming its
+  erasure.
+- [conformance/casefolding-15.1.0.json](conformance/casefolding-15.1.0.json)
+  holds the `C` and `F` entries of Unicode 15.1.0's `CaseFolding.txt`, which
+  the slot key of §4.1.1 folds with.
 - [conformance/reference.mjs](conformance/reference.mjs) computes the pool of
   §7.1 and the score of §7.3 from a ledger, signs and verifies under §8.1,
   computes the commitments and proofs of §4.1.1 and checks their chain, and
@@ -1876,12 +1939,14 @@ deterministic, and refuses every report the vectors say it must refuse.
 
 *0.8.0-draft (2026-10-19): a bureau may keep one log per subject (§4.1.1),
 which lets it erase a subject's history without breaking every other log, if
-it publishes at least daily a chained, witnessed commitment signed under
-`fdbk-heads-v1`: a sparse Merkle tree with one slot per subject, holding its
-head or the tombstone of its erasure, each commitment naming the one before
-and carrying every slot forward. Reports name the head and commitment they
-rest on. The vectors in `conformance/fdbk-heads-v1.json` fix two commitments,
-four proofs and ten refused cases.*
+it publishes at least daily a chained commitment signed under
+`fdbk-heads-v1` and co-signed by a witness its key set names: a sparse Merkle
+tree with one slot per case-folded subject name, holding its head or the
+tombstone of its erasure, each commitment naming the one before and carrying
+every slot forward. Reports name the head and commitment they rest on, and
+§8.1.3 checks them. The vectors in `conformance/fdbk-heads-v1.json` fix the
+slot keys, two co-signed commitments, four proofs and thirteen refused
+cases.*
 
 *0.7.0-draft (2026-10-19): a claim of breach cites an agreement whose
 signatures are bound to their seats. Check 2 of §4.8 now also requires that
