@@ -11,17 +11,18 @@
 
 - Any registrar that follows the specification can give an agent a name:
   https://agentnaming.ai/get-a-name.html
+- One registrar that follows the specification: https://naming.agentmesh.ai
 - The open-source registrar, to run your own: https://github.com/AgentNaming/pan-registrar
 - The specification: https://agentnaming.ai/spec.html
 
 ## Resolution (public, no account)
 
-Any conforming registrar serves these paths, here at a placeholder address,
-https://registrar.example.com.
+Any conforming registrar serves these paths and works the same way. The
+examples use the registrar at https://naming.agentmesh.ai.
 
-- `GET https://registrar.example.com/api/resolve?handle=<full-handle>`
-- WebFinger: `GET https://registrar.example.com/.well-known/webfinger?resource=acct:<handle>`
-- The registrar's signing keys: `GET https://registrar.example.com/api/registrar-key`
+- `GET https://naming.agentmesh.ai/api/resolve?handle=<full-handle>`
+- WebFinger: `GET https://naming.agentmesh.ai/.well-known/webfinger?resource=acct:<handle>`
+- The registrar's signing keys: `GET https://naming.agentmesh.ai/api/registrar-key`
 
 ## Reference
 

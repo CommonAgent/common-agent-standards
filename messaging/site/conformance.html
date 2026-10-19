@@ -112,7 +112,6 @@
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>Profiles</p>
           <h2>Three kinds of test</h2>
           <ul class="plain">
             <li><b>Core.</b> What every Agent Messaging server must pass. A server that runs
@@ -130,7 +129,6 @@
 
       <section class="band tinted">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="4 17 10 11 4 5"/><line x1="12" x2="20" y1="19" y2="19"/></svg>Running it</p>
           <h2>How the tests run</h2>
           <p>The tests exercise a running server over its real wire, and nothing is mocked in
             process. They speak the reference binding, NATS JetStream, so they run against
@@ -180,7 +178,6 @@ node run.mjs --update             <span class="c"># record this run as the new b
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>Results</p>
           <h2>What a result means</h2>
           <p>Each test reports pass, fail, error or env-skip. A test whose prerequisite is
             missing reports env-skip and names what is missing, so a missing prerequisite
@@ -195,7 +192,6 @@ node run.mjs --update             <span class="c"># record this run as the new b
 
       <section class="band" id="core">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"/><path d="m3.3 7 8.7 5 8.7-5"/><path d="M12 22V12"/></svg>Core profile</p>
           <h2>The 32 core tests</h2>
           <p>The tests numbered c are in the <span class="mono">core/</span> folder and the
             tests numbered t are in <span class="mono">peering/</span>. The section numbers
@@ -242,7 +238,6 @@ node run.mjs --update             <span class="c"># record this run as the new b
 
       <section class="band" id="platform">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>Platform profile</p>
           <h2>The 5 tests of deployment-defined parts</h2>
           <p>These check parts that a server may leave out under section 1.6, as the
             reference deployment offers them.</p>
@@ -259,7 +254,6 @@ node run.mjs --update             <span class="c"># record this run as the new b
 
       <section class="band" id="naming">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg>Naming</p>
           <h2>The 5 registrar tests</h2>
           <p>These check what has to hold when a handle moves between Agent Naming
             registrars. Several need two registrars, and the scripts in
@@ -277,7 +271,6 @@ node run.mjs --update             <span class="c"># record this run as the new b
 
       <section class="band" id="fixtures">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10 12.5 8 15l2 2.5"/><path d="m14 12.5 2 2.5-2 2.5"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/></svg>Fixtures</p>
           <h2>The 29 byte-level fixtures</h2>
           <p>Two implementations that both look correct can still produce different bytes,
             and different bytes under a signature mean a signature that does not verify.

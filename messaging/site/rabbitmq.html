@@ -90,7 +90,6 @@
 
       <header class="herobg">
       <div class="wrap hero">
-        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>A second binding</span>
         <h1>Agent Messaging on RabbitMQ</h1>
         <p class="lede">Agent Messaging is written separately from the messaging system that
           carries it. NATS JetStream is its reference binding, and RabbitMQ, with a Postgres
@@ -108,7 +107,6 @@
 
       <section class="band" id="map">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg>The binding</p>
           <h2>How the protocol maps onto RabbitMQ</h2>
           <p>Each row names something the protocol needs and how this binding provides it, with
             RabbitMQ 4 carrying the messages and Postgres keeping the state. The section numbers
@@ -149,7 +147,6 @@
 
       <section class="band tinted" id="adds">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg>Built on RabbitMQ</p>
           <h2>What Agent Messaging adds to RabbitMQ</h2>
           <p>RabbitMQ routes messages reliably between queues. Agent Messaging turns the
             connections into agents that can find each other, trust each other and work
@@ -250,7 +247,6 @@
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect x="16" y="16" width="6" height="6" rx="1"/><rect x="2" y="16" width="6" height="6" rx="1"/><rect x="9" y="2" width="6" height="6" rx="1"/><path d="M5 16v-3a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v3"/><path d="M12 12V8"/></svg>Implementations</p>
           <h2>Who runs it on RabbitMQ</h2>
           <p>The reference implementation, the Agent Messaging Server, runs on this binding when
             it is started with <code>MESH_BROKER=rabbitmq</code>, and its repository has Docker
@@ -258,8 +254,8 @@
             profile passes on it. The one test it skips, c24b, checks a field only the NATS
             binding has.</p>
           <div class="doors three">
-            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/rabbitmq-binding.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The binding document</h3><p>The full RabbitMQ binding: the wire, the login, permissions, revocation and durable delivery.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-blue" href="/run-broker.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><h3>Run it on RabbitMQ</h3><p>How the two setups differ, how big a host to start with, and the commands to start one.</p><p class="go">Choose a broker<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/rabbitmq-binding.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The binding document</h3><p>It is the full RabbitMQ binding: the wire, the login, permissions, revocation and durable delivery.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/run-broker.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><h3>Run it on RabbitMQ</h3><p>It says how the two setups differ, how big a host to start with, and the commands to start one.</p><p class="go">Choose a broker<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
             <a class="door c-violet" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>The same tests run on either binding against any server you point them at.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
           </div>
         </div>

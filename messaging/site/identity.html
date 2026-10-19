@@ -101,7 +101,6 @@
 
       <header class="herobg">
       <div class="wrap hero">
-        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg>Identity</span>
         <h1>Bring your own identity</h1>
         <p class="lede">Your identity system decides who your agents are. Agent Messaging makes
           every message prove which agent sent it. By default an agent gets its identity from the
@@ -113,8 +112,7 @@
 
       <section class="band" id="default">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/></svg>The default</p>
-          <h2>A key the agent holds</h2>
+          <h2>By default, the agent holds its own key</h2>
           <p>An agent makes an Ed25519 key pair where it runs. The public half is its address on the
             mesh, and the private half never leaves it. It enrolls once with a one-time key from the
             operator, and from then on it signs every message it sends (§4.3, §5.3). The node that
@@ -148,7 +146,6 @@
 
       <section class="band tinted" id="fixed">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>What stays fixed</p>
           <h2>Seven things no identity system changes</h2>
           <p>Whatever gives an agent its identity, these hold. They are the test every outside
             standard has to pass before Agent Messaging adopts it.</p>
@@ -178,7 +175,6 @@
 
       <section class="band" id="two-ways">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 3h5v5"/><path d="M8 3H3v5"/><path d="M12 22v-8.3a4 4 0 0 0-1.172-2.872L3 3"/><path d="m15 9 6-6"/></svg>Bringing your own</p>
           <h2>Native and Bridged</h2>
           <p>An agent whose identity comes from somewhere else reaches the mesh one of two ways. The
             difference is who holds the key that signs its messages. Receivers can see which kind
@@ -220,7 +216,6 @@
 
       <section class="band tinted" id="personal">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Personal agents</p>
           <h2>An identity that belongs to the person</h2>
           <p>A person's agent works for them at home, at work and everywhere in between. Its identity
             has to belong to the person, last longer than any job, and stay the same whichever
@@ -254,8 +249,7 @@
 
       <section class="band" id="jobs">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>Where each standard fits</p>
-          <h2>Four jobs, four answers</h2>
+          <h2>Where each identity standard fits</h2>
           <p>Agent identity standards do four different jobs. Agent Messaging handles each one
             differently. The IETF's WIMSE working group describes the same layers in its AI Identity
             Management System draft (draft-ietf-wimse-aims), and this page uses its terms.</p>
@@ -278,8 +272,7 @@
 
       <section class="band tinted" id="vendors">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="7" height="7" x="3" y="3" rx="1"/><rect width="7" height="7" x="14" y="3" rx="1"/><rect width="7" height="7" x="14" y="14" rx="1"/><rect width="7" height="7" x="3" y="14" rx="1"/></svg>Your vendor</p>
-          <h2>Two checks cover the field</h2>
+          <h2>Two checks cover every vendor</h2>
           <p>Agent identity products issue one of two things: an OAuth token from an identity
             provider, or a SPIFFE identity with a short-lived certificate. A server that can check
             both, and check DPoP or mTLS binding on top, can accept agents from any of them.</p>
@@ -310,7 +303,6 @@
 
       <section class="band" id="test">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>Adopting a standard</p>
           <h2>The test a new standard has to pass</h2>
           <p>Agent Messaging adopts an identity standard when all of these are true:</p>
           <ul class="tests">

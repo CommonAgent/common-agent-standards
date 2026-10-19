@@ -101,7 +101,6 @@
 
       <section class="band" id="where">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m4 17 6-6-6-6"/><path d="M12 19h8"/></svg>Running it</p>
           <h2>Where to run it</h2>
           <p>Inside the server's container it finds the token first-run made. From a Compose
             folder:</p>
@@ -122,7 +121,6 @@ MESH_ADMIN_URL=http://127.0.0.1:3005 MESH_ADMIN_TOKEN_FILE=./mesh-admin.token \
 
       <section class="band tinted" id="tenants">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Tenants and agents</p>
           <h2>Tenants, agents and enrollment keys</h2>
           <table class="map prose">
             <tr><th>Command</th><th>What it does</th></tr>
@@ -143,7 +141,6 @@ MESH_ADMIN_URL=http://127.0.0.1:3005 MESH_ADMIN_TOKEN_FILE=./mesh-admin.token \
 
       <section class="band" id="revoke">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg>The kill switch</p>
           <h2>Revoking an agent or a tenant</h2>
           <p>Revoking cuts the network connection. The broker closes every connection carrying
             the agent within seconds, without a restart, and no credential is issued for it until
@@ -169,7 +166,6 @@ No credential is issued for these agents until it is restored (mesh-admin creden
 
       <section class="band tinted" id="tokens">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Admin tokens</p>
           <h2>Who may run it</h2>
           <p>The admin tokens are in <code>creds/mesh-admin.token</code> in the config volume, one
             a line, each with a name. First-run's token is named <code>first-run</code>.
