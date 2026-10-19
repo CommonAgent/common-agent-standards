@@ -20,7 +20,8 @@
 //
 // The cards are made from standards.json. What is written by hand is the few
 // sentences that say what the suite is, the heading and sentence of each group
-// (GROUPS), and the explainer videos (VIDEOS, CONTRACT_VIDEO).
+// (GROUPS), the explainer videos on agent.html (VIDEOS), and the drawings on
+// the front page's two doors (agentCell, standardsMap).
 //
 // The front page used to hold everything that is now on agent.html and
 // standards.html. Links to its old sections (commonagent.net/#standards, say)
@@ -77,8 +78,6 @@ const VIDEOS = [
   { title: "The Common Agent, Part 1", file: "common-agent-part-1", poster: "common-agent-part-1.jpg", length: "9:15", colour: "c-violet" },
   { title: "The Common Agent, Part 2", file: "common-agent-part-2", poster: "common-agent-part-2.jpg", length: "4:44", colour: "c-mint" },
 ];
-// The same video the four contracting sites show, copied into this site's /media/.
-const CONTRACT_VIDEO = { title: "How Agents Contract Work", file: "how-agents-contract-work", poster: "how-agents-contract-work-poster.jpg", length: "5:21", colour: "c-amber" };
 function video(v) {
   const mp4 = `${MEDIA}/${v.file}.mp4`;
   return `<li class="vid ${v.colour}">
@@ -93,7 +92,8 @@ function video(v) {
 // The groups of standards.html, in the order standards.json lists them. Each
 // has a heading and one sentence; the cards under it are the entries whose
 // group is its id, in the order standards.json lists them unless the group
-// gives an order of its own (contracting follows the order of a contract).
+// gives an order of its own (contracting lists them in the order an engagement
+// uses them).
 const GROUPS = {
   "identity-and-reach": {
     icon: "agent",
@@ -105,11 +105,6 @@ const GROUPS = {
     order: ["nda", "rfp", "sow", "mandate", "reputations"],
     heading: "Two parties agree on work and record how it went",
     text: "The parties sign an Agent NDA before they share anything, the buyer asks for proposals with an Agent RFP, the agreed work is written down in an Agent SoW, an Agent Mandate bounds the authority each agent acts on, and Agent Reputations keeps the record of how the work went.",
-    video: CONTRACT_VIDEO,
-    videoText: "This video follows one freight audit from the request to the record, and shows where each of these standards fits.",
-    after: `Those documents are for services. If you are buying or selling products, use
-            an agent commerce protocol such as the <a href="https://www.agenticcommerce.dev/">Agentic Commerce Protocol</a>
-            or the <a href="https://ucp.dev/">Universal Commerce Protocol</a>.`,
   },
   "doing-the-work": {
     icon: "processes",
@@ -211,6 +206,50 @@ const sponsorBand = `<section class="band" id="sponsor">
         </div>
       </section>`;
 
+// ── the front page's drawings ───────────────────────────────────────────────
+// A pointy-topped hexagon of radius r about (x, y), as an SVG points list.
+const hex = (x, y, r) => [-90, -30, 30, 90, 150, 210]
+  .map((a) => `${(x + r * Math.cos((a * Math.PI) / 180)).toFixed(1)},${(y + r * Math.sin((a * Math.PI) / 180)).toFixed(1)}`).join(" ");
+
+// The Common Agent door: one cell, the mark of the site, with its outside
+// drawn as a dotted boundary and the five questions it answers to anyone
+// around it, each wired to that boundary.
+function agentCell() {
+  const cx = 220, cy = 116;
+  const qs = [[-150, -52], [-168, 40], [0, -100], [168, 40], [150, -52]].map(([dx, dy]) => [cx + dx, cy + dy]);
+  const toEdge = ([x, y]) => { const a = Math.atan2(y - cy, x - cx); return [cx + 92 * Math.cos(a), cy + 92 * Math.sin(a)]; };
+  return `<svg class="art-svg" viewBox="0 0 440 232" aria-hidden="true" focusable="false">
+              ${qs.map((q) => { const [ex, ey] = toEdge(q); return `<line class="wire" x1="${q[0]}" y1="${q[1]}" x2="${ex.toFixed(1)}" y2="${ey.toFixed(1)}"/>`; }).join("")}
+              <polygon class="outside" points="${hex(cx, cy, 92)}"/>
+              <g class="cell"><polygon class="body" points="${hex(cx, cy, 62)}"/>
+              <path class="bars" d="M${cx - 19} ${cy - 13}v26M${cx} ${cy - 24}v48M${cx + 19} ${cy - 13}v26"/></g>
+              ${qs.map(([x, y], i) => `<g class="q" style="--d:${i * 60}ms"><circle cx="${x}" cy="${y}" r="15"/><path d="M${x - 4} ${y - 3}a4 4 0 1 1 5.5 3.7c-1 .5-1.5 1.2-1.5 2.3M${x} ${y + 7}h.01"/></g>`).join("")}
+            </svg>`;
+}
+
+// The standards door: every entry of standards.json as a tile in one
+// honeycomb, coloured by its group, with the Common Agent Specification at the
+// centre and a line from it to every standard, since each one builds on it.
+function standardsMap() {
+  const grp = (id) => {
+    const order = GROUPS[id]?.order ?? [];
+    const rank = (s) => { const i = order.indexOf(s.id); return i < 0 ? Infinity : i; };
+    return SUITE.standards.filter((s) => s.group === id && s.kind !== "base").sort((a, b) => rank(a) - rank(b));
+  };
+  const base = SUITE.standards.find((s) => s.kind === "base");
+  const groupIds = (SUITE.groups ?? []).map((g) => g.id);
+  const tone = Object.fromEntries(groupIds.map((g, i) => [g, ["c-violet", "c-amber", "c-mint", "c-blue"][i % 4]]));
+  const ident = grp(groupIds[0]), contract = grp(groupIds[1]), work = groupIds.slice(2).flatMap(grp);
+  const rows = [contract.slice(0, 4), [ident[0], base, ...ident.slice(1)].filter(Boolean), [...contract.slice(4), ...work]];
+  const step = 80, cx = 220, cy = 116, dy = 66;
+  const tiles = rows.flatMap((row, r) => row.map((s, i) => ({ s, x: cx + (i - (row.length - 1) / 2) * step, y: cy + (r - 1) * dy })));
+  const hub = tiles.find((t) => t.s === base);
+  return `<svg class="art-svg" viewBox="0 0 440 232" aria-hidden="true" focusable="false">
+              ${tiles.filter((t) => t !== hub).map((t) => `<line class="wire ${tone[t.s.group]}" x1="${hub.x}" y1="${hub.y}" x2="${t.x}" y2="${t.y}"/>`).join("")}
+              ${tiles.map((t, i) => `<g class="tile ${t === hub ? "hub c-violet" : tone[t.s.group]}" style="--d:${i * 35}ms"><polygon points="${hex(t.x, t.y, t === hub ? 34 : 28)}"/><g transform="${t === hub ? `translate(${t.x - 16.8} ${t.y - 16.8}) scale(1.4)` : `translate(${t.x - 12} ${t.y - 12})`}">${t === hub ? ICONS.agent : ICONS[t.s.id] ?? ICONS.book}</g></g>`).join("")}
+            </svg>`;
+}
+
 /** index.html: one sentence and two doors. `draft` marks it as the main branch's copy. */
 export function renderHome({ draft = false } = {}) {
   const title = SUITE.suite;
@@ -219,22 +258,31 @@ export function renderHome({ draft = false } = {}) {
     file: "index.html", active: "home", title, description, headExtra: `\n  ${forwardScript}`,
     body: `      <header class="herobg front">
       <div class="wrap hero">
-        <span class="eyebrow">${ico(ICONS.layers)}A suite of open standards for agents</span>
-        <h1>${esc(title)}</h1>
-        <p class="lede">The Common Agent Standards are open specifications for agents that
-          work for people and organizations.</p>
+        <div class="front-top">
+          <div>
+            <span class="eyebrow">${ico(ICONS.layers)}A suite of open standards for agents</span>
+            <h1>${esc(title)}</h1>
+            <p class="lede">The Common Agent Standards are open specifications for agents that
+              work for people and organizations.</p>
+          </div>
+          <svg class="heromark" viewBox="0 0 32 32" aria-hidden="true" focusable="false"><path class="hm-hex" d="M16 2.8 27.4 9.4v13.2L16 29.2 4.6 22.6V9.4z"/><path class="hm-bars" d="M11 12.5v7M16 10.5v11M21 12.5v7"/></svg>
+        </div>
         <nav class="bigdoors" aria-label="Where to start">
           <a class="bigdoor c-violet" href="/agent.html">
-            <span class="chip">${ico(ICONS.agent)}</span>
-            <span class="t">The Common Agent</span>
-            <span class="d">What an agent is from the outside, and what any agent must be able to do, as the Common Agent Specification defines it.</span>
-            <span class="go">${ico(ICONS.arrow)}</span>
+            <span class="art">${agentCell()}</span>
+            <span class="body">
+              <span class="t">The Common Agent</span>
+              <span class="d">What an agent is from the outside, and what any agent must be able to do, as the Common Agent Specification defines it.</span>
+              <span class="go">Read about the Common <span class="nw">Agent${ico(ICONS.arrow)}</span></span>
+            </span>
           </a>
           <a class="bigdoor c-mint" href="/standards.html">
-            <span class="chip">${ico(ICONS.layers)}</span>
-            <span class="t">The Common Agent Standards</span>
-            <span class="d">The family of standards agents use to find each other, reach each other, contract work and run it together.</span>
-            <span class="go">${ico(ICONS.arrow)}</span>
+            <span class="art">${standardsMap()}</span>
+            <span class="body">
+              <span class="t">The Common Agent Standards</span>
+              <span class="d">The family of standards agents use to find each other, reach each other, contract work and run it together.</span>
+              <span class="go">See every <span class="nw">standard${ico(ICONS.arrow)}</span></span>
+            </span>
           </a>
         </nav>
         <p class="version">${stampFor(draft)}</p>
@@ -370,15 +418,11 @@ export function renderStandards({ draft = false } = {}) {
     if (!copy) throw new Error(`build-home.mjs has no heading for the group ${g.id} in standards.json`);
     const rank = (s) => { const i = (copy.order ?? []).indexOf(s.id); return i < 0 ? Infinity : i; };
     const members = SUITE.standards.filter((s) => s.group === g.id).sort((a, b) => rank(a) - rank(b));
-    const vid = copy.video
-      ? `\n          <p>${esc(copy.videoText)}</p>\n          <ol class="vids one">\n            ${video(copy.video)}\n          </ol>`
-      : "";
-    const after = copy.after ? `\n          <p>${copy.after}</p>` : "";
     return `<section class="band${gi % 2 ? "" : " tinted"}" id="${esc(g.id)}">
         <div class="wrap">
           <p class="kicker">${ico(ICONS[copy.icon])}${esc(g.name)}</p>
           <h2>${esc(copy.heading)}</h2>
-          <p>${esc(copy.text)}</p>${vid}${after}
+          <p>${esc(copy.text)}</p>
           <ol class="stds">
             ${members.map((s) => card(s, COLOURS[n++ % COLOURS.length])).join("\n            ")}
           </ol>
