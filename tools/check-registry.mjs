@@ -8,7 +8,9 @@
 // version line carries (for a library whose documents each carry
 // "Version: v1", every one of them must agree); the tag is the id, "-v" and
 // the version; the changelog has an entry for the version; and every listed
-// part names its version in its first lines. Exits 1 on any disagreement.
+// part names its version in its first lines. Every entry names a group from
+// the registry's groups, and every group has at least one entry. Exits 1 on
+// any disagreement.
 import { existsSync, readFileSync, readdirSync, statSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -17,6 +19,13 @@ const REPO = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const reg = JSON.parse(readFileSync(join(REPO, "standards.json"), "utf8"));
 const bad = [];
 const ids = new Set();
+const groups = new Set();
+for (const g of reg.groups ?? []) {
+  if (!g.id || !g.name) bad.push(`groups: an entry has no id or no name`);
+  if (groups.has(g.id)) bad.push(`groups: the id ${g.id} is used twice`);
+  groups.add(g.id);
+}
+const used = new Set();
 const read = (p) => readFileSync(join(REPO, p), "utf8").replace(/\r\n/g, "\n");
 const mdUnder = (d) => readdirSync(join(REPO, d)).flatMap((f) => {
   const p = `${d}/${f}`;
@@ -28,10 +37,12 @@ for (const s of reg.standards) {
   const at = `${s.id}:`;
   if (ids.has(s.id)) bad.push(`${at} the id is used twice`);
   ids.add(s.id);
-  for (const k of ["name", "kind", "folder", "spec", "domain", "site", "version", "status", "tag", "summary"]) {
+  for (const k of ["name", "kind", "group", "folder", "spec", "domain", "site", "version", "status", "tag", "summary"]) {
     if (!s[k]) bad.push(`${at} has no ${k}`);
   }
   if (!["base", "standard", "guide"].includes(s.kind)) bad.push(`${at} kind is ${s.kind}`);
+  if (s.group && !groups.has(s.group)) bad.push(`${at} group ${s.group} is not one of the groups`);
+  used.add(s.group);
   if (!existsSync(join(REPO, s.folder))) { bad.push(`${at} no folder ${s.folder}`); continue; }
   for (const f of [s.spec, `${s.folder}/CHANGELOG.md`, `${s.folder}/README.md`, s.builder].filter(Boolean)) {
     if (!existsSync(join(REPO, f))) bad.push(`${at} no file ${f}`);
@@ -62,6 +73,7 @@ for (const s of reg.standards) {
   }
 }
 if (reg.standards.filter((s) => s.kind === "base").length !== 1) bad.push("there must be exactly one base");
+for (const g of groups) if (!used.has(g)) bad.push(`groups: no entry is in the group ${g}`);
 
 for (const b of bad) console.log(`MISMATCH ${b}`);
 if (bad.length) process.exit(1);
