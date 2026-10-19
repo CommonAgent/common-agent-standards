@@ -58,6 +58,8 @@ const PAGE_OF = {
   "process-catalog.md": "/guide-catalog.html",
   "examples/social-campaign.md": "/social-campaign.html",
   "examples/marketing-catalog.md": "/marketing-catalog.html",
+  "reference/onboard-an-agent.md": "/onboard-an-agent.html",
+  "reference/offboard-an-agent.md": "/offboard-an-agent.html",
 };
 const MOVED = {
   "https://github.com/jeffrschneider/agentcollab": "https://agentcollab.dev/",
@@ -221,7 +223,7 @@ ${relink(entries, "CHANGELOG.md")}`;
   }));
 }
 
-// ── the guides and the worked examples ──────────────────────────────────────
+// ── the guides, the examples and the reference processes ──────────────────────────────────────
 const GUIDES = [
   { src: "process.md", file: "guide-process.html", active: "guide-process", h1: "Guide: writing down a process",
     description: "How to write down one process: the trigger, the steps and their order, the automation level of each step, handoffs, bindings, policy, measures and amendments." },
@@ -231,6 +233,12 @@ const GUIDES = [
     description: "A social campaign process written out in full: thirteen steps, the handoffs between them, the automation level of each, and its failure edges." },
   { src: "examples/marketing-catalog.md", file: "marketing-catalog.html", active: "marketing-catalog",
     description: "A marketing department's catalog of eleven processes, the graph of what feeds what, and where the department would start automating." },
+  { src: "reference/onboard-an-agent.md", file: "onboard-an-agent.html", active: "onboard-an-agent",
+    h1: "Reference process: onboard an agent",
+    description: "A reference process for bringing an outside agent into an organization's work: verify it, interview it, sign an NDA where needed, form the engagement, grant a mandate and access, hand over context, and run a trial before go-live." },
+  { src: "reference/offboard-an-agent.md", file: "offboard-an-agent.html", active: "offboard-an-agent",
+    h1: "Reference process: offboard an agent",
+    description: "A reference process for taking an outside agent out of an organization's work: hand over its work, end the engagement, revoke its mandate and access, settle the money, confirm the data, file the outcome and sign an exit record." },
 ];
 for (const g of GUIDES) {
   const md = read(g.src);
