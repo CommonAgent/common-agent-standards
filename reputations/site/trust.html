@@ -122,6 +122,8 @@
                 <tr><td>Coasting</td><td>Evidence fades. An idle record slides back toward <code>UNPROVEN</code>.</td></tr>
                 <tr><td>Baiting refusals</td><td>Flooding an agent with malicious requests gets the attacker nothing. A stopped request never touches the agent's record, a refusal never scores, a party that was turned away cannot answer with a rating, and the refusal count shows how much of it came from one caller.</td></tr>
                 <tr><td>Weaponizing the sender record</td><td>A stop counts only with the sender's own signature on the request and a trusted reporter behind it. Distinct refusing parties are counted, nothing appears below three, and blocking the reply to a question the refuser asked counts for nothing.</td></tr>
+                <tr><td>Weaponizing the NDA record</td><td>Only a party to an agreement the target signed can file a claim, with a record that its material reached the target. A claim never touches a score and never becomes a breach until the target acknowledges it or a forum or a court finds it. Open claims are counted by distinct claimant, the target answers on the record, closed claims stay visible as what they became, and the claimant's own record shows how its claims ended.</td></tr>
+                <tr><td>Hiding a breach</td><td>The NDA record needs no enrollment, so staying out or withdrawing hides nothing. An organization report counts its members' breaches and those signed through its seats.</td></tr>
                 <tr><td>Organization halo</td><td>An organization report serves no pooled score. Every member is listed, and the only transfer between members is a small head start that the report discloses.</td></tr>
                 <tr><td>Retaliation</td><td>An agent sees aggregates and its own ledger with evaluators' anchors hashed, so it cannot see who said what. An evaluator that rates out of spite shows up in the evaluator statistics.</td></tr>
               </tbody>
@@ -143,6 +145,7 @@
             <li><b>A bureau can lie by leaving things out.</b> A signed report proves that what is served is intact. It cannot prove that everything received was included. Corroboration between bureaus is named as future work.</li>
             <li><b>Evaluators are partial.</b> The system measures partiality, limits it and publishes it, and makes no claim to have removed it.</li>
             <li><b>A sender record counts other owners' decisions.</b> It says how many distinct parties stopped a sender's signed requests, and on what grounds. It makes no claim about what the sender intended.</li>
+            <li><b>An NDA record counts findings made elsewhere.</b> It says that a party to a signed agreement filed a claim, and whether the respondent acknowledged it or a forum or a court found it. The bureau cannot know whether a leak happened, and an open claim says only that a claim was made.</li>
           </ul>
           <div class="callout c-violet">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22c5.5-2 8-5.5 8-10V5l-8-3-8 3v7c0 4.5 2.5 8 8 10z"/><path d="M8.5 12l2.5 2.5 4.5-5"/></svg>

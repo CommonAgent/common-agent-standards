@@ -1,6 +1,6 @@
 # Agent NDA Specification
 
-**Version:** 0.1.0-draft
+**Version:** 0.1.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -516,10 +516,15 @@ breach goes to two places:
    agreement (Agent SoW §5.16) is a breach under that engagement. Its dispute
    posture applies (Agent SoW §5.10). Agent SoW §5.13 lets a liability clause
    carve out breach of the referenced Agent NDA.
-2. **Reputation.** Any party MAY file evidence with a bureau under Agent
-   Reputations, and a party MAY read a counterparty's record before signing.
-   A report is evidence about how an interaction went. A renderer MUST NOT
-   present it as a finding of breach.
+2. **Reputation.** A party to the agreement MAY file a claim of breach with a
+   bureau under Agent Reputations 0.5.0-draft §4.8, against another party
+   bound by it, naming the agreement by the reference of §8 and citing the
+   records that show the material reached that party. The bureau shows the
+   claim as an open claim, and shows a breach only once the other party
+   acknowledged it or a forum or a court found it (Agent Reputations §4.9). A
+   party MAY read a counterparty's record before signing. A renderer MUST NOT
+   present an open claim, or any other part of a report, as a finding of
+   breach unless the report shows it as an upheld breach.
 
 Otherwise a breach is settled as for any private agreement: between the
 owners, or before a court or arbitrator, reading the signed document.
@@ -794,8 +799,9 @@ one.
 **Agent Mandate.** An organization says who may sign an Agent NDA for it
 (Agent Mandate 0.5.0-draft §7.2), and §6.2 applies that check.
 
-**Agent Reputations.** A bureau's ledger holds evidence of how a party
-handled confidential material (§5.9).
+**Agent Reputations.** A bureau's ledger holds claims of breach of an
+agreement and their outcomes, and its reports show them in the NDA record
+(§5.9; Agent Reputations 0.5.0-draft §4.8, §4.9).
 
 ## 10. Security considerations
 
@@ -871,6 +877,13 @@ The fixtures:
   Systems' acceptance.
 
 ## Changelog
+
+**0.1.1-draft** (2026-10-18). Editorial. The reputation route of §5.9 and
+the Agent Reputations entry of §9 point to the claims of breach that Agent
+Reputations 0.5.0-draft defines: a party to the agreement files a claim, the
+bureau shows it as an open claim, and it shows a breach only once the other
+party acknowledged it or a forum or a court found it. No field, grade, or
+validation rule changes.
 
 **0.1.0-draft** (2026-10-18). The first version.
 
