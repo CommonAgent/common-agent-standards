@@ -1,6 +1,6 @@
 # Agent Reputations: A2A Reputation Extension
 
-**Version:** 0.1.2-draft
+**Version:** 0.1.3-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -121,13 +121,14 @@ A consumer uses a listed entry in three steps:
 1. **Query the bureau** at its published interface for the subject named in
    the entry. How to query is the bureau's own documented interface, found
    from `bureau`; this extension does not define the transport.
-2. **Verify the report's signature** with the bureau's pinned signing key,
-   as the Agent Reputations specification section 8.1 requires: the key is
-   published by the bureau (this bureau publishes it on its developers page
-   and pins it per Personal Agent Naming section 5.3, signing `fdbk-report-v1` plus a newline
-   plus the canonical JSON of the `report` object). A consumer MUST verify
-   the signature and MUST discard a report whose signature fails, is
-   absent, or is made by a key other than the one the bureau pins.
+2. **Verify the report** as the Agent Reputations specification section
+   8.1 requires. Section 8.1.1 defines the signed bytes, section 8.1.2 the
+   bureau's published key set and how a consumer pins it, and section 8.1.3
+   the steps of verification. The `bureau` of the entry is the URL the
+   consumer finds the key set from, and the report's own `bureau` member must
+   name the same bureau. A consumer MUST discard a report that fails any step
+   of section 8.1.3, including a report whose signature fails, is absent, or
+   is made by a key outside the bureau's pinned key set.
 3. **Check the binding.** The report answers for `subject`. A consumer MUST
    confirm that this subject identifier actually denotes the agent the card
    describes, by resolving the identifier in its own system (Personal Agent Naming or ANS)
@@ -258,6 +259,14 @@ obligations, and any A2A agent able to add one card entry, can use it.
 ---
 
 ## Changelog
+
+**0.1.3-draft** (2026-10-18). Section 5 step 2 points to the Agent
+Reputations specification section 8.1 for the signed bytes, the bureau's keys,
+and the steps of verification, which Agent Reputations 0.6.0-draft defines
+there, in place of describing the signature itself. The tag and the canonical
+JSON this extension named are the ones section 8.1 defines. The step adds
+that the entry's `bureau` is where the consumer finds the key set, and that
+the report must name the same bureau. The payload is unchanged.
 
 **0.1.2-draft** (2026-10-18). Restates two rules of Agent Reputations
 0.4.0-draft for card readers, with no change to the payload or the

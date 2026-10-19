@@ -7,6 +7,8 @@
 //   spec.html                sow/SPEC.md, the specification
 //   spec-a2a-terms.html      sow/SPEC-A2A-TERMS.md, the A2A Terms extension
 //   spec-a2a-interview.html  sow/SPEC-A2A-INTERVIEW.md, the A2A Interview extension
+//   extensions/a2a-terms/v1/index.html, extensions/a2a-interview/v1/index.html
+//                            the pages at the two extensions' URIs
 //   versions.html            every version, from the changelog of SPEC.md and
 //                            sow/CHANGELOG.md
 //
@@ -206,9 +208,19 @@ if (!SPEC_LOG.some((e) => e.ver === VERSION)) throw new Error(`the changelog of 
 // ── the A2A extensions ──────────────────────────────────────────────────────
 const EXTENSIONS = [
   { src: "SPEC-A2A-TERMS.md", file: "spec-a2a-terms.html", active: "spec-a2a-terms",
-    description: "The A2A Terms extension: an entry in an A2A Agent Card that says where the agent's signed standing proposal lives and commits to it by digest." },
+    description: "The A2A Terms extension: an entry in an A2A Agent Card that says where the agent's signed standing proposal lives and commits to it by digest.",
+    name: "The A2A Terms extension", slug: "a2a-terms",
+    about: "An A2A agent puts it in its Agent Card to say where its signed Agent SoW standing proposals live, and commits to each one by digest, so a client learns on what terms the agent works before it sends a request and can check that the terms it fetched are the ones the card meant.",
+    where: "The address is the <code>uri</code> of an entry in the card's <code>capabilities.extensions</code>.",
+    versioned: "the shape of this entry and the rule for verifying the proposals it commits to",
+    covers: "It says what the entry holds, how a client fetches a proposal and checks its digest, and what a client may and may not conclude from the terms it finds." },
   { src: "SPEC-A2A-INTERVIEW.md", file: "spec-a2a-interview.html", active: "spec-a2a-interview",
-    description: "The A2A Interview extension: five questions any client may put to an agent, each answered by projecting the agent's declared documents." },
+    description: "The A2A Interview extension: five questions any client may put to an agent, each answered by projecting the agent's declared documents.",
+    name: "The A2A Interview extension", slug: "a2a-interview",
+    about: "An A2A agent puts it in its Agent Card to offer five questions any client may ask it, about its identity, capabilities, usage, terms and refusals, each answered by copying a value from a document the agent declared, so a client can compare what the agent says with what it signed.",
+    where: "The address is the <code>uri</code> of an entry in the card's <code>capabilities.extensions</code>, and an interviewer that wants the five methods lists it in the <code>A2A-Extensions</code> header of its request.",
+    versioned: "the methods, the shape of their answers and the shape of their refusals",
+    covers: "It says how a client activates the extension, what each of the five methods returns, how an answer names the document and member it was copied from, and how a refusal is shaped." },
 ];
 for (const x of EXTENSIONS) {
   const d = header(x.src);
@@ -224,6 +236,38 @@ for (const x of EXTENSIONS) {
     metas: `<div class="metas">${chip("version", d.version)}${chip("status", d.status)}${chip("date", d.date)}</div>`,
     canon: `${stamp(x.src)} It extends the <a href="/spec.html">Agent SoW specification</a>, which is the authority for every term it borrows.`,
     toc, body: html,
+  }));
+}
+
+// ── the pages at the extensions' URIs ───────────────────────────────────────
+// Each extension is named in Agent Cards by a URI under
+// https://agentsow.com/extensions/. A client matches that string and never
+// needs to fetch it, but people paste it into a browser, so each address
+// serves a page about its extension. The page is <path>/index.html, and the
+// bucket answers the URI itself with a redirect to it.
+for (const x of EXTENSIONS) {
+  const d = header(x.src);
+  const want = `${SITE}/extensions/${x.slug}/v1`;
+  const uri = d.rest.match(/## 2\. Extension URI\s+```\n(\S+)\n```/)?.[1];
+  if (uri !== want) throw new Error(`${x.src}: section 2 names the URI ${uri}, and this builder writes the page for ${want}`);
+  const declaration = d.rest.match(/## 3\. [^\n]+[\s\S]*?```json\n([\s\S]*?)```/)?.[1];
+  if (!declaration) throw new Error(`${x.src}: section 3 has no JSON declaration`);
+  const file = `extensions/${x.slug}/v1/index.html`;
+  mkdirSync(resolve(OUT, `extensions/${x.slug}/v1`), { recursive: true });
+  const body = `<p>This address is the identifier of ${x.name.replace(/^The /, "the ")} of Agent SoW. ${x.about}</p>
+<h2 id="declared">An agent names this address in its Agent Card<a class="hl" href="#declared" aria-label="Link to this section">#</a></h2>
+<p>${x.where} A client matches it as an exact string and does not need to fetch it, so a card is read the same way whether or not this page can be reached. The entry looks like this:</p>
+<pre><code class="language-json">${esc(declaration)}</code></pre>
+<p>The address ends in <span class="mono">v1</span> for ${x.versioned}. A revision of the text that keeps them keeps this address, and a revision that changes them takes a new address.</p>
+<h2 id="text">The full text of the extension defines every rule<a class="hl" href="#text" aria-label="Link to this section">#</a></h2>
+<p><a href="/${x.file}">${esc(x.name)}</a> is at version ${esc(d.version)}, dated ${esc(d.date)}. ${x.covers} The <a href="/spec.html">Agent SoW specification</a> is the authority for every term it borrows.</p>`;
+  write(file, page({
+    file, active: x.active,
+    title: x.name,
+    description: `The identifier of ${x.name.replace(/^The /, "the ")}, ${uri}: what an Agent Card that names it says, and where the full text of the extension is.`,
+    h1: x.name,
+    canon: stamp(x.src),
+    body,
   }));
 }
 
