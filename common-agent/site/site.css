@@ -737,3 +737,5 @@ ol.problems p{ margin:0; font-size:.95rem; line-height:1.5; color:var(--text-2);
   .herobg.front .lede{ max-width:none; }
 }
 .bigdoor .go .nw{ white-space:nowrap; }
+ol.problems h3.key{ font-family:var(--disp); font-size:1.25rem; letter-spacing:-.01em; text-transform:none; margin:0 0 8px; }
+ol.problems h3.key .ico{ width:20px; height:20px; }
