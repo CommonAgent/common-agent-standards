@@ -1,8 +1,8 @@
 # Agent Processes Specification
 
-**Version:** 0.6.1-draft
+**Version:** 0.7.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 **This revision.** A process document can name the Agent NDA that every
 participant from outside the process owner shares, written
@@ -2392,6 +2392,68 @@ open run that nobody is running, and the difference is visible only in
 this record. The `open:` line names what was left and who may close it,
 so that the next person to touch the work starts from what is there.
 
+#### 13.5.1. The signed close
+
+The records of a run are not signed documents, and nothing above asks a
+runtime to sign them. A run MAY also close with a **signed close**: one
+attestation, made by the process owner, that names every record the run
+left by its digest. A reader who later holds the run's records can then
+check that they are the records the owner closed the run on, with none
+added, changed or dropped since. Where a process needs proof that a run
+happened as recorded, the signed close is that proof.
+
+The signed close follows the record convention of the Common Agent
+Specification §8.1, with the tag `agent-process-close-v1`:
+
+```json
+{
+  "format": "agent-process-close-v1",
+  "role": "process-owner",
+  "act": "close",
+  "process": { "id": "gm/offboard-an-agent", "version": 1 },
+  "run": "run 3",
+  "outcome": "completed",
+  "records": [
+    "sha256:<digest of the RUN record>",
+    "sha256:<digest of the next record written>",
+    "sha256:<digest of the RUN DONE record>"
+  ],
+  "produced_at": "2027-04-02T10:00:00Z",
+  "by": "<process owner public key>",
+  "signatures": [
+    { "tag": "agent-process-close-v1", "by": "<process owner public key>",
+      "sig": "<base64>", "alg": "ed25519" }
+  ]
+}
+```
+
+1. `records` lists, in the order they were written, the digest of every
+   record the run left, from its `RUN` record through its `RUN DONE`
+   record, run-scoped records and refusals included. A digest is
+   `sha256:` and the 64 lowercase hex digits of the SHA-256 of the
+   record's exact bytes as the runtime stored them, in UTF-8. The signed
+   close is not in the list.
+2. `process`, `run` and `outcome` repeat what the `RUN` and `RUN DONE`
+   records say, and MUST agree with them.
+3. The signature is the one the Common Agent Specification §8.1 defines:
+   Ed25519 over the tag, one newline, and the JCS canonical JSON of the
+   document with `signatures` removed. Its by-equality rule applies.
+4. `by` is a key of the process owner, the party `owner:` names. Which key
+   that is, the owner's organization says in its own records, and a
+   reader judges what the key is worth, as for any attestation.
+5. A runtime that writes a signed close MUST NOT write a record for the
+   run after it. A record that appears later is outside the close, and a
+   reader MUST NOT treat it as part of the run the owner closed.
+6. A reader who holds a record whose digest is not in `records`, or who
+   cannot produce a record whose digest is, MUST say so wherever it shows
+   the run as closed.
+
+The signed close is `evidence` that the owner closed the run on exactly
+these records. It is not evidence that what the records say is true. A
+run without a signed close is complete as Section 13.5 defines it, and a
+process that wants named people to put their names to a run, beyond the
+owner, still writes an approval phase for it.
+
 ### 13.6. A record names its source and its versions
 
 A record MUST name its source and the version of anything it was
@@ -2895,7 +2957,9 @@ phase finishes has skipped the part where somebody was watching.
 **Records (section 13).** A runtime MUST leave the records section 13
 requires, and MUST record the version of the document the run ran under.
 A runtime MUST NOT alter a record afterwards, including when the
-document changes (section 18).
+document changes (section 18). A runtime that writes a signed close
+(section 13.5.1) MUST list every record of the run in it, and MUST NOT
+write a record for the run after it.
 
 **Harness phases (section 6.3).** A runtime MUST give a `harness:`
 phase only when the handoffs it takes in exist, MUST NOT

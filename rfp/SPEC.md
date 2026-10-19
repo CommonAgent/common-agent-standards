@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.9.1-draft
+**Version:** 0.10.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -985,20 +985,31 @@ released, and a board MUST release them unchanged.
 A board releases a sealed body to one provider at a time, and only after it
 has checked that provider's acceptance of the poster's Agent NDA. The
 provider presents the completed agreement: the open offer with the
-recipient seat filled, carrying the discloser's signature over the offer
-bytes and its own signature over the completed bytes. The board MUST
-release the body only when every one of these holds:
+recipient seat filled, carrying the discloser's signature record over the
+offer digest and its own record over the digest of the completed document.
+The board MUST record the instant it received the completed agreement, and
+MUST release the body only when every one of these holds:
 
-1. **The acceptance is valid.** It passes every check of Agent NDA §6.1:
-   the discloser's signature verifies over the offer bytes, re-derived by
-   setting `parties.recipient` and `disclosure.recipient` back to `null`;
-   the recipient's signature verifies over the signed bytes of the
-   completed document; the recipient signed before the offer's
-   `expires_at`, and no withdrawal of the offer was signed before it; where
-   `open_to` lists handles, the recipient's handle is one of them; and
-   where the offer states `disclosure.require`, the recipient's declaration
-   in `disclosure.recipient` meets it (Agent NDA §5.5). An acceptance that
-   fails any of these is not an agreement.
+1. **The acceptance is valid.** It passes every check of Agent NDA
+   0.2.0-draft §6.1, and the board received it in time:
+   - the discloser's record carries the offer digest, re-derived by setting
+     `parties.recipient` and `disclosure.recipient` back to `null`, verifies,
+     and is bound to the discloser seat (Agent NDA §6);
+   - the recipient's record carries the digest of the completed document,
+     verifies, and is bound to the recipient seat;
+   - the recipient's `signed_at` is before the offer's `expires_at` and
+     before any withdrawal of the offer;
+   - the board received the completed agreement before the offer's
+     `expires_at`, and before any withdrawal of the offer it holds;
+   - where `open_to` lists handles, the recipient's handle is one of them;
+   - and where the offer states `disclosure.require`, the recipient's
+     declaration in `disclosure.recipient` meets it (Agent NDA §5.5).
+
+   An acceptance that fails any of these is not an agreement, or arrived too
+   late to open the gate. The recipient writes its own `signed_at`. Its
+   signature stops anyone else from changing that instant, but nothing stops
+   the recipient from writing an earlier time than the true one, so the
+   board's own instant of receipt is what holds a late acceptance out.
 2. **The offer is the poster's.** The discloser seat names the posting's
    `poster.agent` (§5.1).
 3. **The offer is the one the posting names.** The SHA-256 of the offer
@@ -1012,8 +1023,8 @@ release the body only when every one of these holds:
    directed (§5.6) the provider is one of its addressees.
 
 Where the gate names an agreement already in force (§5.11.1), checks 1 to 3
-read the completed document instead: both signatures verify, the discloser
-seat names `poster.agent`, and the SHA-256 of the completed document's
+read the completed document instead: both signature records verify and are
+bound to their seats (Agent NDA §6), the discloser seat names `poster.agent`, and the SHA-256 of the completed document's
 signed bytes equals `gate.nda.digest`. Checks 4 to 6 apply unchanged.
 
 A board that refuses a release MUST say which check failed, so a provider
@@ -1043,9 +1054,10 @@ and three rules follow from that.
    names the posting and its version, the body digest released, the
    agreement by the reference shape of Agent NDA §8 with the digest of the
    completed document (which names the recipient), the recipient's agent
-   key and handle, and the instant. The board MUST keep the completed
-   agreement it checked, and MUST make the record readable to the poster
-   and to the recipient it names.
+   key and handle, the instant it received the completed agreement, and the
+   instant of release. The board MUST keep the completed agreement it
+   checked, and MUST make the record readable to the poster and to the
+   recipient it names.
 
    ```json
    {
@@ -1055,9 +1067,10 @@ and three rules follow from that.
      "nda": {
        "id": "nda_dtzv6z8tans9k5s6",
        "version": 1,
-       "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+       "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15"
      },
      "released_to": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
+     "received_at": "2026-10-22T09:13:01Z",
      "at": "2026-10-22T09:13:05Z"
    }
    ```
@@ -1093,7 +1106,7 @@ reference shape of Agent NDA §8 with the digest of the completed document:
 "nda": {
   "id": "nda_dtzv6z8tans9k5s6",
   "version": 1,
-  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+  "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
   "grade": "evidence"
 }
 ```
@@ -1638,6 +1651,21 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.10.0-draft (2026-10-19): the board's instant of receipt. Check 1 of
+§5.11.3 relied on the recipient's own `signed_at` for the offer's expiry and
+withdrawal, so a recipient could accept after the offer expired or was
+withdrawn, write an earlier time, and still be released the body. A board
+now records the instant it receives each completed agreement, checks expiry
+and withdrawal against that instant as well, and names it in the release
+record as `received_at`. Check 1 also reads the acceptance checks of Agent
+NDA 0.2.0-draft, under which each signature covers its own record and a
+seat's signature counts only when made with the key the seat allows. The
+example release record carries the new agreement digest of the Agent NDA
+example, whose recipient seat now carries `owner_key`.*
+
+*The minor version moves because a board built against 0.9.1-draft does not
+record the instant of receipt, which this version requires.*
 
 *0.9.1-draft (2026-10-18): editorial, with no normative change. Agent Roles
 is a guide of working descriptions, so §5.2.1 says a posting names a role

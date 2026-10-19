@@ -1,7 +1,7 @@
 {
-  "comment": "Agent NDA grading (agentnda.net 0.1.2-draft, 3, 5, 7.1, 11). An NDA asks the recipient to do things in private, so its promises are 'recorded', the facts around them (parties, instants, signatures, acts) are 'evidence', and NOTHING in an agreement is 'enforced': a clause graded 'enforced' is refused as the false enforcement claim (Agent SoW 3 rule 1). The one enforced step, a board releasing a gated body after a valid acceptance, is defined in Agent RFP 5.11 and does not appear in an agreement. Also pinned: the closed lists and what absence means in each (a category, activity, exclusion or need_to_know value left out is not covered and MUST NOT be inferred; absent subcontractors means none; absent survival is no survival period, never a default), and the derivation of the lifecycle state from signatures, acts and instants. Each case edits the base document: an edit maps a dotted path to its new value, and the value \"<removed>\" deletes the member. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
+  "comment": "Agent NDA grading (agentnda.net 0.2.0-draft, 3, 5, 7.1, 11). An NDA asks the recipient to do things in private, so its promises are 'recorded', the facts around them (parties, instants, signatures, acts) are 'evidence', and NOTHING in an agreement is 'enforced': a clause graded 'enforced' is refused as the false enforcement claim (Agent SoW 3 rule 1). The one enforced step, a board releasing a gated body after a valid acceptance, is defined in Agent RFP 5.11 and does not appear in an agreement. Also pinned: the closed lists and what absence means in each (a category, activity, exclusion or need_to_know value left out is not covered and MUST NOT be inferred; absent subcontractors means none; absent survival is no survival period, never a default), and the derivation of the lifecycle state from signatures, acts and instants. Each case edits the base document: an edit maps a dotted path to its new value, and the value \"<removed>\" deletes the member. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent NDA 0.1.2-draft: 3 (gradient), 5 (clauses, with 5.1 multilateral agreements and 5.5 flow-down), 6.2 (mandates), 7.1 (states), 8.1 (whether a party is bound), 11 (conformance)",
+  "spec": "Agent NDA 0.2.0-draft: 3 (gradient), 5 (clauses, with 5.1 multilateral agreements and 5.5 flow-down), 6.2 (mandates), 7.1 (states), 8.1 (whether a party is bound), 11 (conformance)",
   "grades": {
     "comment": "11: the grade each clause MUST carry. Any other grade does not validate; 'enforced' on any clause is reported as the false enforcement claim.",
     "fixed": {
@@ -126,7 +126,8 @@
         "recipient": {
           "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
           "handle": "Sable.audit@calderafreight.example",
-          "owner": "Caldera Freight Systems"
+          "owner": "Caldera Freight Systems",
+          "owner_key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ"
         },
         "grade": "evidence"
       },
@@ -215,17 +216,19 @@
       "signatures": [
         {
           "role": "discloser",
-          "over": "offer",
           "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
           "signed_at": "2026-10-20T15:00:00Z",
-          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
-          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+          "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6",
+          "over": "offer",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m",
+          "sig": "0rnQxLka/GJtMUP7bp2APfoUUA47KZZM5TKgdW8D7r8pShle2hPkCz/oBXopHA9rHNtw9/vrokorhIzx1B+WBw=="
         },
         {
           "role": "recipient",
           "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
           "signed_at": "2026-10-22T09:12:40Z",
-          "sig": "6IqZjlkbI53EPScHpQa29SSqujoVPh+oFAIAsMpDPjwxDyMcgCyCMoTXS7IJBTmhbLA5NJnlDdkaTdMkifYjBg=="
+          "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
+          "sig": "YrJBF2STw2o8utvMErj7hrnyIY+yrxjwMD/tYou7j8fD9VJhhyUcTgZA2neGRQHfvuCF5rrjSlbR1yz4nI85AQ=="
         }
       ]
     }
@@ -484,6 +487,54 @@
       },
       "error": "instants",
       "why": "ends_at before a non-null effective_at"
+    },
+    {
+      "case": "recipient_without_owner_key",
+      "edit": {
+        "parties.recipient.owner_key": "<removed>"
+      },
+      "error": "owner_key",
+      "why": "a seat without an organization names the key that signs for it (5.1)"
+    },
+    {
+      "case": "organization_seat_with_owner_key",
+      "edit": {
+        "parties.discloser.owner_key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C"
+      },
+      "error": "owner_key",
+      "why": "a seat that names an organization carries no owner_key; its signers are the holders of the mandates their records cite (5.1, 6.2)"
+    },
+    {
+      "case": "record_without_digest",
+      "edit": {
+        "signatures.1.digest": "<removed>"
+      },
+      "error": "signatures",
+      "why": "every signature record names the digest of the bytes it covers (6)"
+    },
+    {
+      "case": "sig_base64url",
+      "edit": {
+        "signatures.1.sig": "YrJBF2STw2o8utvMErj7hrnyIY-yrxjwMD_tYou7j8fD9VJhhyUcTgZA2neGRQHfvuCF5rrjSlbR1yz4nI85AQ"
+      },
+      "error": "signatures",
+      "why": "sig is padded base64 in the standard alphabet (6)"
+    },
+    {
+      "case": "sig_unpadded",
+      "edit": {
+        "signatures.1.sig": "YrJBF2STw2o8utvMErj7hrnyIY+yrxjwMD/tYou7j8fD9VJhhyUcTgZA2neGRQHfvuCF5rrjSlbR1yz4nI85AQ"
+      },
+      "error": "signatures",
+      "why": "sig carries its padding (6)"
+    },
+    {
+      "case": "sig_non_canonical_bits",
+      "edit": {
+        "signatures.1.sig": "YrJBF2STw2o8utvMErj7hrnyIY+yrxjwMD/tYou7j8fD9VJhhyUcTgZA2neGRQHfvuCF5rrjSlbR1yz4nI85AR=="
+      },
+      "error": "signatures",
+      "why": "the unused bits of the last character are zero, so each signature has exactly one spelling (6)"
     }
   ],
   "states": {
@@ -593,7 +644,7 @@
     "comment": "5.1, 6, 7.1: a multilateral agreement among the process owner and three outside parties. Every member is a discloser and a recipient to every other; each member signs the same bytes with role 'member' and its seat's agent; it is in force only when every member has signed; it has no open offer. The keys are derived from the test seeds of nda-lifecycle.json, the identifier is minted, and the four signatures are real.",
     "document": {
       "nda": "v1",
-      "id": "nda_g1pfpfk34433ndq7",
+      "id": "nda_jfrehsjcfnxkb2f0",
       "version": 1,
       "language": {
         "id": "agent-nda-standard-language",
@@ -612,17 +663,20 @@
           {
             "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
             "handle": "Sable.audit@calderafreight.example",
-            "owner": "Caldera Freight Systems"
+            "owner": "Caldera Freight Systems",
+            "owner_key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ"
           },
           {
             "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
             "handle": "Heron.desk@tidewatercustoms.example",
-            "owner": "Tidewater Customs Brokers"
+            "owner": "Tidewater Customs Brokers",
+            "owner_key": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX"
           },
           {
             "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
             "handle": "Kestrel.rates@northgaterates.example",
-            "owner": "Northgate Rate Data"
+            "owner": "Northgate Rate Data",
+            "owner_key": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y"
           }
         ],
         "grade": "evidence"
@@ -691,30 +745,34 @@
           "role": "member",
           "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "2xEs2qxdPWdDTOb801/1mfQCYQIdPzlnw2m3svrtOqOuCnKD5EFchF4PfyAUqkL1mLIt5jBzpNNCh8ymZxpYDw==",
+          "digest": "sha256:5ff384d01f40f863ca9c8aa75e6078b49a430513fb30d9622f96232998e4b713",
           "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
-          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+          "mandate": "mnd_3f8c1n6z9v4b7q2m",
+          "sig": "Vva1lKAtJxy3qcLJjRD2llHmqSJdFUqFSyQ4U3bysGGFZaTu/c2ixiziB1LDiRAXcYldfaPb9pKhDzOiKAE5Cw=="
         },
         {
           "role": "member",
           "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "DcrirPvBw2KgAZTdku7y9LK4rViPLK5yZjUOPgGYdIiC1tuKYpjIWcwTcxka7cszRg8KKesn83iBbRheeAemBg==",
-          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
+          "digest": "sha256:5ff384d01f40f863ca9c8aa75e6078b49a430513fb30d9622f96232998e4b713",
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "sig": "6FAU9nsFkfDAI26IVzSBree9YK5979/yN6PlMOCzB6M1QQOATB2f18Td17AisPsTKYeILYAIenwvesLGbLqmAw=="
         },
         {
           "role": "member",
           "key": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "+MVf9HywwTFtTiQgKJZRGDjJKxWwcpc7z9Nu3wHCDT7hCYxnk8CqEgf9NhEqLrkxtFVom0+l1n++O2S+XeutAw==",
-          "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
+          "digest": "sha256:5ff384d01f40f863ca9c8aa75e6078b49a430513fb30d9622f96232998e4b713",
+          "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
+          "sig": "xoGTe+u39nDgX/cwgTONyA+JnONii/SpIXsGgPai8inpsE7FiWC7Bcjo9l6bHD39e+7DI4vzMI3IK/FcpoPPCQ=="
         },
         {
           "role": "member",
           "key": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "O21cBVKEY7li2bwrQjv/udPzXZigCuvL1kPuqqrc15uNubqz5pq389UgaAJcsndbyRLYwlIJPpxkLo7cnXLmCg==",
-          "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
+          "digest": "sha256:5ff384d01f40f863ca9c8aa75e6078b49a430513fb30d9622f96232998e4b713",
+          "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
+          "sig": "iiAMxBsJRzuK0C9XTIQVa9muVlQsVKgn88tu7KmPgsOKJjvBJE1svIoaoebnIMKgVyxEGU7xABtmJdyBfP4jBw=="
         }
       ]
     },
@@ -739,7 +797,8 @@
             {
               "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
               "handle": "Sable.audit@calderafreight.example",
-              "owner": "Caldera Freight Systems"
+              "owner": "Caldera Freight Systems",
+              "owner_key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ"
             }
           ]
         },
@@ -772,6 +831,14 @@
         },
         "error": "signatures",
         "why": "a member signature names its seat"
+      },
+      {
+        "case": "member_without_owner_key",
+        "edit": {
+          "parties.members.2.owner_key": "<removed>"
+        },
+        "error": "owner_key",
+        "why": "a member seat without an organization names the key that signs for it"
       }
     ],
     "states": [
@@ -802,11 +869,11 @@
     "upstream": {
       "id": "nda_dtzv6z8tans9k5s6",
       "version": 1,
-      "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+      "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15"
     },
     "document": {
       "nda": "v1",
-      "id": "nda_dahyf5s1662ab2yx",
+      "id": "nda_yj6zcdgbe7pjf42c",
       "version": 1,
       "language": {
         "id": "agent-nda-standard-language",
@@ -818,19 +885,21 @@
         "discloser": {
           "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
           "handle": "Sable.audit@calderafreight.example",
-          "owner": "Caldera Freight Systems"
+          "owner": "Caldera Freight Systems",
+          "owner_key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ"
         },
         "recipient": {
           "agent": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS",
           "handle": "Wren.ops@ledgerline.example",
-          "owner": "Ledgerline Data Services"
+          "owner": "Ledgerline Data Services",
+          "owner_key": "UBPTD7JMW6FRJFK6M2KZASOLWYTCZ34I3ZUEPQWG2ZISUV7VDGXZ3UD2"
         },
         "grade": "evidence"
       },
       "flows_from": {
         "id": "nda_dtzv6z8tans9k5s6",
         "version": 1,
-        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+        "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15"
       },
       "effective_at": null,
       "ends_at": "2027-11-30T00:00:00Z",

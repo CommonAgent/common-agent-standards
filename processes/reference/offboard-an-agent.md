@@ -12,8 +12,11 @@ settled and any reservation released. The agent's owner confirms in
 writing what was returned and what was deleted, the outcome is filed
 with the reputation bureau the engagement names, and the confidentiality
 terms that outlast the engagement are written on the register entry.
-The run closes with an exit record that named people sign, saying all
-of that happened.
+The run closes with a signed close: the process owner signs the digest
+of every record the run left, so the run's own records are the signed
+proof that all of that happened (Agent Processes §13.5.1). An
+organization that also wants named people to countersign the exit keeps
+the `sign-exit` gate.
 
 This is a reference process. It is a first draft for an organization to
 adopt and argue with, and it is not running anywhere. Its owner, its
@@ -40,7 +43,7 @@ it reads that run's access list.
 | 7 | Confirm the Data Returned or Deleted | the agent's owner confirms in writing what was returned, what was deleted and when, and what is still held and why | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) · agent's owner (person) |
 | 8 | File the Outcome | the engagement's outcome and a review filed with the reputation bureau the engagement names | sponsor (person) |
 | 9 | Note What Stays Confidential | the confidentiality terms that outlast the engagement, and until when, written on the register entry | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
-| 10 | Sign the Exit Record | named people sign one record saying the engagement ended, the mandate was revoked, the access was withdrawn, the money was settled, the data was confirmed and the work was handed over | sponsor (person) · security reviewer (person) |
+| 10 | Countersign the Exit, Where Wanted | named people countersign the run's records, saying the engagement ended, the mandate was revoked, the access was withdrawn, the money was settled, the data was confirmed and the work was handed over | sponsor (person) · security reviewer (person) |
 | 11 | Record What Was Learned | what to repeat, what to avoid | supplier-manager · sponsor (person) |
 
 ## What the graph says
@@ -61,7 +64,11 @@ happened to the data.
 
 Noting what stays confidential is marked as a phase that does not run
 in every run. An engagement that ran under no NDA has no surviving terms
-to write down, and nothing waits for it. An adopter whose engagements
+to write down, and nothing waits for it. Countersigning the exit is
+marked the same way. The signed close already proves the run happened as
+recorded, so the countersignature is for an organization that wants
+named people, such as a security reviewer, to put their own names to it.
+An adopter that does not want it drops the phase. An adopter whose engagements
 never run under an NDA also drops the `confidential-under:` line, which
 holds every outside participant in the run to the agreement the
 engagement ran under.
@@ -72,8 +79,8 @@ when it came and who sent it. It cannot see the deletion itself, which
 is why the confirmation is in writing and the run stays open until it
 comes.
 
-Three edges point backwards. A grant that still works at the exit
-record returns the run to withdrawing access. A data confirmation that
+Three edges point backwards. A grant that still works when the exit is
+countersigned returns the run to withdrawing access. A data confirmation that
 does not come returns the run to the money, where the final settlement
 and any open dispute are what the organization still holds. A final
 charge that does not match the engagement returns the run to ending
@@ -98,7 +105,7 @@ concurrency: runs may overlap - <how many> offboardings open at once,
 goal: the agent out of the organization's work, with its engagement
       ended, its mandate revoked, every grant withdrawn, the money
       settled, the data confirmed returned or deleted, the work handed
-      over, and one exit record signed by named people
+      over, and the run closed with a signed close
 phases:
   take-in-ending   - human: why the engagement is ending, whether for
                      convenience with notice, for cause, or by reaching
@@ -153,17 +160,18 @@ phases:
                      written on the register entry
                      owner: supplier-manager     after: file-outcome
                      automation: <level>
-  sign-exit        - convenes approval: one exit record, signed by named
-                     people, saying the engagement ended, the mandate
-                     was revoked, every grant was withdrawn and tried,
-                     the money was settled, the data was confirmed and
-                     the work was handed over, each with the record it
-                     rests on
+  sign-exit        - convenes approval: named people countersign the
+                     run's records, saying the engagement ended, the
+                     mandate was revoked, every grant was withdrawn and
+                     tried, the money was settled, the data was
+                     confirmed and the work was handed over, each with
+                     the record it rests on
                      owner: <your security role>
                      after: file-outcome + note-confidentiality?
                      by: <days>                  automation: never
   record-learnings - convenes debrief: what to repeat, what to avoid
-                     owner: supplier-manager     after: sign-exit
+                     owner: supplier-manager
+                     after: file-outcome + note-confidentiality? + sign-exit?
                      automation: <level>
   escalate-holdout - human: the agent's owner has not confirmed what
                      happened to the data by the date, so the request is
@@ -175,7 +183,7 @@ phases:
 run-scoped:
   status - harness: a status report      owner: supplier-manager
            every: <cadence>
-           from: take-in-ending   until: sign-exit
+           from: take-in-ending   until: record-learnings
            automation: <level>
 handoffs:
   take-in-ending -> hand-over-work [ending]: why the engagement ends,
@@ -201,7 +209,8 @@ handoffs:
   note-confidentiality -> sign-exit [surviving-terms]: each
     confidentiality term that outlasts the engagement, with its end date
   file-outcome -> sign-exit [outcome-filed]: the same record
-  sign-exit -> record-learnings [exit-record]: the signed exit record
+  sign-exit -> record-learnings [exit-record]: the countersigned exit
+  file-outcome -> record-learnings [outcome-filed]: the same record
 deviations:
   sign-exit -> withdraw-access [grant-still-open]: a grant still works
     when the exit record is read, so access is withdrawn again and
@@ -232,45 +241,52 @@ policy:
     grant that still works keeps the run open
   the run stays open until the agent's owner has confirmed in writing
     what was returned and what was deleted
-  ending the engagement, revoking the mandate and signing the exit
-    record are human gates and are never delegated to an agent
+  ending the engagement, revoking the mandate and countersigning the
+    exit are human gates and are never delegated to an agent
+  the run closes with a signed close that names every record it left
 measures:
-  cycle time: <target> from the ending to the signed exit record
+  cycle time: <target> from the ending to the signed close
   coverage: <share> of grants on the access list withdrawn and tried
-            before the exit record is signed
-  quality gate: no exit record is signed while a grant still works or
-                the data is unconfirmed
+            before the run closes
+  quality gate: no run closes while a grant still works or the data is
+                unconfirmed
 records:
   work-handover - every open item and where it went
   access-check  - every grant on the access list, withdrawn and tried,
                   with the date of each
-  exit-record   - the signed exit record, its signers, and the record
-                  each of its statements rests on
+  exit-record   - the signed close over every record of the run, and,
+                  where the exit is countersigned, the named people who
+                  signed it and the record each statement rests on
 ```
 
 ## The records a run leaves
 
 Each phase leaves the record its own kind of work produces, and three
 records matter across the whole run. The exit record is the one an
-auditor asks for. It is signed by named people at the `sign-exit` gate,
-and each statement in it cites the record it rests on: the termination,
-the revocation, the access check, the settlement, the data confirmation
-and the handover.
+auditor asks for, and it is the run's own records under a signed close.
+The termination, the revocation, the access check, the settlement, the
+data confirmation and the handover are each a record of the run, and the
+process owner signs the digest of every one of them when the run closes
+(Agent Processes §13.5.1). An auditor who holds the records can check
+that they are the ones the owner closed on.
 
-The exit record is signed as a gate because the records of a run under
-this specification are not themselves signed documents. A run record
-says what happened, when, and who acted, and nothing in this
-specification asks a runtime to sign it. The gate is where named people
-put their names to the whole set.
+The signed close proves what the records were when the run closed. It
+does not prove that they are true, and it is the owner's signature only.
+An organization that wants named people, such as a security reviewer, to
+put their own names to the exit keeps the `sign-exit` gate, where they
+countersign the records before the run closes.
 
 The run closes:
 
 ```
 RUN DONE: <team>/offboard-an-agent v1 · run <n>
 outcome: <completed | abandoned>
-result: <the agent out of the work, with a signed exit record>
+result: <the agent out of the work, with every record under a signed close>
 open: <what nobody finished, and who may close it>
 ```
+
+and the process owner signs the close over every record from `RUN`
+through `RUN DONE`.
 
 ## The failure edges
 
@@ -279,8 +295,8 @@ open: <what nobody finished, and who may close it>
   and what the owner is still holding is recorded on the register entry.
   An unanswered request is not a deletion.
 - **A grant still works after it was withdrawn.** The run returns to
-  withdrawing access. An exit record signed while a grant still works
-  records something that is not true.
+  withdrawing access. A run closed while a grant still works puts a
+  signature on something that is not true.
 - **There is no access list from the onboarding run.** The grants are
   found from the access control systems instead, and the run records
   that the list was rebuilt. The next onboarding is where that gap is

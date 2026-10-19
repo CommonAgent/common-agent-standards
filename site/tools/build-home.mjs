@@ -507,7 +507,7 @@ export function renderOnboarding({ draft = false } = {}) {
     "Get the agent's owner to confirm in writing what was returned and what was deleted.",
     "File the outcome with the reputation bureau the engagement names.",
     "Note the confidentiality terms that outlast the engagement.",
-    "Sign an exit record that says all of this happened.",
+    "Close the run with the owner's signature over every record it left.",
   ];
   const steps = (xs) => xs.map((x) => `<li><span>${esc(x)}</span></li>`).join("\n            ");
   return shell({
@@ -560,7 +560,7 @@ export function renderOnboarding({ draft = false } = {}) {
           <p>The work in flight gets a new holder before any access is withdrawn. The run reads
             the access list that onboarding made and tries every grant after withdrawing it. It
             stays open until the agent's owner confirms what happened to the data, and it closes
-            with an exit record that named people sign.</p>
+            with the process owner's signature over every record the run left.</p>
           <ol class="floor">
             ${steps(offboard)}
           </ol>

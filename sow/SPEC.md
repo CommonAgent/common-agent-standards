@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.25.0-draft
+**Version:** 0.26.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -279,21 +279,26 @@ stays self-contained: values and language are both fixed at signing time.
 ### 5.1 Parties
 
 Identifies both sides: for each, the agent's public key, an optional
-human-readable handle, the owner's identity, and the party's role
-(`provider` or `client`).
+human-readable handle, the owner's identity, the key the owner signs with,
+and the party's role (`provider` or `client`).
 
 ```json
 "parties": {
   "provider": { "agent": "<public key>", "handle": "Granite.books@stonework.example",
-                "owner": "Stonework Analytics" },
+                "owner": "Stonework Analytics", "owner_key": "<owner public key>" },
   "client":   { "agent": "<public key>", "handle": "Petrel.mari@harborandline.example",
-                "owner": "Harbor & Line Outfitters" },
+                "owner": "Harbor & Line Outfitters", "owner_key": "<owner public key>" },
   "grade": "evidence"
 }
 ```
 
 A party MAY additionally carry an `organization` reference beside its owner,
 naming the organization on whose behalf that seat engages (§6.2).
+
+Every seat MUST carry `owner_key`, the public key of the owner that signs
+for it, and a signature counts for a seat only when it is made with that key
+(§6). Owners sign, and the seat says which key is the owner's. A seat filled
+at formation gets its `owner_key` then, with the rest of the seat (§12.1).
 
 Grade: `evidence`. Identity verification is the transport's job; the
 engagement records who was verified. A runtime SHOULD refuse to apply an
@@ -391,9 +396,11 @@ What the client furnishes, in what form, and when (`per_task` or `standing`).
     "via": "link", "when": "standing" },
   { "name": "ledger",         "kind": "shared_resource", "access": "read-write",
     "via": "mcp",  "when": "standing" }
-],
-"grade": "enforced"
+]
 ```
+
+`inputs` is a list, so it has no member of its own to carry a grade, and
+none is written. Its grade is fixed here.
 
 Grade: `enforced`. A task arriving without a required `per_task` input MUST
 NOT fail and MUST NOT be silently attempted; it moves to `input_required`
@@ -572,6 +579,9 @@ either of them lying. §5.4 draws the line that form is machine-judged and
 quality is not, and that line is right. `acceptance` is how the parties move a
 specific, agreed slice of quality onto the judgeable side, by naming the test
 before the work starts.
+
+`acceptance` attaches to a deliverable (§5.4), per-task or interim, as
+`rights` does (§5.4.1). Each deliverable that has a test carries its own.
 
 ```json
 "acceptance": {
@@ -1252,6 +1262,19 @@ force before `starts_at`. Between countersigning and the start instant the
 engagement is `agreed`, and neither runtime applies its grants or limits
 until the start instant arrives.
 
+A standing proposal (§12.1) is offered before anyone knows when an
+engagement will start, so it leaves `starts_at` and `ends_at` `null` and
+states the length of the term in the top-level member `term_months`, a whole
+number of calendar months, at least 1. At formation the instance sets
+`starts_at`, and its `ends_at` is `starts_at` plus `term_months` calendar
+months: the same day of the month at the same time of day, in UTC, that many
+months later, or the last day of that month at that time where the month has
+no such day. An instance MAY keep `term_months` as a record of how `ends_at`
+was computed. Where it does, the two MUST agree, and a runtime MUST refuse a
+document where they do not. A document with neither a non-null `ends_at` nor
+`term_months` has no term, and a runtime MUST refuse to form it. The gate
+reads `ends_at` and nothing else.
+
 Engagements MUST NOT renew automatically. After `ends_at` the engagement
 lapses: its grants and limits stop applying and the client reverts to
 whatever the provider's general admission policy says. Renewal is an
@@ -1294,8 +1317,11 @@ The counterparty resolves it one of four ways:
   change but not the price change is not an approval of anything; it is a
   different amendment, proposed back the other way after this one is denied
   or withdrawn.
-- **Silence**: an unresolved proposal lapses after `review_window_days`.
-  Lapse is recorded, and the current version continues in force.
+- **Silence**: an unresolved proposal lapses after `review_window_days`,
+  counted from the proposing signature's `signed_at`. Where the clause does
+  not state it, the window is 7 days, so that an unanswered proposal always
+  lapses and never blocks the next one. Lapse is recorded, and the current
+  version continues in force.
 
 The proposer MAY withdraw an open proposal before it is resolved; withdrawal
 is recorded like the other outcomes.
@@ -1313,10 +1339,19 @@ version its own owner has not signed.
 
 ### 5.9 Termination
 
-Either owner may terminate: for convenience with the stated notice (in-flight
-tasks complete and are paid), or immediately for cause (in-flight tasks are
-canceled with a recorded reason). Termination takes effect at the next
-message.
+Either owner may terminate, in one of two ways:
+
+- **For convenience.** The termination takes effect when the stated notice,
+  `convenience_notice_hours`, has run from the termination act. Until then
+  the engagement stays `active`, and in-flight tasks complete and are paid.
+  Where the clause states no notice, the notice is zero and the termination
+  takes effect at once.
+- **For cause.** The termination takes effect at once, and the act MUST carry
+  the reason. In-flight tasks are canceled, each with the reason recorded.
+
+A runtime applies a termination from the instant it takes effect: it admits
+no new work under the engagement from then on, and it treats the next message
+after that instant as it treats any message outside the engagement.
 
 ```json
 "termination": { "convenience_notice_hours": 24, "grade": "enforced" }
@@ -1467,8 +1502,9 @@ transfer of obligation; what a processor does is governed by its own terms,
 and the client is owed the name so it can go read them.
 
 A processor entry MAY carry its own `processed_in`, in the same tokens the
-clause-level member uses. Where present it MUST be a subset of the
-clause-level `processed_in`, and a document where it is not does not validate:
+clause-level member uses. Where both are present, the processor's
+`processed_in` MUST be a subset of the clause-level one, and a document where
+it is not does not validate:
 a provider cannot promise the content stays in one place and name, in the same
 clause, a service that takes it somewhere else. Absence states nothing here
 too. A client reading a clause-level `processed_in` beside a processor that
@@ -1878,7 +1914,7 @@ member:
 "nda": {
   "id": "nda_dtzv6z8tans9k5s6",
   "version": 1,
-  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+  "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
   "ref": "mesh:artifacts:01JB2N7Q4C",
   "grade": "evidence"
 }
@@ -2155,8 +2191,32 @@ timestamp:
 ]
 ```
 
-A document is **agreed** when both roles have valid signatures over the same
-canonical bytes, and **active** once `starts_at` arrives. Each party's node
+`sig` is the Ed25519 signature (RFC 8032, without prehashing or a context)
+over the signed bytes, in base64 with padding (RFC 4648 §4), the spelling of
+Agent NDA §6 and of the family's other signed records. The spelling is
+canonical, so each signature has exactly one valid string: 88 characters from
+the standard alphabet, ending in two padding characters, with the unused low
+bits of the last data character zero. A runtime MUST write that spelling, and
+a verifier of a document written against 0.26.0-draft or later MUST refuse any
+other. A document written against an earlier version may carry another
+spelling of the same 64 bytes, such as base64url, and a verifier MAY decode it
+as written.
+
+**Binding.** A signature proves control of a key, and the seat says which key
+may sign for it. A signature record counts for a seat only when its `key` is
+that seat's `owner_key` (§5.1) and its signature verifies. A valid signature
+by any other key is not the seat's signature, whoever made it, and a runtime
+MUST NOT present it as one. The person-grade approval of §6.1 and the
+mandate of §6.2 stand beside this rule and do not replace it: they say who
+confirmed and with what authority, and the binding says whose key signed.
+
+A document whose seats carry no `owner_key` was written against 0.25.0-draft
+or earlier. A verifier MAY still check its signatures over the signed bytes,
+and MUST NOT present them as bound to the seats' owners.
+
+A document is **agreed** when both roles have valid signatures, each bound to
+its seat, over the same canonical bytes, and **active** once `starts_at`
+arrives. Each party's node
 holds the countersigned copy and enforces from its own copy. There is no
 central contract store to trust or to lose.
 
@@ -2263,9 +2323,11 @@ proposal              entitled to countersign; not publicly listed; spent
 agreed                both signatures, before starts_at; no force yet
 active                both signatures, starts_at reached; the runtimes
                       enforce it
-  → amendment proposed  a full replacement vN+1 with one signature is open
-                      (§5.8); no force; the current version governs until
-                      it is approved, denied, withdrawn, or lapses
+  → amendment proposed  a state of the proposal, not of the engagement: a
+                      full replacement vN+1 with one signature is open
+                      (§5.8); it has no force, and the engagement stays
+                      active under the current version until the proposal
+                      is approved, denied, withdrawn, or lapses
   → amended           replaced by a higher version with both signatures
   → exhausted         the not-to-exceed cap was reached (§5.5.5); admission
                       and billing stop, and the engagement ends
@@ -2398,10 +2460,13 @@ capability the agent does not carry is a validation error, not an offer.
 
 **Formation.** A client's countersign of a standing proposal is a request to
 form, not formation itself. It produces the completed instance: client seat
-filled, `starts_at` set, `buyer_reference` set where the client gives one
+filled, its `owner_key` included (§5.1), `starts_at` set, `buyer_reference` set where the client gives one
 (§5.17), the client's signature over those bytes. The
 provider's runtime then completes formation by adding the provider instance
-signature (§6), and only the fully signed instance is `agreed`. Where the
+signature (§6), and only the fully signed instance is `agreed`. The client's
+signature counts only when it is made with the `owner_key` the client wrote
+into its seat, and the provider's only when made with the provider seat's
+`owner_key` (§6, binding). Where the
 offer's approval authority for formation is `person` or `agent_then_person`
 (§6.1), completion additionally waits for the client account's human
 confirmation, and an unconfirmed request to form lapses with the review
@@ -2464,7 +2529,7 @@ grades:
 ```json
 "parties": {
   "provider": { "agent": "<public key>", "handle": "Granite.books@stonework.example",
-                "owner": "Stonework Analytics" },
+                "owner": "Stonework Analytics", "owner_key": "<owner public key>" },
   "client": null,
   "offered_to": { "agent": "<public key>",
                   "handle": "Petrel.mari@harborandline.example",
@@ -2765,6 +2830,52 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.26.0-draft** (2026-10-19). A seat names the key that signs for it, one
+spelling for a signature, and eight clarifications found by building an
+implementation.
+
+Every seat now carries `owner_key`, the public key of the owner that signs
+for it (§5.1), and a signature counts for a seat only when it is made with
+that key (§6, binding). Before, a seat named its agent and its owner, and a
+signature named a key, and nothing in the document tied the key that signed
+to the party in the seat. A runtime could not tell a signature by the
+client's owner from a signature by anyone else who held a key. A standing
+proposal carries the provider's `owner_key`, and the client's seat gets its
+`owner_key` at formation with the rest of the seat (§12.1). A document whose
+seats carry no `owner_key` was written against 0.25.0-draft or earlier; its
+signatures can still be checked, and are never presented as bound to the
+seats' owners. The minor version moves because a new MUST applies to every
+document. Agent NDA 0.2.0-draft applies the same rule to its seats. The
+example digest of §5.16 is the new digest of the Agent NDA example, whose
+recipient seat now carries `owner_key`, and `conformance/sow-nda.json`
+carries it too. A new fixture, `conformance/sow-signatures.json`, pins the
+binding with real signatures.
+
+`sig` is canonical base64 with padding, the spelling of Agent NDA §6, so each
+signature has exactly one valid string (§6). The two engagement signatures
+in `conformance/sow-pricing.json` are re-spelled from base64url to it; the
+bytes they encode do not change.
+
+The clarifications:
+
+- §5.7 defines `term_months`, which standing proposals and their fixtures
+  already carried without a definition, and says how a formed instance gets
+  its `ends_at`: `starts_at` plus that many calendar months. A document with
+  neither a non-null `ends_at` nor `term_months` is refused at formation.
+- §7.1 says that `amendment proposed` is a state of the proposal. The
+  engagement stays `active` under the current version, as §5.8 says.
+- §5.8 gives `review_window_days` a default of 7 days, counted from the
+  proposing signature, so that an unanswered proposal always lapses and never
+  blocks the next one.
+- §5.11 says that a processor's `processed_in` is a subset of the clause's
+  where both are present, as the 0.20.0-draft entry described.
+- §5.3's example no longer shows a `grade` beside the `inputs` list, where no
+  member can hold one; the grade is fixed by the section.
+- §5.4.2 says that `acceptance` attaches to a deliverable, as `rights` does.
+- §5.9 says when each termination takes effect: for convenience when the
+  notice has run, for cause at once and with a reason. It said "at the next
+  message", which conflicted with the notice period.
 
 **0.25.0-draft** (2026-10-19). The buyer's reference, and contracted contact by the provider.
 

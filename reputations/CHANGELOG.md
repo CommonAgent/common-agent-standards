@@ -4,6 +4,10 @@ Versions of Agent Reputations tagged in this repository, newest first. A version
 tagged as `reputations-v` followed by the version, and the text in this folder at
 that tag is the text of that version. The history of SPEC.md comes from jeffrschneider/feedback, and the history of the A2A Reputation extension from the repository of agentreputations.com.
 
+## 0.6.1-draft (2026-10-19)
+
+Editorial, with no normative change. The example claim of §4.8 names the Agent NDA example by its new agreement digest. Agent NDA 0.2.0-draft added `owner_key` to the recipient seat of its example, which changed that digest. No requirement, field or section number changes.
+
 ## 0.6.0-draft (2026-10-18)
 
 Report signing, test vectors, and the age of an event. The A2A Reputation

@@ -1500,7 +1500,7 @@
           "role": "client",
           "key": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "signed_at": "2026-08-04T16:47:36Z",
-          "sig": "jOKgGQPmpEwB8u3Pkb1SNCg3MRJdy9AZHYnSTkHEuJLf5GUpzpf2q94Hu4mg0ghjLiMwTGqIKuWSvqYVY8otAg"
+          "sig": "jOKgGQPmpEwB8u3Pkb1SNCg3MRJdy9AZHYnSTkHEuJLf5GUpzpf2q94Hu4mg0ghjLiMwTGqIKuWSvqYVY8otAg=="
         }
       ]
     },
@@ -3027,7 +3027,7 @@
           "role": "provider",
           "key": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "signed_at": "2026-08-04T14:02:11Z",
-          "sig": "Irupty8eYZ1wwvMXx7K8gC7WyO6Tg2xoxv78Hc7AxXRSFp9mPFdjP34mD5NRv4PzdNUqyNqdcTG_nRd5sJb-Dw"
+          "sig": "Irupty8eYZ1wwvMXx7K8gC7WyO6Tg2xoxv78Hc7AxXRSFp9mPFdjP34mD5NRv4PzdNUqyNqdcTG/nRd5sJb+Dw=="
         }
       ]
     },

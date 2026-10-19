@@ -4,6 +4,21 @@ Versions of Agent Mandate tagged in this repository, newest first. A version is
 tagged as `mandate-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentmandate.net.
 
+## 0.6.0-draft (2026-10-19)
+
+The holder key for the `nda` power, and an accurate claim about signed bytes.
+A mandate that holds `nda` MUST carry `holder.key`, and a registry refuses one
+that does not (§6 rule 2), because an Agent NDA signature made under it is
+checked against that key (§7.2 check 1), as Agent NDA 0.2.0-draft requires of
+a seat that names an organization. §7.2 claimed that the `mandate` an Agent
+NDA signature record cites sat inside the agreement's signed bytes. It did
+not, because Agent NDA removed the whole `signatures` array from the signed
+bytes. Agent NDA 0.2.0-draft signs each record, so the claim now holds. §7
+says where an Agent SoW approval record sits, in the `change_control` clause
+inside the signed bytes, so that its `mandate` is signed too. The minor
+version moves because a registry built against 0.5.1-draft accepts a mandate
+holding `nda` without `holder.key`, which this version refuses.
+
 ## 0.5.1-draft (2026-10-18)
 
 Editorial, with no normative change. §8 says that the bookkeeper is a role described in Agent Roles, which is a guide of working descriptions, where it said a role defined at agentroles.ai. No requirement, field or section number changes.

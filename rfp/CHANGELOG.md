@@ -4,6 +4,22 @@ Versions of Agent RFP tagged in this repository, newest first. A version is
 tagged as `rfp-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentrfp.net.
 
+## 0.10.0-draft (2026-10-19)
+
+The board's instant of receipt. Check 1 of §5.11.3 relied on the recipient's
+own `signed_at` for the offer's expiry and withdrawal, so a recipient could
+accept after the offer expired or was withdrawn, write an earlier time, and
+still be released the body. A board now records the instant it receives each
+completed agreement, checks expiry and withdrawal against that instant as
+well, and names it in the release record as `received_at`. Check 1 also
+reads the acceptance checks of Agent NDA 0.2.0-draft, under which each
+signature covers its own record and a seat's signature counts only when made
+with the key the seat allows. The example release record carries the new
+agreement digest of the Agent NDA example, whose recipient seat now carries
+`owner_key`. The minor version moves because a board built against
+0.9.1-draft does not record the instant of receipt, which this version
+requires.
+
 ## 0.9.1-draft (2026-10-18)
 
 Editorial, with no normative change. Agent Roles is a guide of working descriptions, so §5.2.1 says that an agent-shaped posting names a role described in Agent Roles, where it said a published role from the Agent Roles registry. The `registry` member of `role` keeps its name. No requirement, field, example or section number changes.

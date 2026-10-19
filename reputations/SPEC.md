@@ -1,7 +1,7 @@
 # Agent Reputations Specification
 
-**Version:** 0.6.0-draft
-**Date:** 2026-10-18
+**Version:** 0.6.1-draft
+**Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
 **Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent NDA (confidentiality), Agent Reputations (reputation)
@@ -540,7 +540,7 @@ claim body.
 ```json
 {
   "nda": { "id": "nda_dtzv6z8tans9k5s6", "version": 1,
-           "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+           "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
            "ref": "mesh:artifacts:01JB2N7Q4C" },
   "claimant": { "agent": "<public key>", "handle": "Petrel.mari@harborandline.example" },
   "respondent": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
@@ -1717,6 +1717,11 @@ signatures exactly, which Ed25519 makes possible because its signatures are
 deterministic, and refuses every report the vectors say it must refuse.
 
 ---
+
+*0.6.1-draft (2026-10-19): editorial, with no normative change. The example
+claim of §4.8 names the Agent NDA example by its new agreement digest. Agent
+NDA 0.2.0-draft added `owner_key` to the recipient seat of its example, which
+changed that digest. No requirement, field or section number changes.*
 
 *0.6.0-draft (2026-10-18): report signing, test vectors, and the age of an
 event. §8.1 defines how a report is signed, which it had left to Personal

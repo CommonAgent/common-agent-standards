@@ -1,8 +1,8 @@
 # Agent Mandate Specification
 
-**Version:** 0.5.1-draft
+**Version:** 0.6.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 A **mandate** is authority, delegated in writing: a principal states who may
 act on its behalf, for what, up to what limit, until when. An **Agent
@@ -325,14 +325,16 @@ Rules:
    signatures are the record.
 2. **Holder key.** `holder.key` is the public key the mandate's holder
    signs with. It MUST be present on a mandate whose
-   `sub_delegation.allowed` is true, and it MAY be present on any other
-   mandate. It is required only where sub-delegation is permitted because
-   that is the only case in which someone later has to check a signature
-   the holder made, and `holder.account` and `holder.person` name a party
-   without naming a key. A registry MUST refuse a mandate that sets
-   `sub_delegation.allowed` to true and carries no `holder.key`, and MUST
-   refuse a sub-mandate whose signature is not by the `holder.key` of the
-   mandate its `issuer` names. Grade: `enforced` at the registry.
+   `sub_delegation.allowed` is true, and on a mandate whose `powers` include
+   `nda`. It MAY be present on any other mandate. It is required in those
+   two cases because in each of them someone later checks a signature the
+   holder made: a sub-mandate the holder issued, or an Agent NDA signature
+   the holder made for the organization (§7.2), and `holder.account` and
+   `holder.person` name a party without naming a key. A registry MUST refuse
+   a mandate that sets `sub_delegation.allowed` to true or holds `nda` and
+   carries no `holder.key`, and MUST refuse a sub-mandate whose signature is
+   not by the `holder.key` of the mandate its `issuer` names. Grade:
+   `enforced` at the registry.
 3. **Narrowing.** A sub-mandate MUST be at most as broad as its issuer's
    mandate in every dimension: powers a subset, ceilings no higher, scope
    no wider, expiry no later, depth within `max_depth`. For
@@ -439,7 +441,10 @@ system (§3).
 
 Agent SoW documents need one addition to use this: a party MAY carry
 `"organization": "org_…"` beside its owner prose, and an approval record
-MAY carry `"mandate": "mnd_…"`. Both fields sit inside signed bytes.
+MAY carry `"mandate": "mnd_…"`. Both fields sit inside the SoW's signed
+bytes: the party in `parties`, and the approval record in the document's
+`change_control` clause, never in its `signatures` array, which the signed
+bytes leave out.
 
 ### 7.1 The check at a resource proxy
 
@@ -474,10 +479,11 @@ When a seat carries `organization`, the signature record for that seat MUST
 carry `mandate`, and that mandate MUST hold the `nda` power. A runtime
 checks the signature against the mandate in four steps:
 
-1. The signer holds the mandate. The signing account is the mandate's
-   holder, the mandate is for the organization the seat names, and where
-   the mandate carries `holder.key`, the signature verifies under that key.
-   This is check 1 of §7.
+1. The signer holds the mandate. The mandate is for the organization the
+   seat names, it carries `holder.key` (§6 rule 2), and the signature
+   record's `key` is that `holder.key`, so the signature verifies under it.
+   This is check 1 of §7, made with a key: a counterparty can run it from the
+   documents alone.
 2. The mandate was in force when the person signed: started, unexpired,
    unrevoked, and its chain verifies up to the charter's root authority,
    each hop checked against the `holder.key` of the mandate above it (§6).
@@ -509,8 +515,9 @@ act. A board that releases the sealed body of a gated Agent RFP posting
 seat names an organization, and release nothing when it fails. Where the
 board runs it, the check is `enforced` at the board.
 
-The signature record names the mandate inside the agreement's signed bytes,
-and the counterparty's copy shows it. What it proves is what an approval
+The signature record names the mandate, and the signature covers the record
+(Agent NDA 0.2.0-draft §6), so nobody can swap the mandate a signature cites
+after it is made. The counterparty's copy shows it. What it proves is what an approval
 record proves under §7: the person who signed held current, sufficient,
 traceable authority to sign for the organization, as far as the
 organization's own signed delegations are concerned. What a court would say
@@ -531,6 +538,7 @@ for its freight-audit posting under the mandate of §6, which holds `nda`:
 "signatures": [
   { "role": "discloser", "over": "offer", "key": "<holder public key>",
     "mandate": "mnd_3f8c1n6z9v4b7q2m",
+    "digest": "sha256:<offer digest>",
     "signed_at": "2026-10-20T15:00:00Z", "sig": "<base64>" }
 ]
 ```
@@ -826,3 +834,19 @@ on the recipient seat. A seat with no `organization` needs no mandate. §4,
 registry built against 0.4.2-draft does not know `nda` or
 `scope.nda_categories`, and a reader needs the version number to tell which
 text a deployment was built against.*
+
+*0.6.0-draft (2026-10-19): the holder key for the `nda` power, and an
+accurate claim about signed bytes. A mandate that holds `nda` MUST carry
+`holder.key`, and a registry refuses one that does not (§6 rule 2), because
+an Agent NDA signature made under it is checked against that key (§7.2 check
+1), which Agent NDA 0.2.0-draft requires of a seat that names an
+organization. §7.2 claimed that the `mandate` an Agent NDA signature record
+cites sat inside the agreement's signed bytes. It did not, because Agent NDA
+removed the whole `signatures` array from the signed bytes. Agent NDA
+0.2.0-draft signs each record, so the claim now holds, and §7.2 says how. §7
+says where an Agent SoW approval record sits, in the `change_control` clause
+inside the signed bytes, so that its `mandate` is signed too.*
+
+*The minor version moves because a registry built against 0.5.1-draft
+accepts a mandate holding `nda` without `holder.key`, which this version
+refuses.*

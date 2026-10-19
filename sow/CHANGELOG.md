@@ -4,6 +4,54 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.26.0-draft (2026-10-19)
+
+A seat names the key that signs for it, one
+spelling for a signature, and eight clarifications found by building an
+implementation.
+
+Every seat now carries `owner_key`, the public key of the owner that signs
+for it (§5.1), and a signature counts for a seat only when it is made with
+that key (§6, binding). Before, a seat named its agent and its owner, and a
+signature named a key, and nothing in the document tied the key that signed
+to the party in the seat. A runtime could not tell a signature by the
+client's owner from a signature by anyone else who held a key. A standing
+proposal carries the provider's `owner_key`, and the client's seat gets its
+`owner_key` at formation with the rest of the seat (§12.1). A document whose
+seats carry no `owner_key` was written against 0.25.0-draft or earlier; its
+signatures can still be checked, and are never presented as bound to the
+seats' owners. The minor version moves because a new MUST applies to every
+document. Agent NDA 0.2.0-draft applies the same rule to its seats. The
+example digest of §5.16 is the new digest of the Agent NDA example, whose
+recipient seat now carries `owner_key`, and `conformance/sow-nda.json`
+carries it too. A new fixture, `conformance/sow-signatures.json`, pins the
+binding with real signatures.
+
+`sig` is canonical base64 with padding, the spelling of Agent NDA §6, so each
+signature has exactly one valid string (§6). The two engagement signatures
+in `conformance/sow-pricing.json` are re-spelled from base64url to it; the
+bytes they encode do not change.
+
+The clarifications:
+
+- §5.7 defines `term_months`, which standing proposals and their fixtures
+  already carried without a definition, and says how a formed instance gets
+  its `ends_at`: `starts_at` plus that many calendar months. A document with
+  neither a non-null `ends_at` nor `term_months` is refused at formation.
+- §7.1 says that `amendment proposed` is a state of the proposal. The
+  engagement stays `active` under the current version, as §5.8 says.
+- §5.8 gives `review_window_days` a default of 7 days, counted from the
+  proposing signature, so that an unanswered proposal always lapses and never
+  blocks the next one.
+- §5.11 says that a processor's `processed_in` is a subset of the clause's
+  where both are present, as the 0.20.0-draft entry described.
+- §5.3's example no longer shows a `grade` beside the `inputs` list, where no
+  member can hold one; the grade is fixed by the section.
+- §5.4.2 says that `acceptance` attaches to a deliverable, as `rights` does.
+- §5.9 says when each termination takes effect: for convenience when the
+  notice has run, for cause at once and with a reason. It said "at the next
+  message", which conflicted with the notice period.
+
 ## 0.25.0-draft (2026-10-19)
 
 Section 5.17 adds an optional top-level `buyer_reference` member: the client's
