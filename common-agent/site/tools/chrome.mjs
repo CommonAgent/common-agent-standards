@@ -6,9 +6,10 @@
 // agentmessaging.ai's tools/chrome.mjs.
 //
 // commonagent.net is the home of the Common Agent Standards. Its front page
-// (site/tools/build-home.mjs at the repository root) introduces the suite, and
-// the menu lists every standard in standards.json beside the pages of the
-// Common Agent Specification, the base the other standards build on.
+// (site/tools/build-home.mjs at the repository root) opens two doors: the
+// Common Agent (agent.html), and every standard (standards.html). The menu
+// lists every standard in standards.json beside the pages of the Common Agent
+// Specification, the base the other standards build on.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -44,7 +45,7 @@ export function rail(active) {
     `<a href="${href}"${key && key === active ? ' class="on" aria-current="page"' : ""}>${label}${external ? ext : ""}</a>`;
   const others = SUITE.standards.filter((s) => s.kind !== "base")
     .map((s) => a(s.site, s.name, "", true)).join("\n          ");
-  const word = active === "home" ? "Standards" : "Specification";
+  const word = active === "home" || active === "standards" ? "Standards" : "Specification";
   return `<aside class="rail" id="rail">
       <div class="railhead">
         <a class="brand" href="/" aria-label="The Common Agent Standards, home">${MARK}<span class="wm">Common Agent <b>${word}</b></span></a>
@@ -55,6 +56,7 @@ export function rail(active) {
         <details class="sec" open>
           <summary>The Common Agent Specification${chev}</summary>
           <div class="items">
+          ${a("/agent.html", "The Common Agent", "agent")}
           ${a("/spec.html", "The specification", "spec")}
           ${a("/descriptor.html", "The Agent Descriptor", "descriptor")}
           ${a("/package.html", "The Agent Package", "package")}
@@ -67,7 +69,8 @@ export function rail(active) {
         <details class="sec suite" open>
           <summary>The Common Agent Standards${chev}</summary>
           <div class="items">
-          ${a("/", "Every standard", "home")}
+          ${a("/", "Home", "home")}
+          ${a("/standards.html", "Every standard", "standards")}
           ${others}
           ${a(SUITE_REPO, "The standards on GitHub", "", true)}
           </div>
@@ -86,6 +89,8 @@ export function rail(active) {
 export const footer = `<footer class="sitefoot">
         <div class="wrap">
           <a href="/">The Common Agent Standards</a>
+          <a href="/standards.html">Every standard</a>
+          <a href="/agent.html">The Common Agent</a>
           <a href="/spec.html">The specification</a>
           <a href="/descriptor.html">The Agent Descriptor</a>
           <a href="/package.html">The Agent Package</a>

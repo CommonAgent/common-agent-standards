@@ -8,8 +8,9 @@
 // It copies the hand-written pages (conformance.html, 404.html, site.css,
 // favicon.svg, brand/) into the output folder (default site/dist) and writes
 // beside them:
-//   index.html        the front page of the Common Agent Standards, made from
-//                     standards.json by site/tools/build-home.mjs
+//   index.html        the front page of the Common Agent Standards, with its two
+//                     doors to agent.html and standards.html; all three are
+//                     made from standards.json by site/tools/build-home.mjs
 //   spec.html         the whole specification
 //   descriptor.html   Section 6, the Agent Descriptor, as a page of its own
 //   package.html      Section 12, the Agent Package, as a page of its own
@@ -40,7 +41,7 @@ import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import { SITE, REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
-import { renderHome, copySuiteAssets } from "../../../site/tools/build-home.mjs";
+import { renderHome, renderAgent, renderStandards, copySuiteAssets } from "../../../site/tools/build-home.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(ROOT, "..");
@@ -424,9 +425,12 @@ function fill(file, name, html) {
   writeFileSync(p, s.replace(re, () => `<!-- spec:${name} -->${html}<!-- /spec:${name} -->`));
   console.log(`${file}: spec:${name} filled`);
 }
-// index.html is the front page of the Common Agent Standards, made from
-// standards.json (site/tools/build-home.mjs at the repository root).
+// index.html is the front page of the Common Agent Standards, and agent.html
+// and standards.html are its two doors, made from standards.json
+// (site/tools/build-home.mjs at the repository root).
 write("index.html", renderHome({ draft: DRAFT }));
+write("agent.html", renderAgent({ draft: DRAFT }));
+write("standards.html", renderStandards({ draft: DRAFT }));
 copySuiteAssets(OUT);
 {
   const s14 = section("s14").md.replace(/^## .+\n/, "");
