@@ -41,7 +41,7 @@ import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import { SITE, REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
-import { renderHome, renderAgent, renderStandards, copySuiteAssets } from "../../../site/tools/build-home.mjs";
+import { renderHome, renderAgent, renderStandards, renderStart, copySuiteAssets } from "../../../site/tools/build-home.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(ROOT, "..");
@@ -427,10 +427,12 @@ function fill(file, name, html) {
 }
 // index.html is the front page of the Common Agent Standards, and agent.html
 // and standards.html are its two doors, made from standards.json
-// (site/tools/build-home.mjs at the repository root).
+// (site/tools/build-home.mjs at the repository root). start.html, linked
+// under the doors, says which three standards are enough to begin.
 write("index.html", renderHome({ draft: DRAFT }));
 write("agent.html", renderAgent({ draft: DRAFT }));
 write("standards.html", renderStandards({ draft: DRAFT }));
+write("start.html", renderStart());
 copySuiteAssets(OUT);
 {
   const s14 = section("s14").md.replace(/^## .+\n/, "");

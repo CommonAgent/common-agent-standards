@@ -45,7 +45,7 @@ export function rail(active) {
     `<a href="${href}"${key && key === active ? ' class="on" aria-current="page"' : ""}>${label}${external ? ext : ""}</a>`;
   const others = SUITE.standards.filter((s) => s.kind !== "base")
     .map((s) => a(s.site, s.name, "", true)).join("\n          ");
-  const word = active === "home" || active === "standards" ? "Standards" : "Specification";
+  const word = ["home", "standards", "start"].includes(active) ? "Standards" : "Specification";
   return `<aside class="rail" id="rail">
       <div class="railhead">
         <a class="brand" href="/" aria-label="The Common Agent Standards, home">${MARK}<span class="wm">Common Agent <b>${word}</b></span></a>

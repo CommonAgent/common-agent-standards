@@ -17,6 +17,8 @@
 //   standards.html   every Common Agent Standard and guide, under the groups
 //                    standards.json lists, one card each with its version, its
 //                    status, its own site and its folder on GitHub
+//   start.html       the lightest way to begin: the three standards that are
+//                    enough for basic work, and when to add each of the others
 //
 // The cards are made from standards.json. What is written by hand is the few
 // sentences that say what the suite is, the sentence under each group's name
@@ -280,6 +282,7 @@ export function renderHome({ draft = false } = {}) {
             </span>
           </a>
         </nav>
+        <p class="startsmall">New here? <a href="/start.html">Start small.</a></p>
         <p class="version">${stampFor(draft)}</p>
       </div>
       </header>
@@ -470,6 +473,90 @@ export function renderStandards({ draft = false } = {}) {
   });
 }
 
+// The standards a situation adds, in the order a newcomer meets them. The
+// sentence is the situation; the id is the entry of standards.json to add.
+const WHEN = [
+  { id: "sow", when: "You pay for work, or one side owes the other something." },
+  { id: "nda", when: "You will share something confidential." },
+  { id: "rfp", when: "You need a provider that nobody offers yet." },
+  { id: "mandate", when: "An agent commits a company's money." },
+  { id: "reputations", when: "You want to know whether to trust an agent.", note: "You read the record, and the network keeps it." },
+  { id: "processes", when: "The same work recurs and should run the same way each time." },
+  { id: "collab", when: "Several agents work on one thing together." },
+];
+
+/** start.html: the three standards that are enough to begin, and when to add the rest. */
+export function renderStart() {
+  const by = (id) => {
+    const s = SUITE.standards.find((x) => x.id === id);
+    if (!s) throw new Error(`build-home.mjs: start.html names ${id}, which standards.json does not list`);
+    return s;
+  };
+  const base = by("common-agent"), naming = by("naming"), messaging = by("messaging");
+  const title = `Start small: ${SUITE.suite}`;
+  const description = "Three standards are enough for basic work between agents: the Common Agent Specification, Personal Agent Naming and Agent Messaging. Add each of the others when a situation calls for it.";
+  const three = [
+    { s: base, icon: "agent", colour: "c-violet", href: "/agent.html",
+      p: ["When your agent first starts, its software makes it a key of its own. The agent signs with that key, so other agents can check that a message really came from it.",
+        "The agent also publishes a signed Descriptor that says who it is, who it acts for and what it does. Anyone can read the Descriptor before they contact the agent."] },
+    { s: naming, icon: "naming", colour: "c-blue", href: naming.site,
+      p: ["Personal Agent Naming gives your agent a name on an email address you already have, such as <b>assistant.ann@example.com</b>. You sign in at a registrar with your email address and the code it sends you, and the registrar ties the name to your agent's key.",
+        "A name is optional for an agent that only hears from agents it already knows. Many agents turn away a sender that has no verified name, so get one before your agent contacts agents that do not know it yet."] },
+    { s: messaging, icon: "messaging", colour: "c-mint", href: messaging.site,
+      p: ["Agent Messaging carries messages between agents. To reach an agent that does not know yours, your agent knocks on its door, and the other agent's owner decides whether to admit it.",
+        "Once your agent is admitted, the two agents send messages and reply to each other. A message to an agent that is offline waits in its inbox until the agent returns."] },
+  ];
+  return shell({
+    file: "start.html", active: "start", title, description, ogType: "article",
+    body: `      <header class="herobg">
+      <div class="wrap hero">
+        <h1>Start small</h1>
+        <p class="lede">You do not need every standard to put an agent to work. Three of them are
+          enough for basic work, and you add each of the others only when a situation calls for it.</p>
+      </div>
+      </header>
+
+      <section class="band" id="three">
+        <div class="wrap">
+          <h2>Three standards are enough to begin</h2>
+          <ol class="three">
+            ${three.map((t) => `<li class="std ${t.colour}">
+              <div class="top"><span class="chip">${ico(ICONS[t.icon])}</span>
+                <div><h3><a href="${esc(t.href)}">${esc(t.s.name)}</a></h3></div></div>
+              ${t.p.map((x) => `<p class="sum">${x}</p>`).join("\n              ")}
+            </li>`).join("\n            ")}
+          </ol>
+        </div>
+      </section>
+
+      <section class="band tinted" id="casual">
+        <div class="wrap">
+          <h2>Everyday messages need no paperwork</h2>
+          <p>A question, a reply or a small favour between agents needs no contract, agreement or
+            process. The ordinary admission rules of Agent Messaging already cover it. Every sender's
+            identity is checked before its message arrives, limits apply to strangers, and a
+            message from someone new waits in a hold queue until the owner decides.</p>
+        </div>
+      </section>
+
+      <section class="band" id="when">
+        <div class="wrap">
+          <h2>Add a standard when the situation calls for it</h2>
+          <p>Each of these standards builds on the same three, so nothing you set up at the start
+            is wasted when you add one.</p>
+          <table class="when">
+            <thead><tr><th scope="col">When this happens</th><th scope="col">Add this</th></tr></thead>
+            <tbody>
+            ${WHEN.map((w) => { const s = by(w.id); return `<tr><td>${esc(w.when)}${w.note ? ` <span class="note">${esc(w.note)}</span>` : ""}</td><td><a href="${esc(s.site)}">${esc(s.name)}</a></td></tr>`; }).join("\n            ")}
+            </tbody>
+          </table>
+          <p>Every standard in the suite, with its version and its own site, is on
+            <a href="/standards.html">every standard</a>.</p>
+        </div>
+      </section>`,
+  });
+}
+
 /** Copy the suite's own files (its social image) into a rendered site. */
 export function copySuiteAssets(out) {
   cpSync(resolve(HERE, "brand"), resolve(out, "brand"), { recursive: true });
@@ -483,6 +570,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   writeFileSync(resolve(out, "index.html"), renderHome({ draft }));
   writeFileSync(resolve(out, "agent.html"), renderAgent({ draft }));
   writeFileSync(resolve(out, "standards.html"), renderStandards({ draft }));
+  writeFileSync(resolve(out, "start.html"), renderStart());
   copySuiteAssets(out);
-  console.log(`index.html, agent.html and standards.html written to ${out}`);
+  console.log(`index.html, agent.html, standards.html and start.html written to ${out}`);
 }
