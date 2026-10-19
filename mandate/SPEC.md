@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.6.0-draft
+**Version:** 0.6.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 

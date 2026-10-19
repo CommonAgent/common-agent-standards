@@ -4,6 +4,19 @@ Versions of Agent Mandate tagged in this repository, newest first. A version is
 tagged as `mandate-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentmandate.net.
 
+## 0.6.1-draft (2026-10-19)
+
+Editorial, with no normative change. Two more conformance fixtures join
+`mandate-ids.json` and `mandate-proxy.json` in `mandate/conformance/`:
+`mandate-documents.json` pins identifier derivation (§4), the acceptance of an
+identifier nobody holds that does not re-derive, signed bytes and real
+signatures, and the shape rules of §5.3 and §6 rules 2, 4 and 8;
+`mandate-checks.json` pins chain verification (§6 rules 1, 3 and 7), the check
+at approval (§7) and the check for an Agent NDA (§7.2). Their documents are
+signed with test keys derived from published seeds, and name each holder by a
+display name. A README describes all four files. No requirement, field or
+section number changes.
+
 ## 0.6.0-draft (2026-10-19)
 
 The holder key for the `nda` power, and an accurate claim about signed bytes.
