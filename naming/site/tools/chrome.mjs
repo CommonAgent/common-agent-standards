@@ -3,9 +3,19 @@
 // rewrites the same parts of the hand-written pages (the <aside class="rail
 // sidenav"> block and the <footer> block), so a menu change is made here once.
 // Redirect stubs carry no menu and are left alone.
+//
+// The menu lists the other standards in standards.json under "The Common
+// Agent Standards", with the family page at commonagent.net first, as on
+// agentsow.com and the other sites of the suite. Agent Work Patterns is left
+// out because it is being retired.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+
+export const FAMILY = "https://commonagent.net/";
+const LEFT_OUT = new Set(["naming", "work-patterns"]);
+const REGISTRY = resolve(dirname(fileURLToPath(import.meta.url)), "../../../standards.json");
+export const SUITE = JSON.parse(readFileSync(REGISTRY, "utf8"));
 
 // The naming specification's own repository (SPEC-NAMING.md and its
 // conformance vectors). Never link the Agent Messaging repositories for it.
@@ -15,10 +25,9 @@ export const SITE_REPO_URL = "https://github.com/CommonAgent/common-agent-standa
 
 const chev = `<svg class="sn-chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
-// The front page names the standard's family and leaves the sponsor to the
-// other pages, so it reads as a neutral introduction to agent naming.
-const FOOT = `An open standard for naming personal agents.<br>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.`;
-const HOME_FOOT = `An open standard for naming personal agents, and one of the <a href="https://commonagent.net/">Common Agent Standards</a>.`;
+// The menu's foot names the standard's family. The front page's footer leaves the
+// sponsor to the other pages, so it reads as a neutral introduction to agent naming.
+const FOOT = `An open standard for naming personal agents, and one of the <a href="${FAMILY}">Common Agent Standards</a>.`;
 
 export function rail(active) {
   const a = (href, label, key) =>
@@ -49,11 +58,12 @@ export function rail(active) {
           a("/implementers.html", "For implementers", "implementers"),
           `<a href="${SPEC_REPO_URL}">Its source on GitHub ↗</a>`,
         ])}
-        ${sec("Related", [
-          `<a href="https://agentmessaging.ai/">Agent Messaging ↗</a>`,
+        ${sec("The Common Agent Standards", [
+          `<a href="${FAMILY}">Every standard ↗</a>`,
+          ...SUITE.standards.filter((s) => !LEFT_OUT.has(s.id)).map((s) => `<a href="${s.site}">${s.name} ↗</a>`),
         ])}
       </nav>
-      <div class="sn-foot">${active === "home" ? HOME_FOOT : FOOT}</div>
+      <div class="sn-foot">${FOOT}</div>
     </aside>`;
 }
 
@@ -78,9 +88,8 @@ export const footer = `<footer>
           <a href="/implementers.html">For implementers</a>
           <a href="${SPEC_REPO_URL}">The specification's source</a>
           <a href="${SITE_REPO_URL}">This site's source</a>
-          <a href="https://agentmessaging.ai/">agentmessaging.ai</a>
-          <a href="https://agentmesh.ai/">agentmesh.ai</a>
-          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+          <a href="${FAMILY}">The Common Agent Standards</a>
+          <span>Sponsored by <a href="${SUITE.sponsor.url}">${SUITE.sponsor.name}</a></span>
         </div>
       </footer>`;
 
