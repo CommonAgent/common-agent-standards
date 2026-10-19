@@ -84,9 +84,9 @@
       "spec": "mandate/SPEC.md",
       "domain": "agentmandate.net",
       "site": "https://agentmandate.net/",
-      "version": "0.6.0-draft",
+      "version": "0.7.0-draft",
       "status": "Working Draft",
-      "tag": "mandate-v0.6.0-draft",
+      "tag": "mandate-v0.7.0-draft",
       "builder": "mandate/site/tools/build-spec.mjs",
       "summary": "A mandate is a signed delegation of authority that is bounded and can be revoked. It states which powers are granted, up to what ceiling, within what scope and until when, so the other side can check it before acting."
     },

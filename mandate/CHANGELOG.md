@@ -4,6 +4,37 @@ Versions of Agent Mandate tagged in this repository, newest first. A version is
 tagged as `mandate-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentmandate.net.
 
+## 0.7.0-draft (2026-10-20)
+
+The resources a write may reach, and a fixed domain. A mandate MAY carry
+`scope.resources`, a list of patterns over the resource names a grant made
+`via: "proxy"` uses, in the style of `scope.offerings` (§6 rule 9). A proxy
+answers a mutating act, under `write` or `amend`, only on a resource the list
+matches (§7.1, §7 check 5), and a sub-mandate narrows the list as it narrows
+the rest of its scope (§6 rule 3). Absent, the list places no limit, so
+earlier mandates keep their authority. Before, the `write` power reached
+every resource granted through a proxy to the holder's organization, and
+neither the organization nor a sub-mandate could narrow it. §5 rule 6 says
+that a charter amendment MUST NOT change `domain`: a new domain is a new
+charter. A new fixture, `conformance/mandate-scope.json`, pins the patterns,
+covering, narrowing and the registry's refusals, and
+`conformance/mandate-proxy.json` gains cases for the check at the proxy. The
+minor version moves because a checker built against 0.6.1-draft does not read
+`scope.resources`, and this version requires it to.
+
+## 0.6.1-draft (2026-10-19)
+
+Editorial, with no normative change. Two more conformance fixtures join
+`mandate-ids.json` and `mandate-proxy.json` in `mandate/conformance/`:
+`mandate-documents.json` pins identifier derivation (§4), the acceptance of an
+identifier nobody holds that does not re-derive, signed bytes and real
+signatures, and the shape rules of §5.3 and §6 rules 2, 4 and 8;
+`mandate-checks.json` pins chain verification (§6 rules 1, 3 and 7), the check
+at approval (§7) and the check for an Agent NDA (§7.2). Their documents are
+signed with test keys derived from published seeds, and name each holder by a
+display name. A README describes all four files. No requirement, field or
+section number changes.
+
 ## 0.6.0-draft (2026-10-19)
 
 The holder key for the `nda` power, and an accurate claim about signed bytes.

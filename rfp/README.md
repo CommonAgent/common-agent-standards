@@ -8,6 +8,7 @@ Agent RFP is a Common Agent Standard, kept in the [Common Agent Standards reposi
 
 - [SPEC.md](SPEC.md): the specification, version 0.10.0-draft, status Working Draft.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
+- [conformance/](conformance/): the conformance files, which software that mints, signs or checks postings checks itself against. `rfp-sealed-body.json` holds the sealed body of a gated posting and its nonce. `rfp-posting.json` holds the identifier, the signed bytes of a posting and of the acts on it, the lifecycle, the rules a response's own document must meet, and the split of a gated posting into a public document and a sealed body.
 
 ## Versions
 
