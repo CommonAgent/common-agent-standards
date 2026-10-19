@@ -1,8 +1,8 @@
 # Agent NDA Specification
 
-**Version:** 0.1.1-draft
+**Version:** 0.1.2-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 An **Agent NDA** is a signed non-disclosure agreement between parties whose
 software agents work together. It is usually the first agreement they sign.
@@ -874,9 +874,28 @@ The fixtures:
   test, the mandate rule and the states of §7.1.
 - `conformance/nda-offer.json` pins the identifier, the offer bytes and both
   digests for Harbor & Line Outfitters' open offer and Caldera Freight
-  Systems' acceptance.
+  Systems' acceptance, with both signatures.
+- `conformance/nda-lifecycle.json` pins signatures, the five checks on an
+  acceptance (§6.1), acts (§7.3), the states of §7.1 with the instants they
+  imply, whether a party is bound (§8.1), and the checks a board runs on an
+  agreement before it releases a gated body (Agent RFP §5.11.3). Every
+  signature in the fixtures is real. The owner keys are derived from test
+  seeds the fixture publishes, and Ed25519 is deterministic, so any
+  implementation reproduces each signature byte for byte.
 
 ## Changelog
+
+**0.1.2-draft** (2026-10-19). Editorial. The fixtures carry real Ed25519
+signatures where they carried placeholders, and a new fixture,
+`conformance/nda-lifecycle.json`, pins acceptance, acts, the states of §7.1,
+the bound test of §8.1 and the release checks of Agent RFP §5.11.3 with
+signed documents. The owner keys in the signature records of
+`nda-offer.json` and `nda-grading.json` change to keys derived from the
+published test seeds; the documents, the identifier and both digests do not
+change, because signatures are outside every hashed byte string. The
+multilateral and flow-down examples in `nda-grading.json` get real keys and
+minted identifiers in place of placeholders. No field, grade, or validation
+rule changes.
 
 **0.1.1-draft** (2026-10-18). Editorial. The reputation route of §5.9 and
 the Agent Reputations entry of §9 point to the claims of breach that Agent

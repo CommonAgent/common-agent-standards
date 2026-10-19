@@ -4,6 +4,18 @@ Versions of Agent NDA tagged in this repository, newest first. A version is
 tagged as `nda-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.1.2-draft (2026-10-19)
+
+Editorial. The fixtures carry real Ed25519 signatures in place of
+placeholders, and a new fixture, `conformance/nda-lifecycle.json`, pins the
+five checks on an acceptance, termination and withdrawal acts, the states of
+the lifecycle with the instants they imply, whether a party is bound, and the
+checks a board runs before it releases a gated Agent RFP body, all with
+signed documents. The owner keys are derived from test seeds the fixture
+publishes, so any implementation reproduces every signature. The documents,
+the identifier and both digests of the example do not change. No field,
+grade, or validation rule changes.
+
 ## 0.1.1-draft (2026-10-18)
 
 Editorial. The reputation route of the breach clause (§5.9) and the Agent

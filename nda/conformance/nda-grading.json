@@ -1,7 +1,7 @@
 {
-  "comment": "Agent NDA grading (agentnda.net 0.1.0-draft, 3, 5, 7.1, 11). An NDA asks the recipient to do things in private, so its promises are 'recorded', the facts around them (parties, instants, signatures, acts) are 'evidence', and NOTHING in an agreement is 'enforced': a clause graded 'enforced' is refused as the false enforcement claim (Agent SoW 3 rule 1). The one enforced step, a board releasing a gated body after a valid acceptance, is defined in Agent RFP 5.11 and does not appear in an agreement. Also pinned: the closed lists and what absence means in each (a category, activity, exclusion or need_to_know value left out is not covered and MUST NOT be inferred; absent subcontractors means none; absent survival is no survival period, never a default), and the derivation of the lifecycle state from signatures, acts and instants. Each case edits the base document: an edit maps a dotted path to its new value, and the value \"<removed>\" deletes the member. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
+  "comment": "Agent NDA grading (agentnda.net 0.1.2-draft, 3, 5, 7.1, 11). An NDA asks the recipient to do things in private, so its promises are 'recorded', the facts around them (parties, instants, signatures, acts) are 'evidence', and NOTHING in an agreement is 'enforced': a clause graded 'enforced' is refused as the false enforcement claim (Agent SoW 3 rule 1). The one enforced step, a board releasing a gated body after a valid acceptance, is defined in Agent RFP 5.11 and does not appear in an agreement. Also pinned: the closed lists and what absence means in each (a category, activity, exclusion or need_to_know value left out is not covered and MUST NOT be inferred; absent subcontractors means none; absent survival is no survival period, never a default), and the derivation of the lifecycle state from signatures, acts and instants. Each case edits the base document: an edit maps a dotted path to its new value, and the value \"<removed>\" deletes the member. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent NDA 0.1.0-draft: 3 (gradient), 5 (clauses, with 5.1 multilateral agreements and 5.5 flow-down), 6.2 (mandates), 7.1 (states), 8.1 (whether a party is bound), 11 (conformance)",
+  "spec": "Agent NDA 0.1.2-draft: 3 (gradient), 5 (clauses, with 5.1 multilateral agreements and 5.5 flow-down), 6.2 (mandates), 7.1 (states), 8.1 (whether a party is bound), 11 (conformance)",
   "grades": {
     "comment": "11: the grade each clause MUST carry. Any other grade does not validate; 'enforced' on any clause is reported as the false enforcement claim.",
     "fixed": {
@@ -216,16 +216,16 @@
         {
           "role": "discloser",
           "over": "offer",
-          "key": "UZRYTIHPC2HJSMSQD2QDS7GRKNMM2SNZ7D6PD5HZ3IRM2Z2OJYWZRYTI",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
           "signed_at": "2026-10-20T15:00:00Z",
-          "sig": "<base64>",
+          "sig": "P66+Yfl5PajEl31yP5MafQ7PFSPh/1mEIMzxgVLYVEDPTJ7ATJsY8qe1SIkLeKm8tCzyLM0jQTLbySyRQZ3rCA==",
           "mandate": "mnd_3f8c1n6z9v4b7q2m"
         },
         {
           "role": "recipient",
-          "key": "UZY4CFRW6EMRLTJXJ53RSYFDCH42KGA5MWFPC7JRPVNLRQ737ACZY4CF",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
           "signed_at": "2026-10-22T09:12:40Z",
-          "sig": "<base64>"
+          "sig": "6IqZjlkbI53EPScHpQa29SSqujoVPh+oFAIAsMpDPjwxDyMcgCyCMoTXS7IJBTmhbLA5NJnlDdkaTdMkifYjBg=="
         }
       ]
     }
@@ -590,10 +590,10 @@
     ]
   },
   "multilateral": {
-    "comment": "5.1, 6, 7.1: a multilateral agreement among the process owner and three outside parties. Every member is a discloser and a recipient to every other; each member signs the same bytes with role 'member' and its seat's agent; it is in force only when every member has signed; it has no open offer. Placeholders stand for keys, and the identifier is not minted here.",
+    "comment": "5.1, 6, 7.1: a multilateral agreement among the process owner and three outside parties. Every member is a discloser and a recipient to every other; each member signs the same bytes with role 'member' and its seat's agent; it is in force only when every member has signed; it has no open offer. The keys are derived from the test seeds of nda-lifecycle.json, the identifier is minted, and the four signatures are real.",
     "document": {
       "nda": "v1",
-      "id": "nda_<minted>",
+      "id": "nda_g1pfpfk34433ndq7",
       "version": 1,
       "language": {
         "id": "agent-nda-standard-language",
@@ -604,23 +604,23 @@
       "parties": {
         "members": [
           {
-            "agent": "<Harbor & Line agent key>",
+            "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
             "handle": "Petrel.mari@harborandline.example",
             "owner": "Harbor & Line Outfitters",
             "organization": "org_7k2m9q4w1x8e5r3t"
           },
           {
-            "agent": "<Caldera agent key>",
+            "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
             "handle": "Sable.audit@calderafreight.example",
             "owner": "Caldera Freight Systems"
           },
           {
-            "agent": "<Tidewater agent key>",
+            "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
             "handle": "Heron.desk@tidewatercustoms.example",
             "owner": "Tidewater Customs Brokers"
           },
           {
-            "agent": "<Northgate agent key>",
+            "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
             "handle": "Kestrel.rates@northgaterates.example",
             "owner": "Northgate Rate Data"
           }
@@ -648,28 +648,28 @@
       "disclosure": {
         "members": [
           {
-            "agent": "<Harbor & Line agent key>",
+            "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
             "processors": [],
             "processed_in": [
               "us"
             ]
           },
           {
-            "agent": "<Caldera agent key>",
+            "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
             "processors": [],
             "processed_in": [
               "us"
             ]
           },
           {
-            "agent": "<Tidewater agent key>",
+            "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL",
             "processors": [],
             "processed_in": [
               "us"
             ]
           },
           {
-            "agent": "<Northgate agent key>",
+            "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I",
             "processors": [],
             "processed_in": [
               "us"
@@ -689,32 +689,32 @@
       "signatures": [
         {
           "role": "member",
-          "agent": "<Harbor & Line agent key>",
-          "key": "<owner key 1>",
+          "key": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "<base64>",
+          "sig": "2xEs2qxdPWdDTOb801/1mfQCYQIdPzlnw2m3svrtOqOuCnKD5EFchF4PfyAUqkL1mLIt5jBzpNNCh8ymZxpYDw==",
+          "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
           "mandate": "mnd_3f8c1n6z9v4b7q2m"
         },
         {
           "role": "member",
-          "agent": "<Caldera agent key>",
-          "key": "<owner key 2>",
+          "key": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "<base64>"
+          "sig": "DcrirPvBw2KgAZTdku7y9LK4rViPLK5yZjUOPgGYdIiC1tuKYpjIWcwTcxka7cszRg8KKesn83iBbRheeAemBg==",
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
         },
         {
           "role": "member",
-          "agent": "<Tidewater agent key>",
-          "key": "<owner key 3>",
+          "key": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "<base64>"
+          "sig": "+MVf9HywwTFtTiQgKJZRGDjJKxWwcpc7z9Nu3wHCDT7hCYxnk8CqEgf9NhEqLrkxtFVom0+l1n++O2S+XeutAw==",
+          "agent": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
         },
         {
           "role": "member",
-          "agent": "<Northgate agent key>",
-          "key": "<owner key 4>",
+          "key": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y",
           "signed_at": "2026-11-02T10:00:00Z",
-          "sig": "<base64>"
+          "sig": "O21cBVKEY7li2bwrQjv/udPzXZigCuvL1kPuqqrc15uNubqz5pq389UgaAJcsndbyRLYwlIJPpxkLo7cnXLmCg==",
+          "agent": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
         }
       ]
     },
@@ -731,13 +731,13 @@
         "edit": {
           "parties.members": [
             {
-              "agent": "<Harbor & Line agent key>",
+              "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
               "handle": "Petrel.mari@harborandline.example",
               "owner": "Harbor & Line Outfitters",
               "organization": "org_7k2m9q4w1x8e5r3t"
             },
             {
-              "agent": "<Caldera agent key>",
+              "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
               "handle": "Sable.audit@calderafreight.example",
               "owner": "Caldera Freight Systems"
             }
@@ -749,7 +749,7 @@
       {
         "case": "shared_key",
         "edit": {
-          "parties.members.3.agent": "<Caldera agent key>"
+          "parties.members.3.agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB"
         },
         "error": "members",
         "why": "no two members share an agent key"
@@ -806,7 +806,7 @@
     },
     "document": {
       "nda": "v1",
-      "id": "nda_<minted>",
+      "id": "nda_dahyf5s1662ab2yx",
       "version": 1,
       "language": {
         "id": "agent-nda-standard-language",
@@ -821,7 +821,7 @@
           "owner": "Caldera Freight Systems"
         },
         "recipient": {
-          "agent": "<Ledgerline agent key>",
+          "agent": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS",
           "handle": "Wren.ops@ledgerline.example",
           "owner": "Ledgerline Data Services"
         },
