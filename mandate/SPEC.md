@@ -478,13 +478,12 @@ A mutating act on a resource the object names needs that power. A mutating
 act on a resource it does not name, or on any resource of a grant that
 carries no `writes`, needs `write`. The parties sign the grant inside the
 engagement, so both of them agreed which authority a write through it
-takes, and the proxy reads the answer from signed bytes rather than
-deciding it. A grant whose `writes` names a power §6 rule 4 does not list
+takes, and the proxy reads the answer from signed bytes. A grant whose `writes` names a power §6 rule 4 does not list
 does not validate. Grade: `enforced` at the proxy that runs the check, as
 above.
 
-Nothing new is defined here. The mandate, its chain, and its check are §6
-and §7's; the proxy is simply a counterparty that chose to run it at the
+Apart from which power a write needs, nothing new is defined here. The
+mandate, its chain, and its check are §6 and §7's; the proxy is simply a counterparty that chose to run it at the
 resource boundary. Where it does, the mandate is `enforced` at that
 boundary, because the act does not happen without it, and the vendor behind
 the resource never needed to learn what a mandate is.
