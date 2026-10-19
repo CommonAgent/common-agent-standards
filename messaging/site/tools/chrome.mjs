@@ -3,11 +3,21 @@
 // tools/build-spec.mjs uses it for spec.html; `node tools/chrome.mjs` rewrites
 // the same parts of the hand-written pages between their marker comments, so a
 // menu change is made here once.
+//
+// The menu lists the other standards in standards.json under "The Common
+// Agent Standards", with the family page at commonagent.net first, as on
+// agentsow.com and the other sites of the suite. Agent Work Patterns is left
+// out because it is being retired.
 import { readFileSync, writeFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 
 export const REPO_URL = "https://github.com/CommonAgent/common-agent-standards/tree/main/messaging";
+export const FAMILY = "https://commonagent.net/";
+const LEFT_OUT = new Set(["messaging", "work-patterns"]);
+
+const REGISTRY = resolve(dirname(fileURLToPath(import.meta.url)), "../../../standards.json");
+export const SUITE = JSON.parse(readFileSync(REGISTRY, "utf8"));
 
 export const headLinks = `<link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,6 +36,8 @@ const ext = `<span class="ext" aria-hidden="true">↗</span>`;
 export function rail(active) {
   const a = (href, label, key, external) =>
     `<a href="${href}"${key && key === active ?' class="on" aria-current="page"' : ""}>${label}${external ? ext : ""}</a>`;
+  const others = SUITE.standards.filter((s) => !LEFT_OUT.has(s.id))
+    .map((s) => a(s.site, s.name, "", true)).join("\n          ");
   return `<aside class="rail" id="rail">
       <div class="railhead">
         <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
@@ -56,14 +68,15 @@ export function rail(active) {
           ${a("/run-operate.html", "Upgrades and backups", "run-operate")}
           </div>
         </details>
-        <details class="sec" open>
-          <summary>Related${chev}</summary>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards${chev}</summary>
           <div class="items">
-          ${a("https://agentnaming.ai/", "Personal Agent Naming", "", true)}
+          ${a(FAMILY, "Every standard", "", true)}
+          ${others}
           </div>
         </details>
       </nav>
-      <div class="foot">The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+      <div class="foot">Agent Messaging is one of the <a href="${FAMILY}">Common Agent Standards</a>. The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>.</div>
     </aside>`;
 }
 
@@ -78,9 +91,8 @@ export const footer = `<footer class="sitefoot">
           <a href="/identity.html">Bring your own identity</a>
           <a href="/run.html">Run it</a>
           <a href="${REPO_URL}">GitHub</a>
-          <a href="https://agentnaming.ai/">agentnaming.ai</a>
-          <a href="https://agentmesh.ai/">agentmesh.ai</a>
-          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+          <a href="${FAMILY}">The Common Agent Standards</a>
+          <span>Sponsored by <a href="${SUITE.sponsor.url}">${SUITE.sponsor.name}</a></span>
         </div>
       </footer>`;
 
