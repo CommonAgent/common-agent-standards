@@ -7,6 +7,8 @@
 //   spec.html                 reputations/SPEC.md, the specification
 //   spec-a2a-reputation.html  reputations/SPEC-A2A-REPUTATION.md, the A2A Reputation extension
 //   versions.html             reputations/CHANGELOG.md, every version and the changelog
+//   extensions/a2a-reputation/v1/index.html
+//                             the page at the A2A Reputation extension's URI
 //
 // tools/render-site.sh at the repository root copies the hand-written pages
 // (index.html, why.html, evidence.html, scores.html, trust.html,
@@ -207,6 +209,39 @@ if (VERSION !== ENTRY.version) throw new Error(`SPEC.md carries ${VERSION} and s
     metas: metasOf(A2A.fields),
     canon: `${stamp(rel)} The <a href="/spec.html">specification</a> defines every term this extension borrows.`,
     toc, body: html,
+  }));
+}
+
+// ── the page at the extension's URI ─────────────────────────────────────────
+// The A2A Reputation extension is named in Agent Cards by the URI
+// https://agentreputations.com/extensions/a2a-reputation/v1. A consumer matches
+// that string and never needs to fetch it, but people paste it into a browser,
+// so the address serves a page about the extension. The page is
+// extensions/a2a-reputation/v1/index.html, and the bucket answers the URI
+// itself with a redirect to it.
+{
+  const rel = "SPEC-A2A-REPUTATION.md";
+  const A2A = header(rel);
+  const uri = A2A.rest.match(/## 2\. Extension URI\s+```\n(\S+)\n```/)?.[1];
+  if (uri !== `${SITE}/extensions/a2a-reputation/v1`) throw new Error(`${rel}: section 2 names the URI ${uri}, and this builder writes the page for ${SITE}/extensions/a2a-reputation/v1`);
+  const declaration = A2A.rest.match(/## 3\. The declaration[\s\S]*?```json\n([\s\S]*?)```/)?.[1];
+  if (!declaration) throw new Error(`${rel}: section 3 has no JSON declaration`);
+  const file = "extensions/a2a-reputation/v1/index.html";
+  mkdirSync(resolve(OUT, dirname(file)), { recursive: true });
+  const body = `<p>This address is the identifier of the A2A Reputation extension of Agent Reputations. An A2A agent puts it in its Agent Card to say which bureaus hold the evidence about it and the identifier each bureau knows it by. The card carries no score. A consumer that wants the record asks the bureau, and verifies the signed report it gets back.</p>
+<h2 id="declared">An agent names this address in its Agent Card<a class="hl" href="#declared" aria-label="Link to this section">#</a></h2>
+<p>The address is the <code>uri</code> of an entry in the card's <code>capabilities.extensions</code>. A consumer matches it as an exact string and does not need to fetch it, so a card is read the same way whether or not this page can be reached. The entry looks like this:</p>
+<pre><code class="language-json">${esc(declaration)}</code></pre>
+<p>The address ends in <span class="mono">v1</span> for the shape of this entry and the rule for verifying what it points to. A revision of the text that keeps both keeps this address, and a revision that changes either one takes a new address.</p>
+<h2 id="text">The full text of the extension defines every rule<a class="hl" href="#text" aria-label="Link to this section">#</a></h2>
+<p>The <a href="/spec-a2a-reputation.html">A2A Reputation extension</a> is at version ${esc(A2A.fields.version)}, dated ${esc(A2A.fields.date)}. It says what the entry holds, why the card carries no report, how a consumer verifies a report and checks that it is about the card's agent, and how to read one. The <a href="/spec.html">Agent Reputations specification</a> defines the reports themselves, and its <a href="/spec.html#s8-1">section 8.1</a> says how a report is signed and verified.</p>`;
+  write(file, page({
+    file, active: "spec-a2a-reputation",
+    title: "The A2A Reputation extension",
+    description: `The identifier of the A2A Reputation extension, ${uri}: what an Agent Card that names it says, and where the full text of the extension is.`,
+    h1: "The A2A Reputation extension",
+    canon: `${stamp(rel)}`,
+    body,
   }));
 }
 

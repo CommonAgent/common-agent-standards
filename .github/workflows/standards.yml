@@ -2,7 +2,9 @@
 # that has a builder.
 #
 # A pull request and a push to main check every standard: the registry against
-# the specifications, the links in each standard's folder, and, for each
+# the specifications, the links in each standard's folder, the Agent
+# Reputations test vectors against its reference script
+# (reputations/conformance/reference.mjs), and, for each
 # standard with a builder (common-agent, messaging, naming, processes, rfp, sow, nda, mandate, reputations, roles and collab), its site
 # rendered at /draft/, the contrast gate over every page, and the links in the
 # rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
@@ -87,6 +89,9 @@ jobs:
 
       - name: Links between the files of the repository
         run: node tools/check-links.mjs
+
+      - name: The Agent Reputations test vectors, reproduced by the reference script
+        run: node reputations/conformance/reference.mjs
 
       - name: The standards to check, from standards.json
         id: plan

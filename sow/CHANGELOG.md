@@ -4,6 +4,14 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.24.1-draft (2026-10-19)
+
+Editorial, with no normative change. The extension URIs
+`https://agentsow.com/extensions/a2a-terms/v1` and
+`https://agentsow.com/extensions/a2a-interview/v1` returned 404. Each now
+answers with a page that describes the extension. The URI strings and the
+extension texts are unchanged, and every 0.24.0-draft document remains valid.
+
 ## 0.24.0-draft (2026-10-18)
 
 Section 5.16 lets an engagement name the Agent NDA (https://agentnda.net) it

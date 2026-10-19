@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.24.0-draft
+**Version:** 0.24.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -2615,6 +2615,8 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.24.1-draft** (2026-10-19). Editorial, with no normative change. The A2A Terms and A2A Interview extension URIs now answer with a page that describes each extension.
 
 **0.24.0-draft** (2026-10-18). The Agent NDA an engagement runs under.
 

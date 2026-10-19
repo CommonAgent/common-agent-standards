@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.5.0-draft
+**Version:** 0.6.0-draft
 **Date:** 2026-10-18
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -988,6 +988,16 @@ MUST publish it and MUST use one value per formula version. Evidence never expir
 at a cliff; it fades. An agent that was great a year ago and absent since is not
 great now, and an agent that was bad a year ago and diligent since is not bad now.
 
+`age_days_i` is the time from the end of the interaction the event scores to the
+instant the score is computed, which for a served score is the report's
+`issued_at`, counted in days of 86,400 seconds and kept as a real number
+without rounding. The end of an interaction is the `ended_at` of its fact
+(§4.2), and of a probe, the `ended_at` the probe's reporter recorded. An
+attestation takes the age of the interaction it is about. Its signature can
+come weeks after the work, inside the attestation window, and a late judgment
+must not make old work look recent. A value judgment on an engagement with no
+task records takes the `ended_at` of the engagement's fact (§6.6).
+
 ### 7.3. The posterior
 
     a = 1 + Σ ( w_i · v_i )
@@ -1003,6 +1013,13 @@ confidence bound at roughly the 10th percentile. It is ordinary arithmetic with 
 iteration, no randomness, and no lookup tables, and therefore recomputable by anyone
 holding the events (verification levels, §8.4). This formula is
 **`fdbk-score-1`** and every report names the formula version it used.
+
+`n_eff` is the sum of the weights `w_i`, the effective number of events in the
+pool. The two 1s are the prior, and `n_eff` never counts them: where a portfolio
+prior replaces them (§7.5), `n_eff` is `a + b` less the two prior terms. The
+constant 1.2816 is exact as written. The test vectors of §14 fix every value
+this section defines for a set of ledgers, so two implementations can confirm
+that they compute the same score.
 
 **Consumers MUST rank by `lcb`, not `mean`.** The lower bound is where the evidence
 runs out; the mean is where the marketing starts. Three lucky calls can produce a
@@ -1024,6 +1041,13 @@ If it does: the prior's weight MUST NOT exceed the equivalent of 10 effective
 events, the report MUST disclose that a portfolio prior is in effect, and direct
 evidence MUST dominate as it accumulates. A prior is a head start, not an
 inheritance.
+
+Written as numbers, a portfolio prior is a pair `a0`, `b0` that takes the place
+of the two 1s in `a` and `b`, with `a0 + b0 − 2` no more than 10. It moves
+`mean`, `sd`, and `lcb`. It does not move `n_eff`, which counts direct evidence
+only (§7.3), so a new agent reaches RATED on its own record and never on its
+publisher's (§7.4). The organization report of §8.5 shows a prior's weight as
+`weight_events`, which is `a0 + b0 − 2`.
 
 The prior for a capability MUST be derived only from the anchor's other agents
 that are RATED for that same capability, because a publisher's record at code
@@ -1074,7 +1098,7 @@ arithmetic of §7.3 MUST issue a new formula version rather than reuse this one.
 
 ### 8.1. The report
 
-The answer to a resolution query, signed like a Personal Agent Naming card:
+The answer to a resolution query, signed by the bureau:
 
 ```json
 {
@@ -1136,9 +1160,144 @@ The answer to a resolution query, signed like a Personal Agent Naming card:
 }
 ```
 
-Signature, key sets, rotation, and pinning follow Personal Agent Naming §5.3 verbatim, with
-`use: "fdbk-report-signing"`. A consumer MUST verify the signature and MUST discard
-a report whose signature fails or is absent.
+The report is the `report` member. The three members beside it are the
+signature envelope, which has the shape Personal Agent Naming §5.3 gives a
+signed card, with `bureau_` in place of `registrar_`. The signed bytes, the
+keys, and the steps of verification are defined in §8.1.1 to §8.1.3. The file
+[conformance/fdbk-report-v1.json](conformance/fdbk-report-v1.json) beside this
+document holds a test key, the signed bytes, and the expected signature of a
+report and of an organization report, so an implementation can check its
+signing byte for byte (§14).
+
+#### 8.1.1. The signed bytes
+
+A report is signed under the tagged-signature convention of this family, the
+one Agent SoW §6 and Agent Mandate §4 use. The signed bytes are, in order:
+
+1. the ASCII signature tag, which is `fdbk-report-v1` for a report and
+   `fdbk-org-report-v1` for an organization report (§8.5);
+2. one line feed (the byte 0x0A);
+3. the JCS (RFC 8785) canonical JSON of the signed object, in UTF-8. The
+   signed object is the value of the `report` member for a report, and of the
+   `organization_report` member for an organization report.
+
+The signed object is covered whole. Every member it holds is inside the signed
+bytes, at every depth, including `subject`, `capability`, `bureau`,
+`formula_version`, `issued_at`, `expires_at`, and any member this version does
+not define, so a member cannot be added, removed, or changed after signing
+without breaking the signature. A bureau MUST put every statement a consumer
+relies on inside the signed object.
+
+Three members are outside the signed bytes: `bureau_key`, `bureau_kid`, and
+`bureau_sig`, which sit beside the signed object in the envelope. The signature
+cannot cover itself. The key and the key id can stay outside because a consumer
+never takes them on the envelope's word: it checks both against the bureau's
+published key set (§8.1.2), so a key id changed in transit selects a key the
+set does not hold, or a key that does not verify. A bureau MUST NOT add any
+other member to the envelope.
+
+JCS fixes one byte string for every value a report can carry. Members are
+sorted by the UTF-16 code units of their names at every depth, there is no
+whitespace between tokens, strings are escaped in the one way JCS defines, and
+numbers are written in the ECMAScript form, so a bureau that stores `0.90` or
+`412.60` signs `0.9` and `412.6`. A signed object MUST NOT hold a number that
+JCS cannot write exactly: a value that is not finite, or an integer whose
+magnitude is above 2^53. A count that large is written as a string. A signed
+object MUST NOT repeat a member name, and a consumer MUST reject a report that
+does.
+
+The tag keeps the kinds apart. The same object signed under one tag does not
+verify under the other, so a report cannot be presented as an organization
+report or the reverse (§8.5 rule 4), and a report cannot be presented as a
+Personal Agent Naming card, which a registrar signs over canonical JSON with no
+tag. The tag is the one place where a report's signature departs from Personal
+Agent Naming §5.3. The envelope, the key set, rotation, and pinning are the
+same.
+
+`bureau_sig` is the Ed25519 signature (RFC 8032, without prehashing or a
+context) over the signed bytes, in base64 with padding (RFC 4648 §4).
+`bureau_key` is the bureau's 32-byte Ed25519 public key in the same base64, and
+`bureau_kid` is that key's id (§8.1.2).
+
+#### 8.1.2. The bureau's keys
+
+A bureau publishes its report signing keys as a key set at
+`GET <bureau>/api/bureau-key`, where `<bureau>` is the HTTPS URL that the
+`bureau` member of its reports carries. The key set has the form of Personal
+Agent Naming §5.3, with `bureau` in place of `registrar`:
+
+```json
+{ "bureau": "https://bureau.example",
+  "keys": ["<current>", "<retired>"],
+  "key_set": [
+    { "kid": "<kid of current>", "key": "<current>", "status": "current", "use": "fdbk-report-signing" },
+    { "kid": "<kid of retired>", "key": "<retired>", "status": "retired", "use": "fdbk-report-signing" }
+  ] }
+```
+
+The rules are those of Personal Agent Naming §5.3:
+
+1. Every key carries a `kid`, which is the first 12 lowercase hexadecimal
+   digits of the SHA-256 of the key's base64 text, so anyone can check a `kid`
+   against the key it names. A `kid` is never reused for another key.
+2. The current signing key is first, in `keys` and in `key_set`.
+3. Rotation is additive. The bureau publishes the new key beside the old one,
+   then signs with the new one, and drops the old key only after an overlap at
+   least as long as the longest validity of a report it signed with the old
+   key. A key the set lists as `retired` still verifies a report. A key the set
+   does not list never does.
+4. Every key carries `use: "fdbk-report-signing"`, and one key signs both kinds
+   of report, which the tag of §8.1.1 tells apart. A key whose `use` is
+   anything else MUST NOT verify a report.
+5. A bureau MAY also show its keys on a page for people. The key set at
+   `/api/bureau-key` is the one a consumer reads.
+
+A consumer finds the key set from the `bureau` URL it already holds: the
+bureau it chose to query, the `bureau` of an entry in an A2A card's Reputation
+extension, or the bureau that served an organization report it is following.
+It never takes the key set from the report it is about to verify, because a
+forged report would name a forged key set.
+
+A consumer MUST pin each bureau's key set on first sight, per bureau, as
+Personal Agent Naming §5.3 pins registrar keys, because one global pin would
+refuse every correct answer from a second bureau. When a report names a key
+outside the pinned set, the consumer MUST NOT accept it silently. It refuses
+that report, keeps the pin it holds, fetches the key set again from the bureau,
+and extends the pin only when the fresh set lists the new key beside a key it
+already pinned, which is what an additive rotation looks like. A fresh set that
+shares no key with the pinned one replaces the bureau's keys outright, and the
+consumer accepts it only after its operator confirms the change by some means
+other than the bureau's own answer.
+
+#### 8.1.3. Verifying a report
+
+A consumer MUST verify every report before it relies on any member, and MUST
+discard the report at the first of these steps that fails:
+
+1. **The envelope.** The envelope holds the signed object, `bureau_key`,
+   `bureau_kid`, and `bureau_sig`, and no member name repeats in it or in the
+   signed object. An absent signature fails here.
+2. **The bureau.** The signed object's `bureau` is the URL of the bureau the
+   consumer asked.
+3. **The key.** The consumer's pinned key set for that bureau holds an entry
+   whose `kid` is `bureau_kid`, whose `key` is `bureau_key`, whose `use` is
+   `fdbk-report-signing`, and whose status is `current` or `retired`.
+4. **The signature.** The signature verifies under that key over the tag, one
+   line feed, and the JCS form of the signed object as the consumer parsed it.
+   The consumer canonicalizes the object it received, with every member it
+   holds. It MUST NOT verify over the bytes as they arrived, which need not be
+   canonical, and MUST NOT verify over an object rebuilt from the members it
+   understands, which would drop the ones it does not.
+5. **The time.** `expires_at` has not passed and `issued_at` is not in the
+   future. A grace for clock skew is permitted, RECOMMENDED no more than 60
+   seconds, as Personal Agent Naming §5.3 permits for cards.
+6. **The answer.** The report's `subject` and `capability` are the ones the
+   consumer asked about, and an organization report's `anchor` is the anchor
+   it asked about.
+
+A report that passes all six steps is verified at L1 (§8.4). Verification
+establishes that the bureau signed these bytes for this window. What the bytes
+are worth is the question of the trust model (§11).
 
 ### 8.2. Mandatory context
 
@@ -1307,9 +1466,9 @@ Rules:
    organization are self-dealing (§6.4), whatever their basis, and the only way
    one member's record reaches another is the disclosed, capped portfolio prior
    of §7.5.
-4. **It is signed as a report is.** The signature, keys, and verification follow
-   §8.1, under the signature tag `fdbk-org-report-v1`, so neither kind of report
-   can be presented as the other. The verification levels of §8.4 apply to each
+4. **It is signed as a report is.** The signed bytes, keys, and verification
+   are those of §8.1.1 to §8.1.3, under the signature tag `fdbk-org-report-v1`,
+   so neither kind of report can be presented as the other. The verification levels of §8.4 apply to each
    member's figures through that member's own report.
 
 ## 9. Promises
@@ -1513,15 +1672,73 @@ Agent Reputations replaces.
 - **Difficulty normalization and joint evaluator-subject estimation.** Future
   formula versions, taken when the data volume justifies them.
 
-## 14. Reference implementation
+## 14. Reference implementation and test vectors
 
-None yet. The intended first implementation is a bureau alongside a reference
-mesh stack, with the mesh runtime as first configured reporter and Personal Agent Naming as the
-identity resolver. Test vectors for `fdbk-score-1` (a set of event pools with
-expected `a`, `b`, `mean`, `sd`, `lcb`, `n_eff` values) MUST accompany the first
-implementation and will be added to this document as a normative appendix.
+The intended first implementation of a bureau sits alongside a reference mesh
+stack, with the mesh runtime as its first configured reporter and Personal Agent
+Naming as its identity resolver.
+
+The arithmetic and the signing every bureau uses are fixed by test vectors and a
+reference script in the [conformance](conformance/) folder beside this
+document. The vectors are normative. The script is one implementation that
+reproduces them, written for reading beside this document, with nothing
+outside Node.js itself.
+
+- [conformance/fdbk-score-1.json](conformance/fdbk-score-1.json) holds the
+  ledgers of thirteen (subject, capability) pairs, with every event's
+  `ended_at` given against one stated evaluation instant, its outcome code, and
+  any exclusion, and for each one the expected `a`, `b`, `mean`, `sd`, `lcb`,
+  `n_eff`, the state (RATED or UNPROVEN), and the events that entered the pool
+  with their values and weights. They cover an empty record, a thin record and
+  the threshold of §7.4 from both sides, decay over several half-lives,
+  `OK_CORRECTED`, `FAILED` beside `FAILED_SILENT`, the codes that never enter a
+  pool, an attestation on an interaction with no work, a value judgment at the
+  weight of §7.6, a portfolio prior at the most §7.5 allows, an upheld breach
+  of an Agent NDA that enters no pool, and attestations that override,
+  amend, or are excluded, beside probes.
+- [conformance/fdbk-report-v1.json](conformance/fdbk-report-v1.json) holds a
+  test key whose private part is published so that anyone can sign with it,
+  the bureau key set that names it, two JCS cases, a report and an
+  organization report with their signed bytes and the expected signatures,
+  and eight changed reports that verification must refuse, each with the step
+  of §8.1.3 that refuses it. The test key is a test key only. A report signed
+  with it proves nothing, and a bureau MUST NOT sign with it and a consumer
+  MUST NOT pin it.
+- [conformance/reference.mjs](conformance/reference.mjs) computes the pool of
+  §7.1 and the score of §7.3 from a ledger, signs and verifies under §8.1, and
+  checks both files. The repository runs it on every change.
+
+An implementation of `fdbk-score-1` conforms to the vectors when every number
+it computes is within the stated tolerance of the expected one, which allows
+for the last digits that `2^x` can differ in between platforms, and its state
+and the codes in its pool are equal to the expected ones. An implementation of
+report signing conforms when it produces the expected signed bytes and
+signatures exactly, which Ed25519 makes possible because its signatures are
+deterministic, and refuses every report the vectors say it must refuse.
 
 ---
+
+*0.6.0-draft (2026-10-18): report signing, test vectors, and the age of an
+event. §8.1 defines how a report is signed, which it had left to Personal
+Agent Naming §5.3 while the A2A Reputation extension named a tag that
+specification does not use. The signed bytes are the tag `fdbk-report-v1` (or
+`fdbk-org-report-v1` for an organization report), one line feed, and the JCS
+(RFC 8785) canonical JSON of the whole signed object (§8.1.1). The envelope's
+`bureau_key`, `bureau_kid`, and `bureau_sig` are outside the signed bytes, and
+nothing else may sit beside them. Keys and signatures are Ed25519 in base64
+with padding, a key id is the first 12 hexadecimal digits of the SHA-256 of the
+key's base64 text, and the key set is published at `/api/bureau-key` and
+pinned per bureau, with the rotation rule of Personal Agent Naming (§8.1.2).
+A consumer verifies in six steps (§8.1.3). §7.2 states that an event's age runs
+from the end of the interaction it scores to the instant the score is computed,
+in days of 86,400 seconds, and §7.3 and §7.5 state that `n_eff` counts direct
+evidence only and never a portfolio prior. §14 points to the test vectors for
+`fdbk-score-1` and for report signing, and the reference script that
+reproduces them, in the conformance folder. The formula version stays
+`fdbk-score-1`, because the outcome values and the arithmetic of §7.3 are
+unchanged. A bureau that signed reports as Personal Agent Naming signs cards,
+with no tag, signs differently under this version, and a bureau that counted a
+portfolio prior in `n_eff` serves a different state for a new agent.*
 
 *0.5.0-draft (2026-10-18): claims of breach of an Agent NDA. Added claim of
 breach, claimant, respondent, and upheld breach (§1), and the ledger actions

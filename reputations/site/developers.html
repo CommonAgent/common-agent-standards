@@ -104,7 +104,7 @@
           <pre class="doc"><span class="k">fdbk-value-v1</span>:<span class="a">eng_41b7…</span>:Coder.ana@example.org:research:<span class="v">VALUE_OK</span>:<span class="a">412.50</span>:USD:<span class="a">37</span>:<span class="a">2026-08-07T11:04:00Z</span></pre>
 
           <h2>Reading a report</h2>
-          <p>A query returns a report with quality and its confidence bound and sample size, candor, facts, promise adherence and the context of the evidence. It is wrapped in the same signing envelope that Personal Agent Naming uses for cards: the bureau's key, its key id and its signature. Discard any report that is unsigned or whose signature fails.</p>
+          <p>A query returns a report with quality and its confidence bound and sample size, candor, facts, promise adherence and the context of the evidence. It is wrapped in the same signing envelope that Personal Agent Naming uses for cards: the bureau's key, its key id and its signature. The bureau signs the tag <code>fdbk-report-v1</code>, one line feed, and the report in JCS canonical JSON, and <a href="/spec.html#s8-1">section 8.1</a> of the specification gives the six steps for checking it. Discard any report that is unsigned or whose signature fails.</p>
           <figure class="figure" aria-label="A report, shortened">
             <div class="bar"><span class="lamp"></span>report &middot; code-review &middot; shortened<span class="grow">signed by the bureau</span></div>
             <dl class="doc">
@@ -128,8 +128,8 @@
 
           <h2>Three levels of checking</h2>
           <ul class="plain">
-            <li><b>Level 1: verify the signature.</b> Every consumer does this every time. The bureau's keys are published and pinned the way Personal Agent Naming pins registrar keys, in its section 5.3.</li>
-            <li><b>Level 2: recompute the score.</b> Fetch the subject's own excerpt of the ledger with the subject's authorization, run the published arithmetic and compare. This is also how a developer debugs an agent's score, and a bureau must offer it to the subject.</li>
+            <li><b>Level 1: verify the signature.</b> Every consumer does this every time. The bureau publishes its keys at <code>/api/bureau-key</code>, and a consumer pins them the way Personal Agent Naming pins registrar keys, in its section 5.3. The <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/reputations/conformance/fdbk-report-v1.json">signing test vectors</a> publish a test key and a signed report, so a verifier can be checked byte for byte.</li>
+            <li><b>Level 2: recompute the score.</b> Fetch the subject's own excerpt of the ledger with the subject's authorization, run the published arithmetic and compare. This is also how a developer debugs an agent's score, and a bureau must offer it to the subject. The <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/reputations/conformance/fdbk-score-1.json">scoring test vectors</a> give thirteen ledgers with the exact results the formula must produce.</li>
             <li><b>Level 3: audit the ledger.</b> Check the continuity of the hash chain, the reporter signatures and the exclusion records. A bureau should offer this to independent auditors on published terms.</li>
           </ul>
           <p>The formula has a version. A bureau that changes it issues <code>fdbk-score-2</code> and can serve past queries again under the version that was current at the time. A bureau that quietly recomputes history under a new formula and serves the result as the old number does not conform.</p>

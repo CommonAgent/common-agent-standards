@@ -4,6 +4,60 @@ Versions of Agent Reputations tagged in this repository, newest first. A version
 tagged as `reputations-v` followed by the version, and the text in this folder at
 that tag is the text of that version. The history of SPEC.md comes from jeffrschneider/feedback, and the history of the A2A Reputation extension from the repository of agentreputations.com.
 
+## 0.6.0-draft (2026-10-18)
+
+Report signing, test vectors, and the age of an event. The A2A Reputation
+extension moves to 0.1.3-draft, which points to §8.1 for the signature in
+place of describing it. Its extension URI, and those of the A2A Terms and A2A
+Interview extensions of Agent SoW, resolve to a page about the extension
+on each site, written by the site's builder.
+
+- §8.1 defines how a report is signed. Before this version it said that
+  signing followed Personal Agent Naming §5.3 verbatim, which signs canonical
+  JSON with no tag, while the A2A Reputation extension said the bureau signs
+  the tag `fdbk-report-v1`. The two could not both be followed.
+- The signed bytes are the tag (`fdbk-report-v1` for a report,
+  `fdbk-org-report-v1` for an organization report), one line feed, and the JCS
+  (RFC 8785) canonical JSON of the whole signed object in UTF-8, the
+  tagged-signature convention of Agent SoW §6 and Agent Mandate §4 (§8.1.1).
+  Every member of the signed object is covered, including members a reader
+  does not know. `bureau_key`, `bureau_kid`, and `bureau_sig` sit outside the
+  signed bytes, and the envelope holds nothing else.
+- The signature is Ed25519 (RFC 8032) in base64 with padding, and the key is
+  the 32-byte public key in the same base64. A key id is the first 12
+  hexadecimal digits of the SHA-256 of the key's base64 text, as Personal Agent
+  Naming's reference registrar derives it.
+- A bureau publishes its key set at `GET <bureau>/api/bureau-key`, in the form
+  of Personal Agent Naming §5.3 with `use: "fdbk-report-signing"`, rotates
+  additively, and keeps a retired key listed for at least the validity of the
+  reports it signed (§8.1.2). A consumer finds the key set from the bureau URL
+  it already holds, never from the report, pins it per bureau, and extends the
+  pin only on an additive rotation.
+- A consumer verifies a report in six steps: the envelope, the bureau, the
+  key, the signature over the canonical form of the object it parsed, the
+  time window with at most 60 seconds of grace, and the answer (§8.1.3).
+- §7.2 states what an event's age is measured from: the end of the interaction
+  it scores, to the instant the score is computed, in days of 86,400 seconds
+  without rounding. An attestation takes the age of its interaction.
+- §7.3 and §7.5 state that `n_eff` is the sum of the weights and never counts
+  a portfolio prior, so a prior moves the mean and the bound and never moves a
+  new agent to RATED. This is the reading the organization report of §8.5
+  already showed, with a member at an `n_eff` of 6.1 under a prior of 10 events.
+- §14 points to the conformance folder: `fdbk-score-1.json`, thirteen
+  ledgers with their expected `a`, `b`, `mean`, `sd`, `lcb`, `n_eff`, state, and
+  pool; `fdbk-report-v1.json`, a published test key, two JCS cases, a signed
+  report and a signed organization report with their exact bytes and
+  signatures, and eight reports that verification must refuse; and
+  `reference.mjs`, a script with nothing outside Node.js that reproduces both.
+  The repository's workflow runs it on every change.
+- The formula version stays `fdbk-score-1`, because the outcome values and the
+  arithmetic of §7.3 are unchanged.
+
+The version moves to 0.6.0-draft, a minor version, because a conforming
+bureau's obligations change. A bureau that signed reports with no tag, served
+its key at another address, or counted a portfolio prior in `n_eff` does not
+conform to this version without a change.
+
 ## 0.5.0-draft (2026-10-18)
 
 Claims of breach of an Agent NDA. The A2A Reputation extension is unchanged at
