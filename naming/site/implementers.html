@@ -90,16 +90,16 @@
           <p>Resolution looks up the whole handle as one string and needs no account. The
             response is the agent's card, signed by the registrar (§5.1, §5.3). A handle is also
             a valid <span class="mono">acct:</span> URI, so WebFinger finds the same card
-            (§5.2). These examples use the registrar AgentMesh runs, and any conforming
-            registrar serves the same paths.</p>
+            (§5.2). These examples use a placeholder address, registrar.example.com, and any
+            conforming registrar serves the same paths.</p>
 <pre class="code"><span class="c"># the card</span>
-curl "https://naming.agentmesh.ai/api/resolve?handle=PublicAgent.ann@gmail.com"
+curl "https://registrar.example.com/api/resolve?handle=PublicAgent.ann@gmail.com"
 
 <span class="c"># the same handle through WebFinger (RFC 7033)</span>
-curl "https://naming.agentmesh.ai/.well-known/webfinger?resource=acct:PublicAgent.ann@gmail.com"
+curl "https://registrar.example.com/.well-known/webfinger?resource=acct:PublicAgent.ann@gmail.com"
 
 <span class="c"># the registrar's signing keys, to check the card's signature</span>
-curl "https://naming.agentmesh.ai/api/registrar-key"</pre>
+curl "https://registrar.example.com/api/registrar-key"</pre>
           <p>A resolver checks the registrar's signature on every card, refuses an unsigned
             one, and remembers the agent key each handle resolved to, so it can warn when the key
             changes (§5.3). Before asking a registrar, it asks the domain in the address for its
@@ -152,8 +152,7 @@ curl "https://naming.agentmesh.ai/api/registrar-key"</pre>
             service on Postgres, with a container image at
             <span class="mono">ghcr.io/agentnaming/pan-registrar</span> and a Docker Compose setup in
             its repository. Its CI runs its own tests and the registrar conformance tests on two
-            registrars side by side, and AgentMesh runs the same release at
-            <span class="mono">naming.agentmesh.ai</span>.</p>
+            registrars side by side.</p>
         </div>
       </section>
 

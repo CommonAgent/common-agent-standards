@@ -1,5 +1,5 @@
 /* The family palette, the left menu and the light/dark switch, shared by the
-   AgentMesh standards sites. Every page loads this after its own styles, so
+   Common Agent Standards sites. Every page loads this after its own styles, so
    the tokens here replace the page's. Light is the default; dark only when
    the reader presses the switch (theme.js). Ratios are WCAG 2 contrast,
    measured: body text 7:1 or more, every other piece of text 4.5:1 or more at

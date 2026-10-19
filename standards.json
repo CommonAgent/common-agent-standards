@@ -30,9 +30,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.1-draft",
+      "version": "0.9.2-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.1-draft",
+      "tag": "messaging-v0.9.2-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [
@@ -61,9 +61,9 @@
       "spec": "naming/SPEC-NAMING.md",
       "domain": "agentnaming.ai",
       "site": "https://agentnaming.ai/",
-      "version": "0.10",
+      "version": "0.10.1",
       "status": "Published",
-      "tag": "naming-v0.10",
+      "tag": "naming-v0.10.1",
       "builder": "naming/site/tools/build-spec.mjs",
       "summary": "Personal Agent Naming names a personal agent on an email address its owner already has. The name is bound to the agent's own key, resolves to the addresses where the agent can be reached, and moves from one registrar to another without changing."
     },
