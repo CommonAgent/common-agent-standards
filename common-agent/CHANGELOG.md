@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
 
+## 0.28.2-draft (2026-10-19)
+
+Contracted contact at the door. Section 7.1 gains a paragraph on the admission an executed Agent SoW engagement gives the provider's agent at the client's agents through its `provider_contact` member (Agent SoW 0.25.0-draft, Section 5.18). The client's runtime applies it as a roster entry in the shape of a connection's: stance `allow`, grants from the set under Connections (`messages`, `scheduling`, `share`, never `errands`), the member's rate limits, and an end equal to the engagement's. It is enforced as a connection's entry is, an explicit `block` and the stop control win over it, and it MUST be removed when the engagement ends or is amended to drop it. The paragraph on connections and businesses now points to it. No other requirement, member, attribute or section number changes.
+
 ## 0.28.1-draft (2026-10-18)
 
 Editorial, with no normative change. Agent Roles is a guide of working descriptions, so the text calls it Agent Roles where it called it the roles registry, and a role is described there where it was published as a contract: the opening, Section 4.4, the `role` member of Sections 6.4 and 6.11, Sections 9.3 and 9.4, Section 10, the installer of Section 12, and Appendix A. No requirement, member, attribute or section number changes.

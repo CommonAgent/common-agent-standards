@@ -1,8 +1,8 @@
 # Agent SoW Specification
 
-**Version:** 0.24.1-draft
+**Version:** 0.25.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 A **statement of work** (SoW) is the legal agreement businesses sign when
 they contract a service firm: it lists the work, what each side provides, the
@@ -244,6 +244,8 @@ verify is.
   "disputes": { ... },       // §5.10
   "confidentiality": { ... },// §5.11
   "nda": { ... },            // §5.16, optional
+  "buyer_reference": "...",  // §5.17, optional
+  "provider_contact": { ... }, // §5.18, optional
   "signatures": [ ... ]      // §6
 }
 ```
@@ -1987,6 +1989,153 @@ nondisclosure agreement between the parties. It does not say that they have
 none, and it does not say that the engagement's content is protected only by
 §5.11. A reader MUST NOT infer either.
 
+### 5.17 The buyer's reference
+
+Many clients account for each commitment against a purchase order or another
+reference of their own, and their accounting systems match every charge to
+that reference before they pay it. An engagement already does the work of a
+purchase order: the client's authority to commit comes from its mandate,
+formation is the commitment to the provider, and a time and materials
+engagement reserves the funds (§5.5.4). What the client's books still need is
+the client's own reference, carried on every record the engagement produces.
+The optional top-level `buyer_reference` member carries it:
+
+```json
+"buyer_reference": "PO-2026-004417"
+```
+
+**Form.** `buyer_reference` is a string of 1 to 128 Unicode code points and
+contains no control character (general category Cc). A runtime MUST refuse a
+document whose `buyer_reference` is not a string, is empty, is longer than 128
+code points, or contains a control character, and the refusal MUST be typed.
+
+**It belongs to the client.** The client supplies the value. A client sets it
+when it countersigns a standing proposal (§12.1), or writes it into a
+negotiated document before signing; in either case both signatures cover it
+(§6), so neither party can change it alone afterwards. A standing proposal
+MUST NOT carry `buyer_reference`, because no client has yet given one, and a
+listing derived from a proposal (§12.2) MUST NOT show it. The value changes
+only by amendment (§5.8). A provider MUST NOT propose an amendment that adds,
+changes or removes `buyer_reference`, and a provider's runtime SHOULD NOT deny
+an amendment whose only change is to it.
+
+**The runtime does not interpret it.** `buyer_reference` states nothing about
+price, scope, authority or funds. A runtime MUST NOT refuse formation,
+admission or settlement because of its value beyond the form check above,
+MUST NOT rate, route or deduplicate by it, and MUST NOT treat two engagements
+that carry the same value as related. A client MAY use one reference for
+several engagements.
+
+**It travels unchanged.** Every settlement record issued under the engagement
+MUST carry the engagement's `buyer_reference`, byte for byte, as a top-level
+`buyer_reference` member, and so MUST every task receipt issued for work
+admitted under it, including the Agent Messaging task receipt (Agent
+Messaging §19.2). The value is the one in the version of the engagement the
+work was admitted under, as §5.8 provides for price, so work admitted before
+an amendment that changed the reference keeps the reference it was admitted
+under. An engagement without `buyer_reference` produces records without it.
+
+A client node that receives a settlement record or receipt in which the
+reference is missing or different SHOULD record the discrepancy and MAY ask
+the provider for a corrected record. A missing or altered reference does not
+by itself make the settlement disputed under §5.5.8, because it does not
+change what was owed.
+
+The member carries no `grade`. It promises nothing about the work: it is a
+label the client gives the engagement, and what is checkable about it, its
+form and its presence on records, is stated above.
+
+### 5.18 Contracted contact by the provider
+
+An engagement admits the client at the provider: its volume limits replace
+the provider's limits for strangers (§5.6), and its grants and limits apply
+for its term (§5.7). Nothing in that admits the provider's agent at the
+client's agents. Yet much of what a provider owes reaches the client without
+being asked for that day: interim deliverables on a schedule (§5.4), reports
+while the work runs (§5.12), and notice that an input is missing (§14). Sent
+to a client's agent that has never admitted the provider, each of those is
+held at the door as a stranger's message would be. An `allow` entry that the
+client adds to its own roster by hand is broader than the engagement and
+outlives it, the standing door §5.3.1 warns about.
+
+The optional top-level `provider_contact` member admits the provider's agent
+at named agents of the client's, for the engagement's term and no longer:
+
+```json
+"provider_contact": {
+  "agents": ["ledger.harborandline@example.com"],
+  "grants": ["messages", "share"],
+  "per_hour": 10,
+  "per_day": 40,
+  "grade": "enforced"
+}
+```
+
+**What it names.**
+
+- `agents`: one or more of the client's agents, each by handle or by agent
+  key. Each MUST be an agent the client's owner controls, and the client's
+  runtime MUST refuse to sign a document that names one its owner does not
+  control.
+- `grants`: grant names from the closed set of the Common Agent
+  Specification, Section 7.1: `messages`, `scheduling` and `share`. `errands`
+  MUST NOT appear. An order from the provider would ask the client to spend
+  money outside the engagement's price, and work the client pays for is
+  priced in this document (§5.5) or in an amendment (§5.8). A runtime MUST
+  refuse a document whose `grants` is empty, names `errands`, or names
+  anything outside the set.
+- `per_hour` and `per_day`: how many messages the provider's agent may send
+  to each named agent in each window. At least one MUST be present, and each
+  is a positive integer. Excess MUST be refused with a retry time, and MUST
+  NOT be held.
+- `grade`: `enforced`, the only value, because the client's door enforces it.
+
+It admits the provider's agent named in the parties (§5.1) and no other. A
+subcontractor (§5.15) is not admitted by it, and its work reaches the client
+through the provider. It is one-way: it admits the provider's agent at the
+named agents and gives the client nothing at the provider, which §5.6 already
+covers.
+
+**Its term is the engagement's.** The admission applies from `starts_at` and
+ends when the engagement lapses at `ends_at` or ends by termination (§5.9) or
+by reaching its cap (§5.5.5), by the same rules as the engagement's other
+grants (§5.7). An agreed amendment (§5.8) that removes the member, or narrows
+it, takes effect when the amendment is agreed. When the admission ends, the
+provider's agent falls back at each named agent's door to the tier it would
+have had without the engagement.
+
+**How it is enforced.** The client's runtime applies the member as a roster
+entry for the provider's agent at each named agent, in the shape of a
+connection's entry (Common Agent Specification, Section 7.1): stance `allow`,
+the grants, the rate limits, and an end equal to the engagement's. The entry
+exists because of the engagement. The runtime adds it when the engagement
+becomes active, MUST remove it when the admission ends, and MUST NOT let it
+outlive the engagement. A message's needs are read as Section 7.1 reads them,
+from what the message carries and never from what its words say. A message
+the grants do not cover MUST NOT be delivered, and the refusal MUST name the
+grant that was missing. An explicit `block` on the client's roster for the
+provider's agent still wins, and an implementation's stop control overrides
+the entry, as it overrides every connection. The provider's runtime SHOULD NOT
+send what the grants do not cover.
+
+**Interim deliverables.** An engagement with interim deliverables (§5.4)
+SHOULD carry `provider_contact` with `share` at the agent that receives them,
+or the provider SHOULD deliver them on a feed (Agent Messaging, Section 6.6a)
+that the client's agent subscribes to. An interim deliverable that the
+provider sent before its due instant, and that the client's door held or
+refused because the engagement admitted the provider's agent for nothing that
+covered it, is not a missed due instant. Both runtimes MUST record it as held
+at the client's door, and it MUST NOT count as a failed obligation for §5.9
+and §5.10. The provider's signed envelope and its time are the record that it
+was sent.
+
+Grade: `enforced` at the client's door, by the roster entry. That the
+provider sent a deliverable which the door held is `evidence`.
+
+**Absence admits nothing.** A document without `provider_contact` admits the
+provider's agent at none of the client's agents. It reaches them under their
+own rosters, as any sender does.
+
 ## 6. Signatures
 
 Owners sign, not agents: an engagement binds principals to obligations that
@@ -2249,7 +2398,8 @@ capability the agent does not carry is a validation error, not an offer.
 
 **Formation.** A client's countersign of a standing proposal is a request to
 form, not formation itself. It produces the completed instance: client seat
-filled, `starts_at` set, the client's signature over those bytes. The
+filled, `starts_at` set, `buyer_reference` set where the client gives one
+(§5.17), the client's signature over those bytes. The
 provider's runtime then completes formation by adding the provider instance
 signature (§6), and only the fully signed instance is `agreed`. Where the
 offer's approval authority for formation is `person` or `agent_then_person`
@@ -2615,6 +2765,37 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.25.0-draft** (2026-10-19). The buyer's reference, and contracted contact by the provider.
+
+New §5.17 adds an optional top-level `buyer_reference` member: the client's
+own purchase order number or other internal reference, a string of 1 to 128
+Unicode code points with no control character. The client supplies it at
+formation, both signatures cover it, and it changes only by amendment, which
+the provider does not propose. A standing proposal does not carry it and a
+listing does not show it. The runtime does not interpret it, and copies it
+unchanged onto every settlement record and task receipt issued under the
+engagement, including the Agent Messaging task receipt, from the version of
+the engagement the work was admitted under. A missing or altered reference on
+a record is a discrepancy for the client to record; it does not by itself make
+the settlement disputed. §4.2 lists the member and §12.1 sets it at formation. A new
+fixture, `conformance/sow-buyer-reference.json`, pins the form, the template
+rule and the carriage rule.
+
+New §5.18 adds an optional top-level `provider_contact` member, which admits
+the provider's agent at named agents of the client's for the engagement's
+term. It names the client's agents, grants from the Common Agent
+Specification's closed set (`messages`, `scheduling`, `share`, never
+`errands`) and a per-hour or per-day limit. The client's runtime applies it as
+a roster entry in the shape of a connection's, removes it when the engagement
+lapses, is terminated, reaches its cap or is amended to drop it, and refuses a
+message the grants do not cover with the missing grant named. An explicit
+block and the stop control win over it. An interim deliverable that the client's
+door held for lack of it is not a missed due instant. Common Agent
+Specification 0.28.2-draft, Section 7.1, describes the entry from the door's
+side. A new fixture, `conformance/sow-provider-contact.json`, pins the form,
+the term and the door's decisions. No section is renumbered, and every
+0.24.1-draft document remains valid.
 
 **0.24.1-draft** (2026-10-19). Editorial, with no normative change. The A2A Terms and A2A Interview extension URIs now answer with a page that describes each extension.
 

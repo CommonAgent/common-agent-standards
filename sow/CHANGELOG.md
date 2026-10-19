@@ -4,6 +4,41 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.25.0-draft (2026-10-19)
+
+Section 5.17 adds an optional top-level `buyer_reference` member: the client's
+own purchase order number or other internal reference, so that a client's
+accounting system can match each charge under an engagement to it. It is a
+string of 1 to 128 Unicode code points with no control character. The client
+supplies it at formation, both signatures cover it, and it changes only by
+amendment, which the provider does not propose. A standing proposal does not
+carry it and a listing does not show it. The runtime does not interpret it,
+and copies it unchanged onto every settlement record and task receipt issued
+under the engagement, including the Agent Messaging task receipt (Agent
+Messaging 0.9.4-draft, §19.2), from the version of the engagement the work was
+admitted under. A missing or altered reference on a record is a discrepancy
+for the client to record; it does not by itself make the settlement disputed.
+Sections 4.2 and 12.1 name the member, and a new fixture,
+`conformance/sow-buyer-reference.json`, pins the form, the template rule and
+the carriage rule.
+
+Section 5.18 adds an optional top-level `provider_contact` member, which
+admits the provider's agent at named agents of the client's for the
+engagement's term, so that interim deliverables, reports and notices reach the
+client without the client adding a standing `allow` to its roster by hand. It
+names the client's agents, grants from the closed set of the Common Agent
+Specification, Section 7.1 (`messages`, `scheduling`, `share`, never
+`errands`), and a per-hour or per-day limit. The client's runtime applies it
+as a roster entry in the shape of a connection's, removes it when the
+engagement lapses, is terminated, reaches its cap or is amended to drop it,
+and refuses a message the grants do not cover with the missing grant named.
+An explicit block and the stop control win over it. An interim deliverable
+that the client's door held for lack of it is not a missed due instant. Common
+Agent Specification 0.28.2-draft describes the entry from the door's side. A
+new fixture, `conformance/sow-provider-contact.json`, pins the form, the term
+and the door's decisions. No section is renumbered, and every 0.24.1-draft
+document remains valid.
+
 ## 0.24.1-draft (2026-10-19)
 
 Editorial, with no normative change. The extension URIs

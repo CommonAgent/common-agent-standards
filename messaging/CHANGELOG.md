@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.9.4-draft (2026-10-19)
+
+Section 19.2, the task receipt, gains an optional `buyer_reference` member. When a task was admitted under an agreement that carries the client's own reference for its accounts, such as an Agent SoW engagement's `buyer_reference` (Agent SoW 0.25.0-draft, Section 5.17), the receipt carries that reference byte for byte from the version of the agreement the task was admitted under, so a client's accounting system can match each task to its purchase order. A canceled task's receipt carries it the same way. The platform does not interpret it. No other requirement, field, wire identifier or section number changes. The Change History entry of 2026-10-19 in [SPEC.md](SPEC.md) has the details. The wire version stays 0.3.0.
+
 ## 0.9.3-draft (2026-10-18)
 
 Editorial, with no normative change. The lifecycle interface that a stop asks over is described in Agent Roles, which is a guide of working descriptions, and the text no longer calls it the roles registry. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.
