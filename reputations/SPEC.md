@@ -1,7 +1,7 @@
 # Agent Reputations Specification
 
-**Version:** 0.6.0-draft
-**Date:** 2026-10-18
+**Version:** 0.7.0-draft
+**Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
 **Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent NDA (confidentiality), Agent Reputations (reputation)
@@ -540,7 +540,7 @@ claim body.
 ```json
 {
   "nda": { "id": "nda_dtzv6z8tans9k5s6", "version": 1,
-           "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+           "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
            "ref": "mesh:artifacts:01JB2N7Q4C" },
   "claimant": { "agent": "<public key>", "handle": "Petrel.mari@harborandline.example" },
   "respondent": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
@@ -551,7 +551,7 @@ claim body.
       "at": "2026-10-22T09:13:05Z" }
   ],
   "found": { "at": "2027-04-09T00:00:00Z",
-             "material_digest": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+             "material_digest": "sha256:1904a3f5b73cb54a8c22e36dc0844fbd4543a1605a62c6d6e33367710384304f",
              "note": "The sealed posting body was offered for sale on a public site." },
   "breach_at": null,
   "at": "2027-04-10T16:02:11Z"
@@ -587,9 +587,17 @@ else:
    currently resolved identity, and that identity's agent key is the key in
    `claimant`.
 2. **The agreement is the one both parties signed.** The bureau retrieves the
-   agreement, its signed bytes hash to `nda.digest`, its signatures verify,
-   and the digest is that of a completed agreement as the first bullet above
-   requires.
+   agreement, its signed bytes hash to `nda.digest`, its signatures verify
+   and each is bound to its seat (Agent NDA §6), and the digest is that of a
+   completed agreement as the first bullet above requires. A seat that names
+   no organization counts only with its owner confirmed against the
+   registry, as the agreement's receiving verifier recorded it or, without
+   that record, as the bureau resolves it. An unconfirmed owner fails this
+   check as a contradicted one does, so a claim never does better because an
+   owner could not be resolved. The one exception is the recipient of an
+   acceptance of an open offer whose discloser chose `"owners": "any"`
+   (Agent NDA §6.1), which counts with an unconfirmed owner. A contradicted
+   owner never counts.
 3. **The claimant is a party whose material the agreement protects.** The
    claimant's agent key is in a seat of the agreement. In a one-way agreement
    it is the discloser's seat (Agent NDA §5.1).
@@ -1717,6 +1725,19 @@ signatures exactly, which Ed25519 makes possible because its signatures are
 deterministic, and refuses every report the vectors say it must refuse.
 
 ---
+
+*0.7.0-draft (2026-10-19): a claim of breach cites an agreement whose
+signatures are bound to their seats. Check 2 of §4.8 now also requires that
+each signature on the cited agreement is bound to its seat, as Agent NDA
+0.2.0-draft defines binding: a signature by a key the seat does not name
+does not make a party to the agreement, and an owner the registry could not
+confirm fails the check as a contradicted one does. The example claim of §4.8 names the
+Agent NDA example by its new agreement digest, because that version added
+`owner_key` to the example's recipient seat, and its material digest is the
+new digest of the Agent RFP example body, which now carries a nonce. The
+minor version moves because
+a bureau built against 0.6.0-draft accepts a claim whose agreement carries an
+unbound signature, which this version refuses.*
 
 *0.6.0-draft (2026-10-18): report signing, test vectors, and the age of an
 event. §8.1 defines how a report is signed, which it had left to Personal

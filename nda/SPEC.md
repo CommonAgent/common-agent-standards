@@ -1,6 +1,6 @@
 # Agent NDA Specification
 
-**Version:** 0.1.2-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -49,7 +49,7 @@ Today these documents refer to it:
   the NDA that every outside participant in a run must be bound by (Agent
   Processes 0.6.0-draft §4, `confidential-under:`).
 - **Agent Mandate** (https://agentmandate.net). An organization says who may
-  sign an Agent NDA for it (Agent Mandate 0.5.0-draft §7.2).
+  sign an Agent NDA for it (Agent Mandate 0.6.0-draft §7.2).
 
 More of the Common Agent Standards will refer to it as the family grows.
 
@@ -96,8 +96,8 @@ runtime can watch any of that. So:
    established outside the system (§5.9).
 2. **The facts are `evidence`.** Who the parties are, when the agreement
    starts and ends, and who signed are carried in signed bytes. A
-   countersignature proves that an owner key signed these exact terms at a
-   stated instant.
+   countersignature proves that a key bound to a seat (§6) signed these
+   exact terms, and the instant its signer stated.
 3. **Nothing in an agreement is `enforced`.** An agreement MUST NOT grade any
    of its clauses `enforced`, and a document that does is not valid. No
    runtime can refuse a recipient's private use of what it already holds.
@@ -107,7 +107,7 @@ runtime can watch any of that. So:
    phase or a handoff to an outside agent only after it checks that the
    agent's owner is bound (§8.1; Agent Processes 0.6.0-draft §4). A platform
    holds an organization's signature until the signer's mandate is checked
-   (§6.2; Agent Mandate 0.5.0-draft §7.2). Each refusal happens before the
+   (§6.2; Agent Mandate 0.6.0-draft §7.2). Each refusal happens before the
    recipient holds anything, so each is `enforced` where it runs. Once the
    material arrives, its handling is a `recorded` promise.
 
@@ -190,6 +190,15 @@ Each seat has the shape of one seat of an Agent SoW parties clause (Agent SoW
 A seat MAY carry `organization`, naming the organization it signs for
 (§6.2).
 
+A seat says which key signs for it. A seat without `organization` MUST carry
+`owner_key`, the public key of the owner that signs for the seat, and every
+signature and act for the seat MUST be made with that key (§6). A seat with
+`organization` MUST NOT carry `owner_key`. Its signers are people who hold a
+mandate of the organization, and each signature names its mandate, whose
+`holder.key` is the key it must be made with (§6.2). The two rules differ
+because a person signing for an organization can change from one act to the
+next, while an owner acting for itself signs with its own key every time.
+
 ```json
 "direction": "one_way",
 "parties": {
@@ -199,7 +208,8 @@ A seat MAY carry `organization`, naming the organization it signs for
                  "organization": "org_7k2m9q4w1x8e5r3t" },
   "recipient": { "agent": "<public key>",
                  "handle": "Sable.audit@calderafreight.example",
-                 "owner": "Caldera Freight Systems" },
+                 "owner": "Caldera Freight Systems",
+                 "owner_key": "<owner public key>" },
   "grade": "evidence"
 }
 ```
@@ -222,11 +232,11 @@ A seat MAY carry `organization`, naming the organization it signs for
     { "agent": "<public key>", "handle": "Petrel.mari@harborandline.example",
       "owner": "Harbor & Line Outfitters", "organization": "org_7k2m9q4w1x8e5r3t" },
     { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example",
-      "owner": "Caldera Freight Systems" },
+      "owner": "Caldera Freight Systems", "owner_key": "<owner public key>" },
     { "agent": "<public key>", "handle": "Heron.desk@tidewatercustoms.example",
-      "owner": "Tidewater Customs Brokers" },
+      "owner": "Tidewater Customs Brokers", "owner_key": "<owner public key>" },
     { "agent": "<public key>", "handle": "Kestrel.rates@northgaterates.example",
-      "owner": "Northgate Rate Data" }
+      "owner": "Northgate Rate Data", "owner_key": "<owner public key>" }
   ],
   "grade": "evidence"
 }
@@ -245,8 +255,9 @@ agreement with each of them, or an open offer, is enough.
 The recipient seat is `null` in an open offer (§6.1) and filled in every
 other agreement.
 
-Grade: `evidence`. The agreement records which keys and owners signed.
-Identity verification is the transport's job (Agent SoW §5.1). A node SHOULD
+Grade: `evidence`. The agreement records which keys and owners signed, and
+which key may sign for each seat. Identity verification is the transport's
+job (Agent SoW §5.1). A node SHOULD
 NOT treat material as covered unless the agent it came from, or goes to, is
 named in a seat.
 
@@ -534,24 +545,102 @@ owners, or before a court or arbitrator, reading the signed document.
 Owners sign agreements. An agreement binds principals to duties that outlive
 any one process (Agent SoW §6).
 
-The signed bytes are the ASCII prefix `agent-nda-v1`, one newline, and the
-JCS canonical JSON of the document with `signatures` removed. The signed
-bytes include `id`.
+The **signed bytes** of an agreement are the ASCII prefix `agent-nda-v1`, one
+newline, and the JCS canonical JSON of the document with `signatures`
+removed. The signed bytes include `id`. The **agreement digest** is `sha256:`
+and the 64 lowercase hex digits of the SHA-256 of the signed bytes (§8).
+
+A signature covers its own record as well as the agreement. Each record names
+the bytes it covers by their digest, and its **signature bytes** are the ASCII
+prefix `agent-nda-sig-v1`, one newline, and the JCS canonical JSON of the
+record with `sig` removed. `sig` is the Ed25519 signature (RFC 8032, without
+prehashing or a context) over the signature bytes, made with the key the
+record names. So the key, the role, the seat, the instant and the mandate a
+record states are all signed, and changing any of them breaks the signature.
 
 ```json
 "signatures": [
-  { "role": "discloser", "key": "<owner public key>",
+  { "role": "discloser", "key": "<holder public key>",
+    "mandate": "mnd_3f8c1n6z9v4b7q2m",
+    "digest": "sha256:<agreement digest>",
     "signed_at": "2026-10-20T15:00:00Z", "sig": "<base64>" },
   { "role": "recipient", "key": "<owner public key>",
+    "digest": "sha256:<agreement digest>",
     "signed_at": "2026-10-22T09:12:40Z", "sig": "<base64>" }
 ]
 ```
 
-`role` is `discloser` or `recipient`, or `member` in a multilateral
-agreement. A `member` record MUST carry `agent`, naming the seat it signs
-for. An agreement is **countersigned** when every seat has a valid
-signature. All signatures are over the same signed bytes, except for an open
-offer and its acceptance (§6.1).
+- `role` is `discloser` or `recipient`, or `member` in a multilateral
+  agreement. A `member` record MUST carry `agent`, naming the seat it signs
+  for.
+- `key` is the signer's public key.
+- `digest` is REQUIRED. It is the agreement digest, except on the
+  discloser's record of an open offer, marked `"over": "offer"`, where it is
+  the offer digest (§6.1). A record whose `digest` is not the digest of the
+  bytes it covers does not verify.
+- `signed_at` is the instant the signer says it signed. It is inside the
+  signature bytes, so nobody but the signer can change it. The signer writes
+  it, though, and could write an earlier time than the true one.
+
+**The receiving verifier.** The receiving verifier of a record or act is the
+party the signer delivered it to: the counterparty, or the board a provider
+presents an acceptance to (Agent RFP §5.11.3). The receiving verifier records
+the instant it received the record or act, and the registry's owner of each
+seat's agent as it resolved it then (binding rule 1 below). It checks every
+time limit against the instant of receipt as well as against `signed_at`: the
+offer's expiry and withdrawal (§6.1, step 3) and the term of a mandate
+(§6.2). Every other reader checks against `signed_at` and against whatever
+instant of receipt and owner the receiving verifier recorded, where it holds
+that record. A reader that holds no such record has `signed_at` alone, and
+says so where it shows the result.
+- `mandate` names the signer's mandate where the seat names an organization
+  (§6.2).
+- `sig` is the 64-byte signature in base64 with padding (RFC 4648 §4). The
+  spelling is canonical, so each signature has exactly one valid string: 88
+  characters from the standard alphabet, ending in two padding characters,
+  with the unused low bits of the last data character zero. A verifier MUST
+  refuse any other spelling, including base64url, a missing pad, and nonzero
+  unused bits.
+
+A record carries only the members above, and a verifier MUST refuse a record
+that carries any other. `over` is valid only on the discloser's record of a
+document that carries an `offer` member, and a record that carries it
+anywhere else does not verify. A discloser's record without `over` covers the
+agreement digest, so on an acceptance it never passes step 1 of §6.1.
+
+**Binding.** A key that signs is bound to a seat in one of two ways:
+
+1. For a seat without `organization`, the key is the seat's `owner_key`
+   (§5.1). The seat's party writes `owner_key` itself, so the receiving
+   verifier also resolves, at receipt, the owner the registry holds for the
+   seat's agent (Agent Messaging §8.6), and records the result. Only an
+   owner the registry verified through an `owner_attestation` counts. The
+   result is one of three:
+   - **confirmed**: an attested owner, and it is the seat's `owner_key`;
+   - **contradicted**: an attested owner, and it is another key. The seat is
+     not bound;
+   - **unconfirmed**: the registry was unreachable, does not list the agent,
+     or holds only the default owner, the hosting node's key with no
+     `owner_attestation`. The binding is `evidence` only, and a renderer
+     MUST say that the seat's owner is unconfirmed.
+
+   A decision that rides on the binding treats an unconfirmed owner as it
+   treats a contradicted one, so failing to resolve an owner never does
+   better than resolving the wrong one. The one exception is the recipient
+   of an open offer whose discloser chose `"owners": "any"` (§6.1), which
+   accepts an unconfirmed owner. A contradicted owner never counts. Such decisions are whether a party is
+   bound (§8.1), a board's release of a gated body (Agent RFP §5.11.3), and a
+   bureau's check of a claim of breach (Agent Reputations §4.8).
+2. For a seat with `organization`, the key is the `holder.key` of the mandate
+   the record names, and that mandate passes the check of §6.2.
+
+A record counts for its seat only when it verifies and its key is bound to
+the seat. A valid signature by any other key is not that seat's signature,
+whoever made it.
+
+An agreement is **countersigned** when every seat has a record that counts.
+Every record carries the agreement digest except the discloser's record on
+an open offer and its acceptance, which carries the offer digest (§6.1).
 
 Grade: `evidence`.
 
@@ -568,21 +657,38 @@ one-way or mutual agreement with `parties.recipient` and
 
 - `open_to` is `"any"`, or a list of handles entitled to accept.
 - `expires_at` is REQUIRED. No acceptance is valid after it.
+- `owners` is OPTIONAL and says which recipient owners a decision that rides
+  on the binding accepts (§6, binding rule 1). `confirmed`, the value when
+  the member is absent, accepts only an owner confirmed against the
+  registry. `any` also accepts an unconfirmed owner. Neither accepts an owner
+  the registry contradicts. Most agents today run under an unattested
+  default owner, so a discloser that wants any of them to accept chooses
+  `any`. In doing so it accepts a risk, and should know it: a party can
+  unlist its agent, or never register an attested owner, so that its
+  `owner_key` reads as unconfirmed where it would otherwise read as
+  contradicted. `owners` sits in the offer, inside the offer bytes, so the
+  discloser's signature covers it.
 
-The discloser signs the **offer bytes**: the signed bytes of the offer, with
-both recipient members `null`. The **offer digest** is `sha256:` and the
-lowercase hex SHA-256 of the offer bytes.
+The **offer bytes** are the signed bytes of the offer, with both recipient
+members `null`. The **offer digest** is `sha256:` and the lowercase hex
+SHA-256 of the offer bytes. The discloser's record on an open offer carries
+`"over": "offer"` and the offer digest from the moment it is signed, and it
+never changes afterwards.
 
 A recipient accepts by writing the **completed document**. It fills
-`parties.recipient` with its seat and `disclosure.recipient` with its
-declaration, and changes nothing else. It keeps the discloser's signature,
-marked `"over": "offer"`, and adds its own over the completed document:
+`parties.recipient` with its seat, `owner_key` included, and
+`disclosure.recipient` with its declaration, and changes nothing else. It
+keeps the discloser's record as it is and adds its own, which carries the
+agreement digest of the completed document:
 
 ```json
 "signatures": [
-  { "role": "discloser", "over": "offer", "key": "<owner public key>",
+  { "role": "discloser", "over": "offer", "key": "<holder public key>",
+    "mandate": "mnd_3f8c1n6z9v4b7q2m",
+    "digest": "sha256:<offer digest>",
     "signed_at": "2026-10-20T15:00:00Z", "sig": "<base64>" },
   { "role": "recipient", "key": "<owner public key>",
+    "digest": "sha256:<agreement digest>",
     "signed_at": "2026-10-22T09:12:40Z", "sig": "<base64>" }
 ]
 ```
@@ -591,11 +697,29 @@ A verifier checks an acceptance in five steps. An acceptance that fails any
 step is not an agreement.
 
 1. Set `parties.recipient` and `disclosure.recipient` back to `null`, and
-   verify the discloser's signature over the resulting offer bytes. Any
-   other change to the document fails here.
-2. Verify the recipient's signature over the completed document.
-3. Check that the recipient signed before `offer.expires_at`, and before any
-   withdrawal of the offer (§7.3).
+   check that the discloser's record carries `"over": "offer"` and the offer
+   digest of the result, verifies, and is bound to the discloser seat (§6).
+   Any other change to the document fails here. Where the discloser seat
+   names an organization, its mandate is checked when each acceptance is
+   received, as well as at the offer's `signed_at` (§6.2). Revoking the
+   mandate, or letting it lapse, stops new acceptances, and the acceptances
+   received before then stand.
+2. Check that the recipient's record carries the agreement digest of the
+   completed document, verifies, and is bound to the recipient seat (§6).
+   Where the recipient seat names no organization and its owner is
+   unconfirmed (§6, binding rule 1), the acceptance is an agreement, and a
+   renderer MUST say that the recipient's owner is unconfirmed. A decision
+   that rides on the binding still treats that owner as not bound, unless
+   the offer says `"owners": "any"`.
+3. Check that the recipient's `signed_at` is before `offer.expires_at`, and
+   before any withdrawal of the offer took effect (§7.3). A verifier that
+   received the acceptance itself, such as a board releasing a gated body,
+   MUST also check that it received the acceptance before `offer.expires_at`
+   and before any withdrawal it holds took effect, and MUST record when it
+   received it (Agent RFP §5.11.3). It checks the instant of receipt in
+   addition to `signed_at`. `signed_at` protects the instant from everyone
+   except its signer, and the instant of receipt protects it from the
+   signer.
 4. Where `open_to` lists handles, check that the recipient's handle is one of
    them and resolves to its agent key.
 5. Where `disclosure.require` is present, check the subset rule of §5.5.
@@ -617,18 +741,27 @@ organization binds the organization, so it needs authority.
 
 When a seat carries `organization`, the signature for that seat MUST carry
 `mandate`, naming a mandate of that organization that holds the `nda` power
-(Agent Mandate 0.5.0-draft §6 and §7.2). This applies to every act on an
-agreement: signing an offer or an open offer, countersigning, accepting,
-joining a multilateral agreement, amending, terminating and withdrawing.
+and carries `holder.key` (Agent Mandate 0.6.0-draft §6 and §7.2). The record's
+`key` MUST be that `holder.key`. This applies to every act on an agreement:
+signing an offer or an open offer, countersigning, accepting, joining a
+multilateral agreement, amending, terminating and withdrawing.
 
 ```json
-{ "role": "discloser", "key": "<owner public key>",
-  "signed_at": "2026-10-20T15:00:00Z", "sig": "<base64>",
-  "mandate": "mnd_3f8c1n6z9v4b7q2m" }
+{ "role": "discloser", "key": "<holder public key>",
+  "mandate": "mnd_3f8c1n6z9v4b7q2m",
+  "digest": "sha256:<agreement digest>",
+  "signed_at": "2026-10-20T15:00:00Z", "sig": "<base64>" }
 ```
 
-The check is Agent Mandate §7.2. The signer holds the mandate, the mandate is
-in force and its chain verifies, and it holds `nda`. A mandate MAY narrow
+The check is Agent Mandate §7.2. The signer holds the mandate, which means the
+record's key is the mandate's `holder.key`; the mandate was in force at the
+record's `signed_at` and its chain verifies; and it holds `nda`. The
+receiving verifier (§6) also checks that the mandate was still in force,
+unexpired and unrevoked, at the instant it received the record or act, and
+records that instant; a later reader holding that record checks against it
+too. A mandate that lapsed or was revoked before the verifier
+received a signature made under it does not carry that signature, whatever
+`signed_at` says. A mandate MAY narrow
 which categories its holder may agree to (`scope.nda_categories`). There is
 no price ceiling to check, because an NDA commits no price.
 
@@ -636,8 +769,9 @@ A seat without `organization` is a person or party acting for itself. It
 needs no mandate.
 
 Grade: `enforced` where a platform or board holds the act until the check
-passes and refuses it otherwise. A board releasing a gated body (Agent RFP
-§5.11) SHOULD run the check on a recipient seat that names an organization.
+passes and refuses it otherwise. A board releasing a gated body runs the
+check on every seat that names an organization, at signing and at receipt
+(Agent RFP §5.11.3).
 Elsewhere the mandate reference is `evidence`: the counterparty can verify
 the chain, but nothing refused the act. A runtime that does not run the
 check MUST NOT present an agreement as mandate-verified. A mandate reference
@@ -700,21 +834,48 @@ agreement a member's termination ends its own participation. The agreement
 stays in force among the others while at least two remain. The party that
 signed an offer MAY withdraw it before it is countersigned or accepted.
 
-Acts are signed separately: the prefix `agent-nda-act-v1`, one newline, and
-the JCS canonical JSON of the act body.
+An act is a JSON object of two members: `act`, the body, and `signature`,
+the record of who signed it. Its signed bytes are the ASCII prefix
+`agent-nda-act-v1`, one newline, and the JCS canonical JSON of the whole act
+with `signature.sig` removed, so the record is signed with the body.
 
 ```json
-{ "nda": "nda_dtzv6z8tans9k5s6", "version": 1,
-  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
-  "action": "terminate", "at": "2027-03-01T12:00:00Z",
-  "reason": "The freight-audit engagement ended." }
+{ "act": { "nda": "nda_dtzv6z8tans9k5s6", "version": 1,
+           "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
+           "action": "terminate", "at": "2027-03-01T12:00:00Z",
+           "reason": "The freight-audit engagement ended.",
+           "by": "recipient" },
+  "signature": { "key": "<owner public key>",
+                 "signed_at": "2027-03-01T12:00:00Z", "sig": "<base64>" } }
 ```
 
-`action` is `terminate` or `withdraw`. `digest` names the agreement, or the
-offer digest for a withdrawn offer. Acceptances of one offer share an
-identifier, so an act on one acceptance MUST carry its digest. `reason` is
-OPTIONAL. An act signed for a seat that names an organization MUST carry
-`mandate` (§6.2). Grade: `evidence`. Termination starts the survival period.
+- `action` is `terminate` or `withdraw`.
+- `digest` names the agreement, or the offer digest for a withdrawn open
+  offer. Acceptances of one offer share an identifier, so an act on one
+  acceptance MUST carry its digest.
+- `by` is REQUIRED and names the seat that acts: `discloser`, `recipient`, or
+  `member`. A member's act MUST also carry `agent`, naming its seat.
+- `reason` is OPTIONAL.
+- `at` is when the act takes effect, and it MUST NOT be earlier than
+  `signature.signed_at`. An act cannot take effect before it was signed.
+- `signature` carries `key`, `signed_at` and `sig`, in the spelling of §6,
+  and `mandate` where the seat named in `by` names an organization (§6.2).
+
+`act` carries only `nda`, `version`, `digest`, `action`, `at`, `reason`, `by`
+and `agent`, and `signature` only `key`, `signed_at`, `sig` and `mandate`. An
+act with any other member is not valid. An act is valid only when its
+signature verifies and its key is bound to the seat named in `by`, under the
+rule of §6.
+
+The signer writes `at`. So an act takes effect at the later of its `at` and
+the instant its receiving verifier (§6) received it, and the receiving
+verifier records that instant. A later reader holding that record reads the
+act's effect from it. A termination's notice counts from there,
+and a withdrawal reaches no acceptance the verifier received before it. A
+party cannot backdate a withdrawal to undo an acceptance already received, or
+backdate a termination to shorten the notice its counterparty gets. An open offer is withdrawn only by
+its discloser, and any other offer only by a seat that signed it. Grade:
+`evidence`. Termination starts the survival period.
 
 ## 8. How other documents refer to an Agent NDA
 
@@ -726,7 +887,7 @@ data processing agreement the same way.
 "nda": {
   "id": "nda_dtzv6z8tans9k5s6",
   "version": 1,
-  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+  "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
   "ref": "mesh:artifacts:01JB2N7Q4C",
   "grade": "evidence"
 }
@@ -763,7 +924,8 @@ Agent Processes, and any later standard that needs every participant bound,
 asks one question: is this party's owner bound by the named agreement? The
 answer is yes when one of these holds and the agreement is in force:
 
-1. The owner's key signed a seat of the named agreement. For a multilateral
+1. The party's seat of the named agreement carries a record that counts: it
+   verifies and its key is bound to the seat (§6). For a multilateral
    agreement that means a member seat.
 2. The named reference is an open offer, and the owner is the recipient of
    an acceptance of it that passes §6.1.
@@ -773,7 +935,10 @@ answer is yes when one of these holds and the agreement is in force:
    hop until it reaches the named agreement.
 
 Where a seat names an organization, the mandate check of §6.2 is part of
-whether that seat's signature counts.
+whether that seat's signature counts. Where a seat names no organization, its
+signature counts here only when its owner is confirmed (§6, binding rule 1).
+An unconfirmed owner is not bound, as a contradicted one is not, except as
+the recipient of an open offer that says `"owners": "any"` (§6.1).
 
 A runtime that answers this question before material moves, and refuses when
 the answer is no, enforces that refusal (§3, point 4). It cannot enforce
@@ -783,8 +948,11 @@ what the party does with the material afterwards.
 
 **Agent SoW.** Agent NDA takes from Agent SoW the gradient (§3), the
 identifier rules (§4.1), contract language (§4.3), the party seat (§5.1), the
-processor and jurisdiction shapes (§5.11) and the signature rules (§6).
-Agent SoW §5.11 still governs an engagement's content, and its retention
+processor and jurisdiction shapes (§5.11), the seat's `owner_key` (Agent SoW
+§5.1) and the signed bytes (§6). Agent NDA goes further than Agent SoW §6 in
+one respect: each signature also covers its own record, because the expiry
+check of §6.1 and the mandate of §6.2 read members of the record. Agent SoW
+§5.11 still governs an engagement's content, and its retention
 rules win where the two overlap (§5.8). Agent SoW §5.16 names the agreement
 an engagement runs under.
 
@@ -797,7 +965,7 @@ before it starts a phase held by an outside agent or delivers a handoff to
 one.
 
 **Agent Mandate.** An organization says who may sign an Agent NDA for it
-(Agent Mandate 0.5.0-draft §7.2), and §6.2 applies that check.
+(Agent Mandate 0.6.0-draft §7.2), and §6.2 applies that check.
 
 **Agent Reputations.** A bureau's ledger holds claims of breach of an
 agreement and their outcomes, and its reports show them in the NDA record
@@ -819,7 +987,31 @@ agreement and their outcomes, and its reports show them in the NDA record
 - **A weak flow-down.** A subcontract that is less strict than the upstream
   agreement does not count as binding (§5.5, §8.1).
 - **Key compromise.** A party whose owner key is compromised should terminate
-  the agreements it signed with that key and sign replacements.
+  the agreements it signed with that key and sign replacements that name its
+  new `owner_key`.
+- **A changed signature record.** Before 0.2.0-draft a signature record sat
+  outside every signed byte string, so anyone holding a document could move
+  its `signed_at` past an expiry check or swap the mandate it cited. Each
+  signature now signs its own record (§6), and a record without `digest` is
+  refused.
+- **A signer's own clock.** `signed_at` is signed, but its signer writes it.
+  A recipient could accept an offer after it expired or was withdrawn and
+  write an earlier time. A verifier that receives the acceptance checks the
+  limits against the instant of receipt and records it (§6.1, step 3).
+- **A key that is not the party's.** A valid signature proves control of a
+  key, and nothing more. The seat's `owner_key`, or the `holder.key` of the
+  mandate a record cites, says which key may sign for the seat, and a
+  signature by any other key does not count (§6). An acceptor writes its own
+  seat, so the registry's owner of the seat's agent confirms the
+  `owner_key`, and where it cannot be resolved the owner is shown as
+  unconfirmed.
+- **A backdated act.** The signer writes `at` and `signed_at`. An act takes
+  effect for a verifier no earlier than the instant it received it, and its
+  `at` can never precede its `signed_at` (§7.3).
+- **A mandate that has run out.** A signature made under a mandate that
+  lapsed or was revoked before the verifier received it does not count, so a
+  holder cannot sign late and date the record back into the mandate's term
+  (§6.2).
 - **Reading too much into a signature.** A signature proves who signed and
   when. Nothing in this system shows that a recipient kept its promises.
 
@@ -855,13 +1047,20 @@ A validator MUST refuse a document that:
    sharing an agent key, an `offer` member, or a `member` signature without
    `agent`;
 5. has a recipient seat of `null` without an `offer` member;
-6. has an open offer without `offer.expires_at`, or one that names a posting;
+6. has an open offer without `offer.expires_at`, one that names a posting, or
+   one whose `offer.owners` is neither `confirmed` nor `any`;
 7. breaks the processor subset rule of Agent SoW §5.11 or the `require`
    subset rule of §5.5;
 8. has a `survival.days` or `at_end.within_days` that is not a positive whole
    number, or an `at_end.action` outside the three values;
 9. has an `ends_at` before a non-null `effective_at`;
-10. has a seat with `organization` whose signature carries no `mandate`.
+10. has a seat with `organization` whose signature carries no `mandate`;
+11. has a seat without `organization` and without `owner_key`, or a seat with
+    `organization` that carries `owner_key` (§5.1);
+12. has a signature record without `digest`, with a member §6 does not
+    define, with `over` anywhere but the discloser's record of a document
+    with an `offer` member, or whose `sig` is not the canonical spelling of
+    §6.
 
 A renderer MUST show every grade, MUST NOT present a promise as enforced,
 MUST derive the state from signatures, acts and instants, and MUST say when
@@ -872,18 +1071,79 @@ The fixtures:
 - `conformance/nda-grading.json` pins the grades, the false enforcement
   claim, the closed lists, absence, multilateral agreements, the flow-down
   test, the mandate rule and the states of §7.1.
-- `conformance/nda-offer.json` pins the identifier, the offer bytes and both
-  digests for Harbor & Line Outfitters' open offer and Caldera Freight
-  Systems' acceptance, with both signatures.
-- `conformance/nda-lifecycle.json` pins signatures, the five checks on an
-  acceptance (§6.1), acts (§7.3), the states of §7.1 with the instants they
-  imply, whether a party is bound (§8.1), and the checks a board runs on an
-  agreement before it releases a gated body (Agent RFP §5.11.3). Every
+- `conformance/nda-offer.json` pins the identifier, the offer bytes, both
+  digests and both records' signature bytes for Harbor & Line Outfitters'
+  open offer and Caldera Freight Systems' acceptance, with both signatures.
+- `conformance/nda-lifecycle.json` pins signatures and their binding to
+  seats (§6), the five checks on an acceptance with and without an instant
+  of receipt (§6.1), acts with and without an instant of receipt (§7.3),
+  the states of §7.1 with the instants they imply, whether a party is bound
+  (§8.1), and the checks a board runs on an agreement before it releases a
+  gated body (Agent RFP §5.11.3). It also carries the mandates the fixtures
+  cite and the owners a registry holds, as lookups answer them. Every
   signature in the fixtures is real. The owner keys are derived from test
   seeds the fixture publishes, and Ed25519 is deterministic, so any
   implementation reproduces each signature byte for byte.
 
 ## Changelog
+
+**0.2.0-draft** (2026-10-19). Signatures cover their own records, seats name
+the key that signs for them, and acts have a defined shape. Building an
+implementation against 0.1.2-draft found three gaps, and this version closes
+them. It is breaking: a 0.1.x signature does not verify under it.
+
+- **Each signature signs its own record (§6).** The record carries `digest`,
+  the digest of the bytes it covers, and the signature is over the prefix
+  `agent-nda-sig-v1` and the canonical record with `sig` removed. Before, the
+  whole `signatures` array sat outside the signed bytes, so `signed_at`, which
+  the expiry check of §6.1 reads, and `mandate`, which Agent Mandate §7.2 said
+  was inside the signed bytes, could be changed without breaking anything.
+  The signed bytes, the agreement digest and the offer digest are defined as
+  before, so every reference by digest keeps its meaning. The discloser's
+  record on an open offer carries `"over": "offer"` from the moment it is
+  signed.
+- **A seat names the key that signs for it (§5.1, §6).** A seat without an
+  organization carries `owner_key`, and only that key signs for it. A seat
+  with an organization carries none, and its signer's key is the `holder.key`
+  of the mandate the record cites, which Agent Mandate 0.6.0-draft now
+  requires on a mandate holding `nda`. Before, nothing tied the key that
+  signed to the party in the seat.
+- **Acts have a defined shape (§7.3).** An act is `{ act, signature }`, the
+  body names the acting seat in `by`, the signature record carries `key`,
+  `signed_at` and, for an organization's seat, `mandate`, and the signed
+  bytes cover both. Before, an act had a prefix and a body and no record
+  format, and nothing said who acted.
+- **One spelling for a signature (§6).** `sig` is canonical base64 with
+  padding, so each signature has exactly one valid string.
+- **The instant of receipt (§6.1, §6.2, §7.3).** A signer writes its own
+  `signed_at` and `at`. A verifier that receives an acceptance, such as a
+  board, checks expiry and withdrawal against when it received it as well as
+  against `signed_at`, and records that instant (Agent RFP 0.10.0-draft
+  §5.11.3). It checks a mandate at that instant too. An act takes effect for
+  a verifier no earlier than when it received it, and its `at` never
+  precedes its `signed_at`.
+- **The registry confirms an owner key (§6).** The receiving verifier, the
+  party a record or act was delivered to, records the instant of receipt and
+  resolves each seat's owner then. A seat without an organization is
+  confirmed only where an attested registry owner of its agent (Agent
+  Messaging §8.6) is the seat's `owner_key`. An unreachable registry, an
+  unlisted agent or an unattested default owner leaves the owner
+  unconfirmed: the agreement stands, and every decision that rides on the
+  binding treats the owner as not bound. An open offer MAY say
+  `"owners": "any"` to accept unconfirmed recipients, for the agents that
+  run under an unattested default owner today, at the risk the discloser
+  accepts that a party unlists its agent to avoid a contradiction (§6.1).
+- **Closed member sets (§6, §7.3).** A signature record and an act carry
+  only the members this specification defines, and `over` is valid only on
+  the discloser's record of an open offer or its acceptance.
+
+Caldera Freight Systems' seat in the specification's example now carries
+`owner_key`, so the acceptance's agreement digest changes to
+`sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15`. The
+identifier and the offer digest do not change, because Harbor & Line's seat
+names an organization. Agent RFP, Agent SoW and Agent Reputations print the
+new digest. All three fixtures are regenerated with real signatures under the
+new rules.
 
 **0.1.2-draft** (2026-10-19). Editorial. The fixtures carry real Ed25519
 signatures where they carried placeholders, and a new fixture,

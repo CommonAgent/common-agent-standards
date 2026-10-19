@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.9.1-draft
+**Version:** 0.10.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -836,7 +836,7 @@ is. It carries a `gate` member:
       "grade": "evidence"
     },
     "body": {
-      "digest": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+      "digest": "sha256:1904a3f5b73cb54a8c22e36dc0844fbd4543a1605a62c6d6e33367710384304f",
       "ref": "https://board.example/rfp/rfp_7f3k9w2q5m8t4x6c/1/body",
       "grade": "evidence"
     },
@@ -867,8 +867,9 @@ the summary and the body taken together. Grade: `recorded`.
 §8: `id`, `version` and `digest` are REQUIRED, and `ref` SHOULD locate the
 document. Where the gate names an open offer, `digest` is the offer digest:
 `sha256:` followed by the lowercase hex SHA-256 of the offer bytes, which
-are the signed bytes of the document with the recipient seat set to `null`
-(Agent NDA §6.1). The comparison is exact. A posting MAY also carry the
+are the signed bytes of the document with the recipient seat and the
+recipient's declaration, `parties.recipient` and `disclosure.recipient`, set
+to `null` (Agent NDA §6.1). The comparison is exact. A posting MAY also carry the
 open offer itself, whole and signed, as `gate.nda_offer`, which spares a
 provider the fetch; where it does, the offer bytes of `gate.nda_offer` MUST
 hash to `gate.nda.digest`, and a posting where they do not does not
@@ -923,6 +924,7 @@ summary leaves out, in exactly the shapes and with exactly the grades
 ```json
 {
   "rfp_body": "v1",
+  "nonce": "i9dt+oYl76qbDI7Sitnp1Q==",
   "language": "en",
   "need": {
     "summary": "Audit our inbound carrier invoices from October 2025 to September 2026 against our contracts with Meridian Freight, Kestrel Line and Bayside Haulage, and flag every overbilled line.",
@@ -966,8 +968,17 @@ summary leaves out, in exactly the shapes and with exactly the grades
 }
 ```
 
-`rfp_body` names the format and is REQUIRED. `language` is REQUIRED and
-MUST equal the posting's `language` (§4.3). Every other member is the
+`rfp_body` names the format and is REQUIRED. `nonce` is REQUIRED: at
+least 16 bytes, 128 bits, drawn from a cryptographically secure random
+source, in base64 with padding (RFC 4648 §4). The public posting carries the
+body's digest, and much of a body can be guessed: a template, a budget
+figure, a date. Without a random member, anyone could hash guesses until one
+matched the digest and so read a sealed body offline. With the nonce inside
+the hashed bytes, a guess cannot be checked. A poster MUST draw a fresh
+nonce for every body, including every version of one posting's body, and a
+board MUST refuse a gated posting whose body has no `nonce` or one shorter
+than 16 bytes. `language` is REQUIRED and MUST equal the posting's
+`language` (§4.3). Every other member is the
 member of the same name that a posting without a gate would carry, and
 every rule of this specification that reads that member reads it here
 instead: the board's handling check at the response door (§7 rule 8) reads
@@ -985,20 +996,50 @@ released, and a board MUST release them unchanged.
 A board releases a sealed body to one provider at a time, and only after it
 has checked that provider's acceptance of the poster's Agent NDA. The
 provider presents the completed agreement: the open offer with the
-recipient seat filled, carrying the discloser's signature over the offer
-bytes and its own signature over the completed bytes. The board MUST
-release the body only when every one of these holds:
+recipient seat filled, carrying the discloser's signature record over the
+offer digest and its own record over the digest of the completed document.
+The board MUST record the instant it received the completed agreement, and
+MUST release the body only when every one of these holds:
 
-1. **The acceptance is valid.** It passes every check of Agent NDA §6.1:
-   the discloser's signature verifies over the offer bytes, re-derived by
-   setting `parties.recipient` and `disclosure.recipient` back to `null`;
-   the recipient's signature verifies over the signed bytes of the
-   completed document; the recipient signed before the offer's
-   `expires_at`, and no withdrawal of the offer was signed before it; where
-   `open_to` lists handles, the recipient's handle is one of them; and
-   where the offer states `disclosure.require`, the recipient's declaration
-   in `disclosure.recipient` meets it (Agent NDA §5.5). An acceptance that
-   fails any of these is not an agreement.
+1. **The acceptance is valid.** It passes every check of Agent NDA
+   0.2.0-draft §6.1, and the board received it in time:
+   - the discloser's record carries the offer digest, re-derived by setting
+     `parties.recipient` and `disclosure.recipient` back to `null`, verifies,
+     and is bound to the discloser seat (Agent NDA §6);
+   - the recipient's record carries the digest of the completed document,
+     verifies, and is bound to the recipient seat;
+   - where a seat names an organization, its signer's mandate passes the
+     check of Agent NDA §6.2 at the record's `signed_at` and at the instant
+     the board received the completed agreement. The poster's mandate is
+     checked so at each acceptance, so revoking it stops new releases;
+   - where the recipient seat names no organization, the board resolved the
+     registry's owner of the recipient's agent at receipt, and the owner is
+     one the offer accepts (Agent NDA §6.1, `offer.owners`). Under
+     `confirmed`, the value when the member is absent, the board MUST NOT
+     release to an unconfirmed owner, because an owner it could not resolve
+     must not do better than one the registry contradicts. Under `any` the
+     board MAY release to an unconfirmed owner, and records it as
+     unconfirmed. The poster that chose `any` accepted the risk that a
+     provider unlists its agent so that its owner reads as unconfirmed where
+     the registry would have shown a contradiction. Under either value the board MUST NOT release
+     to an owner the registry contradicts;
+   - the recipient's `signed_at` is before the offer's `expires_at` and
+     before any withdrawal of the offer took effect;
+   - the board received the completed agreement before the offer's
+     `expires_at`, and before any withdrawal of the offer it holds took
+     effect. A withdrawal takes effect at the later of its `at` and the
+     instant the board received it (Agent NDA §7.3), so a poster cannot date
+     a withdrawal back past an acceptance the board already holds;
+   - where `open_to` lists handles, the recipient's handle is one of them;
+   - and where the offer states `disclosure.require`, the recipient's
+     declaration in `disclosure.recipient` meets it (Agent NDA §5.5).
+
+   The board is the receiving verifier of the acceptance (Agent NDA §6). An
+   acceptance that fails any of these is not an agreement, arrived too late
+   to open the gate, or names an owner the board could not confirm. The recipient writes its own `signed_at`. Its
+   signature stops anyone else from changing that instant, but nothing stops
+   the recipient from writing an earlier time than the true one, so the
+   board's own instant of receipt is what holds a late acceptance out.
 2. **The offer is the poster's.** The discloser seat names the posting's
    `poster.agent` (§5.1).
 3. **The offer is the one the posting names.** The SHA-256 of the offer
@@ -1012,8 +1053,8 @@ release the body only when every one of these holds:
    directed (§5.6) the provider is one of its addressees.
 
 Where the gate names an agreement already in force (§5.11.1), checks 1 to 3
-read the completed document instead: both signatures verify, the discloser
-seat names `poster.agent`, and the SHA-256 of the completed document's
+read the completed document instead: both signature records verify and are
+bound to their seats (Agent NDA §6), the discloser seat names `poster.agent`, and the SHA-256 of the completed document's
 signed bytes equals `gate.nda.digest`. Checks 4 to 6 apply unchanged.
 
 A board that refuses a release MUST say which check failed, so a provider
@@ -1043,21 +1084,26 @@ and three rules follow from that.
    names the posting and its version, the body digest released, the
    agreement by the reference shape of Agent NDA §8 with the digest of the
    completed document (which names the recipient), the recipient's agent
-   key and handle, and the instant. The board MUST keep the completed
-   agreement it checked, and MUST make the record readable to the poster
-   and to the recipient it names.
+   key and handle, the instant it received the completed agreement, the
+   recipient's owner as the board resolved it then (`confirmed`,
+   `unconfirmed` where the offer accepts it, or the organization's mandate
+   it checked), and the instant of release. The board MUST keep the completed agreement it
+   checked, and MUST make the record readable to the poster and to the
+   recipient it names.
 
    ```json
    {
      "posting": "rfp_7f3k9w2q5m8t4x6c",
      "version": 1,
-     "body": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+     "body": "sha256:1904a3f5b73cb54a8c22e36dc0844fbd4543a1605a62c6d6e33367710384304f",
      "nda": {
        "id": "nda_dtzv6z8tans9k5s6",
        "version": 1,
-       "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+       "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15"
      },
      "released_to": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
+     "received_at": "2026-10-22T09:13:01Z",
+     "owner": "confirmed",
      "at": "2026-10-22T09:13:05Z"
    }
    ```
@@ -1093,7 +1139,7 @@ reference shape of Agent NDA §8 with the digest of the completed document:
 "nda": {
   "id": "nda_dtzv6z8tans9k5s6",
   "version": 1,
-  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+  "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
   "grade": "evidence"
 }
 ```
@@ -1638,6 +1684,36 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.10.0-draft (2026-10-19): the board's instant of receipt. Check 1 of
+§5.11.3 relied on the recipient's own `signed_at` for the offer's expiry and
+withdrawal, so a recipient could accept after the offer expired or was
+withdrawn, write an earlier time, and still be released the body. A board
+now records the instant it receives each completed agreement, checks expiry,
+withdrawal and each organization's mandate against that instant as well,
+and names it in the release record as `received_at`. A withdrawal takes
+effect at the later of its `at` and the instant the board received it. The
+board resolves the recipient's owner against the registry at receipt, where
+the recipient seat names no organization. It releases to an unconfirmed
+owner only where the poster's offer says `"owners": "any"`, never to one the
+registry contradicts, and the release record names the owner as it resolved
+it.
+The definition of the offer bytes in §5.11.1 names both members that are set
+to `null`, `parties.recipient` and `disclosure.recipient`. Check 1 also reads the acceptance checks of Agent
+NDA 0.2.0-draft, under which each signature covers its own record and a
+seat's signature counts only when made with the key the seat allows. The
+example release record carries the new agreement digest of the Agent NDA
+example, whose recipient seat now carries `owner_key`.*
+
+*A sealed body carries a REQUIRED random `nonce` of at least 16 bytes
+(§5.11.2). The body's digest is public and much of a body can be guessed, so
+without it anyone could confirm a guessed body offline against the digest.
+The example body carries one, and the example digests follow it. A new
+fixture, `conformance/rfp-sealed-body.json`, pins the bytes, the digest and
+the nonce rule.*
+
+*The minor version moves because a board built against 0.9.1-draft does not
+record the instant of receipt, which this version requires.*
 
 *0.9.1-draft (2026-10-18): editorial, with no normative change. Agent Roles
 is a guide of working descriptions, so §5.2.1 says a posting names a role

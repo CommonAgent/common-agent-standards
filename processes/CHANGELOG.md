@@ -4,6 +4,31 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.7.0-draft (2026-10-19)
+
+- A run MAY close with a signed close (§13.5.1): one attestation, made by
+  the process owner in the record convention of the Common Agent
+  Specification §8.1 under the tag `agent-process-close-v1`, that names
+  every record the run left by the SHA-256 of its exact bytes, from `RUN`
+  through `RUN DONE`. A reader who holds the records can check that they are
+  the records the owner closed the run on, with none added, changed or
+  dropped. A runtime that writes one lists every record in it and writes no
+  record for the run after it (§17.3). The signed close is `evidence` of what
+  the records were. Whether what they say is true is a separate question,
+  which the close does not answer.
+- The reference process `ref/gm/offboard-an-agent` closes with a signed
+  close, so the run's own records are the signed proof of exit. Its
+  `sign-exit` gate stays for an organization that wants named people to
+  countersign, and is marked as a phase that does not run in every run.
+- Both reference processes give their exception phase a row in the activity
+  table (`close-rejected` in onboarding, `escalate-holdout` in offboarding),
+  so the table and the phase list describe the same work in the same order,
+  and each activity's description is cut to fit the 60 characters a
+  catalog's diagram gives it. The same documents are in the agentcatalog
+  library.
+- The minor version moves because the signed close adds obligations for a
+  runtime that writes one.
+
 ## 0.6.1-draft (2026-10-19)
 
 - Editorial. The site gains a Reference processes section with two
