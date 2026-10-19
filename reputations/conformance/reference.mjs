@@ -26,6 +26,7 @@ const SCORE_FILE = join(HERE, "fdbk-score-1.json");
 const REPORT_FILE = join(HERE, "fdbk-report-v1.json");
 const HEADS_FILE = join(HERE, "fdbk-heads-v1.json");
 const CASEFOLD_FILE = join(HERE, "casefolding-15.1.0.json");
+const CLAIM_FILE = join(HERE, "fdbk-nda-claim-v1.json");
 
 // ── §5, §7: the formula ─────────────────────────────────────────────────────
 // The quality value of each outcome code that enters a pool (§5). Every code
@@ -505,6 +506,40 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       if (res === "ok") bad.push(`must fail ${f.name}: it passed`);
     }
     console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${file.key_set.witness_changes.length} witness change, ${file.commitments.length} commitments co-signed by ${witnesses.length} witnesses, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
+  }
+}
+
+{
+  // A claim of breach (§4.8): its signed bytes, signature and digest, and the
+  // rejection a bureau may keep of it.
+  const file = JSON.parse(readFileSync(CLAIM_FILE, "utf8"));
+  const claimant = keyFromSeed(file.test_claimant.seed_hex);
+  const respondent = keyFromSeed(file.test_respondent.seed_hex);
+  if (WRITE) {
+    Object.assign(file.test_claimant, { public_key: claimant.key, kid: claimant.kid });
+    file.test_respondent.public_key = respondent.key;
+    file.claim.claimant.agent = claimant.key;
+    file.claim.respondent.agent = respondent.key;
+  }
+  const bytes = signedBytes(file.tag, file.claim);
+  const sig = sign(null, bytes, claimant.privateKey).toString("base64");
+  const digest = `sha256:${createHash("sha256").update(jcs(file.claim), "utf8").digest("hex")}`;
+  if (WRITE) {
+    Object.assign(file, { signed_bytes: bytes.toString("utf8"), sig, digest });
+    file.rejection.claim = digest;
+    writeFileSync(CLAIM_FILE, `${JSON.stringify(file, null, 2)}\n`);
+  } else {
+    if (file.claim.claimant.agent !== claimant.key) bad.push("nda claim: the claimant seed gives another key");
+    if (bytes.toString("utf8") !== file.signed_bytes) bad.push("nda claim: the signed bytes differ from the vector's");
+    if (sig !== file.sig) bad.push(`nda claim: the signature is ${sig}, the vector says ${file.sig}`);
+    if (digest !== file.digest || file.rejection.claim !== digest) bad.push("nda claim: the digest differs from the vector's");
+    for (const f of file.must_fail) {
+      const set = JSON.parse(JSON.stringify(f.set).replace('"<respondent>"', JSON.stringify(respondent.key)));
+      const changed = { ...file.claim, ...set };
+      const signer = changed.claimant.agent;
+      if (verify(null, signedBytes(file.tag, changed), publicKeyOf(signer), Buffer.from(file.sig, "base64"))) bad.push(`must fail ${f.name}: it verified`);
+    }
+    console.log(`fdbk-nda-claim-v1: a signed claim, its digest and the rejection kept of it, and ${file.must_fail.length} changed claims that must fail checked`);
   }
 }
 

@@ -6,7 +6,7 @@ Agent Reputations is a Common Agent Standard, kept in the [Common Agent Standard
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.8.0-draft, status Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.9.0-draft, status Draft.
 - [SPEC-A2A-REPUTATION.md](SPEC-A2A-REPUTATION.md): A2A Reputation extension, version 0.1.3-draft.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 
