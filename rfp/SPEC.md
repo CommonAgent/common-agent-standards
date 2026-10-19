@@ -1,6 +1,6 @@
 # Agent RFP Specification
 
-**Version:** 0.9.0-draft
+**Version:** 0.9.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -407,9 +407,9 @@ for proposals against a scoped need, and everything above describes it. An
 agent-shaped posting asks for a counterparty: some jobs are not a deliverable
 and a deadline but a seat to be held, the same questions answered the same
 way for as long as the engagement runs, and the poster's real question is
-not "what would this cost" but "who can I trust in this seat." The Agent
-Roles registry (https://agentroles.ai) exists because those jobs recur, and
-an agent-shaped posting is the demand side of it: wanted, a holder.
+not "what would this cost" but "who can I trust in this seat." Agent Roles
+(https://agentroles.ai) describes those jobs because they recur, and an
+agent-shaped posting is the demand side of it: wanted, a holder.
 
 ```json
 "need": {
@@ -429,8 +429,9 @@ an agent-shaped posting is the demand side of it: wanted, a holder.
 
 An agent-shaped posting MUST carry exactly one of `role` or `profile`.
 
-`role` names a published role by registry, standard offering name, and
-version. The role contract already states the four parts a candidacy is
+`role` names a role described in Agent Roles, or in another collection of
+roles, by where it is described (`registry`), its offering name, and its
+version. The role's description already states the four parts a candidacy is
 judged against, scope, access, refusals, and documents (Agent Roles §3),
 and it states the conformance test, so the posting repeats none of it. What
 the posting states is what the role cannot know: the access the poster will
@@ -1637,6 +1638,12 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.9.1-draft (2026-10-18): editorial, with no normative change. Agent Roles
+is a guide of working descriptions, so §5.2.1 says a posting names a role
+described in Agent Roles, where it said a published role from the Agent
+Roles registry. The `registry` member keeps its name. No requirement,
+field, example, or section number changes.*
 
 *0.9.0-draft (2026-10-18): gated postings. New §5.11. Organizations often
 require a provider to sign a non-disclosure agreement before it may see a

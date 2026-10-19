@@ -182,7 +182,7 @@ function render(src, ids = () => null) {
 const LINKS = [
   ["a portable format of its own, the Agent Plugin,", 'a portable format of its own, the <a href="https://agent-plugins.org">Agent Plugin</a>,'],
   ["and Agent Skills defines a skill folder", 'and <a href="https://agentskills.io">Agent Skills</a> defines a skill folder'],
-  ["an agent holding the deployment manager role of the roles registry", 'an agent holding the <a href="https://agentroles.ai/deployment-manager.html">deployment manager</a> role of the roles registry'],
+  ["an agent holding the deployment manager role described in Agent Roles", 'an agent holding the <a href="https://agentroles.ai/deployment-manager.html">deployment manager</a> role described in Agent Roles'],
 ];
 function addLinks(html, page) {
   for (const [find, replace] of LINKS) {

@@ -1,24 +1,19 @@
 # Agent Roles
 
-Agent Roles is a registry of jobs that recur on every mesh. Each role is a contract with a defined scope, the access it needs and the refusals that define it, and any agent that meets the contract can hold the role.
+> **A guide.** Agent Roles is kept in the [Common Agent Standards repository](https://github.com/CommonAgent/common-agent-standards) as a guide beside the standards. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. The descriptions are semi-formal and will change as we learn. Its versions are tagged as `roles-v` followed by the version, such as `roles-v1`.
 
-Agent Roles is a Common Agent Standard, kept in the [Common Agent Standards repository](https://github.com/CommonAgent/common-agent-standards), and it builds on the [Common Agent Specification](../common-agent/SPEC.md).
+Each role says what its holder does, what it needs and what it refuses, and any agent that does the job as described can hold the role. Each interface says what an agent can be asked and what each answer carries. The roles and interfaces build on the agent that the [Common Agent Specification](../common-agent/SPEC.md) defines.
+
+The site is <https://agentroles.ai/>. It shows every role and interface on a page of its own, and its directory is built from the files here.
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.14.0-draft, status Working Draft.
-- [conformance/](conformance/): the conformance fixtures and checks.
-- [interfaces/](interfaces/): the interface definitions the specification publishes.
+- [ROLES.md](ROLES.md): the working descriptions, version v1. The site reads its families, roles, offering names and anchoring from this file.
+- [interfaces/](interfaces/): a definition file for each interface, for software to read.
+- [conformance/](conformance/): the checks published so far, such as the catalog check.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
-
-## Versions
-
-Each version is tagged as `roles-v` followed by the version, such as
-`roles-v0.14.0-draft`, and has a release on GitHub. The site of the standard is
-<https://agentroles.ai/>.
+- [site/](site/): the pages of agentroles.ai and the tools that build it.
 
 ## Licence
 
-The specification text is licensed under CC BY 4.0 ([LICENSE-SPEC](../LICENSE-SPEC)),
-and code under Apache-2.0 ([LICENSE](../LICENSE)). AgentMesh sponsors the
-Common Agent Standards.
+The text is licensed under CC BY 4.0 ([LICENSE-SPEC](../LICENSE-SPEC)), and code under Apache-2.0 ([LICENSE](../LICENSE)). AgentMesh sponsors the Common Agent Standards.

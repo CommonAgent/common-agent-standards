@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The solution planner: Agent Roles</title>
+  <meta name="description" content="The solution planner turns what somebody wants done into a plan for a solution, which is several agents doing one job together. It writes down what done means before it plans any step, marks every line as written, assumed or asked, and leaves the choice of agent for each step to the catalog.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The solution planner: Agent Roles">
+  <meta property="og:description" content="The solution planner turns what somebody wants done into a plan for a solution, which is several agents doing one job together. It writes down what done means before it plans any step, marks every line as written, assumed or asked, and leaves the choice of agent for each step to the catalog.">
+  <meta property="og:url" content="https://agentroles.ai/solution-planner.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/solution-planner.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How a holder is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html" class="on" aria-current="page">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The solution planner</h1>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-solution-planner</b></span><span>updated <b>2026-10-05</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#32-role-the-solution-planner">32</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p>The solution planner turns what somebody wants done into a plan for a solution, which is several agents doing one job together, each handing its result to the next. Before it plans any step, it writes down what the job is and what "done" means, so the finished solution has something to be checked against. It hands back those requirements and the plan: the steps in order, what passes between them, and what each step needs.</p>
+        <p>It does not decide which agent does each step. The <a href="/catalog.html">catalog</a> decides that at the next stage, answering each step with an agent or a solution that already exists, or with "build one". A step that nothing existing can do becomes a new agent, and the <a href="/spec-writer.html">spec writer</a> writes that agent's statement.</p>
+        <p>On the lifecycle map, the solution planner holds the Requirements and Design stages for a solution (<a href="https://agenticdevelopment.ai/stages.html#requirements">agenticdevelopment.ai</a>). The spec writer holds the same two stages for a single agent.</p>
+
+        <h2 id="asks">1. The requests</h2>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (Agent Roles &sect;14.3). Implementing them alone does not grant the role.</p>
+        <ol>
+          <li><b>Plan this from a description.</b> The planner is given what somebody wants done, in their own words. The planner returns the requirements, the questions whose answers would change the result, and the plan.</li>
+          <li><b>Plan this from a written spec.</b> The planner is given a specification the person wrote. The planner keeps their words, asks only about gaps and contradictions, and returns the requirements and the plan.</li>
+          <li><b>Revise this plan.</b> The planner is given a change, with the current requirements and plan. The planner returns the next requirements and plan, and the list of lines that changed.</li>
+        </ol>
+        <p>The requirements say what the job is, what the person gives at the start, what comes back, when it runs, what must be true of the result for the job to count as done, what it refuses, and the most a run may cost.</p>
+
+        <h2 id="contract">2. What it does</h2>
+        <ol>
+          <li><b>"Done" is written before any step.</b> The solution planner writes down what must be true of the result for the job to count as done, as statements that can be checked, before it plans a step. A plan with nothing written under "done" is not delivered.</li>
+          <li><b>Every line says where it came from.</b> Each line of the requirements is marked written when it is the person's own words, assumed when the planner filled it in, or asked when the planner asked and the person answered. An assumption is shown to the person as an assumption and is never left unmarked.</li>
+          <li><b>It asks only what would change the result.</b> The planner asks the person a question only when the answer would change the plan or what counts as done.</li>
+          <li><b>It says what each step needs and leaves the agent open.</b> Each step names what it takes, what it hands back, and what kind of work it is. The planner does not choose the agent or the solution that does a step, because the catalog answers that at the next stage, Source.</li>
+          <li><b>It writes no agent's statement.</b> When the catalog answers a step with "build one", the step becomes a new agent, and its statement is the spec writer's to write. The solution planner does not write it.</li>
+          <li><b>A revision names what changed.</b> A revised plan comes with the list of lines that changed in the requirements and in the plan. The <a href="/impact-analyst.html">impact analyst</a> reads the two versions to work out what the change touches.</li>
+        </ol>
+
+        <h2 id="record">3. The record</h2>
+        <p>The record is the requirements and the plan. The requirements are the first part of the solution's own process document, written in the <a href="https://agentcatalog.com/spec/agent-processes">Agent Processes language</a>, so a new version of the requirements is a new version of the document. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (&sect;18.2 rule 7).</p>
+
+        <h2 id="conformance">4. How a holder is checked</h2>
+        <p>The test is behavioral. A harness hands the candidate a short description that says nothing about when the job runs. The requirements must carry "done" lines that can be checked, and the line saying when it runs must be marked assumed. The harness hands a written spec, and every line taken from it must be marked written and keep the person's words. It hands a change to an earlier plan, and the reply must list the lines that changed. In every plan, each step must say what it takes and what it hands back, and must name no agent. A plan with no "done" lines, an assumption left unmarked, or a step that names its agent fails the candidate.</p>
+        <p>A platform can record the results of the check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+
+        <p><i>v0.1.0-draft (2026-10-05): first draft, from the lifecycle revision plan.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

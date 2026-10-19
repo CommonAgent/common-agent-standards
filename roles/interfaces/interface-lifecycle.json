@@ -17,7 +17,7 @@
   ],
   "conformance": {
     "check": "ask status, pause as the operator, check status says paused and nothing is running, pause as a stranger and check it is refused, resume as the operator, check status says running, stop as the operator and check nothing is running",
-    "reference": "fleet-manager/runtime/fleet/lifecycle-check.mjs in the AgentMesh repository",
+    "reference": "fleet-manager/runtime/fleet/lifecycle-check.mjs in the reference implementation",
     "refusing_with_a_reason_conforms": true,
     "not_answering_conforms": false
   }

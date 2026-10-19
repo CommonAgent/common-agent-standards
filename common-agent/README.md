@@ -86,5 +86,5 @@ under [Apache-2.0](../LICENSE).
 - The specification site: <https://commonagent.net>
 - AgentDoc, the assembled view of an agent: <https://agentdoc.net>
 - Agent Messaging, a network binding: <https://agentmessaging.ai>
-- The roles registry: <https://agentroles.ai>
+- Agent Roles, working descriptions of recurring jobs: <https://agentroles.ai>
 - AgentMesh, the sponsor: <https://agentmesh.ai>

@@ -3,7 +3,7 @@
   "sponsor": { "name": "AgentMesh", "url": "https://agentmesh.ai/" },
   "repository": "https://github.com/CommonAgent/common-agent-standards",
   "home": "https://commonagent.net/",
-  "about": "Every entry is a folder of this repository. A standard's version is the version line of its specification, and each version is tagged as the entry's id, then -v, then the version. The kind is base for the Common Agent Specification, standard for every Common Agent Standard, and guide for a library of playbooks that has no schema to conform to. The group is the part of the work an entry belongs to, and commonagent.net/standards.html lists the entries under their groups, in the order of the groups below.",
+  "about": "Every entry is a folder of this repository. A standard's version is the version line of its specification, and each version is tagged as the entry's id, then -v, then the version. The kind is base for the Common Agent Specification, standard for every Common Agent Standard, and guide for a library of playbooks or working descriptions that has no schema to conform to. The group is the part of the work an entry belongs to, and commonagent.net/standards.html lists the entries under their groups, in the order of the groups below.",
   "groups": [
     { "id": "identity-and-reach", "name": "Identity and reach" },
     { "id": "contracting", "name": "Contracting" },
@@ -19,9 +19,9 @@
       "spec": "common-agent/SPEC.md",
       "domain": "commonagent.net",
       "site": "https://commonagent.net/spec.html",
-      "version": "0.28.0-draft",
+      "version": "0.28.1-draft",
       "status": "Working Draft",
-      "tag": "common-agent-v0.28.0-draft",
+      "tag": "common-agent-v0.28.1-draft",
       "builder": "common-agent/site/tools/build-spec.mjs",
       "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
       "parts": [
@@ -37,9 +37,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.2-draft",
+      "version": "0.9.3-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.2-draft",
+      "tag": "messaging-v0.9.3-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [
@@ -84,9 +84,9 @@
       "spec": "mandate/SPEC.md",
       "domain": "agentmandate.net",
       "site": "https://agentmandate.net/",
-      "version": "0.5.0-draft",
+      "version": "0.5.1-draft",
       "status": "Working Draft",
-      "tag": "mandate-v0.5.0-draft",
+      "tag": "mandate-v0.5.1-draft",
       "builder": "mandate/site/tools/build-spec.mjs",
       "summary": "A mandate is a signed delegation of authority that is bounded and can be revoked. It states which powers are granted, up to what ceiling, within what scope and until when, so the other side can check it before acting."
     },
@@ -99,9 +99,9 @@
       "spec": "rfp/SPEC.md",
       "domain": "agentrfp.net",
       "site": "https://agentrfp.net/",
-      "version": "0.9.0-draft",
+      "version": "0.9.1-draft",
       "status": "Working Draft",
-      "tag": "rfp-v0.9.0-draft",
+      "tag": "rfp-v0.9.1-draft",
       "builder": "rfp/site/tools/build-spec.mjs",
       "summary": "An Agent RFP is a signed, structured request for proposal. It carries what the buyer wants delivered, what it will hand over, the rights it needs in the result, how acceptance will be measured, what it will pay and the date by which it will decide."
     },
@@ -158,20 +158,6 @@
       ]
     },
     {
-      "id": "roles",
-      "name": "Agent Roles",
-      "kind": "standard",
-      "group": "doing-the-work",
-      "folder": "roles",
-      "spec": "roles/SPEC.md",
-      "domain": "agentroles.ai",
-      "site": "https://agentroles.ai/",
-      "version": "0.14.0-draft",
-      "status": "Working Draft",
-      "tag": "roles-v0.14.0-draft",
-      "summary": "Agent Roles is a registry of jobs that recur on every mesh. Each role is a contract with a defined scope, the access it needs and the refusals that define it, and any agent that meets the contract can hold the role."
-    },
-    {
       "id": "processes",
       "name": "Agent Processes",
       "kind": "standard",
@@ -185,6 +171,21 @@
       "tag": "processes-v0.6.0-draft",
       "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
+    },
+    {
+      "id": "roles",
+      "name": "Agent Roles",
+      "kind": "guide",
+      "group": "doing-the-work",
+      "folder": "roles",
+      "spec": "roles/ROLES.md",
+      "domain": "agentroles.ai",
+      "site": "https://agentroles.ai/",
+      "version": "v1",
+      "status": "Guide",
+      "tag": "roles-v1",
+      "builder": "roles/site/tools/build-spec.mjs",
+      "summary": "Agent Roles is a guide of working descriptions of jobs that recur wherever agents work. Each role says what its holder does, what it needs and what it refuses, and the descriptions will change as we learn."
     },
     {
       "id": "collab",

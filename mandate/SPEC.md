@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.5.0-draft
+**Version:** 0.5.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -574,7 +574,8 @@ settlement history already are the organization's books, with every
 line signed and attributed. An income view or a cash view is a
 presentation derived from those records, and producing one is a job for
 tools that read them, not for this document. The standard tool for that
-job is the bookkeeper, a role defined at https://agentroles.ai: it
+job is the bookkeeper, a role described in Agent Roles
+(https://agentroles.ai): it
 reads the records under a read-only grant, answers four questions, and
 holds no mandate.
 

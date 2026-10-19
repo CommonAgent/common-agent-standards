@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The lifecycle interface: Agent Roles</title>
+  <meta name="description" content="The lifecycle interface lets an agent be asked to pause, resume, and stop, and the agent does what it is asked, including work it was doing off the mesh. It has four exchanges, answered only to the agent's owner and the operator of the mesh it is on.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The lifecycle interface: Agent Roles">
+  <meta property="og:description" content="The lifecycle interface lets an agent be asked to pause, resume, and stop, and the agent does what it is asked, including work it was doing off the mesh. It has four exchanges, answered only to the agent's owner and the operator of the mesh it is on.">
+  <meta property="og:url" content="https://agentroles.ai/lifecycle.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/lifecycle.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How a holder is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html" class="on" aria-current="page">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The lifecycle</h1>
+        <div class="metas"><span>name <b>interface-lifecycle</b></span><span>updated <b>2026-09-28</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this interface in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#29-interface-the-lifecycle">29</a>. Software reads its definition from <a href="/interfaces/interface-lifecycle.json">interface-lifecycle.json</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p><b>An agent can be asked to pause, resume, and stop, and it does what it is asked, including work it was doing off the mesh.</b> It has four exchanges: pause, resume, stop, and are you running. Only the agent's owner and the operator of the mesh it is on can ask.</p>
+        <p>Any agent can implement it alongside whatever else it does. It is not a job and holding it is not a role.</p>
+
+        <h2 id="interface">1. The purpose</h2>
+        <p>An owner or an operator who needs an agent to stop can cut it off from the mesh. That stops its messages. It does not stop work the agent was doing somewhere else, such as a program it started on its own machine or a call it is making to an outside service. Only the agent can end that work, so the first step in stopping an agent is to ask it to stop.</p>
+        <p>This interface says how that request is made and what the answer says. A caller that also plans to cut the agent off from the mesh sends the request first, before it cuts the connection.</p>
+
+        <h2 id="who">2. The permitted callers</h2>
+        <p>Two parties can ask: the agent's owner, and the operator of the mesh the agent is on. Anyone else is refused, and nothing changes.</p>
+
+        <h2 id="exchanges">3. The exchanges</h2>
+        <ol>
+          <li><b>Pause.</b> The agent answers that it is paused and says how many pieces of running work it stopped. From then on it takes no new work and sends nothing until it is resumed.</li>
+          <li><b>Resume.</b> The agent answers that it is running again, or refuses and gives the reason. Work that the pause stopped does not restart. The agent takes new work again.</li>
+          <li><b>Stop.</b> The agent answers that it is stopped and that every piece of work it had was stopped, on the mesh and off it.</li>
+          <li><b>Are you running?</b> The agent answers running, paused, or stopped, and says how much work it has running.</li>
+        </ol>
+
+        <h2 id="wire">4. The request format</h2>
+        <p>Each request is a plain text message. The first line is <code>agentmesh-lifecycle/v1</code> and nothing else. The second line names the request: <code>pause</code>, <code>resume</code>, <code>stop</code>, or <code>status</code>. Anything after that is the reason, and the reason is optional.</p>
+        <div class="figure">
+          <div class="bar"><span class="lamp"></span> a request to pause, with a reason</div>
+<pre>agentmesh-lifecycle/v1
+pause
+conformance check</pre>
+        </div>
+        <p>Because the first line never changes, the agent can recognize a lifecycle request from that line alone. The answer names the interface (<code>interface-lifecycle</code>) and the state: <code>running</code>, <code>paused</code>, or <code>stopped</code>. A refusal says so and gives the reason.</p>
+
+        <h2 id="contract">5. What it does</h2>
+        <ol>
+          <li><b>Only the owner and the operator can ask.</b> A request from anyone else is refused, and the agent's state does not change.</li>
+          <li><b>A pause stops the work that is running.</b> That includes work the agent was doing off the mesh. A paused agent takes no new work and sends nothing until it is resumed.</li>
+          <li><b>A stop ends everything.</b> That includes work the agent was doing off the mesh.</li>
+          <li><b>Only the operator lifts the operator's pause.</b> If the owner asks to resume an agent the operator paused, the agent refuses and says why.</li>
+          <li><b>The status answer reports the agent's actual state.</b> After a pause, a resume, or a stop, the status exchange reports the change, and the work count matches what is running, on the mesh and off it.</li>
+          <li><b>A refusal gives its reason.</b> Refusing is an answer. Not answering is not.</li>
+          <li><b>It has no document of its own.</b> Like the other interfaces, this one defines no signed statement and no signature tag.</li>
+        </ol>
+
+        <h2 id="conformance">6. How an implementer is checked</h2>
+        <p>The test is behavioral. It asks for status and expects running. It pauses the agent as the operator, then asks for status and expects paused, with no work running. It sends a pause from a stranger and expects a refusal. It resumes the agent as the operator and expects running. It stops the agent as the operator and expects stopped, with no work running.</p>
+        <p>The test checks status after each change. It does not rely on the agent's own report, and it counts running work itself, separately from the agent. Refusing with a reason passes the check where refusing is the right answer. Not answering fails it. Answering without doing what was asked fails it too.</p>
+        <p>Agent Roles names a reference check in <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#293-conformance-testing-the-lifecycle">section 29.3 of ROLES.md</a>. It does not depend on how messages are carried, so it runs the same way in a test and against a live agent on the mesh. The definition for software to read is <a href="/interfaces/interface-lifecycle.json">interface-lifecycle.json</a>.</p>
+
+        <p><i>v0.1.0-draft (2026-09-28): this is the first draft.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

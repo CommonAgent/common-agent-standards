@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.2-draft
+**Version:** 0.9.3-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -586,7 +586,7 @@ A stop covers an agent in every place it acts from (§4.11). A key holder sends 
 
 **Levels.** A stop acts at every level the implementation reaches, at once:
 
-1. **It asks the agent to stop**, over the lifecycle interface (the roles registry's `interface-lifecycle`: pause, resume, stop, status). An honest agent that is asked to stop stops everything, including work it was doing off the mesh. The ask is sent before the transport is cut, while the agent can still hear it.
+1. **It asks the agent to stop**, over the lifecycle interface (`interface-lifecycle`, described in Agent Roles: pause, resume, stop, status). An honest agent that is asked to stop stops everything, including work it was doing off the mesh. The ask is sent before the transport is cut, while the agent can still hear it.
 2. **It cuts the agent off the mesh.** Every connection carrying a covered agent is revoked as of now (§4.8); every issuing door refuses it; the registry reports its status (§9.2); receivers refuse what it signs (§5.3).
 3. **It ends what the agent borrowed.** Access the mesh brokers to outside systems is short-lived and issued through the mesh, so it is not renewed for a stopped agent.
 4. **It stops the process** wherever the implementation runs the agent, and refuses to start it again while it is stopped.
@@ -6385,3 +6385,9 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > Personal Agent Naming and the A2A Bridge, and the examples of §18.10 use
 > `mesh.example.com`. No requirement, field, wire identifier or section
 > number changes. The wire version stays `0.3.0` (§20.1).
+
+> **2026-10-18: Version 0.9.3-draft. Editorial.** The lifecycle interface
+> that a stop asks over is described in Agent Roles, which is a guide of
+> working descriptions; the text no longer calls it the roles registry. No
+> requirement, field, wire identifier or section number changes. The wire
+> version stays `0.3.0` (§20.1).

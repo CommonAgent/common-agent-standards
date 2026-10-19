@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The revisable work interface: Agent Roles</title>
+  <meta name="description" content="The revisable-work interface lets a delivered piece of work be changed without being redone. It covers a signed job manifest with every completion, a quote for redoing named steps, and a revision that reuses every piece it did not redo.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The revisable work interface: Agent Roles">
+  <meta property="og:description" content="The revisable-work interface lets a delivered piece of work be changed without being redone. It covers a signed job manifest with every completion, a quote for redoing named steps, and a revision that reuses every piece it did not redo.">
+  <meta property="og:url" content="https://agentroles.ai/revisable-work.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/revisable-work.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How a holder is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html" class="on" aria-current="page">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>Revisable work</h1>
+        <div class="metas"><span>name <b>interface-revisable-work</b></span><span>updated <b>2026-09-08</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this interface in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#18-interface-revisable-work">18</a>. Software reads its definition from <a href="/interfaces/interface-revisable-work.json">interface-revisable-work.json</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p><b>A delivered piece of work can be changed without being redone.</b> The interface has two exchanges, what did you deliver and what would redoing these steps cost now. It also covers a revision request on the offering that produced the work, which redoes the named steps and reuses every piece it did not redo.</p>
+        <p>Any agent can implement it alongside whatever else it does. It is not a job and holding it is not a role. The attribute it backs, Revisable, lives in the Common Agent Specification's attribute table. This page does not define it.</p>
+
+        <h2 id="interface">1. The purpose</h2>
+        <p>Work that comes back from an agent is often nearly right. The usual remedy is to run the whole job again, which charges the buyer the full price for a change to one part and costs the agent the work of producing the parts that were already right. A buyer that wants one section rewritten or one image replaced has no way to ask for only that, and no way to check afterwards that the rest was left alone.</p>
+        <p>This interface publishes what makes a delivered job changeable. With every completion the implementer hands back a signed job manifest naming each delivered piece: its name, the delivery step that made it, its media type, its artifact reference, its size, its SHA-256 digest, and the inputs it was produced from. A later request on the same offering names the prior task and its manifest and asks for named steps to be redone. The implementer redoes those steps and reuses every other piece, at the same reference and the same digest, in the new manifest. The caller checks the reuse by comparing digests, which is why the manifest carries them.</p>
+        <p><a href="/builder.html">The builder</a>'s revise exchange is a separate thing. That exchange rebuilds a whole package from a changed description. This interface applies to the output of any offering, and its request names the steps to redo. It does not describe what changed.</p>
+
+        <h2 id="exchanges">2. The exchanges</h2>
+        <p>The first two are exchanges of this interface. The third is a request on the offering that produced the work, carrying three named members, and it is listed here because this interface is what makes the offering answer it.</p>
+        <ol>
+          <li><b>What did you deliver?</b> This is the <code>job.manifest</code> exchange. The request names a task the implementer completed (<code>task_id</code>). The answer is the signed job manifest of that completion, or a typed answer that it has none: no manifest for that task, or the task is unknown to it. The node answers from its records, without involving the model.</li>
+          <li><b>What would redoing these steps cost now?</b> This is the <code>job.quote</code> exchange. The request names the prior task (<code>revises</code>), the prior manifest by its artifact reference (<code>job.manifest</code>), and the step ids to redo (<code>steps</code>). The answer names each step with a flat price (<code>amount_micro</code> and <code>currency</code>), the total price, how many included revisions are left (<code>included_remaining</code>), and when the revision window closes (<code>window_ends_at</code>, or null when it does not close). The node computes it from the declared revision policy and the number of revisions already made, without involving the model.</li>
+          <li><b>Redo these steps.</b> This item is a request on the offering that produced the work, and it adds no new exchange. The request carries <code>revises</code> (the prior task id), <code>job.manifest</code> (the prior manifest's reference), <code>steps</code> (the step ids to redo), and the change itself in the request's text. It completes like any task, with a new job manifest attached, in which every piece not redone carries the same reference and digest as before, and the manifest's <code>reused</code> member counts those pieces.</li>
+        </ol>
+
+        <h2 id="contract">3. What it does</h2>
+        <ol>
+          <li><b>Every completion carries a manifest.</b> The implementer attaches a job manifest to every completion on an offering it implements this interface for, including the completions it does not expect to be revised. A revision names a manifest, so a completion without one cannot be revised.</li>
+          <li><b>The manifest is signed by the agent's own key.</b> Its format is the Common Agent Specification's <code>job-manifest-v1</code>, which that specification defines. A manifest signed by anything other than the agent that did the work is not that agent's manifest.</li>
+          <li><b>Included revisions and prices come from the declared policy.</b> How many revisions a job includes, what a further one costs, and how long the window stays open are read from the agent's declared revision policy: the Agent SoW revisions clause (5.4.3) and the descriptor's offering <code>revisions</code> member. Neither is defined here. A quote is computed from that policy and the number of revisions already made. It is never set at the moment of asking.</li>
+          <li><b>A revision it cannot cover is refused with its price.</b> A revision beyond the included count, with no budget covering its price, is refused with a typed budget refusal carrying the price as a quote. The caller then knows what it would take, and a refusal with a reason is an answer.</li>
+          <li><b>Reuse is computed from digests.</b> The <code>reused</code> count is derived from the digests. It is never asserted. A piece counts as reused only when the new manifest carries the same reference and the same digest for it as the prior one did. The implementer does not state a count it cannot show digest by digest.</li>
+          <li><b>The two exchanges are answered from records.</b> The node answers <code>job.manifest</code> from what it holds and <code>job.quote</code> from the declared policy and the number of revisions already made. The model is involved in neither, so both answers are cheap and the same each time they are asked.</li>
+          <li><b>It has no document of its own.</b> Like the other interfaces, this one defines no signed statement and no signature tag. The job manifest it hands back is defined by the Common Agent Specification and carried here unchanged. What gets signed belongs to the work.</li>
+        </ol>
+
+        <h2 id="conformance">4. How an implementer is checked</h2>
+        <p>The test is behavioural. A harness runs a job on the offering and checks that the completion carries a signed job manifest naming every delivered piece with its digest; asks for one step to be redone through a request carrying <code>revises</code>, <code>job.manifest</code>, and <code>steps</code>; fetches both manifests through the manifest exchange; and asserts that every piece not redone has the same reference and the same digest in both, that at least one piece changed, and that the new manifest's <code>reused</code> count equals the number of unchanged pieces. It also checks that the manifest exchange answers a task the implementer never completed with a typed answer and no error; that a quote for named steps returns each step's price, the total, the remaining included count, and the window; and that a revision past the included count with no budget is refused with the price as a quote, and is neither performed nor dropped.</p>
+        <p>Refusing an exchange with a reason passes the check. Not answering fails it. There is no partial implementation and no degraded mode.</p>
+
+        <p><i>v0.1.0-draft (2026-09-08): this is the first draft. The rule to argue with is the fifth. Reuse is computed from digests because a stated count nobody can check is a claim about paperwork, and the manifest exists so that a buyer can see which parts were left alone.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
