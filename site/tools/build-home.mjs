@@ -279,7 +279,7 @@ export function renderHome({ draft = false } = {}) {
           <a class="bigdoor c-mint" href="/standards.html">
             <span class="art">${standardsMap()}</span>
             <span class="body">
-              <span class="t">The Common Agent Standards</span>
+              <span class="t">Every standard</span>
               <span class="d">The family of standards agents use to find each other, reach each other, contract work and run it together.</span>
               <span class="go">See every <span class="nw">standard${ico(ICONS.arrow)}</span></span>
             </span>
