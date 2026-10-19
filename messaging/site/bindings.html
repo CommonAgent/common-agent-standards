@@ -90,9 +90,7 @@
 
       <header class="herobg">
       <div class="wrap hero">
-        <span class="eyebrow"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg>Bindings</span>
         <h1>Bindings</h1>
-        <p class="subtitle">What can carry Agent Messaging</p>
         <p class="lede">Agent Messaging is written separately from the messaging system underneath
           it, and a binding maps the protocol onto one. This page says what a binding has to
           provide, how the common messaging systems measure up, and why Kafka is not a
@@ -106,7 +104,6 @@
 
       <section class="band" id="needs">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg>What a binding provides</p>
           <h2>What a binding must provide</h2>
           <p>Section 18.1 of the specification lists what any binding must provide, and the core
             profile in section 1.6 says what every Agent Messaging server must implement on top
@@ -180,7 +177,6 @@
 
       <section class="band tinted" id="fit">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M3 9h18"/><path d="M3 15h18"/><path d="M9 3v18"/></svg>How the common systems fit</p>
           <h2>How the common messaging systems fit</h2>
           <p>Each row is a requirement from the list above, and each column is a messaging system
             as it ships, with no gateway in front of it. Where a system needs a database or a
@@ -278,7 +274,6 @@
 
       <section class="band" id="today">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg>Bindings today</p>
           <h2>Bindings today</h2>
           <p>NATS JetStream is the reference binding, and sections 18.2 to 18.10 of the
             specification define it in full. <a href="/nats.html">Agent Messaging on NATS</a>
@@ -290,16 +285,15 @@
             presence in Postgres. <a href="/rabbitmq.html">Agent Messaging on RabbitMQ</a> shows
             how the protocol maps onto it. The Agent Messaging Server runs on either binding.</p>
           <div class="doors three">
-            <a class="door c-blue" href="/nats.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>The reference binding</h3><p>How the protocol maps onto NATS JetStream, row by row.</p><p class="go">Agent Messaging on NATS<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-violet" href="/rabbitmq.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span><h3>A second binding</h3><p>How the protocol maps onto RabbitMQ, with Postgres beside it.</p><p class="go">Agent Messaging on RabbitMQ<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-mint" href="/spec.html#18-bindings"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>Section 18</h3><p>The binding requirements and the full NATS JetStream binding.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/nats.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>The reference binding</h3><p>A table maps the protocol onto NATS JetStream, row by row.</p><p class="go">Agent Messaging on NATS<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-violet" href="/rabbitmq.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span><h3>A second binding</h3><p>A table maps the protocol onto RabbitMQ, with Postgres beside it.</p><p class="go">Agent Messaging on RabbitMQ<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="/spec.html#18-bindings"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>Section 18</h3><p>It holds the binding requirements and the full NATS JetStream binding.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
           </div>
         </div>
       </section>
 
       <section class="band tinted" id="kafka">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg>Kafka</p>
           <h2>Why Kafka is not a binding</h2>
           <p>Many companies already run Kafka for their event data, so it is natural to ask
             whether Agent Messaging can run on it. It cannot, because Kafka lacks several things
@@ -335,7 +329,6 @@
 
       <section class="band" id="writing">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20h9"/><path d="M16.376 3.622a1 1 0 0 1 3.002 3.002L7.368 18.635a2 2 0 0 1-.855.506l-2.872.838a.5.5 0 0 1-.62-.62l.838-2.872a2 2 0 0 1 .506-.854z"/></svg>Writing a binding</p>
           <h2>Writing a binding</h2>
           <p>A binding is a document. Besides meeting the requirements above, section 18.1 says it
             must document the mesh-server interface: the wire protocol and framing between client
@@ -361,8 +354,8 @@
             leaves out any part of the core profile does not implement Agent Messaging
             (<a href="/spec.html#1-6-conformance-profiles">§1.6</a>).</p>
           <div class="doors">
-            <a class="door c-blue" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>The core tests, what each one checks, and how to run them against a server.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-mint" href="/spec.html#18-1-binding-requirements"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>Section 18.1</h3><p>The binding requirements, word for word.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>It lists the core tests, what each one checks, and how to run them against a server.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="/spec.html#18-1-binding-requirements"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>Section 18.1</h3><p>It gives the binding requirements word for word.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
           </div>
         </div>
       </section>

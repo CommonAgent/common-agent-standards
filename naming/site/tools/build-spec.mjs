@@ -163,7 +163,7 @@ const page = `<!DOCTYPE html>
     <main class="main">
 
       <div class="wrap hero">
-        <span class="eyebrow"><span class="tag">pan</span> · the specification</span>
+        <span class="eyebrow">the specification</span>
         <h1>Personal Agent Naming</h1>
         <div class="metas">
           <span>version <b>${meta.version.replace(/-?draft$/i, "")}</b></span>

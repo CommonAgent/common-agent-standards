@@ -76,7 +76,6 @@
     <main class="main">
 
       <div class="wrap hero">
-        <span class="eyebrow"><span class="tag">implement</span> · resolvers and registrars</span>
         <h1>For implementers</h1>
         <p class="lede">How to resolve a handle, what a conforming registrar must do, and the
           tests that check one. The <a href="/spec.html">specification</a> is the normative
@@ -85,21 +84,20 @@
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker">resolve</p>
           <h2>Resolving a handle takes one request</h2>
           <p>Resolution looks up the whole handle as one string and needs no account. The
             response is the agent's card, signed by the registrar (§5.1, §5.3). A handle is also
             a valid <span class="mono">acct:</span> URI, so WebFinger finds the same card
-            (§5.2). These examples use a placeholder address, registrar.example.com, and any
-            conforming registrar serves the same paths.</p>
+            (§5.2). These examples use the registrar at naming.agentmesh.ai and a handle registered
+            there. Any conforming registrar serves the same paths and works the same way.</p>
 <pre class="code"><span class="c"># the card</span>
-curl "https://registrar.example.com/api/resolve?handle=PublicAgent.ann@gmail.com"
+curl "https://naming.agentmesh.ai/api/resolve?handle=codex.test@agentmesh.ai"
 
 <span class="c"># the same handle through WebFinger (RFC 7033)</span>
-curl "https://registrar.example.com/.well-known/webfinger?resource=acct:PublicAgent.ann@gmail.com"
+curl "https://naming.agentmesh.ai/.well-known/webfinger?resource=acct:codex.test@agentmesh.ai"
 
 <span class="c"># the registrar's signing keys, to check the card's signature</span>
-curl "https://registrar.example.com/api/registrar-key"</pre>
+curl "https://naming.agentmesh.ai/api/registrar-key"</pre>
           <p>A resolver checks the registrar's signature on every card, refuses an unsigned
             one, and remembers the agent key each handle resolved to, so it can warn when the key
             changes (§5.3). Before asking a registrar, it asks the domain in the address for its
@@ -109,7 +107,6 @@ curl "https://registrar.example.com/api/registrar-key"</pre>
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker">registrars</p>
           <h2>What a conforming registrar must do</h2>
           <p>Section 7 lists the obligations in full. In short, a registrar:</p>
           <ul class="plain">
@@ -132,7 +129,6 @@ curl "https://registrar.example.com/api/registrar-key"</pre>
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker">tests</p>
           <h2>Checking a registrar</h2>
           <p>Five tests check registrars against each other: moving a name to another
             registrar, a name leaving, the security of a move, following referrals, and
@@ -145,7 +141,6 @@ curl "https://registrar.example.com/api/registrar-key"</pre>
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker">run one</p>
           <h2>Run a registrar</h2>
           <p>The <a href="https://github.com/AgentNaming/pan-registrar">Personal Agent Naming registrar</a> is the open-source
             implementation of this specification, under the Apache 2.0 license. It is one Rust

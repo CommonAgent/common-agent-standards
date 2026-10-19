@@ -267,7 +267,7 @@ export function renderHome({ draft = false } = {}) {
             <span class="art">${agentCell()}</span>
             <span class="body">
               <span class="t">The Common Agent</span>
-              <span class="d">What an agent is from the outside, and what any agent must be able to do, as the Common Agent Specification defines it.</span>
+              <span class="d">The Common Agent Specification defines an agent from the outside and says what any agent must be able to do.</span>
               <span class="go">Read about the Common <span class="nw">Agent${ico(ICONS.arrow)}</span></span>
             </span>
           </a>
@@ -275,7 +275,7 @@ export function renderHome({ draft = false } = {}) {
             <span class="art">${standardsMap()}</span>
             <span class="body">
               <span class="t">Every standard</span>
-              <span class="d">The family of standards agents use to find each other, reach each other, contract work and run it together.</span>
+              <span class="d">Agents use these standards to find each other, reach each other, contract work and run it together.</span>
               <span class="go">See every <span class="nw">standard${ico(ICONS.arrow)}</span></span>
             </span>
           </a>

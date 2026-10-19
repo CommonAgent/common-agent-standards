@@ -236,7 +236,7 @@ function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, ext
     <main class="main">
 
       <div class="wrap spec-hero">
-        <span class="eyebrow">${eyebrow}</span>
+        ${eyebrow ? `<span class="eyebrow">${eyebrow}</span>` : ""}
         <h1>${h1}</h1>
         ${sub ? `<p class="sub">${sub}</p>` : ""}
         ${meta}
@@ -293,9 +293,8 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
     title: `${TITLE} ${VERSION}`,
     ogTitle: TITLE,
     description: "The full text of the Common Agent Specification: the floor every agent meets, the work it does, the Agent Descriptor, the capabilities, the signed records others issue, the AgentDoc, the twenty attributes, the Agent Package and the agent repository.",
-    eyebrow: "The specification",
     h1: esc(TITLE),
-    sub: "The definition of the agent as a testable claim. Every clause can be checked by a program or a signature.",
+    sub: "It defines the agent as a claim anyone can test, and every clause can be checked by a program or a signature.",
     extraHero: `<p class="canon">${stamp}${DRAFT ? "" : " This page is the normative text."}</p>`,
     toc: toc.filter((t) => t.lvl === 2),
     body: html,
@@ -329,7 +328,7 @@ const DESCRIPTOR_IDS = { "6.1": "primary", "6.2": "document", "6.3": "kinds", "6
   "6.11": "scope", "6.12": "shape" };
 chapter({
   file: "descriptor.html", active: "descriptor", id: "s6", num: 6, name: "The Agent Descriptor",
-  sub: "The operator's standing description of one agent, and the primary location for its metadata.",
+  sub: "The Agent Descriptor is the operator's standing description of one agent and the primary location for its metadata.",
   description: "The Agent Descriptor, Section 6 of the Common Agent Specification: the members, the kind vocabulary, the four rules, versioning and the digest, the signature, serving and discovery, and the projections that consume it.",
   ids: (lvl, num) => (lvl === 3 && DESCRIPTOR_IDS[num] ? { aliases: [DESCRIPTOR_IDS[num]] } : null),
   introAliases: ["motivation", "terms"],
@@ -348,7 +347,7 @@ const PACKAGE_IDS = { "12.1": "terms", "12.2": "layout", "12.3": "descriptor", "
   "12.6": "rules", "12.7": "lifecycle", "12.8": "provenance", "12.9": "out", "12.10": "conformance" };
 chapter({
   file: "package.html", active: "package", id: "s12", num: 12, name: "The Agent Package", links: true,
-  sub: "How an agent travels from a description to a running agent with an identity: what a package contains, how it is published to a depot and installed from one, and how a verifier checks that the agent answering is the package that was built.",
+  sub: "This section says how an agent travels from a description to a running agent with an identity: what a package contains, how it is published to a depot and installed from one, and how a verifier checks that the agent answering is the package that was built.",
   description: "The Agent Package, Section 12 of the Common Agent Specification: the layout, the draft Descriptor, the install file, skills, the rules, publish and install, provenance, and conformance.",
   ids: (lvl, num) => (lvl === 3 && PACKAGE_IDS[num] ? { aliases: [PACKAGE_IDS[num]] } : null),
   tail: `\n<p class="chapnote">Where an agent is kept before it is packaged, and how somebody comes to run a copy of their own, is Section 13 of the <a href="/spec.html#s13">specification</a>, the agent repository.</p>`,
@@ -377,7 +376,7 @@ chapter({
     description: "The Common Agent catalog profile: offers derived from signed standing proposals, reputation pointers, liveness pointers, evidence labels, signed entries, audience, and publish and fetch calls, as optional metadata on an ARD entry.",
     eyebrow: "A part of the specification",
     h1: esc(pTitle),
-    sub: "Optional metadata on an ARD entry that tells a buyer what an agent charges, what others have recorded about it, where to ask whether it is reachable, and who signed the listing.",
+    sub: "The catalog profile is optional metadata on an ARD entry. It tells a buyer what an agent charges, what others have recorded about it, where to ask whether it is reachable, and who signed the listing.",
     meta: metaLine(pVersion, pStatus.split(/[,.]/)[0].trim(), (pDate.match(/\d{4}-\d{2}-\d{2}/) ?? [pDate])[0]),
     extraHero: `${applies}<p class="canon">${pStamp}${DRAFT ? "" : " This page is the normative text of the profile."}</p>`,
     toc: toc.filter((t) => t.lvl === 2),
@@ -408,9 +407,7 @@ ${entries}
     file: "versions.html", active: "versions",
     title: "Versions and changelog: the Common Agent Specification",
     description: "Every version of the Common Agent Specification, with its date and what it changed.",
-    eyebrow: "Versions and changelog",
     h1: "Versions and changelog",
-    sub: "Each version of the Common Agent Specification, the date it carries, and what it changed.",
     extraHero: `<p class="canon">${stamp}</p>`,
     body,
   }));

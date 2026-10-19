@@ -159,7 +159,6 @@ const page = `<!DOCTYPE html>
       <div class="wrap spec-hero">
         <span class="eyebrow">The specification</span>
         <h1>${esc(title)}</h1>
-        ${subtitle ? `<p class="sub">${esc(subtitle)}</p>` : ""}
         <div class="metas">
           <span>version <b>${meta.version}</b></span>
           <span>status <b>${meta.status}</b></span>

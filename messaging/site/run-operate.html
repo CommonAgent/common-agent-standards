@@ -100,7 +100,6 @@
 
       <section class="band" id="upgrade">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m5 12 7-7 7 7"/><path d="M12 19V5"/></svg>Upgrading</p>
           <h2>Moving to a new release</h2>
           <ol class="plain">
             <li>Back up, as the next section says.</li>
@@ -130,8 +129,7 @@ docker compose exec server /entrypoint.sh mesh-admin status</pre>
 
       <section class="band tinted" id="backup">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="5" x="2" y="3" rx="1"/><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"/><path d="M10 12h4"/></svg>Backups</p>
-          <h2>Backing up, and restoring</h2>
+          <h2>Backups and restores</h2>
           <h3 class="step">On NATS</h3>
           <p>The <code>config</code> volume is the whole mesh: the keys, the settings, JetStream's
             data and the audit log. Stop the broker so JetStream's files are consistent, copy the
@@ -162,16 +160,15 @@ docker run --rm -v agent-messaging-rabbitmq_config:/config -v "$PWD":/backup bus
 
       <section class="band" id="more">
         <div class="wrap">
-          <p class="kicker"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg>In the repository</p>
-          <h2>Kubernetes, and everything else</h2>
+          <h2>More in the repository</h2>
           <p>Every night the repository's CI starts both setups from empty, with Compose and on a
             throwaway Kubernetes cluster, enrolls an agent, runs the core conformance profile,
             revokes a credential live, and runs the examples.</p>
           <div class="doors">
-            <a class="door c-blue" href="https://github.com/agent-messaging/agent-messaging-server/tree/main/deploy/kubernetes"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><h3>Kubernetes</h3><p>A manifest for each broker, on one node, with a first-run Job.</p><p class="go">Read the README<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/operator-handbook.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The operator handbook</h3><p>Ports, secrets, TLS, tokens, limits, and what to do when something is wrong.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-amber" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/sizing.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg></span><h3>The sizing guide</h3><p>What runs out first on each broker, and what to watch.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-violet" href="https://github.com/agent-messaging/agent-messaging-server/tree/main/examples"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></span><h3>The examples</h3><p>Five working programs, each runnable on either broker.</p><p class="go">See them<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-blue" href="https://github.com/agent-messaging/agent-messaging-server/tree/main/deploy/kubernetes"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg></span><h3>Kubernetes</h3><p>There is a manifest for each broker, on one node, with a first-run Job.</p><p class="go">Read the README<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/operator-handbook.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The operator handbook</h3><p>It covers ports, secrets, TLS, tokens, limits, and what to do when something is wrong.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-amber" href="https://github.com/agent-messaging/agent-messaging-server/blob/main/docs/sizing.md"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z"/><path d="m14.5 12.5 2-2"/><path d="m11.5 9.5 2-2"/><path d="m8.5 6.5 2-2"/><path d="m17.5 15.5 2-2"/></svg></span><h3>The sizing guide</h3><p>It says what runs out first on each broker, and what to watch.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-violet" href="https://github.com/agent-messaging/agent-messaging-server/tree/main/examples"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/></svg></span><h3>The examples</h3><p>Five working programs each run on either broker.</p><p class="go">See them<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
           </div>
         </div>
       </section>
