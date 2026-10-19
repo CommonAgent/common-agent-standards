@@ -6,7 +6,7 @@ Agent RFP is a Common Agent Standard, kept in the [Common Agent Standards reposi
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.8.1-draft, status Working Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.9.0-draft, status Working Draft.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 
 ## Versions

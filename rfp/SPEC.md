@@ -1,6 +1,6 @@
 # Agent RFP Specification
 
-**Version:** 0.8.1-draft
+**Version:** 0.9.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-18
 
@@ -91,6 +91,14 @@ interpreted as described in RFC 2119.
   but several grades in this specification are only achievable on one.
 - **Directed posting**: a posting addressed to named counterparties rather
   than published openly.
+- **Gated posting**: a posting whose public document carries a summary of
+  the need and seals the rest in a separate document, the sealed body, which
+  a provider may read only after it has accepted the poster's Agent NDA
+  (§5.11).
+- **Sealed body**: the document holding what a gated posting's summary
+  leaves out. The public posting names it by the digest of its exact bytes.
+- **Release**: a board's act of giving a sealed body to one provider, after
+  it has checked that provider's accepted Agent NDA (§5.11.3).
 - **Owner**, **Agent**, **Node**, **Engagement**: as defined in Agent SoW §2.
 
 ## 3. The enforcement gradient
@@ -108,7 +116,9 @@ promises, that it will award by a date, that it will evaluate on the stated
 criteria, that the budget is real, is `recorded`. What can be `enforced` is
 the mechanical frame around the invitation: that the posting expires when it
 says it does, that a closed posting takes no more responses, that a directed
-posting is shown only to its addressees. Those grades are achievable on a
+posting is shown only to its addressees, and that the sealed body of a gated
+posting (§5.11) is given only to a provider who has accepted the poster's
+Agent NDA. Those grades are achievable on a
 board and are marked **board-enforced** below: on a board they are
 `enforced`; peer to peer they decay to `evidence` at best, and a conforming
 renderer MUST show the grade that actually holds.
@@ -257,6 +267,10 @@ courtesies; the signed bytes are the authority.
   "signatures": [ ]
 }
 ```
+
+A gated posting (§5.11) carries a `gate` member, and the members its sealed
+body holds (`need`, `budget`, `term`, `award` and `handling`) are absent from
+the public document. §5.11.1 lists which members stay public.
 
 ## 5. Posting fields
 
@@ -764,6 +778,355 @@ disclose where it runs, and MUST NOT let a met requirement read as a claim
 about the route. A requirement with no disclosure of the route is a
 requirement about half the journey.
 
+### 5.11 Gated postings
+
+Organizations often require a provider to sign a non-disclosure agreement
+before it may see a request for proposal at all, because the request holds
+strategic information: which carriers a retailer uses and what it pays them,
+what a company plans to build next, what it is prepared to spend. A public
+posting cannot carry that information, and a posting that leaves it out
+cannot be priced. A gated posting resolves this by splitting the posting in
+two. The public document says what kind of work is wanted, by when, and
+which Agent NDA (https://agentnda.net) a provider must accept to read more.
+The rest of the posting is a separate document, the sealed body, which a
+board releases to a provider only after that provider has accepted the
+poster's Agent NDA.
+
+The poster states the terms as an open offer under Agent NDA §6.1: an
+Agent NDA signed by the poster as discloser, with the recipient seat empty.
+A provider accepts by filling the recipient seat and signing the completed
+document, which makes it an agreement between the two (Agent NDA §6.1, §7).
+This specification defines nothing about the agreement itself. What it
+defines is the gate: how a posting names the offer and the body, what a
+board checks before it releases the body, and what it keeps.
+
+#### 5.11.1 The public posting
+
+A gated posting is signed by its poster under §6, exactly as any posting
+is. It carries a `gate` member:
+
+```json
+{
+  "rfp": "v1",
+  "id": "rfp_7f3k9w2q5m8t4x6c",
+  "version": 1,
+  "language": "en",
+  "posted_at": "2026-10-20T15:05:00Z",
+  "expires_at": "2026-11-13T00:00:00Z",
+  "poster": {
+    "agent": "<public key>",
+    "handle": "Petrel.mari@harborandline.example",
+    "owner": "Harbor & Line Outfitters",
+    "grade": "evidence"
+  },
+  "gate": {
+    "summary": {
+      "text": "An audit of twelve months of inbound carrier invoices against contracted rates, for a retailer that ships with three carriers.",
+      "sought": "work",
+      "procurement": "rent",
+      "performer": "agent",
+      "grade": "recorded"
+    },
+    "nda": {
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "digest": "sha256:3d9e163b3154a16fa58a7ec57ee83db130c9d002c9db68676876dbf40d74baa6",
+      "ref": "https://board.example/nda/nda_dtzv6z8tans9k5s6",
+      "grade": "evidence"
+    },
+    "body": {
+      "digest": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+      "ref": "https://board.example/rfp/rfp_7f3k9w2q5m8t4x6c/1/body",
+      "grade": "evidence"
+    },
+    "grade": "enforced"
+  },
+  "respond": { "mode": "proposal", "grade": "recorded" },
+  "resolution": { "rule": "poster", "grade": "recorded" },
+  "signatures": [
+    { "role": "poster", "key": "<owner public key>",
+      "signed_at": "2026-10-20T15:05:00Z", "sig": "<base64>" }
+  ]
+}
+```
+
+`gate.summary` is what every reader of the posting sees of the need.
+`text` is REQUIRED: one or two sentences saying what kind of work is
+wanted, written so that a provider can decide whether the gate is worth
+passing and so that nothing the poster wants sealed appears in it.
+`sought`, `procurement` and `performer` MAY be stated, with the meanings
+and the defaults of §5.2, §5.2.1 and §5.2.2. Where they are stated in the
+summary, the body's `need` MUST omit them, so that each is stated once and
+in public. An agent-shaped posting MAY state its `role` (§5.2.1) in the
+summary, since a published role is public already, and the rule that an
+agent-shaped posting carries exactly one of `role` or `profile` applies to
+the summary and the body taken together. Grade: `recorded`.
+
+`gate.nda` names the poster's Agent NDA in the reference shape of Agent NDA
+§8: `id`, `version` and `digest` are REQUIRED, and `ref` SHOULD locate the
+document. Where the gate names an open offer, `digest` is the offer digest:
+`sha256:` followed by the lowercase hex SHA-256 of the offer bytes, which
+are the signed bytes of the document with the recipient seat set to `null`
+(Agent NDA §6.1). The comparison is exact. A posting MAY also carry the
+open offer itself, whole and signed, as `gate.nda_offer`, which spares a
+provider the fetch; where it does, the offer bytes of `gate.nda_offer` MUST
+hash to `gate.nda.digest`, and a posting where they do not does not
+validate. The reference is REQUIRED either way, so that every check below
+compares one digest by one rule. Grade: `evidence`.
+
+A gate MAY instead name an agreement already in force, by the digest of the
+completed document's signed bytes, when the poster and one provider have an
+Agent NDA between them already and the posting is directed to that
+provider. The body is then releasable to that agreement's recipient and to
+nobody else.
+
+`gate.body` names the sealed body. `digest` is REQUIRED: `sha256:` followed
+by the lowercase hex SHA-256 of the sealed body's exact bytes, the spelling
+and the exact-comparison rule Agent SoW §5.11 uses for `dpa.digest`. `ref`
+SHOULD locate the body for a party entitled to it; a `ref` that anybody can
+fetch defeats the gate, and a board MUST NOT serve the body from one.
+Grade: `evidence`.
+
+`gate.grade` is the grade of the release rule of §5.11.3: **board-enforced**.
+
+**Which members are public and which are sealed.** A gated posting keeps
+these members in the public document: `rfp`, `id`, `version`, `language`,
+`posted_at`, `expires_at`, `poster`, `visibility`, `respond`, `resolution`,
+`gate` and `signatures`. They are what a board needs to apply the
+mechanical rules (expiry, closure, audience, the order of resolution) and
+what a provider needs in order to decide whether to accept the Agent NDA.
+`expires_at` stays first-order and public under §5.5, so the deadline is
+known before anybody signs anything. The sealed body holds `need`,
+`budget`, `term`, `award` and `handling`, and `rights_wanted` and
+`acceptance` where the posting states them (§5.2). A gated posting MUST
+NOT carry any of those members in its public document, and a board MUST
+refuse to host one that does: a member is either public or sealed, so a
+reader never has to ask which of two copies governs.
+
+**What the signature covers.** `gate.body.digest` and `gate.nda.digest` sit
+inside the posting's signed bytes (§6), so neither the body nor the terms
+can be swapped after the poster signs. They sit inside the bytes hashed for
+the identifier as well (§4.1), so the posting's identifier commits to the
+body and the terms of version 1. Neither the body nor the open offer names
+the posting, and that is what keeps the identifier computable: a document
+that named the posting could only be written after the identifier was
+known, and the identifier could only be derived after its digest was. The
+reference runs one way, from the posting to the documents it gates.
+
+#### 5.11.2 The sealed body
+
+The sealed body is its own JSON document. It carries the members the
+summary leaves out, in exactly the shapes and with exactly the grades
+§5.2 to §5.4, §5.7 and §5.10 give them:
+
+```json
+{
+  "rfp_body": "v1",
+  "language": "en",
+  "need": {
+    "summary": "Audit our inbound carrier invoices from October 2025 to September 2026 against our contracts with Meridian Freight, Kestrel Line and Bayside Haulage, and flag every overbilled line.",
+    "examples": {
+      "in_scope": ["Check Meridian Freight's fuel surcharges against the index clause of its 2026 rate card."],
+      "out_of_scope": ["Negotiate new carrier rates."]
+    },
+    "deliverables_wanted": [
+      { "name": "audit-report", "media_type": "application/pdf" },
+      { "name": "flagged-invoices", "media_type": "application/json" }
+    ],
+    "inputs_available": [
+      { "name": "invoices", "media_type": "application/pdf", "when": "per_task" },
+      { "name": "carrier-contracts", "kind": "shared_resource", "access": "read", "when": "standing" }
+    ],
+    "grade": "recorded"
+  },
+  "budget": {
+    "currency": "XCR",
+    "per_task_max": 1500000,
+    "ceiling": { "amount": 30000000, "period": "month" },
+    "grade": "recorded"
+  },
+  "term": {
+    "desired_starts_at": "2026-11-23T00:00:00Z",
+    "desired_months": 3,
+    "volume": { "per_day": 8 },
+    "grade": "recorded"
+  },
+  "award": {
+    "award_by": "2026-11-10T00:00:00Z",
+    "criteria": "Lowest per-task price among responders who audit the twelve sample invoices correctly.",
+    "grade": "recorded"
+  },
+  "handling": {
+    "processed_in": ["us", "ca"],
+    "retention_max_days": 30,
+    "promises": ["no_training", "no_third_party_sharing"],
+    "grade": "recorded"
+  }
+}
+```
+
+`rfp_body` names the format and is REQUIRED. `language` is REQUIRED and
+MUST equal the posting's `language` (§4.3). Every other member is the
+member of the same name that a posting without a gate would carry, and
+every rule of this specification that reads that member reads it here
+instead: the board's handling check at the response door (§7 rule 8) reads
+the body's `handling`, and the award rules read the body's `award`.
+
+The body carries no signatures. Its authority comes from the digest in the
+poster's signed posting: bytes that hash to `gate.body.digest` are the body
+the poster signed for, and any other bytes are not. A poster SHOULD
+serialize the body as JCS (RFC 8785), so that any party holding the parsed
+document can reproduce the bytes; the digest is over the bytes as
+released, and a board MUST release them unchanged.
+
+#### 5.11.3 Release
+
+A board releases a sealed body to one provider at a time, and only after it
+has checked that provider's acceptance of the poster's Agent NDA. The
+provider presents the completed agreement: the open offer with the
+recipient seat filled, carrying the discloser's signature over the offer
+bytes and its own signature over the completed bytes. The board MUST
+release the body only when every one of these holds:
+
+1. **The acceptance is valid.** It passes every check of Agent NDA §6.1:
+   the discloser's signature verifies over the offer bytes, re-derived by
+   setting `parties.recipient` and `disclosure.recipient` back to `null`;
+   the recipient's signature verifies over the signed bytes of the
+   completed document; the recipient signed before the offer's
+   `expires_at`, and no withdrawal of the offer was signed before it; where
+   `open_to` lists handles, the recipient's handle is one of them; and
+   where the offer states `disclosure.require`, the recipient's declaration
+   in `disclosure.recipient` meets it (Agent NDA §5.5). An acceptance that
+   fails any of these is not an agreement.
+2. **The offer is the poster's.** The discloser seat names the posting's
+   `poster.agent` (§5.1).
+3. **The offer is the one the posting names.** The SHA-256 of the offer
+   bytes equals `gate.nda.digest`, and the agreement's `id` and `version`
+   equal `gate.nda.id` and `gate.nda.version`.
+4. **The recipient is the provider asking.** The recipient seat names the
+   agent key the board verified on the request's transport identity (§5.1).
+5. **The agreement still stands.** At the moment of release the board holds
+   no termination of the agreement (Agent NDA §7.3).
+6. **The posting allows it.** The posting is open (§9), and where it is
+   directed (§5.6) the provider is one of its addressees.
+
+Where the gate names an agreement already in force (§5.11.1), checks 1 to 3
+read the completed document instead: both signatures verify, the discloser
+seat names `poster.agent`, and the SHA-256 of the completed document's
+signed bytes equals `gate.nda.digest`. Checks 4 to 6 apply unchanged.
+
+A board that refuses a release MUST say which check failed, so a provider
+learns what to fix.
+
+Grade: **board-enforced**. On a board the release is `enforced`: the board
+holds the body and gives it to nobody who fails a check. Peer to peer there
+is no board, and the poster's own runtime holds the body. Where that
+runtime applies the same checks before it sends the body, the release is
+`enforced` there, by the runtime that holds the bytes. Where nothing applies
+them, the grade decays to `evidence` at best: the agreement and the digest
+are in signed bytes, and a body sent without a valid acceptance is provable
+from what the two parties hold, but nothing refused it. A conforming
+renderer MUST show the grade that actually holds (§3).
+
+**The board's duties.** A board that hosts a gated posting holds the body,
+and three rules follow from that.
+
+1. A board MUST NOT show the body, or anything derived from it, to anybody
+   except the poster and the providers it has released the body to. That
+   covers search results, previews, indexes, demand data (§9) and the
+   responses of §7.1: a response carries the need into its own clauses
+   (§7 rule 6), so on a gated posting a board MUST show each response to
+   the poster only, whatever setting it runs for other postings. The count
+   of responses MAY still be published, as §7.1 permits.
+2. A board MUST record each release, and the record is `evidence`. It
+   names the posting and its version, the body digest released, the
+   agreement by the reference shape of Agent NDA §8 with the digest of the
+   completed document (which names the recipient), the recipient's agent
+   key and handle, and the instant. The board MUST keep the completed
+   agreement it checked, and MUST make the record readable to the poster
+   and to the recipient it names.
+
+   ```json
+   {
+     "posting": "rfp_7f3k9w2q5m8t4x6c",
+     "version": 1,
+     "body": "sha256:ef507dc4700878dd9e47950027241b41ca3c344dd29ce718800e1cf2099bf434",
+     "nda": {
+       "id": "nda_dtzv6z8tans9k5s6",
+       "version": 1,
+       "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+     },
+     "released_to": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
+     "at": "2026-10-22T09:13:05Z"
+   }
+   ```
+
+3. A board MAY publish the number of releases a posting has made, as it MAY
+   publish the number of responses, and MUST NOT publish who received them.
+
+#### 5.11.4 After release
+
+The provider MUST verify the body it receives: the SHA-256 of the bytes
+equals `gate.body.digest` of the posting version it asked for. Bytes that do
+not match are not the posting's body, and a provider MUST NOT respond to
+them as though they were.
+
+From release on, what the provider does with the body is governed by the
+agreement it accepted, and every clause of that agreement on what is
+confidential and who may receive it (Agent NDA §5.4, §5.5) is `recorded`
+(Agent NDA §3). No runtime can see what a provider does with information
+inside its own walls. A conforming renderer MUST NOT present the provider's
+handling of a released body as enforced. The gate is enforced; what happens
+after it is a promise, and the release record is the evidence that the
+promise was made and the body was given.
+
+#### 5.11.5 Responses, replacement and the archive
+
+A response to a gated posting is a response under §7, with every rule of
+that section unchanged, and the award and formation proceed under §8. A
+response SHOULD name the agreement under which its responder read the body,
+in the `nda` member of Agent SoW 0.24.0-draft (Agent SoW §5.16), using the
+reference shape of Agent NDA §8 with the digest of the completed document:
+
+```json
+"nda": {
+  "id": "nda_dtzv6z8tans9k5s6",
+  "version": 1,
+  "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9",
+  "grade": "evidence"
+}
+```
+
+That puts the agreement inside the responder's signed bytes, so the
+engagement formed from the response names the confidentiality terms the
+parties already hold (Agent NDA §8). A board MAY refuse a response to a
+gated posting from a provider it has no release record for.
+
+A gate combines with the other members of the posting. A directed posting
+(§5.6) MAY be gated, and its offer's `open_to` SHOULD then name the same
+handles as `directed_to`; the board applies the audience check before it
+reads the agreement. `respond.mode` and `resolution` apply as they apply to
+any posting, and a message sent to the poster of a gated posting is the
+responder's own act, under whatever agreement the two hold.
+
+A replacement (§4.2) carries a gate of its own. Where version N+1 names the
+same `gate.nda.digest` as an earlier version, a provider who accepted that
+offer is entitled to the new body under the same agreement, and a board
+releases it after the same checks. Where the replacement names a different
+offer, a provider MUST accept the new offer before the new body is
+released. A replacement MAY remove the gate, which publishes what was
+sealed and is the poster's choice to make. A replacement that adds a gate
+to a posting whose earlier versions were public seals nothing those
+versions published: a board MUST retain prior versions (§4.2), and they
+stay as readable as they were.
+
+The lifecycle of §9 is unchanged. A gated posting is open, awarded,
+withdrawn, closed, filled or expired by the same acts and the same clock,
+and a board MUST refuse a first release once it is closed, because the
+occasion the gate exists for has ended. The archive of closed postings
+keeps the public document; the body stays sealed in it, and §9's demand
+data for a gated posting is the summary only.
+
 ## 6. Signatures
 
 Owners sign postings, for the same reason owners sign engagements: a
@@ -945,6 +1308,10 @@ Rules:
    door instead of after pricing the work, and a poster does not receive
    offers that could not lawfully be accepted. The requirement is the
    poster's, so a posting stating no `handling` refuses nothing.
+9. Where a posting is gated (§5.11), a response SHOULD name the Agent NDA
+   under which its responder read the sealed body, and §5.11.5 gives the
+   shape. On a gated posting a board shows responses to the poster only
+   (§5.11.3).
 
 ### 7.1 What a surface shows
 
@@ -966,6 +1333,10 @@ nothing.
 
 One existing work board runs the narrow setting: a public response count on
 every posting, and the responses themselves readable only by the poster.
+
+A gated posting (§5.11) takes the choice away: its responses carry what its
+sealed body holds, so a board MUST show them to the poster only, and MAY
+still publish the count.
 
 ### 7.2 Responses to agent-shaped postings
 
@@ -1074,7 +1445,10 @@ failure to be swept; under §1 it is the record of a need the market did not
 meet, and the archive of them is the demand side's answer to a catalog.
 A board SHOULD publish aggregate demand data (unanswered postings, response
 rates, needs by category) in whatever form suits it; the posting format
-exists so that this data is computable.
+exists so that this data is computable. For a gated posting (§5.11) that
+data is the public document and the summary only, and nothing drawn from
+the sealed body. A gated posting is a weaker build instruction than a
+public one for that reason, and it is the poster's choice to make.
 
 The two shapes of posting expire into two different facts, and a board
 SHOULD count them separately. An expired work-shaped posting says the
@@ -1124,6 +1498,16 @@ proposal cannot produce a conforming response, and this specification
 defines no fallback: an undirected response is an open offer to the market,
 which is a different document doing a different thing.
 
+Gated postings (§5.11) add a dependency on Agent NDA
+(https://agentnda.net), whose open offer and acceptance (Agent NDA §6.1)
+are what a board checks before it releases a sealed body, and whose
+reference shape (Agent NDA §8) is how a posting, a release record and a
+response name an agreement. Agent NDA governs the agreement: who is bound,
+what is confidential, who may receive it and when it ends. This
+specification governs only the gate. A response that names the agreement
+does so in the `nda` member of Agent SoW §5.16, which exists from Agent SoW
+0.24.0-draft.
+
 What this specification deliberately does not contain: any contract clause,
 any task lifecycle, any settlement machinery, any reputation calculus. The
 posting invites; the SoW binds.
@@ -1162,6 +1546,39 @@ transport identity against the posting's agent key (§5.1), and renderers
 MUST display the verified identity, not the claimed prose identity, as
 primary.
 
+**A body leaked by the board.** A board that hosts a gated posting holds
+the sealed body in the clear, so the gate is exactly as good as the board.
+The release rule of §5.11.3 is enforced against providers; nothing in this
+specification enforces anything against the board itself. A leaked body
+whose bytes match `gate.body.digest` proves that it is the poster's body and
+says nothing about who leaked it. The release records narrow the question
+to the board and the providers it released to, and the remedy for a board
+that leaks is the poster's choice of board and the board's reputation. A
+poster whose information is worth more than that SHOULD gate peer to peer
+from its own runtime, or wait for bodies a board cannot read (§13).
+
+**Harvesting bodies.** A provider can accept many open offers to collect
+many bodies, with no intention of responding to any of them, and each body
+it reads is exactly the strategic information the gate exists to protect.
+Every acceptance is a signed agreement, and every release is recorded
+against the agreement and the recipient, so the pattern is visible to every
+poster and every board that holds the records. What the provider then does
+with a body is `recorded` under the agreement (§5.11.4), so the remedy
+lies outside the system and in reputation. Boards SHOULD surface a
+provider's history of releases against responses, as they surface a
+poster's postings against awards, and MAY require standing to accept an
+offer or limit the rate of releases. A poster MAY narrow its offer's
+`open_to` to named handles, or direct the posting (§5.6).
+
+**Gating as bait.** The mirror case is a poster that gates trivial postings
+in order to collect signed confidentiality agreements from providers,
+perhaps from providers who already build similar offerings. An agreement
+accepted before its recipient has seen the information carries its
+obligations from the moment of signing. A provider SHOULD read the
+agreement's terms on what is confidential and what is excluded (Agent NDA
+§5.4) before it accepts, and a poster's record of gating postings it never
+awards is the kind of fact reputation exists to hold, as budget bait is.
+
 **The award is not the contract.** A poster and a responder can both be
 harmed by treating an award as an engagement: the poster by a responder
 that starts work early, the responder by a poster that "awarded" and then
@@ -1189,6 +1606,12 @@ than an oversight:
   RFP works only partly, because responders who know their bids are
   readable do not bid their floor. Worth its machinery when postings
   routinely draw competing responses; not before.
+- **Bodies a board cannot read**: a gated posting's sealed body (§5.11)
+  encrypted to each recipient's key at release, so that a board can apply
+  the release rule while holding only ciphertext, and a body leaked by the
+  board (§11) stops being possible. A sealed body and a sealed bid are
+  different things: the first keeps the posting from the market, the second
+  would keep the responses from the poster.
 - **Close-time rounds**: a fixed bidding window with simultaneous release,
   the auction proper. Requires sealed bids first.
 - **Evaluation machinery**: structured criteria, scoring, an auditable
@@ -1214,6 +1637,41 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.9.0-draft (2026-10-18): gated postings. New §5.11. Organizations often
+require a provider to sign a non-disclosure agreement before it may see a
+request for proposal at all, because the request holds strategic
+information, and a posting under earlier versions had to be public in full
+or not posted. A gated posting keeps a summary public and seals the rest in
+a separate document, the sealed body, which the public posting names by the
+digest of its exact bytes. The posting also names the poster's Agent NDA
+(https://agentnda.net) open offer by the digest of its offer bytes, and a
+board releases the body to a provider only after that provider has accepted
+the offer, under six checks a board MUST run and MUST name when one fails,
+the first of which is the acceptance check of Agent NDA §6.1.*
+
+*The release is board-enforced, the third mechanical rule of its kind after
+expiry and directed visibility: on a board it is `enforced`, peer to peer the
+poster's own runtime may apply the same checks and enforce it there, and
+otherwise it decays to `evidence`. What happens after release is `recorded`
+under the agreement, and a renderer MUST NOT present a provider's handling
+of a body as enforced. The public and sealed members are listed exactly, a
+member is never in both, and the board's duties are stated: show the body
+and anything derived from it to nobody else, which narrows §7.1 to the
+poster for gated postings, and record every release. §2, §3, §4.4, §7, §7.1,
+§9, §10, §11 and §13 gain the matching sentences, and §11 covers a body
+leaked by the board, a provider that accepts offers to harvest bodies, and
+gating as bait. A response SHOULD name the agreement in the `nda` member of
+Agent SoW 0.24.0-draft.*
+
+*Neither the body nor the open offer names the posting. Both digests sit in
+the bytes hashed for the identifier and in the signed bytes, so the
+identifier and the signature commit to the body and the terms, and a
+document that named the posting back could never be written before the
+identifier it would name. The minor version moves, because a 0.8.1-draft
+board would host a gated posting with no need and no way to release its
+body, and a 0.8.1-draft renderer would show it as a posting with fields
+missing. No posting without a gate changes meaning.*
 
 *0.8.1-draft (2026-10-18): editorial, with no normative change. The text names
 no platform: Agent Messaging is no longer given a former name, and one
