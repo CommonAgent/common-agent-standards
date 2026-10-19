@@ -1,7 +1,7 @@
 # The Common Agent Specification
 
-**Version:** 0.28.1-draft
-**Status:** Working draft, 2026-10-18. Home: https://commonagent.net/
+**Version:** 0.28.2-draft
+**Status:** Working draft, 2026-10-19. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
 
@@ -691,7 +691,9 @@ Admission and discovery consent are different relationships and never conflate: 
 
 *Records.* Every offer, claim, acceptance, narrowing and revocation is recorded with who did it and on whose behalf, and both people are told when a connection begins, narrows or ends.
 
-*Not for businesses.* A connection is between two people's agents, which are agents that declare `acts_for: person` (Sections 6.2 and 6.9). A person's agent acting for them at a business's agent is not a connection and follows Section 7.8: the business admits the agent through PACT, and what the agent may do on the person's account is the business's grant, not a connection's.
+*Not for businesses.* A connection is between two people's agents, which are agents that declare `acts_for: person` (Sections 6.2 and 6.9). A person's agent acting for them at a business's agent is not a connection and follows Section 7.8: the business admits the agent through PACT, and what the agent may do on the person's account is the business's grant, not a connection's. Agents of businesses that have contracted work reach each other's doors under the terms of their engagement, as the next paragraph describes.
+
+**Contracted contact (0.28.2-draft).** A connection is not the only scoped admission the door carries. An executed Agent SoW engagement (https://agentsow.com) can admit the provider's agent at the client's agents, through its `provider_contact` member (Agent SoW, Section 5.18). The member names the client's agents the provider's agent may reach, grants from the set under Connections above (`messages`, `scheduling` and `share`, never `errands`), and a per-hour or per-day limit. The client's runtime applies it as a roster entry for the provider's agent at each named agent, in the shape of a connection's entry: stance `allow`, those grants, those limits, and an end equal to the engagement's. It is enforced as a connection's entry is. A message the grants do not cover MUST NOT be delivered, and the refusal MUST name the missing grant; an explicit `block` for the same subject still wins; and the stop control overrides it. Unlike a connection, it is agreed between businesses as a term of the engagement, it is one-way, and it lasts exactly as long as the engagement: the entry MUST be removed when the engagement ends, whether it lapses, is terminated or reaches its cap, or when it is amended to drop the member, and a roster MUST NOT keep it afterwards.
 
 ### 7.2 Sealed conversations
 
@@ -1622,6 +1624,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.28.2-draft (2026-10-19).** Contracted contact at the door. Section 7.1 gains a paragraph on the admission an executed Agent SoW engagement gives the provider's agent at the client's agents through its `provider_contact` member (Agent SoW 0.25.0-draft, Section 5.18). The client's runtime applies it as a roster entry in the shape of a connection's: stance `allow`, grants from the set under Connections (`messages`, `scheduling`, `share`, never `errands`), the member's rate limits, and an end equal to the engagement's. It is enforced as a connection's entry is, an explicit `block` and the stop control win over it, and it MUST be removed when the engagement ends or is amended to drop it. The paragraph on connections and businesses now points to it. No other requirement, member, attribute or section number changes.
 
 **0.28.1-draft (2026-10-18).** Editorial, with no normative change. Agent Roles is a guide of working descriptions, so the text calls it Agent Roles where it called it the roles registry, and a role is described there where it was published as a contract: the opening, Section 4.4, the `role` member of Sections 6.4 and 6.11, Sections 9.3 and 9.4, Section 10, the installer of Section 12, and Appendix A. No requirement, member, attribute or section number changes.
 

@@ -72,6 +72,7 @@ export function rail(active) {
           ${a("/", "Home", "home")}
           ${a("/standards.html", "Every standard", "standards")}
           ${others}
+          ${a("/purchase-order.html", "Agent Purchase Order", "purchase-order")}
           ${a(SUITE_REPO, "The standards on GitHub", "", true)}
           </div>
         </details>

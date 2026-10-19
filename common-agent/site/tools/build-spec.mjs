@@ -41,7 +41,7 @@ import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import { SITE, REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
-import { renderHome, renderAgent, renderStandards, copySuiteAssets } from "../../../site/tools/build-home.mjs";
+import { renderHome, renderAgent, renderStandards, renderPurchaseOrder, copySuiteAssets } from "../../../site/tools/build-home.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(ROOT, "..");
@@ -431,6 +431,7 @@ function fill(file, name, html) {
 write("index.html", renderHome({ draft: DRAFT }));
 write("agent.html", renderAgent({ draft: DRAFT }));
 write("standards.html", renderStandards({ draft: DRAFT }));
+write("purchase-order.html", renderPurchaseOrder({ draft: DRAFT }));
 copySuiteAssets(OUT);
 {
   const s14 = section("s14").md.replace(/^## .+\n/, "");

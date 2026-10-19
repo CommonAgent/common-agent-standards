@@ -2,9 +2,9 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.3-draft
+**Version:** 0.9.4-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
+**Date:** 2026-10-19
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
@@ -4539,6 +4539,12 @@ The platform SHOULD emit one for every completed task:
 - `budget`: the final (highest-revision) budget that applied, so the receipt
   records the terms as well as the spend.
 - `completed_late`: whether completion arrived after the deadline (§7.7).
+- `buyer_reference`: present only when the task was admitted under an
+  agreement that carries the client's own reference for its accounts, such as
+  an Agent SoW engagement's `buyer_reference` (Agent SoW §5.17, usually a
+  purchase order number). It is copied byte for byte from the version of the
+  agreement the task was admitted under, and the platform does not interpret
+  it. A task admitted under no such agreement has a receipt without it.
 
 **Canceled Tasks get a receipt too.** A cancellation ends spending authority
 the way a completion does, so the platform SHOULD emit the same receipt when a
@@ -6391,3 +6397,13 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > working descriptions; the text no longer calls it the roles registry. No
 > requirement, field, wire identifier or section number changes. The wire
 > version stays `0.3.0` (§20.1).
+
+> **2026-10-19: Version 0.9.4-draft. The buyer's reference on the task
+> receipt.** §19.2 gains an optional `buyer_reference` member: when a task was
+> admitted under an agreement that carries the client's own reference, such
+> as an Agent SoW engagement's `buyer_reference` (Agent SoW 0.25.0-draft,
+> §5.17), the receipt carries it byte for byte from the version of the
+> agreement the task was admitted under, so a client's accounting system can
+> match each task to its purchase order. A canceled task's receipt carries it
+> the same way. No other requirement, field, wire identifier or section number
+> changes. The wire version stays `0.3.0` (§20.1).
