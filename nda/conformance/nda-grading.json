@@ -1,7 +1,7 @@
 {
   "comment": "Agent NDA grading (agentnda.net 0.1.0-draft, 3, 5, 7.1, 11). An NDA asks the recipient to do things in private, so its promises are 'recorded', the facts around them (parties, instants, signatures, acts) are 'evidence', and NOTHING in an agreement is 'enforced': a clause graded 'enforced' is refused as the false enforcement claim (Agent SoW 3 rule 1). The one enforced step, a board releasing a gated body after a valid acceptance, is defined in Agent RFP 5.11 and does not appear in an agreement. Also pinned: the closed lists and what absence means in each (a category, activity, exclusion or need_to_know value left out is not covered and MUST NOT be inferred; absent subcontractors means none; absent survival is no survival period, never a default), and the derivation of the lifecycle state from signatures, acts and instants. Each case edits the base document: an edit maps a dotted path to its new value, and the value \"<removed>\" deletes the member. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent NDA 0.1.0-draft: 3 (gradient), 5 (clauses), 7.1 (states), 11 (conformance)",
+  "spec": "Agent NDA 0.1.0-draft: 3 (gradient), 5 (clauses, with 5.1 multilateral agreements and 5.5 flow-down), 6.2 (mandates), 7.1 (states), 8.1 (whether a party is bound), 11 (conformance)",
   "grades": {
     "comment": "11: the grade each clause MUST carry. Any other grade does not validate; 'enforced' on any clause is reported as the false enforcement claim.",
     "fixed": {
@@ -31,7 +31,8 @@
       "evaluate_solicitation",
       "validation_probe",
       "negotiation",
-      "perform_engagements"
+      "perform_engagements",
+      "process_runs"
     ],
     "exclusions": [
       "public",
@@ -54,7 +55,8 @@
     ],
     "direction": [
       "one_way",
-      "mutual"
+      "mutual",
+      "multilateral"
     ]
   },
   "absence": {
@@ -106,7 +108,7 @@
     "comment": "The valid agreement every case below edits: Caldera Freight Systems' acceptance of Harbor & Line Outfitters' open offer (see nda-offer.json).",
     "document": {
       "nda": "v1",
-      "id": "nda_2bpnmagnx6925r5y",
+      "id": "nda_dtzv6z8tans9k5s6",
       "version": 1,
       "language": {
         "id": "agent-nda-standard-language",
@@ -119,7 +121,7 @@
           "agent": "U5WF6QOGXRKK4O6CI6J7EVQMGUGCGCVXY2DOYGQPSBNO46FDKZ35WF6Q",
           "handle": "Petrel.mari@harborandline.example",
           "owner": "Harbor & Line Outfitters",
-          "organization": "org_hl4q8m2x6t9w3k7r"
+          "organization": "org_7k2m9q4w1x8e5r3t"
         },
         "recipient": {
           "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
@@ -217,7 +219,7 @@
           "key": "UZRYTIHPC2HJSMSQD2QDS7GRKNMM2SNZ7D6PD5HZ3IRM2Z2OJYWZRYTI",
           "signed_at": "2026-10-20T15:00:00Z",
           "sig": "<base64>",
-          "mandate": "mnd_mv7c2k9q4x8t1w3e"
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
         },
         {
           "role": "recipient",
@@ -468,6 +470,14 @@
       "why": "an open offer MUST NOT name the posting that gates on it; the posting commits to the offer digest, so the reference runs one way"
     },
     {
+      "case": "organization_without_mandate",
+      "edit": {
+        "signatures.0.mandate": "<removed>"
+      },
+      "error": "mandate",
+      "why": "6.2: a seat that names an organization signs under a mandate holding the nda power"
+    },
+    {
       "case": "ends_before_effective",
       "edit": {
         "effective_at": "2028-01-01T00:00:00Z"
@@ -576,6 +586,395 @@
         "now": "2027-04-01T00:00:00Z",
         "state": "terminated",
         "why": "notice_days 30: the termination takes effect at 2027-03-31T12:00:00Z, and survival runs from then"
+      }
+    ]
+  },
+  "multilateral": {
+    "comment": "5.1, 6, 7.1: a multilateral agreement among the process owner and three outside parties. Every member is a discloser and a recipient to every other; each member signs the same bytes with role 'member' and its seat's agent; it is in force only when every member has signed; it has no open offer. Placeholders stand for keys, and the identifier is not minted here.",
+    "document": {
+      "nda": "v1",
+      "id": "nda_<minted>",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "multilateral",
+      "parties": {
+        "members": [
+          {
+            "agent": "<Harbor & Line agent key>",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_7k2m9q4w1x8e5r3t"
+          },
+          {
+            "agent": "<Caldera agent key>",
+            "handle": "Sable.audit@calderafreight.example",
+            "owner": "Caldera Freight Systems"
+          },
+          {
+            "agent": "<Tidewater agent key>",
+            "handle": "Heron.desk@tidewatercustoms.example",
+            "owner": "Tidewater Customs Brokers"
+          },
+          {
+            "agent": "<Northgate agent key>",
+            "handle": "Kestrel.rates@northgaterates.example",
+            "owner": "Northgate Rate Data"
+          }
+        ],
+        "grade": "evidence"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Performing the phases of Harbor & Line's freight-audit process runs whose document names this agreement.",
+        "activities": [
+          "process_runs"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "inputs",
+          "deliverables",
+          "own_material",
+          "relationship"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "members": [
+          {
+            "agent": "<Harbor & Line agent key>",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "<Caldera agent key>",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "<Tidewater agent key>",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          },
+          {
+            "agent": "<Northgate agent key>",
+            "processors": [],
+            "processed_in": [
+              "us"
+            ]
+          }
+        ],
+        "subcontractors": "bound",
+        "need_to_know": [
+          "personnel"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "signatures": [
+        {
+          "role": "member",
+          "agent": "<Harbor & Line agent key>",
+          "key": "<owner key 1>",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "<base64>",
+          "mandate": "mnd_3f8c1n6z9v4b7q2m"
+        },
+        {
+          "role": "member",
+          "agent": "<Caldera agent key>",
+          "key": "<owner key 2>",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "<base64>"
+        },
+        {
+          "role": "member",
+          "agent": "<Tidewater agent key>",
+          "key": "<owner key 3>",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "<base64>"
+        },
+        {
+          "role": "member",
+          "agent": "<Northgate agent key>",
+          "key": "<owner key 4>",
+          "signed_at": "2026-11-02T10:00:00Z",
+          "sig": "<base64>"
+        }
+      ]
+    },
+    "valid": [
+      {
+        "case": "four_members",
+        "edit": {},
+        "why": "3 to 16 members, all signed"
+      }
+    ],
+    "invalid": [
+      {
+        "case": "two_members",
+        "edit": {
+          "parties.members": [
+            {
+              "agent": "<Harbor & Line agent key>",
+              "handle": "Petrel.mari@harborandline.example",
+              "owner": "Harbor & Line Outfitters",
+              "organization": "org_7k2m9q4w1x8e5r3t"
+            },
+            {
+              "agent": "<Caldera agent key>",
+              "handle": "Sable.audit@calderafreight.example",
+              "owner": "Caldera Freight Systems"
+            }
+          ]
+        },
+        "error": "members",
+        "why": "two parties use one_way or mutual"
+      },
+      {
+        "case": "shared_key",
+        "edit": {
+          "parties.members.3.agent": "<Caldera agent key>"
+        },
+        "error": "members",
+        "why": "no two members share an agent key"
+      },
+      {
+        "case": "with_offer",
+        "edit": {
+          "offer": {
+            "open_to": "any",
+            "expires_at": "2026-11-20T00:00:00Z"
+          }
+        },
+        "error": "offer",
+        "why": "a multilateral agreement has no open offer"
+      },
+      {
+        "case": "member_signature_without_agent",
+        "edit": {
+          "signatures.1.agent": "<removed>"
+        },
+        "error": "signatures",
+        "why": "a member signature names its seat"
+      }
+    ],
+    "states": [
+      {
+        "case": "three_of_four_signed",
+        "signatures": 3,
+        "state": "offered",
+        "why": "in force only when every member has signed"
+      },
+      {
+        "case": "all_signed",
+        "signatures": 4,
+        "state": "in force"
+      },
+      {
+        "case": "one_member_terminates",
+        "signatures": 4,
+        "acts": [
+          "terminate by Northgate Rate Data"
+        ],
+        "state": "in force",
+        "why": "7.3: a member's termination ends its own participation; three remain"
+      }
+    ]
+  },
+  "flow_down": {
+    "comment": "5.5, 8.1: Caldera Freight Systems binds its subcontractor Ledgerline Data Services with a flow-down agreement whose flows_from names Caldera's acceptance. At least as strict, compared field by field: categories a superset, activities a subset, the subcontractor's processors and processed_in a subset of Caldera's own upstream declaration, survival at least as long, within_days no longer, exclusions and need_to_know subsets, subcontractors none or bound. A flow-down that fails does not bind the subcontractor for 8.1.",
+    "upstream": {
+      "id": "nda_dtzv6z8tans9k5s6",
+      "version": 1,
+      "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+    },
+    "document": {
+      "nda": "v1",
+      "id": "nda_<minted>",
+      "version": 1,
+      "language": {
+        "id": "agent-nda-standard-language",
+        "version": 1,
+        "sha256": "32e0821ea4cc9982808b4570c3ba6dc9da0a0311fae6f629e40407ee0920ce31"
+      },
+      "direction": "one_way",
+      "parties": {
+        "discloser": {
+          "agent": "U44CZBU4QWBVADJH3LKBYLSMTHUVGDSCCO7KLJHM3NCUH5FWUQC44CZB",
+          "handle": "Sable.audit@calderafreight.example",
+          "owner": "Caldera Freight Systems"
+        },
+        "recipient": {
+          "agent": "<Ledgerline agent key>",
+          "handle": "Wren.ops@ledgerline.example",
+          "owner": "Ledgerline Data Services"
+        },
+        "grade": "evidence"
+      },
+      "flows_from": {
+        "id": "nda_dtzv6z8tans9k5s6",
+        "version": 1,
+        "digest": "sha256:04b87bb12cda549043a33fb4b24e5513d1eaaf34f25ade3c05e88f7e569a6ec9"
+      },
+      "effective_at": null,
+      "ends_at": "2027-11-30T00:00:00Z",
+      "purpose": {
+        "statement": "Extracting line items from Harbor & Line's carrier invoices for Caldera's freight audit.",
+        "activities": [
+          "perform_engagements"
+        ],
+        "grade": "recorded"
+      },
+      "covers": {
+        "categories": [
+          "solicitation",
+          "agreement_terms",
+          "relationship",
+          "inputs",
+          "deliverables"
+        ],
+        "grade": "recorded"
+      },
+      "disclosure": {
+        "recipient": {
+          "processors": [],
+          "processed_in": [
+            "us"
+          ]
+        },
+        "subcontractors": "none",
+        "need_to_know": [
+          "personnel"
+        ],
+        "grade": "recorded"
+      },
+      "survival": {
+        "days": 730,
+        "grade": "recorded"
+      },
+      "exclusions": {
+        "allowed": [
+          "public",
+          "already_known"
+        ],
+        "grade": "recorded"
+      },
+      "compelled": {
+        "notice": true,
+        "grade": "recorded"
+      },
+      "at_end": {
+        "action": "destroy",
+        "within_days": 14,
+        "certify": true,
+        "grade": "recorded"
+      },
+      "signatures": []
+    },
+    "valid": [
+      {
+        "case": "stricter",
+        "edit": {},
+        "why": "equal survival, within_days 14 against 30, fewer exclusions, no further subcontracting"
+      },
+      {
+        "case": "same_need_to_know",
+        "edit": {
+          "disclosure.need_to_know": [
+            "personnel",
+            "advisers"
+          ]
+        },
+        "why": "equal to the upstream list is a subset"
+      },
+      {
+        "case": "fewer_activities",
+        "edit": {
+          "purpose.activities": [
+            "perform_engagements",
+            "negotiation"
+          ]
+        },
+        "why": "both are upstream activities"
+      }
+    ],
+    "not_binding": [
+      {
+        "case": "drops_category",
+        "edit": {
+          "covers.categories": [
+            "solicitation",
+            "inputs",
+            "deliverables"
+          ]
+        },
+        "why": "relationship and agreement_terms are covered upstream"
+      },
+      {
+        "case": "new_activity",
+        "edit": {
+          "purpose.activities": [
+            "perform_engagements",
+            "process_runs"
+          ]
+        },
+        "why": "process_runs is not an upstream activity"
+      },
+      {
+        "case": "shorter_survival",
+        "edit": {
+          "survival.days": 365
+        },
+        "why": "survival at least the upstream 730 days"
+      },
+      {
+        "case": "longer_at_end",
+        "edit": {
+          "at_end.within_days": 60
+        },
+        "why": "within_days at most the upstream 30"
+      },
+      {
+        "case": "wider_jurisdiction",
+        "edit": {
+          "disclosure.recipient.processed_in": [
+            "us",
+            "ca"
+          ]
+        },
+        "why": "Caldera declared us only upstream"
+      },
+      {
+        "case": "undeclared_processor",
+        "edit": {
+          "disclosure.recipient.processors": [
+            {
+              "service": "Example OCR",
+              "domain": "ocr.example",
+              "purpose": "invoice text extraction",
+              "processed_in": [
+                "us"
+              ]
+            }
+          ]
+        },
+        "why": "Caldera's upstream declaration lists no such processor"
       }
     ]
   }

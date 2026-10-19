@@ -5,16 +5,16 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent NDA</title>
-  <meta name="description" content="An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together, written so that software can read it and grade each clause.">
+  <meta name="description" content="An Agent NDA is usually the first agreement two or more parties sign. It starts the relationship, and the documents that follow refer to it.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Agent NDA">
   <meta property="og:title" content="Agent NDA">
-  <meta property="og:description" content="An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together, written so that software can read it and grade each clause.">
+  <meta property="og:description" content="An Agent NDA is usually the first agreement two or more parties sign. It starts the relationship, and the documents that follow refer to it.">
   <meta property="og:url" content="https://agentnda.net/">
   <meta property="og:image" content="https://agentnda.net/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent NDA. A signed non-disclosure agreement between two parties whose agents work together, with every clause graded.">
+  <meta property="og:image:alt" content="Agent NDA. The first agreement parties sign when their agents work together, with every clause graded.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentnda.net/brand/png/og-image.png">
   <link rel="canonical" href="https://agentnda.net/">
@@ -48,6 +48,7 @@
           <a href="/" class="on" aria-current="page">What it is</a>
           <a href="/clauses.html">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html">Questions and answers</a>
           </div>
@@ -86,9 +87,8 @@
       <div class="herobg">
         <div class="wrap hero">
           <h1>Agent NDA</h1>
-          <p class="lede">An Agent NDA is a signed non-disclosure agreement between two parties whose agents work together, written so that software can read it and grade each clause.</p>
-          <p class="more">Organizations often make a provider sign a non-disclosure agreement before it may even see a request for proposal, because the RFP holds strategic information: what the organization plans to change, what it spends today and which suppliers it is unhappy with. Confidential material also changes hands in an Agent SoW validation probe, where a client sends real sample inputs before anyone has signed a statement of work, and during negotiation, while drafts and prices pass back and forth. And one non-disclosure agreement often covers a whole relationship, across many statements of work signed over years.</p>
-          <p class="more">A clause inside an <a href="https://agentsow.com/">Agent SoW</a> cannot cover any of that. Before a statement of work exists there is no document for the clause to sit in, and once several exist, each would carry its own copy of the same promises with its own start and end. So Agent NDA is its own signed document, and the documents that depend on it name it by its identifier and digest.</p>
+          <p class="lede">An Agent NDA is usually the first agreement two or more parties sign. It starts their relationship, and the documents that follow refer to it: an Agent RFP posting, an Agent SoW, an Agent Processes run, and more of the Common Agent Standards as the family grows.</p>
+          <p class="more">It is a signed JSON document. It says what is confidential, what it may be used for, who may see it and for how long. An agent can read it, check who signed it and know which terms cover the material it holds. It records what the parties signed and is not legal advice.</p>
           <div class="cta">
             <a class="btn btn-primary" href="/spec.html">Read the specification</a>
             <a class="btn btn-ghost" href="/example.html">See an example</a>
@@ -96,121 +96,102 @@
           <p class="version"><!-- spec:version -->The specification is at version 0.1.0-draft.<!-- /spec:version --></p>
 
           <figure class="docbox" aria-label="Six clauses of a signed Agent NDA, each with its grade">
-            <div class="bar"><span>nda_2bpnmagnx6925r5y · version 1 · in force</span><span>both owners signed</span></div>
+            <div class="bar"><span>nda_dtzv6z8tans9k5s6 · version 1 · in force</span><span>both owners signed</span></div>
 <pre class="doc"><span class="k">parties</span>   Harbor &amp; Line discloses, Caldera receives <span class="gv">[EVIDENCE]</span> <span class="c">keys and owners, signed</span>
 <span class="k">term</span>      in force until 30 November 2027           <span class="gv">[EVIDENCE]</span> <span class="c">instants in the signed bytes</span>
 <span class="k">survival</span>  the duties last 730 days after the end    <span class="gr">[RECORDED]</span> <span class="c">a promise no runtime checks</span>
 <span class="k">purpose</span>   the RFP, probes, talks and engagements    <span class="gr">[RECORDED]</span> <span class="c">use for this and nothing else</span>
 <span class="k">covers</span>    the RFP body, inputs, terms and more      <span class="gr">[RECORDED]</span> <span class="c">a closed list of categories</span>
 <span class="k">at end</span>    return or destroy within 30 days          <span class="gr">[RECORDED]</span> <span class="c">with a signed confirmation</span></pre>
-            <figcaption class="cap"><b>No clause of an Agent NDA is labeled enforced.</b> The promises are recorded and the signatures are evidence. The one step software performs is a board's release of a gated RFP's sealed body, and Agent RFP defines it.</figcaption>
+            <figcaption class="cap"><b>No clause of an Agent NDA is labeled enforced.</b> The promises are recorded, and the signatures are evidence.</figcaption>
           </figure>
         </div>
       </div>
 
-      <section class="band tinted" id="moments">
+      <section class="band tinted" id="first">
         <div class="wrap">
-          <h2>One agreement covers three moments</h2>
-          <p>A non-disclosure agreement is usually signed early and outlives the first piece of work. An Agent NDA is built for the three points where confidential material changes hands between agents.</p>
-          <figure class="figure tl-fig" role="img" aria-label="A timeline. First, a provider accepts the poster's Agent NDA and the board releases the sealed body of the RFP. Second, the provider runs a validation probe on real samples and the parties negotiate. Third, several statements of work follow, each naming the NDA. One Agent NDA is in force across all three.">
-            <div class="bar"><span class="lamp"></span>one relationship, from the first look to the last contract<span class="grow">nda_2bpnmagnx6925r5y</span></div>
-            <svg class="tl" viewBox="0 0 960 240" aria-hidden="true" focusable="false">
-              <line class="axis" x1="30" y1="118" x2="930" y2="118"/>
-              <text class="num" x="170" y="34">1</text>
-              <text class="ev" x="170" y="58">Before an RFP is shown</text>
-              <text class="evs" x="170" y="78">the provider accepts the open offer,</text>
-              <text class="evs" x="170" y="96">and the board releases the sealed body</text>
-              <circle class="dot" cx="170" cy="118" r="8"/>
-              <text class="num" x="455" y="34">2</text>
-              <text class="ev" x="455" y="58">During a probe and a negotiation</text>
-              <text class="evs" x="455" y="78">sample invoices, methods and draft</text>
-              <text class="evs" x="455" y="96">terms pass under the same NDA</text>
-              <circle class="dot" cx="455" cy="118" r="8"/>
-              <text class="num" x="770" y="34">3</text>
-              <text class="ev" x="770" y="58">Across many contracts</text>
-              <text class="evs" x="770" y="78">each Agent SoW names the NDA</text>
-              <text class="evs" x="770" y="96">by its identifier and digest</text>
-              <circle class="dot" cx="770" cy="118" r="8"/>
-              <line class="span" x1="170" y1="150" x2="915" y2="150"/>
-              <text class="lab" x="170" y="178">One Agent NDA in force, from the recipient's signature to the end of its term</text>
-              <rect class="sow" x="645" y="196" width="76" height="28" rx="6"/><text class="sowt" x="683" y="215">SoW 1</text>
-              <rect class="sow" x="732" y="196" width="76" height="28" rx="6"/><text class="sowt" x="770" y="215">SoW 2</text>
-              <rect class="sow" x="819" y="196" width="76" height="28" rx="6"/><text class="sowt" x="857" y="215">SoW 3</text>
+          <h2>Later documents name the agreement they rely on</h2>
+          <p>Each later document names the Agent NDA by identifier and digest, so nobody can swap in other terms.</p>
+          <figure class="figure tl-fig" role="img" aria-label="One Agent NDA, signed first. An Agent RFP posting, an Agent SoW and an Agent Processes run each name it by identifier and digest. More standards will name it as the family grows.">
+            <div class="bar"><span class="lamp"></span>one agreement, named by the documents that follow<span class="grow">nda_dtzv6z8tans9k5s6</span></div>
+            <svg class="tl" viewBox="0 0 960 250" aria-hidden="true" focusable="false">
+              <defs><marker id="ah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+              <rect class="nda" x="40" y="80" width="260" height="90" rx="12"/>
+              <text class="bt" x="170" y="118">Agent NDA</text>
+              <text class="bs" x="170" y="142">signed first</text>
+              <path class="arr" d="M620 40 C 470 40, 440 110, 304 118" marker-end="url(#ah)"/>
+              <path class="arr" d="M620 98 C 480 98, 440 122, 304 124" marker-end="url(#ah)"/>
+              <path class="arr" d="M620 156 C 480 156, 440 130, 304 130" marker-end="url(#ah)"/>
+              <path class="arr dash" d="M620 214 C 470 214, 440 140, 304 136" marker-end="url(#ah)"/>
+              <text class="lab" x="170" y="200">named by identifier and digest</text>
+              <rect class="box" x="620" y="20" width="300" height="40" rx="8"/><text class="bx" x="770" y="45">an Agent RFP posting</text>
+              <rect class="box" x="620" y="78" width="300" height="40" rx="8"/><text class="bx" x="770" y="103">an Agent SoW</text>
+              <rect class="box" x="620" y="136" width="300" height="40" rx="8"/><text class="bx" x="770" y="161">an Agent Processes run</text>
+              <rect class="box dash" x="620" y="194" width="300" height="40" rx="8"/><text class="bx dim" x="770" y="219">more standards as the family grows</text>
             </svg>
           </figure>
-          <ol class="moments">
-            <li><span class="n">1</span><h3>Before an RFP is shown</h3><p>A buyer publishes a gated posting under <a href="https://agentrfp.net/">Agent RFP</a>: a public summary anyone can read, and a sealed body held back. The posting names the buyer's Agent NDA, signed as an open offer. A provider accepts by signing, and the board releases the body only after it has verified that acceptance.</p></li>
-            <li><span class="n">2</span><h3>During a probe and a negotiation</h3><p>Before anyone signs a statement of work, a provider can run an Agent SoW validation probe on the buyer's real inputs to show it can do the work, and the two sides trade drafts and prices. The same agreement covers all of it.</p></li>
-            <li><span class="n">3</span><h3>Across many contracts</h3><p>When work begins, each Agent SoW names the agreement it runs under by identifier and digest. The agreement keeps its own term, so it outlives any one engagement and covers the next.</p></li>
-          </ol>
+          <ul class="moments">
+            <li><h3>An RFP is shown after an acceptance.</h3><p>A buyer's <a href="https://agentrfp.net/">Agent RFP</a> posting shows a public summary. The board releases the sealed body only to a provider that has accepted the buyer's Agent NDA.</p></li>
+            <li><h3>A probe and a negotiation happen under it.</h3><p>A provider runs an Agent SoW validation probe on real samples, and the two sides trade drafts. No statement of work exists yet, so the Agent NDA covers this.</p></li>
+            <li><h3>Each statement of work names it.</h3><p>Every <a href="https://agentsow.com/">Agent SoW</a> between the parties names the Agent NDA it runs under. One agreement can cover many of them.</p></li>
+            <li><h3>A process run checks every outside participant.</h3><p>An <a href="https://agentprocesses.ai/">Agent Processes</a> document names the agreement. The runtime checks that each outside agent's owner is bound before it hands that agent any work.</p></li>
+          </ul>
         </div>
       </section>
 
       <section class="band" id="grades">
         <div class="wrap">
           <h2>Every clause says what backs it up</h2>
-          <p>The Common Agent Standards label every clause with one of three grades: enforced, evidence or recorded. A non-disclosure agreement asks the recipient to do things in private: to use material only for a purpose, to show it only to certain people, to destroy it at the end. No runtime can watch any of that. So an Agent NDA uses only two of the grades, and a document that labels any of its clauses enforced does not validate.</p>
+          <p>The Common Agent Standards give every clause one of three grades. An NDA asks the recipient to act in private, where no runtime can watch, so no clause of an Agent NDA is graded enforced.</p>
           <div class="cards three">
             <div class="card c-blue">
               <span class="grade c-blue">evidence</span>
-              <h3>Who signed, and when</h3>
-              <p>The parties, their keys and owners, the instants the agreement starts and ends, and the signatures themselves. Anyone can verify them from the signed bytes, and a dispute starts from that record.</p>
+              <h3>The facts are signed.</h3>
+              <p>The parties, the dates and the signatures are in signed bytes. Anyone can verify them.</p>
             </div>
             <div class="card c-amber">
               <span class="grade c-amber">recorded</span>
-              <h3>What the recipient promised</h3>
-              <p>The purpose, what is confidential, who may receive it, the exclusions, compelled disclosure, how long the duties survive, and return or destruction. They are signed and citable, and a breach is settled between the owners, under a related engagement or before a court.</p>
+              <h3>The promises are recorded.</h3>
+              <p>Purpose, what is confidential and who may see it are promises. A breach is settled outside the system.</p>
             </div>
             <div class="card c-mint">
               <span class="grade c-mint">enforced</span>
-              <h3>One step, outside the document</h3>
-              <p>A board releases the sealed body of a gated posting only to a provider whose acceptance it has verified. That refusal happens before the provider holds anything, so it is enforced at the board. Agent RFP defines it, and <a href="/gated.html">Gated RFPs</a> walks through it.</p>
+              <h3>Some checks run before material moves.</h3>
+              <p>A board, a process runtime or a platform can refuse before anything moves. These checks sit outside the document.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="band tinted" id="who">
-        <div class="wrap">
-          <h2>Who it is for</h2>
-          <ul class="plain">
-            <li><b>Buyers and their counsel</b> who already require a non-disclosure agreement before they share an RFP or sample data, and want their agents to ask for one and check it.</li>
-            <li><b>Providers</b> whose agents read RFPs, run validation probes and negotiate, and who want to accept an agreement without a person retyping it into another system.</li>
-            <li><b>Implementers of boards and runtimes</b> that host gated postings or hold confidential inputs, and need a document they can parse, verify and cite by digest.</li>
-          </ul>
-          <p>An Agent NDA describes what the parties recorded and signed. It is not legal advice, and what a court would make of a particular agreement is a question for the law that governs it.</p>
-        </div>
-      </section>
-
-      <section class="band" id="fit">
+      <section class="band tinted" id="fit">
         <div class="wrap">
           <h2>Where it fits among the Common Agent Standards</h2>
-          <p>Agent NDA is the confidentiality document of the contracting standards. Each of the others has a part in it.</p>
           <div class="tablebox">
             <table class="t">
               <thead><tr><th>Standard</th><th>Its part beside an Agent NDA</th></tr></thead>
               <tbody>
-                <tr><td><a href="https://agentrfp.net/">Agent RFP</a></td><td>Defines the gated posting: the public summary, the sealed body, the open offer the posting names by digest, and the board's release of the body after it verifies a provider's acceptance.</td></tr>
-                <tr><td><a href="https://agentsow.com/">Agent SoW</a></td><td>Defines the validation probe and the statement of work. An Agent SoW names the agreement it runs under by identifier and digest, and its own data-handling clause still governs retention for that engagement.</td></tr>
-                <tr><td><a href="https://agentmandate.net/">Agent Mandate</a></td><td>Shows who may sign for an organization. A party can name the organization it acts for, and a signature can name the mandate under which the signer acted.</td></tr>
-                <tr><td><a href="https://agentreputations.com/">Agent Reputations</a></td><td>Holds evidence of how parties behaved. Either party may file evidence of a breach with a bureau, and a party considering an agreement may read the other's record first.</td></tr>
-                <tr><td><a href="https://commonagent.net/spec.html">The Common Agent Specification</a></td><td>Defines the agent itself, with the key that signs and the identity both sides verify.</td></tr>
+                <tr><td><a href="https://agentrfp.net/">Agent RFP</a></td><td>A gated posting names the poster's open offer by digest. The board releases the sealed body after it verifies an acceptance (Agent RFP §5.11).</td></tr>
+                <tr><td><a href="https://agentsow.com/">Agent SoW</a></td><td>A statement of work names the Agent NDA it runs under (Agent SoW §5.16). Its own retention rules still govern the engagement's content.</td></tr>
+                <tr><td><a href="https://agentprocesses.ai/">Agent Processes</a></td><td>A process document names the agreement in <code>confidential-under:</code>. The runtime checks that every outside participant is bound (Agent Processes 0.6.0-draft).</td></tr>
+                <tr><td><a href="https://agentmandate.net/">Agent Mandate</a></td><td>The <code>nda</code> power says who may sign an Agent NDA for an organization (Agent Mandate 0.5.0-draft §7.2).</td></tr>
+                <tr><td><a href="https://agentreputations.com/">Agent Reputations</a></td><td>A party may file evidence of a breach with a bureau, and read a counterparty's record before it signs.</td></tr>
+                <tr><td><a href="https://commonagent.net/spec.html">The Common Agent Specification</a></td><td>Defines the agent and the key it signs with.</td></tr>
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <section class="band tinted" id="more">
+      <section class="band" id="more">
         <div class="wrap">
           <h2>Read more</h2>
           <div class="doors">
-            <a class="door" href="/clauses.html"><h3>What an Agent NDA says</h3><p>Each clause, what it records and the grade it carries.</p></a>
-            <a class="door" href="/gated.html"><h3>Gated RFPs</h3><p>A posting shows a summary to everyone and releases the rest after an acceptance.</p></a>
-            <a class="door" href="/example.html"><h3>An example</h3><p>Harbor &amp; Line shares a freight-audit RFP with Caldera under one agreement.</p></a>
-            <a class="door" href="/questions.html"><h3>Questions and answers</h3><p>Mutual agreements, breach, retention and what the document leaves out.</p></a>
-            <a class="door" href="/spec.html"><h3>The specification</h3><p>The full text holds every rule a document and a verifier follow.</p></a>
-            <a class="door" href="https://commonagent.net/"><h3>The Common Agent Standards</h3><p>Agent NDA is one of a family of open standards for agents.</p></a>
+            <a class="door" href="/clauses.html"><h3>What an Agent NDA says</h3><p>Each clause and the grade it carries.</p></a>
+            <a class="door" href="/gated.html"><h3>Gated RFPs</h3><p>How a board releases a sealed body after an acceptance.</p></a>
+            <a class="door" href="/parties.html"><h3>Many parties</h3><p>One agreement for every participant in a process run.</p></a>
+            <a class="door" href="/example.html"><h3>An example</h3><p>Harbor &amp; Line shares a freight-audit RFP with Caldera.</p></a>
+            <a class="door" href="/questions.html"><h3>Questions and answers</h3><p>Short answers to the questions people ask first.</p></a>
+            <a class="door" href="/spec.html"><h3>The specification</h3><p>Every rule a document and a verifier follow.</p></a>
           </div>
         </div>
       </section>
@@ -221,6 +202,7 @@
           <a href="/">Agent NDA</a>
           <a href="/clauses.html">What an Agent NDA says</a>
           <a href="/gated.html">Gated RFPs</a>
+          <a href="/parties.html">Many parties</a>
           <a href="/example.html">An example</a>
           <a href="/questions.html">Questions and answers</a>
           <a href="/spec.html">Specification</a>
