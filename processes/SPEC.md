@@ -8,10 +8,14 @@
 participant from outside the process owner shares, written
 `confidential-under:` in the header (Section 4). Every agent of another
 owner that holds a phase or receives a handoff MUST belong to an owner
-bound by that agreement, as Agent NDA §8.1 defines it. A runtime that
+bound by that agreement, as Agent NDA §8.1 defines it, and the process
+owner MUST be a party to it. A runtime that
 implements the key checks before it starts such a phase or delivers
 such a handoff, refuses with the reason named, and records the refusal
-in the run record. A runtime that does not implement the check says so
+in the run record. A phase that runs another process passes the
+agreement on to the inner run, and an inner document that names its
+own agreement adds to the outer one and cannot drop it. An agent that a
+harness contracts on its own is bound by flow-down only. A runtime that does not implement the check says so
 under Section 11.3. A phase's `under:` (Section 6.4.1) is unchanged. The
 key is optional, and no document in the corpus fails anything new. The
 matching change is in the Agent NDA specification, which adds
@@ -365,21 +369,37 @@ defines whether an owner is bound. It is bound when it is a member of a
 multilateral agreement in force, when it is the recipient of an
 acceptance in force of the named open offer, or when it is bound by a
 flow-down agreement whose `flows_from` names an agreement the party
-above it is bound by. The process owner SHOULD itself be a party to the
+above it is bound by. The process owner MUST itself be a party to the
 named agreement, as the discloser of the open offer or as one of the
-members.
+members. A runtime that implements the key checks this before it
+starts a run, and it MUST NOT start a run whose process owner is not a
+party.
 
 The rule covers the agent a phase goes to and the agent a handoff is
-delivered to. An agent that a `harness:` phase contracts on the way is
+delivered to. An agent that a `harness:` phase contracts on its own is
 the holder's to bind, and Agent NDA §5.5 says how the holder does so.
-A phase that runs another process is checked for the handoff into it,
-and the inner run's own phases are held to the inner document's header.
+That agent is bound by flow-down only, and the runtime does not check
+it, because the runtime never delivers anything to it.
 
-**The check.** A runtime that implements the key MUST make the check at
-two moments: before it starts a phase held by an agent of another
-owner, and before it delivers a handoff to an agent of another owner.
-It checks that the agent's owner is bound by the named agreement at
-that moment. Where the check fails, the runtime MUST refuse. It MUST
+**A phase that runs another process.** The inner run inherits the outer
+document's `confidential-under:` (Section 6.3.1). Where the inner
+document carries no `confidential-under:` of its own, a runtime holds
+every phase and handoff of the inner run to the outer agreement, exactly
+as it holds the outer run's own. Where the inner document names its own
+agreement, that agreement MUST be at least as strict as the outer one,
+and the check shows how: the runtime checks each agent of an owner other
+than the outer process owner against both agreements, and that owner
+MUST be bound by each of them. The inner document can add an agreement
+in this way, and it cannot drop the outer one. The handoff into the
+phase is checked as any other handoff is.
+
+**The check.** A runtime that implements the key MUST check, before it
+starts a run, that the process owner is a party to the named
+agreement. It MUST then make the check at two moments: before it
+starts a phase held by an agent of another owner, and before it
+delivers a handoff to an agent of another owner. It checks that the
+agent's owner is bound by the named agreement at that moment, and in an
+inner run by each agreement the paragraph above names. Where the check fails, the runtime MUST refuse. It MUST
 NOT start the phase or deliver the handoff, and it MUST name the
 reason. The reason says which agent, which owner, and which test of
 Agent NDA §8.1 failed: no seat or acceptance names the owner, the
@@ -825,6 +845,16 @@ not from the moment the queued run starts. Where the line joins the
 firing to a run already in flight, that run's cast governs, whatever
 filled it, and a runtime MUST record that the phase waits on a run it did
 not cast.
+
+**Confidentiality.** Where the outer document carries
+`confidential-under:`, the inner run inherits it. An inner document
+with no `confidential-under:` of its own is held to the outer
+agreement, and an inner document that names its own is held to both
+(Section 4). Where the firing joins a run already in flight, that run
+was not started under the outer agreement, so a runtime MUST check its
+outside participants against the outer agreement before it delivers
+the handoff into it, and MUST refuse the join when any of them is not
+bound.
 
 **What comes out, and nothing else.** What the outer document names as
 coming out of the phase MUST be something the inner document's `goal:`
@@ -2886,7 +2916,10 @@ inner run open when the outer run is abandoned.
 `confidential-under:`, a runtime that implements the key MUST check,
 before it starts a phase held by an agent of another owner and before
 it delivers a handoff to one, that the agent's owner is bound by the
-named agreement. It MUST refuse when the check fails, name the reason,
+named agreement. It MUST NOT start a run whose process owner is not a
+party to the agreement. It MUST hold an inner run to the outer
+agreement, and to the inner document's own as well where the inner
+document names one. It MUST refuse when a check fails, name the reason,
 and record the refusal in the run record. A runtime that does not
 implement the check MUST say so under section 11.3.
 

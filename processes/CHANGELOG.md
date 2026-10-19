@@ -16,6 +16,17 @@ that tag is the text of that version. Its history comes from jeffrschneider/agen
   such a phase or delivers such a handoff, refuses with the reason
   named, and records a `REFUSED:` record in the run record
   (Sections 8.4, 13.2 and 17.3).
+- The process owner MUST be a party to the named agreement, as the
+  discloser of the open offer or as a member, and a runtime that
+  implements the key does not start a run when it is not (Section 4).
+- A phase that runs another process passes the agreement on to the
+  inner run. An inner document with no `confidential-under:` of its own
+  is held to the outer agreement. An inner document that names its own
+  is held to both, so it can add an agreement and cannot drop the outer
+  one. A firing that joins an inner run already in flight is checked
+  against the outer agreement first (Sections 4 and 6.3.1).
+- An agent that a `harness:` phase contracts on its own is bound by
+  flow-down only (Agent NDA §5.5), and the runtime does not check it.
 - The check is enforced at the runtime that makes it. What each party
   does with the material afterwards stays a recorded promise under the
   agreement. A runtime that does not implement the check says so under
