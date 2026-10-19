@@ -1,0 +1,118 @@
+{
+  "about": "Test vectors for the commitment over every subject's head that a bureau keeping one log per subject publishes (Agent Reputations §4.1.1). A leaf is SHA-256 over the byte 0x00 and the JCS of the head's subject, seq and head_hash; leaves are ordered by the UTF-8 bytes of the subject; a pair becomes SHA-256 over the byte 0x01 and the two digests; an odd last digest is carried up unchanged; no heads give the SHA-256 of the empty string. The root is lowercase hex. The commitment is signed under the tag fdbk-heads-v1 with the report test key of fdbk-report-v1.json, as §8.1.1 signs a report. reference.mjs beside this file reproduces every vector.",
+  "heads": [
+    {
+      "subject": "Coder.ana@example.org",
+      "seq": 412,
+      "head_hash": "Ibkw+Kp+LQU9E4U1YnEJ+5KCdMkANM6uoweiH3ZL3rk="
+    },
+    {
+      "subject": "Chloé.ops@example.org",
+      "seq": 37,
+      "head_hash": "0yBO3U6ZAt1WGpgDUY0T3ByuSDYvl40uoNULvjWc144="
+    },
+    {
+      "subject": "bot.zed@example.net",
+      "seq": 1,
+      "head_hash": "OVH42DvSmryhiZSk/GPSo4EUQ+p+xeOYvW5Sj/3YhyU="
+    },
+    {
+      "subject": "Ledger.lee@example.com",
+      "seq": 2208,
+      "head_hash": "1IJeONqYnF5T5cy/Z3DxCodlmUYCGywfCyqJvbgtwV4="
+    },
+    {
+      "subject": "Research.ravi@example.org",
+      "seq": 96,
+      "head_hash": "5IuThVkd8KEDUq+4XhGjd6SjhMvgryGE+9bjmd00o7g="
+    }
+  ],
+  "leaves": [
+    {
+      "subject": "Chloé.ops@example.org",
+      "leaf": "9f65aba35bb738d04f3e35c93b301eb603a54a68059c464758ff5eea56d8ea23"
+    },
+    {
+      "subject": "Coder.ana@example.org",
+      "leaf": "efcc7a53bf9af3bf30c8158a41d71727512d5ee8470356873b286e8c996c685a"
+    },
+    {
+      "subject": "Ledger.lee@example.com",
+      "leaf": "c4fad1053a6e6133c97dbcff39eb74e58c57ebaa4cb2d52afe7d22ea7dd0ccc0"
+    },
+    {
+      "subject": "Research.ravi@example.org",
+      "leaf": "9165882f36fbbb1aa52b287348201fd96a60bd9b07a0d8100d70aa444392bd97"
+    },
+    {
+      "subject": "bot.zed@example.net",
+      "leaf": "d296f7d0686fdf8318f1588b6b57eb40b12bb49e1c959cdabe0d57a8f13365d9"
+    }
+  ],
+  "root": "e6ba9c054646e7bf54c0910ff4547159f08621920ff104260e937c3b0411ad5b",
+  "empty_root": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "signed": {
+    "name": "commitment",
+    "tag": "fdbk-heads-v1",
+    "member": "heads",
+    "envelope": {
+      "heads": {
+        "bureau": "https://bureau.example",
+        "issued_at": "2026-10-19T00:00:00.000Z",
+        "root": "e6ba9c054646e7bf54c0910ff4547159f08621920ff104260e937c3b0411ad5b",
+        "subjects": 5
+      },
+      "bureau_key": "01sCQHvvCb7r6Es5no0VZvHxhYQkGKmKzG5m11P/Bww=",
+      "bureau_kid": "e23eccc4f5cc",
+      "bureau_sig": "ddkSsKb//9qkAfooOixTfSvOym8ftgrfwsH9e14X2G0qWbBZly/sGeXvlwXK32NKlE7wdVLHIjQnvOoAfZU7BQ=="
+    },
+    "signed_bytes": "fdbk-heads-v1\n{\"bureau\":\"https://bureau.example\",\"issued_at\":\"2026-10-19T00:00:00.000Z\",\"root\":\"e6ba9c054646e7bf54c0910ff4547159f08621920ff104260e937c3b0411ad5b\",\"subjects\":5}",
+    "signed_bytes_sha256": "38251ff03c48265ebfc3214c3539b15fd42f1624dccb699fc11ab4e53925fa98"
+  },
+  "proofs": [
+    {
+      "subject": "Chloé.ops@example.org",
+      "path": [
+        {
+          "side": "right",
+          "hash": "efcc7a53bf9af3bf30c8158a41d71727512d5ee8470356873b286e8c996c685a"
+        },
+        {
+          "side": "right",
+          "hash": "d36b274ca924fc8ad933a0b6f7827fe0b69ea762f068634f3972de6aba641fa1"
+        },
+        {
+          "side": "right",
+          "hash": "d296f7d0686fdf8318f1588b6b57eb40b12bb49e1c959cdabe0d57a8f13365d9"
+        }
+      ]
+    },
+    {
+      "subject": "bot.zed@example.net",
+      "path": [
+        {
+          "side": "left",
+          "hash": "ae6e5c0c7508a1d04d114899f1d74308bee2c86f312e629fd3d315b0ca2090f0"
+        }
+      ]
+    }
+  ],
+  "must_fail": [
+    {
+      "name": "a-changed-head",
+      "subject": "Chloé.ops@example.org",
+      "set": {
+        "head_hash": "z+PXm0Zj5aF443IKD0TFUDp5x/5cIjAZL8O9rbjok5M="
+      },
+      "reason": "the path does not lead to the root"
+    },
+    {
+      "name": "a-changed-seq",
+      "subject": "bot.zed@example.net",
+      "set": {
+        "seq": 2
+      },
+      "reason": "the path does not lead to the root"
+    }
+  ]
+}

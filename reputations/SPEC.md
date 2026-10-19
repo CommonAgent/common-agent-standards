@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.7.0-draft
+**Version:** 0.8.0-draft
 **Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -191,8 +191,9 @@ and fresh identities rank below proven ones** (§7.4, §12.2).
 
 ### 4.1. The ledger
 
-Each bureau maintains one append-only log of evidence events. Entries are never
-updated or deleted. Each entry carries the hash of the previous entry:
+Each bureau maintains one append-only log of evidence events, or one such log
+per subject (§4.1.1). Entries are never updated or deleted. Each entry carries
+the hash of the previous entry in its log:
 
 ```json
 {
@@ -221,6 +222,68 @@ Ledger access is subject-scoped: a subject can retrieve every entry about itself
 (explainability is an obligation, §10), a reporter can retrieve what it submitted,
 and the public gets aggregate reports (§8), not the raw feed. Rationale mirrors Personal Agent Naming
 §6: audit for the owner, privacy against enumeration.
+
+#### 4.1.1. One log per subject
+
+A bureau MAY keep one log per subject in place of one log for every subject.
+Each subject's log is then chained as above, starting from its own first entry,
+and its `seq` counts that subject's entries only.
+
+The reason is erasure. A bureau holds records about the people and businesses
+behind the agents it rates, and the law where it operates may oblige it to
+erase a subject's history, as may the subject's own account closing. In one log
+chained across every subject, removing one subject's entries breaks the hash of
+every entry after them, for every other subject too. One log per subject can be
+erased whole and leaves every other log verifying.
+
+What one log gives and many logs alone do not is that a bureau cannot show one
+reader a history it hides from another: every entry is bound into one chain
+that everyone sees the head of. A bureau that keeps one log per subject MUST
+restore that with a commitment over every subject's head:
+
+1. At least once in every 24 hours, the bureau computes the root defined below
+   over the head of every subject's log: the subject, the `seq` of the log's
+   last entry, and that entry's `entry_hash` as the entry carries it.
+2. It publishes the root in a commitment, a JSON object holding `bureau` (the
+   bureau's URL, as reports carry it, §8.1.2), `issued_at`, `subjects` (the
+   number of heads), and `root`. The commitment is signed as a report is
+   (§8.1.1), under the tag `fdbk-heads-v1` and with the bureau's report signing
+   key, in an envelope whose signed member is `heads`. It SHOULD also be
+   timestamped by a party other than the bureau.
+3. It serves the latest commitment at `GET <bureau>/api/heads`, keeps every
+   commitment it has published, and serves each at
+   `GET <bureau>/api/heads/<issued_at>`.
+4. With a subject's ledger excerpt (§4.1, §10), it serves the path from that
+   subject's head to the root of the latest commitment, so the subject can
+   check that the head it was shown is the head everyone was committed to.
+
+The root is a Merkle tree over the heads:
+
+- A head's leaf is SHA-256 over the byte 0x00 followed by the JCS (RFC 8785)
+  of an object holding exactly `subject`, `seq`, and `head_hash`, in UTF-8.
+- Leaves are ordered by the UTF-8 bytes of the subject, ascending.
+- Each level takes the digests two at a time, and each pair becomes SHA-256
+  over the byte 0x01 followed by the two 32-byte digests. An odd digest at the
+  end of a level is carried to the next level unchanged, never paired with
+  itself, which would let two different sets of heads share a root.
+- The last digest standing, in lowercase hex, is the root. With no heads the
+  root is the SHA-256 of the empty string.
+
+A path is a list of steps from the leaf upward, one for each level at which the
+leaf's digest has a partner: the partner's digest in hex and whether it sits
+on the `left` or the `right`. A consumer recomputes the leaf from the head it
+was shown, folds the steps in order, and compares the result with the root of a
+commitment it verified.
+
+An erased subject's head is absent from every commitment after the erasure. A
+commitment published before it stays as published, and its root is no longer
+reproducible from the logs that remain, which is the intended trade: erasure
+wins over the ability to recompute an old root, and the old commitment still
+proves what the bureau had committed to on its date.
+
+The file [conformance/fdbk-heads-v1.json](conformance/fdbk-heads-v1.json) holds
+five heads, their leaves and root, a signed commitment, two paths, and two
+changed heads whose paths must not reach the root (§14).
 
 ### 4.2. Facts
 
@@ -1712,9 +1775,16 @@ outside Node.js itself.
   of §8.1.3 that refuses it. The test key is a test key only. A report signed
   with it proves nothing, and a bureau MUST NOT sign with it and a consumer
   MUST NOT pin it.
+- [conformance/fdbk-heads-v1.json](conformance/fdbk-heads-v1.json) holds the
+  heads of five subjects' logs, their leaves in order and the root of
+  §4.1.1, the root of no heads, a commitment signed with the test key of
+  `fdbk-report-v1.json`, the paths of two heads to the root (one of them a
+  head carried up unpaired), and two changed heads whose paths must not reach
+  the root.
 - [conformance/reference.mjs](conformance/reference.mjs) computes the pool of
-  §7.1 and the score of §7.3 from a ledger, signs and verifies under §8.1, and
-  checks both files. The repository runs it on every change.
+  §7.1 and the score of §7.3 from a ledger, signs and verifies under §8.1,
+  computes the root and the paths of §4.1.1, and checks all three files. The
+  repository runs it on every change.
 
 An implementation of `fdbk-score-1` conforms to the vectors when every number
 it computes is within the stated tolerance of the expected one, which allows
@@ -1725,6 +1795,13 @@ signatures exactly, which Ed25519 makes possible because its signatures are
 deterministic, and refuses every report the vectors say it must refuse.
 
 ---
+
+*0.8.0-draft (2026-10-19): a bureau may keep one log per subject (§4.1.1),
+which lets it erase a subject's history without breaking every other log, if
+it publishes at least daily a commitment signed under `fdbk-heads-v1` over
+every subject's head, with a path from each head to the root served beside
+the subject's excerpt. The vectors in `conformance/fdbk-heads-v1.json` fix the
+root, the commitment and the paths.*
 
 *0.7.0-draft (2026-10-19): a claim of breach cites an agreement whose
 signatures are bound to their seats. Check 2 of §4.8 now also requires that

@@ -3,7 +3,7 @@
 // fdbk-score-1 (Agent Reputations §7) and of report signing (§8.1), and the
 // check that it reproduces the test vectors beside it.
 //
-//   node reputations/conformance/reference.mjs           check both vector files
+//   node reputations/conformance/reference.mjs           check the vector files
 //   node reputations/conformance/reference.mjs --write   recompute the expected
 //                                                        values and write them
 //
@@ -24,6 +24,7 @@ import { createHash, createPrivateKey, createPublicKey, sign, verify } from "nod
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCORE_FILE = join(HERE, "fdbk-score-1.json");
 const REPORT_FILE = join(HERE, "fdbk-report-v1.json");
+const HEADS_FILE = join(HERE, "fdbk-heads-v1.json");
 
 // ── §5, §7: the formula ─────────────────────────────────────────────────────
 // The quality value of each outcome code that enters a pool (§5). Every code
@@ -131,6 +132,48 @@ export function verifyReport(envelope, { tag, member, keySet, bureau, now, grace
   return "ok";
 }
 
+// ── §4.1.1: the commitment over every subject's head ──────────────────────
+// A leaf is SHA-256 over the byte 0x00 and the JCS of the head's three members;
+// leaves go in order of the subject's UTF-8 bytes; a pair becomes SHA-256 over
+// 0x01 and the two digests; an odd last digest is carried up unchanged; no
+// heads give the SHA-256 of nothing. The root is lowercase hex.
+const sha256 = (...parts) => { const h = createHash("sha256"); for (const x of parts) h.update(x); return h.digest(); };
+export const headLeaf = (h) => sha256(Buffer.from([0]), Buffer.from(jcs({ head_hash: h.head_hash, seq: h.seq, subject: h.subject }), "utf8"));
+const bySubject = (heads) => [...heads].sort((a, b) => Buffer.compare(Buffer.from(a.subject, "utf8"), Buffer.from(b.subject, "utf8")));
+export function headsRoot(heads) {
+  if (!heads.length) return sha256(Buffer.alloc(0)).toString("hex");
+  let level = bySubject(heads).map(headLeaf);
+  while (level.length > 1) {
+    const next = [];
+    for (let i = 0; i < level.length; i += 2) next.push(i + 1 < level.length ? sha256(Buffer.from([1]), level[i], level[i + 1]) : level[i]);
+    level = next;
+  }
+  return level[0].toString("hex");
+}
+// The path from one subject's leaf to the root: at each level where the leaf
+// has a sibling, the sibling's digest and the side it sits on.
+export function inclusionPath(heads, subject) {
+  let level = bySubject(heads).map((h) => ({ d: headLeaf(h), mine: h.subject === subject }));
+  const path = [];
+  while (level.length > 1) {
+    const next = [];
+    for (let i = 0; i < level.length; i += 2) {
+      if (i + 1 >= level.length) { next.push(level[i]); continue; }
+      const [l, r] = [level[i], level[i + 1]];
+      if (l.mine) path.push({ side: "right", hash: r.d.toString("hex") });
+      if (r.mine) path.push({ side: "left", hash: l.d.toString("hex") });
+      next.push({ d: sha256(Buffer.from([1]), l.d, r.d), mine: l.mine || r.mine });
+    }
+    level = next;
+  }
+  return path;
+}
+export function rootFromPath(head, path) {
+  let d = headLeaf(head);
+  for (const step of path) d = step.side === "left" ? sha256(Buffer.from([1]), Buffer.from(step.hash, "hex"), d) : sha256(Buffer.from([1]), d, Buffer.from(step.hash, "hex"));
+  return d.toString("hex");
+}
+
 // ── the check ───────────────────────────────────────────────────────────────
 const WRITE = process.argv.includes("--write");
 const bad = [];
@@ -208,6 +251,46 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       else if (f.reason && res !== f.reason) bad.push(`must fail ${f.name}: it failed with "${res}", the vector says "${f.reason}"`);
     }
     console.log(`fdbk-report-v1: ${file.jcs.length} canonical forms, ${file.signed.length} signed reports and ${file.must_fail.length} reports that must fail checked`);
+  }
+}
+
+{
+  const file = JSON.parse(readFileSync(HEADS_FILE, "utf8"));
+  const report = JSON.parse(readFileSync(REPORT_FILE, "utf8"));
+  const { privateKey, key, kid } = keyFromSeed(report.test_key.seed_hex);
+  const leaves = bySubject(file.heads).map((h) => ({ subject: h.subject, leaf: headLeaf(h).toString("hex") }));
+  const root = headsRoot(file.heads);
+  const commitment = { ...file.signed.envelope.heads, root, subjects: file.heads.length };
+  const bytes = signedBytes(file.signed.tag, commitment);
+  const sig = sign(null, bytes, privateKey).toString("base64");
+  if (WRITE) {
+    file.leaves = leaves;
+    file.root = root;
+    file.signed.envelope = { heads: commitment, bureau_key: key, bureau_kid: kid, bureau_sig: sig };
+    file.signed.signed_bytes = bytes.toString("utf8");
+    file.signed.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
+    for (const pr of file.proofs) pr.path = inclusionPath(file.heads, pr.subject);
+    file.empty_root = headsRoot([]);
+    writeFileSync(HEADS_FILE, `${JSON.stringify(file, null, 2)}\n`);
+  } else {
+    if (JSON.stringify(leaves) !== JSON.stringify(file.leaves)) bad.push("heads: the leaves differ from the vector's");
+    if (root !== file.root) bad.push(`heads: the root is ${root}, the vector says ${file.root}`);
+    if (headsRoot([]) !== file.empty_root) bad.push("heads: the root of no heads differs from the vector's");
+    if (headsRoot([...file.heads].reverse()) !== root) bad.push("heads: the root depends on the order the heads are given in");
+    if (bytes.toString("utf8") !== file.signed.signed_bytes) bad.push("heads: the signed bytes differ from the vector's");
+    if (sig !== file.signed.envelope.bureau_sig) bad.push(`heads: the signature is ${sig}, the vector says ${file.signed.envelope.bureau_sig}`);
+    if (!verify(null, bytes, publicKeyOf(key), Buffer.from(file.signed.envelope.bureau_sig, "base64"))) bad.push("heads: the commitment does not verify");
+    for (const pr of file.proofs) {
+      const head = file.heads.find((h) => h.subject === pr.subject);
+      if (JSON.stringify(inclusionPath(file.heads, pr.subject)) !== JSON.stringify(pr.path)) bad.push(`heads proof ${pr.subject}: the path differs from the vector's`);
+      if (rootFromPath(head, pr.path) !== root) bad.push(`heads proof ${pr.subject}: the path does not lead to the root`);
+    }
+    for (const f of file.must_fail) {
+      const head = { ...file.heads.find((h) => h.subject === f.subject), ...(f.set ?? {}) };
+      const pr = file.proofs.find((x) => x.subject === f.subject);
+      if (rootFromPath(head, pr.path) === root) bad.push(`heads must fail ${f.name}: it led to the root`);
+    }
+    console.log(`fdbk-heads-v1: ${file.heads.length} heads, ${file.proofs.length} proofs and ${file.must_fail.length} heads that must not prove checked`);
   }
 }
 

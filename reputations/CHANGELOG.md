@@ -4,6 +4,24 @@ Versions of Agent Reputations tagged in this repository, newest first. A version
 tagged as `reputations-v` followed by the version, and the text in this folder at
 that tag is the text of that version. The history of SPEC.md comes from jeffrschneider/feedback, and the history of the A2A Reputation extension from the repository of agentreputations.com.
 
+## 0.8.0-draft (2026-10-19)
+
+A bureau may keep one log per subject (§4.1.1). Until this version §4.1 asked
+for one append-only log chained across every subject, in which erasing one
+subject's history, which the law or the subject's own account closing can
+require of a bureau, breaks the hash of every later entry for everyone. A
+bureau that keeps one log per subject must now publish, at least daily, a
+signed commitment over every subject's head: a Merkle root, signed under the
+tag `fdbk-heads-v1` with the report signing key, served at `/api/heads` with
+every earlier one kept, and a path from each subject's head to the root served
+with the subject's excerpt. That keeps what one log gave: a bureau cannot show
+one reader a history it hides from another. The new file
+`conformance/fdbk-heads-v1.json` fixes the root, a signed commitment and the
+paths, and `reference.mjs` reproduces it. The minor version moves because a
+bureau conforming to 0.7.0-draft with one log stays conforming, while one with
+a log per subject conforms only from this version, and only with the
+commitment.
+
 ## 0.7.0-draft (2026-10-19)
 
 A claim of breach cites an agreement whose signatures are bound to their seats. Check 2 of §4.8 now also requires that each signature on the cited agreement is bound to its seat, as Agent NDA 0.2.0-draft defines binding: a signature by a key the seat does not name does not make a party to the agreement, and an owner the registry could not confirm fails the check as a contradicted one does. The example claim of §4.8 names the Agent NDA example by its new agreement digest, because that version added `owner_key` to the example's recipient seat, and its material digest is the new digest of the Agent RFP example body, which now carries a nonce. The minor version moves because a bureau built against 0.6.0-draft accepts a claim whose agreement carries an unbound signature, which this version refuses.
