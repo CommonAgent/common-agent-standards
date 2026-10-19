@@ -18,10 +18,20 @@ says where an Agent SoW approval record sits, in the `change_control` clause
 inside the signed bytes, so that its `mandate` is signed too. A new power,
 `write`, covers a mutating act through a resource proxy (§6 rule 4, §7.1),
 and an Agent SoW grant made `via: "proxy"` MAY name, in `writes`, the power
-each resource's mutating acts need instead; before, no power covered one. A
+each resource's mutating acts need instead, `write` or `amend` and no other;
+before, no power covered one. §7.1 says how a proxy decides an act is
+mutating: from the operation, reading the resource's own read-only
+declaration, with an operation it cannot classify counted as mutating. A
 new fixture, `conformance/mandate-proxy.json`, pins the rule. §7.2 check 2
 is also run at the instant the verifier received the signature, where it
-received it, because the signer writes the instant of signing. The minor
+received it, because the signer writes the instant of signing. §4 lets a
+registry reserve a charter's identifier for the domain it handed it out for,
+because the identifier is published for the domain proof before filing, and
+requires it to refuse a filing under an identifier held for another domain
+or, for a mandate, another organization; the rule that an identifier is not
+refused for failing to re-derive applies only to one nobody holds. A new
+fixture, `conformance/mandate-ids.json`, pins it. `holder.person` SHOULD NOT
+be an email address, because mandates are public. The minor
 version moves because a registry built against 0.5.1-draft accepts a mandate
 holding `nda` without `holder.key`, which this version refuses.
 

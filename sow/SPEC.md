@@ -440,10 +440,12 @@ made**:
 
 A grant made `via: "proxy"` MAY also carry `writes`, naming for each
 resource it covers the Agent Mandate power a caller's mandate must hold for
-a mutating act on it, `{ "<resource>": "<power>" }`. A resource it does not
-name needs the `write` power. The proxy checks the caller's mandate against
-it (Agent Mandate §7.1). `writes` on a grant made any other way does not
-validate, and neither does a power Agent Mandate §6 rule 4 does not list.
+a mutating act on it, `{ "<resource>": "<power>" }`, where the power is
+`write` or `amend`. A resource it does not name needs `write`. The proxy
+decides which acts are mutating and checks the caller's mandate (Agent
+Mandate §7.1). `writes` on a grant made any other way does not validate, and
+neither does any other power, so a grant cannot lend a caller the authority
+to form, award, sign an Agent NDA or issue mandates.
 
 `via` is a closed vocabulary and absent means the parties have not said. A
 runtime MUST NOT infer `link` from silence, and MUST NOT render an input with
@@ -1333,13 +1335,30 @@ The counterparty resolves it one of four ways:
 
 A proposed replacement MUST carry `change_control.proposed_at`, the instant
 the proposer made the proposal, inside the signed bytes of the replacement.
-The proposer writes that instant, and the counterparty learns of the
-proposal only when it arrives. So the window counts from the later of
-`proposed_at` and the instant the counterparty received the proposal, and
-the counterparty records the instant it received it. A proposer cannot date
-a proposal back so that it lapses before the counterparty could answer. The
-signature record's `signed_at` sits outside the signed bytes (§6) and does
-not count the window.
+The proposal lapses at `proposed_at` plus the window, counted in days of
+86,400 seconds. Both parties read that instant from the same signed bytes, so
+they agree on it. The signature record's `signed_at` sits outside the signed
+bytes (§6) and counts nothing here.
+
+The proposer writes `proposed_at`, so two rules keep it honest:
+
+1. **No forward dating.** The counterparty records the instant it received
+   the proposal, and MUST refuse a proposal whose `proposed_at` is later than
+   that instant. A forward-dated proposal would hold the one open slot past
+   its window.
+2. **Backdating costs only the proposer.** A proposal dated back lapses
+   sooner, and a lapsed proposal leaves the current version in force, so the
+   counterparty loses nothing by it.
+
+**When an approval forms the new version.** The new version forms when the
+proposer receives the counterparty's approval before the proposal lapses.
+The proposer acknowledges every approval it receives, saying whether it
+formed the new version, and the counterparty applies the new version only
+when it holds that acknowledgement. An approval the proposer receives at or
+after the lapse instant forms nothing, unless the proposer accepts it in its
+acknowledgement. Until the counterparty holds an acknowledgement that the
+version formed, both sides keep applying the current version, so they never
+disagree about which version governs.
 
 The proposer MAY withdraw an open proposal before it is resolved; withdrawal
 is recorded like the other outcomes.
@@ -2230,13 +2249,16 @@ may sign for it. A signature record counts for a seat only when its `key` is
 that seat's `owner_key` (§5.1) and its signature verifies. A valid signature
 by any other key is not the seat's signature, whoever made it, and a runtime
 MUST NOT present it as one. The party in a seat writes its own `owner_key`,
-so a verifier also checks it against the owner the registry holds for the
-seat's agent: the agent's `owner`, which the registry verified through its
-`owner_attestation` (Agent Messaging §8.6). Where the verifier can resolve
-that owner, it MUST be the seat's `owner_key`, and a seat whose `owner_key`
-the registry contradicts is not bound. Where it cannot, the binding is
-`evidence` only, and a renderer MUST say that the seat's owner is
-unconfirmed. The person-grade approval of §6.1 and the mandate of §6.2
+so the party that receives the document, the counterparty, also resolves at
+receipt the owner the registry holds for the seat's agent and records it
+(Agent Messaging §8.6), as Agent NDA §6 describes. Only an owner the registry
+verified through an `owner_attestation` counts. An attested owner that is
+the seat's `owner_key` confirms it; an attested owner that is another key
+contradicts it, and the seat is not bound. An unreachable registry, an
+unlisted agent, or a default owner with no attestation leaves the owner
+unconfirmed: the binding is `evidence` only, a renderer MUST say so, and any
+decision that rides on the binding treats an unconfirmed owner as it treats
+a contradicted one. The person-grade approval of §6.1 and the mandate of §6.2
 stand beside this rule and do not replace it: they say who confirmed and
 with what authority, and the binding says whose key signed.
 
@@ -2879,9 +2901,10 @@ to the party in the seat. A runtime could not tell a signature by the
 client's owner from a signature by anyone else who held a key. A standing
 proposal carries the provider's `owner_key`, and the client's seat gets its
 `owner_key` at formation with the rest of the seat (§12.1). A verifier also
-checks a seat's `owner_key` against the owner the registry holds for its
-agent (Agent Messaging §8.6), and where that owner cannot be resolved the
-binding is evidence and the owner is shown as unconfirmed. A document is
+checks a seat's `owner_key` at receipt against the attested owner the
+registry holds for its agent (Agent Messaging §8.6). Where no attested owner
+can be resolved the binding is evidence, the owner is shown as unconfirmed,
+and a decision that rides on the binding treats it as a contradicted owner. A document is
 written against this version when any seat carries `owner_key`, and one
 where only some seats carry it is refused. A document where no seat carries
 it was written against an earlier version: it stays agreed or active, its
@@ -2910,11 +2933,15 @@ The clarifications:
 - §7.1 says that `amendment proposed` is a state of the proposal. The
   engagement stays `active` under the current version, as §5.8 says.
 - §5.8 gives `review_window_days` a default of 7 days, so that an unanswered
-  proposal always lapses and never blocks the next one, and counts the window
-  from a signed instant: the new `change_control.proposed_at`, or the instant
-  the counterparty received the proposal where that is later. The signature
-  record's `signed_at` sits outside the signed bytes, so it does not count
-  the window.
+  proposal always lapses and never blocks the next one. The window counts
+  from a signed instant, the new `change_control.proposed_at`, which both
+  parties read from the same bytes. A counterparty refuses a proposal dated
+  later than it arrived. A new version forms when the proposer receives the
+  approval before the lapse instant, or accepts a later one, and the
+  counterparty applies it only on the proposer's acknowledgement, so the two
+  sides never disagree about which version governs. A new fixture,
+  `conformance/sow-review-window.json`, pins the default, the lapse instant
+  and formation.
 - §5.11 says that a processor's `processed_in` is a subset of the clause's
   where both are present, as the 0.20.0-draft entry described.
 - §5.3's example no longer shows a `grade` beside the `inputs` list, where no
@@ -2924,8 +2951,9 @@ The clarifications:
   notice has run, for cause at once and with a reason. It said "at the next
   message", which conflicted with the notice period.
 - §5.3.1 lets a grant made `via: "proxy"` name, in `writes`, the Agent
-  Mandate power a mutating act on each resource needs. A resource it does
-  not name needs the `write` power, which Agent Mandate 0.6.0-draft adds.
+  Mandate power a mutating act on each resource needs: `write` or `amend`
+  and no other. A resource it does not name needs `write`, which Agent
+  Mandate 0.6.0-draft adds.
 
 **0.25.0-draft** (2026-10-19). The buyer's reference, and contracted contact by the provider.
 

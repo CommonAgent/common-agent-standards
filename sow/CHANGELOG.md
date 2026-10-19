@@ -18,9 +18,10 @@ to the party in the seat. A runtime could not tell a signature by the
 client's owner from a signature by anyone else who held a key. A standing
 proposal carries the provider's `owner_key`, and the client's seat gets its
 `owner_key` at formation with the rest of the seat (§12.1). A verifier also
-checks a seat's `owner_key` against the owner the registry holds for its
-agent (Agent Messaging §8.6), and where that owner cannot be resolved the
-binding is evidence and the owner is shown as unconfirmed. A document is
+checks a seat's `owner_key` at receipt against the attested owner the
+registry holds for its agent (Agent Messaging §8.6). Where no attested owner
+can be resolved the binding is evidence, the owner is shown as unconfirmed,
+and a decision that rides on the binding treats it as a contradicted owner. A document is
 written against this version when any seat carries `owner_key`, and one
 where only some seats carry it is refused. A document where no seat carries
 it was written against an earlier version: it stays agreed or active, its
@@ -49,11 +50,15 @@ The clarifications:
 - §7.1 says that `amendment proposed` is a state of the proposal. The
   engagement stays `active` under the current version, as §5.8 says.
 - §5.8 gives `review_window_days` a default of 7 days, so that an unanswered
-  proposal always lapses and never blocks the next one, and counts the window
-  from a signed instant: the new `change_control.proposed_at`, or the instant
-  the counterparty received the proposal where that is later. The signature
-  record's `signed_at` sits outside the signed bytes, so it does not count
-  the window.
+  proposal always lapses and never blocks the next one. The window counts
+  from a signed instant, the new `change_control.proposed_at`, which both
+  parties read from the same bytes. A counterparty refuses a proposal dated
+  later than it arrived. A new version forms when the proposer receives the
+  approval before the lapse instant, or accepts a later one, and the
+  counterparty applies it only on the proposer's acknowledgement, so the two
+  sides never disagree about which version governs. A new fixture,
+  `conformance/sow-review-window.json`, pins the default, the lapse instant
+  and formation.
 - §5.11 says that a processor's `processed_in` is a subset of the clause's
   where both are present, as the 0.20.0-draft entry described.
 - §5.3's example no longer shows a `grade` beside the `inputs` list, where no
@@ -63,8 +68,9 @@ The clarifications:
   notice has run, for cause at once and with a reason. It said "at the next
   message", which conflicted with the notice period.
 - §5.3.1 lets a grant made `via: "proxy"` name, in `writes`, the Agent
-  Mandate power a mutating act on each resource needs. A resource it does
-  not name needs the `write` power, which Agent Mandate 0.6.0-draft adds.
+  Mandate power a mutating act on each resource needs: `write` or `amend`
+  and no other. A resource it does not name needs `write`, which Agent
+  Mandate 0.6.0-draft adds.
 
 ## 0.25.0-draft (2026-10-19)
 

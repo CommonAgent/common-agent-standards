@@ -13,7 +13,11 @@ still be released the body. A board now records the instant it receives each
 completed agreement, checks expiry, withdrawal and each organization's
 mandate against that instant as well, and names it in the release record as
 `received_at`. A withdrawal takes effect at the later of its `at` and the
-instant the board received it. The definition of the offer bytes in §5.11.1
+instant the board received it. The board confirms the recipient's owner
+against the registry at receipt, where the recipient seat names no
+organization, and releases nothing to an owner it could not confirm; the
+release record names the owner as it resolved it. The definition of the
+offer bytes in §5.11.1
 names both members that are set to `null`, `parties.recipient` and
 `disclosure.recipient`. Check 1 also
 reads the acceptance checks of Agent NDA 0.2.0-draft, under which each

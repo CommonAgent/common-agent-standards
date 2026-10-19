@@ -580,11 +580,19 @@ record states are all signed, and changing any of them breaks the signature.
   bytes it covers does not verify.
 - `signed_at` is the instant the signer says it signed. It is inside the
   signature bytes, so nobody but the signer can change it. The signer writes
-  it, though, and could write an earlier time than the true one. So a
-  verifier that received a record itself records the instant it received
-  it, and checks every time limit against that instant as well as against
-  `signed_at`: the offer's expiry and withdrawal (§6.1, step 3) and the
-  mandate's term (§6.2).
+  it, though, and could write an earlier time than the true one.
+
+**The receiving verifier.** The receiving verifier of a record or act is the
+party the signer delivered it to: the counterparty, or the board a provider
+presents an acceptance to (Agent RFP §5.11.3). The receiving verifier records
+the instant it received the record or act, and the registry's owner of each
+seat's agent as it resolved it then (binding rule 1 below). It checks every
+time limit against the instant of receipt as well as against `signed_at`: the
+offer's expiry and withdrawal (§6.1, step 3) and the term of a mandate
+(§6.2). Every other reader checks against `signed_at` and against whatever
+instant of receipt and owner the receiving verifier recorded, where it holds
+that record. A reader that holds no such record has `signed_at` alone, and
+says so where it shows the result.
 - `mandate` names the signer's mandate where the seat names an organization
   (§6.2).
 - `sig` is the 64-byte signature in base64 with padding (RFC 4648 §4). The
@@ -603,14 +611,24 @@ agreement digest, so on an acceptance it never passes step 1 of §6.1.
 **Binding.** A key that signs is bound to a seat in one of two ways:
 
 1. For a seat without `organization`, the key is the seat's `owner_key`
-   (§5.1). The seat's party writes `owner_key` itself, so a verifier also
-   checks it against the owner the registry holds for the seat's agent: the
-   agent's `owner`, which the registry verified through its
-   `owner_attestation` (Agent Messaging §8.6). Where the verifier can resolve
-   that owner, it MUST be the seat's `owner_key`, and a seat whose
-   `owner_key` the registry contradicts is not bound. Where the verifier
-   cannot resolve it, the binding is `evidence` only, and a renderer MUST say
-   that the seat's owner is unconfirmed.
+   (§5.1). The seat's party writes `owner_key` itself, so the receiving
+   verifier also resolves, at receipt, the owner the registry holds for the
+   seat's agent (Agent Messaging §8.6), and records the result. Only an
+   owner the registry verified through an `owner_attestation` counts. The
+   result is one of three:
+   - **confirmed**: an attested owner, and it is the seat's `owner_key`;
+   - **contradicted**: an attested owner, and it is another key. The seat is
+     not bound;
+   - **unconfirmed**: the registry was unreachable, does not list the agent,
+     or holds only the default owner, the hosting node's key with no
+     `owner_attestation`. The binding is `evidence` only, and a renderer
+     MUST say that the seat's owner is unconfirmed.
+
+   A decision that rides on the binding treats an unconfirmed owner as it
+   treats a contradicted one, so failing to resolve an owner never does
+   better than resolving the wrong one. Such decisions are whether a party is
+   bound (§8.1), a board's release of a gated body (Agent RFP §5.11.3), and a
+   bureau's check of a claim of breach (Agent Reputations §4.8).
 2. For a seat with `organization`, the key is the `holder.key` of the mandate
    the record names, and that mandate passes the check of §6.2.
 
@@ -668,12 +686,17 @@ step is not an agreement.
 1. Set `parties.recipient` and `disclosure.recipient` back to `null`, and
    check that the discloser's record carries `"over": "offer"` and the offer
    digest of the result, verifies, and is bound to the discloser seat (§6).
-   Any other change to the document fails here.
+   Any other change to the document fails here. Where the discloser seat
+   names an organization, its mandate is checked when each acceptance is
+   received, as well as at the offer's `signed_at` (§6.2). Revoking the
+   mandate, or letting it lapse, stops new acceptances, and the acceptances
+   received before then stand.
 2. Check that the recipient's record carries the agreement digest of the
    completed document, verifies, and is bound to the recipient seat (§6).
-   Where the recipient seat names no organization and the registry's owner
-   of its agent cannot be resolved, the acceptance stands, and a renderer
-   MUST say that the recipient's owner is unconfirmed.
+   Where the recipient seat names no organization and its owner is
+   unconfirmed (§6, binding rule 1), the acceptance is an agreement, and a
+   renderer MUST say that the recipient's owner is unconfirmed. A decision
+   that rides on the binding still treats that owner as not bound.
 3. Check that the recipient's `signed_at` is before `offer.expires_at`, and
    before any withdrawal of the offer took effect (§7.3). A verifier that
    received the acceptance itself, such as a board releasing a gated body,
@@ -718,10 +741,11 @@ multilateral agreement, amending, terminating and withdrawing.
 
 The check is Agent Mandate §7.2. The signer holds the mandate, which means the
 record's key is the mandate's `holder.key`; the mandate was in force at the
-record's `signed_at` and its chain verifies; and it holds `nda`. A verifier
-that received the record or act itself also checks that the mandate was still
-in force, unexpired and unrevoked, at the instant it received it, and records
-that instant. A mandate that lapsed or was revoked before the verifier
+record's `signed_at` and its chain verifies; and it holds `nda`. The
+receiving verifier (§6) also checks that the mandate was still in force,
+unexpired and unrevoked, at the instant it received the record or act, and
+records that instant; a later reader holding that record checks against it
+too. A mandate that lapsed or was revoked before the verifier
 received a signature made under it does not carry that signature, whatever
 `signed_at` says. A mandate MAY narrow
 which categories its holder may agree to (`scope.nda_categories`). There is
@@ -829,9 +853,10 @@ act with any other member is not valid. An act is valid only when its
 signature verifies and its key is bound to the seat named in `by`, under the
 rule of §6.
 
-The signer writes `at`. So for a verifier that received an act, the act takes
-effect at the later of its `at` and the instant the verifier received it, and
-the verifier records that instant. A termination's notice counts from there,
+The signer writes `at`. So an act takes effect at the later of its `at` and
+the instant its receiving verifier (§6) received it, and the receiving
+verifier records that instant. A later reader holding that record reads the
+act's effect from it. A termination's notice counts from there,
 and a withdrawal reaches no acceptance the verifier received before it. A
 party cannot backdate a withdrawal to undo an acceptance already received, or
 backdate a termination to shorten the notice its counterparty gets. An open offer is withdrawn only by
@@ -896,7 +921,9 @@ answer is yes when one of these holds and the agreement is in force:
    hop until it reaches the named agreement.
 
 Where a seat names an organization, the mandate check of §6.2 is part of
-whether that seat's signature counts.
+whether that seat's signature counts. Where a seat names no organization, its
+signature counts here only when its owner is confirmed (§6, binding rule 1).
+An unconfirmed owner is not bound, as a contradicted one is not.
 
 A runtime that answers this question before material moves, and refuses when
 the answer is no, enforces that refusal (§3, point 4). It cannot enforce
@@ -1079,10 +1106,14 @@ them. It is breaking: a 0.1.x signature does not verify under it.
   §5.11.3). It checks a mandate at that instant too. An act takes effect for
   a verifier no earlier than when it received it, and its `at` never
   precedes its `signed_at`.
-- **The registry confirms an owner key (§6).** A seat without an
-  organization is bound only where the registry's owner of its agent (Agent
-  Messaging §8.6) is the seat's `owner_key`. Where that owner cannot be
-  resolved, the binding is evidence and the owner is shown as unconfirmed.
+- **The registry confirms an owner key (§6).** The receiving verifier, the
+  party a record or act was delivered to, records the instant of receipt and
+  resolves each seat's owner then. A seat without an organization is
+  confirmed only where an attested registry owner of its agent (Agent
+  Messaging §8.6) is the seat's `owner_key`. An unreachable registry, an
+  unlisted agent or an unattested default owner leaves the owner
+  unconfirmed: the agreement stands, and every decision that rides on the
+  binding treats the owner as not bound.
 - **Closed member sets (§6, §7.3).** A signature record and an act carry
   only the members this specification defines, and `over` is valid only on
   the discloser's record of an open offer or its acceptance.

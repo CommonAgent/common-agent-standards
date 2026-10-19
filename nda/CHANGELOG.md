@@ -29,10 +29,13 @@ does not verify under it.
   instant, and checks a mandate at it too (§6.1 step 3, §6.2). An act takes
   effect for a verifier no earlier than when it received it, and its `at`
   never precedes its `signed_at` (§7.3).
-- A seat without an organization is bound only where the registry's owner of
-  its agent (Agent Messaging §8.6) is the seat's `owner_key`. Where that
-  owner cannot be resolved, the binding is evidence and the owner is shown
-  as unconfirmed (§6).
+- The receiving verifier, the party a record or act was delivered to,
+  records the instant of receipt and resolves each seat's owner then. A seat
+  without an organization is confirmed only where an attested registry owner
+  of its agent (Agent Messaging §8.6) is the seat's `owner_key`. An
+  unreachable registry, an unlisted agent or an unattested default owner
+  leaves the owner unconfirmed: the agreement stands, and every decision
+  that rides on the binding treats the owner as not bound (§6, §8.1).
 - A signature record and an act carry only the members this specification
   defines, and `over` is valid only on the discloser's record of an open
   offer or its acceptance (§6, §7.3).

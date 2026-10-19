@@ -163,6 +163,20 @@ earlier, possibly under an earlier revision of this specification. Point 3
 above is a test a minting implementation applies to the documents it mints,
 and it is not a test a reader applies to the documents it receives.
 
+**Holding an identifier.** A charter's identifier is public before the
+charter is filed: the organization publishes it in DNS or at a well-known
+path to prove domain control (§5 rule 1). Anyone who reads it there could
+file a charter of their own under it first. So a registry MAY reserve an
+identifier for a domain when it hands that identifier out for a domain
+proof, and it MUST refuse a filing under an identifier that a reservation or
+an earlier filing holds for a different domain. A mandate's identifier is
+held for the organization its first filing names, and a registry MUST refuse
+a later filing under it that names another organization (§6). The rule
+above, that a registry MUST NOT refuse an identifier because it does not
+re-derive, applies only to an identifier nobody holds. A reservation that is
+not used within the period the registry states lapses, and the registry says
+what that period is. Grade: `enforced` at the registry.
+
 Documents minted before this revision carry identifiers derived under a
 superseded reading. Those identifiers remain valid and remain the names of
 their documents. That is the reason re-derivation is not a conformance test.
@@ -250,7 +264,11 @@ Rules:
    a DNS record or a well-known HTTPS path on the charter's domain that
    names the charter id. The binding is re-checkable by anyone at any
    time; a charter whose domain proof disappears is suspended, not
-   deleted. Grade: `enforced` at the registry.
+   deleted. The registry records the domain each charter identifier is
+   held for, from the reservation it made when it handed the identifier out
+   for the proof or from the first filing, and refuses a charter under that
+   identifier whose `domain` is another (§4). Grade: `enforced` at the
+   registry.
 2. `root_authority.keys` are the organization's highest authority in this
    system, held by its allocators. `threshold` is how many root signatures
    an act of root authority needs; issuing a mandate, amending the
@@ -296,7 +314,7 @@ the limits change. The delegation document. Tag: `agent-mandate-v1`.
   "issuer": { "kind": "root" },
   "holder": {
     "account": "acct_2c9f7e1a",
-    "person": "mari@harborandline.example",
+    "person": "Marisol Vega, Purchasing",
     "key": "<holder public key>"
   },
   "powers": ["form", "amend", "terminate", "award", "nda"],
@@ -334,7 +352,10 @@ Rules:
    a mandate that sets `sub_delegation.allowed` to true or holds `nda` and
    carries no `holder.key`, and MUST refuse a sub-mandate whose signature is
    not by the `holder.key` of the mandate its `issuer` names. Grade:
-   `enforced` at the registry.
+   `enforced` at the registry. `holder.person` names the person for the
+   people who read the mandate, and mandate documents are public, so it
+   SHOULD be a display name or an opaque reference the organization keeps
+   for its member, and SHOULD NOT be an email address.
 3. **Narrowing.** A sub-mandate MUST be at most as broad as its issuer's
    mandate in every dimension: powers a subset, ceilings no higher, scope
    no wider, expiry no later, depth within `max_depth`. For
@@ -465,10 +486,19 @@ checked exactly as §7 checks it: chain to the charter, unexpired, unrevoked,
 the act within powers, the resource within scope. A refusal names the
 failing check, like every refusal in this family.
 
+**Which acts are mutating.** The proxy decides from the operation it is
+asked to perform, never from what the caller says about it. An operation that
+creates, changes or deletes anything in the resource, sends anything out of
+it, or starts a process is mutating. Where the resource declares whether an
+operation only reads (an MCP server declares it in a tool's `readOnlyHint`
+annotation), the proxy reads that declaration. An operation that declares
+nothing, or that the proxy cannot classify, is mutating. Only an operation
+declared or known to read and change nothing is answered on the grant alone.
+
 **Which power a mutating act needs.** The grant says. A `shared_resource`
 input granted `via: "proxy"` MAY carry `writes`, an object that names, for
-each resource the grant covers, the power a mutating act on it needs, from
-the powers of §6 rule 4 (Agent SoW §5.3.1):
+each resource the grant covers, the power a mutating act on it needs, either
+`write` or `amend` (Agent SoW §5.3.1):
 
 ```json
 "writes": { "ledger": "amend", "receipts": "write" }
@@ -478,8 +508,10 @@ A mutating act on a resource the object names needs that power. A mutating
 act on a resource it does not name, or on any resource of a grant that
 carries no `writes`, needs `write`. The parties sign the grant inside the
 engagement, so both of them agreed which authority a write through it
-takes, and the proxy reads the answer from signed bytes. A grant whose `writes` names a power §6 rule 4 does not list
-does not validate. Grade: `enforced` at the proxy that runs the check, as
+takes, and the proxy reads the answer from signed bytes. A grant whose
+`writes` names any other power does not validate: a grant cannot lend a
+caller the authority to form an engagement, award a posting, act on an Agent
+NDA or issue mandates. Grade: `enforced` at the proxy that runs the check, as
 above.
 
 Apart from which power a write needs, nothing new is defined here. The
@@ -507,11 +539,14 @@ checks the signature against the mandate in four steps:
 2. The mandate was in force when the person signed: started, unexpired,
    unrevoked, and its chain verifies up to the charter's root authority,
    each hop checked against the `holder.key` of the mandate above it (§6).
-   The signer writes the instant of signing, so a verifier that received the
-   signature itself also checks that the mandate was still in force at the
-   instant it received it, and records that instant. A mandate that lapsed or
-   was revoked before then does not carry the signature. This is check 2 of
-   §7.
+   The signer writes the instant of signing, so the receiving verifier, the
+   party the signature was delivered to, also checks that the mandate was
+   still in force at the instant it received it, and records that instant;
+   a later reader holding that record checks against it too (Agent NDA §6).
+   A mandate that lapsed or was revoked before then does not carry the
+   signature. On an open offer the discloser's mandate is checked when each
+   acceptance is received, so revoking it stops new acceptances. This is
+   check 2 of §7.
 3. The mandate holds `nda`. This is check 3 of §7.
 4. Where the mandate carries `scope.nda_categories` (§6 rule 8), every
    category in the agreement's `covers.categories` appears in that list. An
@@ -873,14 +908,27 @@ inside the signed bytes, so that its `mandate` is signed too.*
 
 *A new power, `write`, covers a mutating act through a resource proxy
 (§6 rule 4, §7.1). An Agent SoW grant made `via: "proxy"` MAY name, in
-`writes`, the power each resource's mutating acts need instead, from the
-same list. Before, §7.1 said a mandate's powers had to cover a mutating act
-and no power covered one. A new fixture, `conformance/mandate-proxy.json`,
+`writes`, the power each resource's mutating acts need instead, `write` or
+`amend` and no other. §7.1 also says how a proxy decides that an act is
+mutating: from the operation, reading the resource's own read-only
+declaration, with an operation it cannot classify counted as mutating.
+Before, §7.1 said a mandate's powers had to cover a mutating act and no
+power covered one. A new fixture, `conformance/mandate-proxy.json`,
 pins the rule.*
 
 *§7.2 check 2 is also run at the instant the verifier received the
 signature, where it received it, because the signer writes the instant of
 signing and could date a late signature back into the mandate's term.*
+
+*§4 lets a registry hold an identifier for the domain it was handed out
+for: a charter's identifier is published for the domain proof before the
+charter is filed, so a registry MAY reserve it for that domain and MUST
+refuse a filing under an identifier held for another domain or, for a
+mandate, another organization. The rule that a registry does not refuse an
+identifier because it does not re-derive applies only to an identifier
+nobody holds. A new fixture, `conformance/mandate-ids.json`, pins it.
+`holder.person` SHOULD NOT be an email address, because mandates are public,
+and the example names a person by display name.*
 
 *The minor version moves because a registry built against 0.5.1-draft
 accepts a mandate holding `nda` without `holder.key`, which this version

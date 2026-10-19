@@ -22,10 +22,16 @@
     }
   },
   "registry": {
-    "comment": "The owner key the registry holds for each agent (Agent Messaging 8.6). A seat's owner_key is confirmed where the registry's owner of its agent is the same key.",
+    "comment": "What the receiving verifier resolved from the registry at receipt (6; Agent Messaging 8.6): each agent owner key and whether the registry verified it through an owner_attestation. A seat owner_key is confirmed where an attested owner of its agent is the same key; an unattested, unlisted or unreachable owner leaves it unconfirmed.",
     "owners": {
-      "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
-      "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3"
+      "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A": {
+        "owner": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+        "attested": true
+      },
+      "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP": {
+        "owner": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+        "attested": true
+      }
     }
   },
   "documents": {
@@ -706,13 +712,13 @@
           "role": "provider",
           "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
           "signed_at": "2026-08-04T14:02:11Z",
-          "sig": "pJ3PJtwn7HNwxz13ZuDcsPh+e/QdA3lZkpdCjFSh3sxsi9LSi/Yq+DeUMFGC+qhF6VRFA+X1Zchw75XiA7KGDg=="
+          "sig": "xFir5x3xdod+GSQfB6KyFpK43FWO7v12Hl2XhlKRP/MJw3A96M5dKcKIz/HtZZrAcU1Rby0Q8AlLhu2D9qoADA=="
         },
         {
           "role": "client",
           "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
           "signed_at": "2026-08-04T16:47:36Z",
-          "sig": "/RfCS5Gl9ISRPzS+ExMRYb9gOVVs/aNAT8heRc6fNwYS9UPHpxIXGQM+1aUAvDFXoaeIXq3e+qoOZXTy21KQDw=="
+          "sig": "Khq28LMH9Ttw8qep+AAXwGYOhvCKViPq66lOz3MHb+GLE31Q8bdC5ckZFTPfC3glrJ8amNYUCIikMjBGlL1zDw=="
         }
       ]
     }
@@ -784,7 +790,7 @@
       {
         "case": "owner_key_on_one_seat",
         "document": "owner_key_on_one_seat",
-        "why": "a document that carries owner_key on some seats and not on others is refused"
+        "why": "a document that carries owner_key on some seats and not on others is refused; both its signatures verify, so this rule alone refuses it"
       },
       {
         "case": "sig_base64url",

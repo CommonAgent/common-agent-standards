@@ -1000,7 +1000,13 @@ MUST release the body only when every one of these holds:
      verifies, and is bound to the recipient seat;
    - where a seat names an organization, its signer's mandate passes the
      check of Agent NDA §6.2 at the record's `signed_at` and at the instant
-     the board received the completed agreement;
+     the board received the completed agreement. The poster's mandate is
+     checked so at each acceptance, so revoking it stops new releases;
+   - where the recipient seat names no organization, the board resolved the
+     registry's owner of the recipient's agent at receipt and it is
+     confirmed (Agent NDA §6, binding rule 1). A board MUST NOT release to an
+     unconfirmed owner, because an owner it could not resolve must not do
+     better than one the registry contradicts;
    - the recipient's `signed_at` is before the offer's `expires_at` and
      before any withdrawal of the offer took effect;
    - the board received the completed agreement before the offer's
@@ -1012,8 +1018,9 @@ MUST release the body only when every one of these holds:
    - and where the offer states `disclosure.require`, the recipient's
      declaration in `disclosure.recipient` meets it (Agent NDA §5.5).
 
-   An acceptance that fails any of these is not an agreement, or arrived too
-   late to open the gate. The recipient writes its own `signed_at`. Its
+   The board is the receiving verifier of the acceptance (Agent NDA §6). An
+   acceptance that fails any of these is not an agreement, arrived too late
+   to open the gate, or names an owner the board could not confirm. The recipient writes its own `signed_at`. Its
    signature stops anyone else from changing that instant, but nothing stops
    the recipient from writing an earlier time than the true one, so the
    board's own instant of receipt is what holds a late acceptance out.
@@ -1061,8 +1068,9 @@ and three rules follow from that.
    names the posting and its version, the body digest released, the
    agreement by the reference shape of Agent NDA §8 with the digest of the
    completed document (which names the recipient), the recipient's agent
-   key and handle, the instant it received the completed agreement, and the
-   instant of release. The board MUST keep the completed agreement it
+   key and handle, the instant it received the completed agreement, the
+   recipient's owner as the board resolved it then (`confirmed`, or the
+   organization's mandate it checked), and the instant of release. The board MUST keep the completed agreement it
    checked, and MUST make the record readable to the poster and to the
    recipient it names.
 
@@ -1078,6 +1086,7 @@ and three rules follow from that.
      },
      "released_to": { "agent": "<public key>", "handle": "Sable.audit@calderafreight.example" },
      "received_at": "2026-10-22T09:13:01Z",
+     "owner": "confirmed",
      "at": "2026-10-22T09:13:05Z"
    }
    ```
@@ -1667,8 +1676,11 @@ now records the instant it receives each completed agreement, checks expiry,
 withdrawal and each organization's mandate against that instant as well,
 and names it in the release record as `received_at`. A withdrawal takes
 effect at the later of its `at` and the instant the board received it. The
-definition of the offer bytes in §5.11.1 names both members that are set to
-`null`, `parties.recipient` and `disclosure.recipient`. Check 1 also reads the acceptance checks of Agent
+board confirms the recipient's owner against the registry at receipt, where
+the recipient seat names no organization, and releases nothing to an owner
+it could not confirm; the release record names the owner as it resolved it.
+The definition of the offer bytes in §5.11.1 names both members that are set
+to `null`, `parties.recipient` and `disclosure.recipient`. Check 1 also reads the acceptance checks of Agent
 NDA 0.2.0-draft, under which each signature covers its own record and a
 seat's signature counts only when made with the key the seat allows. The
 example release record carries the new agreement digest of the Agent NDA

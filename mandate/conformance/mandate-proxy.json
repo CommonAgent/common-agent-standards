@@ -1,16 +1,7 @@
 {
-  "comment": "Agent Mandate: which power a mutating act through a resource proxy needs (agentmandate.net 0.6.0-draft, 6 rule 4 and 7.1; Agent SoW 0.26.0-draft 5.3.1). A client agent answers a provider's requests against resources it granted via proxy. A read within the grant is answered on the grant alone. A mutating act on a resource the grant's writes names needs that power; on any other resource it needs write. The caller presents a mandate, checked as 7 checks it; mandate below is the answer a lookup gives at the instant of the act, with only the members these cases turn on. expected is allow, or refuse with the failing check: mandate (none presented), in_force, or powers. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "comment": "Agent Mandate: which power a mutating act through a resource proxy needs (agentmandate.net 0.6.0-draft, 6 rule 4 and 7.1; Agent SoW 0.26.0-draft 5.3.1). A client agent answers a provider's requests against resources it granted via proxy. A read within the grant is answered on the grant alone. An act is mutating unless its operation is declared or known to read and change nothing (read_only: true); an operation with no declaration (read_only: null) is mutating. A mutating act on a resource the grant's writes names needs that power; on any other resource it needs write. The caller presents a mandate, checked as 7 checks it; mandate below is the answer a lookup gives at the instant of the act, with only the members these cases turn on. expected is allow, or refuse with the failing check: mandate (none presented), in_force, or powers. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
   "version": 1,
   "spec": "Agent Mandate 0.6.0-draft: 6 rule 4 (powers), 7.1 (the check at a resource proxy); Agent SoW 0.26.0-draft: 5.3.1 (writes)",
-  "powers": [
-    "form",
-    "amend",
-    "terminate",
-    "award",
-    "nda",
-    "write",
-    "issue"
-  ],
   "grant": {
     "name": "ledger-and-receipts",
     "kind": "shared_resource",
@@ -26,7 +17,8 @@
       "case": "read_needs_no_mandate",
       "act": {
         "resource": "ledger",
-        "mutating": false
+        "operation": "get_entries",
+        "read_only": true
       },
       "mandate": null,
       "expected": {
@@ -38,7 +30,8 @@
       "case": "write_named_power_held",
       "act": {
         "resource": "ledger",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": {
         "organization": "org_stonework",
@@ -59,7 +52,8 @@
       "case": "write_named_power_missing",
       "act": {
         "resource": "ledger",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": {
         "organization": "org_stonework",
@@ -81,7 +75,8 @@
       "case": "write_unnamed_resource_needs_write",
       "act": {
         "resource": "receipts",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": {
         "organization": "org_stonework",
@@ -102,7 +97,8 @@
       "case": "write_unnamed_resource_without_write",
       "act": {
         "resource": "receipts",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": {
         "organization": "org_stonework",
@@ -123,7 +119,8 @@
       "case": "write_without_a_mandate",
       "act": {
         "resource": "ledger",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": null,
       "expected": {
@@ -136,7 +133,8 @@
       "case": "mandate_not_in_force",
       "act": {
         "resource": "ledger",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": {
         "organization": "org_stonework",
@@ -164,7 +162,8 @@
       },
       "act": {
         "resource": "ledger",
-        "mutating": true
+        "operation": "post_entry",
+        "read_only": false
       },
       "mandate": {
         "organization": "org_stonework",
@@ -180,10 +179,25 @@
       },
       "why": "a grant with no writes asks write for every resource",
       "at": "2026-10-01T00:00:00Z"
+    },
+    {
+      "case": "undeclared_operation_is_mutating",
+      "act": {
+        "resource": "ledger",
+        "operation": "reconcile",
+        "read_only": null
+      },
+      "mandate": null,
+      "at": "2026-10-01T00:00:00Z",
+      "expected": {
+        "allow": false,
+        "check": "mandate"
+      },
+      "why": "an operation that declares nothing is mutating, so it needs a mandate"
     }
   ],
   "validation": {
-    "comment": "A grant whose writes names a power 6 rule 4 does not list, or that carries writes without via proxy, does not validate.",
+    "comment": "A grant whose writes names any power but write and amend, or that carries writes without via proxy, does not validate.",
     "invalid": [
       {
         "case": "unknown_power",
@@ -210,7 +224,63 @@
             "ledger": "amend"
           }
         }
+      },
+      {
+        "case": "borrows_nda",
+        "grant": {
+          "name": "ledger-and-receipts",
+          "kind": "shared_resource",
+          "access": "read-write",
+          "via": "proxy",
+          "when": "standing",
+          "writes": {
+            "x": "nda"
+          }
+        }
+      },
+      {
+        "case": "borrows_award",
+        "grant": {
+          "name": "ledger-and-receipts",
+          "kind": "shared_resource",
+          "access": "read-write",
+          "via": "proxy",
+          "when": "standing",
+          "writes": {
+            "x": "award"
+          }
+        }
+      },
+      {
+        "case": "borrows_form",
+        "grant": {
+          "name": "ledger-and-receipts",
+          "kind": "shared_resource",
+          "access": "read-write",
+          "via": "proxy",
+          "when": "standing",
+          "writes": {
+            "x": "form"
+          }
+        }
+      },
+      {
+        "case": "borrows_issue",
+        "grant": {
+          "name": "ledger-and-receipts",
+          "kind": "shared_resource",
+          "access": "read-write",
+          "via": "proxy",
+          "when": "standing",
+          "writes": {
+            "x": "issue"
+          }
+        }
       }
     ]
-  }
+  },
+  "writes_powers": [
+    "write",
+    "amend"
+  ]
 }

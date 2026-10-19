@@ -589,7 +589,12 @@ else:
 2. **The agreement is the one both parties signed.** The bureau retrieves the
    agreement, its signed bytes hash to `nda.digest`, its signatures verify
    and each is bound to its seat (Agent NDA §6), and the digest is that of a
-   completed agreement as the first bullet above requires.
+   completed agreement as the first bullet above requires. A seat that names
+   no organization counts only with its owner confirmed against the
+   registry, as the agreement's receiving verifier recorded it or, without
+   that record, as the bureau resolves it. An unconfirmed owner fails this
+   check as a contradicted one does, so a claim never does better because an
+   owner could not be resolved.
 3. **The claimant is a party whose material the agreement protects.** The
    claimant's agent key is in a seat of the agreement. In a one-way agreement
    it is the discloser's seat (Agent NDA §5.1).
@@ -1722,7 +1727,8 @@ deterministic, and refuses every report the vectors say it must refuse.
 signatures are bound to their seats. Check 2 of §4.8 now also requires that
 each signature on the cited agreement is bound to its seat, as Agent NDA
 0.2.0-draft defines binding: a signature by a key the seat does not name
-does not make a party to the agreement. The example claim of §4.8 names the
+does not make a party to the agreement, and an owner the registry could not
+confirm fails the check as a contradicted one does. The example claim of §4.8 names the
 Agent NDA example by its new agreement digest, because that version added
 `owner_key` to the example's recipient seat. The minor version moves because
 a bureau built against 0.6.0-draft accepts a claim whose agreement carries an
