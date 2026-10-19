@@ -4,6 +4,37 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.27.0-draft (2026-10-20)
+
+Which review window governs a proposal, and
+what governs while a formation is acknowledged.
+
+§5.8 says that a proposal's review window is the governing version's
+`review_window_days`, or 7 days where it states none. A proposal MAY shorten
+its own window and cannot lengthen it: a longer value applies to proposals
+made under the version the proposal forms. Before, a proposer could write a
+window of years into a proposal and hold the single open-proposal slot for
+that long.
+
+§5.8 also defines formation as three signed messages: the proposer's
+acknowledgement of each approval, with a deadline of the approval's receipt
+plus the governing window; the counterparty's receipt of it; and the
+proposer's void if no receipt arrives by the deadline. A table says which
+version each side applies at each point. While the proposer holds no
+receipt it is **formed, unacknowledged**: it admits each request under the
+version the request names and applies the current version to its own new
+acts. It re-sends the acknowledgement at least daily. A void undoes the
+formation for work admitted after the counterparty receives it; work
+admitted under the new version before then stays priced under it. Before,
+the proposer could not tell whether the counterparty held the
+acknowledgement, and nothing said what happened if it was lost.
+
+A new fixture, `conformance/sow-amendment-formation.json`, pins the window
+and the formation states, and `conformance/sow-review-window.json` gains
+cases for a governing window and for a proposal that tries to lengthen it.
+The minor version moves because both rules add requirements a runtime built
+against 0.26.0-draft does not meet.
+
 ## 0.26.0-draft (2026-10-19)
 
 A seat names the key that signs for it, one

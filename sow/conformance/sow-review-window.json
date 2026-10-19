@@ -1,7 +1,7 @@
 {
-  "comment": "Agent SoW: the amendment review window (agentsow.com 0.26.0-draft, 5.8). A proposed replacement carries change_control.proposed_at inside its signed bytes. It lapses at proposed_at plus review_window_days, counted in days of 86,400 seconds, and the window is 7 days where the clause does not state one. The counterparty refuses a proposal whose proposed_at is later than the instant it received it. A new version forms when the proposer receives the approval before the lapse instant, or accepts one it receives later in its acknowledgement; the counterparty applies the new version only on that acknowledgement. Each case gives the instants and expects the lapse instant and the outcome: forms, lapsed, or refused. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "comment": "Agent SoW: the amendment review window (agentsow.com 0.26.0-draft, 5.8). A proposed replacement carries change_control.proposed_at inside its signed bytes. It lapses at proposed_at plus its review window, counted in days of 86,400 seconds. The window is the governing version's review_window_days (governing_window_days here; 7 where the governing version states none), or the proposal's own review_window_days where that is shorter; a longer value in the proposal does not lengthen its own window. The counterparty refuses a proposal whose proposed_at is later than the instant it received it. A new version forms when the proposer receives the approval before the lapse instant, or accepts one it receives later in its acknowledgement; the counterparty applies the new version only on that acknowledgement. Each case gives the instants and expects the lapse instant and the outcome: forms, lapsed, or refused. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent SoW 0.26.0-draft: 5.8 (change control)",
+  "spec": "Agent SoW 0.27.0-draft: 5.8 (change control)",
   "default_review_window_days": 7,
   "cases": [
     {
@@ -28,7 +28,8 @@
         "lapses_at": "2026-09-17T10:02:00Z",
         "outcome": "lapsed"
       },
-      "why": "the proposer received the approval after the lapse instant and did not accept it"
+      "why": "the proposer received the approval after the lapse instant and did not accept it",
+      "governing_window_days": 3
     },
     {
       "case": "late_approval_accepted",
@@ -42,7 +43,8 @@
       "expected": {
         "lapses_at": "2026-09-17T10:02:00Z",
         "outcome": "forms"
-      }
+      },
+      "governing_window_days": 3
     },
     {
       "case": "approved_at_the_lapse_instant",
@@ -94,6 +96,49 @@
         "outcome": "lapsed"
       },
       "why": "dating a proposal back shortens only the proposer's own window"
+    },
+    {
+      "case": "proposal_shortens_window",
+      "governing_window_days": 7,
+      "change_control": {
+        "proposed_at": "2026-09-14T10:02:00Z",
+        "review_window_days": 3
+      },
+      "received_by_counterparty": "2026-09-14T10:02:05Z",
+      "approval_received_by_proposer": "2026-09-18T09:00:00Z",
+      "expected": {
+        "lapses_at": "2026-09-17T10:02:00Z",
+        "outcome": "lapsed"
+      }
+    },
+    {
+      "case": "proposal_cannot_lengthen_window",
+      "governing_window_days": 7,
+      "change_control": {
+        "proposed_at": "2026-09-14T10:02:00Z",
+        "review_window_days": 3650
+      },
+      "received_by_counterparty": "2026-09-14T10:02:05Z",
+      "approval_received_by_proposer": "2026-10-01T00:00:00Z",
+      "expected": {
+        "lapses_at": "2026-09-21T10:02:00Z",
+        "outcome": "lapsed"
+      },
+      "why": "the governing version's 7 days govern; 3650 would only apply to proposals made under the version this one forms"
+    },
+    {
+      "case": "governing_states_none",
+      "change_control": {
+        "proposed_at": "2026-09-14T10:02:00Z",
+        "review_window_days": 30
+      },
+      "received_by_counterparty": "2026-09-14T10:02:05Z",
+      "approval_received_by_proposer": "2026-09-22T00:00:00Z",
+      "expected": {
+        "lapses_at": "2026-09-21T10:02:00Z",
+        "outcome": "lapsed"
+      },
+      "why": "the governing version states no window, so 7 days govern, and the proposal's 30 does not lengthen it"
     }
   ],
   "validation": {
