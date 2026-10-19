@@ -3,66 +3,56 @@
   "version": 1,
   "spec": "Agent NDA 0.1.2-draft: 6 (signatures), 6.1 (acceptance), 6.2 (mandates), 7.1 (states), 7.3 (acts), 8 (references), 8.1 (whether a party is bound); Agent RFP 0.9.1-draft 5.11.3 checks 1 to 5",
   "keys": {
-    "comment": "Each seed is the SHA-256 of its label, as UTF-8. seed_hex is the raw 32-byte Ed25519 seed, seed its nkeys spelling, public the public key in the family's spelling. The agent keys of Harbor & Line and Caldera Freight are the stand-ins the specification prints and have no seed; they never sign, because owners sign.",
+    "comment": "Each seed is the SHA-256 of its label, as UTF-8. seed_hex is the raw 32-byte Ed25519 seed and public the public key in the family's spelling. The seeds are given as hex only, so that no secret-shaped string sits in the fixture. The agent keys of Harbor & Line and Caldera Freight are the stand-ins the specification prints and have no seed; they never sign, because owners sign.",
     "entries": {
       "harbor-owner": {
         "label": "Agent NDA conformance test key: harbor-owner",
         "seed_hex": "74435d97efa3b4d7598539be941fdc5c7d85e4fae1afa0dda9b3833d338336ae",
-        "seed": "SUAHIQ25S7X2HNGXLGCTTPUUD7OFY7MF4T5ODL5A3WU3HAZ5GOBTNLRKNU",
         "public": "UARHK3CZKNFYKM6UITP7I2HFEW7G3HSD5L7ING4Q36F4EZHCVLKWN74C"
       },
       "caldera-owner": {
         "label": "Agent NDA conformance test key: caldera-owner",
         "seed_hex": "53b37d622d9f8ae525ed0d713b2f4a1a52e797de552bb1e75063529bee21d26b",
-        "seed": "SUAFHM35MIWZ7CXFEXWQ24J3F5FBUUXHS7PFKK5R45IGGUU35YQ5E2YORA",
         "public": "UBL2TNL5ZIPZYX62DSWOBTYK6JBPKR72MV2K7JG6S25S5PWDHEETOMZJ"
       },
       "tidewater-owner": {
         "label": "Agent NDA conformance test key: tidewater-owner",
         "seed_hex": "d0f0a2b73c31277f2ae591778dc437c3206cb74d2335d3e608b12eb76bf11abe",
-        "seed": "SUANB4FCW46DCJ37FLSZC54NYQ34GIDMW5GSGNOT4YELCLVXNPYRVPV24E",
         "public": "UDZOHYPC7MHCBXNIXESS56SMQMOGWLERKHWQKW334E6K3OM24LVC2BJX"
       },
       "northgate-owner": {
         "label": "Agent NDA conformance test key: northgate-owner",
         "seed_hex": "044528e70946ec8ee5ac6559d1a7d9be110abd8a90fdc05e7d2af0685993310e",
-        "seed": "SUAAIRJI44EUN3EO4WWGKWORU7M34EIKXWFJB7OALZ6SV4DILGJTCDTVUI",
         "public": "UA5YO4EOEWT44QBZIHD7U3QGCSUVTRE6GRUHMCHH5Z5ES5XWLCT47O2Y"
       },
       "ledgerline-owner": {
         "label": "Agent NDA conformance test key: ledgerline-owner",
         "seed_hex": "23ab19ed7df1e45003351cc0e6b7e0696fcfaa6987cb0a06a55d7fdc8809785d",
-        "seed": "SUACHKYZ5V67DZCQAM2RZQHGW7QGS36PVJUYPSYKA2SV2764RAEXQXM5UQ",
         "public": "UBPTD7JMW6FRJFK6M2KZASOLWYTCZ34I3ZUEPQWG2ZISUV7VDGXZ3UD2"
       },
       "outsider-owner": {
         "label": "Agent NDA conformance test key: outsider-owner",
         "seed_hex": "97e08d6cc417ab5c80a6f171c46a69b9ab9524d2fb85a0824e564d8bd59a40d5",
-        "seed": "SUAJPYENNTCBPK24QCTPC4OENJU3TK4VETJPXBNAQJHFMTML2WNEBVLT4Y",
         "public": "UCLUA22X4K2N6XJK5XGIE3NQU6CX7SURYBDVWNWZSZCYL2NLAEFBQMZQ"
       },
       "tidewater-agent": {
         "label": "Agent NDA conformance test key: tidewater-agent",
         "seed_hex": "8bd8626fee171bf49d840e4fb1c2a33ad106141aa3f7fba0b494a369f13d20e1",
-        "seed": "SUAIXWDCN7XBOG7UTWCA4T5RYKRTVUIGCQNKH573UC2JJI3J6E6SBYMH2A",
         "public": "UCPQTPNER6IMQPR4EJ3BNZM5AWUB4D7Q4KPSDNNZLF5FCYLBEMDZOZFL"
       },
       "northgate-agent": {
         "label": "Agent NDA conformance test key: northgate-agent",
         "seed_hex": "aa80e167197e42d19f4576f34b88380c08124efe3561305970d1ab86a3840ec3",
-        "seed": "SUAKVAHBM4MX4QWRT5CXN42LRA4AYCASJ37DKYJQLFYNDK4GUOCA5Q45MY",
         "public": "UDURVVYU3MHKW4EV6WBXMY4VTJPK3EOV25OEQRXZYVZ2Y4ICOHBZYR7I"
       },
       "ledgerline-agent": {
         "label": "Agent NDA conformance test key: ledgerline-agent",
         "seed_hex": "ed9edd3781bab4cea653ce91e386ab27ca0fa25dc39bbc66b91f673b29b4d530",
-        "seed": "SUAO3HW5G6A3VNGOUZJ45EPDQ2VSPSQPUJO4HG54M24R6ZZ3FG2NKMDM7U",
         "public": "UCZDL3VEPELZGIPJXCFKAG33TRNOPYYTGW7KOZVIYROHDMWWDZPIPCZS"
       },
       "granite-agent": {
         "label": "Agent NDA conformance test key: granite-agent",
         "seed_hex": "59f1997868e7a370c5d2a81393b0a70dce4ff957662d945f1fd285560e327a75",
-        "seed": "SUAFT4MZPBUOPI3QYXJKQE4TWCTQ3TSP7FLWMLMUL4P5FBKWBYZHU5IVRQ",
         "public": "UCF426ILKTVMFLTJNT2NWIKEI5LDUISQMEBCELTZH2BKLV4S3HYPQYPZ"
       }
     },
