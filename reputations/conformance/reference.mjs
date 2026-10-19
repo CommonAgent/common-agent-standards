@@ -132,46 +132,106 @@ export function verifyReport(envelope, { tag, member, keySet, bureau, now, grace
   return "ok";
 }
 
-// ── §4.1.1: the commitment over every subject's head ──────────────────────
-// A leaf is SHA-256 over the byte 0x00 and the JCS of the head's three members;
-// leaves go in order of the subject's UTF-8 bytes; a pair becomes SHA-256 over
-// 0x01 and the two digests; an odd last digest is carried up unchanged; no
-// heads give the SHA-256 of nothing. The root is lowercase hex.
-const sha256 = (...parts) => { const h = createHash("sha256"); for (const x of parts) h.update(x); return h.digest(); };
-export const headLeaf = (h) => sha256(Buffer.from([0]), Buffer.from(jcs({ head_hash: h.head_hash, seq: h.seq, subject: h.subject }), "utf8"));
-const bySubject = (heads) => [...heads].sort((a, b) => Buffer.compare(Buffer.from(a.subject, "utf8"), Buffer.from(b.subject, "utf8")));
-export function headsRoot(heads) {
-  if (!heads.length) return sha256(Buffer.alloc(0)).toString("hex");
-  let level = bySubject(heads).map(headLeaf);
-  while (level.length > 1) {
-    const next = [];
-    for (let i = 0; i < level.length; i += 2) next.push(i + 1 < level.length ? sha256(Buffer.from([1]), level[i], level[i + 1]) : level[i]);
-    level = next;
-  }
-  return level[0].toString("hex");
+// ── §4.1.1: the commitment over every subject's log ────────────────────────
+// A sparse Merkle tree of height 256. Each subject has one slot, at the
+// SHA-256 of its lowercased name. A slot holds the subject's head, or the
+// tombstone of an erased subject, or nothing. An empty subtree of height h has
+// the digest EMPTY[h]: 32 zero bytes at height 0, and SHA-256 over 0x01 and two
+// copies of EMPTY[h - 1] above. A filled slot's digest is SHA-256 over 0x00 and
+// the JCS of what it holds. A node is SHA-256 over 0x01, its left child and its
+// right child. Bit 0 of a key, its first byte's highest bit, chooses the side
+// at the root.
+const H = (...parts) => { const h = createHash("sha256"); for (const x of parts) h.update(x); return h.digest(); };
+const ONE = Buffer.from([1]);
+export const EMPTY = [Buffer.alloc(32)];
+for (let i = 1; i <= 256; i++) EMPTY.push(H(ONE, EMPTY[i - 1], EMPTY[i - 1]));
+export const subjectKey = (subject) => createHash("sha256").update(subject.toLowerCase(), "utf8").digest();
+const bitOf = (key, i) => (key[i >> 3] >> (7 - (i & 7))) & 1;
+
+/** What a slot holds, as the JCS object its digest is taken over. */
+export function slotBody(slot) {
+  if (slot.erased_at) return { erased_at: slot.erased_at, key: slot.key };
+  return { ...(slot.after_erasure ? { after_erasure: slot.after_erasure } : {}), head_hash: slot.head_hash, key: slot.key, seq: slot.seq, subject: slot.subject };
 }
-// The path from one subject's leaf to the root: at each level where the leaf
-// has a sibling, the sibling's digest and the side it sits on.
-export function inclusionPath(heads, subject) {
-  let level = bySubject(heads).map((h) => ({ d: headLeaf(h), mine: h.subject === subject }));
-  const path = [];
-  while (level.length > 1) {
-    const next = [];
-    for (let i = 0; i < level.length; i += 2) {
-      if (i + 1 >= level.length) { next.push(level[i]); continue; }
-      const [l, r] = [level[i], level[i + 1]];
-      if (l.mine) path.push({ side: "right", hash: r.d.toString("hex") });
-      if (r.mine) path.push({ side: "left", hash: l.d.toString("hex") });
-      next.push({ d: sha256(Buffer.from([1]), l.d, r.d), mine: l.mine || r.mine });
+export const slotDigest = (slot) => H(Buffer.from([0]), Buffer.from(jcs(slotBody(slot)), "utf8"));
+
+/** The slots of a commitment: one per subject, a head or a tombstone. Two entries for one subject are refused. */
+export function slotsOf(heads, tombstones = []) {
+  const slots = new Map();
+  const put = (slot) => {
+    if (slots.has(slot.key)) throw new Error(`two entries for the slot ${slot.key}`);
+    slots.set(slot.key, slot);
+  };
+  for (const h of heads) put({ ...h, key: subjectKey(h.subject).toString("hex") });
+  for (const t of tombstones) put({ key: t.key, erased_at: t.erased_at });
+  return slots;
+}
+
+function subtree(entries, depth) {
+  if (!entries.length) return EMPTY[256 - depth];
+  if (depth === 256) return slotDigest(entries[0]);
+  const keyBits = (e) => bitOf(Buffer.from(e.key, "hex"), depth);
+  return H(ONE, subtree(entries.filter((e) => keyBits(e) === 0), depth + 1), subtree(entries.filter((e) => keyBits(e) === 1), depth + 1));
+}
+export const smtRoot = (slots) => subtree([...slots.values()], 0).toString("hex");
+
+/** The proof for one slot: the digest of each sibling from the slot up to the root, or null where the sibling is an empty subtree. */
+export function smtProof(slots, keyHex) {
+  const key = Buffer.from(keyHex, "hex");
+  const topDown = [];
+  let entries = [...slots.values()];
+  for (let depth = 0; depth < 256; depth++) {
+    const b = bitOf(key, depth);
+    const same = entries.filter((e) => bitOf(Buffer.from(e.key, "hex"), depth) === b);
+    const other = entries.filter((e) => bitOf(Buffer.from(e.key, "hex"), depth) !== b);
+    topDown.push(other.length ? subtree(other, depth + 1).toString("hex") : null);
+    entries = same;
+  }
+  return topDown.reverse();
+}
+
+/** Fold a proof from a slot up to a root: the slot's digest, or an empty slot for an absence. */
+export function rootFromProof(keyHex, slot, siblings) {
+  const key = Buffer.from(keyHex, "hex");
+  let cur = slot ? slotDigest(slot) : EMPTY[0];
+  for (let h = 0; h < 256; h++) {
+    const sib = siblings[h] === null ? EMPTY[h] : Buffer.from(siblings[h], "hex");
+    cur = bitOf(key, 255 - h) ? H(ONE, sib, cur) : H(ONE, cur, sib);
+  }
+  return cur.toString("hex");
+}
+
+export const HEADS_TAG = "fdbk-heads-v1";
+/** `prev` of the next commitment: SHA-256 over this commitment's signed bytes, in hex. */
+export const commitmentHash = (commitment) => createHash("sha256").update(signedBytes(HEADS_TAG, commitment)).digest("hex");
+
+/** A commitment follows another: the next sequence number, and `prev` naming the previous one's signed bytes. */
+export function followsFrom(prev, next) {
+  if (next.seq !== prev.seq + 1) return `the sequence number is ${next.seq}, after ${prev.seq}`;
+  if (next.prev !== commitmentHash(prev)) return "prev does not name the previous commitment";
+  return "ok";
+}
+
+/**
+ * Every slot of the earlier commitment carried forward: a head stays or moves
+ * up its own log (the same seq and hash, or a higher seq) unless a tombstone
+ * replaces it; a tombstone stays, or gives way to a head that names the
+ * erasure in `after_erasure`; no slot simply empties.
+ */
+export function carriesForward(prevSlots, slots) {
+  for (const [key, was] of prevSlots) {
+    const now = slots.get(key);
+    if (!now) return `the slot ${key.slice(0, 12)}… emptied without a tombstone`;
+    if (was.erased_at) {
+      if (now.erased_at ? now.erased_at !== was.erased_at : now.after_erasure !== was.erased_at) return `the erased slot ${key.slice(0, 12)}… came back without naming its erasure`;
+      continue;
     }
-    level = next;
+    if (now.erased_at) continue;
+    if ((now.after_erasure ?? null) !== (was.after_erasure ?? null)) return `the slot ${key.slice(0, 12)}… changed its erasure`;
+    if (now.seq < was.seq) return `the head of ${was.subject} went back from ${was.seq} to ${now.seq}`;
+    if (now.seq === was.seq && now.head_hash !== was.head_hash) return `the head of ${was.subject} at ${was.seq} changed its hash`;
   }
-  return path;
-}
-export function rootFromPath(head, path) {
-  let d = headLeaf(head);
-  for (const step of path) d = step.side === "left" ? sha256(Buffer.from([1]), Buffer.from(step.hash, "hex"), d) : sha256(Buffer.from([1]), d, Buffer.from(step.hash, "hex"));
-  return d.toString("hex");
+  return "ok";
 }
 
 // ── the check ───────────────────────────────────────────────────────────────
@@ -258,39 +318,66 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
   const file = JSON.parse(readFileSync(HEADS_FILE, "utf8"));
   const report = JSON.parse(readFileSync(REPORT_FILE, "utf8"));
   const { privateKey, key, kid } = keyFromSeed(report.test_key.seed_hex);
-  const leaves = bySubject(file.heads).map((h) => ({ subject: h.subject, leaf: headLeaf(h).toString("hex") }));
-  const root = headsRoot(file.heads);
-  const commitment = { ...file.signed.envelope.heads, root, subjects: file.heads.length };
-  const bytes = signedBytes(file.signed.tag, commitment);
-  const sig = sign(null, bytes, privateKey).toString("base64");
-  if (WRITE) {
-    file.leaves = leaves;
-    file.root = root;
-    file.signed.envelope = { heads: commitment, bureau_key: key, bureau_kid: kid, bureau_sig: sig };
-    file.signed.signed_bytes = bytes.toString("utf8");
-    file.signed.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
-    for (const pr of file.proofs) pr.path = inclusionPath(file.heads, pr.subject);
-    file.empty_root = headsRoot([]);
-    writeFileSync(HEADS_FILE, `${JSON.stringify(file, null, 2)}\n`);
-  } else {
-    if (JSON.stringify(leaves) !== JSON.stringify(file.leaves)) bad.push("heads: the leaves differ from the vector's");
-    if (root !== file.root) bad.push(`heads: the root is ${root}, the vector says ${file.root}`);
-    if (headsRoot([]) !== file.empty_root) bad.push("heads: the root of no heads differs from the vector's");
-    if (headsRoot([...file.heads].reverse()) !== root) bad.push("heads: the root depends on the order the heads are given in");
-    if (bytes.toString("utf8") !== file.signed.signed_bytes) bad.push("heads: the signed bytes differ from the vector's");
-    if (sig !== file.signed.envelope.bureau_sig) bad.push(`heads: the signature is ${sig}, the vector says ${file.signed.envelope.bureau_sig}`);
-    if (!verify(null, bytes, publicKeyOf(key), Buffer.from(file.signed.envelope.bureau_sig, "base64"))) bad.push("heads: the commitment does not verify");
-    for (const pr of file.proofs) {
-      const head = file.heads.find((h) => h.subject === pr.subject);
-      if (JSON.stringify(inclusionPath(file.heads, pr.subject)) !== JSON.stringify(pr.path)) bad.push(`heads proof ${pr.subject}: the path differs from the vector's`);
-      if (rootFromPath(head, pr.path) !== root) bad.push(`heads proof ${pr.subject}: the path does not lead to the root`);
+  const byName = Object.fromEntries(file.commitments.map((c) => [c.name, c]));
+  let prev = null;
+  for (const c of file.commitments) {
+    const slots = slotsOf(c.heads, c.tombstones);
+    const root = smtRoot(slots);
+    const commitment = { ...c.envelope.heads, seq: c.envelope.heads.seq, prev: prev ? commitmentHash(prev.envelope.heads) : null, root, subjects: c.heads.length, tombstones: c.tombstones.length };
+    const bytes = signedBytes(HEADS_TAG, commitment);
+    const sig = sign(null, bytes, privateKey).toString("base64");
+    if (WRITE) {
+      c.slots = [...slots.values()].sort((a, b) => a.key.localeCompare(b.key)).map((s) => ({ key: s.key, digest: slotDigest(s).toString("hex") }));
+      c.envelope = { heads: commitment, bureau_key: key, bureau_kid: kid, bureau_sig: sig };
+      c.signed_bytes = bytes.toString("utf8");
+      c.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
+    } else {
+      if (root !== c.envelope.heads.root) bad.push(`${c.name}: the root is ${root}, the vector says ${c.envelope.heads.root}`);
+      if (bytes.toString("utf8") !== c.signed_bytes) bad.push(`${c.name}: the signed bytes differ from the vector's`);
+      if (sig !== c.envelope.bureau_sig) bad.push(`${c.name}: the signature is ${sig}, the vector says ${c.envelope.bureau_sig}`);
+      if (!verify(null, bytes, publicKeyOf(key), Buffer.from(c.envelope.bureau_sig, "base64"))) bad.push(`${c.name}: the commitment does not verify`);
+      if (prev) {
+        const f = followsFrom(prev.envelope.heads, c.envelope.heads);
+        if (f !== "ok") bad.push(`${c.name}: ${f}`);
+        const x = carriesForward(slotsOf(prev.heads, prev.tombstones), slots);
+        if (x !== "ok") bad.push(`${c.name}: ${x}`);
+      }
     }
+    prev = c;
+  }
+  if (WRITE) file.empty_root = EMPTY[256].toString("hex");
+  else if (EMPTY[256].toString("hex") !== file.empty_root) bad.push("heads: the root of no slots differs from the vector's");
+  for (const p of file.proofs) {
+    const c = byName[p.commitment];
+    const slots = slotsOf(c.heads, c.tombstones);
+    const keyHex = p.key ?? subjectKey(p.subject).toString("hex");
+    const siblings = smtProof(slots, keyHex);
+    if (WRITE) { p.key = keyHex; p.siblings = siblings; continue; }
+    if (JSON.stringify(siblings) !== JSON.stringify(p.siblings)) bad.push(`proof ${p.name}: the siblings differ from the vector's`);
+    const slot = p.kind === "absent" ? null : slots.get(keyHex);
+    if (rootFromProof(keyHex, slot, p.siblings) !== c.envelope.heads.root) bad.push(`proof ${p.name}: it does not reach the root of ${c.name}`);
+  }
+  if (WRITE) writeFileSync(HEADS_FILE, `${JSON.stringify(file, null, 2)}\n`);
+  else {
     for (const f of file.must_fail) {
-      const head = { ...file.heads.find((h) => h.subject === f.subject), ...(f.set ?? {}) };
-      const pr = file.proofs.find((x) => x.subject === f.subject);
-      if (rootFromPath(head, pr.path) === root) bad.push(`heads must fail ${f.name}: it led to the root`);
+      let res = "ok";
+      if (f.check === "proof") {
+        const c = byName[f.commitment];
+        const p = file.proofs.find((x) => x.name === f.proof);
+        const slot = f.slot === null ? null : { ...f.slot, key: p.key };
+        res = rootFromProof(p.key, slot, p.siblings) === c.envelope.heads.root ? "ok" : "the proof does not reach the root";
+      } else if (f.check === "build") {
+        try { slotsOf(f.heads, f.tombstones ?? []); } catch (e) { res = e.message; }
+      } else if (f.check === "chain") {
+        const next = { ...byName[f.commitment].envelope.heads, ...(f.set ?? {}) };
+        res = followsFrom(byName[f.after].envelope.heads, next);
+      } else if (f.check === "extension") {
+        const base = byName[f.after];
+        res = carriesForward(slotsOf(base.heads, base.tombstones), slotsOf(f.heads, f.tombstones ?? []));
+      }
+      if (res === "ok") bad.push(`must fail ${f.name}: it passed`);
     }
-    console.log(`fdbk-heads-v1: ${file.heads.length} heads, ${file.proofs.length} proofs and ${file.must_fail.length} heads that must not prove checked`);
+    console.log(`fdbk-heads-v1: ${file.commitments.length} commitments, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
   }
 }
 

@@ -9,18 +9,35 @@ that tag is the text of that version. The history of SPEC.md comes from jeffrsch
 A bureau may keep one log per subject (§4.1.1). Until this version §4.1 asked
 for one append-only log chained across every subject, in which erasing one
 subject's history, which the law or the subject's own account closing can
-require of a bureau, breaks the hash of every later entry for everyone. A
-bureau that keeps one log per subject must now publish, at least daily, a
-signed commitment over every subject's head: a Merkle root, signed under the
-tag `fdbk-heads-v1` with the report signing key, served at `/api/heads` with
-every earlier one kept, and a path from each subject's head to the root served
-with the subject's excerpt. That keeps what one log gave: a bureau cannot show
-one reader a history it hides from another. The new file
-`conformance/fdbk-heads-v1.json` fixes the root, a signed commitment and the
-paths, and `reference.mjs` reproduces it. The minor version moves because a
-bureau conforming to 0.7.0-draft with one log stays conforming, while one with
-a log per subject conforms only from this version, and only with the
-commitment.
+require of a bureau, breaks the hash of every later entry for everyone.
+
+A bureau that keeps one log per subject keeps what one log gave, that it
+cannot show readers different histories or rewrite one it has shown, with a
+chain of commitments:
+
+- At least daily it publishes a commitment over a sparse Merkle tree of
+  height 256 with one slot per subject, at the SHA-256 of the lowercased name.
+  A slot holds the subject's head, the tombstone of its erasure, or nothing,
+  so a subject has one head and an absent subject can be proved absent.
+- Each commitment carries a sequence number and `prev`, the hash of the
+  previous one's signed bytes. It is signed under `fdbk-heads-v1` with the
+  report signing key, and a party other than the bureau must witness it
+  within 24 hours.
+- Every slot carries forward: a head moves only up its own log, leaves only
+  for a tombstone, and a tombstone gives way only to a new log that names
+  the erasure in `after_erasure`.
+- Commitments are kept and served by sequence number, with a proof for any
+  slot of any of them.
+- Reports carry `log`: the head their figures came from and the commitment
+  to check it against.
+- §8.1.1 and §8.1.2 rule 4 name the commitment's tag, and the key's `use`
+  governs commitments as it does reports.
+
+The new file `conformance/fdbk-heads-v1.json` fixes two chained commitments,
+four proofs and ten refused cases, and `reference.mjs` reproduces it. The
+minor version moves because a bureau conforming to 0.7.0-draft with one log
+stays conforming, while one with a log per subject conforms only from this
+version, and only with the commitments.
 
 ## 0.7.0-draft (2026-10-19)
 
