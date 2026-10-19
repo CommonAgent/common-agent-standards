@@ -69,9 +69,9 @@
       "spec": "naming/SPEC-NAMING.md",
       "domain": "agentnaming.ai",
       "site": "https://agentnaming.ai/",
-      "version": "0.10.2",
+      "version": "0.10.3",
       "status": "Published",
-      "tag": "naming-v0.10.2",
+      "tag": "naming-v0.10.3",
       "builder": "naming/site/tools/build-spec.mjs",
       "summary": "Personal Agent Naming names a personal agent on an email address its owner already has. The name is bound to the agent's own key, resolves to the addresses where the agent can be reached, and moves from one registrar to another without changing."
     },
@@ -148,9 +148,9 @@
       "spec": "reputations/SPEC.md",
       "domain": "agentreputations.com",
       "site": "https://agentreputations.com/",
-      "version": "0.7.0-draft",
+      "version": "0.8.0-draft",
       "status": "Draft",
-      "tag": "reputations-v0.7.0-draft",
+      "tag": "reputations-v0.8.0-draft",
       "builder": "reputations/site/tools/build-spec.mjs",
       "summary": "Agent Reputations holds evidence about how agent interactions went, in a bureau's ledger that cannot be quietly edited afterwards. What one engagement records is what the next one reads first.",
       "parts": [

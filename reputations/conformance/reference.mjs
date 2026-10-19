@@ -3,7 +3,7 @@
 // fdbk-score-1 (Agent Reputations §7) and of report signing (§8.1), and the
 // check that it reproduces the test vectors beside it.
 //
-//   node reputations/conformance/reference.mjs           check both vector files
+//   node reputations/conformance/reference.mjs           check the vector files
 //   node reputations/conformance/reference.mjs --write   recompute the expected
 //                                                        values and write them
 //
@@ -24,6 +24,8 @@ import { createHash, createPrivateKey, createPublicKey, sign, verify } from "nod
 const HERE = dirname(fileURLToPath(import.meta.url));
 const SCORE_FILE = join(HERE, "fdbk-score-1.json");
 const REPORT_FILE = join(HERE, "fdbk-report-v1.json");
+const HEADS_FILE = join(HERE, "fdbk-heads-v1.json");
+const CASEFOLD_FILE = join(HERE, "casefolding-15.1.0.json");
 
 // ── §5, §7: the formula ─────────────────────────────────────────────────────
 // The quality value of each outcome code that enters a pool (§5). Every code
@@ -131,6 +133,169 @@ export function verifyReport(envelope, { tag, member, keySet, bureau, now, grace
   return "ok";
 }
 
+// ── §4.1.1: the commitment over every subject's log ────────────────────────
+// A sparse Merkle tree of height 256. Each subject has one slot, at the
+// SHA-256 of its lowercased name. A slot holds the subject's head, or the
+// tombstone of an erased subject, or nothing. An empty subtree of height h has
+// the digest EMPTY[h]: 32 zero bytes at height 0, and SHA-256 over 0x01 and two
+// copies of EMPTY[h - 1] above. A filled slot's digest is SHA-256 over 0x00 and
+// the JCS of what it holds. A node is SHA-256 over 0x01, its left child and its
+// right child. Bit 0 of a key, its first byte's highest bit, chooses the side
+// at the root.
+const H = (...parts) => { const h = createHash("sha256"); for (const x of parts) h.update(x); return h.digest(); };
+const ONE = Buffer.from([1]);
+export const EMPTY = [Buffer.alloc(32)];
+for (let i = 1; i <= 256; i++) EMPTY.push(H(ONE, EMPTY[i - 1], EMPTY[i - 1]));
+// A subject's slot key: SHA-256 over the UTF-8 of the subject's canonical
+// caseless form (Unicode D145): normalization form D, full case folding (the
+// C and F entries of CaseFolding.txt, Unicode 15.1.0, in
+// casefolding-15.1.0.json), and normalization form D again. Composing in
+// between, as NFC would, can compose a mark with the wrong base and lose a
+// match: U+1FB7 and U+0391 U+0342 U+0345 match under D145 and not under NFC.
+const FOLD = JSON.parse(readFileSync(CASEFOLD_FILE, "utf8")).fold;
+export function foldSubject(subject) {
+  let out = "";
+  for (const ch of subject.normalize("NFD")) {
+    const hex = ch.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
+    out += FOLD[hex] ? String.fromCodePoint(...FOLD[hex].split(" ").map((h) => parseInt(h, 16))) : ch;
+  }
+  return out.normalize("NFD");
+}
+export const subjectKey = (subject) => createHash("sha256").update(foldSubject(subject), "utf8").digest();
+const bitOf = (key, i) => (key[i >> 3] >> (7 - (i & 7))) & 1;
+
+/** What a slot holds, as the JCS object its digest is taken over. */
+export function slotBody(slot) {
+  if (slot.erased_at) return { erased_at: slot.erased_at, key: slot.key };
+  return { ...(slot.after_erasure ? { after_erasure: slot.after_erasure } : {}), head_hash: slot.head_hash, key: slot.key, seq: slot.seq, subject: slot.subject };
+}
+export const slotDigest = (slot) => H(Buffer.from([0]), Buffer.from(jcs(slotBody(slot)), "utf8"));
+
+/** The slots of a commitment: one per subject, a head or a tombstone. Two entries for one subject are refused. */
+export function slotsOf(heads, tombstones = []) {
+  const slots = new Map();
+  const put = (slot) => {
+    if (slots.has(slot.key)) throw new Error(`two entries for the slot ${slot.key}`);
+    slots.set(slot.key, slot);
+  };
+  for (const h of heads) put({ ...h, key: subjectKey(h.subject).toString("hex") });
+  for (const t of tombstones) put({ key: t.key, erased_at: t.erased_at });
+  return slots;
+}
+
+function subtree(entries, depth) {
+  if (!entries.length) return EMPTY[256 - depth];
+  if (depth === 256) return slotDigest(entries[0]);
+  const keyBits = (e) => bitOf(Buffer.from(e.key, "hex"), depth);
+  return H(ONE, subtree(entries.filter((e) => keyBits(e) === 0), depth + 1), subtree(entries.filter((e) => keyBits(e) === 1), depth + 1));
+}
+export const smtRoot = (slots) => subtree([...slots.values()], 0).toString("hex");
+
+/** The proof for one slot: the digest of each sibling from the slot up to the root, or null where the sibling is an empty subtree. */
+export function smtProof(slots, keyHex) {
+  const key = Buffer.from(keyHex, "hex");
+  const topDown = [];
+  let entries = [...slots.values()];
+  for (let depth = 0; depth < 256; depth++) {
+    const b = bitOf(key, depth);
+    const same = entries.filter((e) => bitOf(Buffer.from(e.key, "hex"), depth) === b);
+    const other = entries.filter((e) => bitOf(Buffer.from(e.key, "hex"), depth) !== b);
+    topDown.push(other.length ? subtree(other, depth + 1).toString("hex") : null);
+    entries = same;
+  }
+  return topDown.reverse();
+}
+
+/** Fold a proof from a slot up to a root: the slot's digest, or an empty slot for an absence. */
+export function rootFromProof(keyHex, slot, siblings) {
+  const key = Buffer.from(keyHex, "hex");
+  let cur = slot ? slotDigest(slot) : EMPTY[0];
+  for (let h = 0; h < 256; h++) {
+    const sib = siblings[h] === null ? EMPTY[h] : Buffer.from(siblings[h], "hex");
+    cur = bitOf(key, 255 - h) ? H(ONE, sib, cur) : H(ONE, cur, sib);
+  }
+  return cur.toString("hex");
+}
+
+export const HEADS_TAG = "fdbk-heads-v1";
+/** `prev` of the next commitment: SHA-256 over this commitment's signed bytes, in hex. */
+export const commitmentHash = (commitment) => createHash("sha256").update(signedBytes(HEADS_TAG, commitment)).digest("hex");
+
+/** Every tombstone in a commitment is dated no later than the commitment. */
+export function erasuresDated(commitment, tombstones) {
+  for (const t of tombstones) if (Date.parse(t.erased_at) > Date.parse(commitment.issued_at)) return `the erasure of ${t.key.slice(0, 12)}… is dated after the commitment`;
+  return "ok";
+}
+
+// A witness co-signs a commitment only when it extends the last one the
+// witness co-signed for that bureau: the first, with seq 1 and no prev, or the
+// next seq whose prev is the hash of the last. So a witness never co-signs two
+// commitments with one seq. It signs, under the tag fdbk-heads-cosign-v1, the
+// JCS of the bureau, the seq and the commitment's hash.
+export const COSIGN_TAG = "fdbk-heads-cosign-v1";
+export const cosignedObject = (commitment) => ({ bureau: commitment.bureau, commitment: commitmentHash(commitment), seq: commitment.seq });
+export function witnessCosigns(last, commitment) {
+  if (!last) return commitment.seq === 1 && commitment.prev === null ? "ok" : "the witness co-signs a bureau's first commitment first";
+  if (commitment.bureau !== last.bureau) return "another bureau";
+  if (commitment.seq !== last.seq + 1 || commitment.prev !== commitmentHash(last)) return "it does not extend the last commitment the witness co-signed";
+  return "ok";
+}
+
+/** Every co-signer the key set names has co-signed the commitment. One that has not, or whose signature fails, refuses it. */
+export function cosignedByAll(commitment, cosignatures, witnesses) {
+  const bytes = signedBytes(COSIGN_TAG, cosignedObject(commitment));
+  for (const w of witnesses.filter((x) => x.kind === "cosigner")) {
+    const c = cosignatures.find((x) => x.witness === w.id);
+    if (!c || !verify(null, bytes, publicKeyOf(w.key), Buffer.from(c.sig, "base64"))) return `${w.id} has not co-signed it`;
+  }
+  return "ok";
+}
+
+// A change to the witness list names the list it changes by the SHA-256 of
+// its JCS, and every co-signer on that list signs it under the tag
+// fdbk-witnesses-v1. A consumer moves its pinned list only along changes so
+// signed.
+export const WITNESSES_TAG = "fdbk-witnesses-v1";
+export const witnessListHash = (list) => createHash("sha256").update(jcs(list), "utf8").digest("hex");
+export function witnessChangeSigned(pinned, change, signatures) {
+  if (change.previous !== witnessListHash(pinned)) return "it does not change the list the consumer pinned";
+  const bytes = signedBytes(WITNESSES_TAG, change);
+  for (const w of pinned.filter((x) => x.kind === "cosigner")) {
+    const s = signatures.find((x) => x.witness === w.id);
+    if (!s || !verify(null, bytes, publicKeyOf(w.key), Buffer.from(s.sig, "base64"))) return `${w.id}, on the list it changes, has not signed it`;
+  }
+  return "ok";
+}
+
+/** A commitment follows another: the next sequence number, and `prev` naming the previous one's signed bytes. */
+export function followsFrom(prev, next) {
+  if (next.seq !== prev.seq + 1) return `the sequence number is ${next.seq}, after ${prev.seq}`;
+  if (next.prev !== commitmentHash(prev)) return "prev does not name the previous commitment";
+  return "ok";
+}
+
+/**
+ * Every slot of the earlier commitment carried forward: a head stays or moves
+ * up its own log (the same seq and hash, or a higher seq) unless a tombstone
+ * replaces it; a tombstone stays, or gives way to a head that names the
+ * erasure in `after_erasure`; no slot simply empties.
+ */
+export function carriesForward(prevSlots, slots) {
+  for (const [key, was] of prevSlots) {
+    const now = slots.get(key);
+    if (!now) return `the slot ${key.slice(0, 12)}… emptied without a tombstone`;
+    if (was.erased_at) {
+      if (now.erased_at ? now.erased_at !== was.erased_at : now.after_erasure !== was.erased_at) return `the erased slot ${key.slice(0, 12)}… came back without naming its erasure`;
+      continue;
+    }
+    if (now.erased_at) continue;
+    if ((now.after_erasure ?? null) !== (was.after_erasure ?? null)) return `the slot ${key.slice(0, 12)}… changed its erasure`;
+    if (now.seq < was.seq) return `the head of ${was.subject} went back from ${was.seq} to ${now.seq}`;
+    if (now.seq === was.seq && now.head_hash !== was.head_hash) return `the head of ${was.subject} at ${was.seq} changed its hash`;
+  }
+  return "ok";
+}
+
 // ── the check ───────────────────────────────────────────────────────────────
 const WRITE = process.argv.includes("--write");
 const bad = [];
@@ -208,6 +373,138 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       else if (f.reason && res !== f.reason) bad.push(`must fail ${f.name}: it failed with "${res}", the vector says "${f.reason}"`);
     }
     console.log(`fdbk-report-v1: ${file.jcs.length} canonical forms, ${file.signed.length} signed reports and ${file.must_fail.length} reports that must fail checked`);
+  }
+}
+
+{
+  const file = JSON.parse(readFileSync(HEADS_FILE, "utf8"));
+  const report = JSON.parse(readFileSync(REPORT_FILE, "utf8"));
+  const { privateKey, key, kid } = keyFromSeed(report.test_key.seed_hex);
+  const wk = Object.fromEntries(file.test_witnesses.map((w) => [w.id, keyFromSeed(w.seed_hex)]));
+  for (const w of file.test_witnesses) {
+    if (WRITE) Object.assign(w, { public_key: wk[w.id].key, kid: wk[w.id].kid });
+    else if (w.public_key !== wk[w.id].key) bad.push(`heads: the seed of ${w.id} gives another key`);
+  }
+  const listOf = (ids) => ids.map((id) => ({ id, key: wk[id].key, kind: "cosigner" }));
+  const cosign = (id, commitment) => ({ witness: id, kid: wk[id].kid, sig: sign(null, signedBytes(COSIGN_TAG, cosignedObject(commitment)), wk[id].privateKey).toString("base64") });
+  const signChange = (id, change) => ({ witness: id, kid: wk[id].kid, sig: sign(null, signedBytes(WITNESSES_TAG, change), wk[id].privateKey).toString("base64") });
+
+  // The witness list: the one a consumer pinned, the changes from it, and the
+  // list the key set names now.
+  if (WRITE) {
+    file.pinned_witnesses = listOf(file.pinned_witnesses.map((w) => w.id));
+    let list = file.pinned_witnesses;
+    for (const c of file.key_set.witness_changes) {
+      c.change = { bureau: file.key_set.bureau, previous: witnessListHash(list), witnesses: listOf(c.change.witnesses.map((w) => w.id)) };
+      c.signatures = list.map((w) => signChange(w.id, c.change));
+      list = c.change.witnesses;
+    }
+    file.key_set.witnesses = list;
+  } else {
+    let list = file.pinned_witnesses;
+    for (const c of file.key_set.witness_changes) {
+      const ok = witnessChangeSigned(list, c.change, c.signatures);
+      if (ok !== "ok") bad.push(`heads: a witness change: ${ok}`);
+      list = c.change.witnesses;
+    }
+    if (jcs(list) !== jcs(file.key_set.witnesses)) bad.push("heads: the changes do not lead from the pinned witnesses to the key set's");
+  }
+  const witnesses = file.key_set.witnesses;
+
+  for (const k of file.slot_keys) {
+    const ka = subjectKey(k.a).toString("hex"), kb = subjectKey(k.b).toString("hex");
+    if (WRITE) { k.folded = foldSubject(k.a); k.key = ka; continue; }
+    if (ka !== kb) bad.push(`slot key ${k.name}: the two names take different slots`);
+    if (ka !== k.key || foldSubject(k.a) !== k.folded) bad.push(`slot key ${k.name}: differs from the vector`);
+  }
+  const byName = Object.fromEntries(file.commitments.map((c) => [c.name, c]));
+  let prev = null;
+  for (const c of file.commitments) {
+    const slots = slotsOf(c.heads, c.tombstones);
+    const root = smtRoot(slots);
+    const commitment = { ...c.envelope.heads, seq: c.envelope.heads.seq, prev: prev ? commitmentHash(prev.envelope.heads) : null, root, subjects: c.heads.length, tombstones: c.tombstones.length };
+    const bytes = signedBytes(HEADS_TAG, commitment);
+    const sig = sign(null, bytes, privateKey).toString("base64");
+    if (WRITE) {
+      c.slots = [...slots.values()].sort((x, y) => x.key.localeCompare(y.key)).map((x) => ({ key: x.key, digest: slotDigest(x).toString("hex") }));
+      c.envelope = { heads: commitment, bureau_key: key, bureau_kid: kid, bureau_sig: sig };
+      c.signed_bytes = bytes.toString("utf8");
+      c.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
+      c.cosigned_bytes = signedBytes(COSIGN_TAG, cosignedObject(commitment)).toString("utf8");
+      c.cosignatures = witnesses.map((w) => cosign(w.id, commitment));
+    } else {
+      if (root !== c.envelope.heads.root) bad.push(`${c.name}: the root is ${root}, the vector says ${c.envelope.heads.root}`);
+      if (bytes.toString("utf8") !== c.signed_bytes) bad.push(`${c.name}: the signed bytes differ from the vector's`);
+      if (sig !== c.envelope.bureau_sig) bad.push(`${c.name}: the signature is ${sig}, the vector says ${c.envelope.bureau_sig}`);
+      if (!verify(null, bytes, publicKeyOf(key), Buffer.from(c.envelope.bureau_sig, "base64"))) bad.push(`${c.name}: the commitment does not verify`);
+      if (erasuresDated(commitment, c.tombstones) !== "ok") bad.push(`${c.name}: ${erasuresDated(commitment, c.tombstones)}`);
+      const all = cosignedByAll(commitment, c.cosignatures, witnesses);
+      if (all !== "ok") bad.push(`${c.name}: ${all}`);
+      const refused = witnessCosigns(prev ? prev.envelope.heads : null, commitment);
+      if (refused !== "ok") bad.push(`${c.name}: a witness would refuse it: ${refused}`);
+      if (prev) {
+        const f = followsFrom(prev.envelope.heads, c.envelope.heads);
+        if (f !== "ok") bad.push(`${c.name}: ${f}`);
+        const x = carriesForward(slotsOf(prev.heads, prev.tombstones), slots);
+        if (x !== "ok") bad.push(`${c.name}: ${x}`);
+      }
+    }
+    prev = c;
+  }
+  if (WRITE) file.empty_root = EMPTY[256].toString("hex");
+  else if (EMPTY[256].toString("hex") !== file.empty_root) bad.push("heads: the root of no slots differs from the vector's");
+  for (const p of file.proofs) {
+    const c = byName[p.commitment];
+    const slots = slotsOf(c.heads, c.tombstones);
+    const keyHex = p.key ?? subjectKey(p.subject).toString("hex");
+    const siblings = smtProof(slots, keyHex);
+    if (WRITE) { p.key = keyHex; p.siblings = siblings; continue; }
+    if (JSON.stringify(siblings) !== JSON.stringify(p.siblings)) bad.push(`proof ${p.name}: the siblings differ from the vector's`);
+    const slot = p.kind === "absent" ? null : slots.get(keyHex);
+    if (rootFromProof(keyHex, slot, p.siblings) !== c.envelope.heads.root) bad.push(`proof ${p.name}: it does not reach the root of ${c.name}`);
+  }
+  if (WRITE) {
+    // The cases that must fail and carry signatures get them here.
+    for (const f of file.must_fail) {
+      if (f.check === "fork") {
+        for (const br of f.branches) br.cosignatures = br.cosigned_by.map((id) => cosign(id, { ...byName[f.commitment].envelope.heads, ...(br.set ?? {}) }));
+      } else if (f.check === "witness_change") {
+        f.change = { bureau: file.key_set.bureau, previous: witnessListHash(witnesses), witnesses: listOf(f.change.witnesses.map((w) => w.id)) };
+        f.signatures = f.signed_by.map((id) => signChange(id, f.change));
+      }
+    }
+    writeFileSync(HEADS_FILE, `${JSON.stringify(file, null, 2)}\n`);
+  } else {
+    for (const f of file.must_fail) {
+      let res = "ok";
+      if (f.check === "proof") {
+        const c = byName[f.commitment];
+        const p = file.proofs.find((x) => x.name === f.proof);
+        const slot = f.slot === null ? null : { ...f.slot, key: p.key };
+        res = rootFromProof(p.key, slot, p.siblings) === c.envelope.heads.root ? "ok" : "the proof does not reach the root";
+      } else if (f.check === "build") {
+        try { slotsOf(f.heads, f.tombstones ?? []); } catch (e) { res = e.message; }
+      } else if (f.check === "chain") {
+        const next = { ...byName[f.commitment].envelope.heads, ...(f.set ?? {}) };
+        res = followsFrom(byName[f.after].envelope.heads, next);
+      } else if (f.check === "extension") {
+        const base = byName[f.after];
+        res = carriesForward(slotsOf(base.heads, base.tombstones), slotsOf(f.heads, f.tombstones ?? []));
+      } else if (f.check === "erasure") {
+        res = erasuresDated({ ...byName[f.commitment].envelope.heads }, f.tombstones);
+      } else if (f.check === "witness") {
+        const next = { ...byName[f.commitment].envelope.heads, ...(f.set ?? {}) };
+        res = witnessCosigns(byName[f.after].envelope.heads, next);
+      } else if (f.check === "fork") {
+        // Each branch of the fork must fail: neither carries every named co-signer.
+        const passing = f.branches.filter((br) => cosignedByAll({ ...byName[f.commitment].envelope.heads, ...(br.set ?? {}) }, br.cosignatures, witnesses) === "ok");
+        res = passing.length ? "ok" : "no branch carries every named co-signer";
+      } else if (f.check === "witness_change") {
+        res = witnessChangeSigned(witnesses, f.change, f.signatures);
+      }
+      if (res === "ok") bad.push(`must fail ${f.name}: it passed`);
+    }
+    console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${file.key_set.witness_changes.length} witness change, ${file.commitments.length} commitments co-signed by ${witnesses.length} witnesses, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
   }
 }
 

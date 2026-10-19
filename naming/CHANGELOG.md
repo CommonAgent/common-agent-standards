@@ -4,6 +4,16 @@ Versions of Personal Agent Naming tagged in this repository, newest first. A ver
 tagged as `naming-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from AgentNaming/personal-agent-naming.
 
+## 0.10.3 (2026-10-19)
+
+A clarification. §2 defines the case-folded form of a handle, which §2 rule 2,
+§5 and §5.6 compare in and did not define: Unicode's canonical caseless match
+(definition D145) at Unicode 15.1.0, normalization form D, full case folding,
+and normalization form D again. A registrar that folded between two steps of
+normalization form C, or lowercased, could keep apart two handles this form
+matches. Agent Reputations hashes subject names in the same form, so the two
+standards pin one definition. No field, wire value or section number changes.
+
 ## 0.10.2 (2026-10-18)
 
 Editorial, with no normative change. The prose writes the standard's name, Personal Agent

@@ -2,8 +2,14 @@
 
 **An open standard for naming personal agents**, and a companion to the Agent Messaging specification, `SPEC.md`.
 
-**Version:** 0.10.2 · **Date:** 2026-10-18
+**Version:** 0.10.3 · **Date:** 2026-10-19
 **Authors:** Jeff R Schneider <jeffrschneider@gmail.com>
+
+**Clarification, 2026-10-19 (0.10.3):** §2 defines the case-folded form of a handle,
+which §2 rule 2, §5 and §5.6 already compare in: Unicode's canonical caseless match (definition
+D145) at Unicode 15.1.0, that is normalization form D, full case folding, and normalization form D
+again. Agent Reputations hashes subject names in the same form. No field, wire value or section
+number changes.
 
 **Editorial, 2026-10-18 (0.10.2):** The prose writes the standard's name, Personal Agent
 Naming, where it used the abbreviation PAN. Protocol identifiers keep their spelling: `urn:pan:*`
@@ -227,6 +233,19 @@ time. The second claimant is refused with "taken." No exceptions, no
 adjudication.
 
 Handles are case-insensitive for matching and case-preserving for display.
+
+**The case-folded form.** Wherever this specification compares, looks up, or
+hashes a handle case-folded, it uses the handle's canonical caseless form,
+Unicode definition D145 at Unicode 15.1.0: normalization form D, then full
+case folding (the `C` and `F` entries of `CaseFolding.txt`), then
+normalization form D again. Two handles match when their case-folded forms
+are the same sequence of code points. A handle is folded and never merely
+lowercased, so `Straße.ops@example.org` and `STRASSE.ops@example.org` match,
+as do a name ending in `ς` and the same name in capitals. Decomposing on both
+sides of the folding keeps each combining mark with its base: `ᾷ` (U+1FB7)
+and `Α` followed by U+0342 and U+0345 match, and folding between two steps
+of normalization form C would keep them apart. A registrar MAY store or show
+a handle in normalization form C, which changes nothing about matching.
 
 ## 3. Claiming
 
