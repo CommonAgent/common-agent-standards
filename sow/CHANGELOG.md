@@ -7,7 +7,7 @@ that tag is the text of that version. Its history comes from jeffrschneider/agen
 ## 0.26.0-draft (2026-10-19)
 
 A seat names the key that signs for it, one
-spelling for a signature, and eight clarifications found by building an
+spelling for a signature, and clarifications found by building an
 implementation.
 
 Every seat now carries `owner_key`, the public key of the owner that signs
@@ -17,11 +17,19 @@ signature named a key, and nothing in the document tied the key that signed
 to the party in the seat. A runtime could not tell a signature by the
 client's owner from a signature by anyone else who held a key. A standing
 proposal carries the provider's `owner_key`, and the client's seat gets its
-`owner_key` at formation with the rest of the seat (§12.1). A document whose
-seats carry no `owner_key` was written against 0.25.0-draft or earlier; its
-signatures can still be checked, and are never presented as bound to the
-seats' owners. The minor version moves because a new MUST applies to every
-document. Agent NDA 0.2.0-draft applies the same rule to its seats. The
+`owner_key` at formation with the rest of the seat (§12.1). A verifier also
+checks a seat's `owner_key` against the owner the registry holds for its
+agent (Agent Messaging §8.6), and where that owner cannot be resolved the
+binding is evidence and the owner is shown as unconfirmed. A document is
+written against this version when any seat carries `owner_key`, and one
+where only some seats carry it is refused. A document where no seat carries
+it was written against an earlier version: it stays agreed or active, its
+grants and limits keep applying, and its signatures are shown as unbound
+until an amendment adds `owner_key` to every seat. The minor version moves
+because a new MUST applies to every document. Agent NDA 0.2.0-draft binds
+its seats the same way with one difference: an organization's seat there
+carries no `owner_key`, and its signer's key is the holder key of the
+mandate the signature cites. The
 example digest of §5.16 is the new digest of the Agent NDA example, whose
 recipient seat now carries `owner_key`, and `conformance/sow-nda.json`
 carries it too. A new fixture, `conformance/sow-signatures.json`, pins the
@@ -40,9 +48,12 @@ The clarifications:
   neither a non-null `ends_at` nor `term_months` is refused at formation.
 - §7.1 says that `amendment proposed` is a state of the proposal. The
   engagement stays `active` under the current version, as §5.8 says.
-- §5.8 gives `review_window_days` a default of 7 days, counted from the
-  proposing signature, so that an unanswered proposal always lapses and never
-  blocks the next one.
+- §5.8 gives `review_window_days` a default of 7 days, so that an unanswered
+  proposal always lapses and never blocks the next one, and counts the window
+  from a signed instant: the new `change_control.proposed_at`, or the instant
+  the counterparty received the proposal where that is later. The signature
+  record's `signed_at` sits outside the signed bytes, so it does not count
+  the window.
 - §5.11 says that a processor's `processed_in` is a subset of the clause's
   where both are present, as the 0.20.0-draft entry described.
 - §5.3's example no longer shows a `grade` beside the `inputs` list, where no

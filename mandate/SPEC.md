@@ -487,7 +487,11 @@ checks the signature against the mandate in four steps:
 2. The mandate was in force when the person signed: started, unexpired,
    unrevoked, and its chain verifies up to the charter's root authority,
    each hop checked against the `holder.key` of the mandate above it (§6).
-   This is check 2 of §7.
+   The signer writes the instant of signing, so a verifier that received the
+   signature itself also checks that the mandate was still in force at the
+   instant it received it, and records that instant. A mandate that lapsed or
+   was revoked before then does not carry the signature. This is check 2 of
+   §7.
 3. The mandate holds `nda`. This is check 3 of §7.
 4. Where the mandate carries `scope.nda_categories` (§6 rule 8), every
    category in the agreement's `covers.categories` appears in that list. An
@@ -846,6 +850,10 @@ removed the whole `signatures` array from the signed bytes. Agent NDA
 0.2.0-draft signs each record, so the claim now holds, and §7.2 says how. §7
 says where an Agent SoW approval record sits, in the `change_control` clause
 inside the signed bytes, so that its `mandate` is signed too.*
+
+*§7.2 check 2 is also run at the instant the verifier received the
+signature, where it received it, because the signer writes the instant of
+signing and could date a late signature back into the mandate's term.*
 
 *The minor version moves because a registry built against 0.5.1-draft
 accepts a mandate holding `nda` without `holder.key`, which this version

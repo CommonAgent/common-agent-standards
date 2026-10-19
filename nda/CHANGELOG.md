@@ -23,8 +23,19 @@ does not verify under it.
   bytes cover the signature record too (§7.3).
 - `sig` is canonical base64 with padding, so each signature has exactly one
   valid string (§6).
-- A verifier that receives an acceptance, such as a board, checks expiry and
-  withdrawal against the instant it received it (§6.1, step 3).
+- A signer writes its own `signed_at` and `at`. A verifier that receives an
+  acceptance, such as a board, checks expiry and withdrawal against the
+  instant it received it as well as against `signed_at`, records that
+  instant, and checks a mandate at it too (§6.1 step 3, §6.2). An act takes
+  effect for a verifier no earlier than when it received it, and its `at`
+  never precedes its `signed_at` (§7.3).
+- A seat without an organization is bound only where the registry's owner of
+  its agent (Agent Messaging §8.6) is the seat's `owner_key`. Where that
+  owner cannot be resolved, the binding is evidence and the owner is shown
+  as unconfirmed (§6).
+- A signature record and an act carry only the members this specification
+  defines, and `over` is valid only on the discloser's record of an open
+  offer or its acceptance (§6, §7.3).
 
 The acceptance in the specification's example now carries Caldera Freight
 Systems' `owner_key`, so its agreement digest changes to

@@ -10,8 +10,12 @@ The board's instant of receipt. Check 1 of §5.11.3 relied on the recipient's
 own `signed_at` for the offer's expiry and withdrawal, so a recipient could
 accept after the offer expired or was withdrawn, write an earlier time, and
 still be released the body. A board now records the instant it receives each
-completed agreement, checks expiry and withdrawal against that instant as
-well, and names it in the release record as `received_at`. Check 1 also
+completed agreement, checks expiry, withdrawal and each organization's
+mandate against that instant as well, and names it in the release record as
+`received_at`. A withdrawal takes effect at the later of its `at` and the
+instant the board received it. The definition of the offer bytes in §5.11.1
+names both members that are set to `null`, `parties.recipient` and
+`disclosure.recipient`. Check 1 also
 reads the acceptance checks of Agent NDA 0.2.0-draft, under which each
 signature covers its own record and a seat's signature counts only when made
 with the key the seat allows. The example release record carries the new

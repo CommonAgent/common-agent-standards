@@ -214,7 +214,7 @@ handoffs:
   file-outcome -> record-learnings [outcome-filed]: the same record
 deviations:
   sign-exit -> withdraw-access [grant-still-open]: a grant still works
-    when the exit record is read, so access is withdrawn again and
+    when the exit is countersigned, so access is withdrawn again and
     tried again
   confirm-data -> settle-money [owner-will-not-confirm]: the agent's
     owner will not confirm what happened to the data, so the final

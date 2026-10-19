@@ -4,7 +4,17 @@
 **Status:** Working Draft
 **Date:** 2026-10-19
 
-**This revision.** A process document can name the Agent NDA that every
+**This revision.** A run MAY close with a signed close (Section 13.5.1):
+one attestation, made by the process owner in the record convention of the
+Common Agent Specification §8.1, that names every record the run left by
+the SHA-256 of its exact bytes. A reader who holds the run's records can
+check that they are the records the owner closed the run on, with none
+added, changed or dropped since. A runtime that writes one lists every
+record in it and writes no record for the run after it (Section 17.3). The
+reference process `ref/gm/offboard-an-agent` closes with one, so its run
+record is the signed proof of exit.
+
+**0.6.0-draft.** A process document can name the Agent NDA that every
 participant from outside the process owner shares, written
 `confidential-under:` in the header (Section 4). Every agent of another
 owner that holds a phase or receives a handoff MUST belong to an owner

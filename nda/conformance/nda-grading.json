@@ -535,6 +535,22 @@
       },
       "error": "signatures",
       "why": "the unused bits of the last character are zero, so each signature has exactly one spelling (6)"
+    },
+    {
+      "case": "record_unknown_member",
+      "edit": {
+        "signatures.1.note": "accepted for the Q4 audit"
+      },
+      "error": "signatures",
+      "why": "a signature record carries only the members 6 defines"
+    },
+    {
+      "case": "over_on_recipient_record",
+      "edit": {
+        "signatures.1.over": "offer"
+      },
+      "error": "signatures",
+      "why": "over sits only on the discloser's record of a document with an offer member (6)"
     }
   ],
   "states": {

@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.6.1-draft
+**Version:** 0.7.0-draft
 **Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -587,9 +587,9 @@ else:
    currently resolved identity, and that identity's agent key is the key in
    `claimant`.
 2. **The agreement is the one both parties signed.** The bureau retrieves the
-   agreement, its signed bytes hash to `nda.digest`, its signatures verify,
-   and the digest is that of a completed agreement as the first bullet above
-   requires.
+   agreement, its signed bytes hash to `nda.digest`, its signatures verify
+   and each is bound to its seat (Agent NDA §6), and the digest is that of a
+   completed agreement as the first bullet above requires.
 3. **The claimant is a party whose material the agreement protects.** The
    claimant's agent key is in a seat of the agreement. In a one-way agreement
    it is the discloser's seat (Agent NDA §5.1).
@@ -1718,10 +1718,15 @@ deterministic, and refuses every report the vectors say it must refuse.
 
 ---
 
-*0.6.1-draft (2026-10-19): editorial, with no normative change. The example
-claim of §4.8 names the Agent NDA example by its new agreement digest. Agent
-NDA 0.2.0-draft added `owner_key` to the recipient seat of its example, which
-changed that digest. No requirement, field or section number changes.*
+*0.7.0-draft (2026-10-19): a claim of breach cites an agreement whose
+signatures are bound to their seats. Check 2 of §4.8 now also requires that
+each signature on the cited agreement is bound to its seat, as Agent NDA
+0.2.0-draft defines binding: a signature by a key the seat does not name
+does not make a party to the agreement. The example claim of §4.8 names the
+Agent NDA example by its new agreement digest, because that version added
+`owner_key` to the example's recipient seat. The minor version moves because
+a bureau built against 0.6.0-draft accepts a claim whose agreement carries an
+unbound signature, which this version refuses.*
 
 *0.6.0-draft (2026-10-18): report signing, test vectors, and the age of an
 event. §8.1 defines how a report is signed, which it had left to Personal

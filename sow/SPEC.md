@@ -298,7 +298,9 @@ naming the organization on whose behalf that seat engages (§6.2).
 Every seat MUST carry `owner_key`, the public key of the owner that signs
 for it, and a signature counts for a seat only when it is made with that key
 (§6). Owners sign, and the seat says which key is the owner's. A seat filled
-at formation gets its `owner_key` then, with the rest of the seat (§12.1).
+at formation gets its `owner_key` then, with the rest of the seat (§12.1). A
+document that carries `owner_key` on some seats and not on others does not
+validate, and a runtime MUST refuse it.
 
 Grade: `evidence`. Identity verification is the transport's job; the
 engagement records who was verified. A runtime SHOULD refuse to apply an
@@ -1317,11 +1319,20 @@ The counterparty resolves it one of four ways:
   change but not the price change is not an approval of anything; it is a
   different amendment, proposed back the other way after this one is denied
   or withdrawn.
-- **Silence**: an unresolved proposal lapses after `review_window_days`,
-  counted from the proposing signature's `signed_at`. Where the clause does
-  not state it, the window is 7 days, so that an unanswered proposal always
-  lapses and never blocks the next one. Lapse is recorded, and the current
-  version continues in force.
+- **Silence**: an unresolved proposal lapses after `review_window_days`.
+  Where the clause does not state it, the window is 7 days, so that an
+  unanswered proposal always lapses and never blocks the next one. Lapse is
+  recorded, and the current version continues in force.
+
+A proposed replacement MUST carry `change_control.proposed_at`, the instant
+the proposer made the proposal, inside the signed bytes of the replacement.
+The proposer writes that instant, and the counterparty learns of the
+proposal only when it arrives. So the window counts from the later of
+`proposed_at` and the instant the counterparty received the proposal, and
+the counterparty records the instant it received it. A proposer cannot date
+a proposal back so that it lapses before the counterparty could answer. The
+signature record's `signed_at` sits outside the signed bytes (§6) and does
+not count the window.
 
 The proposer MAY withdraw an open proposal before it is resolved; withdrawal
 is recorded like the other outcomes.
@@ -1330,9 +1341,14 @@ is recorded like the other outcomes.
 "change_control": {
   "review_window_days": 7,
   "approval": { "formation": "agent", "amendment": "person" },
+  "proposed_at": "2026-09-14T10:02:00Z",
   "grade": "enforced"
 }
 ```
+
+`proposed_at` appears on a proposed replacement and on the version that
+approval makes of it, so the agreed record keeps the instant it was proposed.
+A version formed without an amendment does not carry it.
 
 Grade: `enforced` by the signing rule itself: a runtime MUST NOT apply a
 version its own owner has not signed.
@@ -2193,7 +2209,7 @@ timestamp:
 
 `sig` is the Ed25519 signature (RFC 8032, without prehashing or a context)
 over the signed bytes, in base64 with padding (RFC 4648 §4), the spelling of
-Agent NDA §6 and of the family's other signed records. The spelling is
+Agent NDA §6. The spelling is
 canonical, so each signature has exactly one valid string: 88 characters from
 the standard alphabet, ending in two padding characters, with the unused low
 bits of the last data character zero. A runtime MUST write that spelling, and
@@ -2206,17 +2222,30 @@ as written.
 may sign for it. A signature record counts for a seat only when its `key` is
 that seat's `owner_key` (§5.1) and its signature verifies. A valid signature
 by any other key is not the seat's signature, whoever made it, and a runtime
-MUST NOT present it as one. The person-grade approval of §6.1 and the
-mandate of §6.2 stand beside this rule and do not replace it: they say who
-confirmed and with what authority, and the binding says whose key signed.
+MUST NOT present it as one. The party in a seat writes its own `owner_key`,
+so a verifier also checks it against the owner the registry holds for the
+seat's agent: the agent's `owner`, which the registry verified through its
+`owner_attestation` (Agent Messaging §8.6). Where the verifier can resolve
+that owner, it MUST be the seat's `owner_key`, and a seat whose `owner_key`
+the registry contradicts is not bound. Where it cannot, the binding is
+`evidence` only, and a renderer MUST say that the seat's owner is
+unconfirmed. The person-grade approval of §6.1 and the mandate of §6.2
+stand beside this rule and do not replace it: they say who confirmed and
+with what authority, and the binding says whose key signed.
 
-A document whose seats carry no `owner_key` was written against 0.25.0-draft
-or earlier. A verifier MAY still check its signatures over the signed bytes,
-and MUST NOT present them as bound to the seats' owners.
+**Documents written before this rule.** A document is written against
+0.26.0-draft or later when any of its seats carries `owner_key`, and then
+every seat carries it (§5.1). A document where no seat carries it was
+written against an earlier version. Such a document stays agreed or active
+as it was, and its grants and limits keep applying, because no party loses
+what it agreed to when the specification grows. Its signatures are
+unbound, though, and a runtime MUST NOT present them as bound to the seats'
+owners. They stay unbound until an amendment that adds `owner_key` to every
+seat is agreed (§5.8).
 
-A document is **agreed** when both roles have valid signatures, each bound to
-its seat, over the same canonical bytes, and **active** once `starts_at`
-arrives. Each party's node
+A document is **agreed** when both roles have valid signatures over the same
+canonical bytes, each bound to its seat where the document is written
+against 0.26.0-draft or later, and **active** once `starts_at` arrives. Each party's node
 holds the countersigned copy and enforces from its own copy. There is no
 central contract store to trust or to lose.
 
@@ -2323,11 +2352,11 @@ proposal              entitled to countersign; not publicly listed; spent
 agreed                both signatures, before starts_at; no force yet
 active                both signatures, starts_at reached; the runtimes
                       enforce it
-  → amendment proposed  a state of the proposal, not of the engagement: a
-                      full replacement vN+1 with one signature is open
-                      (§5.8); it has no force, and the engagement stays
-                      active under the current version until the proposal
-                      is approved, denied, withdrawn, or lapses
+  → amendment proposed  the proposal's own state: a full replacement vN+1
+                      with one signature is open (§5.8). The proposal has
+                      no force, and the engagement stays active under the
+                      current version until the proposal is approved,
+                      denied, withdrawn, or lapses
   → amended           replaced by a higher version with both signatures
   → exhausted         the not-to-exceed cap was reached (§5.5.5); admission
                       and billing stop, and the engagement ends
@@ -2832,7 +2861,7 @@ facts and a motivated judge are present.
 ## Changelog
 
 **0.26.0-draft** (2026-10-19). A seat names the key that signs for it, one
-spelling for a signature, and eight clarifications found by building an
+spelling for a signature, and clarifications found by building an
 implementation.
 
 Every seat now carries `owner_key`, the public key of the owner that signs
@@ -2842,11 +2871,19 @@ signature named a key, and nothing in the document tied the key that signed
 to the party in the seat. A runtime could not tell a signature by the
 client's owner from a signature by anyone else who held a key. A standing
 proposal carries the provider's `owner_key`, and the client's seat gets its
-`owner_key` at formation with the rest of the seat (§12.1). A document whose
-seats carry no `owner_key` was written against 0.25.0-draft or earlier; its
-signatures can still be checked, and are never presented as bound to the
-seats' owners. The minor version moves because a new MUST applies to every
-document. Agent NDA 0.2.0-draft applies the same rule to its seats. The
+`owner_key` at formation with the rest of the seat (§12.1). A verifier also
+checks a seat's `owner_key` against the owner the registry holds for its
+agent (Agent Messaging §8.6), and where that owner cannot be resolved the
+binding is evidence and the owner is shown as unconfirmed. A document is
+written against this version when any seat carries `owner_key`, and one
+where only some seats carry it is refused. A document where no seat carries
+it was written against an earlier version: it stays agreed or active, its
+grants and limits keep applying, and its signatures are shown as unbound
+until an amendment adds `owner_key` to every seat. The minor version moves
+because a new MUST applies to every document. Agent NDA 0.2.0-draft binds
+its seats the same way with one difference: an organization's seat there
+carries no `owner_key`, and its signer's key is the holder key of the
+mandate the signature cites. The
 example digest of §5.16 is the new digest of the Agent NDA example, whose
 recipient seat now carries `owner_key`, and `conformance/sow-nda.json`
 carries it too. A new fixture, `conformance/sow-signatures.json`, pins the
@@ -2865,9 +2902,12 @@ The clarifications:
   neither a non-null `ends_at` nor `term_months` is refused at formation.
 - §7.1 says that `amendment proposed` is a state of the proposal. The
   engagement stays `active` under the current version, as §5.8 says.
-- §5.8 gives `review_window_days` a default of 7 days, counted from the
-  proposing signature, so that an unanswered proposal always lapses and never
-  blocks the next one.
+- §5.8 gives `review_window_days` a default of 7 days, so that an unanswered
+  proposal always lapses and never blocks the next one, and counts the window
+  from a signed instant: the new `change_control.proposed_at`, or the instant
+  the counterparty received the proposal where that is later. The signature
+  record's `signed_at` sits outside the signed bytes, so it does not count
+  the window.
 - §5.11 says that a processor's `processed_in` is a subset of the clause's
   where both are present, as the 0.20.0-draft entry described.
 - §5.3's example no longer shows a `grade` beside the `inputs` list, where no

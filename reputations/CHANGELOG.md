@@ -4,9 +4,9 @@ Versions of Agent Reputations tagged in this repository, newest first. A version
 tagged as `reputations-v` followed by the version, and the text in this folder at
 that tag is the text of that version. The history of SPEC.md comes from jeffrschneider/feedback, and the history of the A2A Reputation extension from the repository of agentreputations.com.
 
-## 0.6.1-draft (2026-10-19)
+## 0.7.0-draft (2026-10-19)
 
-Editorial, with no normative change. The example claim of §4.8 names the Agent NDA example by its new agreement digest. Agent NDA 0.2.0-draft added `owner_key` to the recipient seat of its example, which changed that digest. No requirement, field or section number changes.
+A claim of breach cites an agreement whose signatures are bound to their seats. Check 2 of §4.8 now also requires that each signature on the cited agreement is bound to its seat, as Agent NDA 0.2.0-draft defines binding: a signature by a key the seat does not name does not make a party to the agreement. The example claim of §4.8 names the Agent NDA example by its new agreement digest, because that version added `owner_key` to the example's recipient seat. The minor version moves because a bureau built against 0.6.0-draft accepts a claim whose agreement carries an unbound signature, which this version refuses.
 
 ## 0.6.0-draft (2026-10-18)
 

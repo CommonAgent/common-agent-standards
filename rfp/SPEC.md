@@ -867,8 +867,9 @@ the summary and the body taken together. Grade: `recorded`.
 §8: `id`, `version` and `digest` are REQUIRED, and `ref` SHOULD locate the
 document. Where the gate names an open offer, `digest` is the offer digest:
 `sha256:` followed by the lowercase hex SHA-256 of the offer bytes, which
-are the signed bytes of the document with the recipient seat set to `null`
-(Agent NDA §6.1). The comparison is exact. A posting MAY also carry the
+are the signed bytes of the document with the recipient seat and the
+recipient's declaration, `parties.recipient` and `disclosure.recipient`, set
+to `null` (Agent NDA §6.1). The comparison is exact. A posting MAY also carry the
 open offer itself, whole and signed, as `gate.nda_offer`, which spares a
 provider the fetch; where it does, the offer bytes of `gate.nda_offer` MUST
 hash to `gate.nda.digest`, and a posting where they do not does not
@@ -997,10 +998,16 @@ MUST release the body only when every one of these holds:
      and is bound to the discloser seat (Agent NDA §6);
    - the recipient's record carries the digest of the completed document,
      verifies, and is bound to the recipient seat;
+   - where a seat names an organization, its signer's mandate passes the
+     check of Agent NDA §6.2 at the record's `signed_at` and at the instant
+     the board received the completed agreement;
    - the recipient's `signed_at` is before the offer's `expires_at` and
-     before any withdrawal of the offer;
+     before any withdrawal of the offer took effect;
    - the board received the completed agreement before the offer's
-     `expires_at`, and before any withdrawal of the offer it holds;
+     `expires_at`, and before any withdrawal of the offer it holds took
+     effect. A withdrawal takes effect at the later of its `at` and the
+     instant the board received it (Agent NDA §7.3), so a poster cannot date
+     a withdrawal back past an acceptance the board already holds;
    - where `open_to` lists handles, the recipient's handle is one of them;
    - and where the offer states `disclosure.require`, the recipient's
      declaration in `disclosure.recipient` meets it (Agent NDA §5.5).
@@ -1656,9 +1663,12 @@ stop being premature.
 §5.11.3 relied on the recipient's own `signed_at` for the offer's expiry and
 withdrawal, so a recipient could accept after the offer expired or was
 withdrawn, write an earlier time, and still be released the body. A board
-now records the instant it receives each completed agreement, checks expiry
-and withdrawal against that instant as well, and names it in the release
-record as `received_at`. Check 1 also reads the acceptance checks of Agent
+now records the instant it receives each completed agreement, checks expiry,
+withdrawal and each organization's mandate against that instant as well,
+and names it in the release record as `received_at`. A withdrawal takes
+effect at the later of its `at` and the instant the board received it. The
+definition of the offer bytes in §5.11.1 names both members that are set to
+`null`, `parties.recipient` and `disclosure.recipient`. Check 1 also reads the acceptance checks of Agent
 NDA 0.2.0-draft, under which each signature covers its own record and a
 seat's signature counts only when made with the key the seat allows. The
 example release record carries the new agreement digest of the Agent NDA
