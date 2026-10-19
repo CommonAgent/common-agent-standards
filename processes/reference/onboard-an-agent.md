@@ -28,19 +28,20 @@ happens on their side is not a phase of this document.
 
 | # | Activity | What happens | Agents |
 |---|---|---|---|
-| 1 | Take in the Request | what work the agent will do, for which team, on which systems, and who sponsors it | sponsor (person) |
-| 2 | Verify the Agent | the signed Descriptor verified, the build, deployment and evaluation records read at their versions, and the reputation report read with its date | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) |
-| 3 | Interview the Agent | the five questions asked, each answer compared with the signed declarations, and out-of-scope questions asked to see the refusals | supplier-check |
-| 4 | Sign the NDA | an Agent NDA signed by both sides at one version, where the work involves confidential material | [signature-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/signature-manager.md) · sponsor (person) · agent's owner (person) |
-| 5 | Agree the Terms | the proposed terms scored against the organization's standard terms, clause by clause | [terms-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/terms-check.md) |
-| 6 | Form the Engagement | the Agent SoW engagement signed by both owners at one version, with the organization's own purchase reference where it uses one | signature-manager · sponsor (person) · agent's owner (person) |
-| 7 | Grant the Mandate | a mandate issued to the agent, no wider than the engagement needs | spending authority (person) · [budget-keeper](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/budget-keeper.md) |
-| 8 | Admit the Agent and Grant Access | the agent admitted, and each access grant named, scoped and dated to the engagement's end | [tool-administrator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/tool-administrator.md) |
-| 9 | Hand Over the Context | the material, the process documents and the contacts the agent needs to start | [handover-coordinator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/handover-coordinator.md) |
+| 1 | Take in the Request | the work, the team, the systems, and who sponsors it | sponsor (person) |
+| 2 | Verify the Agent | Descriptor and records verified, reputation read | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) |
+| 3 | Interview the Agent | the five questions asked and checked against declarations | supplier-check |
+| 4 | Sign the NDA | an Agent NDA signed, where the work is confidential | [signature-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/signature-manager.md) · sponsor (person) · agent's owner (person) |
+| 5 | Agree the Terms | the terms scored against the standard terms | [terms-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/terms-check.md) |
+| 6 | Form the Engagement | the Agent SoW engagement signed by both owners | signature-manager · sponsor (person) · agent's owner (person) |
+| 7 | Grant the Mandate | a mandate no wider than the engagement needs | spending authority (person) · [budget-keeper](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/budget-keeper.md) |
+| 8 | Admit the Agent and Grant Access | the agent admitted, each grant scoped to the engagement | [tool-administrator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/tool-administrator.md) |
+| 9 | Hand Over the Context | the material, documents and contacts the agent needs | [handover-coordinator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/handover-coordinator.md) |
 | 10 | Run the Trial | a trial run against the pass line the engagement states | [certification-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/certification-check.md) |
-| 11 | Decide on Go-Live | the trial result read against the pass line, and a decision by named people | sponsor (person) · security reviewer (person) |
-| 12 | Put the Agent into the Work | the roster updated, the register entry opened, and the people beside it told | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
+| 11 | Decide on Go-Live | named people decide on the trial result | sponsor (person) · security reviewer (person) |
+| 12 | Put the Agent into the Work | the roster updated and the register entry opened | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
 | 13 | Record What Was Learned | what to repeat, what to avoid | supplier-manager · sponsor (person) |
+| 14 | Close a Rejected Onboarding | closed with its reason, and nothing left granted | sponsor (person) |
 
 ## What the graph says
 

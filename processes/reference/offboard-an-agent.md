@@ -34,17 +34,18 @@ it reads that run's access list.
 
 | # | Activity | What happens | Agents |
 |---|---|---|---|
-| 1 | Take in the Ending | why the engagement is ending, on what terms, and on what date | sponsor (person) |
-| 2 | Hand Over the Work in Flight | everything the agent has open, each item given a new holder or closed with a reason | [handover-coordinator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/handover-coordinator.md) |
-| 3 | End the Engagement | the engagement terminated for convenience with the notice it requires, terminated for cause with the reason, or recorded as lapsed | [signature-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/signature-manager.md) · sponsor (person) |
+| 1 | Take in the Ending | why the engagement ends, on what terms, and when | sponsor (person) |
+| 2 | Hand Over the Work in Flight | each open item given a new holder or closed | [handover-coordinator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/handover-coordinator.md) |
+| 3 | End the Engagement | terminated for convenience or cause, or lapsed | [signature-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/signature-manager.md) · sponsor (person) |
 | 4 | Revoke the Mandate | the agent's mandate revoked, with every mandate under it | spending authority (person) |
-| 5 | Withdraw Admission and Access | admission revoked, and every grant on the access list withdrawn and checked closed | [tool-administrator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/tool-administrator.md) |
-| 6 | Settle the Money | the final charges read against the engagement, the reservation released, and open disputes listed | [budget-keeper](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/budget-keeper.md) |
-| 7 | Confirm the Data Returned or Deleted | the agent's owner confirms in writing what was returned, what was deleted and when, and what is still held and why | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) · agent's owner (person) |
-| 8 | File the Outcome | the engagement's outcome and a review filed with the reputation bureau the engagement names | sponsor (person) |
-| 9 | Note What Stays Confidential | the confidentiality terms that outlast the engagement, and until when, written on the register entry | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
-| 10 | Countersign the Exit, Where Wanted | named people countersign the run's records, saying the engagement ended, the mandate was revoked, the access was withdrawn, the money was settled, the data was confirmed and the work was handed over | sponsor (person) · security reviewer (person) |
+| 5 | Withdraw Admission and Access | admission revoked, every grant withdrawn and tried | [tool-administrator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/tool-administrator.md) |
+| 6 | Settle the Money | final charges checked, reservation released | [budget-keeper](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/budget-keeper.md) |
+| 7 | Confirm the Data Returned or Deleted | the owner confirms in writing what was returned or deleted | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) · agent's owner (person) |
+| 8 | File the Outcome | outcome and review filed with the reputation bureau | sponsor (person) |
+| 9 | Note What Stays Confidential | surviving confidentiality terms written on the register | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
+| 10 | Countersign the Exit, Where Wanted | named people countersign the run's records | sponsor (person) · security reviewer (person) |
 | 11 | Record What Was Learned | what to repeat, what to avoid | supplier-manager · sponsor (person) |
+| 12 | Escalate a Holdout | the unanswered data request put in writing | legal (person) |
 
 ## What the graph says
 
