@@ -4,6 +4,15 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.6.1-draft (2026-10-19)
+
+- Editorial. The site gains a Reference processes section with two
+  reference processes, `ref/gm/onboard-an-agent` and
+  `ref/gm/offboard-an-agent`, kept in `processes/reference/`. They bring
+  an agent of another owner into an organization's work and take it out
+  again, using acts the Common Agent Standards already define. No rule in
+  this specification changes.
+
 ## 0.6.0-draft (2026-10-18)
 
 - A process document can name the Agent NDA every outside participant
