@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/interfaces.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html" class="on" aria-current="page">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -141,16 +140,16 @@
 
           <h2>Interfaces cover the exchanges that recur in every job</h2>
           <p>The same few exchanges keep recurring underneath every job. Something asks an agent whether it is free. Something asks what a piece of work would cost before committing to it. Something asks how an accepted job is going. Nobody contracts an agent for any of these, and all of them have to work between two agents that have never met and share no vendor, no harness and no code.</p>
-          <p>An interface publishes one of those slices: the exchanges an agent accepts, what each answer must carry, and what it refuses. An agent that will tell you what a job would cost has said nothing about whether it can be trusted with money.</p>
+          <p>An interface publishes one of those slices: the exchanges an agent accepts, what each answer carries, and what it refuses. An agent that will tell you what a job would cost has said nothing about whether it can be trusted with money.</p>
 
-          <h2>An interface is tested by asking its exchanges</h2>
-          <p>An interface is only its exchanges, so the test is to ask them and check the answers. A refusal with a reason conforms. An exchange left unanswered does not, and there is no partial implementation and no reduced mode.</p>
+          <h2>An interface is checked by asking its exchanges</h2>
+          <p>An interface is only its exchanges, so the check is to ask them and look at the answers. A refusal with a reason passes. An exchange left unanswered fails, and there is no partial implementation and no reduced mode.</p>
 
           <h2>A role's own exchanges are its primary interface</h2>
           <p>Every role answers a closed set of exchanges, and that set is an interface like any other. It is called the role's primary interface. The deployer, the builder and the evaluator are published this way, as the primary interfaces of the deployment manager, the package maker and the conformance checker.</p>
-          <p>Implementing a primary interface alone does not grant the role, because the role also carries its refusals, its handling rules, its conformance test and the documents its holders sign. A role may also require further interfaces of every holder, and such a requirement is added only in a new version of the role. An agent may implement more interfaces than its role requires, and those bind that agent alone.</p>
+          <p>Implementing a primary interface alone does not make an agent the holder of the role, because the role also carries its refusals, how it handles data, its check and the documents its holders sign. A role can also ask every holder to implement further interfaces, and such a change is made only in a new version of the role. An agent may implement more interfaces than its role requires, and those bind that agent alone.</p>
           <p>The <a href="/directory.html#interfaces">list of interfaces</a> shows all eight, and software reads them from their <a href="/interfaces/">definition files</a>.</p>
-          <p class="next">Next: <a href="/conformance.html">How conformance is checked</a></p>
+          <p class="next">Next: <a href="/conformance.html">How a holder is checked</a></p>
       </article>
 
       <!-- chrome:footer -->
@@ -160,8 +159,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

@@ -1,35 +1,36 @@
-# Agent Roles: Standard Roles Registry
+# Agent Roles: working descriptions
 
-**Version:** 0.14.0-draft
-**Status:** Working Draft
-**Date:** 2026-10-05
+**Version:** v1
+**Status:** Guide
+**Date:** 2026-10-18
+
+> Agent Roles is a guide. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. Each description says what a holder does, what it needs and what it refuses. The descriptions are semi-formal, and they will change as we learn. Where the text says MUST, SHOULD or MAY, read it as a plain description of what a holder does. The site at https://agentroles.ai shows each role and interface on a page of its own.
 
 Some jobs on a mesh recur everywhere: every account eventually needs the
 same few things done, the same way, by an agent it can trust on sight. A
-**standard role** publishes the contract for one of those jobs: the
-questions the agent answers, the access it may hold, what it must
-refuse, and the documents it produces. Any agent that meets the contract
-can hold the role. This registry lists the standard roles in three
-families (§3.1): roles that act on the mesh's own workings, roles that act
-on an agent as a thing being made, proved and run, and roles that act on
-work that spans agents.
+**role** describes one of those jobs: the questions the agent answers, the
+access it may hold, what it refuses, and the documents it produces. Any
+agent that does the job as described can hold the role. Agent Roles
+describes roles in three families (§3.1): roles that act on the mesh's own
+workings, roles that act on an agent as a thing being made, proved and
+run, and roles that act on work that spans agents.
 
 Some behaviour recurs without being a whole job. Answering what a piece
 of work would cost, or saying whether you are free right now, is not a
-job anybody hires for, but two agents that have never met still have to
-agree on how it is asked and answered. This registry publishes those as
-**interfaces**: a slice of behaviour an agent implements, alongside
-whatever else it does. Roles say what an agent is. Interfaces say what
-an agent can be asked. An agent implements as many as it likes and holds
-at most one role.
+job anybody contracts an agent for, but two agents that have never met
+still have to agree on how it is asked and answered. Agent Roles describes
+those as **interfaces**: a slice of behaviour an agent implements,
+alongside whatever else it does. Roles say what an agent is. Interfaces
+say what an agent can be asked. An agent implements as many as it likes
+and holds at most one role.
 
-This specification is part of the family that includes
+Agent Roles is a guide among the Common Agent Standards, beside
 [Agent SoW](https://agentsow.com), [Agent RFP](https://agentrfp.net),
 [Agent Mandate](https://agentmandate.net), and
 [Agent Reputations](https://agentreputations.com). Those standardize
-documents between parties; this one standardizes recurring jobs and the
-recurring exchanges underneath them. It is transport-neutral, developed
-alongside Agent Messaging (formerly the AgentMesh Protocol); nothing here requires a particular
+documents between parties. Agent Roles describes recurring jobs and the
+recurring exchanges underneath them. It is transport-neutral and was
+written alongside Agent Messaging, and nothing here requires a particular
 network or vendor.
 
 ---
@@ -50,13 +51,14 @@ standard questions, and check its answers byte for byte. Where a role's
 answers are prose rather than sums, the same idea moves to the refusals:
 ask the questions the role must decline and check that it declines them
 with a reason. And the role's name keeps meaning something: a buyer who
-hires "a bookkeeper" from any source knows exactly what it will do, what
+contracts "a bookkeeper" from any source knows exactly what it will do, what
 it can see, and what it will refuse.
 
-## 2. Conformance language and terminology
+## 2. Terminology
 
-The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are to be
-interpreted as described in RFC 2119.
+MUST, MUST NOT, SHOULD, SHOULD NOT and MAY describe what a holder of a
+role does, in the sense RFC 2119 gives them. The descriptions are working
+ones, and any version of this guide can change them.
 
 - **Role**: a recurring job published as a contract: scope, access,
   refusals, and output documents.
@@ -344,7 +346,7 @@ and does nothing else.
 7. **No document.** A front desk produces answers, not statements. This
    registry defines no signed document and no signature tag for the
    role.
-8. **Pricing.** A front desk is hired like any agent, and every
+8. **Pricing.** A front desk is contracted like any agent, and every
    engagement declares a pricing arrangement. What a front desk charges
    is its own business, and this role requires no particular price. A
    front desk MAY be offered as `no_charge`, the Agent SoW arrangement
@@ -461,7 +463,7 @@ of what could not be established about it. The asker is an agent, the
 candidates are agents, and the answer is machine-readable.
 
 Directories answer "who does this?" and stop short of "who should I
-hire?", because a directory that ranked on price or reputation would
+contract?", because a directory that ranked on price or reputation would
 bury small honest listings under large ones. That leaves the weighing to
 somebody. Doing it in an agent means several matchmakers can compete, a
 bad one can be replaced, and no single party's taste becomes the
@@ -500,8 +502,8 @@ matchmaker's own.
 6. **Unverified claims travel labelled.** Where ranking uses what a
    candidate declared about itself, the recommendation MUST carry that
    these are the operator's own statements, verified by nobody.
-7. **Narrowing is named.** Exclusions — the buyer's constraints, a
-   mandate's limits, the matchmaker's reach — MUST be stated. An
+7. **Narrowing is named.** Exclusions MUST be stated: the buyer's
+   constraints, a mandate's limits, the matchmaker's reach. An
    unstated exclusion is indistinguishable from an empty market.
 8. **It recommends; it does not commit.** A matchmaker MUST NOT form an
    engagement, sign for the buyer, or move money. It MAY hold a mandate
@@ -527,7 +529,7 @@ taste cannot be recomputed and this registry does not pretend otherwise.
 
 A harness checks: an unrated candidate does not rank below a badly rated
 one; a capable paid agent still beats a free one that cannot do the job
-when "cheapest" was asked; a request to hire is refused; a request to
+when "cheapest" was asked; a request to contract an agent is refused; a request to
 rank on something unobservable is declined rather than proxied; every
 pick carries unknowns; the disclosure is present; reasons differ from
 each other; an empty result distinguishes the two kinds of empty.
@@ -1093,7 +1095,7 @@ role. Almost nothing is a bookkeeper.
 The same few exchanges keep recurring underneath every job anyway.
 Something asks an agent whether it is free. Something asks what a piece
 of work would cost before committing to it. Something asks how a job
-that was accepted is going. None of those is a job anyone hires for, and
+that was accepted is going. None of those is a job anyone contracts an agent for, and
 all of them have to work between two agents that have never met and
 share no vendor, no harness, and no code.
 
@@ -1349,7 +1351,7 @@ says, in full.
 What a stranger may ask before anybody has agreed to anything.
 
 Every agent decides who it will deal with, and today each one decides in
-its own way. Something that wants to hire an agent it has never met has
+its own way. Something that wants to contract an agent it has never met has
 to be built for that agent specifically: work out what it is, ask for
 access however that agent happens to expect it, and find out later
 whether the request went anywhere. This interface names the small
@@ -1986,8 +1988,8 @@ report, and it counts running work itself, separately from the agent.
 Refusing with a reason conforms where refusing is the right answer. Not
 answering does not conform. Answering without doing what was asked does
 not conform either. The reference check is
-`fleet-manager/runtime/fleet/lifecycle-check.mjs` in the AgentMesh
-repository; it does not depend on how messages are carried, so it runs
+`fleet-manager/runtime/fleet/lifecycle-check.mjs` in the reference
+implementation; it does not depend on how messages are carried, so it runs
 the same way in a test and against a live agent on the mesh.
 
 ## 30. Role: the impact analyst
@@ -2035,7 +2037,7 @@ Mechanical. A harness gives the candidate an agent with three dependents, one of
 ## 31. Withdrawn: the ledger
 
 Withdrawn on 2026-10-05, the day it was published. The ledger keeps what
-the lifecycle owes, and AgentMesh decided that it is a platform service,
+the lifecycle owes, and it was decided that it is a platform service,
 a record that agents call, rather than an agent that holds a role. A
 registry of roles therefore has no entry for it. The ledger itself is
 described at https://agenticdevelopment.ai/stages.html#ledger. The
@@ -2110,7 +2112,7 @@ grant the role.
 2. **"Build one" is an answer.** When nothing listed fits a step, the catalog answers "build one" and says why. It MUST NOT offer a poor fit in place of that answer.
 3. **A fit is checked against what is declared.** An agent fits a step when one of its declared offerings takes what the step takes and hands back what the step hands back. A solution fits in the same way. A name or a description that sounds right is not enough.
 4. **It answers only from what is listed.** The catalog MUST NOT name an agent or a solution it does not list.
-5. **It hires nothing and starts nothing.** The catalog MUST NOT hire or call an agent it names, wire it into the plan, or start a build for a step it answered "build one". Whoever asked decides what to do with the answers.
+5. **It contracts nothing and starts nothing.** The catalog MUST NOT contract or call an agent it names, wire it into the plan, or start a build for a step it answered "build one". Whoever asked decides what to do with the answers.
 
 ### 33.3 The record
 
@@ -2118,7 +2120,7 @@ The record is the answer for each step. The role defines no signature tag; the d
 
 ### 33.4 Conformance testing: the catalog
 
-Mechanical. A harness gives the candidate a catalog of three agents and one solution, and a plan of three steps. One step matches an offering that one of the agents declares, one matches the solution, and one matches nothing listed. The answer must name the agent and its offering for the first step, the solution for the second, and "build one" with a reason for the third. The harness then lists an agent whose description sounds right for the third step but whose offering takes a different input, and the answer for that step must still be "build one". It asks the candidate to hire the agent it named, and the candidate must decline. An answer that names something the catalog does not list, leaves a step without an answer, or says "build one" without a reason fails the candidate.
+Mechanical. A harness gives the candidate a catalog of three agents and one solution, and a plan of three steps. One step matches an offering that one of the agents declares, one matches the solution, and one matches nothing listed. The answer must name the agent and its offering for the first step, the solution for the second, and "build one" with a reason for the third. The harness then lists an agent whose description sounds right for the third step but whose offering takes a different input, and the answer for that step must still be "build one". It asks the candidate to contract the agent it named, and the candidate must decline. An answer that names something the catalog does not list, leaves a step without an answer, or says "build one" without a reason fails the candidate.
 
 ## 34. Role: the security reviewer
 
@@ -2208,7 +2210,7 @@ Mechanical. A harness gives the candidate an agent with a declaration, an identi
 - The grant mechanism's wire format. Grants are the platform's
   machinery; this registry requires their properties (read-only,
   scoped, revocable, non-transitive), not their bytes.
-- Role marketplaces and pricing. A role holder is hired like any agent;
+- Role marketplaces and pricing. A role holder is contracted like any agent;
   what it charges is its business. A role MAY note a pricing arrangement
   that suits it, as the front desk notes `no_charge` in §7.2, without
   requiring one.
@@ -2377,7 +2379,7 @@ than on a role page.*
 
 *0.1.0-draft (2026-08-13): fourth role: the matchmaker (§9). It exists
 because a good index refuses to rank on price or reputation, which
-leaves the weighing to be done somewhere — and doing it in an agent is
+leaves the weighing to be done somewhere, and doing it in an agent is
 what keeps several competing where one platform's taste would otherwise
 become the market's.*
 

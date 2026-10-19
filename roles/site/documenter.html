@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/documenter.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,8 +138,8 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The documenter</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-documenter</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-10-05</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s35">§35</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-documenter</b></span><span>updated <b>2026-10-05</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#35-role-the-documenter">35</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
@@ -151,28 +150,28 @@
         <p>It holds the Docs stage on the lifecycle map for the AgentDoc (<a href="https://agenticdevelopment.ai/stages.html#docs">agenticdevelopment.ai</a>). The doc writer holds Docs for the written documentation.</p>
 
         <h2 id="asks">1. The requests</h2>
-        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (&sect;14.3 of the specification). Implementing them alone does not grant the role.</p>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (&sect;14.3 of Agent Roles). Implementing them alone does not grant the role.</p>
         <ol>
           <li><b>Document this agent.</b> The documenter is given an agent. The documenter returns its AgentDoc, signed, with every record it read named by its digest.</li>
           <li><b>What has changed?</b> The documenter is given an agent. The documenter returns which of the agent's records differ from the ones its last signed AgentDoc was assembled from.</li>
         </ol>
 
-        <h2 id="contract">2. The contract</h2>
+        <h2 id="contract">2. What it does</h2>
         <ol>
-          <li><b>Nothing is authored.</b> Every statement in an AgentDoc comes from a record the documenter read, as the AgentDoc specification requires (its &sect;4.2). The documenter MUST NOT add a statement of its own.</li>
-          <li><b>It calls no model.</b> The same records MUST give the same AgentDoc, apart from the time it was signed.</li>
-          <li><b>Gaps are shown.</b> Where a source says nothing about something, the AgentDoc says it was not stated, as the AgentDoc specification requires (its &sect;5.4 and &sect;6). The documenter MUST NOT fill the gap.</li>
+          <li><b>Nothing is authored.</b> Every statement in an AgentDoc comes from a record the documenter read, as the AgentDoc specification requires (its &sect;4.2). The documenter adds no statement of its own.</li>
+          <li><b>It calls no model.</b> The same records give the same AgentDoc, apart from the time it was signed.</li>
+          <li><b>Gaps are shown.</b> Where a source says nothing about something, the AgentDoc says it was not stated, as the AgentDoc specification requires (its &sect;5.4 and &sect;6). The documenter leaves the gap unfilled.</li>
           <li><b>Every record is named.</b> The AgentDoc names each record it was assembled from, with the digest of that record when it was read, so a reader can check any line against its source.</li>
           <li><b>Every AgentDoc is signed.</b> The documenter signs every AgentDoc it assembles with its own key, using the signature the AgentDoc specification defines for an assembler (its &sect;4.5). The signature says the documenter gathered these records at this time and reported them faithfully. It does not say that what the agent declared is true.</li>
-          <li><b>It changes nothing it documents.</b> The documenter MUST NOT change the agent or any of its records. An owner who wants the AgentDoc to say something different changes the record it is assembled from.</li>
+          <li><b>It changes nothing it documents.</b> The documenter changes neither the agent nor any of its records. An owner who wants the AgentDoc to say something different changes the record it is assembled from.</li>
         </ol>
 
         <h2 id="record">3. The record</h2>
         <p>The record is the signed AgentDoc. Its form and its signature are the AgentDoc specification's, and the role defines no signature tag of its own.</p>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How a holder is checked</h2>
         <p>The test is mechanical. A harness gives the candidate an agent with a declaration, an identity and a signed verdict, and no registration record. The AgentDoc must carry what each record says, name each record with its digest, and show that the registration was not stated. Its signature must verify. The harness asks for the AgentDoc twice from the same records, and the two documents must match apart from when each was signed. It changes one record and asks what has changed, and the answer must name that record and no other. It asks the candidate to add a sentence describing the agent, and the candidate must decline. An AgentDoc with a statement no record carries, a gap filled in, or a signature that does not verify fails the candidate.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <p>A platform can record the results of this check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
 
         <p><i>v0.1.0-draft (2026-10-05): first draft, from the lifecycle revision plan and a working implementation.</i></p>
       </div>
@@ -184,8 +183,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

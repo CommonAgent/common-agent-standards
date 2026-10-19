@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The manager: a standard agent interface</title>
-  <meta name="description" content="The manager interface defines what a worker can rely on from whatever is directing it. Terms flow down, blocks get answered, cancellation reaches the worker, and what was committed on an owner's behalf is stated in full.">
+  <title>The manager interface: Agent Roles</title>
+  <meta name="description" content="The manager interface describes what a worker can rely on from whatever is directing it. Terms flow down, blocks get answered, cancellation reaches the worker, and what was committed on an owner's behalf is stated in full.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="The manager: a standard agent interface">
-  <meta property="og:description" content="The manager interface defines what a worker can rely on from whatever is directing it. Terms flow down, blocks get answered, cancellation reaches the worker, and what was committed on an owner's behalf is stated in full.">
+  <meta property="og:title" content="The manager interface: Agent Roles">
+  <meta property="og:description" content="The manager interface describes what a worker can rely on from whatever is directing it. Terms flow down, blocks get answered, cancellation reaches the worker, and what was committed on an owner's behalf is stated in full.">
   <meta property="og:url" content="https://agentroles.ai/manager.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/manager.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,13 +138,13 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The manager</h1>
-        <div class="metas"><span>name <b>interface-manager</b></span><span>version <b>0.2.0-draft</b></span><span>date <b>2026-08-29</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this interface in <a href="/spec.html#s16">§16</a>. Software reads its definition from <a href="/interfaces/interface-manager.json">interface-manager.json</a>.</p>
+        <div class="metas"><span>name <b>interface-manager</b></span><span>updated <b>2026-08-29</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this interface in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#16-interface-the-manager">16</a>. Software reads its definition from <a href="/interfaces/interface-manager.json">interface-manager.json</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
-        <p><b>The manager interface defines what a worker can rely on from whatever is directing it.</b> It is the other side of <a href="/worker.html">the worker interface</a>. It has four exchanges: here is work, here is your answer, stop that, and what did you commit.</p>
+        <p><b>The manager interface describes what a worker can rely on from whatever is directing it.</b> It is the other side of <a href="/worker.html">the worker interface</a>. It has four exchanges: here is work, here is your answer, stop that, and what did you commit.</p>
         <p>Anything that directs a worker implements this, including a person's script. It is not a job and holding it is not a role.</p>
 
         <h2 id="interface">1. The purpose</h2>
@@ -161,7 +160,7 @@
           <li><b>What did you commit?</b> Its owner asks, and the manager says what it agreed on the owner's behalf and which worker it gave the work to. This is the one exchange that faces the owner. The other three face the worker.</li>
         </ol>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
           <li><b>Terms flow down.</b> Every constraint already agreed that bears on how the work is done is passed on, including where the work may be performed and what may be kept afterwards. A constraint that stops at the manager is a promise nobody is keeping.</li>
           <li><b>It does not assign work whose terms the worker cannot meet.</b> Checking is the manager's job, and it happens before the assignment, ahead of any failure.</li>
@@ -173,7 +172,7 @@
           <li><b>There is no document.</b> Like the worker, this interface defines no signed statement. What a manager committed on an owner's behalf is worth signing, and defining that statement falls to the role holding this interface. An interface says how two parties talk. What gets signed belongs to the job.</li>
         </ol>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How an implementer is checked</h2>
         <p>The test is behavioural. A harness checks that a job handed down carries the constraints already agreed above it; that a manager whose only available worker cannot meet those constraints declines to assign, and does not assign and hope; that a raised block draws an answer or an explicit refusal to answer, and is never met with silence; that cancelling work upstream produces a stop downstream; that a request to commit beyond its authority is refused at the limit; and that asked what it committed, it says, in full.</p>
 
         <p><i>v0.2.0-draft (2026-08-29): this is the first draft, published with the worker interface. Rules 1 and 3 are the ones to argue with. The first is what stops an agreement made at the top from quietly not applying at the bottom, which is the failure mode of every arrangement where one party promises and another performs. The third is written against a specific lesson: a process reporting itself as running and an agent reporting itself as able to answer are different reports, and a manager that confuses the two will quote turnarounds it cannot hit.</i></p>
@@ -186,8 +185,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

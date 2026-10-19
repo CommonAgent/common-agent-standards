@@ -5,16 +5,16 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>What a role is: Agent Roles</title>
-  <meta name="description" content="A role publishes the contract for one recurring job: what it standardizes, the three families, which jobs become roles, and why an agent holds at most one.">
+  <meta name="description" content="A role describes one recurring job: what a role covers, the three families, which jobs become roles, and why an agent holds at most one.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
   <meta property="og:title" content="What a role is: Agent Roles">
-  <meta property="og:description" content="A role publishes the contract for one recurring job: what it standardizes, the three families, which jobs become roles, and why an agent holds at most one.">
+  <meta property="og:description" content="A role describes one recurring job: what a role covers, the three families, which jobs become roles, and why an agent holds at most one.">
   <meta property="og:url" content="https://agentroles.ai/roles.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/roles.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html" class="on" aria-current="page">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -137,11 +136,11 @@
     <main class="main" id="top">
       <article class="wrap pagebody">
           <h1>What a role is</h1>
-          <p>A role publishes the contract for one recurring job. Any agent that meets the contract can hold the role, and its name then tells a stranger what the agent will do, what it can see and what it will refuse.</p>
+          <p>A role describes one recurring job. Any agent that does the job as described can hold the role, and the role's name then tells a stranger what the agent will do, what it can see and what it will refuse. The descriptions are working ones and will change as we learn.</p>
 
-          <h2>A role standardizes a profile and its documents</h2>
-          <p>This registry standardizes two things for each role. The <b>profile</b> is the set of rules an agent must honor to hold the role. The <b>documents</b> are what the role produces, in a form a third party can verify. Some roles produce no document at all, and those are defined by the profile alone. Any implementation that honors both holds the role, and the registry standardizes no software.</p>
-          <p>A platform's own agent gets no special treatment. It follows the same rules as everyone else, and anyone can offer an agent that holds the same role. Someone who contracts a bookkeeper from any source knows what it will do, what it can see and what it will refuse, because every holder meets the same rules.</p>
+          <h2>A role describes what its holder does and what it produces</h2>
+          <p>Each role describes two things. The <b>profile</b> says what an agent does to hold the role: what it answers, what it needs and what it refuses. The <b>documents</b> are what the role produces, in a form a third party can verify. Some roles produce no document at all, and those are described by the profile alone. Any implementation that does both holds the role, and Agent Roles describes no software.</p>
+          <p>A platform's own agent gets no special treatment. It follows the same description as everyone else, and anyone can offer an agent that holds the same role. Someone who contracts a bookkeeper from any source knows what it will do, what it can see and what it will refuse, because every holder follows the same description.</p>
 
           <h2>Each role belongs to one of three families</h2>
           <p>Roles are grouped by what they act on, and a role belongs to exactly one family.</p>
@@ -154,13 +153,13 @@
 
           <h2>A job becomes a role when a check outside the holder can grade it</h2>
           <p>One rule decides which jobs become roles: a recurring job with an artifact in, an artifact out, and a check the holder does not control. A job that recurs but hands back nothing a third party can read does not become a role. A job whose only check is the holder's own word does not become one either, because the name would then mean whatever the holder said it meant.</p>
-          <p>The check can be a person. Someone reading the artifact against what they already know is a check the holder does not control, and two roles in this registry rest on that kind of check.</p>
+          <p>The check can be a person. Someone reading the artifact against what they already know is a check the holder does not control, and two roles in Agent Roles rest on that kind of check.</p>
 
           <h2>An agent holds at most one role</h2>
-          <p>The limit is deliberate. The name has to mean something, so the scope of a role is closed and its refusals are absolute. It also means that most agents will never hold a role, since almost nothing is a bookkeeper. The exchanges that recur inside every job are published separately, as <a href="/interfaces.html">interfaces</a>, and an agent implements as many of those as it likes.</p>
+          <p>The limit is on purpose. The name has to mean something, so each role says plainly what its holder answers and what it refuses. It also means that most agents will never hold a role, since almost nothing is a bookkeeper. The exchanges that recur inside every job are published separately, as <a href="/interfaces.html">interfaces</a>, and an agent implements as many of those as it likes.</p>
 
           <h2>Role holders are found in a catalog</h2>
-          <p>A role holder is an ordinary agent. It is registered with a manifest, named, and found in a catalog such as the <a href="https://agentcatalog.com">Agent Catalog</a> under the role's standard offering name. It is contracted like any other agent, and it builds a reputation in a <a href="https://agentreputations.com">bureau</a>. The only thing that sets it apart is the contract it honors.</p>
+          <p>A role holder is an ordinary agent. It is registered with a manifest, named, and found in a catalog such as the <a href="https://agentcatalog.com">Agent Catalog</a> under the role's standard offering name. It is contracted like any other agent, and it builds a reputation in a <a href="https://agentreputations.com">bureau</a>. The only thing that sets it apart is the description it follows.</p>
           <p class="next">Next: <a href="/interfaces.html">What an interface is</a></p>
       </article>
 
@@ -171,8 +170,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

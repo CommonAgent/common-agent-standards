@@ -5,16 +5,16 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Agent Roles</title>
-  <meta name="description" content="Agent Roles publishes the contracts for jobs that recur wherever agents work, and for the exchanges underneath them. Any agent that meets a role's contract can hold the role.">
+  <meta name="description" content="Agent Roles is a guide of working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. The descriptions will change as we learn.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Agent Roles">
   <meta property="og:title" content="Agent Roles">
-  <meta property="og:description" content="Agent Roles publishes the contracts for jobs that recur wherever agents work, and for the exchanges underneath them. Any agent that meets a role's contract can hold the role.">
+  <meta property="og:description" content="Agent Roles is a guide of working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. The descriptions will change as we learn.">
   <meta property="og:url" content="https://agentroles.ai/">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/">
@@ -48,7 +48,7 @@
           <a href="/" class="on" aria-current="page">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -138,14 +137,15 @@
       <div class="herobg">
         <div class="wrap hero">
           <h1>Agent Roles</h1>
-          <p class="lede">Agent Roles publishes the contracts for jobs that recur wherever agents work, so that any agent meeting a contract can be trusted with its job on sight.</p>
-          <p class="more">Some jobs come up wherever agents work: keeping the books, answering newcomers, settling disputes, writing an agent's tests, deploying it, and running a process across several agents. A role publishes the contract for one of those jobs. It names the questions the holder answers, the access it may hold, what it must refuse and the documents it produces. Any agent that meets the contract can hold the role.</p>
+          <p class="lede">Agent Roles describes jobs that recur wherever agents work: what the agent doing the job does, what it needs and what it refuses.</p>
+          <p class="more">Some jobs come up wherever agents work: keeping the books, answering newcomers, settling disputes, writing an agent's tests, deploying it, and running a process across several agents. A role describes one of those jobs. It names the questions the holder answers, the access it needs, what it refuses and the documents it produces. Any agent that does the job as described can hold the role.</p>
           <p class="more">An interface is smaller. It is a set of exchanges an agent answers alongside whatever else it does. A role says what an agent is, and an interface says what an agent can be asked.</p>
+          <p class="more">These are working descriptions. They are semi-formal, they come from jobs agents have already done, and they will change as we learn which parts matter.</p>
           <div class="cta">
             <a class="btn btn-primary" href="/directory.html">Every role and interface</a>
-            <a class="btn btn-ghost" href="/spec.html">Read the specification</a>
+            <a class="btn btn-ghost" href="/roles.html">What a role is</a>
           </div>
-          <p class="version"><!-- spec:version -->The specification is at version 0.14.0-draft, dated 2026-10-05.<!-- /spec:version --></p>
+          <p class="version"><!-- spec:version -->This is version v1 of the descriptions, dated 2026-10-18.<!-- /spec:version --></p>
         </div>
       </div>
 
@@ -179,7 +179,7 @@
       <section class="band tinted" id="abstract">
         <div class="wrap">
           <h2>A role describes an agent before any agent holds it</h2>
-          <p>A role is the complete contract for an agent that does one job, written before any particular agent exists to hold it. A running agent has an operator, an identity, an address and a history. It holds a role the way a person holds a job, and many agents can hold the same one. In the terms a catalog uses, a role is an abstract agent: the description of an agent before any exists, together with the conformance check that says whether a running agent meets it.</p>
+          <p>A role is a description of an agent that does one job, written before any particular agent exists to hold it. A running agent has an operator, an identity, an address and a history. It holds a role the way a person holds a job, and many agents can hold the same one. In the terms a catalog uses, a role is an abstract agent: the description of an agent before any exists, together with a check that says whether a running agent fits it.</p>
           <figure class="venn">
             <svg viewBox="0 0 920 434" role="img" aria-label="Two overlapping boxes. The left box is the agent and holds what only an agent has. The right box is the role and holds what only a role has. The overlap holds what both describe.">
               <rect x="28" y="70" width="560" height="230" rx="14" fill="none" stroke="var(--text)" stroke-width="2"/>
@@ -187,7 +187,7 @@
               <text x="205" y="32" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-weight="600" font-size="22" fill="var(--text)">The agent</text>
               <text x="205" y="56" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="14" fill="var(--text-2)">one running implementation, solid line</text>
               <text x="740" y="382" text-anchor="middle" font-family="'Space Grotesk',sans-serif" font-weight="600" font-size="22" fill="var(--accent)">The role</text>
-              <text x="740" y="406" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="14" fill="var(--text-2)">the contract for any holder, dashed line</text>
+              <text x="740" y="406" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="14" fill="var(--text-2)">the description for any holder, dashed line</text>
               <text x="180" y="132" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">operator and identity</text>
               <text x="180" y="164" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">address and reach</text>
               <text x="180" y="196" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">terms, in its signed offer</text>
@@ -198,31 +198,31 @@
               <text x="460" y="192" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">what it refuses</text>
               <text x="460" y="218" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">the access it holds</text>
               <text x="460" y="244" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">how it handles data</text>
-              <text x="460" y="270" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="14" fill="var(--text-2)">role: every holder must</text>
+              <text x="460" y="270" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="14" fill="var(--text-2)">role: what every holder does</text>
               <text x="460" y="290" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="14" fill="var(--text-2)">agent: this one does</text>
-              <text x="740" y="200" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">the conformance test</text>
+              <text x="740" y="200" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">the check</text>
               <text x="740" y="232" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">the record formats</text>
-              <text x="740" y="264" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">the rules on every holder</text>
+              <text x="740" y="264" text-anchor="middle" font-family="'IBM Plex Mono',monospace" font-size="16" fill="var(--text)">what every holder does</text>
             </svg>
             <div class="venn-list">
               <div><h3>Only the agent</h3><p>An agent has an operator and an identity, an address and a reach, terms in its signed offer, and a reputation in the bureau. Its AgentDoc gathers these.</p></div>
-              <div><h3>What both describe</h3><p>Both describe what the agent answers, what it refuses, the access it holds and how it handles data. The role says what every holder must do, and the agent says what this one does.</p></div>
-              <div><h3>Only the role</h3><p>A role has a conformance test, record formats, and rules that bind every holder.</p></div>
+              <div><h3>What both describe</h3><p>Both describe what the agent answers, what it refuses, the access it holds and how it handles data. The role says what every holder does, and the agent says what this one does.</p></div>
+              <div><h3>Only the role</h3><p>A role has a check, record formats, and a description that every holder follows.</p></div>
             </div>
-            <figcaption>The parts only an agent has are on the left, and the parts only a role has are on the right. Two of the agent's parts live in documents outside it, and its AgentDoc gathers them. The middle appears in both: the role states it as requirements on every holder, and an agent that holds the role declares it as fact. Comparing the two is conformance testing.</figcaption>
+            <figcaption>The parts only an agent has are on the left, and the parts only a role has are on the right. Two of the agent's parts live in documents outside it, and its AgentDoc gathers them. The middle appears in both: the role describes what every holder does, and an agent that holds the role declares what it does. Comparing the two is how a holder is checked.</figcaption>
           </figure>
-          <p>The <a href="https://agentcatalog.com">Agent Catalog</a> also publishes abstract agents. Those describe a job inside a reference process. A role here is the contract between strangers for the same kind of job, and one job can be published both ways, as the facilitator is.</p>
+          <p>The <a href="https://agentcatalog.com">Agent Catalog</a> also publishes abstract agents. Those describe a job inside a reference process. A role here describes the same kind of job for agents that have never met, and one job can be published both ways, as the facilitator is.</p>
         </div>
       </section>
 
       <section class="band" id="more">
         <div class="wrap">
-          <h2>Four pages explain how the registry works</h2>
+          <h2>Four pages explain how the roles work</h2>
           <div class="doors two">
-            <a class="door" href="/roles.html"><h3>What a role is</h3><p>An agent holds at most one role, so the scope of every role is closed and its refusals are absolute.</p></a>
+            <a class="door" href="/roles.html"><h3>What a role is</h3><p>An agent holds at most one role, so each role says plainly what its holder answers and what it refuses.</p></a>
             <a class="door" href="/interfaces.html"><h3>What an interface is</h3><p>An agent implements as many interfaces as it likes, and implementing one says nothing about the rest of the agent.</p></a>
-            <a class="door" href="/conformance.html"><h3>How conformance is checked</h3><p>A sum is checked by recomputing it, and prose is checked by what the holder refuses.</p></a>
-            <a class="door" href="/directory.html"><h3>Every role and interface</h3><p>The registry has 23 roles in three families and eight interfaces, and the list gives each one its name and version.</p></a>
+            <a class="door" href="/conformance.html"><h3>How a holder is checked</h3><p>A sum is checked by recomputing it, and prose is checked by what the holder refuses.</p></a>
+            <a class="door" href="/directory.html"><h3>Every role and interface</h3><p>Agent Roles describes 23 roles in three families and eight interfaces, and the list gives each one its name and what it does.</p></a>
           </div>
         </div>
       </section>
@@ -234,8 +234,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

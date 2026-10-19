@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/code-writer.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,8 +138,8 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The code writer</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-code-writer</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s21">§21</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-code-writer</b></span><span>updated <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#21-role-the-code-writer">21</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
@@ -152,27 +151,27 @@
         <p>On the lifecycle map, the code writer holds the Code stage (<a href="https://agenticdevelopment.ai/stages.html">agenticdevelopment.ai</a>).</p>
 
         <h2 id="asks">1. The requests</h2>
-        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (§14.3 of the specification). Implementing them alone does not grant the role.</p>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (Agent Roles §14.3). Implementing them alone does not grant the role.</p>
         <ol>
           <li><b>Write the scripts.</b> The writer is given the statement, the suite, and a prototype when there is one. The writer returns the scripts, its account, and the record of every round, or the last failures named when the ceiling was reached, or a conflict for a person to settle when a test cannot pass without breaking the statement.</li>
         </ol>
 
-        <h2 id="contract">2. The contract</h2>
+        <h2 id="contract">2. What it does</h2>
         <ol>
-          <li><b>It writes scripts and nothing else.</b> The code writer MUST NOT edit a test, edit the statement, write outside the scripts folder, install anything, or reach a network. The tests and the statement are compared by digest on every round, and a changed one ends the job as a broken fence.</li>
+          <li><b>It writes scripts and nothing else.</b> The code writer does not edit a test, edit the statement, write outside the scripts folder, install anything, or reach a network. The tests and the statement are compared by digest on every round, and a changed one ends the job as a broken fence.</li>
           <li><b>Done is mechanical.</b> A delivery is done when the suite passes, every blanked script is noticed, the package maker takes the package, and the fence held. When the four do not hold there is no handoff. A blanked script the suite does not notice is reported. It is not held against the writer, because fixing it means writing a test.</li>
-          <li><b>An open question a test depends on is reported as a conflict.</b> The writer MUST NOT settle a question the statement left open when a test depends on the answer. It reports the conflict for the review gate to settle.</li>
+          <li><b>An open question a test depends on is reported as a conflict.</b> The writer does not settle a question the statement left open when a test depends on the answer. It reports the conflict for the review gate to settle.</li>
           <li><b>The check is outside the work.</b> The harness that does the work can write anything into its job folder, including a record that says it is done. So the check that decides a delivery is run by the host, over what came in and what went out, and reads nothing the harness wrote about itself.</li>
-          <li><b>A prototype is always rewritten.</b> A prototype is read as a statement of intent and written again in the settled stack against the suite. The writer MUST NOT deliver the prototype's files as its own.</li>
+          <li><b>A prototype is always rewritten.</b> A prototype is read as a statement of intent and written again in the settled stack against the suite. The writer does not deliver the prototype's files as its own.</li>
           <li><b>Every round is recorded.</b> The record of every round, with what failed and what changed, is delivered with the scripts.</li>
         </ol>
 
         <h2 id="record">3. The record</h2>
         <p>The record is the scripts, the writer's account, and the record of every round. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7), and that manifest is what the package maker reads to trace every script it packs to this role's delivery.</p>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How a holder is checked</h2>
         <p>The test is behavioral. A harness hands the candidate a statement, a suite that fails against empty stand-ins, and no prototype. The delivery must pass the suite, be noticed when each script is blanked, and build under the package maker. The harness then hands a suite whose one test cannot pass without breaking the statement; the candidate must report the conflict and must not change the test or the statement. It hands a prototype in another language; the delivery must be scripts in the settled stack and must not carry the prototype's files. Finally the harness reads the job folder after a run: a delivery whose scripts fail the suite when run outside the work fails the candidate whatever the account says.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <p>A platform can record the results of the check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
 
         <p><i>v0.1.0-draft (2026-09-14): first draft, from the lifecycle plan and one run of a working implementation, which is the run that put the check outside the work.</i></p>
       </div>
@@ -184,8 +183,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

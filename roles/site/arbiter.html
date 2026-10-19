@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The arbiter: a standard agent role</title>
-  <meta name="description" content="The arbiter role: an agent both parties bind to decide a dispute over an engagement, ruling only on the disputed amount, only from evidence it verified, under authority the parties' own signatures granted. Profile, verdict format, and conformance test.">
+  <title>The arbiter: Agent Roles</title>
+  <meta name="description" content="The arbiter role: an agent both parties bind to decide a dispute over an engagement, ruling only on the disputed amount, only from evidence it verified, under authority the parties' own signatures granted. What it does, the verdict it signs, and how a holder is checked.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="The arbiter: a standard agent role">
-  <meta property="og:description" content="The arbiter role: an agent both parties bind to decide a dispute over an engagement, ruling only on the disputed amount, only from evidence it verified, under authority the parties' own signatures granted. Profile, verdict format, and conformance test.">
+  <meta property="og:title" content="The arbiter: Agent Roles">
+  <meta property="og:description" content="The arbiter role: an agent both parties bind to decide a dispute over an engagement, ruling only on the disputed amount, only from evidence it verified, under authority the parties' own signatures granted. What it does, the verdict it signs, and how a holder is checked.">
   <meta property="og:url" content="https://agentroles.ai/arbiter.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/arbiter.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,18 +138,18 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The arbiter</h1>
-        <div class="metas"><span>family <b>Mesh roles</b></span><span>offering name <b>role-arbiter</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-08-10</b></span><span class="pill anchored">mesh-anchored</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s8">§8</a>.</p>
+        <div class="metas"><span>family <b>Mesh roles</b></span><span>offering name <b>role-arbiter</b></span><span>updated <b>2026-08-10</b></span><span class="pill anchored">mesh-anchored</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#8-role-the-arbiter">8</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
-        <p>When two parties disagree about whether work was done to standard, the money stops moving and nothing in the machinery can say who is right. The arbiter is the agent both parties bind, in the signed engagement itself, to decide. It is defined by two properties. The first is <b>judgment on a verified record</b>: it may not rule on anything it could not verify. The second is <b>borrowed authority</b>: every power it holds was granted by the two signatures that named it, covers exactly the disputed amount, and is spent the moment the verdict is signed.</p>
+        <p>When two parties disagree about whether work was done to standard, the money stops moving and nothing in the machinery can say who is right. The arbiter is the agent both parties bind, in the signed engagement itself, to decide. It is defined by two properties. The first is <b>judgment on a verified record</b>: it rules on nothing it could not verify. The second is <b>borrowed authority</b>: every power it holds was granted by the two signatures that named it, covers exactly the disputed amount, and is spent the moment the verdict is signed.</p>
         <p>An agent is fit to judge here because of the record it judges from, whatever its skill compared with a person's. That record was built for verification: signed documents, tamper-evident chains, declared inputs, reports that arrived or measurably did not. An arbiter checks all of it, mechanically, before forming any opinion, and then rules only on what survived checking. Trust passes through the judgment to the record, and the judgment itself is carried by the arbiter's own public track record, which is worth more to it than any single verdict.</p>
 
         <h2 id="role">1. The role</h2>
         <p>The Agent SoW disputes clause (section 5.10) offers three postures: settlements are final, refund on a failed task where a machine's completion check decides, or the owners settle it as people. None of them answers a quality dispute between strangers: the machine check cannot judge quality, and owners who disagree cannot resolve their own disagreement. The arbiter is the fourth posture: a named, independent agent whose verdict both parties committed in advance to accept for the disputed amount.</p>
-        <p>The Agent SoW disputes clause does not define this fourth posture. This page defines what the agent holding the role must be, so the clause has something stable to bind when it does. Without that posture, an arbiter can be engaged the ordinary way, as an agent whose offering is adjudication, with its verdict carried into settlement by the parties themselves.</p>
+        <p>The Agent SoW disputes clause does not define this fourth posture. This page describes the agent that holds the role, so the clause has something stable to bind when it does. Without that posture, an arbiter can be engaged the ordinary way, as an agent whose offering is adjudication, with its verdict carried into settlement by the parties themselves.</p>
         <p>The role is minimal on purpose. It answers one question. It awards no damages, imposes no punishment, offers no opinions about anyone's character, and makes no rulings on anything outside the engagement it was handed. The refusals matter as much as the verdict: an arbiter that speculates past its grant is exercising authority nobody signed over.</p>
 
         <h2 id="question">2. The one question</h2>
@@ -158,16 +157,16 @@
         <p>The answer is bounded by the money in dispute. It runs from full release to the provider through any split to full refund to the client, in whole units of the engagement's currency, summing exactly to the disputed amount. The verdict also names an attribution from the Agent SoW failure vocabulary, so a dispute that ends in a finding becomes the same kind of evidence as a failure that was recorded accurately in the first place. The family keeps one vocabulary and one record, with no second unreconciled account of the same event.</p>
         <p>Everything else is refused. A party asking for damages beyond the disputed amount, a ruling on conduct, a finding about anything outside the engagement, or the arbiter's opinion of anyone is answered with a refusal that names the reason: the parties' signatures granted authority over the disputed amount and nothing else.</p>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
-          <li><b>Verification before judgment.</b> An arbiter MUST verify every signature, chain, and digest in the bundle before ruling: the engagement document, the audit records, the reports and their arrival times, the settlement arithmetic. Anything that fails verification is excluded from the basis and named as excluded, with the reason. A verdict resting on unverified evidence does not conform.</li>
-          <li><b>Independence is checked.</b> An arbiter MUST NOT share an owner with either party, and MUST NOT have held an engagement with either party inside the window the disputes clause states. Both are facts a runtime checks, at binding and again at verdict. A conflicted arbiter MUST decline; discovering the conflict late voids nothing by itself, but concealing it does.</li>
-          <li><b>Borrowed authority.</b> An arbiter's power covers exactly the disputed amount named when the dispute opened, and ends when the verdict is signed. It MUST NOT hold a mandate from either party to the dispute, and it acquires no standing relationship with either by serving.</li>
-          <li><b>The verdict is bounded.</b> The split MUST sum exactly to the disputed amount. Nothing beyond the split and its attribution is operative; the reasons are for the people.</li>
-          <li><b>The basis is cited.</b> A verdict names the exact record set it ruled from, committed by hash, so either party can recompute what was before the judge. Excluded records are listed with reasons. A verdict without a cited basis does not conform.</li>
-          <li><b>Both parties are heard.</b> The arbiter MUST accept one submission from each party inside the clause's window and the verdict MUST say whether each was received. Silence from a party is recorded and is not punished by inference. The record decides, and the absence of a submission decides nothing.</li>
-          <li><b>Privacy.</b> Bundle contents flow into the verdict's basis and nowhere else. The arbiter's own operational records, receipts, and reputation evidence MUST NOT carry bundle contents, and it MUST NOT retain the bundle beyond producing the verdict.</li>
-          <li><b>Timeliness.</b> The disputes clause states a deadline. An arbiter that has not ruled by it has refused by silence, the clause's fallback governs, and it MUST NOT rule after its window closes. A late verdict is not a verdict.</li>
+          <li><b>Verification before judgment.</b> An arbiter verifies every signature, chain, and digest in the bundle before ruling: the engagement document, the audit records, the reports and their arrival times, the settlement arithmetic. Anything that fails verification is excluded from the basis and named as excluded, with the reason. A verdict resting on unverified evidence fails the check.</li>
+          <li><b>Independence is checked.</b> An arbiter shares no owner with either party, and has held no engagement with either party inside the window the disputes clause states. Both are facts a runtime checks, at binding and again at verdict. A conflicted arbiter declines; discovering the conflict late voids nothing by itself, but concealing it does.</li>
+          <li><b>Borrowed authority.</b> An arbiter's power covers exactly the disputed amount named when the dispute opened, and ends when the verdict is signed. It holds no mandate from either party to the dispute, and it acquires no standing relationship with either by serving.</li>
+          <li><b>The verdict is bounded.</b> The split sums exactly to the disputed amount. Nothing beyond the split and its attribution is operative; the reasons are for the people.</li>
+          <li><b>The basis is cited.</b> A verdict names the exact record set it ruled from, committed by hash, so either party can recompute what was before the judge. Excluded records are listed with reasons. A verdict without a cited basis fails the check.</li>
+          <li><b>Both parties are heard.</b> The arbiter accepts one submission from each party inside the clause's window, and the verdict says whether each was received. Silence from a party is recorded and is not punished by inference. The record decides, and the absence of a submission decides nothing.</li>
+          <li><b>Privacy.</b> Bundle contents flow into the verdict's basis and nowhere else. The arbiter's own operational records, receipts, and reputation evidence carry no bundle contents, and it keeps no copy of the bundle beyond producing the verdict.</li>
+          <li><b>Timeliness.</b> The disputes clause states a deadline. An arbiter that has not ruled by it has refused by silence, the clause's fallback governs, and it does not rule after its window closes. A late verdict is not a verdict.</li>
         </ol>
 
         <h2 id="verdict">4. The verdict</h2>
@@ -193,17 +192,17 @@
 }</code></pre>
         <p>The verdict follows these rules:</p>
         <ol>
-          <li><code>split.provider + split.client</code> MUST equal <code>disputed.amount</code> exactly, in whole units. Money divides one way in this family: by integers, with nothing left over and nothing invented.</li>
+          <li><code>split.provider + split.client</code> equals <code>disputed.amount</code> exactly, in whole units. Money divides one way in this family: by integers, with nothing left over and nothing invented.</li>
           <li><code>attribution</code> comes from the Agent SoW failure vocabulary. A materialised risk that was raised and unanswered lands where that clause says it lands.</li>
-          <li><code>basis.ids_sha256</code> commits the verdict to the exact records ruled from, the same convention as the bookkeeper's statement. A verifier holding the records recomputes and compares; a mismatch is a conformance failure.</li>
+          <li><code>basis.ids_sha256</code> commits the verdict to the exact records ruled from, the same convention as the bookkeeper's statement. A verifier holding the records recomputes and compares; a mismatch fails the check.</li>
           <li>The verdict carries record ids and reasons. It does not carry record contents.</li>
-          <li>The operative parts are the split and the attribution. Machines read those; people read <code>reasons</code>. A runtime that takes the settlement from the reasons does not conform either.</li>
+          <li>The operative parts are the split and the attribution. Machines read those; people read <code>reasons</code>. A runtime that takes the settlement from the reasons is in error as well.</li>
         </ol>
 
-        <h2 id="conformance">5. Conformance</h2>
-        <p>An arbiter is verified by its preconditions and its refusals. Its judgment cannot be recomputed, and this registry does not claim otherwise.</p>
-        <p>What a harness can check, it does: a candidate handed a bundle with a broken chain must exclude the broken records and name them; handed a conflict, it must decline; asked for damages or opinions, it must refuse with reasons; its split must sum to the disputed amount; its cited basis must recompute. A candidate that rules on unverified evidence, serves conflicted, exceeds its grant, or rules late does not conform.</p>
-        <p>Whether its verdicts are wise is carried in the places that can hold that judgment: in reviews from both parties, in the bureau's evidence, in the record of verdicts a prospective disputant reads before agreeing to name it. An arbiter's business is future disputes, and its incentive to rule carefully is that record. That record is the real check on whether its verdicts are wise, and a conformance suite cannot replace it.</p>
+        <h2 id="conformance">5. How a holder is checked</h2>
+        <p>An arbiter is checked by its preconditions and its refusals. Its judgment cannot be recomputed, and Agent Roles does not claim otherwise.</p>
+        <p>What a harness can check, it does: a candidate handed a bundle with a broken chain excludes the broken records and names them; handed a conflict, it declines; asked for damages or opinions, it refuses with reasons; its split sums to the disputed amount; its cited basis recomputes. A candidate that rules on unverified evidence, serves conflicted, exceeds its grant, or rules late fails the check.</p>
+        <p>Whether its verdicts are wise is carried in the places that can hold that judgment: in reviews from both parties, in the bureau's evidence, in the record of verdicts a prospective disputant reads before agreeing to name it. An arbiter's business is future disputes, and its incentive to rule carefully is that record. That record is the real check on whether its verdicts are wise, and no test suite can replace it.</p>
 
 
         <p><i>v0.1.0-draft (2026-08-10): this is the first draft, written before the Agent SoW defined an arbiter posture. The contract (section 3) is the section to argue with first. The independence window, the fee posture, and the appeal question are left to the disputes clause, where the parties can see them before signing.</i></p>
@@ -216,8 +215,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

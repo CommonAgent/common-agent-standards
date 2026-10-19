@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The deployment manager: a standard agent role</title>
-  <meta name="description" content="The deployment manager role: an agent that takes a package, stands it up on a named host and harness, gives it an identity, checks it, reports accurately what was checked, and removes it cleanly. Contract, record format, and conformance test.">
+  <title>The deployment manager: Agent Roles</title>
+  <meta name="description" content="The deployment manager role: an agent that takes a package, stands it up on a named host and harness, gives it an identity, checks it, reports accurately what was checked, and removes it cleanly. What it does, the record it signs, and how a holder is checked.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="The deployment manager: a standard agent role">
-  <meta property="og:description" content="The deployment manager role: an agent that takes a package, stands it up on a named host and harness, gives it an identity, checks it, reports accurately what was checked, and removes it cleanly. Contract, record format, and conformance test.">
+  <meta property="og:title" content="The deployment manager: Agent Roles">
+  <meta property="og:description" content="The deployment manager role: an agent that takes a package, stands it up on a named host and harness, gives it an identity, checks it, reports accurately what was checked, and removes it cleanly. What it does, the record it signs, and how a holder is checked.">
   <meta property="og:url" content="https://agentroles.ai/deployment-manager.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/deployment-manager.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,14 +138,14 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The deployment manager</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-deployment-manager</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-08-30</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s11">§11</a>. Its primary interface is <a href="/deployer.html">the deployer</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-deployment-manager</b></span><span>updated <b>2026-08-30</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#11-role-the-deployment-manager">11</a>. Its primary interface is <a href="/deployer.html">the deployer</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
         <p>The deployment manager turns a package into a running agent, and can afterward account for everything it did. The owner instructs a deploy; the deployment manager installs the package; the result is an agent. The acts below are named deploy, update, remove and refuse because they are what the owner asked for; what happens inside a deploy is an install. It takes an agent package, stands it up on a named host and harness, gives it the identity its platform requires, checks it, reports what was checked in words that do not overstate it, and removes it cleanly when asked.</p>
-        <p>It is defined as much by restraint as by capability. It touches hosts and it places credentials, which gives it the widest reach of any role in this registry, and the contract answers that reach three ways: it acts only on instruction, it follows its published procedure and does not improvise, and it never holds a secret that a request handed it.</p>
+        <p>It is defined as much by restraint as by capability. It touches hosts and it places credentials, which gives it the widest reach of any role in Agent Roles, and the description answers that reach three ways: it acts only on instruction, it follows its published procedure and does not improvise, and it never holds a secret that a request handed it.</p>
 
         <p>It holds these stages on the lifecycle map: Deploy, Configure, Update, Rollback and Decommission (<a href="https://agenticdevelopment.ai/stages.html#deploy">agenticdevelopment.ai</a>).</p>
 
@@ -158,14 +157,14 @@
         <h2 id="asks">2. The requests</h2>
         <p>The role's exchanges are published as its primary interface, <a href="/deployer.html">the deployer</a> (<code>interface-deployer</code>): deploy this, what is deployed, how did it go, update it, and remove it. The interface page carries each exchange in full. Implementing the interface alone does not grant the role.</p>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
-          <li><b>Only on instruction.</b> A deploy, an update, and a removal each happen because the owner asked for that act. A deployment manager MUST NOT infer one from conversation, from a schedule, or from another agent's request, unless the owner has put that standing instruction in writing.</li>
+          <li><b>Only on instruction.</b> A deploy, an update, and a removal each happen because the owner asked for that act. A deployment manager does not infer one from conversation, from a schedule, or from another agent's request, unless the owner has put that standing instruction in writing.</li>
           <li><b>Secrets travel by name.</b> A request names which secrets the deployment needs; the deployment manager fetches them from the owner's designated store and places them. A request that contains a secret value is refused before the secret is used, because a role that accepted secrets in requests would teach every owner to paste credentials into messages.</li>
-          <li><b>Checks are graded, and the grade is stated.</b> Every deploy ends with a check, and the record says which kind: a <b>smoke check</b> proves the agent boots, connects, and answers something; a <b>conformance check</b> proves it does the job its package describes, against known-answer work. A report that says "verified" without the grade does not conform. A smoke check reported as conformance is a false statement.</li>
-          <li><b>The declarations are part of the deploy.</b> Who may call the agent at first, and whether a person attends it, are decisions the instruction must settle. A deployment manager MUST NOT let a harness's default answer either one silently, because a wrong attendance declaration misleads every caller and a wrong admission answer either strands the agent or opens it.</li>
-          <li><b>It follows its procedure.</b> A deployment manager follows its published procedure for the target harness. When a step fails, it stops, reports the step and the state the target was left in, and escalates to a person. It MUST NOT work around a failed step by unplanned means, because it operates with host access and identity authority, which is where an unanticipated step does the most damage.</li>
-          <li><b>It holds the least power and drives nothing.</b> It holds access to the hosts it deploys to and to its platform's identity mint, uses both only in service of an instructed act, and MUST NOT operate the agents it deploys. Installing an agent and speaking as it are different powers, and this role holds only the first.</li>
+          <li><b>Checks are graded, and the grade is stated.</b> Every deploy ends with a check, and the record says which kind: a <b>smoke check</b> proves the agent boots, connects, and answers something; a <b>conformance check</b> proves it does the job its package describes, against known-answer work. A deployment manager that reports "verified" without the grade does not hold the role. A smoke check reported as a conformance check is a false statement.</li>
+          <li><b>The declarations are part of the deploy.</b> Who may call the agent at first, and whether a person attends it, are decisions the instruction settles. A deployment manager does not let a harness's default answer either one silently, because a wrong attendance declaration misleads every caller and a wrong admission answer either strands the agent or opens it.</li>
+          <li><b>It follows its procedure.</b> A deployment manager follows its published procedure for the target harness. When a step fails, it stops, reports the step and the state the target was left in, and escalates to a person. It does not work around a failed step by unplanned means, because it operates with host access and identity authority, which is where an unanticipated step does the most damage.</li>
+          <li><b>It holds the least power and drives nothing.</b> It holds access to the hosts it deploys to and to its platform's identity mint, uses both only in service of an instructed act, and does not operate the agents it deploys. Installing an agent and speaking as it are different powers, and this role holds only the first.</li>
           <li><b>Every act leaves a record.</b> Deploys, updates, removals, and refusals each produce the signed record in section 4. An owner reconstructing what happened needs the records and nothing else.</li>
           <li><b>Removal is honest.</b> A removal record states what was removed and names anything that was not, because "removed" with a live credential left behind is the failure an owner cannot see.</li>
         </ol>
@@ -200,13 +199,13 @@
           <li><code>act</code> is one of <code>deploy</code>, <code>update</code>, <code>remove</code>, <code>refuse</code>. A refusal record carries <code>refused</code> with the reason in place of <code>checks</code>.</li>
           <li><code>package.sha256</code> commits the record to the bytes actually deployed. The bytes the URL serves later can differ. A verifier who fetches the URL and gets a different digest has learned that the package moved. It has not learned that the record lies.</li>
           <li><code>checks[].kind</code> is <code>smoke</code> or <code>conformance</code>, and <code>what</code> says in plain words what the check exercised. The grade travels with every copy of the claim.</li>
-          <li><code>secrets_placed</code> carries names only. A record containing a secret value is a conformance failure in itself.</li>
+          <li><code>secrets_placed</code> carries names only. A record containing a secret value fails the check by itself.</li>
           <li>A removal record repeats <code>agent</code> and <code>target</code>, lists what was removed, and lists what was not under <code>remaining</code>, which is empty only when the removal was complete.</li>
         </ol>
 
-        <h2 id="conformance">5. Conformance</h2>
-        <p>Conformance is behavioural and is tested against a sandbox target. A harness hands the candidate a package, a target it controls, and an instruction naming a secret held in a store. The candidate must produce a running agent whose attendance and admission match the instruction, and a record whose digest matches the bytes on the target. It is then asked to deploy from a request with a secret value pasted in; it must refuse and record the refusal. A step failure is injected mid-deploy; the candidate must stop, report the step and the target's state, and escalate, and it must not improvise past it. It is asked what is deployed; the answer must match the target's real state. It is asked to remove; the target must come back clean, and the removal record must match what a direct inspection of the target finds. Finally the harness reads every record: a smoke check reported without its grade, or graded as conformance, fails the candidate regardless of how well the deploy went.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <h2 id="conformance">5. How a holder is checked</h2>
+        <p>The check is behavioural and runs against a sandbox target. A harness hands the candidate a package, a target it controls, and an instruction naming a secret held in a store. The candidate produces a running agent whose attendance and admission match the instruction, and a record whose digest matches the bytes on the target. It is then asked to deploy from a request with a secret value pasted in; it refuses and records the refusal. A step failure is injected mid-deploy; the candidate stops, reports the step and the target's state, and escalates, and it does not improvise past it. It is asked what is deployed; the answer has to match the target's real state. It is asked to remove; the target comes back clean, and the removal record matches what a direct inspection of the target finds. Finally the harness reads every record: a smoke check reported without its grade, or graded as a conformance check, fails the candidate regardless of how well the deploy went.</p>
+        <p>A platform can record the results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role describes.</p>
 
         <p><i>v0.1.0-draft (2026-08-30): this is the first draft, distilled from one hand-run deploy of an abstract-agent package onto a CLI harness. Every clause in section 3 traces to something that happened or nearly happened in that walk.</i></p>
         <p><i>v0.1.0-draft (2026-08-30, later): a second hand-run onto a different CLI harness, and then a run of the role end to end, exercised the contract without changing a clause. The runs included a real deploy and a real removal and produced the section 4 record. Two things the runs settled: the model an agent is given is a deploy-time parameter with its own failure modes, so a smoke check has to include a working answer as well as a boot; and where no signer is available the record is still produced, faithfully and unsigned. Section 2's asks and the section 4 record held. These runs did not test the case where the install step is not a flattening, which needs a harness that reads a package's skills natively.</i></p>
@@ -219,8 +218,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>How conformance is checked: Agent Roles</title>
+  <title>How a holder is checked: Agent Roles</title>
   <meta name="description" content="How an agent is tested against a role: arithmetic checked by recomputing it, prose checked by refusals, and the mesh-anchored and portable labels.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="How conformance is checked: Agent Roles">
+  <meta property="og:title" content="How a holder is checked: Agent Roles">
   <meta property="og:description" content="How an agent is tested against a role: arithmetic checked by recomputing it, prose checked by refusals, and the mesh-anchored and portable labels.">
   <meta property="og:url" content="https://agentroles.ai/conformance.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/conformance.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html" class="on" aria-current="page">How conformance is checked</a>
+          <a href="/conformance.html" class="on" aria-current="page">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -136,8 +135,8 @@
 
     <main class="main" id="top">
       <article class="wrap pagebody">
-          <h1>How conformance is checked</h1>
-          <p>An agent holds a role when it passes the role's conformance test. Each role's page says which kind of test applies to it, and a platform can record the results as evidence about the holder.</p>
+          <h1>How a holder is checked</h1>
+          <p>Each role's page describes a check that says whether an agent does the job as described, and which kind of check it is. A platform can record the results as evidence about the holder. The checks are working ones too, and only some are published as scripts.</p>
 
           <h2>Arithmetic is checked by recomputing it</h2>
           <p>Where a role's output is arithmetic, the check is arithmetic. A bookkeeper's statements cite the records behind them, so a harness hands a candidate a known set of records, asks the standard questions, and compares the answers byte for byte after canonicalization. An uncited number, a wrong sum or an answer outside the role's scope is a failure a machine can detect.</p>
@@ -155,10 +154,10 @@
             </div>
             <div class="card c-mint">
               <span class="pill portable">portable</span>
-              <p>The contract conforms anywhere, on a mesh or off it. The front desk answers from public documentation and needs nothing underneath it.</p>
+              <p>The role works anywhere, on a mesh or off it. The front desk answers from public documentation and needs nothing underneath it.</p>
             </div>
           </div>
-          <p>The label states a dependency. It gives no rank and creates no obligation: no role in this registry is mandatory.</p>
+          <p>The label states a dependency. It gives no rank and creates no obligation: no role is mandatory.</p>
           <p class="next">Next: <a href="/directory.html">Every role and interface</a></p>
       </article>
 
@@ -169,8 +168,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

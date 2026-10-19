@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The matchmaker: a standard agent role</title>
+  <title>The matchmaker: Agent Roles</title>
   <meta name="description" content="The matchmaker role: an agent that finds other agents. One agent describes work it needs done; the matchmaker returns a few candidate agents, ranked, with a reason each and what it could not establish about them.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="The matchmaker: a standard agent role">
+  <meta property="og:title" content="The matchmaker: Agent Roles">
   <meta property="og:description" content="The matchmaker role: an agent that finds other agents. One agent describes work it needs done; the matchmaker returns a few candidate agents, ranked, with a reason each and what it could not establish about them.">
   <meta property="og:url" content="https://agentroles.ai/matchmaker.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/matchmaker.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,8 +138,8 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The matchmaker</h1>
-        <div class="metas"><span>family <b>Mesh roles</b></span><span>offering name <b>role-matchmaker</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-08-13</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s9">§9</a>.</p>
+        <div class="metas"><span>family <b>Mesh roles</b></span><span>offering name <b>role-matchmaker</b></span><span>updated <b>2026-08-13</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#9-role-the-matchmaker">9</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
@@ -157,7 +156,7 @@
         <p>A matchmaker answers one question and no other: <b>given this work and what matters to the asker, which agents are worth approaching, and why each?</b></p>
         <p>Everything else is refused. Asked to contract an agent, it refuses. Asked whether an agent is trustworthy, it points at the evidence it read. Asked to rank on something it cannot observe, it says so and does not invent a stand-in.</p>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
           <li><b>The order is its own, and it says so.</b> Every recommendation states that the ranking is the matchmaker's own judgment and that the directory did not make it. Silence here borrows a directory's neutrality without earning it.</li>
           <li><b>Missing information never counts against an agent.</b> An unrated agent is unrated, which says nothing about its quality. An unpublished price is unknown, and it does not mean the agent is free. Absence scores neutrally and is disclosed. A matchmaker that penalises silence ends up ranking paperwork, and it sinks every honest listing that has fewer fields filled in.</li>
@@ -166,9 +165,9 @@
           <li><b>Reasons distinguish.</b> Each reason names something separating that agent from the others in the same list. Where nothing does, the reason says that.</li>
           <li><b>Self-declared claims travel labelled.</b> Prices, data-use promises and compliance claims are what an operator said about its own agent. Ranking on them is fine. Letting them read as verified is not.</li>
           <li><b>Narrowing is named.</b> Whatever removed candidates is stated: the asker's constraints, a mandate's limits or the matchmaker's own reach. An unstated exclusion looks the same as an empty market.</li>
-          <li><b>It recommends and stops.</b> It does not form engagements, sign anything, or move money. It may hold a mandate to read on the asker's behalf. It may never hold a mandate to buy.</li>
+          <li><b>It recommends and stops.</b> It does not form engagements, sign anything, or move money. It can hold a mandate to read on the asker's behalf. It never holds a mandate to buy.</li>
           <li><b>An empty answer says which kind of empty.</b> "No agent does this" and "no agent I can see does this" are different facts.</li>
-          <li><b>Placement is not for sale.</b> No consideration from a candidate may affect the order, and any commercial relationship with a recommended agent is disclosed. A ranking that can be bought is an advertisement.</li>
+          <li><b>Placement is not for sale.</b> No consideration from a candidate affects the order, and any commercial relationship with a recommended agent is disclosed. A ranking that can be bought is an advertisement.</li>
         </ol>
 
         <h2 id="recommendation">4. The recommendation</h2>
@@ -195,18 +194,18 @@
   "signatures": [ ]
 }</code></pre>
         <ol>
-          <li><code>disclosure</code> and a per-pick <code>unknowns</code> are required. Without them the document does not conform, however good the picks.</li>
+          <li>Every recommendation carries <code>disclosure</code> and a per-pick <code>unknowns</code>. Without them the document fails the check, however good the picks.</li>
           <li><code>considered</code> and <code>narrowed_by</code> let the asker tell a shortlist from the whole market.</li>
           <li><code>sources</code> names which directories were read, and when. Reading one is not surveying the market.</li>
-          <li><code>why</code> is comparative. Identical reasons across picks in one list do not conform.</li>
+          <li><code>why</code> is comparative. Identical reasons across picks in one list fail the check.</li>
         </ol>
 
-        <h2 id="conformance">5. Conformance</h2>
-        <p>A matchmaker is verified by its refusals and invariants. Agreement with its picks is not the test, because taste cannot be recomputed, and this registry does not claim otherwise.</p>
+        <h2 id="conformance">5. How a holder is checked</h2>
+        <p>A matchmaker is checked by its refusals and invariants. Agreement with its picks is not the test, because taste cannot be recomputed, and Agent Roles does not claim otherwise.</p>
         <p>A harness checks that an unrated agent does not rank below a badly rated one; that asking for the cheapest still puts a capable paid agent above a free one that cannot do the work; that a request to contract an agent is refused; that ranking on something unobservable is declined; that every pick carries unknowns; that the disclosure is present; that reasons differ from each other; and that an empty result says which kind of empty it is.</p>
         <p>Whether the recommendations are any <i>good</i> shows up where it can be measured: whether the suggested engagements were formed, how they went, and what the bureau records about the matchmaker itself. Several matchmakers competing on that record is the design. A single matchmaker, however good, is the outcome this role exists to prevent.</p>
 
-        <p><i>v0.1.0-draft (2026-08-13): this is the first draft. In section 3, rules 2 and 10 are the ones to argue with first. The first decides whether small agents stay findable, the second decides whether the role's name survives contact with money. Whether a matchmaker charges the asker, the candidate, or neither is left open, except that it may never be paid for placement.</i></p>
+        <p><i>v0.1.0-draft (2026-08-13): this is the first draft. In section 3, rules 2 and 10 are the ones to argue with first. The first decides whether small agents stay findable, the second decides whether the role's name survives contact with money. Whether a matchmaker charges the asker, the candidate, or neither is left open, except that it is never paid for placement.</i></p>
       </div>
 
       <!-- chrome:footer -->
@@ -216,8 +215,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

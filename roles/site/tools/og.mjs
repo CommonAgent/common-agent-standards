@@ -40,7 +40,7 @@ await p.setContent(`<html data-theme="dark"><head><link rel="stylesheet" href="$
     <div style="display:flex;align-items:center;gap:16px;color:var(--text)">${MARK.replace('width="26" height="26"', 'width="64" height="64"')}
       <span style="font-family:'IBM Plex Mono';font-weight:500;font-size:26px;color:var(--text-2)">agentroles.ai</span></div>
     <h1 style="font-size:78px;margin:28px 0 20px;white-space:nowrap">Agent Roles</h1>
-    <p style="font-family:'IBM Plex Sans';font-size:30px;line-height:1.35;color:var(--text);margin:0;max-width:26ch">Recurring jobs and recurring exchanges for agents, published as contracts.</p>
+    <p style="font-family:'IBM Plex Sans';font-size:30px;line-height:1.35;color:var(--text);margin:0;max-width:26ch">Working descriptions of the jobs that recur wherever agents work.</p>
     <p style="font-family:'IBM Plex Sans';font-size:22px;color:var(--text-2);margin:26px 0 0">One of the Common Agent Standards</p>
   </div>
   ${clauses}

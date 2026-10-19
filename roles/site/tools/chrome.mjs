@@ -7,15 +7,15 @@
 // agentsow.com, agentprocesses.ai and commonagent.net.
 //
 // The roles and interfaces in the menu, and the head of each of their pages
-// (family, offering name, anchoring, version, the sections that define it),
-// come from tools/registry.mjs, which reads them from roles/SPEC.md and
+// (family, offering name, anchoring, the sections of ROLES.md that describe
+// it) come from tools/registry.mjs, which reads them from roles/ROLES.md and
 // roles/interfaces/. The menu ends with every other standard in
 // standards.json under "The Common Agent Standards", with the family page at
 // commonagent.net first.
 import { readFileSync, writeFileSync, readdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
-import { FAMILIES, INTERFACES, ROLES, ENTRIES, sections, specAnchor } from "./registry.mjs";
+import { FAMILIES, INTERFACES, ROLES, ENTRIES, SOURCE, sourceAnchor } from "./registry.mjs";
 
 export const SITE = "https://agentroles.ai";
 export const SUITE_REPO = "https://github.com/CommonAgent/common-agent-standards";
@@ -68,16 +68,15 @@ export function rail(active) {
           a("/", "What it is", "home"),
           a("/roles.html", "What a role is", "roles"),
           a("/interfaces.html", "What an interface is", "interfaces"),
-          a("/conformance.html", "How conformance is checked", "conformance"),
+          a("/conformance.html", "How a holder is checked", "conformance"),
           a("/directory.html", "Every role and interface", "directory"),
         ], true)}
         ${FAMILIES.map((f, i) => sec(f.name, f.roles.map((r) => a(`/${r.slug}.html`, r.title, r.slug)), i === 0 || has(f.roles))).join("\n        ")}
         ${sec("Interfaces", INTERFACES.map((x) => a(`/${x.slug}.html`, x.title, x.slug)), has(INTERFACES))}
         ${sec("Reference", [
-          a("/spec.html", "The specification", "spec"),
-          a("/versions.html", "Versions and changelog", "versions"),
           a("/interfaces/", "Interface definitions", "interfaces/index"),
-          a(`${REPO_URL}/conformance`, "Conformance checks", "", true),
+          a(SOURCE, "The descriptions on GitHub", "", true),
+          a(`${REPO_URL}/conformance`, "The published checks", "", true),
           a(REPO_URL, "The source on GitHub", "", true),
         ], true)}
         ${sec("The Common Agent Standards", [a(`${FAMILY}standards.html`, "Every standard", "", true), ...others], true).replace('class="sec"', 'class="sec suite"')}
@@ -92,8 +91,7 @@ export const footer = `<footer class="sitefoot">
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="${REPO_URL}">The source on GitHub</a>
           <a href="${FAMILY}">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="${SUITE.sponsor.url}">${SUITE.sponsor.name}</a></span>
@@ -114,20 +112,21 @@ export const tailScript = `<script>
 export const pill = (anchoring) => `<span class="pill ${anchoring === "mesh-anchored" ? "anchored" : "portable"}">${anchoring}</span>`;
 
 // The head of a role's or an interface's page: the name, then chips for the
-// family, the offering or interface name, the version, the date and the
-// anchoring, then the sections of the specification that define it.
+// family, the offering or interface name, the date of the last change and
+// the anchoring, then the sections of ROLES.md that describe it.
 export function entryHead(e) {
   const chip = (k, v) => `<span>${k} <b>${esc(v)}</b></span>`;
-  const link = (sec) => `<a href="${specAnchor(sec)}">§${sec}</a>`;
+  const num = (sec) => `<a href="${sourceAnchor(sec)}">${sec}</a>`;
+  const link = (sec) => `section ${num(sec)}`;
   let chips, canon;
   if (e.kind === "role") {
     const primary = INTERFACES.find((x) => x.primaryOf === e);
-    chips = [chip("family", e.family), chip("offering name", e.offering), e.alias ? chip("alias", e.alias) : "", chip("version", e.version), chip("date", e.date), pill(e.anchoring)];
-    const where = e.last !== e.section ? `${link(e.section)} to ${link(e.last)}` : link(e.section);
-    canon = `The specification defines this role in ${where}.${primary ? ` Its primary interface is <a href="/${primary.slug}.html">${primary.title.replace(/^The/, "the")}</a>.` : ""}`;
+    chips = [chip("family", e.family), chip("offering name", e.offering), e.alias ? chip("alias", e.alias) : "", chip("updated", e.date), pill(e.anchoring)];
+    const where = e.last !== e.section ? `sections ${num(e.section)} to ${num(e.last)}` : link(e.section);
+    canon = `ROLES.md describes this role in ${where}.${primary ? ` Its primary interface is <a href="/${primary.slug}.html">${primary.title.replace(/^The/, "the")}</a>.` : ""}`;
   } else {
-    chips = [chip("name", e.name), chip("version", e.version), chip("date", e.date), pill(e.anchoring)];
-    canon = `The specification defines this interface in ${link(e.section)}${e.primaryOf ? `, as the primary interface of <a href="/${e.primaryOf.slug}.html">${e.primaryOf.name}</a>` : ""}. Software reads its definition from <a href="/${e.file}">${e.file.replace("interfaces/", "")}</a>.`;
+    chips = [chip("name", e.name), chip("updated", e.date), pill(e.anchoring)];
+    canon = `ROLES.md describes this interface in ${link(e.section)}${e.primaryOf ? `, as the primary interface of <a href="/${e.primaryOf.slug}.html">${e.primaryOf.name}</a>` : ""}. Software reads its definition from <a href="/${e.file}">${e.file.replace("interfaces/", "")}</a>.`;
   }
   return `<h1>${esc(e.title)}</h1>
         <div class="metas">${chips.filter(Boolean).join("")}</div>

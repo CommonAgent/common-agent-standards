@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The builder: a standard agent interface</title>
+  <title>The builder interface: Agent Roles</title>
   <meta name="description" content="The builder interface holds the exchanges for turning a description of a needed agent into a package: build this, what did you build, and revise it. It is the primary interface of the package maker role.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="The builder: a standard agent interface">
+  <meta property="og:title" content="The builder interface: Agent Roles">
   <meta property="og:description" content="The builder interface holds the exchanges for turning a description of a needed agent into a package: build this, what did you build, and revise it. It is the primary interface of the package maker role.">
   <meta property="og:url" content="https://agentroles.ai/builder.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/builder.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,34 +138,34 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The builder</h1>
-        <div class="metas"><span>name <b>interface-builder</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-08-31</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this interface in <a href="/spec.html#s12-1">§12.1</a>, as the primary interface of <a href="/package-maker.html">the package maker</a>. Software reads its definition from <a href="/interfaces/interface-builder.json">interface-builder.json</a>.</p>
+        <div class="metas"><span>name <b>interface-builder</b></span><span>updated <b>2026-08-31</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this interface in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#121-what-it-can-be-asked">12.1</a>, as the primary interface of <a href="/package-maker.html">the package maker</a>. Software reads its definition from <a href="/interfaces/interface-builder.json">interface-builder.json</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
         <p><b>The builder interface holds the exchanges for turning a description of a needed agent into a package.</b> There are three: build this, what did you build, and revise it.</p>
-        <p>This is the primary interface of the <a href="/package-maker.html">package maker</a> role. Implementing it alone does not grant the role, because the role also carries its refusals, its draft rule, its conformance test, and the record its holders sign.</p>
+        <p>This is the primary interface of the <a href="/package-maker.html">package maker</a> role. Implementing it alone does not grant the role, because the role also carries its refusals, its draft rule, its own check, and the record its holders sign.</p>
 
         <h2 id="interface">1. The purpose</h2>
         <p>Anything that builds agent packages has to be askable in a known way, or every requester learns a different intake for every builder. This interface publishes the asking side of that job, so a caller who has never met a particular builder can still describe an agent, get a package back, and revise it.</p>
 
         <h2 id="exchanges">2. The exchanges</h2>
         <ol>
-          <li><b>Build this.</b> The caller sends a description: a name, one sentence on what the agent does, the jobs it does, the systems it needs and at what access, what it refuses, what always goes to a person, and the records it must leave. The answer is a package, or a refusal that says what the description was missing.</li>
+          <li><b>Build this.</b> The caller sends a description: a name, one sentence on what the agent does, the jobs it does, the systems it needs and at what access, what it refuses, what always goes to a person, and the records it has to leave. The answer is a package, or a refusal that says what the description was missing.</li>
           <li><b>What did you build?</b> The answer is the manifest of a package the implementer produced: its name, version, skills, systems, and obligations, and the note that it is a draft.</li>
           <li><b>Revise it.</b> The caller sends the same description with changes, and the implementer rebuilds it to a new version, with the same parts required.</li>
         </ol>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
           <li><b>Every exchange is answered or refused with a reason.</b> Silence is not an answer.</li>
-          <li><b>A build request must carry the judgment parts.</b> An implementer refuses a description with no refusals or no records and names the missing part. It does not invent either.</li>
-          <li><b>Every answer about a package says it is a draft.</b> Nobody has run the agent a fresh package describes, and an answer must not present it as more.</li>
+          <li><b>A build request carries the judgment parts.</b> An implementer refuses a description with no refusals or no records and names the missing part. It does not invent either.</li>
+          <li><b>Every answer about a package says it is a draft.</b> Nobody has run the agent a fresh package describes, and an answer does not present it as more.</li>
           <li><b>There is no document.</b> The signed build record belongs to the package maker role, and this interface defines none. An implementer that does not hold the role answers these exchanges and signs nothing.</li>
         </ol>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How an implementer is checked</h2>
         <p>The test is behavioural. A harness asks all three exchanges. Each is answered or refused with a reason. A description missing its refusals, and one missing its records, are each refused with the missing part named. Every answer about a built package calls it a draft.</p>
 
         <p><i>v0.1.0-draft (2026-08-31): this is the first draft, extracted from the agent builder role, which previously carried these exchanges inline.</i></p>
@@ -179,8 +178,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

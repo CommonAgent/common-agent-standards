@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.9.3-draft (2026-10-18)
+
+Editorial, with no normative change. The lifecycle interface that a stop asks over is described in Agent Roles, which is a guide of working descriptions, and the text no longer calls it the roles registry. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.
+
 ## 0.9.2-draft (2026-10-18)
 
 Editorial, with no normative change. The specification names no platform: the note under the title, Section 1.6 and the definition of Agent Messaging in Section 2 name the Agent Messaging Server as the reference implementation and no sponsor, Section 1.3 names Personal Agent Naming and the A2A Bridge, and the examples of Section 18.10 use `mesh.example.com`. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.

@@ -18,22 +18,23 @@ The suite's home is <https://commonagent.net>.
 
 | Standard | Kind | Version | Status | Site |
 |----------|------|---------|--------|------|
-| [The Common Agent Specification](common-agent/) | The base | 0.28.0-draft | Working Draft | [commonagent.net](https://commonagent.net/spec.html) |
-| [Agent Messaging](messaging/) | A Common Agent Standard | 0.9.2-draft | Working Draft | [agentmessaging.ai](https://agentmessaging.ai/) |
+| [The Common Agent Specification](common-agent/) | The base | 0.28.1-draft | Working Draft | [commonagent.net](https://commonagent.net/spec.html) |
+| [Agent Messaging](messaging/) | A Common Agent Standard | 0.9.3-draft | Working Draft | [agentmessaging.ai](https://agentmessaging.ai/) |
 | [Personal Agent Naming](naming/) | A Common Agent Standard | 0.10.2 | Published | [agentnaming.ai](https://agentnaming.ai/) |
 | [Agent Mandate](mandate/) | A Common Agent Standard | 0.4.0-draft | Working Draft | [agentmandate.net](https://agentmandate.net/) |
 | [Agent RFP](rfp/) | A Common Agent Standard | 0.8.0-draft | Working Draft | [agentrfp.net](https://agentrfp.net/) |
 | [Agent SoW](sow/) | A Common Agent Standard | 0.23.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
 | [Agent NDA](nda/) | A Common Agent Standard | 0.1.0-draft | Working Draft | [agentnda.net](https://agentnda.net/) |
 | [Agent Reputations](reputations/) | A Common Agent Standard | 0.3-draft | Draft | [agentreputations.com](https://agentreputations.com/) |
-| [Agent Roles](roles/) | A Common Agent Standard | 0.14.0-draft | Working Draft | [agentroles.ai](https://agentroles.ai/) |
 | [Agent Processes](processes/) | A Common Agent Standard | 0.5.1-draft | Working Draft | [agentprocesses.ai](https://agentprocesses.ai/) |
 | [Agent Collab](guides/collab/) | A guide | v1.1 | Guide | [agentcollab.dev](https://agentcollab.dev/) |
+| [Agent Roles](roles/) | A guide | v1 | Guide | [agentroles.ai](https://agentroles.ai/) |
 
 Agent Messaging's extensions are in [messaging/extensions/](messaging/extensions/),
 and its bindings, the A2A Bridge and the RabbitMQ binding, are in
 [messaging/bindings/](messaging/bindings/). Agent Collab is a library of
-playbooks and is kept under [guides/](guides/) as a guide.
+playbooks and is kept under [guides/](guides/) as a guide. Agent Roles is a guide
+of working descriptions of recurring jobs, kept in [roles/](roles/).
 
 ## How the repository is laid out
 

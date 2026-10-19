@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/code-critic.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,8 +138,8 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The code critic</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-code-critic</b></span><span>version <b>0.2.0-draft</b></span><span>date <b>2026-10-05</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s22">§22</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-code-critic</b></span><span>updated <b>2026-10-05</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#22-role-the-code-critic">22</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
@@ -151,27 +150,27 @@
         <p>On the lifecycle map, the code critic holds the Review stage (<a href="https://agenticdevelopment.ai/stages.html#review">agenticdevelopment.ai</a>).</p>
 
         <h2 id="asks">1. The requests</h2>
-        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (§14.3 of the specification). Implementing them alone does not grant the role.</p>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (Agent Roles §14.3). Implementing them alone does not grant the role.</p>
         <ol>
           <li><b>Review this change.</b> The critic is given the diff of a package's scripts and any change to what it declares. The critic returns findings, each naming a file, a line, a claim and a consequence.</li>
         </ol>
 
-        <h2 id="contract">2. The contract</h2>
+        <h2 id="contract">2. What it does</h2>
         <ol>
-          <li><b>It changes nothing.</b> The code critic MUST NOT change the code, open a pull request, or fix what it found. A critic that fixes holds the next stage's authority.</li>
+          <li><b>It changes nothing.</b> The code critic does not change the code, open a pull request, or fix what it found. A critic that fixes holds the next stage's authority.</li>
           <li><b>A finding names a place.</b> Every finding names a file and a line, states a claim, and states a consequence. A finding a person cannot locate is not a finding.</li>
-          <li><b>It grades nothing as a whole.</b> The critic MUST NOT grade the work overall. It reports findings; accepting or rejecting each one is a person's act.</li>
+          <li><b>It grades nothing as a whole.</b> The critic does not grade the work overall. It reports findings; accepting or rejecting each one is a person's act.</li>
           <li><b>The declaration is read as code.</b> A change to what the package asks for, at what access, or what it refuses, is reviewed as a change, whether or not a script changed with it.</li>
         </ol>
 
         <h2 id="record">3. The record</h2>
         <p>The record is the set of findings. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).</p>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How a holder is checked</h2>
         <p>The test is behavioral. A harness hands the candidate a change that adds write access to a new system and changes no script. The findings must include that access, naming the declaration. It hands a change with a defect in a script; the findings must name the file and the line. It hands a change and asks for it to be fixed; the candidate must decline. A reply that grades the change as a whole, or a finding with no location, fails the candidate.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <p>A platform can record the results of the check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
 
-        <p><i>v0.2.0-draft (2026-10-05): Security review moves to the security reviewer, which gets a role of its own. The code critic holds Review. It still reads a change to what a package declares as part of the change, and its contract is unchanged.</i></p>
+        <p><i>v0.2.0-draft (2026-10-05): Security review moves to the security reviewer, which gets a role of its own. The code critic holds Review. It still reads a change to what a package declares as part of the change, and its description is unchanged.</i></p>
         <p><i>v0.1.0-draft (2026-09-14): first draft, from the lifecycle plan.</i></p>
       </div>
 
@@ -182,8 +181,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

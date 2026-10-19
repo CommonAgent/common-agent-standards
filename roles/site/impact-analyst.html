@@ -14,7 +14,7 @@
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/impact-analyst.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,8 +138,8 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The impact analyst</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-impact-analyst</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-10-05</b></span><span class="pill anchored">mesh-anchored</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s30">§30</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-impact-analyst</b></span><span>updated <b>2026-10-05</b></span><span class="pill anchored">mesh-anchored</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#30-role-the-impact-analyst">30</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
@@ -151,29 +150,29 @@
         <p>On the lifecycle map, the impact analyst holds the Impact stage (<a href="https://agenticdevelopment.ai/stages.html#impact">agenticdevelopment.ai</a>).</p>
 
         <h2 id="asks">1. The requests</h2>
-        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (§14.3 of the specification). Implementing them alone does not grant the role.</p>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (Agent Roles §14.3). Implementing them alone does not grant the role.</p>
         <ol>
           <li><b>What does this change to an agent touch?</b> The analyst is given the agent's declaration before the change, the declaration it would have after the change, and the platform's list of what depends on the agent. The analyst returns each dependent, where it learned of it, and one of three answers for it: compatible, breaking, or a change of behavior.</li>
           <li><b>What does this change to a solution touch?</b> The analyst is given the solution's requirements and plan as they stand before the change, and as they would be after it. The analyst returns what changed in the requirements, whether what counts as done moved, the steps added, swapped or removed, and the handoffs between steps that no longer match.</li>
         </ol>
         <p>Both answers end with what has to be redone and what can be reused, and what the change will cost as far as the declared prices show.</p>
 
-        <h2 id="contract">2. The contract</h2>
+        <h2 id="contract">2. What it does</h2>
         <ol>
-          <li><b>It changes nothing it reports on, and approves nothing.</b> The impact analyst MUST NOT change, build or deploy the thing being changed or anything that depends on it, and MUST NOT approve the change. The person who asked for the change approves or refuses it from the report. The only record the analyst writes, besides the report, is what rule 5 files.</li>
-          <li><b>It calls no model.</b> The comparison and the answers follow written rules. The same two versions and the same dependents MUST give the same report.</li>
+          <li><b>It changes nothing it reports on, and approves nothing.</b> The impact analyst does not change, build or deploy the thing being changed or anything that depends on it, and does not approve the change. The person who asked for the change approves or refuses it from the report. The only record the analyst writes, besides the report, is what rule 5 files.</li>
+          <li><b>It calls no model.</b> The comparison and the answers follow written rules. The same two versions and the same dependents always give the same report.</li>
           <li><b>Every dependent is named.</b> Every dependent the analyst knows of, whether declared or seen in the record of who called the agent, appears in the report with where it was found. None is left out. A source of dependents it could not read is named as not read.</li>
-          <li><b>A change a dependent would notice is never called compatible.</b> Compatible means the change only adds something optional, offers something new, widens a limit, or lowers a price. A change to what a dependent sends or gets back is breaking: an offering or an output removed or renamed, a new required input, a narrower limit, a higher price, or a changed refusal or way of handling data. When the contract is the same but the agent may act differently, as with a new model, the answer is a change of behavior, which only running the new version can settle. When the analyst cannot tell which answer applies, it answers breaking and says why it could not tell.</li>
+          <li><b>A change a dependent would notice is never called compatible.</b> Compatible means the change only adds something optional, offers something new, widens a limit, or lowers a price. A change to what a dependent sends or gets back is breaking: an offering or an output removed or renamed, a new required input, a narrower limit, a higher price, or a changed refusal or way of handling data. When the declaration is the same but the agent may act differently, as with a new model, the answer is a change of behavior, which only running the new version can settle. When the analyst cannot tell which answer applies, it answers breaking and says why it could not tell.</li>
           <li><b>It files what is owed.</b> For each dependent whose answer is breaking or a change of behavior, the analyst files an item in the <a href="https://agenticdevelopment.ai/stages.html#ledger">ledger</a>: a change dependency debt, owed to that dependent's owner. The ledger is a platform service and is not a role.</li>
-          <li><b>It does not judge the change.</b> The analyst MUST NOT say whether the change is worth making, and MUST NOT run the new version. Running it against what each dependent counts as done is the evidence half, and it belongs to the <a href="/conformance-checker.html">conformance checker</a> once the new version exists.</li>
+          <li><b>It does not judge the change.</b> The analyst does not say whether the change is worth making, and does not run the new version. Running it against what each dependent counts as done is the evidence half, and it belongs to the <a href="/conformance-checker.html">conformance checker</a> once the new version exists.</li>
         </ol>
 
         <h2 id="record">3. The record</h2>
         <p>The record is the impact report. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).</p>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How a holder is checked</h2>
         <p>The test is mechanical. A harness gives the candidate an agent with three dependents, one of which is known only from the record of who called the agent and appears in no declaration. It then proposes three changes in turn. A new optional input must come back compatible for all three dependents. Removing an output that one dependent reads must come back breaking for that dependent, with a ledger item filed and owed to its owner. A new model under the same declaration must come back as a change of behavior for all three, with an item filed for each. The harness runs every case twice, and the two reports must match. It asks the candidate whether to go ahead with a change; the candidate must decline. A report that leaves out a dependent, calls a removed output compatible, or approves the change fails the candidate.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <p>A platform can record the results of the check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
 
         <p><i>v0.1.0-draft (2026-10-05): first draft, from the lifecycle revision plan.</i></p>
       </div>
@@ -185,8 +184,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

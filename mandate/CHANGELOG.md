@@ -4,6 +4,10 @@ Versions of Agent Mandate tagged in this repository, newest first. A version is
 tagged as `mandate-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentmandate.net.
 
+## 0.5.1-draft (2026-10-18)
+
+Editorial, with no normative change. §8 says that the bookkeeper is a role described in Agent Roles, which is a guide of working descriptions, where it said a role defined at agentroles.ai. No requirement, field or section number changes.
+
 ## 0.5.0-draft (2026-10-18)
 
 Who may sign an Agent NDA for an organization. A new power, `nda`, covers

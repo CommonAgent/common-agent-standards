@@ -15,7 +15,7 @@
     "all": ["none", "refund_on_failed_task", "escalate_to_owners", "arbiter"],
     "fees": ["split", "follows_finding"],
     "role": "role-arbiter",
-    "role_why": "the standard registry's name for the published arbiter contract. The clause's role member is validated as a non-empty name, NOT pinned to this constant: a deployment may publish its own role registry.",
+    "role_why": "the name Agent Roles gives the arbiter role. The clause's role member is validated as a non-empty name, NOT pinned to this constant: a deployment may publish its own role registry.",
     "grade": "evidence",
     "grade_why": "the enforced parts of 5.10 are actions clearing takes - the refund where reversal is supported (8.2), the freeze on the disputed amount, the split moving on a verdict's signature the platform verifies mechanically - never the clause's own grade. No machine here judges whether work was good."
   },

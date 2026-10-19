@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The package maker: a standard agent role</title>
-  <meta name="description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it must not invent, marking every package a draft. Contract, record format, and conformance test.">
+  <title>The package maker: Agent Roles</title>
+  <meta name="description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it does not invent, marking every package a draft. What it does, the record it signs, and how a holder is checked.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="The package maker: a standard agent role">
-  <meta property="og:description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it must not invent, marking every package a draft. Contract, record format, and conformance test.">
+  <meta property="og:title" content="The package maker: Agent Roles">
+  <meta property="og:description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it does not invent, marking every package a draft. What it does, the record it signs, and how a holder is checked.">
   <meta property="og:url" content="https://agentroles.ai/package-maker.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/package-maker.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,33 +138,33 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The package maker</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-package-maker</b></span><span>alias <b>role-agent-builder</b></span><span>version <b>0.2.0-draft</b></span><span>date <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s12">§12</a>. Its primary interface is <a href="/builder.html">the builder</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-package-maker</b></span><span>alias <b>role-agent-builder</b></span><span>updated <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#12-role-the-package-maker">12</a>. Its primary interface is <a href="/builder.html">the builder</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
-        <p>The package maker turns a description of a needed agent into a package another system can deploy. It takes what an agent should do, the systems it needs, what it must refuse, and the records it must leave, and it emits an agent plugin: skills, obligations, and a manifest. It is the other end of the <a href="/deployment-manager.html">deployment manager</a>: one builds the package, the other stands it up.</p>
-        <p>It is defined by what it will not make up. A package is only as honest as the judgment in it, and two parts of it are judgment: what the agent refuses, and what it must record. The rest is description. The builder asks for both and refuses to emit a package without them. It also never presents a package as finished: every package it produces is a draft, because nobody has run the agent it describes.</p>
-        <p>What it emits is an <a href="https://commonagent.net/package.html">Agent Package</a> as the Common Agent Specification defines it: an Agent Plugin carrying the agent's draft Descriptor and an install file beside the manifest. That chapter owns the package's shape; this role owns the judgment a builder must ask for and the record it signs.</p>
+        <p>The package maker turns a description of a needed agent into a package another system can deploy. It takes what an agent should do, the systems it needs, what it has to refuse, and the records it has to leave, and it emits an agent plugin: skills, obligations, and a manifest. It is the other end of the <a href="/deployment-manager.html">deployment manager</a>: one builds the package, the other stands it up.</p>
+        <p>It is defined by what it will not make up. A package is only as honest as the judgment in it, and two parts of it are judgment: what the agent refuses, and what it has to record. The rest is description. The builder asks for both and refuses to emit a package without them. It also never presents a package as finished: every package it produces is a draft, because nobody has run the agent it describes.</p>
+        <p>What it emits is an <a href="https://commonagent.net/package.html">Agent Package</a> as the Common Agent Specification defines it: an Agent Plugin carrying the agent's draft Descriptor and an install file beside the manifest. That chapter owns the package's shape; this role owns the judgment a builder asks for and the record it signs.</p>
 
         <p>It holds these stages on the lifecycle map: Build and package, and Release (<a href="https://agenticdevelopment.ai/stages.html#build">agenticdevelopment.ai</a>).</p>
 
         <h2 id="role">1. The role</h2>
-        <p>Describing an agent and building one are different kinds of work. A person knows what they need done; turning that into a package a runtime can load means writing a manifest at the right schema, one skill per job in a form a harness reads, and the obligations that keep the agent honest once it runs. That last part is where a description quietly becomes a specification, and it is easy to skip.</p>
+        <p>Describing an agent and building one are different kinds of work. A person knows what they need done; turning that into a package a runtime can load means writing a manifest at the right schema, one skill per job in a form a harness reads, and the obligations that keep the agent honest once it runs. That last part is where a description quietly turns into a set of binding rules, and it is easy to skip.</p>
         <p>The package maker is that work as a job. An owner hands it a description and gets back a package in a known shape. The person who has the judgment fills in the honest parts, and the builder does not guess them. What it produces is portable by construction, because a plugin is a plugin wherever it runs; which harnesses can then load it is the deployment manager's concern.</p>
 
         <h2 id="asks">2. The requests</h2>
         <p>The role's exchanges are published as its primary interface, <a href="/builder.html">the builder</a> (<code>interface-builder</code>): build this, what did you build, and revise it. The interface page carries each exchange in full. Implementing the interface alone does not grant the role.</p>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
-          <li><b>The judgment parts are required.</b> A package MUST carry what the agent refuses and the records it must leave, and the builder MUST refuse to emit one that lacks either. It does not derive them from the description, because an agent with nothing written down that it will not do, and no records it must keep, is the failure that a run only reveals once it is too late.</li>
-          <li><b>Every package is a draft.</b> The builder has not run the agent it describes and MUST NOT present the package as more than a starting point. The manifest carries the draft mark, and the record says nobody has run it.</li>
-          <li><b>Systems are named by role.</b> Each system the agent needs is a role, an access level, and what the access is for. The builder MUST NOT name a vendor or wire a package to a particular supplier; binding roles to real systems belongs to whoever deploys it.</li>
-          <li><b>It asks for least access.</b> Each system's access is the most the job needs and no more. The builder MUST NOT request write where the description only reads, or a trigger the jobs never fire.</li>
+          <li><b>The judgment parts are required.</b> A package carries what the agent refuses and the records it has to leave, and the builder refuses to emit one that lacks either. It does not derive them from the description, because an agent with nothing written down that it will not do, and no records it has to keep, is the failure that a run only reveals once it is too late.</li>
+          <li><b>Every package is a draft.</b> The builder has not run the agent it describes and presents the package as no more than a starting point. The manifest carries the draft mark, and the record says nobody has run it.</li>
+          <li><b>Systems are named by role.</b> Each system the agent needs is a role, an access level, and what the access is for. The builder names no vendor and wires no package to a particular supplier; binding roles to real systems belongs to whoever deploys it.</li>
+          <li><b>It asks for least access.</b> Each system's access is the most the job needs and no more. The builder does not request write where the description only reads, or a trigger the jobs never fire.</li>
           <li><b>Skills are jobs.</b> There is one skill per thing somebody would ask the agent for, and each says when to reach for it, what a good result looks like, and what to do when it comes back empty. A skill per tool is a manual page wearing the word skill.</li>
-          <li><b>The manifest conforms to the plugin standard.</b> A package MUST validate against the Agent Plugin schema it declares, so any conforming runtime can load it. A package that only this builder's own deployer can read is not portable, which defeats the point of building one.</li>
+          <li><b>The manifest validates against the plugin schema.</b> A package validates against the Agent Plugin schema it declares, so any runtime that reads that schema can load it. A package that only this builder's own deployer can read is not portable, which defeats the point of building one.</li>
           <li><b>Every build leaves a record.</b> Builds, revisions, and refusals each produce the signed record in section 4. What was built, from what description, and the fact that it is a draft, are all in it.</li>
         </ol>
 
@@ -193,16 +192,16 @@
           <li><code>act</code> is one of <code>build</code>, <code>revise</code>, <code>refuse</code>. A refusal record carries <code>refused</code> with the reason, and names which required part the description was missing.</li>
           <li><code>package.sha256</code> commits the record to the bytes the builder emitted, so a reviewer can confirm they are looking at what was built.</li>
           <li><code>draft</code> is always true. A build record that claimed otherwise would be asserting the agent had been run, which the builder never does.</li>
-          <li><code>shape</code> counts what the package carries. A build whose <code>refuses</code> or <code>records</code> count is zero is not a conforming build, and the counts are where that shows.</li>
+          <li><code>shape</code> counts what the package carries. A build whose <code>refuses</code> or <code>records</code> count is zero fails the check, and the counts are where that shows.</li>
           <li><code>role</code> carries <code>agent-builder</code>, the name the role had when this record format was published. A verifier accepts <code>package-maker</code> beside it, and records already signed keep the old value.</li>
         </ol>
 
-        <h2 id="conformance">5. Conformance</h2>
-        <p>Conformance is behavioural. A harness hands the candidate a description and reads what it emits. The package must validate against the schema it declares, carry one skill per named job, name each system by role with the least access the description implies, and carry the refusals and records the description gave. The harness then hands a description with the refusals removed, and with the records removed; the candidate must refuse each and name the missing part. It must not emit a package with an empty obligation. It hands a description that names a vendor for a system; the package must carry the role and leave the vendor out. Finally the harness reads the record: a build record whose <code>draft</code> is not true, or whose <code>shape</code> disagrees with the package it points at, fails the candidate regardless of how good the package is.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <h2 id="conformance">5. How a holder is checked</h2>
+        <p>The check is behavioural. A harness hands the candidate a description and reads what it emits. The package has to validate against the schema it declares, carry one skill per named job, name each system by role with the least access the description implies, and carry the refusals and records the description gave. The harness then hands a description with the refusals removed, and one with the records removed; the candidate refuses each and names the missing part. It emits no package with an empty obligation. The harness hands a description that names a vendor for a system; the package carries the role and leaves the vendor out. Finally the harness reads the record: a build record whose <code>draft</code> is not true, or whose <code>shape</code> disagrees with the package it points at, fails the candidate regardless of how good the package is.</p>
+        <p>A platform can record the results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role describes.</p>
 
         <p><i>v0.2.0-draft (2026-09-14): the role was renamed from the agent builder. It makes packages and has never built an agent, and the new name says so. The offering name <code>role-agent-builder</code> stays reserved as an alias of <code>role-package-maker</code>, and records already signed under the old name keep it.</i></p>
-        <p><i>v0.1.0-draft (2026-08-30): this is the first draft, distilled from a real build of a package from a description, which passed to the deployment manager unchanged. The first clause of the contract matters most: the parts a description tends to omit, what the agent refuses and what it must record, are the parts that matter once the agent runs, so a builder that invented them would be manufacturing the quietest kind of failure. Argue with that clause first.</i></p>
+        <p><i>v0.1.0-draft (2026-08-30): this is the first draft, distilled from a real build of a package from a description, which passed to the deployment manager unchanged. The first clause of the contract matters most: the parts a description tends to omit, what the agent refuses and what it has to record, are the parts that matter once the agent runs, so a builder that invented them would be manufacturing the quietest kind of failure. Argue with that clause first.</i></p>
       </div>
 
       <!-- chrome:footer -->
@@ -212,8 +211,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

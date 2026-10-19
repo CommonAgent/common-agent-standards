@@ -106,7 +106,7 @@ const GROUPS = {
   },
   "doing-the-work": {
     icon: "processes",
-    text: "Agent Roles defines the jobs that recur on every network, Agent Processes writes down how a piece of work runs and who holds each phase, and the Agent Collab guide gives agents playbooks to follow when they work in a shared room.",
+    text: "Agent Processes writes down how a piece of work runs and who holds each phase, the Agent Roles guide describes the jobs that recur on every network, and the Agent Collab guide gives agents playbooks to follow when they work in a shared room.",
   },
 };
 
@@ -459,8 +459,9 @@ export function renderStandards({ draft = false } = {}) {
             <code>messaging-v0.9.0-draft</code>, and has a release on GitHub.
             <a href="${SUITE_REPO}/blob/main/standards.json">standards.json</a> lists every
             standard with its folder, domain, version, status and group, and this page is made from it.</p>
-          <p>A guide, such as Agent Collab, is kept in the same repository and versioned the same
-            way. It is written for agents to read and follow, and it has no schema or conformance suite.</p>
+          <p>A guide, such as Agent Collab or Agent Roles, is kept in the same repository and versioned the same
+            way. It is written for agents and people to read and follow, it has no schema or conformance suite,
+            and it changes as we learn.</p>
           <p>The text of every specification is licensed under CC BY 4.0, and the code under
             Apache-2.0. Changes are proposed as pull requests, as
             <a href="${SUITE_REPO}/blob/main/GOVERNANCE.md">GOVERNANCE.md</a> describes.</p>

@@ -4,6 +4,10 @@ Versions of Agent RFP tagged in this repository, newest first. A version is
 tagged as `rfp-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentrfp.net.
 
+## 0.9.1-draft (2026-10-18)
+
+Editorial, with no normative change. Agent Roles is a guide of working descriptions, so §5.2.1 says that an agent-shaped posting names a role described in Agent Roles, where it said a published role from the Agent Roles registry. The `registry` member of `role` keeps its name. No requirement, field, example or section number changes.
+
 ## 0.9.0-draft (2026-10-18)
 
 Gated postings, in new §5.11. A posting may keep a summary public and seal the

@@ -5,16 +5,16 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The doc writer: Agent Roles</title>
-  <meta name="description" content="The doc writer writes the documentation for whoever has to use or maintain a package, from the package and its records, and says where there was nothing to write from. It changes nothing it documents. Its check is the weakest in the registry, and it is published last for that reason.">
+  <meta name="description" content="The doc writer writes the documentation for whoever has to use or maintain a package, from the package and its records, and says where there was nothing to write from. It changes nothing it documents. Its check is the weakest of any role in Agent Roles, and it is published last for that reason.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
   <meta property="og:title" content="The doc writer: Agent Roles">
-  <meta property="og:description" content="The doc writer writes the documentation for whoever has to use or maintain a package, from the package and its records, and says where there was nothing to write from. It changes nothing it documents. Its check is the weakest in the registry, and it is published last for that reason.">
+  <meta property="og:description" content="The doc writer writes the documentation for whoever has to use or maintain a package, from the package and its records, and says where there was nothing to write from. It changes nothing it documents. Its check is the weakest of any role in Agent Roles, and it is published last for that reason.">
   <meta property="og:url" content="https://agentroles.ai/doc-writer.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/doc-writer.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,35 +138,35 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The doc writer</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-doc-writer</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this role in <a href="/spec.html#s24">§24</a>.</p>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-doc-writer</b></span><span>updated <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#24-role-the-doc-writer">24</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
         <p>The doc writer writes the documentation for whoever has to use or maintain a package, from the package and its records. It is distinct from the AgentDoc, which is assembled entirely from what an agent declares. This role writes the software's own documentation.</p>
-        <p>Its check is the weakest in this registry, and that is why it is published last among the lifecycle roles: nothing mechanical says whether documentation is right.</p>
+        <p>Its check is the weakest of any role in Agent Roles, and that is why it is published last among the lifecycle roles: nothing mechanical says whether documentation is right.</p>
         <p>It holds the Docs stage on the lifecycle map for the written documentation (<a href="https://agenticdevelopment.ai/stages.html#docs">agenticdevelopment.ai</a>). The <a href="/documenter.html">documenter</a> holds Docs for the AgentDoc.</p>
 
         <h2 id="asks">1. The requests</h2>
-        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (§14.3 of the specification). Implementing them alone does not grant the role.</p>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (§14.3 of Agent Roles). Implementing them alone does not grant the role.</p>
         <ol>
           <li><b>Document this package.</b> The writer is given a package and its records. It returns the documentation for whoever has to use or maintain the package.</li>
         </ol>
 
-        <h2 id="contract">2. The contract</h2>
+        <h2 id="contract">2. What it does</h2>
         <ol>
-          <li><b>It writes from the package and its records.</b> Every statement in the documentation traces to the package's declaration, its scripts, or a record the package left. The writer MUST NOT describe behavior the package does not declare.</li>
-          <li><b>It changes nothing it documents.</b> The doc writer MUST NOT change the package or its records.</li>
+          <li><b>It writes from the package and its records.</b> Every statement in the documentation traces to the package's declaration, its scripts, or a record the package left. The writer describes no behavior the package does not declare.</li>
+          <li><b>It changes nothing it documents.</b> The doc writer changes neither the package nor its records.</li>
           <li><b>What is not documented is said.</b> Where the package or its records give nothing to write from, the documentation says so and leaves the gap open.</li>
         </ol>
 
         <h2 id="record">3. The record</h2>
         <p>The record is the documentation. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).</p>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How a holder is checked</h2>
         <p>The test is behavioral, and it is weak. A harness hands the candidate a package with three declared jobs and records from two of them. The documentation must cover the three jobs, must trace each statement to the declaration or a record, and must say that the third job has no record to write from. A statement about behavior the package does not declare fails the candidate.</p>
-        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <p>A platform can record the results of this check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
 
         <p><i>v0.1.0-draft (2026-09-14): first draft, from the lifecycle plan.</i></p>
       </div>
@@ -179,8 +178,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>

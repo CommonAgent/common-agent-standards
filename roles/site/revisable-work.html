@@ -4,17 +4,17 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Revisable work: a standard agent interface</title>
+  <title>The revisable work interface: Agent Roles</title>
   <meta name="description" content="The revisable-work interface lets a delivered piece of work be changed without being redone. It covers a signed job manifest with every completion, a quote for redoing named steps, and a revision that reuses every piece it did not redo.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
-  <meta property="og:title" content="Revisable work: a standard agent interface">
+  <meta property="og:title" content="The revisable work interface: Agent Roles">
   <meta property="og:description" content="The revisable-work interface lets a delivered piece of work be changed without being redone. It covers a signed job manifest with every completion, a quote for redoing named steps, and a revision that reuses every piece it did not redo.">
   <meta property="og:url" content="https://agentroles.ai/revisable-work.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
   <link rel="canonical" href="https://agentroles.ai/revisable-work.html">
@@ -48,7 +48,7 @@
           <a href="/">What it is</a>
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
-          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/conformance.html">How a holder is checked</a>
           <a href="/directory.html">Every role and interface</a>
           </div>
         </details>
@@ -106,10 +106,9 @@
         <details class="sec" open>
           <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
           <a href="/interfaces/">Interface definitions</a>
-          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
           </div>
         </details>
@@ -139,8 +138,8 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>Revisable work</h1>
-        <div class="metas"><span>name <b>interface-revisable-work</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-09-08</b></span><span class="pill portable">portable</span></div>
-        <p class="canon">The specification defines this interface in <a href="/spec.html#s18">§18</a>. Software reads its definition from <a href="/interfaces/interface-revisable-work.json">interface-revisable-work.json</a>.</p>
+        <div class="metas"><span>name <b>interface-revisable-work</b></span><span>updated <b>2026-09-08</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this interface in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#18-interface-revisable-work">18</a>. Software reads its definition from <a href="/interfaces/interface-revisable-work.json">interface-revisable-work.json</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
@@ -161,7 +160,7 @@
           <li><b>Redo these steps.</b> This item is a request on the offering that produced the work, and it adds no new exchange. The request carries <code>revises</code> (the prior task id), <code>job.manifest</code> (the prior manifest's reference), <code>steps</code> (the step ids to redo), and the change itself in the request's text. It completes like any task, with a new job manifest attached, in which every piece not redone carries the same reference and digest as before, and the manifest's <code>reused</code> member counts those pieces.</li>
         </ol>
 
-        <h2 id="contract">3. The contract</h2>
+        <h2 id="contract">3. What it does</h2>
         <ol>
           <li><b>Every completion carries a manifest.</b> The implementer attaches a job manifest to every completion on an offering it implements this interface for, including the completions it does not expect to be revised. A revision names a manifest, so a completion without one cannot be revised.</li>
           <li><b>The manifest is signed by the agent's own key.</b> Its format is the Common Agent Specification's <code>job-manifest-v1</code>, which that specification defines. A manifest signed by anything other than the agent that did the work is not that agent's manifest.</li>
@@ -172,9 +171,9 @@
           <li><b>It has no document of its own.</b> Like the other interfaces, this one defines no signed statement and no signature tag. The job manifest it hands back is defined by the Common Agent Specification and carried here unchanged. What gets signed belongs to the work.</li>
         </ol>
 
-        <h2 id="conformance">4. Conformance</h2>
+        <h2 id="conformance">4. How an implementer is checked</h2>
         <p>The test is behavioural. A harness runs a job on the offering and checks that the completion carries a signed job manifest naming every delivered piece with its digest; asks for one step to be redone through a request carrying <code>revises</code>, <code>job.manifest</code>, and <code>steps</code>; fetches both manifests through the manifest exchange; and asserts that every piece not redone has the same reference and the same digest in both, that at least one piece changed, and that the new manifest's <code>reused</code> count equals the number of unchanged pieces. It also checks that the manifest exchange answers a task the implementer never completed with a typed answer and no error; that a quote for named steps returns each step's price, the total, the remaining included count, and the window; and that a revision past the included count with no budget is refused with the price as a quote, and is neither performed nor dropped.</p>
-        <p>Refusing an exchange with a reason conforms. Not answering does not. There is no partial implementation and no degraded mode.</p>
+        <p>Refusing an exchange with a reason passes the check. Not answering fails it. There is no partial implementation and no degraded mode.</p>
 
         <p><i>v0.1.0-draft (2026-09-08): this is the first draft. The rule to argue with is the fifth. Reuse is computed from digests because a stated count nobody can check is a claim about paperwork, and the manifest exists so that a buyer can see which parts were left alone.</i></p>
       </div>
@@ -186,8 +185,7 @@
           <a href="/roles.html">What a role is</a>
           <a href="/interfaces.html">What an interface is</a>
           <a href="/directory.html">Every role and interface</a>
-          <a href="/spec.html">The specification</a>
-          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
           <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
           <a href="https://commonagent.net/">The Common Agent Standards</a>
           <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
