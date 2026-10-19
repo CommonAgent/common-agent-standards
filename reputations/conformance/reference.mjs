@@ -146,17 +146,20 @@ const H = (...parts) => { const h = createHash("sha256"); for (const x of parts)
 const ONE = Buffer.from([1]);
 export const EMPTY = [Buffer.alloc(32)];
 for (let i = 1; i <= 256; i++) EMPTY.push(H(ONE, EMPTY[i - 1], EMPTY[i - 1]));
-// A subject's slot key: SHA-256 over the UTF-8 of the subject after NFC,
-// Unicode full case folding (the C and F entries of CaseFolding.txt, Unicode
-// 15.1.0, in casefolding-15.1.0.json), and NFC again.
+// A subject's slot key: SHA-256 over the UTF-8 of the subject's canonical
+// caseless form (Unicode D145): normalization form D, full case folding (the
+// C and F entries of CaseFolding.txt, Unicode 15.1.0, in
+// casefolding-15.1.0.json), and normalization form D again. Composing in
+// between, as NFC would, can compose a mark with the wrong base and lose a
+// match: U+1FB7 and U+0391 U+0342 U+0345 match under D145 and not under NFC.
 const FOLD = JSON.parse(readFileSync(CASEFOLD_FILE, "utf8")).fold;
 export function foldSubject(subject) {
   let out = "";
-  for (const ch of subject.normalize("NFC")) {
+  for (const ch of subject.normalize("NFD")) {
     const hex = ch.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
     out += FOLD[hex] ? String.fromCodePoint(...FOLD[hex].split(" ").map((h) => parseInt(h, 16))) : ch;
   }
-  return out.normalize("NFC");
+  return out.normalize("NFD");
 }
 export const subjectKey = (subject) => createHash("sha256").update(foldSubject(subject), "utf8").digest();
 const bitOf = (key, i) => (key[i >> 3] >> (7 - (i & 7))) & 1;
@@ -235,6 +238,32 @@ export function witnessCosigns(last, commitment) {
   if (!last) return commitment.seq === 1 && commitment.prev === null ? "ok" : "the witness co-signs a bureau's first commitment first";
   if (commitment.bureau !== last.bureau) return "another bureau";
   if (commitment.seq !== last.seq + 1 || commitment.prev !== commitmentHash(last)) return "it does not extend the last commitment the witness co-signed";
+  return "ok";
+}
+
+/** Every co-signer the key set names has co-signed the commitment. One that has not, or whose signature fails, refuses it. */
+export function cosignedByAll(commitment, cosignatures, witnesses) {
+  const bytes = signedBytes(COSIGN_TAG, cosignedObject(commitment));
+  for (const w of witnesses.filter((x) => x.kind === "cosigner")) {
+    const c = cosignatures.find((x) => x.witness === w.id);
+    if (!c || !verify(null, bytes, publicKeyOf(w.key), Buffer.from(c.sig, "base64"))) return `${w.id} has not co-signed it`;
+  }
+  return "ok";
+}
+
+// A change to the witness list names the list it changes by the SHA-256 of
+// its JCS, and every co-signer on that list signs it under the tag
+// fdbk-witnesses-v1. A consumer moves its pinned list only along changes so
+// signed.
+export const WITNESSES_TAG = "fdbk-witnesses-v1";
+export const witnessListHash = (list) => createHash("sha256").update(jcs(list), "utf8").digest("hex");
+export function witnessChangeSigned(pinned, change, signatures) {
+  if (change.previous !== witnessListHash(pinned)) return "it does not change the list the consumer pinned";
+  const bytes = signedBytes(WITNESSES_TAG, change);
+  for (const w of pinned.filter((x) => x.kind === "cosigner")) {
+    const s = signatures.find((x) => x.witness === w.id);
+    if (!s || !verify(null, bytes, publicKeyOf(w.key), Buffer.from(s.sig, "base64"))) return `${w.id}, on the list it changes, has not signed it`;
+  }
   return "ok";
 }
 
@@ -351,41 +380,68 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
   const file = JSON.parse(readFileSync(HEADS_FILE, "utf8"));
   const report = JSON.parse(readFileSync(REPORT_FILE, "utf8"));
   const { privateKey, key, kid } = keyFromSeed(report.test_key.seed_hex);
-  const witness = keyFromSeed(file.test_witness.seed_hex);
-  if (WRITE) Object.assign(file.test_witness, { public_key: witness.key, kid: witness.kid });
-  else if (file.test_witness.public_key !== witness.key) bad.push("heads: the witness seed gives another key");
+  const wk = Object.fromEntries(file.test_witnesses.map((w) => [w.id, keyFromSeed(w.seed_hex)]));
+  for (const w of file.test_witnesses) {
+    if (WRITE) Object.assign(w, { public_key: wk[w.id].key, kid: wk[w.id].kid });
+    else if (w.public_key !== wk[w.id].key) bad.push(`heads: the seed of ${w.id} gives another key`);
+  }
+  const listOf = (ids) => ids.map((id) => ({ id, key: wk[id].key, kind: "cosigner" }));
+  const cosign = (id, commitment) => ({ witness: id, kid: wk[id].kid, sig: sign(null, signedBytes(COSIGN_TAG, cosignedObject(commitment)), wk[id].privateKey).toString("base64") });
+  const signChange = (id, change) => ({ witness: id, kid: wk[id].kid, sig: sign(null, signedBytes(WITNESSES_TAG, change), wk[id].privateKey).toString("base64") });
+
+  // The witness list: the one a consumer pinned, the changes from it, and the
+  // list the key set names now.
+  if (WRITE) {
+    file.pinned_witnesses = listOf(file.pinned_witnesses.map((w) => w.id));
+    let list = file.pinned_witnesses;
+    for (const c of file.key_set.witness_changes) {
+      c.change = { bureau: file.key_set.bureau, previous: witnessListHash(list), witnesses: listOf(c.change.witnesses.map((w) => w.id)) };
+      c.signatures = list.map((w) => signChange(w.id, c.change));
+      list = c.change.witnesses;
+    }
+    file.key_set.witnesses = list;
+  } else {
+    let list = file.pinned_witnesses;
+    for (const c of file.key_set.witness_changes) {
+      const ok = witnessChangeSigned(list, c.change, c.signatures);
+      if (ok !== "ok") bad.push(`heads: a witness change: ${ok}`);
+      list = c.change.witnesses;
+    }
+    if (jcs(list) !== jcs(file.key_set.witnesses)) bad.push("heads: the changes do not lead from the pinned witnesses to the key set's");
+  }
+  const witnesses = file.key_set.witnesses;
+
   for (const k of file.slot_keys) {
     const ka = subjectKey(k.a).toString("hex"), kb = subjectKey(k.b).toString("hex");
     if (WRITE) { k.folded = foldSubject(k.a); k.key = ka; continue; }
-    if (ka !== kb) bad.push(`slot key ${k.a} / ${k.b}: they take different slots`);
-    if (ka !== k.key || foldSubject(k.a) !== k.folded) bad.push(`slot key ${k.a}: differs from the vector`);
+    if (ka !== kb) bad.push(`slot key ${k.name}: the two names take different slots`);
+    if (ka !== k.key || foldSubject(k.a) !== k.folded) bad.push(`slot key ${k.name}: differs from the vector`);
   }
   const byName = Object.fromEntries(file.commitments.map((c) => [c.name, c]));
   let prev = null;
-  let lastCosigned = null;
   for (const c of file.commitments) {
     const slots = slotsOf(c.heads, c.tombstones);
     const root = smtRoot(slots);
     const commitment = { ...c.envelope.heads, seq: c.envelope.heads.seq, prev: prev ? commitmentHash(prev.envelope.heads) : null, root, subjects: c.heads.length, tombstones: c.tombstones.length };
     const bytes = signedBytes(HEADS_TAG, commitment);
     const sig = sign(null, bytes, privateKey).toString("base64");
-    const cosignBytes = signedBytes(COSIGN_TAG, cosignedObject(commitment));
-    const cosig = sign(null, cosignBytes, witness.privateKey).toString("base64");
     if (WRITE) {
       c.slots = [...slots.values()].sort((x, y) => x.key.localeCompare(y.key)).map((x) => ({ key: x.key, digest: slotDigest(x).toString("hex") }));
       c.envelope = { heads: commitment, bureau_key: key, bureau_kid: kid, bureau_sig: sig };
       c.signed_bytes = bytes.toString("utf8");
       c.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
-      c.cosignature = { witness: file.key_set.witnesses[0].id, key: witness.key, kid: witness.kid, signed_bytes: cosignBytes.toString("utf8"), sig: cosig };
+      c.cosigned_bytes = signedBytes(COSIGN_TAG, cosignedObject(commitment)).toString("utf8");
+      c.cosignatures = witnesses.map((w) => cosign(w.id, commitment));
     } else {
       if (root !== c.envelope.heads.root) bad.push(`${c.name}: the root is ${root}, the vector says ${c.envelope.heads.root}`);
       if (bytes.toString("utf8") !== c.signed_bytes) bad.push(`${c.name}: the signed bytes differ from the vector's`);
       if (sig !== c.envelope.bureau_sig) bad.push(`${c.name}: the signature is ${sig}, the vector says ${c.envelope.bureau_sig}`);
       if (!verify(null, bytes, publicKeyOf(key), Buffer.from(c.envelope.bureau_sig, "base64"))) bad.push(`${c.name}: the commitment does not verify`);
       if (erasuresDated(commitment, c.tombstones) !== "ok") bad.push(`${c.name}: ${erasuresDated(commitment, c.tombstones)}`);
-      const named = file.key_set.witnesses.find((w) => w.id === c.cosignature.witness && w.key === c.cosignature.key);
-      if (!named || !verify(null, cosignBytes, publicKeyOf(c.cosignature.key), Buffer.from(c.cosignature.sig, "base64"))) bad.push(`${c.name}: the co-signature of a named witness does not verify`);
-      if (witnessCosigns(lastCosigned, commitment) !== "ok") bad.push(`${c.name}: the witness would refuse it: ${witnessCosigns(lastCosigned, commitment)}`);
+      const all = cosignedByAll(commitment, c.cosignatures, witnesses);
+      if (all !== "ok") bad.push(`${c.name}: ${all}`);
+      const refused = witnessCosigns(prev ? prev.envelope.heads : null, commitment);
+      if (refused !== "ok") bad.push(`${c.name}: a witness would refuse it: ${refused}`);
       if (prev) {
         const f = followsFrom(prev.envelope.heads, c.envelope.heads);
         if (f !== "ok") bad.push(`${c.name}: ${f}`);
@@ -394,7 +450,6 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       }
     }
     prev = c;
-    lastCosigned = commitment;
   }
   if (WRITE) file.empty_root = EMPTY[256].toString("hex");
   else if (EMPTY[256].toString("hex") !== file.empty_root) bad.push("heads: the root of no slots differs from the vector's");
@@ -408,8 +463,18 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
     const slot = p.kind === "absent" ? null : slots.get(keyHex);
     if (rootFromProof(keyHex, slot, p.siblings) !== c.envelope.heads.root) bad.push(`proof ${p.name}: it does not reach the root of ${c.name}`);
   }
-  if (WRITE) writeFileSync(HEADS_FILE, `${JSON.stringify(file, null, 2)}\n`);
-  else {
+  if (WRITE) {
+    // The cases that must fail and carry signatures get them here.
+    for (const f of file.must_fail) {
+      if (f.check === "fork") {
+        for (const br of f.branches) br.cosignatures = br.cosigned_by.map((id) => cosign(id, { ...byName[f.commitment].envelope.heads, ...(br.set ?? {}) }));
+      } else if (f.check === "witness_change") {
+        f.change = { bureau: file.key_set.bureau, previous: witnessListHash(witnesses), witnesses: listOf(f.change.witnesses.map((w) => w.id)) };
+        f.signatures = f.signed_by.map((id) => signChange(id, f.change));
+      }
+    }
+    writeFileSync(HEADS_FILE, `${JSON.stringify(file, null, 2)}\n`);
+  } else {
     for (const f of file.must_fail) {
       let res = "ok";
       if (f.check === "proof") {
@@ -430,10 +495,16 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       } else if (f.check === "witness") {
         const next = { ...byName[f.commitment].envelope.heads, ...(f.set ?? {}) };
         res = witnessCosigns(byName[f.after].envelope.heads, next);
+      } else if (f.check === "fork") {
+        // Each branch of the fork must fail: neither carries every named co-signer.
+        const passing = f.branches.filter((br) => cosignedByAll({ ...byName[f.commitment].envelope.heads, ...(br.set ?? {}) }, br.cosignatures, witnesses) === "ok");
+        res = passing.length ? "ok" : "no branch carries every named co-signer";
+      } else if (f.check === "witness_change") {
+        res = witnessChangeSigned(witnesses, f.change, f.signatures);
       }
       if (res === "ok") bad.push(`must fail ${f.name}: it passed`);
     }
-    console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${file.commitments.length} commitments with their co-signatures, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
+    console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${file.key_set.witness_changes.length} witness change, ${file.commitments.length} commitments co-signed by ${witnesses.length} witnesses, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
   }
 }
 

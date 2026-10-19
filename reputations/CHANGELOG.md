@@ -16,34 +16,40 @@ cannot show readers different histories or rewrite one it has shown, with a
 chain of commitments:
 
 - At least daily it publishes a commitment over a sparse Merkle tree of
-  height 256 with one slot per subject, at the SHA-256 of the name after NFC
-  and Unicode 15.1.0 full case folding, as Personal Agent Naming compares
-  handles. A slot holds the subject's head, the tombstone of its erasure, or
+  height 256 with one slot per subject, at the SHA-256 of the name's
+  canonical caseless form (Unicode D145: NFD, full case folding at Unicode
+  15.1.0, NFD), the form Personal Agent Naming 0.10.3 compares handles in. A slot holds the subject's head, the tombstone of its erasure, or
   nothing, so a subject has one head and an absent subject can be proved
   absent.
 - Each commitment carries a sequence number and `prev`, the hash of the
   previous one's signed bytes. It is signed under `fdbk-heads-v1` with the
-  report signing key, and within 24 hours a witness the bureau's key set
+  report signing key, and within 24 hours every witness the bureau's key set
   names must co-sign it under `fdbk-heads-cosign-v1`. A witness co-signs only
   the commitment that extends the last one it co-signed for the bureau, so it
-  never co-signs two with one `seq`; a public append-only log may stand in.
+  never co-signs two with one `seq`. A public append-only log may stand in
+  only when it refuses a second entry for one `bureau` and `seq`.
+- The witness list is pinned with the keys and changes additively, by
+  changes every witness on the earlier list signs under `fdbk-witnesses-v1`,
+  which the key set lists in `witness_changes`.
 - Every slot carries forward: a head moves only up its own log, leaves only
   for a tombstone, and a tombstone gives way only to a new log that names
   the erasure in `after_erasure`.
 - Commitments are kept and served by sequence number, with a proof for any
   slot of any of them.
 - Reports carry `log`: a head of the subject's log and a commitment that
-  holds exactly that head, and §8.1.3 step 7 checks them when the consumer
-  has the commitment and the proof.
+  holds exactly that head. §8.1.3 step 7 is required for every report that
+  carries `log`, and a consumer that cannot fetch the commitment or the
+  proof says the report is unanchored.
 - A privacy note says what slot keys over guessable names reveal, and names
   a key from a verifiable random function, as in CONIKS, as a later option.
 - §8.1.1 and §8.1.2 rule 4 name the commitment's tag, and the key's `use`
   governs commitments as it does reports.
 
-The new file `conformance/fdbk-heads-v1.json` fixes three pairs of slot keys,
-two co-signed commitments, four proofs and thirteen refused cases, and
-`reference.mjs` reproduces it with the case folding in
-`conformance/casefolding-15.1.0.json`. The
+The new file `conformance/fdbk-heads-v1.json` fixes four pairs of slot keys,
+a witness change, two commitments co-signed by two witnesses, four proofs
+and fifteen refused cases, and `reference.mjs` reproduces it with the case
+folding in `conformance/casefolding-15.1.0.json`, which is Unicode data
+under the Unicode License V3 (`conformance/LICENSE-UNICODE`). The
 minor version moves because a bureau conforming to 0.7.0-draft with one log
 stays conforming, while one with a log per subject conforms only from this
 version, and only with the commitments.

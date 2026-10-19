@@ -5,3 +5,8 @@ This repository holds the Common Agent Standards, sponsored by AgentMesh. The
 specification text is licensed under CC BY 4.0 (LICENSE-SPEC). The conformance
 fixtures and runners, the site tools and the workflow scripts are licensed
 under Apache-2.0 (LICENSE).
+
+reputations/conformance/casefolding-15.1.0.json is Unicode data, taken from
+the Unicode Character Database's CaseFolding.txt, and is licensed under the
+Unicode License V3 (reputations/conformance/LICENSE-UNICODE), not under
+Apache-2.0.

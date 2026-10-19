@@ -1,18 +1,72 @@
 {
-  "about": "Test vectors for the chained commitment over every subject's log that a bureau keeping one log per subject publishes (Agent Reputations §4.1.1). The tree is a sparse Merkle tree of height 256: each subject has one slot, at the SHA-256 of its name lowercased; a slot holds the subject's head or the tombstone of an erased subject, and its digest is SHA-256 over the byte 0x00 and the JCS of what it holds; an empty subtree of height h has the digest EMPTY[h], 32 zero bytes at height 0 and SHA-256 over 0x01 and two copies of EMPTY[h-1] above; a node is SHA-256 over 0x01, its left child and its right child; bit 0 of a key, the highest bit of its first byte, chooses the side at the root. A proof lists the sibling of each level from the slot up, null for an empty subtree. Commitments are signed under the tag fdbk-heads-v1 with the report test key of fdbk-report-v1.json, and each names the previous one in prev: SHA-256 over its signed bytes. reference.mjs beside this file reproduces every vector.",
-  "test_witness": {
-    "warning": "TEST KEY ONLY. Its private part is published so that anyone can reproduce the co-signatures below. A witness must never sign with it.",
-    "seed_hex": "969f12e1c3442c626d7ec7c5d27ea6b7b0ea93d449808b30d244e1b388dd8e6e",
-    "public_key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
-    "kid": "c044d786bb85"
-  },
+  "about": "Test vectors for the chained commitment over every subject's log that a bureau keeping one log per subject publishes (Agent Reputations §4.1.1). The tree is a sparse Merkle tree of height 256: each subject has one slot, at the SHA-256 of the UTF-8 of its canonical caseless form (Unicode D145: NFD, full case folding by casefolding-15.1.0.json, NFD); a slot holds the subject's head or the tombstone of an erased subject, and its digest is SHA-256 over the byte 0x00 and the JCS of what it holds; an empty subtree of height h has the digest EMPTY[h], 32 zero bytes at height 0 and SHA-256 over 0x01 and two copies of EMPTY[h-1] above; a node is SHA-256 over 0x01, its left child and its right child; bit 0 of a key, the highest bit of its first byte, chooses the side at the root. A proof lists the sibling of each level from the slot up, null for an empty subtree. Commitments are signed under the tag fdbk-heads-v1 with the report test key of fdbk-report-v1.json, each names the previous one in prev (SHA-256 over its signed bytes), and every co-signer the key set names co-signs each under fdbk-heads-cosign-v1. The key set's witness list moved from the pinned list by a change that every co-signer on the pinned list signed under fdbk-witnesses-v1. reference.mjs beside this file reproduces every vector.",
+  "test_witnesses_warning": "TEST KEY ONLY. Its private part is published so that anyone can reproduce the co-signatures below. No witness may ever sign with it.",
+  "test_witnesses": [
+    {
+      "id": "https://witness-one.example",
+      "seed_hex": "969f12e1c3442c626d7ec7c5d27ea6b7b0ea93d449808b30d244e1b388dd8e6e",
+      "public_key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
+      "kid": "c044d786bb85"
+    },
+    {
+      "id": "https://witness-two.example",
+      "seed_hex": "0340c2d22c036192d08f55ee6c7ac2cde0242db012ddeb9c7721633e3a1f6e35",
+      "public_key": "bv6AOdcMhmIiHqvw0JIWQcRuNHK2fzSRGFONMwE8a5Y=",
+      "kid": "b441aeececec"
+    },
+    {
+      "id": "https://witness-three.example",
+      "seed_hex": "9f1a47c865d92144d59ebb696d9d5a4e4f7cb184bf476a00f2ae68eea07599a4",
+      "public_key": "yizvytQAskSkeY9YFPdYQopgZ6S5fQDYXmqRhHp82W4=",
+      "kid": "57812592f6ad"
+    }
+  ],
+  "pinned_witnesses": [
+    {
+      "id": "https://witness-one.example",
+      "key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
+      "kind": "cosigner"
+    }
+  ],
   "key_set": {
     "bureau": "https://bureau.example",
     "witnesses": [
       {
-        "id": "https://witness.example",
+        "id": "https://witness-one.example",
         "key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
         "kind": "cosigner"
+      },
+      {
+        "id": "https://witness-two.example",
+        "key": "bv6AOdcMhmIiHqvw0JIWQcRuNHK2fzSRGFONMwE8a5Y=",
+        "kind": "cosigner"
+      }
+    ],
+    "witness_changes": [
+      {
+        "change": {
+          "bureau": "https://bureau.example",
+          "previous": "78f67c93e3f91630ffcd9cb354854a2dac975ec659535b854d4ab8a19f872e96",
+          "witnesses": [
+            {
+              "id": "https://witness-one.example",
+              "key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
+              "kind": "cosigner"
+            },
+            {
+              "id": "https://witness-two.example",
+              "key": "bv6AOdcMhmIiHqvw0JIWQcRuNHK2fzSRGFONMwE8a5Y=",
+              "kind": "cosigner"
+            }
+          ]
+        },
+        "signatures": [
+          {
+            "witness": "https://witness-one.example",
+            "kid": "c044d786bb85",
+            "sig": "njvqlff4Wz9QJNRtRXwHR2PtoG7pAjmfr/4CB8CgOe/L11LPLY0qvN38KWmHS0hpalD0SDAUJ6GfOokuCERSBg=="
+          }
+        ]
       }
     ]
   },
@@ -37,6 +91,14 @@
       "b": "σοφος.ops@example.org",
       "folded": "σοφοσ.ops@example.org",
       "key": "f7250d7d82669e65e3c6846cbaae6832bff7386b2a227ece5bd77f396f21d24a"
+    },
+    {
+      "name": "ypogegrammeni",
+      "a": "ᾷ.ops@example.org",
+      "b": "ᾼ͂.ops@example.org",
+      "note": "U+1FB7 and U+0391 U+0342 U+0345 match under D145; folding between NFC steps gives two keys",
+      "folded": "ᾶι.ops@example.org",
+      "key": "00df3aa5e3c681071f4cdebded30044e3a7214311a0919fa4c6978f2d288e01c"
     }
   ],
   "commitments": [
@@ -72,8 +134,8 @@
       "tombstones": [],
       "slots": [
         {
-          "key": "433c257859dbd546119a82d17824d6c561f52ef37063d4011c1d5c8a35bffc79",
-          "digest": "7af9acf4fb5c579c5ee082a70af839d26daa7ac45a46fc3e3c486802b70b5ff5"
+          "key": "421744dc328debb9d25fb38af48760c604f27b1ab10a716ef25e24f9cac57674",
+          "digest": "49fa6bd2b6a5cdc1b02471fe2253105fe51a288b51c1f905ab635a6c850bcdb0"
         },
         {
           "key": "6eb2e49a1144032a6d33782fe2862a3b3c87214ee2617cbcb244283abe856754",
@@ -98,23 +160,29 @@
           "seq": 1,
           "issued_at": "2026-10-19T00:00:00.000Z",
           "prev": null,
-          "root": "d1a72e21a71c8ab3f08efc0f44f88792a1d400e92f812d9cb08419822fb25710",
+          "root": "14607b8515156a78b991777928eb6114f6cec3842fef8dd3eba8ebd2a456a676",
           "subjects": 5,
           "tombstones": 0
         },
         "bureau_key": "01sCQHvvCb7r6Es5no0VZvHxhYQkGKmKzG5m11P/Bww=",
         "bureau_kid": "e23eccc4f5cc",
-        "bureau_sig": "4+HYivzp6WaKk7bjnpM0P9A1nqDDGzaw1u5W0NrlTSV0EsH1shO4HpPGro3L6c2qhKeZ8P9UYzVgzXmqiXClCg=="
+        "bureau_sig": "ILdEvmKAeVn3MxxOxeQ1JtiKmm3em0eq7H9WBy3RecOrzBq6Wq6+kKAi83MOK8bqP9w3f2hNhTuWSA00kMFvBQ=="
       },
-      "signed_bytes": "fdbk-heads-v1\n{\"bureau\":\"https://bureau.example\",\"issued_at\":\"2026-10-19T00:00:00.000Z\",\"prev\":null,\"root\":\"d1a72e21a71c8ab3f08efc0f44f88792a1d400e92f812d9cb08419822fb25710\",\"seq\":1,\"subjects\":5,\"tombstones\":0}",
-      "signed_bytes_sha256": "f973e9a7e1a7a9d7f50c5f19df09b0cec7535d34b44ad165724d1cd0a335f030",
-      "cosignature": {
-        "witness": "https://witness.example",
-        "key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
-        "kid": "c044d786bb85",
-        "signed_bytes": "fdbk-heads-cosign-v1\n{\"bureau\":\"https://bureau.example\",\"commitment\":\"f973e9a7e1a7a9d7f50c5f19df09b0cec7535d34b44ad165724d1cd0a335f030\",\"seq\":1}",
-        "sig": "rbcIHgIq0eenMOULA8+PYf5ZoO4n6Cr+MpgzfsCQ/jKPQHRGrGY7yLfqkjwptzTDMuRHUr9y+ytKNvU4/W/NDA=="
-      }
+      "signed_bytes": "fdbk-heads-v1\n{\"bureau\":\"https://bureau.example\",\"issued_at\":\"2026-10-19T00:00:00.000Z\",\"prev\":null,\"root\":\"14607b8515156a78b991777928eb6114f6cec3842fef8dd3eba8ebd2a456a676\",\"seq\":1,\"subjects\":5,\"tombstones\":0}",
+      "signed_bytes_sha256": "890509bb38f25e04c258d05e126dcc0895e8f496d20feed12e5550007e8f49a3",
+      "cosigned_bytes": "fdbk-heads-cosign-v1\n{\"bureau\":\"https://bureau.example\",\"commitment\":\"890509bb38f25e04c258d05e126dcc0895e8f496d20feed12e5550007e8f49a3\",\"seq\":1}",
+      "cosignatures": [
+        {
+          "witness": "https://witness-one.example",
+          "kid": "c044d786bb85",
+          "sig": "fi7DrblB5NhWdc2TbtYg04xtpeT7udd0lUVCMGxZjYhSXGd4eiY27Dc8VrLsUVFTwPsUOVzrscGL8wdHXSjNCA=="
+        },
+        {
+          "witness": "https://witness-two.example",
+          "kid": "b441aeececec",
+          "sig": "P87Dvf/8qsji78dRNVWKl/gIEor8bnbYiLutFcnuEaQ6kVn0AHn1vEVM6QhNXf2KlOGcX7tU8lmtod36/pKBBQ=="
+        }
+      ]
     },
     {
       "name": "c2",
@@ -147,14 +215,14 @@
       ],
       "tombstones": [
         {
-          "key": "433c257859dbd546119a82d17824d6c561f52ef37063d4011c1d5c8a35bffc79",
+          "key": "421744dc328debb9d25fb38af48760c604f27b1ab10a716ef25e24f9cac57674",
           "erased_at": "2026-10-19T18:00:00.000Z"
         }
       ],
       "slots": [
         {
-          "key": "433c257859dbd546119a82d17824d6c561f52ef37063d4011c1d5c8a35bffc79",
-          "digest": "592a4582211c75d336acf3815b0554882758905a0eed84731b7d2a8a01511dec"
+          "key": "421744dc328debb9d25fb38af48760c604f27b1ab10a716ef25e24f9cac57674",
+          "digest": "d6f31e132213ee996e889b6c17474b8c3de26e97b80a2a54790557d39b448c94"
         },
         {
           "key": "6eb2e49a1144032a6d33782fe2862a3b3c87214ee2617cbcb244283abe856754",
@@ -182,24 +250,30 @@
           "bureau": "https://bureau.example",
           "seq": 2,
           "issued_at": "2026-10-20T00:00:00.000Z",
-          "prev": "f973e9a7e1a7a9d7f50c5f19df09b0cec7535d34b44ad165724d1cd0a335f030",
-          "root": "031cdcbd4da2bff181992c97ce29f75f42bfaf7180c17c18ef600a6c5c2c4259",
+          "prev": "890509bb38f25e04c258d05e126dcc0895e8f496d20feed12e5550007e8f49a3",
+          "root": "cff315aba91fb6d7f56f40a540ad5446f7ae00e690144e48afcf328637a81d17",
           "subjects": 5,
           "tombstones": 1
         },
         "bureau_key": "01sCQHvvCb7r6Es5no0VZvHxhYQkGKmKzG5m11P/Bww=",
         "bureau_kid": "e23eccc4f5cc",
-        "bureau_sig": "KVGO0D+EcMh/KQVJHOjQCsoTvjy57/hj1EnXyj/zevOwS1hj8AodxOTzO+sZRg109C+tGMq03KyzHg2KP8J+DQ=="
+        "bureau_sig": "7k5HxT56FFNBp2G51g89Gcgm1x+q+gVmVUduyHmRSCn0d7LjvY8NV4UD3URtQquObcrUHzYZDajFjRGrInE5Cw=="
       },
-      "signed_bytes": "fdbk-heads-v1\n{\"bureau\":\"https://bureau.example\",\"issued_at\":\"2026-10-20T00:00:00.000Z\",\"prev\":\"f973e9a7e1a7a9d7f50c5f19df09b0cec7535d34b44ad165724d1cd0a335f030\",\"root\":\"031cdcbd4da2bff181992c97ce29f75f42bfaf7180c17c18ef600a6c5c2c4259\",\"seq\":2,\"subjects\":5,\"tombstones\":1}",
-      "signed_bytes_sha256": "18d3d90bb7212068896f951af66235a1661b684c9814f8e01eb3c561e6251263",
-      "cosignature": {
-        "witness": "https://witness.example",
-        "key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
-        "kid": "c044d786bb85",
-        "signed_bytes": "fdbk-heads-cosign-v1\n{\"bureau\":\"https://bureau.example\",\"commitment\":\"18d3d90bb7212068896f951af66235a1661b684c9814f8e01eb3c561e6251263\",\"seq\":2}",
-        "sig": "0uR7whSXfppiw4owgkWl1PlMEV139bSnO/S3YZY1xTAJWAkvMQ1avRTmp6tCC8GFuoilFvI+DFZfeyox5yIRBg=="
-      }
+      "signed_bytes": "fdbk-heads-v1\n{\"bureau\":\"https://bureau.example\",\"issued_at\":\"2026-10-20T00:00:00.000Z\",\"prev\":\"890509bb38f25e04c258d05e126dcc0895e8f496d20feed12e5550007e8f49a3\",\"root\":\"cff315aba91fb6d7f56f40a540ad5446f7ae00e690144e48afcf328637a81d17\",\"seq\":2,\"subjects\":5,\"tombstones\":1}",
+      "signed_bytes_sha256": "bbd3c5605384b0f61d926a947ea3fd126c4117c9f5fadfe57ee5e4b8afb38db6",
+      "cosigned_bytes": "fdbk-heads-cosign-v1\n{\"bureau\":\"https://bureau.example\",\"commitment\":\"bbd3c5605384b0f61d926a947ea3fd126c4117c9f5fadfe57ee5e4b8afb38db6\",\"seq\":2}",
+      "cosignatures": [
+        {
+          "witness": "https://witness-one.example",
+          "kid": "c044d786bb85",
+          "sig": "sTg3lKquXulvBoqR80s8sReMZpU1cuPxFBLqqLhTkJcvQqmLfUX6zqPwR+R9kSSsq6ClIrUTfGwVKlYdVCo2AQ=="
+        },
+        {
+          "witness": "https://witness-two.example",
+          "kid": "b441aeececec",
+          "sig": "V3wm/1oTZ8OPhfxKJSdG2j02OKyIV1QoSAtXDG+s8qSYrT/YNF9biSmGtNftnkPvwUnsoGXGvzhvjAAATxf5CQ=="
+        }
+      ]
     }
   ],
   "empty_root": "6155289130893872355eac98042d22aefa2c2e708bea169402760e3b55f9a2dc",
@@ -464,7 +538,7 @@
         null,
         null,
         null,
-        "f8ca1f3f5550ef3facd4203c4da6387d9f5a68b5b2e0f15e9e0bc4301f057d5e",
+        "17e7b69ef2092ae5cd34973b88670e496cf4f5c4d5a1d9a2a9a82af8bad60e25",
         null,
         "f1a943a82b428c61985e116eaeb95b43cfb1b247a19ce70f697af929360924e5"
       ]
@@ -474,7 +548,7 @@
       "commitment": "c1",
       "subject": "Chloé.ops@example.org",
       "kind": "head",
-      "key": "433c257859dbd546119a82d17824d6c561f52ef37063d4011c1d5c8a35bffc79",
+      "key": "421744dc328debb9d25fb38af48760c604f27b1ab10a716ef25e24f9cac57674",
       "siblings": [
         null,
         null,
@@ -737,7 +811,7 @@
     {
       "name": "a-tombstone",
       "commitment": "c2",
-      "key": "433c257859dbd546119a82d17824d6c561f52ef37063d4011c1d5c8a35bffc79",
+      "key": "421744dc328debb9d25fb38af48760c604f27b1ab10a716ef25e24f9cac57674",
       "kind": "tombstone",
       "siblings": [
         null,
@@ -1259,7 +1333,7 @@
         null,
         null,
         null,
-        "664ae536d3d8f96ce998614c0feda378d1a13c64c1cd7be439e474b95910867a",
+        "6027ab5a2724221c573ef5e315f13ff97f9428f4cd150ad1373386d4705a7980",
         "f1a943a82b428c61985e116eaeb95b43cfb1b247a19ce70f697af929360924e5"
       ]
     }
@@ -1300,7 +1374,7 @@
       "commitment": "c2",
       "tombstones": [
         {
-          "key": "433c257859dbd546119a82d17824d6c561f52ef37063d4011c1d5c8a35bffc79",
+          "key": "421744dc328debb9d25fb38af48760c604f27b1ab10a716ef25e24f9cac57674",
           "erased_at": "2026-10-20T08:00:00.000Z"
         }
       ],
@@ -1315,6 +1389,79 @@
         "root": "0000000000000000000000000000000000000000000000000000000000000000"
       },
       "reason": "a witness co-signs one commitment for each seq"
+    },
+    {
+      "name": "a-fork-co-signed-by-two-different-witnesses",
+      "check": "fork",
+      "commitment": "c2",
+      "branches": [
+        {
+          "set": {},
+          "cosigned_by": [
+            "https://witness-one.example"
+          ],
+          "cosignatures": [
+            {
+              "witness": "https://witness-one.example",
+              "kid": "c044d786bb85",
+              "sig": "sTg3lKquXulvBoqR80s8sReMZpU1cuPxFBLqqLhTkJcvQqmLfUX6zqPwR+R9kSSsq6ClIrUTfGwVKlYdVCo2AQ=="
+            }
+          ]
+        },
+        {
+          "set": {
+            "root": "0000000000000000000000000000000000000000000000000000000000000000"
+          },
+          "cosigned_by": [
+            "https://witness-two.example"
+          ],
+          "cosignatures": [
+            {
+              "witness": "https://witness-two.example",
+              "kid": "b441aeececec",
+              "sig": "XLtweq7oYBRxq7C3uotxKqMTfdKodmZIhqJH7trCze4q0mMctwkDi7xewfpBJ1+kvuDN3Xttk4afOn5Jjqj1BQ=="
+            }
+          ]
+        }
+      ],
+      "reason": "each witness co-signed one commitment for seq 2, and neither branch carries every named co-signer"
+    },
+    {
+      "name": "a-witness-list-changed-without-the-old-witnesses",
+      "check": "witness_change",
+      "change": {
+        "bureau": "https://bureau.example",
+        "previous": "64b330b09e05027dc62b36739e4b929f3bfcee26ed80e26984f9afc45c0bb617",
+        "witnesses": [
+          {
+            "id": "https://witness-one.example",
+            "key": "6ql/jsmLeOdmFwjupwQqrYysq6shMd5Cfk4FikI4y6Q=",
+            "kind": "cosigner"
+          },
+          {
+            "id": "https://witness-three.example",
+            "key": "yizvytQAskSkeY9YFPdYQopgZ6S5fQDYXmqRhHp82W4=",
+            "kind": "cosigner"
+          }
+        ]
+      },
+      "signed_by": [
+        "https://witness-one.example",
+        "https://witness-three.example"
+      ],
+      "reason": "a change of the witness list is signed by every co-signer on the list it changes, and witness two has not signed",
+      "signatures": [
+        {
+          "witness": "https://witness-one.example",
+          "kid": "c044d786bb85",
+          "sig": "5AyeCFEmTmb6CrwSYp7VlWuCErwOz3SgEux15mzap8nVcPo/pjjHQnbqw6FGF3q7QPba/DhGpSObw9EbIhZDBQ=="
+        },
+        {
+          "witness": "https://witness-three.example",
+          "kid": "57812592f6ad",
+          "sig": "vB2h4k+O3F3+WKa1421LWpSrMQIwuM+yYXCz1GITO8wZPNZOA8ixqpm+Emtww1Grits8EGGzWRD9WMv1lPu+CA=="
+        }
+      ]
     },
     {
       "name": "two-entries-for-one-subject-in-a-tree",
