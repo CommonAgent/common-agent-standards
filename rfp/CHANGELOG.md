@@ -4,6 +4,19 @@ Versions of Agent RFP tagged in this repository, newest first. A version is
 tagged as `rfp-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentrfp.net.
 
+## 0.11.0-draft (2026-10-19)
+
+A gated posting's body ref no longer names the posting. The example in
+§5.11.1 gave `gate.body.ref` as a URL containing the posting's own
+identifier, but the ref sits inside the bytes the identifier is derived
+from (§4.1), so no posting could carry that ref and still have the
+identifier §4.1 derives. A `ref` in the gate MUST NOT contain the posting's
+identifier, a board SHOULD address a body by its digest, which is known
+before the posting is assembled, and the example now does. A board MUST
+refuse to host a gated posting whose body ref contains its `id`; that new
+refusal is why the minor version moves. `conformance/rfp-posting.json` adds
+the cases.
+
 ## 0.10.0-draft (2026-10-19)
 
 The board's instant of receipt. Check 1 of §5.11.3 relied on the recipient's

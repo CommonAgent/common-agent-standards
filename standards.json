@@ -99,9 +99,9 @@
       "spec": "rfp/SPEC.md",
       "domain": "agentrfp.net",
       "site": "https://agentrfp.net/",
-      "version": "0.10.0-draft",
+      "version": "0.11.0-draft",
       "status": "Working Draft",
-      "tag": "rfp-v0.10.0-draft",
+      "tag": "rfp-v0.11.0-draft",
       "builder": "rfp/site/tools/build-spec.mjs",
       "summary": "An Agent RFP is a signed, structured request for proposal. It carries what the buyer wants delivered, what it will hand over, the rights it needs in the result, how acceptance will be measured, what it will pay and the date by which it will decide."
     },

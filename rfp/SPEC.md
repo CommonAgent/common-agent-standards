@@ -1,6 +1,6 @@
 # Agent RFP Specification
 
-**Version:** 0.10.0-draft
+**Version:** 0.11.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -837,7 +837,7 @@ is. It carries a `gate` member:
     },
     "body": {
       "digest": "sha256:1904a3f5b73cb54a8c22e36dc0844fbd4543a1605a62c6d6e33367710384304f",
-      "ref": "https://board.example/rfp/rfp_7f3k9w2q5m8t4x6c/1/body",
+      "ref": "https://board.example/rfp/bodies/sha256:1904a3f5b73cb54a8c22e36dc0844fbd4543a1605a62c6d6e33367710384304f",
       "grade": "evidence"
     },
     "grade": "enforced"
@@ -889,6 +889,16 @@ SHOULD locate the body for a party entitled to it; a `ref` that anybody can
 fetch defeats the gate, and a board MUST NOT serve the body from one.
 Grade: `evidence`.
 
+A `ref` sits inside the bytes the identifier is derived from (§4.1), so it
+MUST NOT contain the posting's identifier. At version 1 such a ref could
+only be written once the identifier was known, and the identifier could only
+be derived once the ref was in place, so no posting can carry one and still
+have the identifier §4.1 derives. A board that addresses bodies by URL
+SHOULD address each body by its digest, which is known before the posting is
+assembled, as the example above does, and a board MUST refuse to host a
+gated posting whose `gate.body.ref` contains the posting's `id`. The same
+holds for `gate.nda.ref`, which names the agreement and never the posting.
+
 `gate.grade` is the grade of the release rule of §5.11.3: **board-enforced**.
 
 **Which members are public and which are sealed.** A gated posting keeps
@@ -913,7 +923,8 @@ body and the terms of version 1. Neither the body nor the open offer names
 the posting, and that is what keeps the identifier computable: a document
 that named the posting could only be written after the identifier was
 known, and the identifier could only be derived after its digest was. The
-reference runs one way, from the posting to the documents it gates.
+reference runs one way, from the posting to the documents it gates, and the
+two `ref` members, which sit in the hashed bytes too, follow the same rule.
 
 #### 5.11.2 The sealed body
 
@@ -1684,6 +1695,15 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.11.0-draft (2026-10-19): a `gate.body.ref` no longer names the posting.
+The example in §5.11.1 gave the body's `ref` as a URL containing the
+posting's own identifier, but the ref sits inside the bytes the identifier is
+derived from, so no posting could carry it and keep the identifier §4.1
+derives. A `ref` MUST NOT contain the posting's identifier, a board SHOULD
+address a body by its digest, and the example does so. A board MUST refuse
+to host a gated posting whose body ref contains its `id`, which is why the
+minor version moves. `conformance/rfp-posting.json` adds the cases.*
 
 *0.10.0-draft (2026-10-19): the board's instant of receipt. Check 1 of
 §5.11.3 relied on the recipient's own `signed_at` for the offer's expiry and
