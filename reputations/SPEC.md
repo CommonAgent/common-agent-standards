@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.8.0-draft
+**Version:** 0.9.0-draft
 **Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -728,7 +728,9 @@ of the evidence.
 
 **Filing.** A claim is signed with the claimant's agent key: the tag
 `fdbk-nda-claim-v1`, one newline, and the JCS canonical JSON (RFC 8785) of the
-claim body.
+claim body. The claim's digest, which answers, acknowledgments and
+withdrawals sign over, is `sha256:` followed by the SHA-256 of that JCS in
+lowercase hex.
 
 ```json
 {
@@ -774,7 +776,7 @@ claim body.
 **What the bureau checks.** A bureau MUST record a claim as open only when all
 of these hold, and MUST otherwise record it as rejected, with the reason, in
 the claimant's and the respondent's subject-scoped excerpts (§4.1) and nowhere
-else:
+else, as the next paragraph allows:
 
 1. **The claimant signed it.** The signature verifies against the claimant's
    currently resolved identity, and that identity's agent key is the key in
@@ -822,6 +824,20 @@ else:
 The bureau checks only these. It does not read the material, decide whether a
 leak happened, or decide whether an exclusion of Agent NDA §5.6 applies, such
 as material that was already public. Those questions belong to the forum.
+
+**What a rejection keeps.** A bureau MAY keep a rejected claim as its digest,
+the number of the check that failed, and the reason, in place of the claim
+and the records it cites, and SHOULD bound how many rejections it records in
+a day from one claimant and against one respondent. Anyone who holds an agent
+key can file a claim against anyone, and a bureau that recorded every rejected
+claim in full would let any filer write data of its choosing into another
+subject's history, without bound and for good, since entries are never
+deleted. A respondent that wants the whole claim can ask the claimant for it,
+and the digest lets it check that what it gets is the claim that was filed.
+A claim whose signature does not verify against the key in `claimant`, or
+whose signing key the bureau can resolve to no identity, is no claim of
+anyone the bureau can name, and a bureau MAY refuse it without recording it
+at all.
 
 **Answers.** The respondent MAY answer any claim about it, signed with its
 agent key, or with the owner key that signed its seat, under the tag
@@ -942,8 +958,10 @@ findings and counts, served under these rules:
    or judge. A bureau serves the NDA record for any subject, enrolled or not,
    in a facts-only report as well (§8.3).
 8. **The respondent can see it and answer it.** The respondent's
-   subject-scoped excerpt (§4.1) MUST carry every claim about it, including
-   rejected claims, with every record the claim cites. The data-error process
+   subject-scoped excerpt (§4.1) MUST carry every claim about it with every
+   record the claim cites, and every rejected claim about it, which may be
+   kept as its digest, its failing check and the reason (§4.8, What a
+   rejection keeps). The data-error process
    of §10 applies to wrong agreements, wrong parties, and failed
    deduplication. Disagreement with a finding is not a data error: the
    respondent answers on the record and takes it to the forum.
@@ -1965,10 +1983,15 @@ outside Node.js itself.
   License V3, whose text is in
   [conformance/LICENSE-UNICODE](conformance/LICENSE-UNICODE). The Apache-2.0
   license of the rest of the folder does not cover it.
+- [conformance/fdbk-nda-claim-v1.json](conformance/fdbk-nda-claim-v1.json)
+  holds a claim of breach of §4.8 signed with a test claimant key whose
+  private part is published, its signed bytes, signature and digest, the
+  rejection a bureau may keep of it in place of the claim, and two changed
+  claims whose signature must not verify.
 - [conformance/reference.mjs](conformance/reference.mjs) computes the pool of
   §7.1 and the score of §7.3 from a ledger, signs and verifies under §8.1,
-  computes the commitments and proofs of §4.1.1 and checks their chain, and
-  checks all three files. The
+  computes the commitments and proofs of §4.1.1 and checks their chain, signs
+  a claim of §4.8 and takes its digest, and checks all four vector files. The
   repository runs it on every change.
 
 An implementation of `fdbk-score-1` conforms to the vectors when every number
@@ -1980,6 +2003,16 @@ signatures exactly, which Ed25519 makes possible because its signatures are
 deterministic, and refuses every report the vectors say it must refuse.
 
 ---
+
+*0.9.0-draft (2026-10-19): a bureau may keep a rejected claim of breach as
+its digest, its failing check and the reason, in place of the claim and its
+records, and should bound how many it records a day per claimant and per
+respondent, because recording junk claims in full lets anyone write
+unbounded, permanent data into another subject's history (§4.8, §4.9 rule
+8). A claim no identity the bureau can resolve signed may be refused
+unrecorded. §4.8 now defines the claim's digest, and
+`conformance/fdbk-nda-claim-v1.json` fixes a signed claim, its digest and the
+rejection kept of it.*
 
 *0.8.0-draft (2026-10-19): a bureau may keep one log per subject (§4.1.1),
 which lets it erase a subject's history without breaking every other log, if

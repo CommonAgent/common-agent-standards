@@ -4,6 +4,33 @@ Versions of Agent Reputations tagged in this repository, newest first. A version
 tagged as `reputations-v` followed by the version, and the text in this folder at
 that tag is the text of that version. The history of SPEC.md comes from jeffrschneider/feedback, and the history of the A2A Reputation extension from the repository of agentreputations.com.
 
+## 0.9.0-draft (2026-10-19)
+
+A bureau may keep a rejected claim of breach of an Agent NDA by its digest.
+Until this version §4.8 had a rejected claim recorded with its reason, and
+§4.9 rule 8 had the respondent's excerpt carry it with every record it
+cites. Anyone who holds an agent key can file a claim against anyone, so a
+bureau that kept every rejected claim in full let any filer write data of its
+choosing into another subject's permanent history, without bound.
+
+- §4.8, What a rejection keeps: a bureau MAY keep a rejected claim as its
+  digest, the number of the failing check and the reason, and SHOULD bound
+  the rejections it records a day per claimant and per respondent. A
+  respondent that wants the whole claim asks the claimant for it, and the
+  digest checks it. A claim whose signature does not verify, or whose
+  signing key resolves to no identity, MAY be refused unrecorded.
+- §4.9 rule 8 carries rejected claims in that form.
+- §4.8 defines the claim's digest: `sha256:` and the lowercase hex SHA-256
+  of the claim's JCS, the bytes answers, acknowledgments and withdrawals
+  sign over.
+
+The new file `conformance/fdbk-nda-claim-v1.json` fixes a signed claim with
+its signed bytes, signature and digest, the rejection kept of it, and two
+changed claims that must not verify, and `reference.mjs` reproduces it. The
+minor version moves because a respondent's excerpt from a bureau conforming
+to this version may hold a rejected claim without its document, which
+0.8.0-draft did not allow.
+
 ## 0.8.0-draft (2026-10-19)
 
 A bureau may keep one log per subject (§4.1.1). Until this version §4.1 asked
