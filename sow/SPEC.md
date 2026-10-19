@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.26.0-draft
+**Version:** 0.27.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -1328,10 +1328,19 @@ The counterparty resolves it one of four ways:
   change but not the price change is not an approval of anything; it is a
   different amendment, proposed back the other way after this one is denied
   or withdrawn.
-- **Silence**: an unresolved proposal lapses after `review_window_days`.
-  Where the clause does not state it, the window is 7 days, so that an
-  unanswered proposal always lapses and never blocks the next one. Lapse is
-  recorded, and the current version continues in force.
+- **Silence**: an unresolved proposal lapses after its review window. Lapse
+  is recorded, and the current version continues in force.
+
+**Which window governs a proposal.** A proposal's review window is the
+`review_window_days` of the version that governs while it is open, the
+current agreed version, or 7 days where that version does not state one. A
+proposal MAY state a shorter window in its own `change_control`, and that
+shorter window then governs it. A proposal that states a longer one does not
+lengthen its own window: the longer value applies to proposals made under
+the version the proposal forms, if it forms. Otherwise a proposer could
+write a window of years into a proposal and hold the single open-proposal
+slot for that long. So every proposal lapses within the governing window,
+and an unanswered proposal never blocks the next one for longer.
 
 A proposed replacement MUST carry `change_control.proposed_at`, the instant
 the proposer made the proposal, inside the signed bytes of the replacement.
@@ -1352,13 +1361,45 @@ The proposer writes `proposed_at`, so two rules keep it honest:
 
 **When an approval forms the new version.** The new version forms when the
 proposer receives the counterparty's approval before the proposal lapses.
-The proposer acknowledges every approval it receives, saying whether it
-formed the new version, and the counterparty applies the new version only
-when it holds that acknowledgement. An approval the proposer receives at or
-after the lapse instant forms nothing, unless the proposer accepts it in its
-acknowledgement. Until the counterparty holds an acknowledgement that the
-version formed, both sides keep applying the current version, so they never
-disagree about which version governs.
+An approval the proposer receives at or after the lapse instant forms
+nothing, unless the proposer accepts it in its acknowledgement. Neither side
+can see what the other holds, so formation runs in three signed messages,
+and each side knows at every moment which version governs for it:
+
+1. **The acknowledgement.** The proposer sends the counterparty a signed
+   acknowledgement of every approval it receives. It names the engagement,
+   the version, whether the version formed, and the acknowledgement's
+   deadline: the instant the proposer received the approval, plus the
+   governing review window.
+2. **The receipt.** On receiving an acknowledgement that the version formed,
+   the counterparty applies the new version and sends the proposer a signed
+   receipt of it. It sends a receipt again for every copy of the
+   acknowledgement it receives.
+3. **The void.** A proposer that holds no receipt when the acknowledgement's
+   deadline passes sends a signed void, and the formation is undone.
+
+What governs on each side:
+
+| Side | Holds | Applies |
+|---|---|---|
+| Proposer | the approval and its own acknowledgement, no receipt | **formed, unacknowledged**: the new version for any request that names it, the current version for its own new acts |
+| Proposer | the receipt | the new version |
+| Proposer | no receipt at the deadline | the current version, and it sends the void |
+| Counterparty | no acknowledgement | the current version |
+| Counterparty | the acknowledgement | the new version, until it holds a void |
+| Counterparty | a void | the current version, from the instant it receives it |
+
+While the proposer is in **formed, unacknowledged**, every request names the
+version it relies on, and the proposer admits each request under the
+version it names, current or new, and prices it under that version. That way
+work the counterparty sent under the new version, before a receipt arrived
+or after one was lost, is honoured as sent. The proposer MUST re-send the
+acknowledgement at least once a day until it holds a receipt or the deadline
+passes, so one lost message does not undo a formation that both sides
+wanted. A void undoes the formation for work admitted after the counterparty
+receives it. Work admitted under the new version before then stays
+evidenced and priced under the new version, as §5.8 keeps work admitted
+under any version.
 
 The proposer MAY withdraw an open proposal before it is resolved; withdrawal
 is recorded like the other outcomes.
@@ -1374,7 +1415,10 @@ is recorded like the other outcomes.
 
 `proposed_at` appears on a proposed replacement and on the version that
 approval makes of it, so the agreed record keeps the instant it was proposed.
-A version formed without an amendment does not carry it.
+A version formed without an amendment does not carry it. Here
+`review_window_days` is the window the version it sits in sets for
+proposals made under it; the proposal it rides on is governed by the
+window above.
 
 Grade: `enforced` by the signing rule itself: a runtime MUST NOT apply a
 version its own owner has not signed.
@@ -2888,6 +2932,35 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.27.0-draft** (2026-10-20). Which review window governs a proposal, and
+what governs while a formation is acknowledged.
+
+§5.8 says that a proposal's review window is the governing version's
+`review_window_days`, or 7 days where it states none. A proposal MAY shorten
+its own window and cannot lengthen it: a longer value applies to proposals
+made under the version the proposal forms. Before, a proposer could write a
+window of years into a proposal and hold the single open-proposal slot for
+that long.
+
+§5.8 also defines formation as three signed messages: the proposer's
+acknowledgement of each approval, with a deadline of the approval's receipt
+plus the governing window; the counterparty's receipt of it; and the
+proposer's void if no receipt arrives by the deadline. A table says which
+version each side applies at each point. While the proposer holds no
+receipt it is **formed, unacknowledged**: it admits each request under the
+version the request names and applies the current version to its own new
+acts. It re-sends the acknowledgement at least daily. A void undoes the
+formation for work admitted after the counterparty receives it; work
+admitted under the new version before then stays priced under it. Before,
+the proposer could not tell whether the counterparty held the
+acknowledgement, and nothing said what happened if it was lost.
+
+A new fixture, `conformance/sow-amendment-formation.json`, pins the window
+and the formation states, and `conformance/sow-review-window.json` gains
+cases for a governing window and for a proposal that tries to lengthen it.
+The minor version moves because both rules add requirements a runtime built
+against 0.26.0-draft does not meet.
 
 **0.26.0-draft** (2026-10-19). A seat names the key that signs for it, one
 spelling for a signature, and clarifications found by building an
