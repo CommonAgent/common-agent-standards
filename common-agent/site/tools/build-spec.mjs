@@ -55,7 +55,10 @@ const REF = arg("--ref") ?? "";
 // are common-agent-v<version>, such as common-agent-v0.26.0-draft.
 const TAG_PREFIX = "common-agent-v";
 const DRAFT = process.argv.includes("--draft");
-const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "ga.js", "brand", "ns"];
+// .well-known/webfinger, api/card/ and api/registrar-key serve the example handle
+// example.agent@commonagent.net the way a domain serves the records for its own
+// addresses (Personal Agent Naming §5.2, §5.5). They are static, signed once.
+const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "ga.js", "brand", "ns", ".well-known", "api"];
 // The catalog profile, a part of the specification with a version of its own.
 const PROFILE_MD = resolve(REPO, "CATALOG-PROFILE.md");
 

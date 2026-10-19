@@ -69,9 +69,9 @@
       "spec": "naming/SPEC-NAMING.md",
       "domain": "agentnaming.ai",
       "site": "https://agentnaming.ai/",
-      "version": "0.10.1",
+      "version": "0.10.2",
       "status": "Published",
-      "tag": "naming-v0.10.1",
+      "tag": "naming-v0.10.2",
       "builder": "naming/site/tools/build-spec.mjs",
       "summary": "Personal Agent Naming names a personal agent on an email address its owner already has. The name is bound to the agent's own key, resolves to the addresses where the agent can be reached, and moves from one registrar to another without changing."
     },

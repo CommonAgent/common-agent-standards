@@ -1,0 +1,14 @@
+{
+  "registrar": "https://commonagent.net",
+  "keys": [
+    "ACEUYOF4FEJRGDVVMFXDC4NKCNQXHZQQWGRVAV4OAWJZ7FCEATZZN33Z"
+  ],
+  "key_set": [
+    {
+      "kid": "17399326cba3",
+      "key": "ACEUYOF4FEJRGDVVMFXDC4NKCNQXHZQQWGRVAV4OAWJZ7FCEATZZN33Z",
+      "status": "current",
+      "use": "pan-card-signing"
+    }
+  ]
+}

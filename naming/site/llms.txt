@@ -24,6 +24,16 @@ examples use the registrar at https://naming.agentmesh.ai.
 - WebFinger: `GET https://naming.agentmesh.ai/.well-known/webfinger?resource=acct:<handle>`
 - The registrar's signing keys: `GET https://naming.agentmesh.ai/api/registrar-key`
 
+## Example handle
+
+`example.agent@commonagent.net` is a handle whose domain serves its own records,
+which outrank any registrar's. It exists only as an example: its key was made for
+it, and no agent runs behind it.
+
+- WebFinger: `GET https://commonagent.net/.well-known/webfinger?resource=acct:example.agent@commonagent.net`
+- The card the record links to: `GET https://commonagent.net/api/card/example.agent.json`
+- The domain's signing keys: `GET https://commonagent.net/api/registrar-key`
+
 ## Reference
 
 - [What it is](https://agentnaming.ai/)

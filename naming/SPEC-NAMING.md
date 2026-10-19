@@ -1,16 +1,22 @@
-# Personal Agent Naming (PAN)
+# Personal Agent Naming
 
 **An open standard for naming personal agents**, and a companion to the Agent Messaging specification, `SPEC.md`.
 
-**Version:** 0.10.1 · **Date:** 2026-10-18
+**Version:** 0.10.2 · **Date:** 2026-10-18
 **Authors:** Jeff R Schneider <jeffrschneider@gmail.com>
+
+**Editorial, 2026-10-18 (0.10.2):** The prose writes the standard's name, Personal Agent
+Naming, where it used the abbreviation PAN. Protocol identifiers keep their spelling: `urn:pan:*`
+link relations and properties, the `_pan` DNS label and `pan-registrar=` record, and the
+`pan-card-signing` key use. No normative change: no requirement, field, wire value or section
+number changes.
 
 **Editorial, 2026-10-18 (0.10.1):** The specification names no platform. The header, the
 position paragraph in the introduction, §3.1, §8 and §11 speak of the reference deployment and
 the reference implementation, and the examples of §5 use `example.com` addresses. No
 normative change: no requirement, field, wire value or section number changes.
 
-**Editorial, 2026-10-13:** PAN is published as an open standard. The
+**Editorial, 2026-10-13:** Personal Agent Naming is published as an open standard. The
 position paragraph in the introduction and §11, now "Implementations", say so. No normative change.
 
 **Changes from 0.9 (2026-10-05):** One addition, new §5.8, the rename
@@ -142,7 +148,7 @@ pinning, conflict precedence, surfaced-never-merged). §10's federation
 exclusion narrowed accordingly. No changes to handles, claiming, or
 binding; no wire changes to existing fields.
 
-**Changes from 0.3:** PAN is now its sponsor's naming service, not an
+**Changes from 0.3:** Personal Agent Naming is now its sponsor's naming service, not an
 independent standard (repositories merged; positioning rewritten). §5.3
 card signing and resolver pinning upgraded from SHOULD to MUST; unsigned
 cards are no longer valid. Card signing added to registrar obligations
@@ -156,18 +162,18 @@ its owner opts in; default stays no-enumeration.
 
 A small protocol giving AI agents human-handleable names: something a person
 can put in an email signature or say in a meeting, the way they hand out a
-phone number or a social handle. PAN targets the largest and least-served
+phone number or a social handle. Personal Agent Naming targets the largest and least-served
 agent population: **personal agents**, owned by people who have an email
 address and nothing else. No domain, no PKI, no ops team.
 
-PAN deliberately does one thing. It names agents, binds names to them, and
+Personal Agent Naming deliberately does one thing. It names agents, binds names to them, and
 defines what a resolved name returns. It does not transport messages (that
 layer belongs to protocols like A2A and Agent Messaging), does not verify
 capability claims, does not host agents, and does not do discovery (that
 belongs to catalog/search layers like ARD).
 
-**Position beside Agent Messaging.** PAN is an open standard. An Agent Messaging deployment that offers naming (a
-deployment-defined part, SPEC.md §1.6) resolves handles against a PAN
+**Position beside Agent Messaging.** Personal Agent Naming is an open standard. An Agent Messaging deployment that offers naming (a
+deployment-defined part, SPEC.md §1.6) resolves handles against a Personal Agent Naming
 registrar for the features that need a named, accountable operator: sender
 provenance, admission tiers, and durable and sealed rooms. The spec is
 self-contained as a layering discipline: claiming, binding, and resolution
@@ -177,7 +183,7 @@ describes the reference deployment.
 
 **Relationship to ANS.** The Agent Name Service (ANS) covers
 domain-anchored, PKI-backed agent identity for organizations that own a
-domain and can run a certificate authority. PAN does not compete there:
+domain and can run a certificate authority. Personal Agent Naming does not compete there:
 it names agents whose owner has an inbox, not a PKI team. Domain
 anchoring is out of scope by design (§9).
 
@@ -245,7 +251,7 @@ person doing them but two to the registrar: a claim that fails (taken,
 cooling off, moved away) MUST leave the operator record as it was, since
 that name is served on every card of every handle the anchor already holds.
 Registrars MUST show the operator name on every card of that anchor's
-handles (§5.1). The rationale: PAN is *personal* agent naming,
+handles (§5.1). The rationale: Personal Agent Naming names *personal* agents,
 and the handle already publishes the anchor email, so the human behind an
 agent is the meaningful unit of trust; a white pages has names. Consumers
 MUST treat the name as a chosen label anchored to the proven email, not as
@@ -379,7 +385,7 @@ the signed string includes both the code and the agent ID.
 
 **Host neutrality is normative.** A registrar MUST NOT require any
 particular agent host, framework, or network for pairing. Whoever holds the
-key can pair, from any runtime. This is what makes PAN implementable by any
+key can pair, from any runtime. This is what makes Personal Agent Naming implementable by any
 personal-agent runtime, not just the reference stack.
 
 ### 4.2 Submitter-match
@@ -542,21 +548,21 @@ The **endpoints are the address**: the reachable coordinates a messaging
 layer uses. For a key-bearing agent, the key itself is the address (in
 Agent Messaging the agent ID is its inbox); a node or an A2A card URL may
 accompany it. Presence is optional and appears only where the registrar
-actually observes liveness; PAN does not require or build a presence
+actually observes liveness; Personal Agent Naming does not require or build a presence
 subsystem. What a consumer *does* with an endpoint belongs to that
-endpoint's protocol, not to PAN.
+endpoint's protocol, not to Personal Agent Naming.
 
 The OPTIONAL `encryption_key` is the agent's X25519 public key, carried so a
 correspondent can *seal* content to the agent before first contact: to
 invite a named agent into an end-to-end-private room, or to send it a
 confidential message, you resolve the handle and seal to this key. It is a
-capability the card advertises, not an address; PAN neither defines nor uses
+capability the card advertises, not an address; Personal Agent Naming neither defines nor uses
 it, and simply passes through what the agent declares (Agent Messaging, SPEC.md §4.3).
 Absent means the agent participates only in cleartext.
 
 ### 5.2 WebFinger and domain sovereignty
 
-A PAN handle is a valid `acct:` URI. Registrars MUST serve
+A Personal Agent Naming handle is a valid `acct:` URI. Registrars MUST serve
 **WebFinger (RFC 7033)**:
 
 ```
@@ -569,15 +575,15 @@ GET /.well-known/webfinger?resource=acct:Coder.ana@example.org
 }
 ```
 
-so that two decades of existing `acct:` tooling resolves handles with no
-PAN-specific code.
+so that two decades of existing `acct:` tooling resolves handles with no code
+written for Personal Agent Naming.
 
 WebFinger is also the sovereignty mechanism. The anchor's **domain** may
 serve `/.well-known/webfinger` for its own accounts, and where it does,
 its answer is final: a domain speaking for its own addresses outranks
 every registrar (§5.5). An organization that serves its own WebFinger
 needs no registrar at all for its agents' handles. The registrar is the
-path for anchors whose mail provider will never serve PAN records (a
+path for anchors whose mail provider will never serve Personal Agent Naming records (a
 Gmail address cannot make google.com answer for it), not a toll booth on
 the namespace.
 
@@ -760,7 +766,7 @@ This is inherent in making the domain authoritative (the owner's chosen
 authority has to be asked to answer), and it is the same exposure
 WebFinger has always carried. Implementations MUST NOT try to hide it by
 skipping the probe; they SHOULD keep it cheap and infrequent (a short
-timeout and a negative cache, so a provider that serves no PAN WebFinger
+timeout and a negative cache, so a provider that serves no WebFinger for Personal Agent Naming
 is asked rarely rather than once per resolution), and a resolver SHOULD
 document that the probe happens.
 
@@ -1256,7 +1262,7 @@ an operator name at all.
 What a handle does **not** prove: that the agent is competent, safe,
 endorsed by anyone, or that its capability claims are true. A handle is an
 address, not a badge. If you need domain-anchored, publicly re-verifiable,
-CA-backed identity, that is what ANS is for; PAN does not reach that bar and
+CA-backed identity, that is what ANS is for; Personal Agent Naming does not reach that bar and
 does not try to.
 
 ## 9. Security considerations and non-goals
@@ -1356,11 +1362,11 @@ does not try to.
   can act on it is the one running the registrar, and the obligation runs
   toward them.
 - **Anchor compromise**: whoever controls the mailbox controls its handles.
-  Anchor hygiene (2FA on the account) is inherited, which is also PAN's
-  strength: it rides the most hardened credential most people already have.
-- **Non-goal, domain anchoring**: PAN does not anchor names to domains or
-  issue certificates. That is ANS's domain, and PAN defers to it rather than
-  duplicating a lighter, weaker version. (Distinguish this from §5.2/§5.5
+  Anchor hygiene (2FA on the account) is inherited, which is also the
+  strength of Personal Agent Naming: it rides the most hardened credential most people already have.
+- **Non-goal, domain anchoring**: names are not anchored to domains and no
+  certificates are issued. That is ANS's domain, and Personal Agent Naming
+  defers to it rather than duplicating a lighter, weaker version. (Distinguish this from §5.2/§5.5
   domain *sovereignty over resolution*: a domain serving WebFinger decides
   where its anchors' handles resolve (routing authority), but the names
   stay email-anchored and the proofs stay §3/§4's; no certificate or
@@ -1371,7 +1377,7 @@ does not try to.
 - **Domain-anchored identity**: names proven by DNS or well-known records,
   CA-backed certificates, DANE. Covered by ANS.
 - **Discovery**: search and browse across agents. Covered by catalog/search
-  layers like ARD. PAN resolves a name you already have.
+  layers like ARD. Personal Agent Naming resolves a name you already have.
 - **Reachability and messaging**: contacting a resolved agent, including any
   registrar-hosted chat or relay surface, belongs to the messaging protocols
   named in the card's endpoints (A2A, Agent Messaging).
