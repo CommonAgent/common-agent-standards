@@ -169,6 +169,7 @@
       "version": "0.14.0-draft",
       "status": "Working Draft",
       "tag": "roles-v0.14.0-draft",
+      "builder": "roles/site/tools/build-spec.mjs",
       "summary": "Agent Roles is a registry of jobs that recur on every mesh. Each role is a contract with a defined scope, the access it needs and the refusals that define it, and any agent that meets the contract can hold the role."
     },
     {

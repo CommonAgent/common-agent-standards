@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The package maker: a standard agent role</title>
+  <meta name="description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it must not invent, marking every package a draft. Contract, record format, and conformance test.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The package maker: a standard agent role">
+  <meta property="og:description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it must not invent, marking every package a draft. Contract, record format, and conformance test.">
+  <meta property="og:url" content="https://agentroles.ai/package-maker.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/package-maker.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html" class="on" aria-current="page">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The package maker</h1>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-package-maker</b></span><span>alias <b>role-agent-builder</b></span><span>version <b>0.2.0-draft</b></span><span>date <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">The specification defines this role in <a href="/spec.html#s12">§12</a>. Its primary interface is <a href="/builder.html">the builder</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p>The package maker turns a description of a needed agent into a package another system can deploy. It takes what an agent should do, the systems it needs, what it must refuse, and the records it must leave, and it emits an agent plugin: skills, obligations, and a manifest. It is the other end of the <a href="/deployment-manager.html">deployment manager</a>: one builds the package, the other stands it up.</p>
+        <p>It is defined by what it will not make up. A package is only as honest as the judgment in it, and two parts of it are judgment: what the agent refuses, and what it must record. The rest is description. The builder asks for both and refuses to emit a package without them. It also never presents a package as finished: every package it produces is a draft, because nobody has run the agent it describes.</p>
+        <p>What it emits is an <a href="https://commonagent.net/package.html">Agent Package</a> as the Common Agent Specification defines it: an Agent Plugin carrying the agent's draft Descriptor and an install file beside the manifest. That chapter owns the package's shape; this role owns the judgment a builder must ask for and the record it signs.</p>
+
+        <p>It holds these stages on the lifecycle map: Build and package, and Release (<a href="https://agenticdevelopment.ai/stages.html#build">agenticdevelopment.ai</a>).</p>
+
+        <h2 id="role">1. The role</h2>
+        <p>Describing an agent and building one are different kinds of work. A person knows what they need done; turning that into a package a runtime can load means writing a manifest at the right schema, one skill per job in a form a harness reads, and the obligations that keep the agent honest once it runs. That last part is where a description quietly becomes a specification, and it is easy to skip.</p>
+        <p>The package maker is that work as a job. An owner hands it a description and gets back a package in a known shape. The person who has the judgment fills in the honest parts, and the builder does not guess them. What it produces is portable by construction, because a plugin is a plugin wherever it runs; which harnesses can then load it is the deployment manager's concern.</p>
+
+        <h2 id="asks">2. The requests</h2>
+        <p>The role's exchanges are published as its primary interface, <a href="/builder.html">the builder</a> (<code>interface-builder</code>): build this, what did you build, and revise it. The interface page carries each exchange in full. Implementing the interface alone does not grant the role.</p>
+
+        <h2 id="contract">3. The contract</h2>
+        <ol>
+          <li><b>The judgment parts are required.</b> A package MUST carry what the agent refuses and the records it must leave, and the builder MUST refuse to emit one that lacks either. It does not derive them from the description, because an agent with nothing written down that it will not do, and no records it must keep, is the failure that a run only reveals once it is too late.</li>
+          <li><b>Every package is a draft.</b> The builder has not run the agent it describes and MUST NOT present the package as more than a starting point. The manifest carries the draft mark, and the record says nobody has run it.</li>
+          <li><b>Systems are named by role.</b> Each system the agent needs is a role, an access level, and what the access is for. The builder MUST NOT name a vendor or wire a package to a particular supplier; binding roles to real systems belongs to whoever deploys it.</li>
+          <li><b>It asks for least access.</b> Each system's access is the most the job needs and no more. The builder MUST NOT request write where the description only reads, or a trigger the jobs never fire.</li>
+          <li><b>Skills are jobs.</b> There is one skill per thing somebody would ask the agent for, and each says when to reach for it, what a good result looks like, and what to do when it comes back empty. A skill per tool is a manual page wearing the word skill.</li>
+          <li><b>The manifest conforms to the plugin standard.</b> A package MUST validate against the Agent Plugin schema it declares, so any conforming runtime can load it. A package that only this builder's own deployer can read is not portable, which defeats the point of building one.</li>
+          <li><b>Every build leaves a record.</b> Builds, revisions, and refusals each produce the signed record in section 4. What was built, from what description, and the fact that it is a draft, are all in it.</li>
+        </ol>
+
+        <h2 id="record">4. The record</h2>
+        <p>A package maker produces a record for every build. Its tag is <code>agent-build-record-v1</code>, and it is signed with the family convention: the ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON of the document with <code>signatures</code> removed.</p>
+        <pre><code>{
+  "record": "v1",
+  "role": "agent-builder",
+  "act": "build",
+  "requested_by": "&lt;who asked&gt;",
+  "package": {
+    "name": "standup-collector",
+    "version": "1.0.0",
+    "schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+    "sha256": "&lt;digest of the package the builder emitted&gt;"
+  },
+  "shape": { "skills": 3, "systems": 2, "refuses": 3, "records": 4 },
+  "draft": true,
+  "produced_at": "&lt;timestamp&gt;",
+  "by": "&lt;package maker public key&gt;",
+  "signatures": [ ]
+}</code></pre>
+        <p>The record follows these rules:</p>
+        <ol>
+          <li><code>act</code> is one of <code>build</code>, <code>revise</code>, <code>refuse</code>. A refusal record carries <code>refused</code> with the reason, and names which required part the description was missing.</li>
+          <li><code>package.sha256</code> commits the record to the bytes the builder emitted, so a reviewer can confirm they are looking at what was built.</li>
+          <li><code>draft</code> is always true. A build record that claimed otherwise would be asserting the agent had been run, which the builder never does.</li>
+          <li><code>shape</code> counts what the package carries. A build whose <code>refuses</code> or <code>records</code> count is zero is not a conforming build, and the counts are where that shows.</li>
+          <li><code>role</code> carries <code>agent-builder</code>, the name the role had when this record format was published. A verifier accepts <code>package-maker</code> beside it, and records already signed keep the old value.</li>
+        </ol>
+
+        <h2 id="conformance">5. Conformance</h2>
+        <p>Conformance is behavioural. A harness hands the candidate a description and reads what it emits. The package must validate against the schema it declares, carry one skill per named job, name each system by role with the least access the description implies, and carry the refusals and records the description gave. The harness then hands a description with the refusals removed, and with the records removed; the candidate must refuse each and name the missing part. It must not emit a package with an empty obligation. It hands a description that names a vendor for a system; the package must carry the role and leave the vendor out. Finally the harness reads the record: a build record whose <code>draft</code> is not true, or whose <code>shape</code> disagrees with the package it points at, fails the candidate regardless of how good the package is.</p>
+        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+
+        <p><i>v0.2.0-draft (2026-09-14): the role was renamed from the agent builder. It makes packages and has never built an agent, and the new name says so. The offering name <code>role-agent-builder</code> stays reserved as an alias of <code>role-package-maker</code>, and records already signed under the old name keep it.</i></p>
+        <p><i>v0.1.0-draft (2026-08-30): this is the first draft, distilled from a real build of a package from a description, which passed to the deployment manager unchanged. The first clause of the contract matters most: the parts a description tends to omit, what the agent refuses and what it must record, are the parts that matter once the agent runs, so a builder that invented them would be manufacturing the quietest kind of failure. Argue with that clause first.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

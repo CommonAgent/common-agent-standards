@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The worker: a standard agent interface</title>
+  <meta name="description" content="The worker interface describes an agent that can be given a piece of work by something that knows nothing about it. It has seven exchanges, covering readiness, estimates, acceptance, status, delivery, blocks, and cancellation.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The worker: a standard agent interface">
+  <meta property="og:description" content="The worker interface describes an agent that can be given a piece of work by something that knows nothing about it. It has seven exchanges, covering readiness, estimates, acceptance, status, delivery, blocks, and cancellation.">
+  <meta property="og:url" content="https://agentroles.ai/worker.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/worker.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html" class="on" aria-current="page">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The worker</h1>
+        <div class="metas"><span>name <b>interface-worker</b></span><span>version <b>0.2.0-draft</b></span><span>date <b>2026-08-29</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">The specification defines this interface in <a href="/spec.html#s15">§15</a>. Software reads its definition from <a href="/interfaces/interface-worker.json">interface-worker.json</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p><b>A worker is an agent that can be given a piece of work by something that knows nothing about it.</b> It has seven exchanges: whether it is free, what a job would take, whether it will take it, how it is going, what came of it, what it is blocked on, and stop.</p>
+        <p>This is an interface, which is a different thing from a role. Implementing it says nothing about what else the agent does, and an agent can implement it alongside anything.</p>
+
+        <h2 id="interface">1. The purpose</h2>
+        <p>A fleet is rarely built from one thing. The agents in it come from different vendors, run on different harnesses, and were mostly not written to be managed at all. Something still has to hand them work and find out how it is going.</p>
+        <p>Without a published contract the managing side has to know about every agent it manages, one special case at a time, and adding an agent means changing the manager. With one, the managing side knows nothing about the agents and does not need to.</p>
+        <p>Roles could not carry this. A role is a whole job with a closed scope, and an agent holds at most one, so almost no agent will ever hold any. Nearly any agent could answer what a piece of work would cost. That gap is the reason interfaces exist.</p>
+
+        <h2 id="exchanges">2. The exchanges</h2>
+        <p>The set is closed. Anything outside it is refused, with the reason named.</p>
+        <ol>
+          <li><b>Are you free?</b> The agent says whether it can take work at the moment of asking, and optionally when that changes. The answer comes from the agent itself. A process being up and an agent being able to answer are different things, and letting anything other than the agent answer this reports on the wrong thing.</li>
+          <li><b>What would this take?</b> Given a description of work, the agent says whether it can do it, what it would cost, and how long it would take. It distinguishes "I cannot do this" from "I cannot tell whether I can do this". An estimate is not a commitment unless the answer says it is, and the answer says which it is.</li>
+          <li><b>Will you take it?</b> The agent accepts or refuses, and a refusal names its reason. Accepting means owning that job until it delivers, fails, or is told to stop.</li>
+          <li><b>How is it going?</b> For a job it accepted, the agent reports working, blocked, done or failed, plus one line. It answers even when nothing has happened, and it never reports progress it cannot point at. Asked about a job it never accepted, it says so. It does not invent one.</li>
+          <li><b>What came of it?</b> The agent gives the result, or states the failure plainly. Either is an answer. Only silence is not.</li>
+          <li><b>What do you need?</b> The agent raises a block, saying what it needs and who from. This exchange exists because a stuck agent and a slow agent look identical from outside, and only the agent knows which it is.</li>
+          <li><b>Stop.</b> The agent accepts cancellation and says what condition the work is in. It does not keep working on a cancelled job.</li>
+        </ol>
+
+        <h2 id="contract">3. The contract</h2>
+        <ol>
+          <li><b>It does not price the deal.</b> It says what work costs <i>it</i>. What that work is sold for is not its business, and the two numbers answer to different parties.</li>
+          <li><b>It is never held to terms it was not given.</b> It honours the constraints handed to it with the job, and cannot be held to one it was never told. Making sure it is always told is what <a href="/manager.html">the manager interface</a> is for.</li>
+          <li><b>An accepted job is never dropped silently.</b> Where it cannot continue, it says so. Going quiet is the failure this interface exists to eliminate.</li>
+          <li><b>A second job is declared openly.</b> Asked to take work while holding other work, it says whether it can run both. Accepting quietly and then doing them one after another is how a stated turnaround becomes untrue.</li>
+          <li><b>Refusal is specific.</b> An exchange outside what it does is refused with the reason. It is never answered with a guess. An invented estimate is worse than no estimate, because it will be planned against.</li>
+          <li><b>There is no document.</b> This interface defines no signed statement and no signature tag. Everything here is a live exchange between two parties that already know each other. Where a durable record of what was agreed matters, the directing side owes it. That record belongs to the job holding the manager interface, and neither interface defines it.</li>
+        </ol>
+
+        <h2 id="conformance">4. Conformance</h2>
+        <p>The test is behavioural, as it is for the front desk. An interface is only its exchanges, so the test is to ask them and check the answers.</p>
+        <p>A harness checks the following: that being free is answered by the agent itself, and by nothing watching it; that work outside what it does draws a refusal and no invented estimate; that work it cannot assess draws "I cannot tell" and no number; that a status question about a job it never accepted is answered as such; that a job it accepted and then abandoned reports failed and does not go silent; that a cancelled job stops; and that every estimate says whether it is a commitment.</p>
+        <p>Refusing an exchange with a reason conforms. Not answering does not. There is no partial implementation and no degraded mode.</p>
+
+        <p><i>v0.2.0-draft (2026-08-29): this is the first draft, published with the manager interface because an interface with only one side published is half a contract. Exchange 1 and rule 3 together separate an agent that is busy from one that has quietly died. Every managing side needs that distinction, and nothing outside the agent can make it.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

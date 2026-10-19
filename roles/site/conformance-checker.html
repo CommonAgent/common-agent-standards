@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The conformance checker: a standard agent role</title>
+  <meta name="description" content="The conformance checker role: an agent that derives a conformance test from a package's own declarations and runs it against a deployed agent, checking refusals, escalations, and records mechanically and never grading quality. Contract, record format, and conformance test.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The conformance checker: a standard agent role">
+  <meta property="og:description" content="The conformance checker role: an agent that derives a conformance test from a package's own declarations and runs it against a deployed agent, checking refusals, escalations, and records mechanically and never grading quality. Contract, record format, and conformance test.">
+  <meta property="og:url" content="https://agentroles.ai/conformance-checker.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/conformance-checker.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html" class="on" aria-current="page">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The conformance checker</h1>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-conformance-checker</b></span><span>alias <b>role-agent-evaluator</b></span><span>version <b>0.2.0-draft</b></span><span>date <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">The specification defines this role in <a href="/spec.html#s13">§13</a>. Its primary interface is <a href="/evaluator.html">the evaluator</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p>The conformance checker says whether a running agent does the job its package describes. It derives a conformance test from the package's own declarations, runs it against the deployed agent, and returns a signed verdict. It completes the three operations jobs: the <a href="/package-maker.html">package maker</a> makes the package, the <a href="/deployment-manager.html">deployment manager</a> stands it up, and the evaluator checks that what is running actually holds.</p>
+        <p>It is defined by what it will and will not judge. A package's checkable promises are three: what it refuses, what it escalates to a person, and the records it must leave. The evaluator checks those mechanically. It never grades the quality of the work, because quality is not a promise a package makes and a machine cannot score it reliably. A verdict that stayed inside those bounds is worth trusting; one that ranged past them would be an opinion wearing a passing grade.</p>
+
+        <p>Evaluation is a separate act an owner asks for, and a deploy does not require it: the deployment manager's own graded check is what a deploy ends with, and the record family says plainly whether an evaluation exists. An agent a person attends is not evaluated by probing, because the person would be answering; its deploy check is the check it carries.</p>
+
+        <p>It holds this stage on the lifecycle map: Conformance (<a href="https://agenticdevelopment.ai/stages.html#conformance">agenticdevelopment.ai</a>).</p>
+
+        <h2 id="role">1. The role</h2>
+        <p>A deployment that boots and answers has passed a smoke check, and a smoke check is not conformance. The gap between "it replied" and "it does the job" is where an agent quietly fails: it answers from memory without consulting its records, it obliges a request it should have refused, it leaves none of the paperwork its job depends on. Somebody has to ask the questions that reveal that, and grade the answers without flattering them.</p>
+        <p>The evaluator is that work as a job. Its test is derived from the package the agent was built from, so the two cannot drift. Nobody writes it by hand and hopes it stays in step with the agent. Each refusal the package declares becomes a request that asks the agent to do the forbidden thing, and a pass is a refusal. Each escalation becomes a case that should go to a named person. Each required record becomes a line in an audit of what the agent actually left behind.</p>
+        <p>What it does not do matters as much as what it does. It does not fix the agent, redeploy it, or grade how good its output was. It runs the checkable test, reports what held and what did not, and signs the result. Whether a failing agent is repaired, replaced, or accepted anyway is somebody else's decision, made with the verdict in hand.</p>
+
+        <h2 id="asks">2. The requests</h2>
+        <p>The role's exchanges are published as its primary interface, <a href="/evaluator.html">the evaluator</a> (<code>interface-evaluator</code>): evaluate this, what is the test, and what did you find. The interface page carries each exchange in full. Implementing the interface alone does not grant the role.</p>
+
+        <h2 id="contract">3. The contract</h2>
+        <ol>
+          <li><b>The test is derived.</b> Every case MUST come from a declaration in the package under test: a refusal, an escalation, a skill, or a required record. The evaluator MUST NOT add a case from its own opinion of what the agent should do, because a hand-written test drifts from the agent, then fails it for the wrong reason. The verdict names, for each case, the declaration it came from.</li>
+          <li><b>Only the checkable is graded.</b> Refusals, escalations, and records are checked mechanically: did it decline, did it route to a person, does the record exist. The evaluator MUST NOT auto-grade the quality of an agent's output, because quality is not a promise the package makes and scoring it by machine would manufacture a precision that is not there. Skill cases confirm the agent engages and are flagged for human review. They are never passed or failed on quality.</li>
+          <li><b>Inconclusive is not a pass.</b> A case the evaluator could not decide is reported inconclusive, and an agent with an inconclusive case does not conform until it is resolved. A missing record is a fail. The evaluator fails closed: the benefit of the doubt is never a passing grade.</li>
+          <li><b>It only observes.</b> The evaluator sends the agent requests and reads the records the agent left where the deployment placed them. It MUST NOT change the agent, its configuration, or its records, and MUST NOT deploy, redeploy, or remove anything. Testing and fixing are different powers, and this role holds only the first.</li>
+          <li><b>The verdict is tied to the exact package.</b> A verdict names the package it graded by digest, so a report cannot be quietly moved onto a different version of the agent. An agent rebuilt from a changed package is re-evaluated. Its earlier verdict is not assumed to hold.</li>
+          <li><b>Every evaluation leaves a record.</b> Evaluations and refusals to evaluate each produce the signed record in section 4. What was tested, against which package, case by case, is in it.</li>
+        </ol>
+
+        <h2 id="record">4. The record</h2>
+        <p>A conformance checker produces a record for every evaluation. Its tag is <code>agent-eval-record-v1</code>, and it is signed with the family convention: the ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON of the document with <code>signatures</code> removed.</p>
+        <pre><code>{
+  "record": "v1",
+  "role": "agent-evaluator",
+  "act": "evaluate",
+  "requested_by": "&lt;who asked&gt;",
+  "subject": { "agent_key": "&lt;the evaluated agent&gt;", "handle": "&lt;handle&gt;" },
+  "package": { "name": "questionnaire-responder", "tree_sha256": "&lt;digest of the package graded&gt;" },
+  "cases": [
+    { "id": "refuse-1", "kind": "refusal", "source": "&lt;the declared refusal&gt;",
+      "verdict": "pass", "observed": "declined and named the reason" }
+  ],
+  "records_audit": { "required": 4, "found": 4, "missing": [ ] },
+  "summary": { "pass": 6, "fail": 0, "inconclusive": 0, "flagged_for_review": 3 },
+  "conforms": true,
+  "produced_at": "&lt;timestamp&gt;",
+  "by": "&lt;conformance checker public key&gt;",
+  "signatures": [ ]
+}</code></pre>
+        <p>The record follows these rules:</p>
+        <ol>
+          <li><code>act</code> is one of <code>evaluate</code>, <code>refuse</code>. A refusal record carries <code>refused</code> with the reason, such as an agent it could not reach or a package it could not read.</li>
+          <li>Each case's <code>verdict</code> is <code>pass</code>, <code>fail</code>, or <code>inconclusive</code>. A capability case is <code>flagged</code>. It is never pass or fail, and <code>observed</code> says the agent engaged.</li>
+          <li><code>conforms</code> is true only when no case is a fail, no case is inconclusive, and the records audit found every required record. Any fail, any inconclusive, or any missing record makes it false.</li>
+          <li><code>package.tree_sha256</code> ties the verdict to the exact package. A verdict read against a different package version proves nothing.</li>
+          <li><code>role</code> carries <code>agent-evaluator</code>, the name the role had when this record format was published. A verifier accepts <code>conformance-checker</code> beside it, and records already signed keep the old value.</li>
+        </ol>
+
+        <h2 id="conformance">5. Conformance</h2>
+        <p>Conformance is behavioural. A harness gives the candidate three deployed agents and their packages: one built to hold its contract, one built to break a specific declared refusal, and one that leaves none of its required records. The candidate must return <code>conforms: true</code> for the first, a verdict whose failing case is the broken refusal and no other for the second, and a records-audit failure for the third. It is given a package and asked for the test without running it; the cases must all trace to declarations in that package. It is asked to grade the quality of an output; it must decline, and its records must show no quality score. Finally the harness inspects a verdict: a case with no source declaration, a quality grade, or a <code>conforms: true</code> sitting over a fail or an inconclusive, fails the candidate regardless of how much of the run was right.</p>
+        <p>A platform MAY record conformance results as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines. An evaluator's own conformance is checked the same way it checks others: by whether its verdicts match a known truth.</p>
+
+        <p><i>v0.2.0-draft (2026-09-14): the role was renamed from the agent evaluator. It derives and runs a conformance test and refuses to grade quality, so it is a checker of conformance, and the new name says so. Grading the work belongs to the agent critic. The offering name <code>role-agent-evaluator</code> stays reserved as an alias of <code>role-conformance-checker</code>, and records already signed under the old name keep it.</i></p>
+        <p><i>v0.1.0-draft (2026-08-30): this is the first draft, distilled from a hand-run conformance eval and from deriving cases mechanically from a package's declarations. The first two clauses matter most: the test comes from the package, and only the checkable is graded. An evaluator that authored its own cases would fail agents for the wrong reasons, and one that scored quality would hand out a precision it cannot have. Argue with those two first.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

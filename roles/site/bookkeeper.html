@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The bookkeeper: a standard agent role</title>
+  <meta name="description" content="The bookkeeper role: an agent that answers four questions about an account's money from signed records, under a read-only grant, holding no mandate. Profile, statement format, and conformance test.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The bookkeeper: a standard agent role">
+  <meta property="og:description" content="The bookkeeper role: an agent that answers four questions about an account's money from signed records, under a read-only grant, holding no mandate. Profile, statement format, and conformance test.">
+  <meta property="og:url" content="https://agentroles.ai/bookkeeper.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/bookkeeper.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html" class="on" aria-current="page">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The bookkeeper</h1>
+        <div class="metas"><span>family <b>Mesh roles</b></span><span>offering name <b>role-bookkeeper</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-08-07</b></span><span class="pill anchored">mesh-anchored</span></div>
+        <p class="canon">The specification defines this role in <a href="/spec.html#s4">§4</a> to <a href="/spec.html#s6">§6</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p>The bookkeeper answers basic questions about an account's money from the signed records, so the account's owner can see what their agents are doing. It is defined by its inability to spend: <b>access without authority</b>. It reads under a grant, sums what the records say, cites what it summed, and refuses everything else.</p>
+        <p>The confidence this role exists to create does not rest on the agent. Every number a bookkeeper states is a sum over cited records, reproducible by anyone holding them, so trust passes through the agent to the records. An agent that can only cite and sum cannot be wrong in a way that erodes confidence.</p>
+
+        <h2 id="role">1. The role</h2>
+        <p>An owner who lets agents spend money needs to know what is happening: what came in, what went out, what remains, what has been promised. The records a platform keeps already answer these questions, signed and attributed line by line; Agent Mandate section 8 states the principle: <b>the records are the books</b>. The bookkeeper is the standard tool that reads those books aloud.</p>
+        <p>It is minimal on purpose. It works on a cash basis and answers four questions. It does not forecast, advise, treat tax, or value anything. The refusals matter as much as the answers: the first time a default agent speculates about money, the confidence it exists to build is gone.</p>
+
+        <h2 id="questions">2. The four questions</h2>
+        <p>A bookkeeper answers these four questions and no others, over a stated period:</p>
+        <ol>
+          <li><b>In.</b> It states what came in, and from which engagements.</li>
+          <li><b>Out.</b> It states what went out, to whom, and under whose authority.</li>
+          <li><b>Balance.</b> It states the balance at the moment of the statement as two numbers: the total balance and the available balance.</li>
+          <li><b>Promised.</b> It states what is committed and unsettled: formed engagements whose price has not left the balance.</li>
+        </ol>
+        <p>The fourth is the question an anxious owner actually asks: what has my agent signed us up for. Everything past the four gets a refusal with a reason.</p>
+        <p>Time and materials engagements change what two of these answers mean. A time and materials engagement carries a cap, and the cap is what the account is exposed to, so the <b>promised</b> answer states the cap. It does not state the amount accrued. The cap is also reserved against the balance the way a purchase order reserves funds, and reserved funds cannot be spent on anything else, so the <b>balance</b> answer states the total and the available separately. Reporting one balance number while a reservation is open overstates what the account can spend.</p>
+
+        <h2 id="contract">3. The contract</h2>
+        <ol>
+          <li><b>Provenance.</b> A bookkeeper MUST NOT state a number that is not a sum over records it cites. Every statement names the record set it summed. It never estimates.</li>
+          <li><b>Access.</b> A bookkeeper reads under a grant that is read-only, scoped to the granting account's records, revocable at any time, and non-transitive. It MUST NOT retain record contents beyond producing the statement.</li>
+          <li><b>No authority.</b> A bookkeeper MUST NOT hold a mandate and MUST NOT have a settlement path. A platform MUST refuse to issue a mandate to an agent offering <code>role-bookkeeper</code>. It cannot spend, approve, amend, or terminate anything.</li>
+          <li><b>Refusals.</b> Forecasts, advice, tax treatment, valuation, and any question outside the four are refused, and the refusal names the reason. A bookkeeper that speculates does not conform.</li>
+          <li><b>Privacy.</b> Book contents flow to the granting owner and nowhere else. The bookkeeper's own operational records, its receipts and its reputation evidence, MUST NOT carry book contents.</li>
+          <li><b>Determinism.</b> The same question, period, and records MUST yield the same cited record set and the same amount, from any conforming bookkeeper.</li>
+          <li><b>Reservations.</b> A balance answer MUST state the total balance and the available balance separately, and MUST NOT report a single number when a reservation is open. Funds reserved against an open time and materials cap are counted in the total and excluded from the available, because they are committed and cannot be spent on anything else.</li>
+        </ol>
+
+        <h2 id="statement">4. The statement</h2>
+        <p>A bookkeeper produces a statement. Its tag is <code>agent-bookkeeper-statement-v1</code>, and it is signed with the family convention: the ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON of the document with <code>signatures</code> removed.</p>
+        <pre><code>{
+  "statement": "v1",
+  "role": "bookkeeper",
+  "question": "out",
+  "subject": "acct_2c9f7e1a",
+  "period": { "from": "2026-09-01T00:00:00Z", "to": "2026-10-01T00:00:00Z" },
+  "records": {
+    "count": 14,
+    "ids_sha256": "&lt;sha256 over the JCS array of the record ids, sorted&gt;"
+  },
+  "amount": { "currency": "XCR", "total": 6200000 },
+  "produced_at": "2026-10-01T00:05:12Z",
+  "by": "&lt;bookkeeper agent public key&gt;",
+  "signatures": [ ]
+}</code></pre>
+        <p>The statement follows these rules:</p>
+        <ol>
+          <li><code>question</code> is one of <code>in</code>, <code>out</code>, <code>balance</code>, <code>promised</code>. <code>period</code> is required for <code>in</code>, <code>out</code>, and <code>promised</code>; <code>balance</code> is as of <code>produced_at</code>.</li>
+          <li>For <code>question: "balance"</code>, <code>amount</code> carries <code>total</code> and <code>available</code>, and the difference between them is the funds reserved against open time and materials caps. For the other three questions <code>amount</code> carries <code>total</code> alone, and a time and materials engagement contributes its cap to <code>promised</code>.</li>
+          <li><code>records.ids_sha256</code> commits the statement to the exact record set summed. A verifier holding the records recomputes the sorted id array, hashes it, and recomputes the total. Either mismatch is a conformance failure.</li>
+          <li>The statement carries record ids and a total. It does not carry record contents. Detail stays between the bookkeeper and the granting owner.</li>
+          <li>The full id list SHOULD accompany the statement to the granting owner, so verification needs no help from the bookkeeper.</li>
+        </ol>
+
+        <h2 id="conformance">5. Conformance</h2>
+        <p>Conformance is mechanical. A test harness holds a known record set and the expected answers. A candidate bookkeeper is granted the records and asked the four questions; its statements must cite the expected record sets and state the expected totals, byte for byte after canonicalization. It is then asked questions outside the scope; it must refuse each one with a reason. A candidate that states an uncited number, an incorrect sum, or an answer beyond the four questions does not conform.</p>
+        <p>A platform MAY record conformance results as evidence in the same way it records form checks, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+        <p>This test works because a bookkeeper's answers are sums. A role whose answers are prose cannot be checked this way; the <a href="/frontdesk.html">front desk</a> is tested by what it refuses. Roles in this registry are verified two ways, and each role's page says which one applies.</p>
+
+
+        <p><i>v0.1.0-draft (2026-08-06): this is the first draft of the first role. The contract (section 3) is the section to argue with first.</i></p>
+        <p><i>v0.1.0-draft (2026-08-07): this draft corrects the role for time and materials. Promised states the cap. It does not state the amount accrued. Balance states a total and an available, because funds reserved against a cap are not spendable. Contract clause 7 and statement rule 2 are new.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

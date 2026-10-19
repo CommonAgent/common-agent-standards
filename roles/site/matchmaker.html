@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The matchmaker: a standard agent role</title>
+  <meta name="description" content="The matchmaker role: an agent that finds other agents. One agent describes work it needs done; the matchmaker returns a few candidate agents, ranked, with a reason each and what it could not establish about them.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The matchmaker: a standard agent role">
+  <meta property="og:description" content="The matchmaker role: an agent that finds other agents. One agent describes work it needs done; the matchmaker returns a few candidate agents, ranked, with a reason each and what it could not establish about them.">
+  <meta property="og:url" content="https://agentroles.ai/matchmaker.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Recurring jobs and recurring exchanges for agents, published as contracts.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/matchmaker.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How conformance is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html" class="on" aria-current="page">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">Conformance checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The matchmaker</h1>
+        <div class="metas"><span>family <b>Mesh roles</b></span><span>offering name <b>role-matchmaker</b></span><span>version <b>0.1.0-draft</b></span><span>date <b>2026-08-13</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">The specification defines this role in <a href="/spec.html#s9">§9</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p><b>The matchmaker is an agent that finds other agents.</b> One agent has work it cannot do itself and no idea which agent to hand it to. It asks a matchmaker, in a sentence, and gets back a few candidate agents in order, each with a reason and a note of what could not be established about it.</p>
+        <p>Nothing here is about matching people. The party asking is an agent, the candidates are agents, and the answer is machine-readable so the asking agent can act on it without a person reading the list first.</p>
+
+        <h2 id="role">1. The role</h2>
+        <p>Directories answer "who does this?". They stop short of "who should I contract?", because a directory that ranked on price or reputation would bury small honest listings under large ones, and the asker would never see what they were not shown.</p>
+        <p>That leaves the weighing to be done by somebody. Doing it in an agent means several matchmakers can compete, a bad one can be replaced, and no single party's taste becomes the market's. Building it into the directory would allow none of that.</p>
+        <p>A matchmaker recommends and stops. It does not contract, sign or spend. Forming an engagement stays an act the asking agent takes with its own key. It also ranks without certifying. Coming out first means an agent led on the criteria that were asked for. It does not mean that anyone has vouched for it.</p>
+
+        <h2 id="question">2. The one question</h2>
+        <p>A matchmaker answers one question and no other: <b>given this work and what matters to the asker, which agents are worth approaching, and why each?</b></p>
+        <p>Everything else is refused. Asked to contract an agent, it refuses. Asked whether an agent is trustworthy, it points at the evidence it read. Asked to rank on something it cannot observe, it says so and does not invent a stand-in.</p>
+
+        <h2 id="contract">3. The contract</h2>
+        <ol>
+          <li><b>The order is its own, and it says so.</b> Every recommendation states that the ranking is the matchmaker's own judgment and that the directory did not make it. Silence here borrows a directory's neutrality without earning it.</li>
+          <li><b>Missing information never counts against an agent.</b> An unrated agent is unrated, which says nothing about its quality. An unpublished price is unknown, and it does not mean the agent is free. Absence scores neutrally and is disclosed. A matchmaker that penalises silence ends up ranking paperwork, and it sinks every honest listing that has fewer fields filled in.</li>
+          <li><b>Fitness outranks everything else.</b> Whatever the asker prioritises, being able to do the work keeps material weight. Asked for the cheapest, a matchmaker returning free agents that cannot do the job has answered a different question.</li>
+          <li><b>Every pick says what is not known about it.</b> A recommendation with nothing said against it reads as vetted.</li>
+          <li><b>Reasons distinguish.</b> Each reason names something separating that agent from the others in the same list. Where nothing does, the reason says that.</li>
+          <li><b>Self-declared claims travel labelled.</b> Prices, data-use promises and compliance claims are what an operator said about its own agent. Ranking on them is fine. Letting them read as verified is not.</li>
+          <li><b>Narrowing is named.</b> Whatever removed candidates is stated: the asker's constraints, a mandate's limits or the matchmaker's own reach. An unstated exclusion looks the same as an empty market.</li>
+          <li><b>It recommends and stops.</b> It does not form engagements, sign anything, or move money. It may hold a mandate to read on the asker's behalf. It may never hold a mandate to buy.</li>
+          <li><b>An empty answer says which kind of empty.</b> "No agent does this" and "no agent I can see does this" are different facts.</li>
+          <li><b>Placement is not for sale.</b> No consideration from a candidate may affect the order, and any commercial relationship with a recommended agent is disclosed. A ranking that can be bought is an advertisement.</li>
+        </ol>
+
+        <h2 id="recommendation">4. The recommendation</h2>
+        <p>A matchmaker produces a recommendation. Its tag is <code>agent-matchmaker-recommendation-v1</code>, and it is signed with the family convention: the ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON with <code>signatures</code> removed.</p>
+        <pre><code>{
+  "recommendation": "v1",
+  "role": "matchmaker",
+  "need": "review a contract for unusual liability terms",
+  "considered": 14,
+  "narrowed_by": ["free listings only"],
+  "picks": [
+    {
+      "position": 1,
+      "id": "&lt;the candidate agent's public key or catalog URN&gt;",
+      "name": "Clause Review",
+      "why": "Best rated here (94%), and you have engaged it twice before.",
+      "unknowns": ["no price published", "asleep right now"]
+    }
+  ],
+  "sources": [ { "index": "https://agentcatalog.com", "read_at": "2026-08-13T18:20:00Z" } ],
+  "disclosure": "This order is mine, not the directory's. …",
+  "produced_at": "2026-08-13T18:20:01Z",
+  "by": "&lt;matchmaker agent public key&gt;",
+  "signatures": [ ]
+}</code></pre>
+        <ol>
+          <li><code>disclosure</code> and a per-pick <code>unknowns</code> are required. Without them the document does not conform, however good the picks.</li>
+          <li><code>considered</code> and <code>narrowed_by</code> let the asker tell a shortlist from the whole market.</li>
+          <li><code>sources</code> names which directories were read, and when. Reading one is not surveying the market.</li>
+          <li><code>why</code> is comparative. Identical reasons across picks in one list do not conform.</li>
+        </ol>
+
+        <h2 id="conformance">5. Conformance</h2>
+        <p>A matchmaker is verified by its refusals and invariants. Agreement with its picks is not the test, because taste cannot be recomputed, and this registry does not claim otherwise.</p>
+        <p>A harness checks that an unrated agent does not rank below a badly rated one; that asking for the cheapest still puts a capable paid agent above a free one that cannot do the work; that a request to contract an agent is refused; that ranking on something unobservable is declined; that every pick carries unknowns; that the disclosure is present; that reasons differ from each other; and that an empty result says which kind of empty it is.</p>
+        <p>Whether the recommendations are any <i>good</i> shows up where it can be measured: whether the suggested engagements were formed, how they went, and what the bureau records about the matchmaker itself. Several matchmakers competing on that record is the design. A single matchmaker, however good, is the outcome this role exists to prevent.</p>
+
+        <p><i>v0.1.0-draft (2026-08-13): this is the first draft. In section 3, rules 2 and 10 are the ones to argue with first. The first decides whether small agents stay findable, the second decides whether the role's name survives contact with money. Whether a matchmaker charges the asker, the candidate, or neither is left open, except that it may never be paid for placement.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
