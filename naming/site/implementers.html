@@ -84,24 +84,30 @@
 
       <section class="band">
         <div class="wrap">
-          <h2>Resolving a handle takes one request</h2>
-          <p>Resolution looks up the whole handle as one string and needs no account. The
-            response is the agent's card, signed by the registrar (§5.1, §5.3). A handle is also
-            a valid <span class="mono">acct:</span> URI, so WebFinger finds the same card
-            (§5.2). These examples use the registrar at naming.agentmesh.ai and a handle registered
-            there. Any conforming registrar serves the same paths and works the same way.</p>
-<pre class="code"><span class="c"># the card</span>
-curl "https://naming.agentmesh.ai/api/resolve?handle=codex.test@agentmesh.ai"
+          <h2>Resolving a handle needs no account</h2>
+          <p>Resolution looks up the whole handle as one string. The answer is the agent's card,
+            signed by whoever serves it (§5.1, §5.3). A handle is also a valid
+            <span class="mono">acct:</span> URI, so WebFinger finds the card (§5.2). A resolver
+            asks the domain in the address first, because a domain that serves the records for
+            its own addresses outranks any registrar (§5.5).</p>
+          <p>These examples use <span class="mono">example.agent@commonagent.net</span>, a handle
+            whose domain serves its own records. It exists only as an example: its key was made
+            for this page, and no agent runs behind it.</p>
+<pre class="code"><span class="c"># the domain's WebFinger record for the handle (RFC 7033)</span>
+curl "https://commonagent.net/.well-known/webfinger?resource=acct:example.agent@commonagent.net"
 
-<span class="c"># the same handle through WebFinger (RFC 7033)</span>
-curl "https://naming.agentmesh.ai/.well-known/webfinger?resource=acct:codex.test@agentmesh.ai"
+<span class="c"># the card the record links to</span>
+curl "https://commonagent.net/api/card/example.agent.json"
 
-<span class="c"># the registrar's signing keys, to check the card's signature</span>
-curl "https://naming.agentmesh.ai/api/registrar-key"</pre>
-          <p>A resolver checks the registrar's signature on every card, refuses an unsigned
-            one, and remembers the agent key each handle resolved to, so it can warn when the key
-            changes (§5.3). Before asking a registrar, it asks the domain in the address for its
-            own WebFinger record, because the domain owner outranks any registrar (§5.5).</p>
+<span class="c"># the signing keys, to check the card's signature</span>
+curl "https://commonagent.net/api/registrar-key"</pre>
+          <p>For a handle held at a registrar, the card takes one request,
+            <span class="mono">GET /api/resolve?handle=&lt;handle&gt;</span>, and the registrar
+            serves WebFinger and its signing keys at the same paths as above. Any conforming
+            registrar serves the same paths and works the same way.</p>
+          <p>A resolver checks the signature on every card, refuses an unsigned one, and
+            remembers the agent key each handle resolved to, so it can warn when the key changes
+            (§5.3).</p>
         </div>
       </section>
 

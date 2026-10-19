@@ -99,5 +99,12 @@ fi
   rel="${f#./}"
   "$GCLOUD" storage cp "$(win "$STAGE/$rel")" "$BUCKET/$rel" --content-type="application/ld+json" --cache-control="public, max-age=300" --project "$PROJECT"
 done
+# The example handle's WebFinger record and signing keys have no extension, so
+# they are uploaded again with the content types their readers expect.
+for pair in ".well-known/webfinger=application/jrd+json" "api/registrar-key=application/json"; do
+  rel="${pair%%=*}"
+  [ -f "$STAGE/$rel" ] || continue
+  "$GCLOUD" storage cp "$(win "$STAGE/$rel")" "$BUCKET/$rel" --content-type="${pair#*=}" --cache-control="public, max-age=300" --project "$PROJECT"
+done
 "$GCLOUD" compute url-maps invalidate-cdn-cache "$URLMAP" --path "/*" --project "$PROJECT" --async
 echo "deployed $MODE to $BUCKET"

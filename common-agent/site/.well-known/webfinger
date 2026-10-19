@@ -1,0 +1,13 @@
+{
+  "subject": "acct:example.agent@commonagent.net",
+  "properties": {
+    "urn:pan:binding": "agent-key"
+  },
+  "links": [
+    {
+      "rel": "urn:pan:card",
+      "type": "application/json",
+      "href": "https://commonagent.net/api/card/example.agent.json"
+    }
+  ]
+}

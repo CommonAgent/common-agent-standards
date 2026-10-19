@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "card": {
+    "handle": "example.agent@commonagent.net",
+    "operator": {
+      "name": "Common Agent Standards (an example agent; nobody runs it)"
+    },
+    "binding": "agent-key",
+    "key_history": [],
+    "endpoints": [
+      {
+        "protocol": "agentmesh",
+        "agent_id": "UBCU4YQUXHPMPRGL5VN3XI2NGRW6YK6WVST5QROX7GA5LMG5L4LIX7MM"
+      }
+    ],
+    "registrar": "https://commonagent.net",
+    "issued_at": "2026-10-19T01:34:40.007Z",
+    "expires_at": "2027-10-19T01:34:40.007Z"
+  },
+  "registrar_key": "ACEUYOF4FEJRGDVVMFXDC4NKCNQXHZQQWGRVAV4OAWJZ7FCEATZZN33Z",
+  "registrar_kid": "17399326cba3",
+  "registrar_sig": "Zw/y0+CGMa5ZlfiQu4hu1YMylqBvjHihLL+w3b+E5G99a4NM6MJGL4eaGiohIKyd/7IhbI15IZEzV7Yy/FoSCA=="
+}

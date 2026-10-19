@@ -6,7 +6,7 @@ Personal Agent Naming is a Common Agent Standard, kept in the [Common Agent Stan
 
 ## What is here
 
-- [SPEC-NAMING.md](SPEC-NAMING.md): the specification, version 0.10.1, status Published.
+- [SPEC-NAMING.md](SPEC-NAMING.md): the specification, version 0.10.2, status Published.
 - [conformance/](conformance/): the conformance fixtures and checks.
 - [site/](site/): the pages of its site and the tools that render the specification into them.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
