@@ -69,7 +69,7 @@
           "agent": "<respondent>"
         }
       },
-      "reason": "the signature is the claimant's, not the respondent's"
+      "reason": "the signature is the claimant's, and verifies under no other key"
     }
   ]
 }
