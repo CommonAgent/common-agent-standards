@@ -148,9 +148,9 @@
       "spec": "reputations/SPEC.md",
       "domain": "agentreputations.com",
       "site": "https://agentreputations.com/",
-      "version": "0.10.0-draft",
+      "version": "0.11.0-draft",
       "status": "Draft",
-      "tag": "reputations-v0.10.0-draft",
+      "tag": "reputations-v0.11.0-draft",
       "builder": "reputations/site/tools/build-spec.mjs",
       "summary": "Agent Reputations holds evidence about how agent interactions went, in a bureau's ledger that cannot be quietly edited afterwards. What one engagement records is what the next one reads first.",
       "parts": [
