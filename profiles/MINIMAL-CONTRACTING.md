@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.1.0-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
-**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.30.0-draft · Agent Messaging 0.9.4-draft
+**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.31.0-draft · Agent Messaging 0.9.4-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.1.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.2.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -26,7 +26,7 @@ A profile implementation MUST refuse to sign, countersign or complete the format
 1. **The client organization delegates a budget.** It files a charter (Agent Mandate §5), and its root authority issues a mandate to the person who approves contracts (§6). The mandate holds the powers `form` and `terminate`, a ceiling per engagement and per month, and an offering scope.
 2. **The provider makes an offer.** The provider's owner signs a standing proposal (Agent SoW §12.1), or a directed standing proposal that names the client (§12.1.1). Its price is a fixed fee per task, or time and materials with a cap and a reservation (§5.5).
 3. **The engagement forms.** The client's agent fills the client seat with its `owner_key`, and with the `buyer_reference` where the client keeps one, and signs. The approving person confirms, and the platform runs the five checks of Agent Mandate §7 against the mandate. The provider's runtime then adds the provider's signature, and the engagement is agreed (Agent SoW §12.1).
-4. **The work runs and is metered.** The client's agent sends tasks over Agent Messaging. Each terminal response carries the responder's usage report under its envelope signature (Agent Messaging §13.5), and each task has a task receipt that carries the `buyer_reference` (§19.2). Under time and materials the provider signs a usage act for each window it bills (Agent SoW §6.3), and the cap bounds what the client pays (§5.5.3 to §5.5.5).
+4. **The work runs and is metered.** The client's agent sends tasks over Agent Messaging. Each terminal response carries the responder's usage report under its envelope signature (Agent Messaging §13.5), and each task has a task receipt that carries the `buyer_reference` (§19.2). Under time and materials the provider signs a usage act for each window it bills (Agent SoW §6.3), and the cap bounds what the client pays (§5.5.3 to §5.5.5). The provider signs a settlement record for each window or task it charges, naming the usage acts it settles (§6.3).
 5. **The engagement ends.** It lapses at `ends_at`, ends `exhausted` when the cap is reached, or ends by a signed terminate act for convenience or for cause (§5.9, §6.3).
 6. **The parties settle a disagreement, where one arises.** Under the posture `none`, settlements are final. Under `escalate_to_owners`, either seat opens a dispute with a signed dispute act, and the dispute closes when both seats sign resolve acts that agree (§5.10, §5.10.2, §6.3).
 
@@ -67,7 +67,7 @@ Sections 1, 10, 11 and 12 are informative.
 
 `mandate-proxy.json` is left out with §7.1.
 
-## 4. Agent SoW 0.30.0-draft
+## 4. Agent SoW 0.31.0-draft
 
 Agent SoW is the contract: who the parties are, what work is in scope, what it costs, and how it ends. Both owners sign the same document, and the runtimes enforce what it says.
 
@@ -88,7 +88,7 @@ Agent SoW is the contract: who the parties are, what work is in scope, what it c
 | §5.11 | Confidentiality and retention. |
 | §5.17 | The buyer's reference. |
 | §6, §6.1, §6.2 | Signatures and owner keys, approval authority, and organizational authority. |
-| §6.3 | The signed acts terminate, usage, dispute and resolve, with the outcome `settled`. |
+| §6.3 | The signed acts terminate, usage, settle, dispute and resolve, with the outcome `settled`. |
 | §7, §8, §9 | The lifecycle, who enforces what, and precedence. |
 | §12.1, §12.1.1 | Formation from a standing proposal, and from a directed one. |
 
@@ -96,7 +96,7 @@ Agent SoW is the contract: who the parties are, what work is in scope, what it c
 
 A profile engagement is an Agent SoW document that meets every rule below. A profile implementation signs nothing else.
 
-1. `price.arrangement` is `fixed_fee` or `time_and_materials`. No schedule line is a pass-through line, and the price carries no operator fee (§5.5.6, §5.5.8).
+1. `price.arrangement` is `fixed_fee` or `time_and_materials`. No schedule line is a pass-through line, and the price carries no operator fee (§5.5.6, §5.5.8), so no settlement record carries `operator_fee`.
 2. Under time and materials, `reservation.window_days` covers the term the parties mean to work in. Work stops when the window closes (§5.5.4), and since a profile engagement is never amended, more work after that needs a new engagement.
 3. `disputes.posture` is `none` or `escalate_to_owners`.
 4. `change_control.approval.formation` is `person` or `agent_then_person`, the client seat carries `organization`, and the client's approval record carries `mandate` (§6.1, §6.2). This is where the delegated budget applies, because Agent Mandate §7 runs its checks when a person approves.
@@ -127,7 +127,7 @@ Sections 1, 10 and 11 are informative.
 |------|--------------------------------------|
 | [sow-signatures.json](../sow/conformance/sow-signatures.json) | Every case: the signed bytes, binding to `owner_key`, and the canonical padded base64 signature. |
 | [sow-pricing.json](../sow/conformance/sow-pricing.json) | The arrangement, every price case, rating without the cases for pass-through lines and operator fees, the settlement lines that are neither, the reservation, document and task states, parties, the directed proposal's clause and formation, approval, and signing. |
-| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate and usage case, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out. |
+| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate, usage and settle case except the two with an operator fee, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out. |
 | [sow-buyer-reference.json](../sow/conformance/sow-buyer-reference.json) | The form, the template, the carriage onto settlement records and receipts, and the check for a discrepancy. The three carriage cases about amendments are left out. |
 | [sow-data-use.json](../sow/conformance/sow-data-use.json) | The promises, the clause and its signing. The comparison against a stated requirement is left out. |
 | [sow-disputes.json](../sow/conformance/sow-disputes.json) | The postures and the clause. The arbiter's verdict is left out. |
@@ -149,13 +149,12 @@ The rest of §19, which covers prices, the money axis of the budget, the billing
 
 ## 6. What the receipt lets each side check
 
-The receipt of a profile engagement is three records, and each side can check every one of them against signed documents.
+The receipt of a profile engagement is four records, and each side can check every one of them against signed documents.
 
 1. **The usage report on each response.** The responder reports its usage on its terminal response, and the envelope signature covers it (Agent Messaging §13.5). The signature proves who reported the usage, and it cannot prove that the numbers are true.
 2. **The usage acts.** Under time and materials, the provider signs the counts for each window it bills (Agent SoW §6.3). The client rates them under §5.5.2, one line at a time as `floor(count × per_unit / per)`, and checks that the total stays within the cap. Under a fixed fee, each task is charged its offering's `per_task` rate.
-3. **The task receipt.** It carries the `buyer_reference` of the version the task was admitted under, and a client that finds the reference missing or altered treats the record as a discrepancy (Agent SoW §5.17).
-
-The suite does not yet define a signed settlement record. Agent SoW defines the lines of a settlement record (§5.5.2) and what one carries (§5.17), and the task receipt is a view the platform derives (Agent Messaging §19.2). Until a standard defines the settlement record as an object with its own signature tag, a profile implementation checks a charge by recomputing it from the signed engagement and the signed usage. A signed settlement record is the first addition this profile expects.
+3. **The settlement record.** The provider signs one for each window or task it charges (Agent SoW §6.3, tag `agent-sow-settlement-v1`). Under time and materials it names the usage acts it settles, each line counts what those acts read for its meter, and no usage act is settled twice. Under a fixed fee each line charges the rate's `per_task` for each task. The client recomputes every line and the total, checks the `buyer_reference`, and checks that the totals stay within the cap.
+4. **The task receipt.** It carries the `buyer_reference` of the version the task was admitted under, and a client that finds the reference missing or altered treats the record as a discrepancy (Agent SoW §5.17). The task receipt is a view the platform derives (Agent Messaging §19.2), so the settlement record is the one of the four that commits the provider to the charge.
 
 ## 7. How the rest of the suite adds on
 
@@ -173,5 +172,7 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.2.0-draft** (2026-10-20). The settlement record. The profile applies to Agent SoW 0.31.0-draft and requires its settle act (§6.3, `agent-sow-settlement-v1`), which the provider signs for each window or task it charges. Section 6 counts it among the records of the receipt in place of saying the suite has none, and the settle cases of `sow-acts.json` are required, except the two with an operator fee. The minor version moves because an implementation of 0.1.0-draft does not produce or check settlement records.
 
 **0.1.0-draft** (2026-10-20). First version.

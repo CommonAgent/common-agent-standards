@@ -4,6 +4,26 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.31.0-draft (2026-10-20)
+
+The settlement record. §6.3 gains a fifth
+signed act, settle (`agent-sow-settlement-v1`), the settlement record that
+every billable unit of work produces under §5.5, which the spec named and
+did not define. The provider's seat signs it. It carries the engagement,
+the version and its digest, the `window` or the one `task` it settles, the
+digests of the usage acts it settles under time and materials, its lines,
+an operator fee where one is inside the charge, `currency`, `total`, and the
+`buyer_reference` byte for byte. Its member set is closed and `sig` is the
+canonical padded base64 of §6. A metered line counts the sum the settled
+usage acts read for its meter and rates it under §5.5.2, a task line
+charges the rate's `per_task` for each task, the total is the lines and the
+fee, the totals of every record stay within the cap, and no usage act is
+settled twice. A dispute's `cites` entry of kind `settlement` names a
+record by the digest of its signed bytes. `conformance/sow-acts.json` gains
+the records, with real test-seed signatures, and the refusals. The minor
+version moves because a runtime built against 0.30.0-draft neither
+produces nor checks these bytes.
+
 ## 0.30.0-draft (2026-10-20)
 
 The signed act formats. New §6.3 defines the
