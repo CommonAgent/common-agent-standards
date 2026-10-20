@@ -1,0 +1,100 @@
+{
+  "comment": "Task origin and cancel attribution on the Task record (SPEC.md 7.1, 7.4, 10.8; Agent Messaging 0.9.6-draft). Two fields the platform writes and a party never does: `origin`, the request that created the Task as the server observed it routing that request, and `canceled_by`, who asked for a cancellation as the server observed it. Pins the field names, the shapes, the closed values, and the cases the reference server's tests run. THE FIXTURE IS THE AUTHORITY for names and shapes: change it only with a spec change alongside.",
+  "version": 1,
+  "spec": "SPEC.md 7.1 (Task object), 7.4 (persistence), 10.8 (cancel), 13.5 (request_id)",
+  "fields": {
+    "origin": {
+      "comment": "Present only when the server observed the creating request. Absent means unknown, never 'no request'. Never taken from a task update, never replaced once set, and never part of `history`, so the history cap cannot remove it. `request_id` is the id answer-derived meter events carry as `request_id` (13.5).",
+      "required": ["request_id", "requester", "responder", "offering", "observed_at", "bound_by"],
+      "types": {
+        "request_id": "string",
+        "requester": "agent-key",
+        "responder": "agent-key",
+        "offering": "string",
+        "observed_at": "ISO-8601",
+        "bound_by": "enum"
+      },
+      "bound_by": {
+        "request": "the request itself named the Task id (a requester-chosen id, as a stream request carries)",
+        "answer": "the responder's answer to the request, routed to the requester's inbox, carried the Task id"
+      },
+      "rules": [
+        "the origin's requester and responder are the Task record's requester and responder, or the origin is not attached",
+        "a Task id is bound to one request for its two parties, and a request to one Task id; the first observation wins",
+        "a request first observed more than a short skew after its Task already existed did not create it and binds nothing",
+        "a party's update cannot set, change or remove the origin, whatever it carries"
+      ]
+    },
+    "canceled_by": {
+      "comment": "Written once, on the canceled transition, beside `cancel_reason`, which stays the canceling party's own signed claim.",
+      "required": ["party", "requester_request", "at"],
+      "party": {
+        "requester": "the requester signed the canceled update",
+        "responder": "the responder signed the canceled update, whatever reason it gave"
+      },
+      "requester_request": {
+        "comment": "The cancel the server observed from the ORIGINAL requester (origin.requester) before the transition, or null when it observed none. Always null on a Task without an origin.",
+        "required": ["request_id", "observed_at", "via"],
+        "via": {
+          "update": "the original requester's own canceled update",
+          "cancel_request": "a task.cancel request the original requester sent the responder"
+        }
+      }
+    }
+  },
+  "shapes": {
+    "origin": {
+      "request_id": "0198c003-0000-7000-8000-00000000a001",
+      "requester": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+      "responder": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
+      "offering": "summarize",
+      "observed_at": "2026-10-20T09:00:00.000Z",
+      "bound_by": "answer"
+    },
+    "canceled_by_requester": {
+      "party": "requester",
+      "requester_request": {
+        "request_id": "0198c003-0000-7000-8000-00000000a002",
+        "observed_at": "2026-10-20T09:01:00.000Z",
+        "via": "update"
+      },
+      "at": "2026-10-20T09:01:00.000Z"
+    },
+    "canceled_by_responder_unasked": {
+      "party": "responder",
+      "requester_request": null,
+      "at": "2026-10-20T09:02:00.000Z"
+    },
+    "canceled_by_responder_after_cancel_request": {
+      "party": "responder",
+      "requester_request": {
+        "request_id": "0198c003-0000-7000-8000-00000000a003",
+        "observed_at": "2026-10-20T09:02:30.000Z",
+        "via": "cancel_request"
+      },
+      "at": "2026-10-20T09:02:31.000Z"
+    }
+  },
+  "cases": {
+    "origin": [
+      { "case": "stream_request_then_handler_throws", "path": "a stream request naming its Task id; the opening working respond; the handler throws and the failed update carries no in_reply_to", "origin": "present", "bound_by": "request" },
+      { "case": "input_problems_then_deferred_failure", "path": "a bare request; the input_required answer carries the Task id and the creating update carries no in_reply_to; a resume request; a deferred failure", "origin": "present", "bound_by": "answer", "request": "the first request, not the resume" },
+      { "case": "deferred_completion", "path": "a bare request; a working answer with the Task id; a deferred completion creates the record", "origin": "present", "bound_by": "answer" },
+      { "case": "update_before_request_observed", "path": "the creating update is recorded before the tap records the request", "origin": "present (attached afterwards)" },
+      { "case": "more_than_50_updates", "path": "60 updates after creation; history keeps the newest 50", "origin": "unchanged" },
+      { "case": "responder_supplies_origin", "path": "the creating update and later updates carry an origin of their own", "origin": "the observed one, or absent when none was observed" },
+      { "case": "responder_names_another_requester", "path": "the creating update's `to` is not the observed request's sender", "origin": "absent" },
+      { "case": "stranger_names_the_task_id", "path": "a third agent's request carries the Task id", "origin": "unaffected" },
+      { "case": "request_not_observed", "path": "nothing crossed the server for this Task", "origin": "absent" }
+    ],
+    "canceled_by": [
+      { "case": "buyer_cancels", "signer": "requester", "reason": "user_requested", "party": "requester", "via": "update" },
+      { "case": "responder_cancels_user_requested_unasked", "signer": "responder", "reason": "user_requested", "party": "responder", "requester_request": null },
+      { "case": "responder_cancels_after_buyer_cancel_request", "signer": "responder", "reason": "user_requested", "party": "responder", "via": "cancel_request" },
+      { "case": "responder_cancels_superseded", "signer": "responder", "reason": "superseded", "party": "responder", "requester_request": null },
+      { "case": "responder_cancels_budget_exhausted", "signer": "responder", "reason": "budget_exhausted", "party": "responder", "requester_request": null },
+      { "case": "stranger_cancel_request", "signer": "responder", "reason": "user_requested", "party": "responder", "requester_request": null, "why": "only the original requester's cancel request counts" },
+      { "case": "no_origin", "signer": "requester", "reason": "user_requested", "party": "requester", "requester_request": null, "why": "without an origin there is no original requester the server can vouch for" }
+    ]
+  }
+}

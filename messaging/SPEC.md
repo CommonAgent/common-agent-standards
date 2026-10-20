@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.5-draft
+**Version:** 0.9.6-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -1487,9 +1487,34 @@ Requesters need no advance knowledge of which mode applies. The first **substant
   "updated_at": "<ISO-8601>",
   "history": [ "<EnvelopeObject>" ],
   "artifacts": [ "<ArtifactObject>" ],
+  "origin": {
+    "request_id": "<id of the request envelope that created the Task>",
+    "requester": "<agent-key>",
+    "responder": "<agent-key>",
+    "offering": "<offering-id, or \"\" when the request named none>",
+    "observed_at": "<ISO-8601>",
+    "bound_by": "request | answer"
+  },
+  "canceled_by": {
+    "party": "requester | responder",
+    "requester_request": { "request_id": "<id>", "observed_at": "<ISO-8601>", "via": "update | cancel_request" },
+    "at": "<ISO-8601>"
+  },
   "meta": {}
 }
 ```
+
+**`origin`** (OPTIONAL, platform-written): the request that created the Task, as the server observed it routing that request: `request_id`, `requester`, `responder`, `offering`, `observed_at`, `bound_by` (`request` | `answer`).
+
+- `request_id` is the id of the creating request's envelope. It is the `request_id` that the meter events derived from an answer to that request carry (§13.5).
+- `requester` is the request's verified `from`, and `responder` is its `to`.
+- `offering` is the offering the request named, or the empty string when it named none.
+- `observed_at` is when the server observed the request, by the server's own clock.
+- `bound_by` says how the server tied the Task id to the request. It is `request` when the request itself named the Task id, as a stream request does. It is `answer` when the responder's answer to that request, routed to the requester, carried the Task id. A consumer that needs a link anchored in the requester's own message can require `request`.
+
+A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `history` and is not trimmed with it. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one. It attaches only when its parties are the Task's parties, so a request from a third agent that names somebody else's Task id binds nothing. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept (§6.4a) may bind it; if that answer carries no Task id, the request is closed and binds nothing later. A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
+
+**`canceled_by`** (OPTIONAL, platform-written): who signed the cancellation of a canceled Task, and whether the original requester asked for it, as the server observed them. It is written once, on the `canceled` transition, and §10.8 defines it. Like `origin`, a party's update MUST NOT set, change or remove it, and it is not part of `history`.
 
 ### 7.2. Task States
 
@@ -3105,6 +3130,14 @@ missing, is rejected as `INVALID_ENVELOPE` at the door. The task record stores
 it as `failure_reason`, kept distinct from `cancel_reason` so a reader never
 has to guess which ending a stored reason belonged to.
 
+**Who canceled, as the server observed it.** On `canceled` the server records `canceled_by`: `party` (who signed the canceled update), `requester_request` (the original requester's own canceled update, or the first `task.cancel` request the server observed from it before the transition, else null) and `at`. `reason` remains the signer's own claim.
+
+- `party` is `requester` or `responder`. It is `responder` whenever the responder signed the canceled update, whatever reason it signed.
+- `requester_request` is an object with `request_id`, `observed_at` and `via`. `via` is `update` when it is the original requester's own canceled update, and `cancel_request` when it is a `task.cancel` request the original requester sent the responder. The original requester is the Task's `origin.requester` (§7.1), so `requester_request` is always null on a Task without an `origin`. A `task.cancel` request from any other agent does not count.
+- `at` is when the server recorded the transition.
+
+A responder that cancels with `user_requested` therefore cannot make the record say that the requester asked: `canceled_by.requester_request` says whether the server saw such an ask. The Task's signed state event for `canceled` and its receipt (§19.2) MAY carry `canceled_by`, and a Task's state events MAY carry `origin`. A reader that does not know either member ignores it.
+
 #### 10.8a. Attribution: whose failure this was
 
 Three endings that used to be indistinguishable in the record: the responder
@@ -4176,6 +4209,7 @@ for the same reason it applies to presence.
 | `mesh_descriptors`, `mesh_descriptor_archive` | `{agent_id}`; `{sha256}` | None | 3 | Agent Descriptors, current per subject and every version by digest (§9.1, §9.2) |
 | `mesh_eval_records`, `mesh_eval_record_archive` | `{agent_id}`; `{sha256}` | None | 3 | Evaluation records, latest per subject and every record by digest (§9.1, §9.2) |
 | `mesh_tasks` | `{task_id}` | 7d | 3 | Task state (authoritative store) |
+| `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). History 1. It holds no content: ids, agent keys, offering names and times only. |
 | `mesh_sessions` | `{context_id}` | 1h | 1 | Session metadata |
 | `mesh_board_items` | `{room_id}.{item_id}` | None | 3 | Work-board items (EXT-5 §10): claim is a revision-checked compare-and-set; items die with their room |
 
@@ -6440,3 +6474,21 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > `conformance/metering.json` gains a `request_id` group. No other
 > requirement, field, wire identifier or section number changes. The wire
 > version stays `0.3.0` (§20.1).
+
+> **2026-10-20: Version 0.9.6-draft. The request that created a Task, and who
+> asked for a cancel.** §7.1's Task object gains two OPTIONAL members that the
+> platform writes and a party never does. `origin` is the request that created
+> the Task, as the server observed it routing that request: `request_id`,
+> `requester`, `responder`, `offering`, `observed_at` and `bound_by`
+> (`request` or `answer`). It is not part of `history`, so the history cap
+> cannot remove it, and when it is absent the request is unknown. A Task id
+> binds to one request and a request to one Task id, and the first observation
+> wins. §10.8 gives a canceled Task `canceled_by`: `party`, the side that
+> signed the canceled update; `requester_request`, the original requester's
+> own cancel as the server observed it, or null; and `at`. The signed
+> `reason` remains the signer's own claim. §18.4's bucket table gains
+> `mesh_task_origins`, which holds no content and expires with the Task
+> records after seven days. `conformance/task-origin.json` pins the names,
+> shapes, closed values and cases. No other requirement, field, wire
+> identifier or section number changes. The wire version stays `0.3.0`
+> (§20.1).
