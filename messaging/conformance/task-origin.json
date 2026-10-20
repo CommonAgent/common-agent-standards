@@ -6,13 +6,16 @@
     "origin": {
       "comment": "Present only when the server observed the creating request. Absent means unknown, never 'no request'. Never taken from a task update, never replaced once set, and never part of `history`, so the history cap cannot remove it. `request_id` is the id answer-derived meter events carry as `request_id` (13.5).",
       "required": ["request_id", "requester", "responder", "offering", "observed_at", "bound_by"],
+      "optional": ["contested_by", "contested_overflow"],
       "types": {
         "request_id": "string",
         "requester": "agent-key",
         "responder": "agent-key",
         "offering": "string",
         "observed_at": "ISO-8601",
-        "bound_by": "enum"
+        "bound_by": "enum",
+        "contested_by": "array of request ids, at most 16",
+        "contested_overflow": "non-negative integer"
       },
       "bound_by": {
         "request": "the request itself named the Task id (a requester-chosen id, as a stream request carries)",
@@ -24,7 +27,7 @@
         "only a request's first answer may bind it; a first answer with no Task id (a bare answer, a refusal, an inbox-mode answer) closes the request, and no later answer binds it",
         "only what reaches the addressee's inbox is observed; a responder's outbox mirror is not",
         "delivery signals are not answers: an accept (status accepted) and a queued acknowledgement (queued: true with an inbox_id, on the payload or its output) neither open nor close a request",
-        "a Task id that the first answers of two different requests between the same parties both name is contested: it gets no origin, and an origin already attached is removed (a resume, a request naming the Task itself, is not a contest)",
+        "the first binding of a Task id stands: a later request whose first answer names an already-bound Task id binds nothing and is appended to the origin's contested_by (at most 16 ids, the rest counted in contested_overflow); an origin is never removed or replaced, a terminal record's origin is never changed, and a consumer refunding the origin refunds every contesting request too (a resume, a request naming the Task itself, is not a contest)",
         "requests that never create a Task are not recorded: registry probes, describe, knock, and task.cancel (recorded as a cancel)",
         "a request first observed more than a short skew after its Task already existed did not create it and binds nothing",
         "a party's update cannot set, change or remove the origin, whatever it carries"
@@ -48,6 +51,15 @@
     }
   },
   "shapes": {
+    "origin_contested": {
+      "request_id": "0198c003-0000-7000-8000-00000000a001",
+      "requester": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+      "responder": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
+      "offering": "summarize",
+      "observed_at": "2026-10-20T09:00:00.000Z",
+      "bound_by": "answer",
+      "contested_by": ["0198c003-0000-7000-8000-00000000a004"]
+    },
     "origin": {
       "request_id": "0198c003-0000-7000-8000-00000000a001",
       "requester": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -85,7 +97,11 @@
       { "case": "stream_request_then_handler_throws", "path": "a stream request naming its Task id; the opening working respond; the handler throws and the failed update carries no in_reply_to", "origin": "present", "bound_by": "request" },
       { "case": "input_problems_then_deferred_failure", "path": "a bare request; the input_required answer carries the Task id and the creating update carries no in_reply_to; a resume request; a deferred failure", "origin": "present", "bound_by": "answer", "request": "the first request, not the resume" },
       { "case": "closed_request_probe", "path": "R1 is answered at once with no task; R2 is sent; the provider sends an extra respond naming R1 and the new Task id, then answers R2 with that Task id; the Task fails", "origin": "present", "request": "R2, never R1" },
-      { "case": "contested_task_id", "path": "R1 gets only an accept and its buyer times out; R2 is sent; the provider answers R1 naming T, then R2 naming T", "origin": "absent" },
+      { "case": "contested_task_id", "path": "R1 gets only an accept and its buyer times out; R2 is sent; the provider answers R1 naming T, then R2 naming T", "origin": "R1", "contested_by": ["R2"] },
+      { "case": "follow_up_answered_with_live_task", "path": "T is bound to R1; a follow-up R2's first answer names T", "origin": "R1", "contested_by": ["R2"] },
+      { "case": "old_queued_acked_request", "path": "R0 got a queued acknowledgement before T existed; T is bound to R1; R0's first answer names T", "origin": "R1", "contested_by": ["R0"] },
+      { "case": "stream_task_contested", "path": "a stream request S1 names T; another request's first answer names T", "origin": "S1", "contested_by": ["the other request"] },
+      { "case": "terminal_task_contested", "path": "T has ended; another request's first answer names T", "origin": "unchanged on the record" },
       { "case": "queued_acknowledgement_then_task", "path": "R1 is held (a door hold, an attended session, a mailbox) and answered with a queued acknowledgement; its later answer names T", "origin": "present", "request": "R1" },
       { "case": "deferred_completion", "path": "a bare request; a working answer with the Task id; a deferred completion creates the record", "origin": "present", "bound_by": "answer" },
       { "case": "update_before_request_observed", "path": "the creating update is recorded before the tap records the request", "origin": "present (attached afterwards)" },
@@ -97,6 +113,7 @@
     ],
     "canceled_by": [
       { "case": "buyer_cancels", "signer": "requester", "reason": "user_requested", "party": "requester", "via": "update" },
+      { "case": "buyer_cancels_then_contest", "signer": "requester", "reason": "user_requested", "party": "requester", "via": "update", "why": "a contest changes neither the origin nor canceled_by" },
       { "case": "responder_cancels_user_requested_unasked", "signer": "responder", "reason": "user_requested", "party": "responder", "requester_request": null },
       { "case": "responder_cancels_after_buyer_cancel_request", "signer": "responder", "reason": "user_requested", "party": "responder", "via": "cancel_request" },
       { "case": "responder_cancels_superseded", "signer": "responder", "reason": "superseded", "party": "responder", "requester_request": null },
