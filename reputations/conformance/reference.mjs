@@ -27,6 +27,7 @@ const REPORT_FILE = join(HERE, "fdbk-report-v1.json");
 const HEADS_FILE = join(HERE, "fdbk-heads-v1.json");
 const CASEFOLD_FILE = join(HERE, "casefolding-15.1.0.json");
 const CLAIM_FILE = join(HERE, "fdbk-nda-claim-v1.json");
+const NDA_RECORD_FILE = join(HERE, "fdbk-nda-record-v1.json");
 
 // ── §5, §7: the formula ─────────────────────────────────────────────────────
 // The quality value of each outcome code that enters a pool (§5). Every code
@@ -540,6 +541,35 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       if (verify(null, signedBytes(file.tag, changed), publicKeyOf(signer), Buffer.from(file.sig, "base64"))) bad.push(`must fail ${f.name}: it verified`);
     }
     console.log(`fdbk-nda-claim-v1: a signed claim, its digest and the rejection kept of it, and ${file.must_fail.length} changed claims that must fail checked`);
+  }
+}
+
+{
+  // Who is served a party's filed counts (§4.9 rules 2, 4 and 6): never a
+  // public report, so a filing moves the respondent's public open count and
+  // nothing on the claimant's public report.
+  const file = JSON.parse(readFileSync(NDA_RECORD_FILE, "utf8"));
+  const servesFiled = (reader) => reader !== "public";
+  if (!WRITE) {
+    const servedTo = new Set();
+    for (const side of Object.values(file.records)) {
+      for (const moment of Object.values(side)) {
+        for (const [reader, record] of Object.entries(moment)) {
+          if (("filed" in record) !== servesFiled(reader)) bad.push(`nda record: ${reader} ${"filed" in record ? "carries" : "lacks"} filed`);
+          if ("filed" in record) servedTo.add(reader);
+        }
+      }
+    }
+    if (JSON.stringify([...servedTo].sort()) !== JSON.stringify([...file.expected.filed_served_to].sort())) bad.push("nda record: filed is served to other readers than the vector says");
+    const c = file.records.claimant;
+    if ((JSON.stringify(c.before.public) === JSON.stringify(c.after.public)) !== file.expected.claimant_public_unchanged) bad.push("nda record: the claimant's public report moved with the filing");
+    const r0 = file.records.respondent.before.public.open.count;
+    const r1 = file.records.respondent.after.public.open.count;
+    if (r0 !== file.expected.respondent_public_open_count.before || r1 !== file.expected.respondent_public_open_count.after) bad.push("nda record: the respondent's open count differs from the vector's");
+    for (const f of file.must_fail) {
+      if (!(("filed" in f.record) && !servesFiled(f.reader))) bad.push(`must fail ${f.name}: a conforming bureau would serve it`);
+    }
+    console.log(`fdbk-nda-record-v1: what ${file.readers.length} readers are served of two NDA records before and after a filing, and ${file.must_fail.length} report a bureau must not serve, checked`);
   }
 }
 
