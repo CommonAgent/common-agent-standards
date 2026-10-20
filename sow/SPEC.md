@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.32.0-draft
+**Version:** 0.33.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -2525,6 +2525,18 @@ runtime MUST refuse an act whose stated or computed numbers pass it. A
 runtime computes those numbers in integer arithmetic wide enough to see the
 excess, so two implementations refuse the same act and neither rounds it.
 
+Every instant an act carries, its `signed_at`, a termination's
+`effective_at`, and a window's `from` and `to`, is an RFC 3339 date-time,
+and it may carry any number of fractional digits. An instant means exactly
+the instant it names. A runtime compares instants, orders them and adds a
+notice or a deadline to them at every fractional digit either one carries,
+and MUST NOT round or truncate an instant first, to milliseconds or to any
+other unit. `2026-10-05T00:00:00.0001Z` is before
+`2026-10-05T00:00:00.0009Z`: a window that ends at the second overlaps one
+that starts at the first, and a window from the first to the second has its
+`from` before its `to`. A runtime whose time type holds whole milliseconds
+compares the digits past them itself.
+
 **Terminate** (tag `agent-sow-terminate-v1`). Either seat signs it.
 
 ```json
@@ -2664,10 +2676,18 @@ kind `settlement` names a settlement record by that digest.
 - No task and no fixed fee window is settled twice. A runtime MUST refuse a
   record that names a `task` an earlier settlement record under the
   engagement names. Under `fixed_fee`, the windows of two settlement records
-  under one engagement MUST NOT overlap, and a runtime MUST refuse a record
-  whose `window` overlaps the `window` of an earlier record. A record signed
-  again with a new `signed_at` is a second record for the same work, and
-  these rules refuse it.
+  made under `fixed_fee` versions of one engagement MUST NOT overlap, and a
+  runtime MUST refuse a record whose `window` overlaps the `window` of such
+  an earlier record. A record signed again with a new `signed_at` is a
+  second record for the same work, and these rules refuse it.
+- Under `fixed_fee` an engagement settles per task or per window, and never
+  both. A runtime MUST refuse a record that settles a `window` where an
+  earlier record made under a `fixed_fee` version of the engagement settles
+  a `task`, and a record that settles a `task` where such an earlier record
+  settles a `window`. A window record counts the tasks it settles and names
+  none of them, so nothing in it shows whether a task record settles one of
+  the same tasks. Settling one way throughout is what lets each of the rules
+  above see every task once.
 - `usage` lists the digests of the usage acts the record settles, one or
   more, each the digest of a usage act's signed bytes under the same
   engagement and version, each window inside the record's `window`, and no
@@ -2688,16 +2708,20 @@ kind `settlement` names a settlement record by that digest.
   line: `offering`, a rate the version's price names, `count`, the number
   of tasks it settles, a whole number from 1, `per_task`, that rate's
   `per_task`, and `amount`, equal to `count × per_task`. No meter or
-  offering has two lines.
+  offering has two lines. A request under the engagement names one offering
+  (§5.2), so a record that settles one `task` carries exactly one task line,
+  and its `count` is 1.
 - `operator_fee` is present where an operator fee is inside the charge,
-  with the shape and arithmetic of §5.5.8, and absent otherwise. Its terms
-  are the terms of the quote the charge followed (§5.5.8). Where the runtime
-  holds that quote, the record carries an operator fee line exactly where
-  the quote carried one, and the line names the quote's `operator`, states
-  the quote's `basis`, and takes as its `base` the sum of the record's
-  lines' amounts, which is the provider's own charge. A runtime MUST refuse
-  a record whose fee departs from the quote in any of these, since the
-  client agreed to the quote's fee before it committed and to no other.
+  with the shape and arithmetic of §5.5.8, and absent otherwise. Its `base`
+  is the sum of the record's lines' amounts, which is the provider's own
+  charge, and a runtime MUST refuse a record whose fee states another base,
+  whether or not it holds the quote. Its terms are the terms of the quote
+  the charge followed (§5.5.8). Where the runtime holds that quote, the
+  record carries an operator fee line exactly where the quote carried one,
+  and the line names the quote's `operator` and states the quote's `basis`.
+  A runtime MUST refuse a record whose fee departs from the quote in either,
+  since the client agreed to the quote's fee before it committed and to no
+  other.
 - `currency` is the price's `currency`. `total` is the sum of every line's
   `amount` and the operator fee's `amount` (§5.5.8). Under
   `time_and_materials`, the totals of every settlement record under the
@@ -3246,6 +3270,25 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.33.0-draft** (2026-10-20). Settling under a fixed fee, and instants.
+Under `fixed_fee` an engagement now settles per task or per window and never
+both, since a window record names none of the tasks it counts and nothing
+else could show that a task record settles one of them again: a runtime
+refuses a window record where an earlier fixed fee record of the engagement
+settles a task, and the reverse. The rule that fixed fee windows do not
+overlap is stated for records made under `fixed_fee` versions. A record that
+settles one `task` carries exactly one task line, with a `count` of 1,
+because a request names one offering (§5.2). An operator fee's `base` is the
+sum of the record's lines whether or not the runtime holds the quote, which
+still binds the operator and the basis. §6.3 states that every instant an
+act carries is an RFC 3339 date-time and is compared, ordered and added to
+at every fractional digit it carries, with no rounding or truncation to
+milliseconds. `conformance/sow-acts.json` gains 16 cases with real test-seed
+signatures and a document with two rates, and the reasons of
+`settle_task_twice` and `settle_task_line_unsafe` also name the count rule,
+which refuses them too. The minor version moves because a runtime built
+against 0.32.0-draft takes records and acts this version refuses.
 
 **0.32.0-draft** (2026-10-20). Settling the same work once. The settle act
 of §6.3 gains the rules that keep one piece of work from being charged twice

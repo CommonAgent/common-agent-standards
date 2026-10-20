@@ -4,6 +4,27 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.33.0-draft (2026-10-20)
+
+Settling under a fixed fee, and instants. Under `fixed_fee` an engagement
+now settles per task or per window and never both, since a window record
+names none of the tasks it counts and nothing else could show that a task
+record settles one of them again: a runtime refuses a window record where an
+earlier fixed fee record of the engagement settles a task, and the reverse.
+The rule that fixed fee windows do not overlap is stated for records made
+under `fixed_fee` versions. A record that settles one `task` carries exactly
+one task line, with a `count` of 1, because a request names one offering
+(§5.2). An operator fee's `base` is the sum of the record's lines whether or
+not the runtime holds the quote, which still binds the operator and the
+basis. §6.3 states that every instant an act carries is an RFC 3339
+date-time and is compared, ordered and added to at every fractional digit it
+carries, with no rounding or truncation to milliseconds.
+`conformance/sow-acts.json` gains 16 cases with real test-seed signatures
+and a document with two rates, and the reasons of `settle_task_twice` and
+`settle_task_line_unsafe` also name the count rule, which refuses them too.
+The minor version moves because a runtime built against 0.32.0-draft takes
+records and acts this version refuses.
+
 ## 0.32.0-draft (2026-10-20)
 
 Settling the same work once. The settle act of §6.3 gains the rules that
