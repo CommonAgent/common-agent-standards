@@ -17,6 +17,10 @@
 //   versions.html     every version and the changelog
 //   catalog.html      the catalog profile, CATALOG-PROFILE.md, a part of the
 //                     specification with a version of its own
+//   minimal-contracting.html
+//                     the minimal contracting profile, profiles/MINIMAL-CONTRACTING.md
+//                     at the repository root, a profile of the contracting
+//                     standards with a version of its own
 // and fills the text of Section 14 into conformance.html. Nothing in the
 // repository is rewritten, so a build leaves the working tree clean.
 //
@@ -40,7 +44,7 @@ import { execFileSync } from "node:child_process";
 import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
-import { SITE, REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
+import { SITE, REPO_URL, SUITE_REPO, headLinks, rail, footer, tailScript } from "./chrome.mjs";
 import { renderHome, renderAgent, renderStandards, renderPurchaseOrder, renderOnboarding, copySuiteAssets } from "../../../site/tools/build-home.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -61,6 +65,9 @@ const DRAFT = process.argv.includes("--draft");
 const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "ga.js", "brand", "ns", ".well-known", "api"];
 // The catalog profile, a part of the specification with a version of its own.
 const PROFILE_MD = resolve(REPO, "CATALOG-PROFILE.md");
+// The minimal contracting profile, a profile of the suite's contracting
+// standards kept at the repository root beside its machine-readable list.
+const MINIMAL_MD = resolve(REPO, "..", "profiles", "MINIMAL-CONTRACTING.md");
 
 let md = readFileSync(MD, "utf8").replace(/\r\n/g, "\n");
 
@@ -204,7 +211,7 @@ const metaLine = (version, status, date) => `<div class="metas">
         </div>`;
 const metas = metaLine(VERSION, STATUS, DATE);
 
-function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, extraHero = "", toc, body, meta = metas }) {
+function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, extraHero = "", toc, body, meta = metas, siteName = "The Common Agent Specification" }) {
   const url = file === "index.html" ? `${SITE}/` : `${SITE}/${file}`;
   const tocHtml = toc && toc.length
     ? `<nav class="toc" aria-label="Sections">\n            ${toc.map((t) => `<a href="#${t.id}">${t.title}</a>`).join("\n            ")}\n        </nav>`
@@ -218,7 +225,7 @@ function page({ file, active, title, description, ogTitle, eyebrow, h1, sub, ext
   <title>${esc(title)}</title>
   <meta name="description" content="${esc(description)}">
   <meta property="og:type" content="article">
-  <meta property="og:site_name" content="The Common Agent Specification">
+  <meta property="og:site_name" content="${esc(siteName)}">
   <meta property="og:title" content="${esc(ogTitle ?? title)}">
   <meta property="og:description" content="${esc(description)}">
   <meta property="og:url" content="${url}">
@@ -382,6 +389,43 @@ chapter({
     sub: "The catalog profile is optional metadata on an ARD entry. It tells a buyer what an agent charges, what others have recorded about it, where to ask whether it is reachable, and who signed the listing.",
     meta: metaLine(pVersion, pStatus.split(/[,.]/)[0].trim(), (pDate.match(/\d{4}-\d{2}-\d{2}/) ?? [pDate])[0]),
     extraHero: `${applies}<p class="canon">${pStamp}${DRAFT ? "" : " This page is the normative text of the profile."}</p>`,
+    toc: toc.filter((t) => t.lvl === 2),
+    body: html,
+  }));
+}
+
+// ── minimal-contracting.html: the minimal contracting profile ───────────────
+// profiles/MINIMAL-CONTRACTING.md names the smallest part of the contracting
+// standards that lets one organization's agent contract another's. It is
+// rendered whole, with its own version, status and date, and its relative
+// links, which name files of the repository, become links to the repository.
+{
+  let src = readFileSync(MINIMAL_MD, "utf8").replace(/\r\n/g, "\n");
+  const ph = src.match(/^# (.+)\n+\*\*Version:\*\*\s*(.+)\n\*\*Status:\*\*\s*(.+)\n\*\*Date:\*\*\s*(.+)\n(?:\*\*Applies to:\*\*\s*(.+)\n)?/);
+  if (!ph) throw new Error(`${MINIMAL_MD} does not start with the title, Version, Status and Date lines`);
+  const [, mTitle, mVersion, mStatus, mDate, mApplies] = ph.map((x) => x?.trim());
+  src = src.slice(ph[0].length);
+  let mCommit = "";
+  if (commit) { try { git("diff", "--quiet", "HEAD", "--", "../profiles/MINIMAL-CONTRACTING.md"); mCommit = commit; } catch { /* uncommitted */ } }
+  const mStamp = `Rendered ${GENERATED} from <span class="mono">profiles/MINIMAL-CONTRACTING.md</span> in the <a href="${SUITE_REPO}">Common Agent Standards repository</a>${refText}${mCommit ? `, commit <span class="mono">${mCommit}</span>` : ""}.`
+    + (DRAFT ? ` This copy follows the main branch, which can be ahead of the published version at <a href="${SITE}/">commonagent.net</a>.` : "");
+  let { html, toc } = render(src);
+  html = html.replace(/href="(?!https?:|#|\/)([^"]+)"/g, (m, rel) => {
+    const path = rel.startsWith("../") ? rel.slice(3) : `profiles/${rel}`;
+    return `href="${SUITE_REPO}/blob/main/${path}"`;
+  });
+  const applies = mApplies ? `<p class="canon">It applies to ${esc(mApplies.replace(/\s*·\s*/g, ", "))}.</p>` : "";
+  write("minimal-contracting.html", page({
+    file: "minimal-contracting.html", active: "minimal-contracting",
+    title: `${mTitle} ${mVersion}`,
+    ogTitle: mTitle,
+    siteName: "The Common Agent Standards",
+    description: "The minimal contracting profile names the smallest part of Agent Mandate, Agent SoW and Agent Messaging that lets one organization's agent contract another's for services work, within a delegated budget, with a receipt both sides can check.",
+    eyebrow: "A profile of the contracting standards",
+    h1: esc(mTitle),
+    sub: "The profile is where an implementation of the contracting standards can start. It names the sections and conformance vectors of three standards, and says how the rest of the suite adds on.",
+    meta: metaLine(mVersion, mStatus.split(/[,.]/)[0].trim(), (mDate.match(/\d{4}-\d{2}-\d{2}/) ?? [mDate])[0]),
+    extraHero: `${applies}<p class="canon">${mStamp}${DRAFT ? "" : " This page is the text of the profile."} The list tooling reads is <a href="${SUITE_REPO}/blob/main/profiles/minimal-contracting.json">profiles/minimal-contracting.json</a>.</p>`,
     toc: toc.filter((t) => t.lvl === 2),
     body: html,
   }));

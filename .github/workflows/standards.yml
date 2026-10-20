@@ -90,6 +90,9 @@ jobs:
       - name: Links between the files of the repository
         run: node tools/check-links.mjs
 
+      - name: The profiles name sections, files and cases that exist
+        run: node tools/check-profiles.mjs
+
       - name: The Agent Reputations test vectors, reproduced by the reference script
         run: node reputations/conformance/reference.mjs
 
