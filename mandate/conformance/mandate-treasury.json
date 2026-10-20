@@ -1,12 +1,11 @@
 {
   "about": [
     "Agent Mandate §8, the treasury: the draw record a settlement from it leaves (§8.4, proposed for 0.9.0-draft), the rule every draw passes (§8.2), and the sums over the records (§8.3).",
-    "Draw records are signed by the settling platform under agent-mandate-draw-v1, in canonical padded base64. The platform's key is derived from the label below, as every key in these files is: the seed is SHA-256 of the label.",
+    "Draw records are signed by the settling platform under agent-mandate-draw-v1, in canonical padded base64. The platform's key is a test key derived from the label below, as every key in these files is: its Ed25519 seed is the SHA-256 of the label.",
     "The rule cases give the mandate as it stood at approval, the request, and the rule that refuses, or ok. Amounts are in the settling platform's integer unit."
   ],
   "platform_key": {
     "label": "Agent Mandate conformance test key: settling-platform",
-    "seed_hex": "2a3ff9b35363469e9dd0f609cbd451ab2847d7f60f4e73e290962c651f17f7bf",
     "public": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL"
   },
   "identifiers": [
