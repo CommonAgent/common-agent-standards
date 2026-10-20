@@ -4,6 +4,24 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.34.0-draft (2026-10-20)
+
+The month of a ceiling. §5.5.1 said a fixed fee ceiling is per `month` and
+never said when a month starts. Its months are now the engagement's own,
+counted from `starts_at` in UTC the way §5.7 counts the term: month n runs
+from `starts_at` plus n − 1 calendar months to `starts_at` plus n, each
+boundary counted from `starts_at` itself, on the same day at the same time
+or the last day of a month that has no such day, and the last month ends at
+`ends_at`. A charge counts in the month its work was delivered, when the
+client is charged, and never in the month it was admitted. A runtime that
+refuses at admission tests the admission's month with the price of work
+admitted and not yet delivered counted in. A reversed charge, such as a
+refund, no longer counts from the instant it is reversed.
+`conformance/sow-pricing.json` gains `ceiling_period`, with the months of
+three terms, the month a charge counts in, and a month's spend across a
+reversal. The minor version moves because a runtime built against
+0.33.0-draft could count a ceiling's month another way.
+
 ## 0.33.0-draft (2026-10-20)
 
 Settling under a fixed fee, and instants. Under `fixed_fee` an engagement
