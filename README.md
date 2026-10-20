@@ -23,7 +23,7 @@ The suite's home is <https://commonagent.net>.
 | [Personal Agent Naming](naming/) | A Common Agent Standard | 0.10.3 | Published | [agentnaming.ai](https://agentnaming.ai/) |
 | [Agent Mandate](mandate/) | A Common Agent Standard | 0.8.0-draft | Working Draft | [agentmandate.net](https://agentmandate.net/) |
 | [Agent RFP](rfp/) | A Common Agent Standard | 0.10.0-draft | Working Draft | [agentrfp.net](https://agentrfp.net/) |
-| [Agent SoW](sow/) | A Common Agent Standard | 0.29.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
+| [Agent SoW](sow/) | A Common Agent Standard | 0.30.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
 | [Agent NDA](nda/) | A Common Agent Standard | 0.2.0-draft | Working Draft | [agentnda.net](https://agentnda.net/) |
 | [Agent Reputations](reputations/) | A Common Agent Standard | 0.10.0-draft | Draft | [agentreputations.com](https://agentreputations.com/) |
 | [Agent Processes](processes/) | A Common Agent Standard | 0.7.0-draft | Working Draft | [agentprocesses.ai](https://agentprocesses.ai/) |
