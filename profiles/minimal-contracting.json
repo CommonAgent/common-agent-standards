@@ -1,7 +1,7 @@
 {
   "profile": "minimal-contracting",
   "name": "The minimal contracting profile",
-  "version": "0.1.0-draft",
+  "version": "0.2.0-draft",
   "document": "profiles/MINIMAL-CONTRACTING.md",
   "page": "https://commonagent.net/minimal-contracting.html",
   "comment": "The machine-readable half of the minimal contracting profile (MINIMAL-CONTRACTING.md beside this file). For each standard it names the version the profile applies to, the sections a profile implementation implements, the sections it leaves out, and the conformance vectors it must pass. A vector entry names a file and groups in it. A group is a dotted path into the file: 'all' takes everything under the path, 'only' and 'except' select cases of a list by the case's name (its 'name', 'case', 'act' or 'id' member), and 'indexes' selects entries of a list whose entries carry no name. A file under 'excluded_vectors' is outside the profile. tools/check-profiles.mjs checks that every version, section, file, path and case named here exists.",
@@ -17,26 +17,60 @@
     {
       "id": "mandate",
       "version": "0.8.0-draft",
-      "required_sections": ["2", "3", "4", "5", "6", "7", "9", "13"],
-      "partial_sections": [
-        { "section": "6", "leaves_out": "rule 8 (Agent NDA categories) and rule 9 (resources at a proxy). Under rule 6 the payer is the holder." },
-        { "section": "7", "leaves_out": "the powers amend, award, nda and write, and the resource part of check 5" }
+      "required_sections": [
+        "2",
+        "3",
+        "4",
+        "5",
+        "6",
+        "7",
+        "9",
+        "13"
       ],
-      "excluded_sections": ["7.1", "7.2", "8"],
+      "partial_sections": [
+        {
+          "section": "6",
+          "leaves_out": "rule 8 (Agent NDA categories) and rule 9 (resources at a proxy). Under rule 6 the payer is the holder."
+        },
+        {
+          "section": "7",
+          "leaves_out": "the powers amend, award, nda and write, and the resource part of check 5"
+        }
+      ],
+      "excluded_sections": [
+        "7.1",
+        "7.2",
+        "8"
+      ],
       "vectors": [
         {
           "file": "mandate/conformance/mandate-documents.json",
           "groups": [
-            { "path": "identifiers", "all": true },
-            { "path": "minted_earlier", "all": true },
-            { "path": "signatures", "all": true },
-            { "path": "shapes", "all": true }
+            {
+              "path": "identifiers",
+              "all": true
+            },
+            {
+              "path": "minted_earlier",
+              "all": true
+            },
+            {
+              "path": "signatures",
+              "all": true
+            },
+            {
+              "path": "shapes",
+              "all": true
+            }
           ]
         },
         {
           "file": "mandate/conformance/mandate-checks.json",
           "groups": [
-            { "path": "chains", "all": true },
+            {
+              "path": "chains",
+              "all": true
+            },
             {
               "path": "approvals",
               "only": [
@@ -53,46 +87,138 @@
         },
         {
           "file": "mandate/conformance/mandate-ids.json",
-          "groups": [{ "path": "cases", "all": true }]
+          "groups": [
+            {
+              "path": "cases",
+              "all": true
+            }
+          ]
         },
         {
           "file": "mandate/conformance/mandate-scope.json",
-          "groups": [{ "path": "charter_amendments", "all": true }]
+          "groups": [
+            {
+              "path": "charter_amendments",
+              "all": true
+            }
+          ]
         }
       ],
-      "excluded_vectors": ["mandate/conformance/mandate-proxy.json"]
+      "excluded_vectors": [
+        "mandate/conformance/mandate-proxy.json"
+      ]
     },
     {
       "id": "sow",
-      "version": "0.30.0-draft",
+      "version": "0.31.0-draft",
       "required_sections": [
-        "2", "3", "4", "4.1", "4.1.1", "4.2", "4.3",
-        "5.1", "5.2", "5.3", "5.3.1", "5.4", "5.4.1", "5.4.2",
-        "5.5", "5.5.1", "5.5.2", "5.5.3", "5.5.4", "5.5.5",
-        "5.6", "5.7", "5.8", "5.9", "5.10", "5.10.2", "5.11", "5.17",
-        "6", "6.1", "6.2", "6.3", "7", "7.1", "7.2", "8", "8.1", "8.2", "9", "12.1", "12.1.1"
+        "2",
+        "3",
+        "4",
+        "4.1",
+        "4.1.1",
+        "4.2",
+        "4.3",
+        "5.1",
+        "5.2",
+        "5.3",
+        "5.3.1",
+        "5.4",
+        "5.4.1",
+        "5.4.2",
+        "5.5",
+        "5.5.1",
+        "5.5.2",
+        "5.5.3",
+        "5.5.4",
+        "5.5.5",
+        "5.6",
+        "5.7",
+        "5.8",
+        "5.9",
+        "5.10",
+        "5.10.2",
+        "5.11",
+        "5.17",
+        "6",
+        "6.1",
+        "6.2",
+        "6.3",
+        "7",
+        "7.1",
+        "7.2",
+        "8",
+        "8.1",
+        "8.2",
+        "9",
+        "12.1",
+        "12.1.1"
       ],
       "partial_sections": [
-        { "section": "5.8", "leaves_out": "amendments. A profile implementation neither proposes nor approves one, and lets a proposal it receives lapse." },
-        { "section": "5.10", "leaves_out": "the postures refund_on_failed_task and arbiter" },
-        { "section": "6.3", "leaves_out": "the resolve outcomes refunded, verdict and released" },
-        { "section": "12.1", "leaves_out": "qualifications on a standing proposal" }
+        {
+          "section": "5.8",
+          "leaves_out": "amendments. A profile implementation neither proposes nor approves one, and lets a proposal it receives lapse."
+        },
+        {
+          "section": "5.10",
+          "leaves_out": "the postures refund_on_failed_task and arbiter"
+        },
+        {
+          "section": "6.3",
+          "leaves_out": "the resolve outcomes refunded, verdict and released, and an operator fee on a settlement record"
+        },
+        {
+          "section": "12.1",
+          "leaves_out": "qualifications on a standing proposal"
+        }
       ],
-      "excluded_sections": ["5.2.1", "5.4.3", "5.5.6", "5.5.7", "5.5.8", "5.10.1", "5.12", "5.13", "5.14", "5.15", "5.16", "5.18", "12.2", "13", "14", "15"],
+      "excluded_sections": [
+        "5.2.1",
+        "5.4.3",
+        "5.5.6",
+        "5.5.7",
+        "5.5.8",
+        "5.10.1",
+        "5.12",
+        "5.13",
+        "5.14",
+        "5.15",
+        "5.16",
+        "5.18",
+        "12.2",
+        "13",
+        "14",
+        "15"
+      ],
       "vectors": [
         {
           "file": "sow/conformance/sow-signatures.json",
           "groups": [
-            { "path": "signed_bytes", "all": true },
-            { "path": "cases", "all": true },
-            { "path": "validation", "all": true }
+            {
+              "path": "signed_bytes",
+              "all": true
+            },
+            {
+              "path": "cases",
+              "all": true
+            },
+            {
+              "path": "validation",
+              "all": true
+            }
           ]
         },
         {
           "file": "sow/conformance/sow-pricing.json",
           "groups": [
-            { "path": "arrangement", "all": true },
-            { "path": "price", "all": true },
+            {
+              "path": "arrangement",
+              "all": true
+            },
+            {
+              "path": "price",
+              "all": true
+            },
             {
               "path": "rating.cases",
               "except": [
@@ -103,57 +229,144 @@
                 "a_fee_larger_than_what_is_left_rates_nothing_and_takes_nothing"
               ]
             },
-            { "path": "rating.refuses", "only": ["unpriced_meter"] },
-            { "path": "settlement_line.valid", "indexes": [0, 1] },
-            { "path": "settlement_line.invalid", "only": ["no_divisor_on_the_record"] },
-            { "path": "reservation", "all": true },
-            { "path": "document_states", "all": true },
-            { "path": "task_state", "all": true },
-            { "path": "party", "all": true },
-            { "path": "directed.clause", "all": true },
-            { "path": "directed.formation", "all": true },
-            { "path": "approval", "all": true },
-            { "path": "signing", "all": true }
+            {
+              "path": "rating.refuses",
+              "only": [
+                "unpriced_meter"
+              ]
+            },
+            {
+              "path": "settlement_line.valid",
+              "indexes": [
+                0,
+                1
+              ]
+            },
+            {
+              "path": "settlement_line.invalid",
+              "only": [
+                "no_divisor_on_the_record"
+              ]
+            },
+            {
+              "path": "reservation",
+              "all": true
+            },
+            {
+              "path": "document_states",
+              "all": true
+            },
+            {
+              "path": "task_state",
+              "all": true
+            },
+            {
+              "path": "party",
+              "all": true
+            },
+            {
+              "path": "directed.clause",
+              "all": true
+            },
+            {
+              "path": "directed.formation",
+              "all": true
+            },
+            {
+              "path": "approval",
+              "all": true
+            },
+            {
+              "path": "signing",
+              "all": true
+            }
           ]
         },
         {
           "file": "sow/conformance/sow-acts.json",
           "groups": [
-            { "path": "signed_bytes", "all": true },
+            {
+              "path": "signed_bytes",
+              "all": true
+            },
             {
               "path": "cases",
               "except": [
-                "dispute_refund", "dispute_arbiter",
-                "refunded", "refunded_by_client", "refunded_in_part",
-                "verdict", "verdict_split_differs", "verdict_digest_differs", "verdict_late",
-                "released_after_deadline", "released_before_deadline", "released_in_part"
+                "dispute_refund",
+                "dispute_arbiter",
+                "refunded",
+                "refunded_by_client",
+                "refunded_in_part",
+                "verdict",
+                "verdict_split_differs",
+                "verdict_digest_differs",
+                "verdict_late",
+                "released_after_deadline",
+                "released_before_deadline",
+                "released_in_part",
+                "settle_with_operator_fee",
+                "settle_operator_fee_not_floored"
               ]
             },
-            { "path": "pairs", "all": true }
+            {
+              "path": "pairs",
+              "all": true
+            }
           ]
         },
         {
           "file": "sow/conformance/sow-buyer-reference.json",
           "groups": [
-            { "path": "form", "all": true },
-            { "path": "template", "all": true },
-            { "path": "carriage.cases", "except": ["admitted_before_amendment", "admitted_after_amendment", "added_by_amendment"] },
-            { "path": "carriage.discrepancy", "all": true }
+            {
+              "path": "form",
+              "all": true
+            },
+            {
+              "path": "template",
+              "all": true
+            },
+            {
+              "path": "carriage.cases",
+              "except": [
+                "admitted_before_amendment",
+                "admitted_after_amendment",
+                "added_by_amendment"
+              ]
+            },
+            {
+              "path": "carriage.discrepancy",
+              "all": true
+            }
           ]
         },
         {
           "file": "sow/conformance/sow-data-use.json",
           "groups": [
-            { "path": "promises", "all": true },
-            { "path": "clause", "all": true },
-            { "path": "signing", "all": true }
+            {
+              "path": "promises",
+              "all": true
+            },
+            {
+              "path": "clause",
+              "all": true
+            },
+            {
+              "path": "signing",
+              "all": true
+            }
           ]
         },
         {
           "file": "sow/conformance/sow-disputes.json",
           "groups": [
-            { "path": "postures", "all": true },
-            { "path": "clause", "all": true }
+            {
+              "path": "postures",
+              "all": true
+            },
+            {
+              "path": "clause",
+              "all": true
+            }
           ]
         }
       ],
@@ -171,26 +384,58 @@
     {
       "id": "messaging",
       "version": "0.9.4-draft",
-      "required_sections": ["13.5", "19.2"],
+      "required_sections": [
+        "13.5",
+        "19.2"
+      ],
       "partial_sections": [],
-      "excluded_sections": ["19.1", "19.3", "19.4", "19.5", "19.6"],
+      "excluded_sections": [
+        "19.1",
+        "19.3",
+        "19.4",
+        "19.5",
+        "19.6"
+      ],
       "vectors": [
         {
           "file": "messaging/conformance/metering.json",
           "groups": [
-            { "path": "observed_meters", "all": true },
-            { "path": "event", "all": true },
-            { "path": "idempotency", "all": true },
-            { "path": "receipt", "all": true }
+            {
+              "path": "observed_meters",
+              "all": true
+            },
+            {
+              "path": "event",
+              "all": true
+            },
+            {
+              "path": "idempotency",
+              "all": true
+            },
+            {
+              "path": "receipt",
+              "all": true
+            }
           ]
         }
       ],
-      "excluded_vectors": ["messaging/conformance/commerce.json"]
+      "excluded_vectors": [
+        "messaging/conformance/commerce.json"
+      ]
     }
   ],
   "left_out": [
-    { "id": "rfp", "layers_on": "An RFP award forms an Agent SoW engagement, so a profile implementation adds Agent RFP without changing how it forms, runs or ends an engagement." },
-    { "id": "nda", "layers_on": "An engagement names the Agent NDA it runs under in its optional nda member (Agent SoW 5.16). Adding Agent NDA adds that member and the nda power of a mandate." },
-    { "id": "reputations", "layers_on": "A bureau reads the records a profile engagement already leaves: the signed engagement, its acts and its receipts. Adding Agent Reputations adds reviews after the engagement and reports read before it." }
+    {
+      "id": "rfp",
+      "layers_on": "An RFP award forms an Agent SoW engagement, so a profile implementation adds Agent RFP without changing how it forms, runs or ends an engagement."
+    },
+    {
+      "id": "nda",
+      "layers_on": "An engagement names the Agent NDA it runs under in its optional nda member (Agent SoW 5.16). Adding Agent NDA adds that member and the nda power of a mandate."
+    },
+    {
+      "id": "reputations",
+      "layers_on": "A bureau reads the records a profile engagement already leaves: the signed engagement, its acts and its receipts. Adding Agent Reputations adds reviews after the engagement and reports read before it."
+    }
   ]
 }

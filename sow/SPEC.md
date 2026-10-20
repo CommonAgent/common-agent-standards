@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.30.0-draft
+**Version:** 0.31.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -2476,9 +2476,10 @@ fail it, the grade is `enforced`.
 
 ### 6.3 Signed acts on an engagement
 
-Four acts change what an agreed engagement does after formation: a
-termination (§5.9), a usage report (§5.5.2), the opening of a dispute
-(§5.10), and the resolution of one. Each is a JSON object signed on its own,
+Five acts change or record what an agreed engagement does after formation:
+a termination (§5.9), a usage report (§5.5.2), a settlement record (§5.5),
+the opening of a dispute (§5.10), and the resolution of one. Each is a JSON
+object signed on its own,
 in the style of the formation messages of §5.8, so that any two
 implementations can exchange and check them.
 
@@ -2615,6 +2616,63 @@ later counts from the instant it received it.
     (§5.10.2): either seat signs, `to_provider` is the whole amount, and a
     runtime MUST refuse it before `deadline_days` has run.
 - `verdict` appears with the `verdict` outcome and with no other.
+
+**Settle** (tag `agent-sow-settlement-v1`). The provider's seat signs it,
+and it is the settlement record every billable unit of work produces under a
+`fixed_fee` or `time_and_materials` price (§5.5). A `no_charge` engagement
+produces none (§5.5.7). The digest of its signed bytes, `sha256:` and 64
+lowercase hex digits, names the record, and a dispute's `cites` entry of
+kind `settlement` names a settlement record by that digest.
+
+```json
+{ "engagement": "sow_k7m2q4x9w3e6r8t1", "version": 1,
+  "digest": "sha256:<digest of version 1>",
+  "window": { "from": "2026-10-01T00:00:00Z", "to": "2026-10-02T00:00:00Z" },
+  "usage": [ "sha256:<the usage act for the window>" ],
+  "lines": [
+    { "meter": "tokens_out", "unit": "1000 tokens", "count": 182000,
+      "per": 1000, "per_unit": 1500, "amount": 273000 },
+    { "meter": "tool_calls", "unit": "call", "count": 41,
+      "per": 1, "per_unit": 2000, "amount": 82000 } ],
+  "currency": "XCR", "total": 355000,
+  "buyer_reference": "PO-2026-004417",
+  "by": "provider", "key": "<owner public key>",
+  "signed_at": "2026-10-02T00:10:00Z", "sig": "<base64>" }
+```
+
+- The record settles either a `window`, `from` included and `to` excluded,
+  with `from` before `to`, or one `task`, the identifier of the task as the
+  messaging layer names it, a string of 1 to 128 characters. It carries
+  exactly one of the two.
+- `usage` lists the digests of the usage acts the record settles, one or
+  more, each the digest of a usage act's signed bytes under the same
+  engagement and version, each window inside the record's `window`, and no
+  digest twice. It is REQUIRED under `time_and_materials`, where the record
+  settles a `window`, and it MUST be absent under `fixed_fee`. A runtime
+  MUST refuse a record that names a usage act it does not hold, or one an
+  earlier settlement record under the engagement already names, so no count
+  is settled twice.
+- `lines` lists one or more lines. Under `time_and_materials` each line is a
+  metered line of §5.5.2: `meter`, `unit`, `count`, `per`, `per_unit` and
+  `amount`, and on a pass-through line `pass_through` and
+  `upstream_receipt`, with `upstream_amount` where it is stated (§5.5.6).
+  `meter` is a meter the version's schedule prices, and `unit`, `per`,
+  `per_unit` and `pass_through` are the schedule line's. `count` is the sum
+  of the counts the settled usage acts read for that meter, every meter
+  they read has exactly one line, and `amount` is
+  `floor(count × per_unit / per)`. Under `fixed_fee` each line is a task
+  line: `offering`, a rate the version's price names, `count`, the number
+  of tasks it settles, a whole number from 1, `per_task`, that rate's
+  `per_task`, and `amount`, equal to `count × per_task`. No meter or
+  offering has two lines.
+- `operator_fee` is present where an operator fee is inside the charge,
+  with the shape and arithmetic of §5.5.8, and absent otherwise.
+- `currency` is the price's `currency`. `total` is the sum of every line's
+  `amount` and the operator fee's `amount` (§5.5.8). Under
+  `time_and_materials`, the totals of every settlement record under the
+  engagement, this one included, MUST NOT exceed the cap (§5.5.3).
+- `buyer_reference` is the version's `buyer_reference`, byte for byte, and
+  is absent where the version carries none (§5.17).
 
 Grade: `evidence` for every act, as signed records both parties hold. The
 effects they cause are graded where §5.5, §5.9 and §5.10 grade them.
@@ -3143,6 +3201,24 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.31.0-draft** (2026-10-20). The settlement record. §6.3 gains a fifth
+signed act, settle (`agent-sow-settlement-v1`), the settlement record that
+every billable unit of work produces under §5.5, which the spec named and
+did not define. The provider's seat signs it. It carries the engagement,
+the version and its digest, the `window` or the one `task` it settles, the
+digests of the usage acts it settles under time and materials, its lines,
+an operator fee where one is inside the charge, `currency`, `total`, and the
+`buyer_reference` byte for byte. Its member set is closed and `sig` is the
+canonical padded base64 of §6. A metered line counts the sum the settled
+usage acts read for its meter and rates it under §5.5.2, a task line
+charges the rate's `per_task` for each task, the total is the lines and the
+fee, the totals of every record stay within the cap, and no usage act is
+settled twice. A dispute's `cites` entry of kind `settlement` names a
+record by the digest of its signed bytes. `conformance/sow-acts.json` gains
+the records, with real test-seed signatures, and the refusals. The minor
+version moves because a runtime built against 0.30.0-draft neither
+produces nor checks these bytes.
 
 **0.30.0-draft** (2026-10-20). The signed act formats. New §6.3 defines the
 four acts that change an agreed engagement after formation, so that other
