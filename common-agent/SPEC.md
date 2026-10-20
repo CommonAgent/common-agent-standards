@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.28.7-draft
+**Version:** 0.28.8-draft
 **Status:** Working draft, 2026-10-20. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -1624,6 +1624,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.28.8-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the groups of standards.html in the order Identity and reach, Agents and Humans Working Together, B2B Agentic Commerce, under those names. The anchors #contracting and #doing-the-work are unchanged. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 **0.28.7-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.0-draft, at /minimal-contracting.html. The profile moves with Agent SoW 0.34.0-draft, which counts a fixed fee ceiling's months from the engagement's `starts_at` in UTC, counts a charge in the month its work was delivered, and stops counting a charge once it is reversed, and it requires the new `ceiling_period` group of `sow-pricing.json`. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
