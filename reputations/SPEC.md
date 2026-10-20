@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.11.0-draft
+**Version:** 0.11.1-draft
 **Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -365,6 +365,20 @@ witness on the list before it. Otherwise it keeps its pin and accepts the new
 list only after its operator confirms the change by some means other than the
 bureau's own answer. A witness that has stopped working cannot sign its own
 removal, so removing it takes that confirmation.
+
+A bureau that names no witness yet serves `witnesses` as an empty list, or
+leaves `witnesses` and `witness_changes` out, and a consumer pins either as
+the empty list. The empty list is named for every commitment the bureau
+publishes while it names no witness. The first witness it names after it has
+published a commitment joins in a change from the empty list whose `after`
+is the latest commitment, so the witness starts there (rule 1) and its first
+co-signature is of the next commitment. The empty list has no co-signer, so
+no witness signs that change, and the commitments up to `after` stay
+unwitnessed: a consumer treats a report resting on one of them as step 7 of
+§8.1.3 says for a commitment whose named list has no witness. A bureau MUST
+NOT name such a witness on the first list, as if named before any
+commitment, because rule 1 would then let it start only at the commitment
+whose `seq` is 1, which it can no longer co-sign.
 
 What the witnesses give is this. While at least one named witness keeps
 rule 1, or is a log that refuses a second entry for a `seq`, a bureau cannot
@@ -2055,6 +2069,8 @@ deterministic, and refuses every report the vectors say it must refuse.
 
 ---
 
+
+*0.11.1-draft (2026-10-20): a witness named after the first commitment, when the bureau named none before, has a defined start. §4.1.1 said how a witness joins through a change of the list and not what list a bureau that names no witness serves. Such a bureau serves an empty list, or none, and a consumer pins either as the empty list. Its first witness joins in a change from the empty list whose `after` is the latest commitment, which no witness signs, and it never goes on the first list. No signed bytes change.*
 
 *0.11.0-draft (2026-10-20): a witness that joins mid-chain has a defined
 start. Rule 1 of §4.1.1 said how a witness starts at a bureau's first
