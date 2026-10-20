@@ -1510,9 +1510,13 @@ Requesters need no advance knowledge of which mode applies. The first **substant
 - `requester` is the request's verified `from`, and `responder` is its `to`.
 - `offering` is the offering the request named, or the empty string when it named none.
 - `observed_at` is when the server observed the request, by the server's own clock.
-- `bound_by` says how the server tied the Task id to the request. It is `request` when the request itself named the Task id, as a stream request does. It is `answer` when the responder's answer to that request, routed to the requester, carried the Task id. A consumer that needs a link anchored in the requester's own message can require `request`.
+- `bound_by` says how the server tied the Task id to the request. It is `request` when the request itself named the Task id, as a stream request does. It is `answer` when the request's first answer, delivered to the requester's inbox, carried the Task id. A consumer that needs a link anchored in the requester's own message can require `request`.
 
-A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `history` and is not trimmed with it. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one. It attaches only when its parties are the Task's parties, so a request from a third agent that names somebody else's Task id binds nothing. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept (§6.4a) may bind it; if that answer carries no Task id, the request is closed and binds nothing later. A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
+A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `history` and is not trimmed with it. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one.
+
+The server observes only what reaches the addressee's inbox. A request counts when it is delivered to its responder's inbox, and an answer counts when it is delivered to its requester's inbox. A responder's outbox mirror is not observed, because only the responder writes it. Requests that never create a Task are never recorded: registry probes, `describe` (§10.14) and `knock` (EXT-6). A `task.cancel` request is recorded as a cancel (§10.8), not as a request.
+
+It attaches only when its parties are the Task's parties, so a request from a third agent that names somebody else's Task id binds nothing. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept or a delivery signal may bind it. Delivery signals are the accept and the queued acknowledgement (`queued: true` with an `inbox_id`), both defined in §6.4a, and they neither open nor close a request. If that first answer carries no Task id, as a bare answer or a refusal does, the request is closed and binds nothing later. When the first answers of two different requests between the same parties name one Task id, the Task id is contested: the Task gets no `origin`, and the server removes one it had already attached. A resume, a request that names the Task itself, is not a contest. A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
 
 **`canceled_by`** (OPTIONAL, platform-written): who signed the cancellation of a canceled Task, and whether the original requester asked for it, as the server observed them. It is written once, on the `canceled` transition, and §10.8 defines it. Like `origin`, a party's update MUST NOT set, change or remove it, and it is not part of `history`.
 
@@ -4209,7 +4213,7 @@ for the same reason it applies to presence.
 | `mesh_descriptors`, `mesh_descriptor_archive` | `{agent_id}`; `{sha256}` | None | 3 | Agent Descriptors, current per subject and every version by digest (§9.1, §9.2) |
 | `mesh_eval_records`, `mesh_eval_record_archive` | `{agent_id}`; `{sha256}` | None | 3 | Evaluation records, latest per subject and every record by digest (§9.1, §9.2) |
 | `mesh_tasks` | `{task_id}` | 7d | 3 | Task state (authoritative store) |
-| `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). History 1. It holds no content: ids, agent keys, offering names and times only. |
+| `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `a.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `x.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). History 1. It holds no content: ids, agent keys, offering names and times only. |
 | `mesh_sessions` | `{context_id}` | 1h | 1 | Session metadata |
 | `mesh_board_items` | `{room_id}.{item_id}` | None | 3 | Work-board items (EXT-5 §10): claim is a revision-checked compare-and-set; items die with their room |
 
@@ -6483,8 +6487,12 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > (`request` or `answer`). It is not part of `history`, so the history cap
 > cannot remove it, and when it is absent the request is unknown. A Task id
 > binds to one request and a request to one Task id, and the first observation
-> wins. §10.8 gives a canceled Task `canceled_by`: `party`, the side that
-> signed the canceled update; `requester_request`, the original requester's
+> wins. Only a request's first answer that is not an accept or a delivery
+> signal may bind it, and a Task id that two requests' first answers both
+> name gets no origin. The server observes only what reaches the addressee's
+> inbox, and it never records registry probes, `describe` or `knock`. §10.8
+> gives a canceled Task `canceled_by`: `party`, the side that signed the
+> canceled update; `requester_request`, the original requester's
 > own cancel as the server observed it, or null; and `at`. The signed
 > `reason` remains the signer's own claim. §18.4's bucket table gains
 > `mesh_task_origins`, which holds no content and expires with the Task

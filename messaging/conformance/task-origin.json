@@ -16,11 +16,16 @@
       },
       "bound_by": {
         "request": "the request itself named the Task id (a requester-chosen id, as a stream request carries)",
-        "answer": "the responder's answer to the request, routed to the requester's inbox, carried the Task id"
+        "answer": "the request's FIRST answer (accept signals aside), delivered to the requester's inbox, carried the Task id"
       },
       "rules": [
         "the origin's requester and responder are the Task record's requester and responder, or the origin is not attached",
         "a Task id is bound to one request for its two parties, and a request to one Task id; the first observation wins",
+        "only a request's first answer may bind it; a first answer with no Task id (a bare answer, a refusal, an inbox-mode answer) closes the request, and no later answer binds it",
+        "only what reaches the addressee's inbox is observed; a responder's outbox mirror is not",
+        "delivery signals are not answers: an accept (status accepted) and a queued acknowledgement (queued: true with an inbox_id, on the payload or its output) neither open nor close a request",
+        "a Task id that the first answers of two different requests between the same parties both name is contested: it gets no origin, and an origin already attached is removed (a resume, a request naming the Task itself, is not a contest)",
+        "requests that never create a Task are not recorded: registry probes, describe, knock, and task.cancel (recorded as a cancel)",
         "a request first observed more than a short skew after its Task already existed did not create it and binds nothing",
         "a party's update cannot set, change or remove the origin, whatever it carries"
       ]
@@ -79,6 +84,9 @@
     "origin": [
       { "case": "stream_request_then_handler_throws", "path": "a stream request naming its Task id; the opening working respond; the handler throws and the failed update carries no in_reply_to", "origin": "present", "bound_by": "request" },
       { "case": "input_problems_then_deferred_failure", "path": "a bare request; the input_required answer carries the Task id and the creating update carries no in_reply_to; a resume request; a deferred failure", "origin": "present", "bound_by": "answer", "request": "the first request, not the resume" },
+      { "case": "closed_request_probe", "path": "R1 is answered at once with no task; R2 is sent; the provider sends an extra respond naming R1 and the new Task id, then answers R2 with that Task id; the Task fails", "origin": "present", "request": "R2, never R1" },
+      { "case": "contested_task_id", "path": "R1 gets only an accept and its buyer times out; R2 is sent; the provider answers R1 naming T, then R2 naming T", "origin": "absent" },
+      { "case": "queued_acknowledgement_then_task", "path": "R1 is held (a door hold, an attended session, a mailbox) and answered with a queued acknowledgement; its later answer names T", "origin": "present", "request": "R1" },
       { "case": "deferred_completion", "path": "a bare request; a working answer with the Task id; a deferred completion creates the record", "origin": "present", "bound_by": "answer" },
       { "case": "update_before_request_observed", "path": "the creating update is recorded before the tap records the request", "origin": "present (attached afterwards)" },
       { "case": "more_than_50_updates", "path": "60 updates after creation; history keeps the newest 50", "origin": "unchanged" },
