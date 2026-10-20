@@ -1,0 +1,177 @@
+# The minimal contracting profile
+
+**Version:** 0.1.0-draft
+**Status:** Working Draft
+**Date:** 2026-10-20
+**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.30.0-draft · Agent Messaging 0.9.4-draft
+
+The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
+
+This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
+
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.1.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+
+## 1. Conformance language and terms
+
+The key words MUST, MUST NOT, SHOULD, SHOULD NOT, and MAY are to be interpreted as described in RFC 2119.
+
+- **Profile implementation**: software that implements every section this profile requires and passes every conformance vector it names.
+- **Profile engagement**: an Agent SoW engagement whose document carries only what Section 4.2 allows.
+- **Client organization** and **provider organization**: the organizations on whose behalf the client seat and the provider seat engage (Agent SoW §6.2).
+
+A profile implementation MUST refuse to sign, countersign or complete the formation of a document that is not a profile engagement, and MUST name in the refusal the member that is outside the profile. So it never commits to something it does not implement. It still reads and validates every document as the standard defines, so that a document a standard's vectors call valid is valid to it too, even where it declines to sign that document.
+
+## 2. A profile engagement from start to finish
+
+1. **The client organization delegates a budget.** It files a charter (Agent Mandate §5), and its root authority issues a mandate to the person who approves contracts (§6). The mandate holds the powers `form` and `terminate`, a ceiling per engagement and per month, and an offering scope.
+2. **The provider makes an offer.** The provider's owner signs a standing proposal (Agent SoW §12.1), or a directed standing proposal that names the client (§12.1.1). Its price is a fixed fee per task, or time and materials with a cap and a reservation (§5.5).
+3. **The engagement forms.** The client's agent fills the client seat with its `owner_key`, and with the `buyer_reference` where the client keeps one, and signs. The approving person confirms, and the platform runs the five checks of Agent Mandate §7 against the mandate. The provider's runtime then adds the provider's signature, and the engagement is agreed (Agent SoW §12.1).
+4. **The work runs and is metered.** The client's agent sends tasks over Agent Messaging. Each terminal response carries the responder's usage report under its envelope signature (Agent Messaging §13.5), and each task has a task receipt that carries the `buyer_reference` (§19.2). Under time and materials the provider signs a usage act for each window it bills (Agent SoW §6.3), and the cap bounds what the client pays (§5.5.3 to §5.5.5).
+5. **The engagement ends.** It lapses at `ends_at`, ends `exhausted` when the cap is reached, or ends by a signed terminate act for convenience or for cause (§5.9, §6.3).
+6. **The parties settle a disagreement, where one arises.** Under the posture `none`, settlements are final. Under `escalate_to_owners`, either seat opens a dispute with a signed dispute act, and the dispute closes when both seats sign resolve acts that agree (§5.10, §5.10.2, §6.3).
+
+## 3. Agent Mandate 0.8.0-draft
+
+Agent Mandate gives the client organization an identity a machine can check, and gives the person who approves contracts a signed, bounded and revocable authority to do so. That authority is the delegated budget.
+
+**Required sections.**
+
+| Section | What a profile implementation does with it |
+|---------|---------------------------------------------|
+| §2, §3 | The terms, and the grades `enforced`, `evidence` and `recorded`. |
+| §4 | Identifiers and signed bytes for charters and mandates. |
+| §5 | The charter: domain proof, root authority, the administrator, and a domain that never changes. |
+| §6 | The mandate: issuance, the holder key, narrowing, powers, ceilings, the payer, term and revocation. |
+| §7 | The five checks at approval, for the acts `form` and `terminate`. |
+| §9 | The lifecycle, in which revoking a mandate revokes every mandate issued under it. |
+| §13 | The signature tags `agent-charter-v1`, `agent-mandate-v1` and `agent-mandate-resolve-v1`. |
+
+Three parts of these sections are left out. Under §6 rule 6 the payer is the holder, which is the default, so a mandate that names the organization as payer is outside the profile. Rules 8 and 9 of §6 serve Agent NDA and the resource proxy, and a profile implementation refuses an act that needs them. In §7 the powers `amend`, `award`, `nda` and `write` are never exercised, because the acts they cover are outside the profile. A profile implementation still validates a mandate that carries any of these, because a mandate is shared between implementations.
+
+**Left out.**
+
+- **§7.1, the check at a resource proxy.** A proxy lets a contracted agent change the client's own systems. Services work in this profile is delivered through tasks and their artifacts, which need no proxy.
+- **§7.2, the check for an Agent NDA.** Agent NDA is outside the profile.
+- **§8, the treasury.** A treasury needs an organization balance on the settling platform and a draw record for every settlement. The budget in this profile is bounded without one, by the mandate's ceilings and by the engagement's cap and reservation, and the engagement settles from the holder's account.
+
+Sections 1, 10, 11 and 12 are informative.
+
+**Vectors.**
+
+| File | What a profile implementation passes |
+|------|--------------------------------------|
+| [mandate-documents.json](../mandate/conformance/mandate-documents.json) | Every case: identifiers, the signatures, and the shapes a registry refuses. |
+| [mandate-checks.json](../mandate/conformance/mandate-checks.json) | Every chain, and the seven approvals of the five checks. The eight approvals of an Agent NDA are left out. |
+| [mandate-ids.json](../mandate/conformance/mandate-ids.json) | Every case. |
+| [mandate-scope.json](../mandate/conformance/mandate-scope.json) | `charter_amendments` only. The rest pins `scope.resources`, which serves the proxy. |
+
+`mandate-proxy.json` is left out with §7.1.
+
+## 4. Agent SoW 0.30.0-draft
+
+Agent SoW is the contract: who the parties are, what work is in scope, what it costs, and how it ends. Both owners sign the same document, and the runtimes enforce what it says.
+
+### 4.1 Required sections
+
+| Section | What a profile implementation does with it |
+|---------|---------------------------------------------|
+| §2, §3 | The terms and the grades. |
+| §4, §4.1, §4.1.1, §4.2, §4.3 | The document, its identifier, its shape and its contract language. |
+| §5.1 | Parties, each seat with its `owner_key`. |
+| §5.2, §5.3, §5.3.1 | Scope by offerings, and the inputs the client supplies. |
+| §5.4, §5.4.1, §5.4.2 | Deliverables, the rights in them, and acceptance. |
+| §5.5, §5.5.1 to §5.5.5 | A fixed fee, or time and materials with its rate schedule, the cap, the reservation and its window, and what happens at the cap. |
+| §5.6, §5.7 | Volume, and the term. |
+| §5.8 | The `change_control` clause, as far as formation uses it: the review window a request to form lapses with, and the approval authority. |
+| §5.9 | Termination for convenience and for cause. |
+| §5.10, §5.10.2 | The postures `none` and `escalate_to_owners`, and what a dispute freezes. |
+| §5.11 | Confidentiality and retention. |
+| §5.17 | The buyer's reference. |
+| §6, §6.1, §6.2 | Signatures and owner keys, approval authority, and organizational authority. |
+| §6.3 | The signed acts terminate, usage, dispute and resolve, with the outcome `settled`. |
+| §7, §8, §9 | The lifecycle, who enforces what, and precedence. |
+| §12.1, §12.1.1 | Formation from a standing proposal, and from a directed one. |
+
+### 4.2 What a profile engagement carries
+
+A profile engagement is an Agent SoW document that meets every rule below. A profile implementation signs nothing else.
+
+1. `price.arrangement` is `fixed_fee` or `time_and_materials`. No schedule line is a pass-through line, and the price carries no operator fee (§5.5.6, §5.5.8).
+2. Under time and materials, `reservation.window_days` covers the term the parties mean to work in. Work stops when the window closes (§5.5.4), and since a profile engagement is never amended, more work after that needs a new engagement.
+3. `disputes.posture` is `none` or `escalate_to_owners`.
+4. `change_control.approval.formation` is `person` or `agent_then_person`, the client seat carries `organization`, and the client's approval record carries `mandate` (§6.1, §6.2). This is where the delegated budget applies, because Agent Mandate §7 runs its checks when a person approves.
+5. The document carries no `nda`, `provider_contact`, `subcontracting`, `reporting`, `liability` or `service_floors` member. Its scope names offerings and no process (§5.2.1), and its deliverables state no revisions (§5.4.3).
+6. A standing proposal it was formed from states no qualifications (§12.1).
+7. `buyer_reference` MAY be present (§5.17).
+
+### 4.3 Amendments
+
+A profile implementation does not amend an engagement. It MUST NOT propose an amendment and MUST NOT approve one. A proposal it receives lapses at the end of its review window, which §5.8 records as a lapse with the current version still in force. Parties that need other terms terminate the engagement and form a new one. The formation messages of §5.8, and the review window rules for proposals, serve amendments only and are left out with them.
+
+### 4.4 Left out
+
+- **§5.2.1, a process as the scope.** It needs Agent Processes, which is outside the profile.
+- **§5.4.3, revisions.** A deliverable that is rejected is disputed or terminated in this profile.
+- **§5.5.6 to §5.5.8, pass-through lines, no charge and operator fees.** Each adds a way to pay that needs records of its own: an upstream receipt, no settlement at all, or a disclosed fee line. The profile keeps one way to pay for each arrangement.
+- **§5.10.1 and the posture `refund_on_failed_task`.** An arbiter needs a third agent bound by the role contract, and an enforced refund needs clearing that can reverse a payment (§8.2).
+- **§5.12 to §5.15, reporting, liability, service floors and subcontracting.** Each is an optional clause with obligations of its own.
+- **§5.16, the Agent NDA the engagement runs under.** Agent NDA is outside the profile.
+- **§5.18, contracted contact by the provider.** In a profile engagement the client's agent starts every task.
+- **§12.2, §13, §14 and §15: listings, pre-engagement validation, problem reports and post-engagement review.** None of them is needed to form, run or end an engagement.
+
+Sections 1, 10 and 11 are informative.
+
+### 4.5 Vectors
+
+| File | What a profile implementation passes |
+|------|--------------------------------------|
+| [sow-signatures.json](../sow/conformance/sow-signatures.json) | Every case: the signed bytes, binding to `owner_key`, and the canonical padded base64 signature. |
+| [sow-pricing.json](../sow/conformance/sow-pricing.json) | The arrangement, every price case, rating without the cases for pass-through lines and operator fees, the settlement lines that are neither, the reservation, document and task states, parties, the directed proposal's clause and formation, approval, and signing. |
+| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate and usage case, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out. |
+| [sow-buyer-reference.json](../sow/conformance/sow-buyer-reference.json) | The form, the template, the carriage onto settlement records and receipts, and the check for a discrepancy. The three carriage cases about amendments are left out. |
+| [sow-data-use.json](../sow/conformance/sow-data-use.json) | The promises, the clause and its signing. The comparison against a stated requirement is left out. |
+| [sow-disputes.json](../sow/conformance/sow-disputes.json) | The postures and the clause. The arbiter's verdict is left out. |
+
+The fixtures for amendments, the formation messages, the review window of a proposal, the Agent NDA reference, provider contact, reporting, subcontracting, liability and service floors are left out with their sections.
+
+## 5. Agent Messaging 0.9.4-draft
+
+The two agents exchange tasks over Agent Messaging, and this profile assumes its core profile (Agent Messaging §1.6) without repeating it. On top of the core, a profile implementation implements two sections.
+
+| Section | What a profile implementation does with it |
+|---------|---------------------------------------------|
+| §13.5 | Metering: the observed meters, the meter event, and the usage report a responder puts on its terminal response, which the envelope signature covers. |
+| §19.2 | The task receipt for every completed or canceled task, carrying the engagement's `buyer_reference` byte for byte. |
+
+The rest of §19, which covers prices, the money axis of the budget, the billing provider, the agreement and rating, is left out. The engagement's price clause states the price and Agent SoW §5.5.2 rates it.
+
+**Vectors.** Every case of [metering.json](../messaging/conformance/metering.json): the observed meters, the event, idempotency and the receipt. How the `buyer_reference` reaches the receipt is pinned in `sow-buyer-reference.json`. `commerce.json` is left out with the rest of §19.
+
+## 6. What the receipt lets each side check
+
+The receipt of a profile engagement is three records, and each side can check every one of them against signed documents.
+
+1. **The usage report on each response.** The responder reports its usage on its terminal response, and the envelope signature covers it (Agent Messaging §13.5). The signature proves who reported the usage, and it cannot prove that the numbers are true.
+2. **The usage acts.** Under time and materials, the provider signs the counts for each window it bills (Agent SoW §6.3). The client rates them under §5.5.2, one line at a time as `floor(count × per_unit / per)`, and checks that the total stays within the cap. Under a fixed fee, each task is charged its offering's `per_task` rate.
+3. **The task receipt.** It carries the `buyer_reference` of the version the task was admitted under, and a client that finds the reference missing or altered treats the record as a discrepancy (Agent SoW §5.17).
+
+The suite does not yet define a signed settlement record. Agent SoW defines the lines of a settlement record (§5.5.2) and what one carries (§5.17), and the task receipt is a view the platform derives (Agent Messaging §19.2). Until a standard defines the settlement record as an object with its own signature tag, a profile implementation checks a charge by recomputing it from the signed engagement and the signed usage. A signed settlement record is the first addition this profile expects.
+
+## 7. How the rest of the suite adds on
+
+Each part this profile leaves out adds members, acts or documents that a profile implementation refuses today. An implementation that adds one keeps everything it already does.
+
+- **Agent RFP.** A client that does not yet know its provider posts a request for proposals, and the award forms an Agent SoW engagement. Adding Agent RFP adds the posting, the responses and the award, and the `award` power of a mandate. Formation, the acts and the receipts stay as they are.
+- **Agent NDA.** Parties that need to share confidential material before an engagement exists sign an Agent NDA, and the engagement names it in its `nda` member (Agent SoW §5.16). Adding Agent NDA adds that member, the `nda` power and its check (Agent Mandate §7.2).
+- **Agent Reputations.** A bureau reads the records a profile engagement already leaves, which are the signed engagement, its acts and its receipts. Adding Agent Reputations adds post-engagement reviews (Agent SoW §15) and the reports a client reads before it contracts.
+- **The rest of Agent SoW and Agent Mandate.** Amendments add the `amend` power and the formation messages of §5.8. The other dispute postures add the remaining resolve outcomes of §6.3. Subcontracting, provider contact, reporting, liability and service floors each add one clause. The treasury lets the organization pay in place of the holder, and the resource proxy lets a contracted agent write into the client's systems.
+
+## 8. Profile conformance
+
+[minimal-contracting.json](minimal-contracting.json) is the list tooling reads. For each standard it names the version this profile applies to, the required, partly required and excluded sections, and the conformance vectors a profile implementation must pass, by file and by group within the file. A group is a dotted path into the file. It takes everything under the path, or only the named cases of a list, or every case except the named ones, or entries of a list by position where the entries carry no names. The file also names the standards the profile leaves out and how each adds on.
+
+A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
+
+## Changelog
+
+**0.1.0-draft** (2026-10-20). First version.

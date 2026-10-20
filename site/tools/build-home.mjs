@@ -107,6 +107,7 @@ const GROUPS = {
     icon: "contract",
     order: ["nda", "rfp", "sow", "mandate", "reputations"],
     text: "The parties sign an Agent NDA before they share anything, the buyer asks for proposals with an Agent RFP, the agreed work is written down in an Agent SoW, an Agent Mandate bounds the authority each agent acts on, and Agent Reputations keeps the record of how the work went.",
+    note: 'An implementation can start with <a href="/minimal-contracting.html">the minimal contracting profile</a>, the smallest part of Agent Mandate, Agent SoW and Agent Messaging that lets one organization&rsquo;s agent contract another&rsquo;s within a delegated budget.',
   },
   "doing-the-work": {
     icon: "processes",
@@ -599,6 +600,7 @@ export function renderStandards({ draft = false } = {}) {
         <div class="wrap">
           <h2>${esc(g.name)}</h2>
           <p>${esc(copy.text)}</p>
+          ${copy.note ? `<p>${copy.note}</p>` : ""}
           <ol class="stds">
             ${members.map((s) => card(s, COLOURS[n++ % COLOURS.length])).join("\n            ")}
           </ol>

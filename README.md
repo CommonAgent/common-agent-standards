@@ -36,6 +36,16 @@ and its bindings, the A2A Bridge and the RabbitMQ binding, are in
 playbooks and is kept under [guides/](guides/) as a guide. Agent Roles is a guide
 of working descriptions of recurring jobs, kept in [roles/](roles/).
 
+## Profiles
+
+A profile names a part of several standards that an implementation can build
+first. [The minimal contracting profile](profiles/MINIMAL-CONTRACTING.md) is the
+smallest part of Agent Mandate, Agent SoW and Agent Messaging that lets one
+organization's agent contract another's for services work, within a delegated
+budget, with a receipt both sides can check. Its list for tooling is
+[profiles/minimal-contracting.json](profiles/minimal-contracting.json), and it is
+published at <https://commonagent.net/minimal-contracting.html>.
+
 ## How the repository is laid out
 
 - One folder per standard, holding its specification (`SPEC.md`, or the
@@ -46,6 +56,8 @@ of working descriptions of recurring jobs, kept in [roles/](roles/).
 - [standards.json](standards.json): the registry of the suite. It lists every
   standard with its folder, domain, version and status, and the front page of
   commonagent.net is made from it by [site/tools/build-home.mjs](site/tools/build-home.mjs).
+- [profiles/](profiles/): the profiles, each a document and a list that
+  tooling reads.
 - [tools/](tools/): the checks the workflow runs on every change, and the
   script that renders a standard's site.
 - [.github/workflows/standards.yml](.github/workflows/standards.yml): checks the

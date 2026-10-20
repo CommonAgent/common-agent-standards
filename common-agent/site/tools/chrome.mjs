@@ -71,6 +71,7 @@ export function rail(active) {
           <div class="items">
           ${a("/", "Home", "home")}
           ${a("/standards.html", "Every standard", "standards")}
+          ${a("/minimal-contracting.html", "The minimal contracting profile", "minimal-contracting")}
           ${others}
           ${a("/purchase-order.html", "Agent Purchase Order", "purchase-order")}
           ${a("/onboarding.html", "Agent Onboarding and Offboarding", "onboarding")}
@@ -92,6 +93,7 @@ export const footer = `<footer class="sitefoot">
         <div class="wrap">
           <a href="/">The Common Agent Standards</a>
           <a href="/standards.html">Every standard</a>
+          <a href="/minimal-contracting.html">The minimal contracting profile</a>
           <a href="/agent.html">The Common Agent</a>
           <a href="/spec.html">The specification</a>
           <a href="/descriptor.html">The Agent Descriptor</a>
