@@ -1,6 +1,6 @@
 # Agent Mandate Specification
 
-**Version:** 0.7.0-draft
+**Version:** 0.8.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -423,8 +423,10 @@ Rules:
    name. One pattern covers another when it matches every name the other
    matches. The list narrows the `write` and `amend` powers for a mutating
    act through a resource proxy to the resources its patterns match (§7.1).
-   A mandate without the list places no limit on resources, so mandates
-   written before this rule keep the authority they had. Where the list is
+   A mandate that carries neither `scope.resources` nor `scope.offerings`
+   places no limit on resources. A mandate that carries `scope.offerings`
+   and no `scope.resources` was scoped by whoever issued it, so it reaches no
+   resource through a proxy at all (§7.1). Where the list is
    present it MUST be non-empty, each pattern MUST be a resource name or a
    prefix followed by a single trailing `*`, and no pattern may repeat. A
    registry MUST refuse a mandate whose list breaks those rules. Grade:
@@ -547,8 +549,20 @@ write to at all. Where the caller's mandate carries `scope.resources` (§6
 rule 9), a proxy MUST answer a mutating act only when the resource the act
 targets matches one of the list's patterns, whichever power the act needs,
 `write` or `amend`, and MUST refuse it otherwise, naming the scope as the
-failing check. A mandate without the list reaches every resource its powers
-cover. A read is answered on the grant alone, so the list never limits it.
+failing check. A mandate that carries `scope.offerings` and no
+`scope.resources` MUST be refused for every mutating act through a proxy,
+also naming the scope as the failing check: whoever issued it limited what
+its holder may do, and saying nothing about resources is no grant of all of
+them. A mandate that carries neither list reaches every resource its powers
+cover. A read is answered on the grant alone, so neither list limits it.
+
+The refusal is outright. The other choice would be to let a mutating act
+through when the offerings list names its resource. It was not taken
+because offering identifiers and resource names are different vocabularies
+that only sometimes share a spelling, so matching one against the other
+would grant or refuse by coincidence. An organization whose holders write
+through a proxy issues them a mandate with `scope.resources`, and the
+refusal names exactly that.
 
 Apart from which power a write needs, nothing new is defined here. The
 mandate, its chain, and its check are §6 and §7's; the proxy is simply a counterparty that chose to run it at the
@@ -986,3 +1000,17 @@ the registry's refusals, and `conformance/mandate-proxy.json` gains cases
 for the check at the proxy. The minor version moves because a checker built
 against 0.6.1-draft does not read `scope.resources`, and this version
 requires it to.*
+
+*0.8.0-draft (2026-10-20): a mandate scoped by `scope.offerings` and silent
+about resources reaches no resource through a proxy. Under 0.7.0-draft such
+a mandate was unrestricted at a proxy, because an absent `scope.resources`
+placed no limit, although whoever issued it had plainly meant to scope it,
+and every mandate issued before 0.7.0-draft carried only `scope.offerings`.
+A proxy now MUST refuse every mutating act under a mandate that carries
+`scope.offerings` and no `scope.resources` (§6 rule 9, §7.1). It refuses
+outright, without matching the resource against the offerings list, because
+offering identifiers and resource names are different vocabularies and a
+match between them would be a coincidence. A mandate with neither list still
+reaches every resource its powers cover. `conformance/mandate-proxy.json`
+gains cases for both. The minor version moves because a proxy built against
+0.7.0-draft answers acts this version refuses.*
