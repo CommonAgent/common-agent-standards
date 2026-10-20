@@ -1,7 +1,7 @@
 # Agent Reputations Specification
 
 **Version:** 0.11.1-draft
-**Date:** 2026-10-19
+**Date:** 2026-10-20
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
 **Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent NDA (confidentiality), Agent Reputations (reputation)
@@ -372,13 +372,17 @@ the empty list. The empty list is named for every commitment the bureau
 publishes while it names no witness. The first witness it names after it has
 published a commitment joins in a change from the empty list whose `after`
 is the latest commitment, so the witness starts there (rule 1) and its first
-co-signature is of the next commitment. The empty list has no co-signer, so
-no witness signs that change, and the commitments up to `after` stay
-unwitnessed: a consumer treats a report resting on one of them as step 7 of
-§8.1.3 says for a commitment whose named list has no witness. A bureau MUST
-NOT name such a witness on the first list, as if named before any
-commitment, because rule 1 would then let it start only at the commitment
-whose `seq` is 1, which it can no longer co-sign.
+co-signature is of the next commitment. A consumer that first sees the key
+set after that change learns that the first list was the empty one from the
+change's `previous`, which is the SHA-256 of the JCS of the empty list. The
+empty list has no co-signer, so no witness signs that change: a consumer that
+pinned the empty list accepts the first witness on the bureau's word alone,
+as it accepted the bureau's commitments before any witness. The commitments
+up to `after` stay unwitnessed, and a report resting on one of them is
+unanchored (§8.1.3 step 7). A bureau MUST NOT name such a witness on the
+first list, as if named before any commitment, because rule 1 would then let
+it start only at the commitment whose `seq` is 1, which it can no longer
+co-sign.
 
 What the witnesses give is this. While at least one named witness keeps
 rule 1, or is a log that refuses a second entry for a `seq`, a bureau cannot
@@ -1598,6 +1602,10 @@ discard the report at the first of these steps that fails:
    the commitment or the proof MUST treat the report as unanchored: it MAY
    rely on the report as verified by the first six steps, and MUST say that
    the report is unanchored wherever it shows the report or passes it on.
+   A commitment whose named witness list is empty, because the bureau named
+   no witness for its `seq`, is unanchored the same way: the consumer says
+   that the bureau names no witness, and never counts the report as
+   anchored.
 
 A report that passes the first six steps, and the seventh for a report that
 carries `log`, is verified at L1 (§8.4). Verification
@@ -2070,7 +2078,17 @@ deterministic, and refuses every report the vectors say it must refuse.
 ---
 
 
-*0.11.1-draft (2026-10-20): a witness named after the first commitment, when the bureau named none before, has a defined start. §4.1.1 said how a witness joins through a change of the list and not what list a bureau that names no witness serves. Such a bureau serves an empty list, or none, and a consumer pins either as the empty list. Its first witness joins in a change from the empty list whose `after` is the latest commitment, which no witness signs, and it never goes on the first list. No signed bytes change.*
+*0.11.1-draft (2026-10-20): a witness named after the first commitment, when
+the bureau named none before, has a defined start. §4.1.1 said how a witness
+joins through a change of the list and not what list a bureau that names no
+witness serves. Such a bureau serves an empty list, or none, and a consumer
+pins either as the empty list. Its first witness joins in a change from the
+empty list whose `after` is the latest commitment, which no witness signs,
+so a consumer that pinned the empty list accepts it on the bureau's word
+alone, and it never goes on the first list. A consumer that first sees the
+key set later learns the empty first list from the change's `previous`.
+§8.1.3 step 7 says that a report resting on a commitment whose named list is
+empty is unanchored. No signed bytes change.*
 
 *0.11.0-draft (2026-10-20): a witness that joins mid-chain has a defined
 start. Rule 1 of §4.1.1 said how a witness starts at a bureau's first
