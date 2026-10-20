@@ -1496,7 +1496,8 @@ Requesters need no advance knowledge of which mode applies. The first **substant
     "bound_by": "request | answer",
     "contested_by": [ "<request id>" ],
     "contested_overflow": 0,
-    "contested_overflow_since": "<ISO-8601>"
+    "contested_overflow_since": "<ISO-8601>",
+    "multiple_requests": [ "<request id>" ]
   },
   "contested_by": [ "<request id>" ],
   "contested_overflow": 0,
@@ -1524,6 +1525,7 @@ Requesters need no advance knowledge of which mode applies. The first **substant
 - `observed_at` is when the server observed the request, by the server's own clock.
 - `bound_by` says how the request came to name the Task id. In both cases the responder's answer to the request carried the Task id, because nothing else ties a request to a Task. It is `request` when the request itself named the Task id and the answer carried it, as a stream request and its opening `respond` do. It is `answer` when the request named no Task id and its first answer, delivered to the requester's inbox, carried one. A consumer that needs a link anchored in the requester's own message can require `request`.
 - `contested_by` (OPTIONAL) lists the ids of the Task requester's own other requests that did not name this Task id and that the responder answered with it, in the order the server observed them, at most 256. It is append-only. `contested_overflow` (OPTIONAL) counts the contesting requests past those 256, and `contested_overflow_since` (OPTIONAL) records when the server saw the first one that did not fit. Only the server writes these three fields.
+- `multiple_requests` (OPTIONAL) lists the ids of the requester's requests that named the Task id of a Task created by a stream request and were answered under it, the origin's own request first, at most 256. The first stays the origin, and none of them is evidence against the responder. Only the server writes it.
 
 A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `history` and is not trimmed with it. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one.
 
@@ -1537,7 +1539,9 @@ Every such request of the Task's requester, other than the binding request, is l
 
 `origin.contested_by` and the Task-level `contested_by` hold only the Task requester's own requests. On a Task with no `origin`, the server writes `contested_by`, `contested_overflow` and `contested_overflow_since` on the Task itself, with the same meaning and limits, and moves them into `origin` if one attaches later. Requests from other askers that the responder answered under the Task go in the OPTIONAL Task-level `contested_by_asker`. That happens when the Task's recorded requester is not the agent the server saw ask. It is keyed by the asker's agent key, and each entry carries its own `contested_by`, `contested_overflow` and `contested_overflow_since`, never mixed into another asker's list. It lists at most 64 askers per Task. Past that, the OPTIONAL `askers_overflow` counts the further askers, each once, and `askers_overflow_since` records when the first one did not fit. The OPTIONAL `origin_mismatch` (`{ requester }`) marks a Task whose recorded requester differs from the observed one, and names the first such asker. A consumer treats a mismatch as the responder's fault. A consumer that acts on the origin, such as one refunding it, treats every request in `contested_by` the same way. On a Task with no origin, it treats the requests the Task itself lists the same way, and it treats each asker's requests in `contested_by_asker` as that asker's. A reader drops a malformed contest field on its own, never the origin or the rest of the Task. Only the server writes any of these fields, and a party's update MUST NOT set, change or remove them.
 
-The responder, and the platform's privileged read, see all of these fields. A requester's read of the Task shows only its own origin, its own contests and the cancel attribution, never `contested_by_asker`, `origin_mismatch`, `askers_overflow` or `askers_overflow_since`. Both reads show the server's record of origins and contests as of the read, so evidence the server observed shows even when its copy on the Task record was lost.
+One Task id runs one piece of work. A responder MUST refuse a second request naming a Task id that it is already dispatching. The reference SDK answers `TASK_INVALID_TRANSITION`. When a responder answers more than one such request under the Task anyway, the server lists them in `origin.multiple_requests`, and on a Task with no origin on the Task itself, as it does the contest fields.
+
+The responder, and the platform's privileged read, see all of these fields. A requester's read of the Task shows only its own origin, its own contests and the cancel attribution, never `contested_by_asker`, `origin_mismatch`, `askers_overflow` or `askers_overflow_since`. Both reads show the server's record of origins and contests as of the read, so evidence the server observed shows even when its copy on the Task record was lost. A Task's lifecycle events (`mesh.event.task.<state>`) carry `origin` without `contested_by`, `contested_overflow`, `contested_overflow_since` or `multiple_requests`. Those appear only on the Task record and the privileged read.
 
 A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
 
@@ -3163,7 +3167,7 @@ has to guess which ending a stored reason belonged to.
 - `requester_request` is an object with `request_id`, `observed_at` and `via`. `via` is `update` when it is the original requester's own canceled update, and `cancel_request` when it is a `task.cancel` request the original requester sent the responder. The original requester is the Task's `origin.requester` (§7.1), so `requester_request` is always null on a Task without an `origin`. A `task.cancel` request from any other agent does not count.
 - `at` is when the server recorded the transition.
 
-A responder that cancels with `user_requested` therefore cannot make the record say that the requester asked: `canceled_by.requester_request` says whether the server saw such an ask. The Task's signed state event for `canceled` and its receipt (§19.2) MAY carry `canceled_by`, and a Task's state events MAY carry `origin`. A reader that does not know either member ignores it.
+A responder that cancels with `user_requested` therefore cannot make the record say that the requester asked: `canceled_by.requester_request` says whether the server saw such an ask. The Task's signed state event for `canceled` and its receipt (§19.2) MAY carry `canceled_by`, and a Task's state events MAY carry `origin`, without the fields §7.1 keeps to the Task record. A reader that does not know either member ignores it.
 
 #### 10.8a. Attribution: whose failure this was
 
@@ -6523,7 +6527,13 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > OPTIONAL `contested_by_asker` (at most 64 askers, with `askers_overflow` and
 > `askers_overflow_since` past that), and `origin_mismatch` marks a Task whose
 > recorded requester differs from the observed one. A requester's read shows
-> only its own origin, contests and cancel attribution. A terminal Task's origin takes only append-only additions to them.
+> only its own origin, contests and cancel attribution. One Task id runs one
+> piece of work, and a responder MUST refuse a second request naming a Task
+> id it is already dispatching. The OPTIONAL `origin.multiple_requests` lists
+> the same requester's requests that named a stream-created Task's id and were
+> answered under it, and none of them is evidence against the responder.
+> Lifecycle events carry `origin` without the contest fields or
+> `multiple_requests`. A terminal Task's origin takes only append-only additions to them.
 > The server observes only what reaches the addressee's inbox, and it never records registry probes, `describe` or `knock`. §10.8
 > gives a canceled Task `canceled_by`: `party`, the side that signed the
 > canceled update; `requester_request`, the original requester's
