@@ -238,7 +238,8 @@ function standardsMap() {
     return SUITE.standards.filter((s) => s.group === id && s.kind !== "base").sort((a, b) => rank(a) - rank(b));
   };
   const base = SUITE.standards.find((s) => s.kind === "base");
-  const groupIds = (SUITE.groups ?? []).map((g) => g.id);
+  // The map keeps its own layout, whatever the order of the groups on standards.html.
+  const groupIds = ["identity-and-reach", "contracting", ...(SUITE.groups ?? []).map((g) => g.id).filter((id) => id !== "identity-and-reach" && id !== "contracting")];
   const tone = Object.fromEntries(groupIds.map((g, i) => [g, ["c-violet", "c-amber", "c-mint", "c-blue"][i % 4]]));
   const ident = grp(groupIds[0]), contract = grp(groupIds[1]), work = groupIds.slice(2).flatMap(grp);
   const rows = [contract.slice(0, 4), [ident[0], base, ...ident.slice(1)].filter(Boolean), [...contract.slice(4), ...work]];
@@ -589,7 +590,7 @@ export function renderStandards({ draft = false } = {}) {
   const standards = SUITE.standards.filter((s) => s.kind === "standard");
   const guides = SUITE.standards.filter((s) => s.kind === "guide");
   const title = `Every standard: ${SUITE.suite}`;
-  const description = "Every Common Agent Standard, grouped by what it does: identity and reach, contracting, and doing the work. Each card gives the standard's version, its status, its own site and its folder in the repository.";
+  const description = "Every Common Agent Standard, grouped by what it does: identity and reach, Agents and Humans Working Together, and B2B Agentic Commerce. Each card gives the standard's version, its status, its own site and its folder in the repository.";
   let n = 0;
   const bands = (SUITE.groups ?? []).map((g, gi) => {
     const copy = GROUPS[g.id];
