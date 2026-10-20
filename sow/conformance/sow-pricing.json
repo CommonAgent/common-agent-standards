@@ -3725,6 +3725,155 @@
       "carries_a_line": false
     }
   },
+  "ceiling_period": {
+    "comment": "5.5.1 (0.34.0-draft): the month of a fixed fee ceiling. A ceiling's months are the engagement's own, counted from starts_at in UTC the way 5.7 counts the term. Month n runs from starts_at plus n - 1 calendar months, included, to starts_at plus n calendar months, excluded; starts_at plus n calendar months is the same day of the month at the same time of day, n months later, or the last day of that month at that time where the month has no such day. Every boundary is counted from starts_at itself, never from the boundary before it, and the last month ends at ends_at where the term ends inside it. A charge counts in the month its work was DELIVERED, when the client is charged, never in the month it was admitted, and a reversed charge, such as a refund, no longer counts from the instant it is reversed. Amounts are what the client is charged, operator fee included (5.5.8). months lists each term's months; counts_in gives the month a charge counts in; spend gives a month's spend at an instant, against a ceiling of 10000000, for the charges listed.",
+    "months": [
+      {
+        "case": "a start on the 31st: each boundary is counted from starts_at, so March begins on the 31st after a February that began on the 28th",
+        "starts_at": "2026-01-31T09:00:00Z",
+        "ends_at": "2026-06-15T00:00:00Z",
+        "months": [
+          {
+            "from": "2026-01-31T09:00:00Z",
+            "to": "2026-02-28T09:00:00Z"
+          },
+          {
+            "from": "2026-02-28T09:00:00Z",
+            "to": "2026-03-31T09:00:00Z"
+          },
+          {
+            "from": "2026-03-31T09:00:00Z",
+            "to": "2026-04-30T09:00:00Z"
+          },
+          {
+            "from": "2026-04-30T09:00:00Z",
+            "to": "2026-05-31T09:00:00Z"
+          },
+          {
+            "from": "2026-05-31T09:00:00Z",
+            "to": "2026-06-15T00:00:00Z"
+          }
+        ]
+      },
+      {
+        "case": "a leap year: February has a 29th, and the term ends one day into April",
+        "starts_at": "2028-01-30T00:00:00Z",
+        "ends_at": "2028-04-01T00:00:00Z",
+        "months": [
+          {
+            "from": "2028-01-30T00:00:00Z",
+            "to": "2028-02-29T00:00:00Z"
+          },
+          {
+            "from": "2028-02-29T00:00:00Z",
+            "to": "2028-03-30T00:00:00Z"
+          },
+          {
+            "from": "2028-03-30T00:00:00Z",
+            "to": "2028-04-01T00:00:00Z"
+          }
+        ]
+      },
+      {
+        "case": "a mid-month start with a fractional second: three whole months, the last ending at ends_at",
+        "starts_at": "2026-08-04T14:02:11.5Z",
+        "ends_at": "2026-11-04T14:02:11.5Z",
+        "months": [
+          {
+            "from": "2026-08-04T14:02:11.5Z",
+            "to": "2026-09-04T14:02:11.5Z"
+          },
+          {
+            "from": "2026-09-04T14:02:11.5Z",
+            "to": "2026-10-04T14:02:11.5Z"
+          },
+          {
+            "from": "2026-10-04T14:02:11.5Z",
+            "to": "2026-11-04T14:02:11.5Z"
+          }
+        ]
+      }
+    ],
+    "counts_in": [
+      {
+        "case": "admitted in month 1 and delivered at the instant month 2 begins: it counts in month 2",
+        "starts_at": "2026-01-31T09:00:00Z",
+        "admitted_at": "2026-02-28T08:59:59Z",
+        "delivered_at": "2026-02-28T09:00:00Z",
+        "month": 2
+      },
+      {
+        "case": "delivered a tenth of a millisecond before month 2 begins: it counts in month 1",
+        "starts_at": "2026-01-31T09:00:00Z",
+        "admitted_at": "2026-02-28T08:00:00Z",
+        "delivered_at": "2026-02-28T08:59:59.9999Z",
+        "month": 1
+      },
+      {
+        "case": "delivered on 30 March: month 2 runs to 31 March, since the 28 February boundary does not carry into March",
+        "starts_at": "2026-01-31T09:00:00Z",
+        "admitted_at": "2026-03-30T11:00:00Z",
+        "delivered_at": "2026-03-30T12:00:00Z",
+        "month": 2
+      },
+      {
+        "case": "admitted in month 2 and delivered in month 3: it counts in month 3",
+        "starts_at": "2026-01-31T09:00:00Z",
+        "admitted_at": "2026-03-31T08:30:00Z",
+        "delivered_at": "2026-03-31T09:30:00Z",
+        "month": 3
+      }
+    ],
+    "spend": {
+      "starts_at": "2026-08-04T00:00:00Z",
+      "ceiling": {
+        "amount": 10000000,
+        "period": "month"
+      },
+      "charges": [
+        {
+          "amount": 4000000,
+          "delivered_at": "2026-08-10T12:00:00Z"
+        },
+        {
+          "amount": 3000000,
+          "delivered_at": "2026-08-20T12:00:00Z",
+          "reversed_at": "2026-08-25T12:00:00Z"
+        },
+        {
+          "amount": 2500000,
+          "delivered_at": "2026-09-03T12:00:00Z"
+        },
+        {
+          "amount": 2500000,
+          "delivered_at": "2026-09-05T12:00:00Z"
+        }
+      ],
+      "cases": [
+        {
+          "case": "month 1 before the reversal: both August charges count",
+          "at": "2026-08-22T00:00:00Z",
+          "month": 1,
+          "spent": 7000000,
+          "remaining": 3000000
+        },
+        {
+          "case": "month 1 after the reversal: the refunded 3000000 no longer counts, and the charge delivered on 3 September, inside month 1, does",
+          "at": "2026-09-04T00:00:00Z",
+          "month": 1,
+          "spent": 6500000,
+          "remaining": 3500000
+        },
+        {
+          "case": "month 2: the charge delivered on 5 September counts there",
+          "at": "2026-09-10T00:00:00Z",
+          "month": 2,
+          "spent": 2500000,
+          "remaining": 7500000
+        }
+      ]
+    }
+  },
   "not_covered": {
     "comment": "Boundaries, written down so nobody mistakes them for gaps.",
     "items": [

@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.33.0-draft
+**Version:** 0.34.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -774,6 +774,33 @@ the fee on that price would carry the period's spend past the ceiling is
 refused with a quote, which is the refusal this subsection already grades
 `enforced`. Nothing else changes. The engagement does not end, the ceiling is
 per period, and the refusal lifts when the next period begins.
+
+**The period.** A ceiling's `period` is `month`, and its months are the
+engagement's own, counted from `starts_at` in UTC the way §5.7 counts the
+term. Month n runs from `starts_at` plus n − 1 calendar months, included, to
+`starts_at` plus n calendar months, excluded. `starts_at` plus n calendar
+months is the same day of the month at the same time of day, in UTC, n
+months later, or the last day of that month at that time where the month has
+no such day. Every boundary is counted from `starts_at` itself and never
+from the boundary before it, so a day lost to a short month is not lost to
+the months after it. An engagement that starts at 09:00 on 31 January has
+months that begin at 09:00 on 28 February (29 February in a leap year), 31
+March, 30 April and 31 May. A month ends where the next begins, so every
+instant of the term falls in exactly one month, and the last month ends at
+`ends_at` where the term ends inside it. Instants compare at every
+fractional digit they carry (§6.3).
+
+A charge counts toward the month in which its work was delivered, which is
+the instant the client is charged for it, and never toward the month in
+which the work was admitted. Work admitted in one month and delivered in
+the next counts in the next. The ceiling bounds what the client pays, and a
+client pays at delivery, so the month of delivery is the month the payment
+belongs to. A runtime that refuses work at admission tests the month the
+admission falls in, counting the charges already delivered in it and the
+price of every task it has admitted and not yet delivered, so that the
+refusal errs toward refusing. A charge that is reversed, such as a refund
+under `refund_on_failed_task` (§5.10), no longer counts toward the ceiling of
+its month from the instant it is reversed.
 
 This is what makes the committed price of a fixed fee engagement a statement
 of the client's real exposure. A ceiling that did not bound what the client
@@ -3270,6 +3297,22 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.34.0-draft** (2026-10-20). The month of a ceiling. §5.5.1 said a fixed
+fee ceiling is per `month` and never said when a month starts. Its months
+are now the engagement's own, counted from `starts_at` in UTC the way §5.7
+counts the term: month n runs from `starts_at` plus n − 1 calendar months to
+`starts_at` plus n, each boundary counted from `starts_at` itself, on the
+same day at the same time or the last day of a month that has no such day,
+and the last month ends at `ends_at`. A charge counts in the month its work
+was delivered, when the client is charged, and never in the month it was
+admitted. A runtime that refuses at admission tests the admission's month
+with the price of work admitted and not yet delivered counted in. A reversed
+charge, such as a refund, no longer counts from the instant it is reversed.
+`conformance/sow-pricing.json` gains `ceiling_period`, with the months of
+three terms, the month a charge counts in, and a month's spend across a
+reversal. The minor version moves because a runtime built against
+0.33.0-draft could count a ceiling's month another way.
 
 **0.33.0-draft** (2026-10-20). Settling under a fixed fee, and instants.
 Under `fixed_fee` an engagement now settles per task or per window and never
