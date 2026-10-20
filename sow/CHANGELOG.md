@@ -4,6 +4,30 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.32.0-draft (2026-10-20)
+
+Settling the same work once. The settle act of §6.3 gains the rules that
+keep one piece of work from being charged twice and an operator fee from
+passing what the client agreed to. A record MUST NOT name a `task` that an
+earlier record under the engagement names, and under `fixed_fee` the windows
+of two records MUST NOT overlap, so a record for work already settled is
+refused, including one signed again with a new `signed_at`. An earlier
+record is one held under the same engagement whose digest differs from the
+record's own: records under other engagements count for nothing, and a
+record checked again against a store that holds it is the same record and
+settles nothing twice. Where the runtime holds the quote the charge
+followed, the record carries an operator fee line exactly where the quote
+carried one, under the quote's operator and basis, taken on the sum of the
+record's own lines, and §5.5.8 says so beside its four checks. Under
+`fixed_fee` with a `ceiling`, one record's total, fee included, stays within
+the ceiling's amount (§5.5.1). Every number an act carries or computes is at
+most 2^53 − 1, and a `task` is 1 to 128 code points.
+`conformance/sow-acts.json` gains 33 cases, with real test-seed signatures,
+three documents (a fixed fee with a ceiling, `no_charge`, and time and
+materials with a pass-through line) and a `quotes` member that a case names
+in `quote`. The minor version moves because a runtime built against
+0.31.0-draft takes records this version refuses.
+
 ## 0.31.0-draft (2026-10-20)
 
 The settlement record. §6.3 gains a fifth

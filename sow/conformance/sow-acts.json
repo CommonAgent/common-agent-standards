@@ -1,7 +1,7 @@
 {
-  "comment": "Agent SoW: the signed acts of 6.3 (agentsow.com 0.31.0-draft). Each act is a JSON object with a closed member set: engagement, version, digest ('sha256:' and the lowercase hex SHA-256 of that version's signed bytes, 6), the kind's own members, by (the seat that signs), key (that seat's owner_key), signed_at and sig (canonical padded base64 of the 64-byte Ed25519 signature). Its signed bytes are the kind's tag, one newline, and the JCS of the act minus sig: agent-sow-terminate-v1, agent-sow-usage-v1, agent-sow-settlement-v1, agent-sow-dispute-v1 and agent-sow-resolve-v1. A settlement record and a dispute are named by the digest of its signed bytes; a verdict by the digest of its own signed bytes (agent-arbiter-verdict-v1, one newline, JCS minus signatures). Each case names the act, its kind, the document it is made under, and for a resolve the dispute and verdict it rests on; prior lists usage acts the runtime already holds; for a settlement record, held lists the usage acts the runtime holds and earlier the settlement records it already holds under the engagement. unsettled is what remains unsettled under every engagement here when its dispute opens. pairs pin when a dispute under escalate_to_owners closes. The keys are published test seeds (sha256 of the label); 'arbiter' plays the arbiter, whose verdict signature is in the role's own encoding, base64url, as sow-disputes.json pins it. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "comment": "Agent SoW: the signed acts of 6.3 (agentsow.com 0.32.0-draft). Each act is a JSON object with a closed member set: engagement, version, digest ('sha256:' and the lowercase hex SHA-256 of that version's signed bytes, 6), the kind's own members, by (the seat that signs), key (that seat's owner_key), signed_at and sig (canonical padded base64 of the 64-byte Ed25519 signature). Its signed bytes are the kind's tag, one newline, and the JCS of the act minus sig: agent-sow-terminate-v1, agent-sow-usage-v1, agent-sow-settlement-v1, agent-sow-dispute-v1 and agent-sow-resolve-v1. A settlement record and a dispute are named by the digest of its signed bytes; a verdict by the digest of its own signed bytes (agent-arbiter-verdict-v1, one newline, JCS minus signatures). Each case names the act, its kind, the document it is made under, and for a resolve the dispute and verdict it rests on; prior lists usage acts the runtime already holds; for a settlement record, held lists the usage acts the runtime holds and earlier the settlement records it already holds. An earlier list may name the record being checked, which the runtime then holds already and compares with nothing, and records under other engagements, which settle nothing for this one (6.3). quote names an entry of quotes, the quote the charge followed (5.5.8), where the runtime holds one; a case without it holds none. unsettled is what remains unsettled under every engagement here when its dispute opens. pairs pin when a dispute under escalate_to_owners closes. The keys are published test seeds (sha256 of the label); 'arbiter' plays the arbiter, whose verdict signature is in the role's own encoding, base64url, as sow-disputes.json pins it. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent SoW 0.31.0-draft: 6.3 (the signed acts), 5.5, 5.5.2, 5.5.8, 5.9, 5.10, 5.17, 6 (signature spelling)",
+  "spec": "Agent SoW 0.32.0-draft: 6.3 (the signed acts), 5.5, 5.5.1, 5.5.2, 5.5.6, 5.5.7, 5.5.8, 5.9, 5.10, 5.17, 6 (signature spelling)",
   "keys": {
     "entries": {
       "stonework-owner": {
@@ -720,6 +720,380 @@
         ]
       },
       "signed_bytes_digest": "sha256:e9a07a66a0ce346e483f990e64a1ba62ca6cb6b91d5894b6818b74871576e59e"
+    },
+    "fixed_ceiling": {
+      "document": {
+        "id": "sow_ft6r6fr4axwpvjgw",
+        "sow": "v1",
+        "version": 1,
+        "starts_at": "2026-08-04T00:00:00Z",
+        "ends_at": "2027-02-01T00:00:00Z",
+        "language": {
+          "id": "agent-sow-standard-language",
+          "version": 4,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "parties": {
+          "provider": {
+            "agent": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
+            "handle": "Granite.books@stonework.example",
+            "owner": "Stonework Analytics",
+            "organization": "org_stonework",
+            "owner_key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO"
+          },
+          "client": {
+            "agent": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_harborandline",
+            "owner_key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3"
+          },
+          "grade": "evidence"
+        },
+        "scope": {
+          "offerings": [
+            "reconcile-statement"
+          ],
+          "examples": {
+            "in_scope": [
+              "reconcile the August statement"
+            ],
+            "out_of_scope": [
+              "file the return"
+            ]
+          },
+          "grade": "enforced"
+        },
+        "price": {
+          "arrangement": "fixed_fee",
+          "currency": "XCR",
+          "rates": [
+            {
+              "offering": "reconcile-statement",
+              "per_task": 2500000
+            }
+          ],
+          "ceiling": {
+            "amount": 10000000,
+            "period": "month"
+          },
+          "grade": "enforced"
+        },
+        "volume": {
+          "per_hour": 20,
+          "per_day": 200,
+          "grade": "enforced"
+        },
+        "change_control": {
+          "review_window_days": 7,
+          "approval": {
+            "formation": "agent",
+            "amendment": "person"
+          },
+          "approvals": [
+            {
+              "act": "amendment",
+              "authority": "person",
+              "key": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "approved_at": "2026-08-06T09:14:02Z",
+              "mandate": "mnd_harborandline_ap"
+            }
+          ],
+          "grade": "enforced"
+        },
+        "termination": {
+          "grade": "enforced"
+        },
+        "disputes": {
+          "posture": "none",
+          "grade": "evidence"
+        },
+        "confidentiality": {
+          "transport": {
+            "sealed": true,
+            "grade": "enforced"
+          },
+          "retention": {
+            "max_days": 30,
+            "grade": "enforced"
+          },
+          "promises": {
+            "no_training": true,
+            "grade": "recorded"
+          }
+        },
+        "signatures": [
+          {
+            "role": "provider",
+            "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+            "signed_at": "2026-08-04T14:02:11Z",
+            "sig": "UghlPys3jQtOOCMhWVqs6+SVQEXgxEV9MmQyo4wGPv1YrjHUNRtlZE5NrKWmMEQm0sIHm5mOVbcNcUsPz4R1Bw=="
+          },
+          {
+            "role": "client",
+            "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+            "signed_at": "2026-08-04T16:47:36Z",
+            "sig": "fdFkPk/yQjiytwuvS9QV7aemwxlsfA+oulcJ5B+7ZdbvAnNES0tTQ7BLAgQmxxb51znLpsA0mjvSoSqKG5dMCw=="
+          }
+        ]
+      },
+      "signed_bytes_digest": "sha256:eb8a29ea1143d038a8480c66d284d5d95e4d9c42eabc405f6e18cf5b8e331ceb"
+    },
+    "no_charge": {
+      "document": {
+        "id": "sow_r7yf0r77trd38gag",
+        "sow": "v1",
+        "version": 1,
+        "starts_at": "2026-08-04T00:00:00Z",
+        "ends_at": "2027-02-01T00:00:00Z",
+        "language": {
+          "id": "agent-sow-standard-language",
+          "version": 4,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "parties": {
+          "provider": {
+            "agent": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
+            "handle": "Granite.books@stonework.example",
+            "owner": "Stonework Analytics",
+            "organization": "org_stonework",
+            "owner_key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO"
+          },
+          "client": {
+            "agent": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_harborandline",
+            "owner_key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3"
+          },
+          "grade": "evidence"
+        },
+        "scope": {
+          "offerings": [
+            "reconcile-statement"
+          ],
+          "examples": {
+            "in_scope": [
+              "reconcile the August statement"
+            ],
+            "out_of_scope": [
+              "file the return"
+            ]
+          },
+          "grade": "enforced"
+        },
+        "price": {
+          "arrangement": "no_charge",
+          "grade": "enforced"
+        },
+        "volume": {
+          "per_hour": 20,
+          "per_day": 200,
+          "grade": "enforced"
+        },
+        "change_control": {
+          "review_window_days": 7,
+          "approval": {
+            "formation": "agent",
+            "amendment": "person"
+          },
+          "approvals": [
+            {
+              "act": "amendment",
+              "authority": "person",
+              "key": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "approved_at": "2026-08-06T09:14:02Z",
+              "mandate": "mnd_harborandline_ap"
+            }
+          ],
+          "grade": "enforced"
+        },
+        "termination": {
+          "convenience_notice_hours": 48,
+          "grade": "enforced"
+        },
+        "disputes": {
+          "posture": "escalate_to_owners",
+          "grade": "evidence"
+        },
+        "confidentiality": {
+          "transport": {
+            "sealed": true,
+            "grade": "enforced"
+          },
+          "retention": {
+            "max_days": 30,
+            "grade": "enforced"
+          },
+          "promises": {
+            "no_training": true,
+            "grade": "recorded"
+          }
+        },
+        "signatures": [
+          {
+            "role": "provider",
+            "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+            "signed_at": "2026-08-04T14:02:11Z",
+            "sig": "TjGUjPgC66wbqN0YlEBz6141h0N0vSIPUu9+FeWsSuElFL8aWS6R/M9Lsrp+pTQc/ti+puNGy/6VyYa9Gu8LAA=="
+          },
+          {
+            "role": "client",
+            "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+            "signed_at": "2026-08-04T16:47:36Z",
+            "sig": "LbetgxVioLQrvEH97l6UHi99Txwmw4OmnlLgBgCo4no0Q6OP9KxEMByWnnTGnMbl6peVLEwOvJnudPL0kyw1Bg=="
+          }
+        ]
+      },
+      "signed_bytes_digest": "sha256:343976ca3d0ec607aab9b99915008dfab37ca5823b89e5108b12dd111ec7b34c"
+    },
+    "agreed_pass": {
+      "document": {
+        "id": "sow_nj97c5yb0x5cq6xm",
+        "sow": "v1",
+        "version": 1,
+        "starts_at": "2026-08-04T00:00:00Z",
+        "ends_at": "2027-02-01T00:00:00Z",
+        "language": {
+          "id": "agent-sow-standard-language",
+          "version": 4,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "parties": {
+          "provider": {
+            "agent": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
+            "handle": "Granite.books@stonework.example",
+            "owner": "Stonework Analytics",
+            "organization": "org_stonework",
+            "owner_key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO"
+          },
+          "client": {
+            "agent": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_harborandline",
+            "owner_key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3"
+          },
+          "grade": "evidence"
+        },
+        "scope": {
+          "offerings": [
+            "reconcile-statement"
+          ],
+          "examples": {
+            "in_scope": [
+              "reconcile the August statement"
+            ],
+            "out_of_scope": [
+              "file the return"
+            ]
+          },
+          "grade": "enforced"
+        },
+        "price": {
+          "arrangement": "time_and_materials",
+          "currency": "XCR",
+          "schedule": [
+            {
+              "meter": "tokens_out",
+              "unit": "1000 tokens",
+              "per": 1000,
+              "per_unit": 1500
+            },
+            {
+              "meter": "tool_calls",
+              "unit": "call",
+              "per": 1,
+              "per_unit": 2000
+            },
+            {
+              "meter": "items",
+              "unit": "invoice",
+              "per": 1,
+              "per_unit": 40000
+            },
+            {
+              "meter": "elapsed",
+              "unit": "minute",
+              "per": 60,
+              "per_unit": 12000
+            },
+            {
+              "meter": "vendor_lookups",
+              "unit": "lookup",
+              "per": 1,
+              "per_unit": 9000,
+              "pass_through": true
+            }
+          ],
+          "cap": {
+            "amount": 40000000
+          },
+          "reservation": {
+            "window_days": 30
+          },
+          "grade": "enforced"
+        },
+        "volume": {
+          "per_hour": 20,
+          "per_day": 200,
+          "grade": "enforced"
+        },
+        "change_control": {
+          "review_window_days": 7,
+          "approval": {
+            "formation": "agent",
+            "amendment": "person"
+          },
+          "approvals": [
+            {
+              "act": "amendment",
+              "authority": "person",
+              "key": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "approved_at": "2026-08-06T09:14:02Z",
+              "mandate": "mnd_harborandline_ap"
+            }
+          ],
+          "grade": "enforced"
+        },
+        "termination": {
+          "convenience_notice_hours": 48,
+          "grade": "enforced"
+        },
+        "disputes": {
+          "posture": "escalate_to_owners",
+          "grade": "evidence"
+        },
+        "confidentiality": {
+          "transport": {
+            "sealed": true,
+            "grade": "enforced"
+          },
+          "retention": {
+            "max_days": 30,
+            "grade": "enforced"
+          },
+          "promises": {
+            "no_training": true,
+            "grade": "recorded"
+          }
+        },
+        "signatures": [
+          {
+            "role": "provider",
+            "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+            "signed_at": "2026-08-04T14:02:11Z",
+            "sig": "ZBMMYmwePux9GGVAWGI2DvTVZDTTG8vrBwecDFqfkMd0i2Q+ehhdWD8kxUJEE54wcppCS+C+ef0AVL8BML9KBw=="
+          },
+          {
+            "role": "client",
+            "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+            "signed_at": "2026-08-04T16:47:36Z",
+            "sig": "7+hlQGgJ8PX0S+SLCzTtoEFr+98/0L0R76FRqBUrOEI4oRz0mx0yQWwWkxd/cPrOxwKX3wouaId/gW37JLoWCQ=="
+          }
+        ]
+      },
+      "signed_bytes_digest": "sha256:5aea9a8e8700dd2c6e987d76c04e9d5e220a281a72b01364e3e1ba57a6b95078"
     }
   },
   "unsettled": 500000,
@@ -797,6 +1171,25 @@
         ]
       },
       "digest": "sha256:a59a8e1920f1973d7e400acef6c8a26ef644aeee2ea7e426175cab27993c12bd"
+    }
+  },
+  "quotes": {
+    "percent_10": {
+      "total": 2750000,
+      "currency": "XCR",
+      "operator_fee": {
+        "operator": "operator.example",
+        "basis": {
+          "kind": "percent",
+          "percent": 10
+        },
+        "base": 2500000,
+        "amount": 250000
+      }
+    },
+    "none": {
+      "total": 2500000,
+      "currency": "XCR"
     }
   },
   "acts": {
@@ -3010,6 +3403,617 @@
       "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
       "sig": "UEEOzDwsBi1V4EwI4yn8lBIV4GYW6rTXNE/jqHLsSvWAB6eRhjxQ4xNkfxU6aN5nj409LVE68bYe28H3WL+qBw=="
     },
+    "settle_task_twice": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 5000000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 2,
+          "per_task": 2500000,
+          "amount": 5000000
+        }
+      ],
+      "signed_at": "2026-10-04T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "8zQ6CMex/RJOD1k1In48t/Lg/+QXyu3b2lsBM/u55f94ibiO1cr3dbDr1qheUQGBLAzs9gvPQk4x3HyZgrusCA=="
+    },
+    "settle_task_resent": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 2500000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "signed_at": "2026-10-03T06:00:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "QmlYP28GxMdOmadLIypvx8QfPKDylUaUj0pZQW+yUi9ewEujBI544s/QQnZTz02V6D2nGsV+xO4juEXE5yojCw=="
+    },
+    "settle_fixed_window_resent": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 7500000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-08T00:00:00Z"
+      },
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 3,
+          "per_task": 2500000,
+          "amount": 7500000
+        }
+      ],
+      "signed_at": "2026-10-08T06:00:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "vV3AjT1EqLx8fQ42g4rRaej/jqu5NWIRq2f2aD5B1v/p3Yf3WKJLq2UVuowMJIEwiliSB/mvcbVA9rY1fAaCCA=="
+    },
+    "settle_fixed_window_overlapping": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 5000000,
+      "window": {
+        "from": "2026-10-05T00:00:00Z",
+        "to": "2026-10-12T00:00:00Z"
+      },
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 2,
+          "per_task": 2500000,
+          "amount": 5000000
+        }
+      ],
+      "signed_at": "2026-10-12T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "R8wJH9onIfnx+/r2N0w3RJ1PZ+f/2QEm9DM/Mk3yz3D3NJo5jDC5ov8RS5MWDjvDXh976o+Qze75Q9IZd9tSBg=="
+    },
+    "settle_fixed_window_next": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 5000000,
+      "window": {
+        "from": "2026-10-08T00:00:00Z",
+        "to": "2026-10-15T00:00:00Z"
+      },
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 2,
+          "per_task": 2500000,
+          "amount": 5000000
+        }
+      ],
+      "signed_at": "2026-10-15T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "INOObywDpoI6WHQHjZhHxKKC25o2tdYWaPqrQvZi0Ni6jedzrBh+GIruMgip4pkEPfeTQCu5GKREqTrKa1uoCA=="
+    },
+    "settle_ceiling_task": {
+      "engagement": "sow_ft6r6fr4axwpvjgw",
+      "version": 1,
+      "digest": "sha256:eb8a29ea1143d038a8480c66d284d5d95e4d9c42eabc405f6e18cf5b8e331ceb",
+      "currency": "XCR",
+      "total": 2500000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "DH0szsiCAeoG0mSoLohHXMVpEhVzZtDd4MmDeOI53E1bU2B+ftnHIYDcWq6WK2XxFgf5aTVpJ6Hz7Ro6TPsdBg=="
+    },
+    "usage_v2": {
+      "engagement": "sow_k7m2q4x9w3e6r8t1",
+      "version": 2,
+      "digest": "sha256:329328256318ad46950ef5e76457bfe1d2365413a80ae0788c83026b21b24623",
+      "window": {
+        "from": "2026-10-03T00:00:00Z",
+        "to": "2026-10-04T00:00:00Z"
+      },
+      "readings": [
+        {
+          "meter": "items",
+          "count": 5
+        }
+      ],
+      "signed_at": "2026-10-04T00:05:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "TIRMP4nXWcJl1X+AnKxK/wmClboI+it9ttCclnEC/4RWdtXnvpsEZJT3QWPLUyaU5UdBUdz+kdhM/qWmb2YcBA=="
+    },
+    "settle_usage_other_engagement": {
+      "engagement": "sow_k7m2q4x9w3e6r8t1",
+      "version": 1,
+      "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+      "currency": "XCR",
+      "total": 355000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-02T00:00:00Z"
+      },
+      "usage": [
+        "sha256:27b0b0d524f23f30fe3f0ff0f0800a101c8cb5aec5d39381220f5fdc805b9420"
+      ],
+      "lines": [
+        {
+          "meter": "tokens_out",
+          "unit": "1000 tokens",
+          "count": 182000,
+          "per": 1000,
+          "per_unit": 1500,
+          "amount": 273000
+        },
+        {
+          "meter": "tool_calls",
+          "unit": "call",
+          "count": 41,
+          "per": 1,
+          "per_unit": 2000,
+          "amount": 82000
+        }
+      ],
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "/D419Qg1F0QH75EkJGa6qDLqwi7oxKFbOJ44xflJUj7YsjhJaN8JB0Eztq3Y89Y+zvKNJlB3nAXZMxrsa0kODQ=="
+    },
+    "settle_usage_other_version": {
+      "engagement": "sow_k7m2q4x9w3e6r8t1",
+      "version": 1,
+      "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+      "currency": "XCR",
+      "total": 200000,
+      "window": {
+        "from": "2026-10-03T00:00:00Z",
+        "to": "2026-10-04T00:00:00Z"
+      },
+      "usage": [
+        "sha256:bbcf913df21b1328230dd2cd31adb1db2b63f092904461e35a9c9a070192cbd2"
+      ],
+      "lines": [
+        {
+          "meter": "items",
+          "unit": "invoice",
+          "count": 5,
+          "per": 1,
+          "per_unit": 40000,
+          "amount": 200000
+        }
+      ],
+      "signed_at": "2026-10-04T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "BpS1tUEUr69+MrRfJYtxKB/uYxZONDKgCignWG+xCegFXqebk0NyB+qMKLSSK6WCgwKs/+XuklwIbANHaMKuDA=="
+    },
+    "settle_fee_missing": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 2500000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "signed_at": "2026-10-03T00:20:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "xsoakNF7dUdpDtFpKaOszCOI27Z2Ylvs+OL65LWwlnKqvql785+flYQLVwtLx0tXyM1SVsTkTd56jNSUUmqdCw=="
+    },
+    "settle_fee_over_quote": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 900002500000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "operator_fee": {
+        "operator": "operator.example",
+        "basis": {
+          "kind": "fixed",
+          "fixed": 900000000000
+        },
+        "base": 2500000,
+        "amount": 900000000000
+      },
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "ixDc6ZOOBf7aR+uGJ0NtRbfnUJR5y9Wm10OSVSWiSrWjMRVyLNWa4dDgU2i69ZwTwM7bC5aBs4l+8p4foLCwAw=="
+    },
+    "settle_fee_base_inflated": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 5000000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "operator_fee": {
+        "operator": "operator.example",
+        "basis": {
+          "kind": "percent",
+          "percent": 10
+        },
+        "base": 25000000,
+        "amount": 2500000
+      },
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "LzM6EB1MJ1cUheJlBlUyEJIzgXICDRNcjtXNENGdaDSsPoBKahnnqzWRH4/HaKDNu5XdslH1wVXvsH96zSzQAA=="
+    },
+    "settle_fee_operator_differs": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 2750000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "operator_fee": {
+        "operator": "other-operator.example",
+        "basis": {
+          "kind": "percent",
+          "percent": 10
+        },
+        "base": 2500000,
+        "amount": 250000
+      },
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "syAcranvuWnW2yfBc78hk1KHymoI6cUQMi5u2cZprI6dytZUvf4B5ev9vGyoP1z9ZQOFkZAo+kqH/T+unWnBAw=="
+    },
+    "settle_at_ceiling": {
+      "engagement": "sow_ft6r6fr4axwpvjgw",
+      "version": 1,
+      "digest": "sha256:eb8a29ea1143d038a8480c66d284d5d95e4d9c42eabc405f6e18cf5b8e331ceb",
+      "currency": "XCR",
+      "total": 10000000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-08T00:00:00Z"
+      },
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 4,
+          "per_task": 2500000,
+          "amount": 10000000
+        }
+      ],
+      "signed_at": "2026-10-08T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "BZy8XVD8aX7/kMfMjkULuDsOCKt/nxpxBzCRxe6NfXR+wL91AkIfWHy4amUPu8BbLBUNW0vuncEKPDm+xhw7Ag=="
+    },
+    "settle_over_ceiling": {
+      "engagement": "sow_ft6r6fr4axwpvjgw",
+      "version": 1,
+      "digest": "sha256:eb8a29ea1143d038a8480c66d284d5d95e4d9c42eabc405f6e18cf5b8e331ceb",
+      "currency": "XCR",
+      "total": 12500000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-08T00:00:00Z"
+      },
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 5,
+          "per_task": 2500000,
+          "amount": 12500000
+        }
+      ],
+      "signed_at": "2026-10-08T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "3swnqxXCUuG4INF/VT4HPWIEF/NJuK+CByrDzGWaKRgJiPwOt7zLhvjU7Rbr6X4YsoucgNUDiuh/Zb6E3gvRBA=="
+    },
+    "settle_fee_over_ceiling": {
+      "engagement": "sow_ft6r6fr4axwpvjgw",
+      "version": 1,
+      "digest": "sha256:eb8a29ea1143d038a8480c66d284d5d95e4d9c42eabc405f6e18cf5b8e331ceb",
+      "currency": "XCR",
+      "total": 900002500000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "operator_fee": {
+        "operator": "operator.example",
+        "basis": {
+          "kind": "fixed",
+          "fixed": 900000000000
+        },
+        "base": 2500000,
+        "amount": 900000000000
+      },
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "0RCRmiL6/9l4AQjzE9bsSos+RqH3JHFHj10rGIaAxuv2KJvzFWVgOePiXw7wcSZZEFZxiVOGvdMPu+yQN8jCCA=="
+    },
+    "settle_task_line_unsafe": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 9007199255000000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 3602879702,
+          "per_task": 2500000,
+          "amount": 9007199255000000
+        }
+      ],
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "Cz28hijcelBQ8UazEeoPSZC7BU7ln3gSmrSZFt3j1lnPaC3UIA9ZeH3zmU4BDP5jiOXN46z4evdnPSXzpFByBg=="
+    },
+    "settle_task_astral": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 2500000,
+      "task": "🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "oPiBjwY5IjU3zfAkzB3eBfQ0Te2yBxNliEmt7RxHV3cPuB+4fehm1edz1M2EkMZQIJWoAxXFmfY+fZlYPaXZDA=="
+    },
+    "settle_task_too_long": {
+      "engagement": "sow_hymzpcyen1th2tag",
+      "version": 1,
+      "digest": "sha256:e44cab04caa5a1c3eafc147c4c1c27c85bad074a13132f2f2a4001ae09e92873",
+      "currency": "XCR",
+      "total": 2500000,
+      "task": "🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾🧾",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "VW7WgPaOUOVF5aX2JUMj+imO8Q31RC87aFm3qcJ3l0igZk3IcbFY1C3JGxyjVfkyYCZ311bgWPC26yk7EIP4AQ=="
+    },
+    "settle_under_no_charge": {
+      "engagement": "sow_r7yf0r77trd38gag",
+      "version": 1,
+      "digest": "sha256:343976ca3d0ec607aab9b99915008dfab37ca5823b89e5108b12dd111ec7b34c",
+      "currency": "XCR",
+      "total": 2500000,
+      "task": "0198c001-0000-7000-8000-00000000c4f2",
+      "lines": [
+        {
+          "offering": "reconcile-statement",
+          "count": 1,
+          "per_task": 2500000,
+          "amount": 2500000
+        }
+      ],
+      "signed_at": "2026-10-03T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "B/Irev4ev1aNXPZdbNPQuOjXUzzPvNeBuAzfwL7+RSVRgBBb5zqLxXEl4nl7g9APMZqwVbjt3KESYEO7KEWdCQ=="
+    },
+    "usage_pass_day1": {
+      "engagement": "sow_nj97c5yb0x5cq6xm",
+      "version": 1,
+      "digest": "sha256:5aea9a8e8700dd2c6e987d76c04e9d5e220a281a72b01364e3e1ba57a6b95078",
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-02T00:00:00Z"
+      },
+      "readings": [
+        {
+          "meter": "vendor_lookups",
+          "count": 7
+        },
+        {
+          "meter": "tool_calls",
+          "count": 3
+        }
+      ],
+      "signed_at": "2026-10-02T00:05:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "CYKZfTl7q9zIXvPfExHvLf1Q/qargwTCn8q3ZxrAxHMbPiLGYRa1tHYEHEdoDkKyp2AdWOWDQt1mrTdW3gbvCg=="
+    },
+    "settle_pass_through": {
+      "engagement": "sow_nj97c5yb0x5cq6xm",
+      "version": 1,
+      "digest": "sha256:5aea9a8e8700dd2c6e987d76c04e9d5e220a281a72b01364e3e1ba57a6b95078",
+      "currency": "XCR",
+      "total": 69000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-02T00:00:00Z"
+      },
+      "usage": [
+        "sha256:0d24674dce63b86793b995385cfe42cb4b29c033782df28d2a32590581547dd2"
+      ],
+      "lines": [
+        {
+          "meter": "vendor_lookups",
+          "unit": "lookup",
+          "count": 7,
+          "per": 1,
+          "per_unit": 9000,
+          "pass_through": true,
+          "upstream_receipt": "sha256:f275949c9ceda45bdb6fd0aca005b1446195bd1007026d1964f5a753b43adcc6",
+          "upstream_amount": 63000,
+          "amount": 63000
+        },
+        {
+          "meter": "tool_calls",
+          "unit": "call",
+          "count": 3,
+          "per": 1,
+          "per_unit": 2000,
+          "amount": 6000
+        }
+      ],
+      "signed_at": "2026-10-02T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "m911lRrK6Vr6JwrkwxqHSBwEwsLtYmpeKP1YAqdCuwUN/ZmskaG3Aj/bE9Is9QcPxHoFqXl03AeMR1qAR0yuAQ=="
+    },
+    "settle_pass_through_unmarked": {
+      "engagement": "sow_nj97c5yb0x5cq6xm",
+      "version": 1,
+      "digest": "sha256:5aea9a8e8700dd2c6e987d76c04e9d5e220a281a72b01364e3e1ba57a6b95078",
+      "currency": "XCR",
+      "total": 69000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-02T00:00:00Z"
+      },
+      "usage": [
+        "sha256:0d24674dce63b86793b995385cfe42cb4b29c033782df28d2a32590581547dd2"
+      ],
+      "lines": [
+        {
+          "meter": "vendor_lookups",
+          "unit": "lookup",
+          "count": 7,
+          "per": 1,
+          "per_unit": 9000,
+          "amount": 63000
+        },
+        {
+          "meter": "tool_calls",
+          "unit": "call",
+          "count": 3,
+          "per": 1,
+          "per_unit": 2000,
+          "amount": 6000
+        }
+      ],
+      "signed_at": "2026-10-02T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "9AvvzJuqrmUdhs7H80I9g19Ut6XjAoAa+2hCuwC2AgA6mNhnsZytPGdMS3btAm1qyjqHglBoJRbUrDrdWVOsAg=="
+    },
+    "settle_pass_through_over_upstream": {
+      "engagement": "sow_nj97c5yb0x5cq6xm",
+      "version": 1,
+      "digest": "sha256:5aea9a8e8700dd2c6e987d76c04e9d5e220a281a72b01364e3e1ba57a6b95078",
+      "currency": "XCR",
+      "total": 69000,
+      "window": {
+        "from": "2026-10-01T00:00:00Z",
+        "to": "2026-10-02T00:00:00Z"
+      },
+      "usage": [
+        "sha256:0d24674dce63b86793b995385cfe42cb4b29c033782df28d2a32590581547dd2"
+      ],
+      "lines": [
+        {
+          "meter": "vendor_lookups",
+          "unit": "lookup",
+          "count": 7,
+          "per": 1,
+          "per_unit": 9000,
+          "pass_through": true,
+          "upstream_receipt": "sha256:f275949c9ceda45bdb6fd0aca005b1446195bd1007026d1964f5a753b43adcc6",
+          "upstream_amount": 60000,
+          "amount": 63000
+        },
+        {
+          "meter": "tool_calls",
+          "unit": "call",
+          "count": 3,
+          "per": 1,
+          "per_unit": 2000,
+          "amount": 6000
+        }
+      ],
+      "signed_at": "2026-10-02T00:10:00Z",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "sig": "5riJxVTVlmoKBXurJa5LOZhxmaKwFliNY5JDhnznyIhEsubCeMlQHQBjuX4Zap5zPjTLkeWssZ5MvobKCObFAQ=="
+    },
     "signed_under_formation_tag": {
       "engagement": "sow_k7m2q4x9w3e6r8t1",
       "version": 1,
@@ -3909,6 +4913,307 @@
       "held": [
         "usage_day1",
         "usage_day2"
+      ]
+    },
+    {
+      "act": "settle_task_twice",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "settle_task already settles this task",
+      "earlier": [
+        "settle_task"
+      ]
+    },
+    {
+      "act": "settle_task_resent",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "settle_task signed again: a second record for the task settle_task settles",
+      "earlier": [
+        "settle_task"
+      ]
+    },
+    {
+      "act": "settle_fixed_window_resent",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "settle_fixed_window signed again: its window overlaps settle_fixed_window's",
+      "earlier": [
+        "settle_fixed_window"
+      ]
+    },
+    {
+      "act": "settle_fixed_window_overlapping",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "its window overlaps settle_fixed_window's from 2026-10-05 to 2026-10-08",
+      "earlier": [
+        "settle_fixed_window"
+      ]
+    },
+    {
+      "act": "settle_fixed_window_next",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "this window starts where settle_fixed_window's ends, and windows exclude their end, so they do not overlap",
+      "earlier": [
+        "settle_fixed_window"
+      ]
+    },
+    {
+      "act": "settle_task",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "the runtime holds this record; checked again it is the same record, and the task is settled once",
+      "earlier": [
+        "settle_task"
+      ]
+    },
+    {
+      "act": "settle_fixed_window",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "the runtime holds this record; checked again its window overlaps no other record's",
+      "earlier": [
+        "settle_fixed_window"
+      ]
+    },
+    {
+      "act": "settle_day1",
+      "kind": "settle",
+      "document": "agreed",
+      "valid": true,
+      "why": "the runtime holds this record; checked again its usage act is settled by it alone",
+      "held": [
+        "usage_day1",
+        "usage_day2"
+      ],
+      "earlier": [
+        "settle_day1"
+      ]
+    },
+    {
+      "act": "settle_ref_mid",
+      "kind": "settle",
+      "document": "agreed_ref",
+      "valid": true,
+      "why": "the runtime holds this record; checked again its 680000 counts once toward the cap of 1000000",
+      "held": [
+        "usage_ref_day1",
+        "usage_ref_mid"
+      ],
+      "earlier": [
+        "settle_ref_mid"
+      ]
+    },
+    {
+      "act": "settle_ceiling_task",
+      "kind": "settle",
+      "document": "fixed_ceiling",
+      "valid": true,
+      "why": "one task, within the ceiling of 10000000"
+    },
+    {
+      "act": "settle_task",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "settle_ceiling_task names the same task under another engagement, which settles nothing for this one",
+      "earlier": [
+        "settle_ceiling_task"
+      ]
+    },
+    {
+      "act": "settle_ref_mid",
+      "kind": "settle",
+      "document": "agreed_ref",
+      "valid": true,
+      "why": "settle_window's 835000 is under another engagement and counts nothing toward this cap",
+      "held": [
+        "usage_ref_day1",
+        "usage_ref_mid"
+      ],
+      "earlier": [
+        "settle_window"
+      ]
+    },
+    {
+      "act": "usage_v2",
+      "kind": "usage",
+      "document": "agreed",
+      "valid": false,
+      "why": "version 2 was never agreed"
+    },
+    {
+      "act": "settle_usage_other_engagement",
+      "kind": "settle",
+      "document": "agreed",
+      "valid": false,
+      "why": "usage_ref_day1 is a usage act under another engagement",
+      "held": [
+        "usage_day1",
+        "usage_day2",
+        "usage_ref_day1"
+      ]
+    },
+    {
+      "act": "settle_usage_other_version",
+      "kind": "settle",
+      "document": "agreed",
+      "valid": false,
+      "why": "usage_v2 is a usage act under version 2, and the record is made under version 1",
+      "held": [
+        "usage_day1",
+        "usage_day2",
+        "usage_v2"
+      ]
+    },
+    {
+      "act": "settle_with_operator_fee",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "the fee line is the quote's: its operator, ten percent, on the record's 2500000",
+      "quote": "percent_10"
+    },
+    {
+      "act": "settle_with_operator_fee",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "the quote carried no operator fee, so the record discloses one the client never agreed to",
+      "quote": "none"
+    },
+    {
+      "act": "settle_fee_missing",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "the quote carried an operator fee and the record carries none",
+      "quote": "percent_10"
+    },
+    {
+      "act": "settle_task",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "the quote carried no operator fee and neither does the record",
+      "quote": "none"
+    },
+    {
+      "act": "settle_fee_over_quote",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "the quote's basis is ten percent, and this fee states a fixed 900000000000",
+      "quote": "percent_10"
+    },
+    {
+      "act": "settle_fee_base_inflated",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "the base is the sum of the record's lines, 2500000, and this fee takes ten percent of 25000000",
+      "quote": "percent_10"
+    },
+    {
+      "act": "settle_fee_operator_differs",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "the quote's operator is operator.example",
+      "quote": "percent_10"
+    },
+    {
+      "act": "settle_at_ceiling",
+      "kind": "settle",
+      "document": "fixed_ceiling",
+      "valid": true,
+      "why": "10000000 is exactly the ceiling"
+    },
+    {
+      "act": "settle_over_ceiling",
+      "kind": "settle",
+      "document": "fixed_ceiling",
+      "valid": false,
+      "why": "12500000 is over the ceiling of 10000000"
+    },
+    {
+      "act": "settle_fee_over_ceiling",
+      "kind": "settle",
+      "document": "fixed_ceiling",
+      "valid": false,
+      "why": "2500000 and a fee of 900000000000 are over the ceiling of 10000000, with no quote held"
+    },
+    {
+      "act": "settle_task_line_unsafe",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "3602879702 x 2500000 is 9007199255000000, past 2^53 - 1"
+    },
+    {
+      "act": "settle_task_astral",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": true,
+      "why": "128 code points outside the Basic Multilingual Plane are 256 UTF-16 code units, and the length is counted in code points"
+    },
+    {
+      "act": "settle_task_too_long",
+      "kind": "settle",
+      "document": "fixed_none",
+      "valid": false,
+      "why": "129 code points is over 128"
+    },
+    {
+      "act": "settle_under_no_charge",
+      "kind": "settle",
+      "document": "no_charge",
+      "valid": false,
+      "why": "a no_charge engagement produces no settlement record"
+    },
+    {
+      "act": "usage_pass_day1",
+      "kind": "usage",
+      "document": "agreed_pass",
+      "valid": true
+    },
+    {
+      "act": "settle_pass_through",
+      "kind": "settle",
+      "document": "agreed_pass",
+      "valid": true,
+      "why": "the vendor_lookups line is at cost, 63000, and names its upstream receipt",
+      "held": [
+        "usage_pass_day1"
+      ]
+    },
+    {
+      "act": "settle_pass_through_unmarked",
+      "kind": "settle",
+      "document": "agreed_pass",
+      "valid": false,
+      "why": "the schedule marks vendor_lookups pass-through, so its line does too",
+      "held": [
+        "usage_pass_day1"
+      ]
+    },
+    {
+      "act": "settle_pass_through_over_upstream",
+      "kind": "settle",
+      "document": "agreed_pass",
+      "valid": false,
+      "why": "63000 is above the upstream cost of 60000",
+      "held": [
+        "usage_pass_day1"
       ]
     },
     {

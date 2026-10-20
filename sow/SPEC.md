@@ -1,8 +1,8 @@
 # Agent SoW Specification
 
-**Version:** 0.31.0-draft
+**Version:** 0.32.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-19
+**Date:** 2026-10-20
 
 A **statement of work** (SoW) is the legal agreement businesses sign when
 they contract a service firm: it lists the work, what each side provides, the
@@ -1191,6 +1191,14 @@ failed: `operator_fee_missing`, `operator_fee_undisclosed`,
 A settlement record carrying no operator fee line, against a quote that
 carried none, is well formed. The absence is an assertion, and it is that
 assertion §5.10 tests if it later proves false.
+
+A settlement record in the signed form of §6.3 is also held to the terms
+the quote stated. Its operator fee line names the quote's operator and
+states the quote's basis, taken on the record's own lines, and a runtime
+that holds the quote refuses a record whose line states any other (§6.3).
+An operator that could restate its basis at settlement would make the
+quote's line a disclosure of nothing, since the arithmetic check closes for
+any basis and any base.
 
 **What disclosure reveals.** Disclosing the operator's fee reveals what the
 provider receives, because the total minus the disclosed fee is the
@@ -2508,6 +2516,15 @@ own tag, and every tag differs from the document's `agent-sow-v1` and from
 read as a signature over another, over a formation message, or over a
 document.
 
+Every number an act carries is a whole number no larger than
+9007199254740991, which is 2^53 − 1 and the largest integer every JSON
+implementation reads exactly. Each member's own rule says where its range
+starts. The bound holds for the numbers a rule computes from the act as
+well as for the ones it states, such as a line's `count × per_task`, and a
+runtime MUST refuse an act whose stated or computed numbers pass it. A
+runtime computes those numbers in integer arithmetic wide enough to see the
+excess, so two implementations refuse the same act and neither rounds it.
+
 **Terminate** (tag `agent-sow-terminate-v1`). Either seat signs it.
 
 ```json
@@ -2642,8 +2659,15 @@ kind `settlement` names a settlement record by that digest.
 
 - The record settles either a `window`, `from` included and `to` excluded,
   with `from` before `to`, or one `task`, the identifier of the task as the
-  messaging layer names it, a string of 1 to 128 characters. It carries
+  messaging layer names it, a string of 1 to 128 code points. It carries
   exactly one of the two.
+- No task and no fixed fee window is settled twice. A runtime MUST refuse a
+  record that names a `task` an earlier settlement record under the
+  engagement names. Under `fixed_fee`, the windows of two settlement records
+  under one engagement MUST NOT overlap, and a runtime MUST refuse a record
+  whose `window` overlaps the `window` of an earlier record. A record signed
+  again with a new `signed_at` is a second record for the same work, and
+  these rules refuse it.
 - `usage` lists the digests of the usage acts the record settles, one or
   more, each the digest of a usage act's signed bytes under the same
   engagement and version, each window inside the record's `window`, and no
@@ -2666,13 +2690,34 @@ kind `settlement` names a settlement record by that digest.
   `per_task`, and `amount`, equal to `count × per_task`. No meter or
   offering has two lines.
 - `operator_fee` is present where an operator fee is inside the charge,
-  with the shape and arithmetic of §5.5.8, and absent otherwise.
+  with the shape and arithmetic of §5.5.8, and absent otherwise. Its terms
+  are the terms of the quote the charge followed (§5.5.8). Where the runtime
+  holds that quote, the record carries an operator fee line exactly where
+  the quote carried one, and the line names the quote's `operator`, states
+  the quote's `basis`, and takes as its `base` the sum of the record's
+  lines' amounts, which is the provider's own charge. A runtime MUST refuse
+  a record whose fee departs from the quote in any of these, since the
+  client agreed to the quote's fee before it committed and to no other.
 - `currency` is the price's `currency`. `total` is the sum of every line's
   `amount` and the operator fee's `amount` (§5.5.8). Under
   `time_and_materials`, the totals of every settlement record under the
-  engagement, this one included, MUST NOT exceed the cap (§5.5.3).
+  engagement, this one included, MUST NOT exceed the cap (§5.5.3). Under
+  `fixed_fee`, where the price states a `ceiling`, the record's `total`,
+  fee included, MUST NOT exceed the ceiling's `amount`. The ceiling bounds
+  what the client pays in a period (§5.5.1, §5.5.8), and a record whose
+  total alone passes it carries the spend of any period it falls in past
+  the ceiling.
 - `buyer_reference` is the version's `buyer_reference`, byte for byte, and
   is absent where the version carries none (§5.17).
+
+An **earlier** settlement record is one the runtime holds under the same
+engagement, made under any of its versions, whose digest differs from the
+digest of the record being checked. A record under another engagement is
+never an earlier record, and it settles nothing for this one. A record whose
+digest the runtime already holds is that same record. Checking it again
+compares it with the other records only, and holding it a second time
+settles nothing, so a runtime keeps settlement records by their digests and
+takes a byte-identical copy as the record it already has.
 
 Grade: `evidence` for every act, as signed records both parties hold. The
 effects they cause are graded where §5.5, §5.9 and §5.10 grade them.
@@ -3201,6 +3246,28 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.32.0-draft** (2026-10-20). Settling the same work once. The settle act
+of §6.3 gains the rules that keep one piece of work from being charged twice
+and an operator fee from passing what the client agreed to. A record MUST
+NOT name a `task` that an earlier record under the engagement names, and
+under `fixed_fee` the windows of two records MUST NOT overlap, so a record
+for work already settled is refused, including one signed again with a new
+`signed_at`. An earlier record is one held under the same engagement whose
+digest differs from the record's own: records under other engagements count
+for nothing, and a record checked again against a store that holds it is the
+same record and settles nothing twice. Where the runtime holds the quote the
+charge followed, the record carries an operator fee line exactly where the
+quote carried one, under the quote's operator and basis, taken on the sum of
+the record's own lines, and §5.5.8 says so beside its four checks. Under
+`fixed_fee` with a `ceiling`, one record's total, fee included, stays within
+the ceiling's amount (§5.5.1). Every number an act carries or computes is at
+most 2^53 − 1, and a `task` is 1 to 128 code points.
+`conformance/sow-acts.json` gains 33 cases, with real test-seed signatures,
+three documents (a fixed fee with a ceiling, `no_charge`, and time and
+materials with a pass-through line) and a `quotes` member that a case names
+in `quote`. The minor version moves because a runtime built against
+0.31.0-draft takes records this version refuses.
 
 **0.31.0-draft** (2026-10-20). The settlement record. §6.3 gains a fifth
 signed act, settle (`agent-sow-settlement-v1`), the settlement record that
