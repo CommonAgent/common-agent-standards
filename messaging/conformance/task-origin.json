@@ -6,7 +6,7 @@
     "origin": {
       "comment": "Present only when the server observed the creating request. Absent means unknown, never 'no request'. Never taken from a task update, never replaced once set, and never part of `history`, so the history cap cannot remove it. `request_id` is the id answer-derived meter events carry as `request_id` (13.5).",
       "required": ["request_id", "requester", "responder", "offering", "observed_at", "bound_by"],
-      "optional": ["contested_by", "contested_overflow"],
+      "optional": ["contested_by", "contested_overflow", "contested_overflow_since"],
       "types": {
         "request_id": "string",
         "requester": "agent-key",
@@ -14,8 +14,9 @@
         "offering": "string",
         "observed_at": "ISO-8601",
         "bound_by": "enum",
-        "contested_by": "array of request ids, at most 16",
-        "contested_overflow": "non-negative integer"
+        "contested_by": "array of request ids, at most 256, append-only",
+        "contested_overflow": "non-negative integer",
+        "contested_overflow_since": "ISO-8601"
       },
       "bound_by": {
         "request": "the request itself named the Task id (a requester-chosen id, as a stream request carries)",
@@ -27,11 +28,18 @@
         "only a request's first answer may bind it; a first answer with no Task id (a bare answer, a refusal, an inbox-mode answer) closes the request, and no later answer binds it",
         "only what reaches the addressee's inbox is observed; a responder's outbox mirror is not",
         "delivery signals are not answers: an accept (status accepted) and a queued acknowledgement (queued: true with an inbox_id, on the payload or its output) neither open nor close a request",
-        "the first binding of a Task id stands: a later request whose first answer names an already-bound Task id binds nothing and is appended to the origin's contested_by (at most 16 ids, the rest counted in contested_overflow); an origin is never removed or replaced, a terminal record's origin is never changed, and a consumer refunding the origin refunds every contesting request too (a resume, a request naming the Task itself, is not a contest)",
+        "the first binding of a Task id stands, and an origin is never removed or replaced; no other origin field ever changes",
+        "every OTHER request the server sees answered with the Task id is appended to contested_by, append-only and on terminal records too: a second request's first answer naming a bound Task, a request answered with the Task after its first answer said something else, a first answer seen more than the skew after the Task existed, and a stream request naming a Task an answer had already bound; the one exception is a genuine resume, a later non-stream request naming a Task that already existed",
+        "contested_by holds at most 256 ids; past that contested_overflow counts the rest and contested_overflow_since records when the first did not fit, and a consumer then treats every exchange between the two parties since the Task's creation as contested",
+        "a consumer refunding the origin refunds every contesting request too; with no origin, the evidence sits on the record itself (record-level contested_by, contested_overflow, contested_overflow_since) and the consumer refunds the listed requests",
         "requests that never create a Task are not recorded: registry probes, describe, knock, and task.cancel (recorded as a cancel)",
         "a request first observed more than a short skew after its Task already existed did not create it and binds nothing",
         "a party's update cannot set, change or remove the origin, whatever it carries"
       ]
+    },
+    "record_contested_by": {
+      "comment": "Contest evidence on a Task record with NO origin, same meaning and limits as origin.contested_by. With an origin, the evidence is on the origin and these are absent.",
+      "optional": ["contested_by", "contested_overflow", "contested_overflow_since"]
     },
     "canceled_by": {
       "comment": "Written once, on the canceled transition, beside `cancel_reason`, which stays the canceling party's own signed claim.",
@@ -101,7 +109,12 @@
       { "case": "follow_up_answered_with_live_task", "path": "T is bound to R1; a follow-up R2's first answer names T", "origin": "R1", "contested_by": ["R2"] },
       { "case": "old_queued_acked_request", "path": "R0 got a queued acknowledgement before T existed; T is bound to R1; R0's first answer names T", "origin": "R1", "contested_by": ["R0"] },
       { "case": "stream_task_contested", "path": "a stream request S1 names T; another request's first answer names T", "origin": "S1", "contested_by": ["the other request"] },
-      { "case": "terminal_task_contested", "path": "T has ended; another request's first answer names T", "origin": "unchanged on the record" },
+      { "case": "terminal_task_contested", "path": "T has ended; another request's first answer names T", "origin": "every field unchanged", "contested_by": ["the other request"] },
+      { "case": "burst_of_contests", "path": "twelve requests' first answers name a bound T at once", "contested_by": "all twelve" },
+      { "case": "padding_past_the_cap", "path": "260 requests contest T", "contested_by": "256 ids", "contested_overflow": 4, "contested_overflow_since": "when the 257th was seen" },
+      { "case": "late_first_answer", "path": "the provider creates T naming the buyer, waits past the skew, then answers the buyer's real request with T", "origin": "absent", "record_contested_by": ["the real request"] },
+      { "case": "stream_after_answer_binding", "path": "an answer binds T to R0; then a stream request S names T", "origin": "R0", "contested_by": ["S"] },
+      { "case": "closed_request_answered_with_task", "path": "R1's first answer had no Task; a later answer to R1 names T", "contested_by": ["R1"] },
       { "case": "queued_acknowledgement_then_task", "path": "R1 is held (a door hold, an attended session, a mailbox) and answered with a queued acknowledgement; its later answer names T", "origin": "present", "request": "R1" },
       { "case": "deferred_completion", "path": "a bare request; a working answer with the Task id; a deferred completion creates the record", "origin": "present", "bound_by": "answer" },
       { "case": "update_before_request_observed", "path": "the creating update is recorded before the tap records the request", "origin": "present (attached afterwards)" },
