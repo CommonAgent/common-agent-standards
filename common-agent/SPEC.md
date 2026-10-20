@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.28.5-draft
+**Version:** 0.28.6-draft
 **Status:** Working draft, 2026-10-20. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -1624,6 +1624,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.28.6-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.4.1-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.5-draft, whose meter events derived from an answer carry an optional `request_id` naming the request they answer, and requires the valid events of the new `request_id` group of `metering.json`. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 **0.28.5-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.4.0-draft, at /minimal-contracting.html. The profile moves with Agent SoW 0.33.0-draft, under which a fixed fee engagement settles per task or per window and never both, a record for one task carries one task line with a count of 1, and the instants of every act compare at every fractional digit. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
