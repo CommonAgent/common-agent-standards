@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.9.0-draft
+**Version:** 0.10.0-draft
 **Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -949,10 +949,19 @@ findings and counts, served under these rules:
 5. **It is never a score.** No part of the NDA record enters any quality pool
    (§7.1). A bureau MUST serve it separately, and MUST NOT combine it with
    quality, candor, the facts, or the sender record (§4.7) into one figure.
-6. **Claimants have a record too.** The NDA record of a party carries, under
-   `filed`, the count of claims it filed in the record period in each state.
-   A party whose claims are mostly dismissed or withdrawn shows that, as an
-   evaluator's record shows its partiality (§6.5).
+6. **Claimants have a record too, shown to those it concerns.** A party's
+   NDA record carries, under `filed`, the count of claims it filed in the
+   record period in each state. A party whose claims are mostly dismissed or
+   withdrawn shows that, as an evaluator's record shows its partiality
+   (§6.5). A bureau MUST serve `filed` only in the party's own
+   subject-scoped excerpt (§4.1) and in the excerpt of a respondent of one
+   of the party's claims, beside that claim, and MUST NOT put it in any
+   report another reader can fetch. A public `filed` would move at the same
+   moment as the respondent's open count, and anyone polling both reports
+   could then tell who filed against whom and that the two have an
+   agreement, which rule 4 forbids. The respondent of a claim, who already
+   knows the claimant, sees the claimant's record and can put it before the
+   forum, which is where a pattern of dismissed claims matters.
 7. **It needs no enrollment.** The respondent signed an agreement that names
    its key, and a finding against it is a finding the bureau did not solicit
    or judge. A bureau serves the NDA record for any subject, enrolled or not,
@@ -983,10 +992,16 @@ findings and counts, served under these rules:
       "answered": true, "answered_at": "2027-04-14T…" }
   ],
   "open": { "count": 1, "claimants": 1, "earliest": "2027-08-19T…", "answered": 0 },
-  "closed": { "dismissed": 1, "withdrawn": 0, "set_aside": 0, "lapsed": 0 },
-  "filed": { "open": 0, "upheld": 0, "dismissed": 0, "withdrawn": 0,
-             "set_aside": 0, "lapsed": 0 }
+  "closed": { "dismissed": 1, "withdrawn": 0, "set_aside": 0, "lapsed": 0 }
 }
+```
+
+In the subject's own excerpt, and in a respondent's excerpt beside a claim
+by this subject, the record also carries `filed`:
+
+```json
+"filed": { "open": 0, "upheld": 0, "dismissed": 0, "withdrawn": 0,
+           "set_aside": 0, "lapsed": 0 }
 ```
 
 An empty NDA record states that this bureau holds no accepted claim about the
@@ -1352,9 +1367,7 @@ The answer to a resolution query, signed by the bureau:
       "record_days": 1825,
       "upheld": [],
       "open": { "count": 0, "claimants": 0, "earliest": null, "answered": 0 },
-      "closed": { "dismissed": 1, "withdrawn": 0, "set_aside": 0, "lapsed": 0 },
-      "filed": { "open": 0, "upheld": 0, "dismissed": 0, "withdrawn": 0,
-                 "set_aside": 0, "lapsed": 0 }
+      "closed": { "dismissed": 1, "withdrawn": 0, "set_aside": 0, "lapsed": 0 }
     },
     "evidence": {
       "half_life_days": 60,
@@ -1988,10 +2001,17 @@ outside Node.js itself.
   private part is published, its signed bytes, signature and digest, the
   rejection a bureau may keep of it in place of the claim, and two changed
   claims whose signature must not verify.
+- [conformance/fdbk-nda-record-v1.json](conformance/fdbk-nda-record-v1.json)
+  holds the NDA records of a claimant and a respondent before and after one
+  claim is filed, as each reader is served them: a public report, the
+  subject's own excerpt, and the respondent's excerpt beside the claim. It
+  pins that `filed` appears only in the last two, so the claimant's public
+  report does not move when the respondent's open count does, and holds a
+  public report carrying `filed` that a conforming bureau must not serve.
 - [conformance/reference.mjs](conformance/reference.mjs) computes the pool of
   §7.1 and the score of §7.3 from a ledger, signs and verifies under §8.1,
   computes the commitments and proofs of §4.1.1 and checks their chain, signs
-  a claim of §4.8 and takes its digest, and checks all four vector files. The
+  a claim of §4.8 and takes its digest, and checks all five vector files. The
   repository runs it on every change.
 
 An implementation of `fdbk-score-1` conforms to the vectors when every number
@@ -2003,6 +2023,23 @@ signatures exactly, which Ed25519 makes possible because its signatures are
 deterministic, and refuses every report the vectors say it must refuse.
 
 ---
+
+
+*0.10.0-draft (2026-10-20): The claimant's `filed` counts are no longer public. Under rules 2 and 6 of
+§4.9, one filing moved the respondent's public `open.count` and the
+claimant's public `filed.open` at the same moment, so anyone polling public
+reports could tell who filed against whom and that the two had an agreement,
+which rule 4 protects. A bureau now MUST serve `filed` only in the party's
+own subject-scoped excerpt and in a respondent's excerpt beside a claim by
+that party, and never in a report another reader can fetch. This removes the
+correlated signal entirely. Publishing on a fixed batch schedule was
+considered and not chosen: with few claims in a batch, the two changes
+still line up. The counts stay useful where a pattern of dismissed claims
+matters, to the respondent facing the claimant and, through it, to the
+forum. The example report drops `filed`. A new fixture,
+`conformance/fdbk-nda-record-v1.json`, and a check in `reference.mjs` pin
+what each reader is served. The minor version moves because a bureau built
+against 0.9.0-draft publishes `filed`, which this version forbids.*
 
 *0.9.0-draft (2026-10-19): a bureau may keep a rejected claim of breach as
 its digest, its failing check and the reason, in place of the claim and its

@@ -4,6 +4,10 @@ Versions of Agent Reputations tagged in this repository, newest first. A version
 tagged as `reputations-v` followed by the version, and the text in this folder at
 that tag is the text of that version. The history of SPEC.md comes from jeffrschneider/feedback, and the history of the A2A Reputation extension from the repository of agentreputations.com.
 
+## 0.10.0-draft (2026-10-20)
+
+The claimant's `filed` counts are no longer public. Under rules 2 and 6 of §4.9, one filing moved the respondent's public `open.count` and the claimant's public `filed.open` at the same moment, so anyone polling public reports could tell who filed against whom and that the two had an agreement, which rule 4 protects. A bureau now MUST serve `filed` only in the party's own subject-scoped excerpt and in a respondent's excerpt beside a claim by that party, and never in a report another reader can fetch. This removes the correlated signal entirely. Publishing on a fixed batch schedule was considered and not chosen: with few claims in a batch, the two changes still line up. The counts stay useful where a pattern of dismissed claims matters, to the respondent facing the claimant and, through it, to the forum. The example report drops `filed`. A new fixture, `conformance/fdbk-nda-record-v1.json`, and a check in `reference.mjs` pin what each reader is served. The minor version moves because a bureau built against 0.9.0-draft publishes `filed`, which this version forbids.
+
 ## 0.9.0-draft (2026-10-19)
 
 A bureau may keep a rejected claim of breach of an Agent NDA by its digest.
