@@ -16,7 +16,8 @@
 //                    the Agent Descriptor and the pages of the specification
 //   standards.html   every Common Agent Standard and guide, under the groups
 //                    standards.json lists, one card each with its version, its
-//                    status, its own site and its folder on GitHub
+//                    status, its own site and its folder on GitHub, and the
+//                    reference implementation of the contracting standards
 //   onboarding.html  agent onboarding and offboarding: two reference processes
 //                    in Agent Processes, and where each of their steps lives
 //   purchase-order.html  why there is no Agent Purchase Order: where each job
@@ -24,7 +25,8 @@
 //
 // The cards are made from standards.json. What is written by hand is the few
 // sentences that say what the suite is, the sentence under each group's name
-// (GROUPS), the explainer videos on agent.html (VIDEOS), and the drawings on
+// (GROUPS), the band on the reference implementation (referenceImplementation),
+// the explainer videos on agent.html (VIDEOS), and the drawings on
 // the front page's two doors (agentCell, standardsMap).
 //
 // The front page used to hold everything that is now on agent.html and
@@ -113,6 +115,35 @@ const GROUPS = {
     text: "Agent Processes writes down how a piece of work runs and who holds each phase, the Agent Roles guide describes the jobs that recur on every network, and the Agent Collab guide gives agents playbooks to follow when they work in a shared room.",
   },
 };
+
+// The reference implementation of the contracting standards, in its own band
+// on standards.html right after the contracting group.
+const REFERENCE_IMPLEMENTATION = "https://github.com/CommonAgent/common-agent-ts";
+const PACKAGES = [
+  ["@common-agent/nda", "Agent NDA"],
+  ["@common-agent/rfp", "Agent RFP"],
+  ["@common-agent/sow", "Agent SoW"],
+  ["@common-agent/mandate", "Agent Mandate"],
+  ["@common-agent/reputations", "Agent Reputations"],
+  ["@common-agent/crypto", "shared by all five"],
+];
+const referenceImplementation = (tint) => `<section class="band${tint}" id="reference-implementation">
+        <div class="wrap">
+          <h2>The contracting standards have a reference implementation</h2>
+          <p>The reference implementation of the five contracting standards is
+            <a href="${REFERENCE_IMPLEMENTATION}">common-agent-ts</a>, a TypeScript library licensed
+            under Apache-2.0. It has one package per standard and a shared package that holds what
+            they all use: canonical JSON, Ed25519, and the encodings of keys and signatures.</p>
+          <ul class="plain">
+            ${PACKAGES.map(([name, what]) => `<li><code>${esc(name)}</code>, ${esc(what)}</li>`).join("\n            ")}
+          </ul>
+          <p>Each package runs its standard's conformance vectors from
+            <a href="${SUITE_REPO}">the standards repository</a>, pinned to a tagged release. CI
+            runs them on every change, and <code>npm ci &amp;&amp; npm test</code> runs them in a
+            checkout. The library is pure TypeScript on Node's built-in crypto, with no network,
+            storage or platform dependencies.</p>
+        </div>
+      </section>`;
 
 // Links to the sections the front page used to hold go on to the page that
 // holds them now. The target is relative, so the /draft/ and /<version>/
@@ -590,21 +621,25 @@ export function renderStandards({ draft = false } = {}) {
   const title = `Every standard: ${SUITE.suite}`;
   const description = "Every Common Agent Standard, grouped by what it does: identity and reach, contracting, and doing the work. Each card gives the standard's version, its status, its own site and its folder in the repository.";
   let n = 0;
-  const bands = (SUITE.groups ?? []).map((g, gi) => {
+  // Each band is a function of its tint, so the bands alternate in the order
+  // they appear on the page, the group bands and any band that follows one.
+  const bands = (SUITE.groups ?? []).flatMap((g) => {
     const copy = GROUPS[g.id];
     if (!copy) throw new Error(`build-home.mjs has no sentence for the group ${g.id} in standards.json`);
     const rank = (s) => { const i = (copy.order ?? []).indexOf(s.id); return i < 0 ? Infinity : i; };
     const members = SUITE.standards.filter((s) => s.group === g.id).sort((a, b) => rank(a) - rank(b));
-    return `<section class="band${gi % 2 ? "" : " tinted"}" id="${esc(g.id)}">
+    const cards = members.map((s) => card(s, COLOURS[n++ % COLOURS.length])).join("\n            ");
+    const band = (tint) => `<section class="band${tint}" id="${esc(g.id)}">
         <div class="wrap">
           <h2>${esc(g.name)}</h2>
           <p>${esc(copy.text)}</p>
           <ol class="stds">
-            ${members.map((s) => card(s, COLOURS[n++ % COLOURS.length])).join("\n            ")}
+            ${cards}
           </ol>
         </div>
       </section>`;
-  });
+    return g.id === "contracting" ? [band, referenceImplementation] : [band];
+  }).map((band, i) => band(i % 2 ? "" : " tinted"));
   const unplaced = SUITE.standards.filter((s) => !(SUITE.groups ?? []).some((g) => g.id === s.group));
   if (unplaced.length) throw new Error(`standards.json: no group for ${unplaced.map((s) => s.id).join(", ")}`);
   return shell({
@@ -637,7 +672,7 @@ export function renderStandards({ draft = false } = {}) {
       <span class="alias" id="standards"></span>
       ${bands.join("\n\n      ")}
 
-      <section class="band${(SUITE.groups ?? []).length % 2 ? "" : " tinted"}" id="repository">
+      <section class="band${bands.length % 2 ? "" : " tinted"}" id="repository">
         <div class="wrap">
           <h2>Every standard is kept in one repository</h2>
           <p>Each standard has a folder in <a href="${SUITE_REPO}">${SUITE_REPO.replace("https://", "")}</a>
