@@ -6,7 +6,7 @@ Agent Mandate is a Common Agent Standard, kept in the [Common Agent Standards re
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.7.0-draft, status Working Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.8.0-draft, status Working Draft.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 
 ## Versions

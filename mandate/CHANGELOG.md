@@ -4,6 +4,22 @@ Versions of Agent Mandate tagged in this repository, newest first. A version is
 tagged as `mandate-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentmandate.net.
 
+## 0.8.0-draft (2026-10-20)
+
+A mandate scoped by `scope.offerings` and silent about resources reaches no
+resource through a proxy. Under 0.7.0-draft such a mandate was unrestricted at
+a proxy, because an absent `scope.resources` placed no limit, although whoever
+issued it had plainly meant to scope it, and every mandate issued before
+0.7.0-draft carried only `scope.offerings`. A proxy now MUST refuse every
+mutating act under a mandate that carries `scope.offerings` and no
+`scope.resources` (§6 rule 9, §7.1). It refuses outright, without matching the
+resource against the offerings list, because offering identifiers and resource
+names are different vocabularies and a match between them would be a
+coincidence. A mandate with neither list still reaches every resource its
+powers cover. `conformance/mandate-proxy.json` gains cases for both. The minor
+version moves because a proxy built against 0.7.0-draft answers acts this
+version refuses.
+
 ## 0.7.0-draft (2026-10-20)
 
 The resources a write may reach, and a fixed domain. A mandate MAY carry
