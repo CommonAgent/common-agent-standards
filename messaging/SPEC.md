@@ -2,9 +2,9 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.4-draft
+**Version:** 0.9.5-draft
 **Status:** Working Draft
-**Date:** 2026-10-19
+**Date:** 2026-10-20
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
@@ -3679,6 +3679,7 @@ The atom of usage:
   "offering": "caselaw-summary",
   "task_id": "<uuid, when a Task exists>",
   "envelope_id": "<id of the envelope this event derives from>",
+  "request_id": "<id of the request envelope answered, on events derived from an answer>",
   "ts": "<RFC-3339 UTC>"
 }
 ```
@@ -3694,6 +3695,20 @@ The atom of usage:
   the stream MUST deduplicate on it, so redelivery can never double-count.
   Events not derived from a single envelope (`tasks_completed`, `task_ms`)
   use the Task's terminal envelope id.
+- `request_id`: the id of the request envelope that the deriving envelope
+  answers. A metering deployment SHOULD set it on every event it derives from
+  an answer: the `responses` and `bytes_out` events of a `respond`, the
+  declared events lifted from a usage receipt (below), and the refusal event
+  (below). Its value is the answer's `in_reply_to`, or, for an answer that
+  carries only a `task_id`, the id of the request the deployment matched the
+  answer to. A reader folding the stream joins a request's events to the
+  events of its answer on this value, without keeping correlation state of
+  its own. The events of a delivered request carry no `request_id`, because
+  their `envelope_id` is already the request's id. The events of a Task's
+  terminal state (`tasks_completed`, `task_ms`) are joined by `task_id`. The
+  member is optional, and a deployment that cannot name the request omits it.
+  It takes no part in the idempotency key, and a reader that does not know it
+  ignores it.
 - `refused` / `refusal_code`: present only on refusal events, below.
 
 **Subject:** `mesh.event.metering.usage`. A metering deployment SHOULD
@@ -3708,7 +3723,8 @@ price". When a request is refused at admission (`BUDGET_INSUFFICIENT`,
 `DEADLINE_UNMEETABLE`, `AGREEMENT_REQUIRED`), a metering deployment SHOULD
 record a `requests` event with `quantity` `0`, `refused` `true`, and
 `refusal_code` carrying the code. A refusal event rates to zero, always
-(§19.6): it is a record, never a charge.
+(§19.6): it is a record, never a charge. It derives from the refusing
+`respond`, so its `request_id` names the refused request.
 
 #### The Usage Receipt
 
@@ -3728,6 +3744,8 @@ round: on a `respond` the provider is the envelope's recipient, and on a
 reply-request the provider is its **sender**. A platform lifting receipts
 MUST distinguish the two, because reversing them attributes each party's
 usage to the other and produces figures that are self-consistent and wrong.
+The declared events lifted from such a request carry its `in_reply_to` as
+their `request_id`, as the events lifted from a `respond` do.
 
 The receipt needs no signature of its own, and that is the point of putting
 it in the payload: **the envelope signature (§4.5) already covers it.** A
@@ -6407,3 +6425,18 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > match each task to its purchase order. A canceled task's receipt carries it
 > the same way. No other requirement, field, wire identifier or section number
 > changes. The wire version stays `0.3.0` (§20.1).
+
+> **2026-10-20: Version 0.9.5-draft. The request id on an answer's meter
+> events.** §13.5's meter event gains an optional `request_id` member. A
+> metering deployment SHOULD set it on every event it derives from an answer:
+> the `responses` and `bytes_out` events of a `respond`, the declared events
+> lifted from a usage receipt, on a `respond` or on a request carrying
+> `in_reply_to`, and the refusal event. Its value is the id of the request
+> envelope the answer answers, so a reader folding the stream joins a
+> request's events to its answer's without correlation state of its own. The
+> events of a delivered request need no such member, because their
+> `envelope_id` is the request's id. The idempotency key stays (`meter`,
+> `envelope_id`), and a reader that does not know the member ignores it.
+> `conformance/metering.json` gains a `request_id` group. No other
+> requirement, field, wire identifier or section number changes. The wire
+> version stays `0.3.0` (§20.1).

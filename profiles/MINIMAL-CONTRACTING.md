@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.4.0-draft
+**Version:** 0.4.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
-**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.33.0-draft · Agent Messaging 0.9.4-draft
+**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.33.0-draft · Agent Messaging 0.9.5-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.4.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.4.1-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -134,7 +134,7 @@ Sections 1, 10 and 11 are informative.
 
 The fixtures for amendments, the formation messages, the review window of a proposal, the Agent NDA reference, provider contact, reporting, subcontracting, liability and service floors are left out with their sections.
 
-## 5. Agent Messaging 0.9.4-draft
+## 5. Agent Messaging 0.9.5-draft
 
 The two agents exchange tasks over Agent Messaging, and this profile assumes its core profile (Agent Messaging §1.6) without repeating it. On top of the core, a profile implementation implements two sections.
 
@@ -145,7 +145,7 @@ The two agents exchange tasks over Agent Messaging, and this profile assumes its
 
 The rest of §19, which covers prices, the money axis of the budget, the billing provider, the agreement and rating, is left out. The engagement's price clause states the price and Agent SoW §5.5.2 rates it.
 
-**Vectors.** Every case of [metering.json](../messaging/conformance/metering.json): the observed meters, the event, idempotency and the receipt. How the `buyer_reference` reaches the receipt is pinned in `sow-buyer-reference.json`. `commerce.json` is left out with the rest of §19.
+**Vectors.** Every case of [metering.json](../messaging/conformance/metering.json) but one: the observed meters, the event, idempotency, the receipt and the valid events of the request id. The join of the request id group shows what a reader can do with the member, and is left out. How the `buyer_reference` reaches the receipt is pinned in `sow-buyer-reference.json`. `commerce.json` is left out with the rest of §19.
 
 ## 6. What the receipt lets each side check
 
@@ -172,6 +172,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.4.1-draft** (2026-10-20). The profile applies to Agent Messaging 0.9.5-draft, whose meter events derived from an answer carry an optional `request_id` naming the request they answer (§13.5). The valid events of the new `request_id` group of `metering.json` are required, and its join is left out. The patch version moves because an implementation of 0.4.0-draft reads every event of the new group as it reads any other, ignoring the member it does not know.
 
 **0.4.0-draft** (2026-10-20). The profile applies to Agent SoW 0.33.0-draft, under which a fixed fee engagement settles per task or per window and never both, a record for one task carries one task line with a count of 1, and the instants of every act compare at every fractional digit. The new cases of `sow-acts.json` are required. The minor version moves because an implementation of 0.3.0-draft takes records and acts this version refuses.
 

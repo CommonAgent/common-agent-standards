@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
 
+## 0.28.6-draft (2026-10-20)
+
+No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.4.1-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.5-draft, whose meter events derived from an answer carry an optional `request_id` naming the request they answer, and requires the valid events of the new `request_id` group of `metering.json`. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.28.5-draft (2026-10-20)
 
 No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.4.0-draft, at /minimal-contracting.html. The profile moves with Agent SoW 0.33.0-draft, under which a fixed fee engagement settles per task or per window and never both, a record for one task carries one task line with a count of 1, and the instants of every act compare at every fractional digit. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
