@@ -1,8 +1,8 @@
 # Agent Mandate Specification
 
-**Version:** 0.8.0-draft
+**Version:** 0.9.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-19
+**Date:** 2026-10-20
 
 A **mandate** is authority, delegated in writing: a principal states who may
 act on its behalf, for what, up to what limit, until when. An **Agent
@@ -676,14 +676,31 @@ settling platform's territory (§12).
    settles from the treasury is an act approved under a mandate in
    force that names the organization as payer, within its ceilings. A
    platform MUST refuse any other draw through this specification's
-   machinery. Grade: `enforced` where the platform settles.
+   machinery. The draw is held to the mandate as it stood when it
+   approved the engagement, the version the approval record names: the
+   mandate names the organization as payer, it is issued under the
+   organization whose treasury is drawn on, the approving account is its
+   holder, the approval fell inside its term, and the amount is in the
+   currency of its ceiling. A revocation after the approval does not
+   stop draws on an engagement it validly formed (§10). A platform MUST
+   refuse a draw that would take one engagement's draws on the treasury,
+   this one included, past the mandate's `per_engagement`, and a
+   reversal does not give that headroom back. Grade: `enforced` where
+   the platform settles.
 3. **Every draw leaves a record.** A settlement from the treasury
    produces a draw record naming the engagement, the mandate, the
-   holder, the amount, and the time. Draw records are enumerable by
-   root authority, and the month-to-date sums for the `per_month` check
-   (§7) are computed over them. The treasury's history is the sum of
-   its draw records, so an audit of where the money went is a query,
-   with every line already attributed to a person and their authority.
+   holder, the amount, and the time (§8.4). Draw records are enumerable
+   by root authority, and the month-to-date sums for the `per_month`
+   check (§7) are computed over them: the holder's draws dated in the
+   calendar month, in UTC, by the settling platform's clock. A draw
+   whose outcome the platform does not yet know is counted as made. A
+   reversal does not reduce the sum, because it does not undo the
+   commitment. Where the platform also holds the commitments approved in
+   the month (§6 rule 5), it SHOULD read the larger of the two sums,
+   because a commitment drawn in a later month is not yet among the draw
+   records. The treasury's history is the sum of its draw records, so an
+   audit of where the money went is a query, with every line already
+   attributed to a person and their authority.
 
 The records are the books. This specification defines no accounting
 layer, because the draw records, the approval records, and the
@@ -695,6 +712,73 @@ job is the bookkeeper, a role described in Agent Roles
 (https://agentroles.ai): it
 reads the records under a read-only grant, answers four questions, and
 holds no mandate.
+
+### 8.4 The draw record
+
+The record a settlement from the treasury leaves. Tag:
+`agent-mandate-draw-v1`. The settling platform signs it, because it is
+the party that saw the settlement happen.
+
+```json
+{
+  "draw": "v1",
+  "id": "drw_aaqcabz8ecgx0s0k",
+  "organization": "org_vd5zvpa4ecerft8b",
+  "kind": "draw",
+  "engagement": { "id": "eng_harbor_freight_7", "version": 1 },
+  "mandate": { "id": "mnd_v26kpncz0w44gtc5", "version": 1 },
+  "holder": { "account": "acct_9b4d2f7c", "person": "Tom Okafor, Accounts" },
+  "amount": 1400000,
+  "currency": "XCR",
+  "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+  "settlement": "settled",
+  "buyer_reference": "PO-2026-0917",
+  "at": "2026-09-24T15:41:08Z",
+  "signatures": [ ]
+}
+```
+
+Rules:
+
+1. **Members.** `organization` is the charter id the treasury is anchored
+   to. `kind` is `draw`, value leaving the treasury for the engagement, or
+   `reversal`, value coming back because a draw was undone; a reversal
+   carries `reverses`, the identifier of the draw it undoes, and a draw
+   carries no `reverses`. `engagement` names the engagement and the agreed
+   version it settled under. `mandate` names the mandate the engagement's
+   approval record names, and its version. `holder` names the mandate's
+   holder: `account`, and MAY name `person` as the mandate does. `amount`
+   is a positive integer in the settling platform's unit, and `currency`
+   names it. `txn_id` is the settlement's transaction identifier, the key
+   the settlement is idempotent on. `settlement` is `settled` or
+   `pending`; a settlement that failed moved nothing and leaves no record,
+   and a pending one's finality is read from the settling platform by
+   `txn_id`. `buyer_reference` is the engagement's own (Agent SoW §5.17),
+   carried unchanged, where it has one. `at` is the instant the settling
+   platform accepted the settlement, by its own clock, in UTC. The member
+   set is closed: a reader MUST refuse a record that carries any other
+   member, in the record, in `engagement`, in `mandate` or in `holder`.
+2. **Identifier.** `drw_` followed by the first 16 characters of the
+   Crockford base32 encoding (§4) of SHA-256 over the canonical JSON of
+   `{"organization": …, "txn_id": …}`. Unlike a charter's or a mandate's,
+   this identifier is re-derived by every reader, and a record whose
+   identifier does not re-derive MUST be refused: the identifier is what
+   makes one settlement leave one record and no more.
+3. **Signatures.** Each signature carries `role` `platform`, the settling
+   platform's `key`, `signed_at` and `sig`, over the tag, one newline, and
+   the canonical JSON of the record without `signatures` (§4), in
+   canonical padded base64. A record carries one to four signatures. Every
+   signature on it MUST verify, and at least one MUST be by a key the
+   reader holds as the settling platform's; a signature by any other key
+   attributes nothing, however well it verifies.
+4. **Nothing is edited.** A refund is a reversal of its own, never a change
+   to the draw. A draw is reversed at most once, by no more than it drew,
+   and a reversal names a draw of the same engagement. A reader summing
+   the books lists a record it cannot match, and does not add it.
+
+`conformance/mandate-treasury.json` pins the identifiers, the signed bytes
+and signatures, the shapes a reader refuses, the rule of §8 rule 2, the
+month-to-date sum and the books.
 
 ## 9. Lifecycle
 
@@ -799,6 +883,8 @@ keys, on their own domain, signed the delegations its people act under.
 - `agent-mandate-resolve-v1`: acts on either: `revoke`, `suspend`,
   `restore`, with the action named inside the signed bytes so a relay
   cannot convert one act into another.
+- `agent-mandate-draw-v1`: the draw record (§8.4), signed by the settling
+  platform.
 
 ---
 
@@ -1014,3 +1100,20 @@ match between them would be a coincidence. A mandate with neither list still
 reaches every resource its powers cover. `conformance/mandate-proxy.json`
 gains cases for both. The minor version moves because a proxy built against
 0.7.0-draft answers acts this version refuses.*
+
+*0.9.0-draft (2026-10-20): the draw record. §8 asked for a record of every
+draw from the treasury and gave it no shape, so no two settling platforms
+could exchange one and no reader could check one. §8.4 defines it: its
+members, an identifier derived from the organization and the settlement's
+transaction identifier that every reader re-derives, so one settlement
+leaves one record, and the settling platform's signature under a new tag,
+`agent-mandate-draw-v1` (§13). A refund is a reversal of its own; nothing is
+edited. §8 rule 2 says what a draw is held to: the mandate as it stood when
+it approved the engagement, so a later revocation does not stop draws on an
+engagement it validly formed, and the engagement's draws stay within
+`per_engagement`. §8 rule 3 says how the `per_month` sum is read over the
+records, and that a platform also holding the month's approved commitments
+reads the larger of the two sums. A new fixture,
+`conformance/mandate-treasury.json`, pins the record and the rules. The
+minor version moves because the record and its tag are new: a reader built
+against 0.8.0-draft cannot check one.*

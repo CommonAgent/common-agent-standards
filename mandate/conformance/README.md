@@ -13,6 +13,7 @@ be accepted beside cases that must be refused.
 | [mandate-ids.json](mandate-ids.json) | Holding an identifier: a reservation or an earlier filing refuses a charter for another domain under it, a reservation lapses, and a mandate's identifier is held for the organization its first filing names. | 4 and 5 rule 1 |
 | [mandate-proxy.json](mandate-proxy.json) | Which power a mutating act through a resource proxy needs, the grants whose `writes` does not validate, how `scope.resources` limits which resources a mutating act may reach, and that a mandate scoped by `scope.offerings` alone reaches none. | 6 rules 4 and 9, 7.1 |
 | [mandate-scope.json](mandate-scope.json) | How a `scope.resources` pattern matches a resource name and covers another pattern, how a sub-mandate narrows its issuer's list, the lists a registry refuses, and that a charter amendment keeps its domain. | 5 rule 6, 6 rules 3 and 9 |
+| [mandate-treasury.json](mandate-treasury.json) | The draw record a settlement from the treasury leaves: its identifier, its signed bytes and the platform's signature, and the records a reader refuses by their shape; the rule a draw passes, held to the mandate as it stood at approval and to `per_engagement`; the month-to-date sum for `per_month`; and the books, with the records they cannot match. | 8 rules 2 and 3, 8.4 |
 
 The documents in `mandate-documents.json` and `mandate-checks.json` are signed
 with test keys derived from published seeds: each key's seed is the SHA-256 of
@@ -23,3 +24,7 @@ produces the same signatures. The signatures are base64url; a reader also
 accepts padded base64. In `mandate-checks.json` each case names its documents
 from the file's `documents`, and `at` is the moment the chain is verified or
 the act was approved or signed.
+
+The draw records in `mandate-treasury.json` are signed by a test key for the
+settling platform, derived from its label the same way and given in the file's
+`platform_key`. A draw record's signature is canonical padded base64 only.

@@ -19,9 +19,9 @@
       "spec": "common-agent/SPEC.md",
       "domain": "commonagent.net",
       "site": "https://commonagent.net/spec.html",
-      "version": "0.28.8-draft",
+      "version": "0.28.9-draft",
       "status": "Working Draft",
-      "tag": "common-agent-v0.28.8-draft",
+      "tag": "common-agent-v0.28.9-draft",
       "builder": "common-agent/site/tools/build-spec.mjs",
       "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
       "parts": [
@@ -84,9 +84,9 @@
       "spec": "mandate/SPEC.md",
       "domain": "agentmandate.net",
       "site": "https://agentmandate.net/",
-      "version": "0.8.0-draft",
+      "version": "0.9.0-draft",
       "status": "Working Draft",
-      "tag": "mandate-v0.8.0-draft",
+      "tag": "mandate-v0.9.0-draft",
       "builder": "mandate/site/tools/build-spec.mjs",
       "summary": "A mandate is a signed delegation of authority that is bounded and can be revoked. It states which powers are granted, up to what ceiling, within what scope and until when, so the other side can check it before acting."
     },
