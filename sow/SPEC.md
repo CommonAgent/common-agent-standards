@@ -1,6 +1,6 @@
 # Agent SoW Specification
 
-**Version:** 0.29.0-draft
+**Version:** 0.30.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-19
 
@@ -1492,8 +1492,9 @@ version its own owner has not signed.
 Either owner may terminate, in one of two ways:
 
 - **For convenience.** The termination takes effect when the stated notice,
-  `convenience_notice_hours`, has run from the termination act. Until then
-  the engagement stays `active`, and in-flight tasks complete and are paid.
+  `convenience_notice_hours`, has run from the termination act (§6.3). Until
+  then the engagement stays `active`, and in-flight tasks complete and are
+  paid.
   Where the clause states no notice, the notice is zero and the termination
   takes effect at once.
 - **For cause.** The termination takes effect at once, and the act MUST carry
@@ -1596,8 +1597,9 @@ it.
 Whatever the posture, the money rules are the same, and they exist so a
 reservation cannot be held hostage:
 
-1. A dispute is opened against a stated **disputed amount**, no larger than
-   what remains unsettled under the engagement, and MUST cite the acceptance
+1. A dispute is opened by a signed act (§6.3) against a stated **disputed
+   amount**, no larger than what remains unsettled under the engagement, and
+   MUST cite the acceptance
    act (§5.4.2 rejection with reasons) or settlement record it contests.
 2. Opening a dispute freezes ONLY the disputed amount. Everything else
    settles and releases under the ordinary rules; work already accepted is
@@ -2472,6 +2474,151 @@ reference is then `evidence` that a mandate was cited, not `enforced`
 authority. Where the platform does perform the check and refuses acts that
 fail it, the grade is `enforced`.
 
+### 6.3 Signed acts on an engagement
+
+Four acts change what an agreed engagement does after formation: a
+termination (§5.9), a usage report (§5.5.2), the opening of a dispute
+(§5.10), and the resolution of one. Each is a JSON object signed on its own,
+in the style of the formation messages of §5.8, so that any two
+implementations can exchange and check them.
+
+Every act carries these members:
+
+- `engagement` and `version`: the engagement, and the agreed version the act
+  is made under.
+- `digest`: `sha256:` and the 64 lowercase hex digits of the SHA-256 of that
+  version's signed bytes (§6).
+- `by`: the seat that signs, `provider` or `client`.
+- `key`: that seat's `owner_key` (§5.1). An act signed with any other key is
+  refused.
+- `signed_at`: the instant the signer signed. The signer writes it, so
+  where a rule counts time from an act, the party that receives the act
+  counts from the later of `signed_at` and the instant it received it
+  (§5.8).
+- `sig`: the Ed25519 signature over the act's signed bytes, in the canonical
+  padded base64 of §6.
+
+Each kind adds its own members, below, and an act carries no others. A
+runtime MUST refuse an act that carries any other member or breaks a rule of
+its kind. An act's **signed bytes** are its kind's ASCII tag, one newline,
+and the JCS canonical JSON of the act with `sig` removed. Each kind has its
+own tag, and every tag differs from the document's `agent-sow-v1` and from
+`agent-sow-formation-v1`, so a signature over one kind of act can never be
+read as a signature over another, over a formation message, or over a
+document.
+
+**Terminate** (tag `agent-sow-terminate-v1`). Either seat signs it.
+
+```json
+{ "engagement": "sow_k7m2q4x9w3e6r8t1", "version": 1,
+  "digest": "sha256:<digest of version 1>",
+  "basis": "convenience", "effective_at": "2026-10-03T09:00:00Z",
+  "by": "client", "key": "<owner public key>",
+  "signed_at": "2026-10-01T09:00:00Z", "sig": "<base64>" }
+```
+
+- `basis` is `convenience` or `cause`.
+- `reason` is REQUIRED for `cause` and OPTIONAL for `convenience`, as a
+  string of 1 to 1,000 code points.
+- `effective_at` is the instant the termination takes effect. For
+  `convenience` it MUST be no earlier than `signed_at` plus the engagement's
+  `convenience_notice_hours`, zero where the clause states none. For `cause`
+  it MUST equal `signed_at`. The receiving party counts the notice from the
+  instant it received the act, where that is later, so a termination dated
+  back gives no less notice (§5.9).
+
+**Usage** (tag `agent-sow-usage-v1`). The provider's seat signs it, and
+only under a `time_and_materials` price.
+
+```json
+{ "engagement": "sow_k7m2q4x9w3e6r8t1", "version": 1,
+  "digest": "sha256:<digest of version 1>",
+  "window": { "from": "2026-10-01T00:00:00Z", "to": "2026-10-02T00:00:00Z" },
+  "readings": [ { "meter": "tokens_out", "count": 182000 },
+                { "meter": "tool_calls", "count": 41 } ],
+  "by": "provider", "key": "<owner public key>",
+  "signed_at": "2026-10-02T00:05:00Z", "sig": "<base64>" }
+```
+
+- `window` is the interval the readings cover, `from` included and `to`
+  excluded, with `from` before `to`. The windows of two usage acts under one
+  engagement MUST NOT overlap, and a runtime MUST refuse a usage act whose
+  window overlaps one it already holds, so no count is billed twice.
+- `readings` lists one or more entries, each a `meter` the version's price
+  schedule prices (§5.5.2) and a `count` that is a whole number from 0. No
+  meter appears twice. Each reading rates under §5.5.2, so both parties
+  compute the same charge from the same act.
+
+**Dispute** (tag `agent-sow-dispute-v1`). Either seat signs it, and it
+opens a dispute. The digest of its signed bytes, `sha256:` and 64 lowercase
+hex digits, names the dispute from then on. Its `signed_at` is the opening
+that `deadline_days` runs from (§5.10.1), and a party that received the act
+later counts from the instant it received it.
+
+```json
+{ "engagement": "sow_k7m2q4x9w3e6r8t1", "version": 1,
+  "digest": "sha256:<digest of version 1>",
+  "posture": "escalate_to_owners", "amount": 120000,
+  "cites": [ { "kind": "settlement", "digest": "sha256:<record contested>" } ],
+  "evidence": [ "sha256:<an exhibit>" ],
+  "reason": "The October invoices were charged at the September rate.",
+  "by": "client", "key": "<owner public key>",
+  "signed_at": "2026-10-05T10:00:00Z", "sig": "<base64>" }
+```
+
+- `posture` MUST equal the version's `disputes.posture`, and MUST NOT be
+  `none`, under which no dispute opens.
+- `amount` is the disputed amount, a whole number above 0 in the price's
+  currency, and no larger than what remains unsettled under the engagement
+  when the dispute opens (§5.10.2).
+- `cites` lists one or more records the dispute contests, each with `kind`,
+  `acceptance` or `settlement`, and the `digest` of the record (§5.10.2).
+- `evidence` lists the digests of the exhibits the opener relies on, and MAY
+  be empty.
+- `reason` is REQUIRED, a string of 1 to 1,000 code points.
+
+**Resolve** (tag `agent-sow-resolve-v1`). It closes a dispute.
+
+```json
+{ "engagement": "sow_k7m2q4x9w3e6r8t1", "version": 1,
+  "digest": "sha256:<digest of version 1>",
+  "dispute": "sha256:<digest of the dispute act>",
+  "outcome": "settled",
+  "split": { "to_provider": 80000, "to_client": 40000 },
+  "by": "provider", "key": "<owner public key>",
+  "signed_at": "2026-10-09T16:00:00Z", "sig": "<base64>" }
+```
+
+- `dispute` is the digest of the dispute act's signed bytes.
+- `split` divides the disputed amount, `to_provider` and `to_client`, whole
+  numbers from 0 that sum to it exactly.
+- `outcome` MUST match the posture that governs the dispute. That is the
+  dispute's `posture`, except that under `arbiter`, once `deadline_days`
+  has run from the dispute's opening with no verdict, it is the clause's
+  `fallback` (§5.10.1). Each outcome says who signs and what the split is:
+  - `refunded`, where `refund_on_failed_task` governs: the provider's seat
+    signs, and `to_client` is the whole amount.
+  - `settled`, where `escalate_to_owners` governs: each seat signs its own
+    resolve act, and the dispute closes when both seats have signed resolve
+    acts that name the same dispute, outcome and split. One alone is an
+    offer, and either seat may sign another until both match.
+  - `verdict`, where `arbiter` governs: either seat signs, and the act
+    carries `verdict`, `sha256:` and the hex SHA-256 of the verdict's signed
+    bytes, which are its tag `agent-arbiter-verdict-v1`, one newline, and
+    the JCS of the verdict without `signatures` (§5.10.1). The verdict's
+    `engagement` is the act's, its `dispute` is the dispute's digest, its
+    `disputed.amount` is the dispute's `amount`, and the act's split is the
+    verdict's: `to_provider` is its `split.provider` and `to_client` its
+    `split.client`. A verdict produced after `deadline_days` has run is void
+    (§5.10.1), and a runtime MUST refuse an act that rests on one.
+  - `released`, where `none` governs as an arbiter clause's fallback
+    (§5.10.2): either seat signs, `to_provider` is the whole amount, and a
+    runtime MUST refuse it before `deadline_days` has run.
+- `verdict` appears with the `verdict` outcome and with no other.
+
+Grade: `evidence` for every act, as signed records both parties hold. The
+effects they cause are graded where §5.5, §5.9 and §5.10 grade them.
+
 ## 7. Lifecycle
 
 ### 7.1 Document states
@@ -2996,6 +3143,28 @@ actually support, and it is produced here, at the only moment both the
 facts and a motivated judge are present.
 
 ## Changelog
+
+**0.30.0-draft** (2026-10-20). The signed act formats. New §6.3 defines the
+four acts that change an agreed engagement after formation, so that other
+implementations can exchange them: terminate (`agent-sow-terminate-v1`),
+usage (`agent-sow-usage-v1`), dispute (`agent-sow-dispute-v1`) and resolve
+(`agent-sow-resolve-v1`). Each is a JSON object with a closed member set:
+`engagement`, `version`, the `digest` of that version's signed bytes, the
+kind's own members, `by`, `key`, `signed_at` and `sig`. Its signed bytes are
+the kind's tag, one newline, and the JCS of the act without `sig`, and `sig`
+is the canonical padded base64 of §6. A termination states its basis, a
+reason where the basis is cause, and the instant it takes effect, which for
+convenience gives at least the stated notice. A usage report, signed by the
+provider, gives a window and one reading per priced meter. A dispute names
+the engagement's posture, the disputed amount, the records it contests and
+the evidence it relies on. A resolution names the dispute, an outcome that
+matches the posture, and a split that sums to the disputed amount; under
+`escalate_to_owners` a dispute closes when both seats sign matching
+resolutions. Before, the spec named these acts and did not define them, and
+the platform signed bodies of its own under these tags. A new fixture,
+`conformance/sow-acts.json`, pins them with real test-seed signatures, and
+the refusals. The minor version moves because a runtime built against
+0.29.0-draft neither produces nor checks these bytes.
 
 **0.29.0-draft** (2026-10-20). The bytes of the formation messages. §5.8
 named the acknowledgement, the receipt and the void and did not define them.

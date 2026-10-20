@@ -4,6 +4,30 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.30.0-draft (2026-10-20)
+
+The signed act formats. New §6.3 defines the
+four acts that change an agreed engagement after formation, so that other
+implementations can exchange them: terminate (`agent-sow-terminate-v1`),
+usage (`agent-sow-usage-v1`), dispute (`agent-sow-dispute-v1`) and resolve
+(`agent-sow-resolve-v1`). Each is a JSON object with a closed member set:
+`engagement`, `version`, the `digest` of that version's signed bytes, the
+kind's own members, `by`, `key`, `signed_at` and `sig`. Its signed bytes are
+the kind's tag, one newline, and the JCS of the act without `sig`, and `sig`
+is the canonical padded base64 of §6. A termination states its basis, a
+reason where the basis is cause, and the instant it takes effect, which for
+convenience gives at least the stated notice. A usage report, signed by the
+provider, gives a window and one reading per priced meter. A dispute names
+the engagement's posture, the disputed amount, the records it contests and
+the evidence it relies on. A resolution names the dispute, an outcome that
+matches the posture, and a split that sums to the disputed amount; under
+`escalate_to_owners` a dispute closes when both seats sign matching
+resolutions. Before, the spec named these acts and did not define them, and
+the platform signed bodies of its own under these tags. A new fixture,
+`conformance/sow-acts.json`, pins them with real test-seed signatures, and
+the refusals. The minor version moves because a runtime built against
+0.29.0-draft neither produces nor checks these bytes.
+
 ## 0.29.0-draft (2026-10-20)
 
 The bytes of the formation messages. §5.8
