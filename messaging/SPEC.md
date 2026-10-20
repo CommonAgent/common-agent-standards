@@ -1498,6 +1498,13 @@ Requesters need no advance knowledge of which mode applies. The first **substant
     "contested_overflow": 0,
     "contested_overflow_since": "<ISO-8601>"
   },
+  "contested_by": [ "<request id>" ],
+  "contested_overflow": 0,
+  "contested_overflow_since": "<ISO-8601>",
+  "contested_by_asker": {
+    "<agent-key>": { "contested_by": [ "<request id>" ], "contested_overflow": 0, "contested_overflow_since": "<ISO-8601>" }
+  },
+  "origin_mismatch": { "requester": "<agent-key>" },
   "canceled_by": {
     "party": "requester | responder",
     "requester_request": { "request_id": "<id>", "observed_at": "<ISO-8601>", "via": "update | cancel_request" },
@@ -1513,16 +1520,18 @@ Requesters need no advance knowledge of which mode applies. The first **substant
 - `requester` is the request's verified `from`, and `responder` is its `to`.
 - `offering` is the offering the request named, or the empty string when it named none.
 - `observed_at` is when the server observed the request, by the server's own clock.
-- `bound_by` says how the server tied the Task id to the request. It is `request` when the request itself named the Task id, as a stream request does. It is `answer` when the request's first answer, delivered to the requester's inbox, carried the Task id. A consumer that needs a link anchored in the requester's own message can require `request`.
-- `contested_by` (OPTIONAL) lists the ids of the other requests the server saw answered with this Task id, in the order it observed them, at most 256. It is append-only. `contested_overflow` (OPTIONAL) counts the contesting requests past those 256, and `contested_overflow_since` (OPTIONAL) records when the server saw the first one that did not fit. Only the server writes these three fields.
+- `bound_by` says how the request came to name the Task id. In both cases the responder's answer to the request carried the Task id, because nothing else ties a request to a Task. It is `request` when the request itself named the Task id and the answer carried it, as a stream request and its opening `respond` do. It is `answer` when the request named no Task id and its first answer, delivered to the requester's inbox, carried one. A consumer that needs a link anchored in the requester's own message can require `request`.
+- `contested_by` (OPTIONAL) lists the ids of the Task requester's own other requests that the responder answered with this Task id, in the order the server observed them, at most 256. It is append-only. `contested_overflow` (OPTIONAL) counts the contesting requests past those 256, and `contested_overflow_since` (OPTIONAL) records when the server saw the first one that did not fit. Only the server writes these three fields.
 
 A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `history` and is not trimmed with it. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one.
 
 The server observes only what reaches the addressee's inbox. A request counts when it is delivered to its responder's inbox, and an answer counts when it is delivered to its requester's inbox. A responder's outbox mirror is not observed, because only the responder writes it. Requests that never create a Task are never recorded: registry probes, `describe` (§10.14) and `knock` (EXT-6). A `task.cancel` request is recorded as a cancel (§10.8), not as a request.
 
-It attaches only when its parties are the Task's parties, so a request from a third agent that names somebody else's Task id binds nothing. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept or a delivery signal may bind it. Delivery signals are the accept and the queued acknowledgement (`queued: true` with an `inbox_id`), both defined in §6.4a, and they neither open nor close a request. If that first answer carries no Task id, as a bare answer or a refusal does, the request is closed and binds nothing later. The first binding of a Task id stands, and it is never removed or replaced. No other field of an origin ever changes, except that the server appends to its contest fields.
+A request is tied to a Task only when the responder's answer to it carried that Task id. A request that merely names a Task id ties nothing: it is neither bound to the Task nor listed on it. An origin attaches only when its parties are the Task's parties. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept or a delivery signal may bind it. Delivery signals are the accept and the queued acknowledgement (`queued: true` with an `inbox_id`), both defined in §6.4a, and they neither open nor close a request. If that first answer carries no Task id, as a bare answer or a refusal does, the request is closed and binds nothing later. The first binding of a Task id stands, and it is never removed or replaced. No other field of an origin ever changes, except that the server appends to its contest fields.
 
-Every other request the server sees answered with a Task id is listed in `contested_by`, except the binding request and genuine resumes. A genuine resume is a later request, not a stream request, that names a Task that already existed. The listed requests include a second request whose first answer names an already-bound Task id, a request answered with the Task id after its first answer said something else or carried no Task id, a request whose first answer the server saw more than the allowed interval below after the Task existed, and a stream request naming a Task id that an answer had already bound. None of them binds the Task id. When `contested_by` holds 256 ids, the server counts the rest in `contested_overflow` and records `contested_overflow_since`, and a consumer then treats every exchange between the two parties since the Task was created as contested. On a Task with no `origin`, the server writes the same three fields on the Task itself, with the same meaning and limits, and moves them into `origin` if one attaches later. A terminal Task's origin takes only append-only additions to these three fields. A consumer that acts on the origin, such as one refunding it, treats every request in `contested_by` the same way. On a Task with no origin, it treats the requests the Task itself lists the same way.
+Every other request of the Task's requester that the responder answered with the Task id is listed in `contested_by`, except the binding request and genuine resumes. A genuine resume is a request, not a stream request, that names a Task whose record already existed when the server saw the request, and that is answered under it. The rule does not change with the Task's age. The listed requests include a second request whose first answer names an already-bound Task id, a request answered with the Task id after its first answer said something else or carried no Task id, a request whose first answer the server saw more than the allowed interval below after the Task existed, a stream request answered under an already-bound Task, and a request that is not a stream request, names the Task before its record exists and is answered under it. None of them binds the Task id. When `contested_by` holds 256 ids, the server counts the rest in `contested_overflow`, each request once however often it is seen, and records `contested_overflow_since`. A consumer then treats every exchange between the two parties since the Task was created as contested. A terminal Task's origin takes only append-only additions to these three fields.
+
+`origin.contested_by` and the Task-level `contested_by` hold only the Task requester's own requests. On a Task with no `origin`, the server writes `contested_by`, `contested_overflow` and `contested_overflow_since` on the Task itself, with the same meaning and limits, and moves them into `origin` if one attaches later. Requests from other askers that the responder answered under the Task go in the OPTIONAL Task-level `contested_by_asker`. That happens when the Task's recorded requester is not the agent the server saw ask. It is keyed by the asker's agent key, and each entry carries its own `contested_by`, `contested_overflow` and `contested_overflow_since`, never mixed into another asker's list. The OPTIONAL `origin_mismatch` (`{ requester }`) marks a Task whose recorded requester differs from the observed one, and names the first such asker. A consumer treats a mismatch as the responder's fault. A consumer that acts on the origin, such as one refunding it, treats every request in `contested_by` the same way. On a Task with no origin, it treats the requests the Task itself lists the same way, and it treats each asker's requests in `contested_by_asker` as that asker's. A reader drops a malformed contest field on its own, never the origin or the rest of the Task. Only the server writes any of these fields, and a party's update MUST NOT set, change or remove them.
 
 A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
 
@@ -6496,12 +6505,15 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > cannot remove it, and when it is absent the request is unknown. A Task id
 > binds to one request and a request to one Task id, and the first observation
 > wins. Only a request's first answer that is not an accept or a delivery
-> signal may bind it. The first binding of a Task id stands. Every other
-> request the server sees answered with that Task id, other than genuine
-> resumes, binds nothing and is listed in the OPTIONAL `origin.contested_by`
-> (at most 256 ids), with `contested_overflow` and `contested_overflow_since`
-> past that. On a Task with no origin the same three fields sit on the Task
-> itself. A terminal Task's origin takes only append-only additions to them.
+> signal may bind it, and a request is tied to a Task only when the
+> responder's answer carried that Task id. The first binding of a Task id
+> stands. Every other request of the Task's requester answered with that Task
+> id, other than genuine resumes, binds nothing and is listed in the OPTIONAL
+> `origin.contested_by` (at most 256 ids), with `contested_overflow` and
+> `contested_overflow_since` past that. On a Task with no origin the same
+> three fields sit on the Task itself. Other askers' requests answered under
+> the Task go in the OPTIONAL `contested_by_asker`, and `origin_mismatch`
+> marks a Task whose recorded requester differs from the observed one. A terminal Task's origin takes only append-only additions to them.
 > The server observes only what reaches the addressee's inbox, and it never records registry probes, `describe` or `knock`. §10.8
 > gives a canceled Task `canceled_by`: `party`, the side that signed the
 > canceled update; `requester_request`, the original requester's
