@@ -1,6 +1,6 @@
 # Agent Reputations Specification
 
-**Version:** 0.10.0-draft
+**Version:** 0.11.0-draft
 **Date:** 2026-10-19
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
@@ -306,14 +306,22 @@ signed member is `heads`. A tombstone's `erased_at` is no later than the
 **Witnesses.** A bureau names its witnesses in its key set (§8.1.2), in a
 `witnesses` list whose entries give each witness's `id` (a URL), its
 Ed25519 `key` in padded base64, and its `kind`: `cosigner`, or `log` for a
-public append-only log. Within 24 hours of `issued_at`, every named witness
-MUST have co-signed the commitment, and the bureau serves every co-signature
-beside the commitment. A co-signer:
+public append-only log. Within 24 hours of `issued_at`, every witness named
+for the commitment's `seq` (below) MUST have co-signed the commitment, and
+the bureau serves every co-signature beside the commitment. A co-signer:
 
-1. co-signs a bureau's first commitment only when its `seq` is 1 and its
-   `prev` is `null`, and after that only the commitment whose `seq` is one
-   more than the last it co-signed for that bureau and whose `prev` is that
-   commitment's hash, so it never co-signs two commitments with one `seq`;
+1. starts its record for a bureau at one point in the chain, and never
+   co-signs a commitment before it. A witness named before the bureau has
+   published any commitment starts at the beginning: its first co-signature
+   is of a commitment whose `seq` is 1 and whose `prev` is `null`. A witness
+   that joins mid-chain, through a change of the list (below), starts at the
+   commitment the change names in `after`, the one the witnesses before it
+   co-signed: its first co-signature is of the next commitment, whose `seq`
+   is one more than that one's and whose `prev` is that one's hash, and it
+   never co-signs that commitment or any before it. After its first, it
+   co-signs only the commitment whose `seq` is one more than the last it
+   co-signed for that bureau and whose `prev` is that commitment's hash, so it
+   never co-signs two commitments with one `seq`;
 2. signs, under the tag `fdbk-heads-cosign-v1` with the signed bytes of
    §8.1.1, the JCS of an object holding `bureau`, `seq`, and `commitment`,
    the SHA-256 in lowercase hex of the commitment's signed bytes; and
@@ -331,16 +339,32 @@ not count.
 bureau's keys on first sight (§8.1.2), and the list changes as the keys do,
 additively: a new witness joins in one change, and an old one leaves in a
 later one. A change is an object holding `bureau`, `previous` (the SHA-256 in
-lowercase hex of the JCS of the list it changes), and `witnesses` (the new
-list). Every co-signer on the list it changes signs it under the tag
+lowercase hex of the JCS of the list it changes), `after`, and `witnesses`
+(the new list). Every co-signer on the list it changes signs it under the tag
 `fdbk-witnesses-v1` with the signed bytes of §8.1.1, and every log on that
-list holds it as it holds a commitment. The key set carries every change, in
-order and with its signatures, in `witness_changes`. A consumer moves its pin
-only along changes that lead from the list it pinned to the list the key set
-names, each signed by every witness on the list before it. Otherwise it keeps
-its pin and accepts the new list only after its operator confirms the change
-by some means other than the bureau's own answer. A witness that has stopped
-working cannot sign its own removal, so removing it takes that confirmation.
+list holds it as it holds a commitment.
+
+`after` names the commitment current when the change takes effect: `null` when
+the bureau has published no commitment, and otherwise an object holding that
+commitment's `seq` and `commitment`, the SHA-256 in lowercase hex of its
+signed bytes. It is the latest commitment the bureau has published, and every
+witness on the list the change replaces has co-signed it or holds it. That
+list is the one named for every commitment up to and including `after`, and
+the new list is the one named for every commitment after it. So a joining
+witness's first co-signature is of the commitment after `after` (rule 1), and
+a leaving witness's last is of `after`. A co-signer signs a change only once
+it has co-signed the commitment `after` names, and a joining co-signer checks
+the co-signatures of the witnesses before it on that commitment before it
+co-signs the next. A consumer refuses a change whose `after` names a
+commitment it cannot find co-signed by every witness on the list the change
+replaces, or a commitment before the one named by the `after` of the change
+before it. The key set carries every change, in order and with its signatures,
+in `witness_changes`. A consumer moves its pin only along changes that lead
+from the list it pinned to the list the key set names, each signed by every
+witness on the list before it. Otherwise it keeps its pin and accepts the new
+list only after its operator confirms the change by some means other than the
+bureau's own answer. A witness that has stopped working cannot sign its own
+removal, so removing it takes that confirmation.
 
 What the witnesses give is this. While at least one named witness keeps
 rule 1, or is a log that refuses a second entry for a `seq`, a bureau cannot
@@ -406,14 +430,15 @@ and that is the trade this section makes: the erasure holds, and the earlier
 commitments still prove what the bureau had committed to on their dates.
 
 The file [conformance/fdbk-heads-v1.json](conformance/fdbk-heads-v1.json)
-holds four pairs of names that share a slot, a change of the witness list,
-two chained commitments with every named witness's co-signature, the proofs
-of a head, of a head in the earlier commitment, of a tombstone and of an
-absent subject, and fifteen cases a conforming check refuses (§14). The file
+holds four pairs of names that share a slot, two changes of the witness list,
+one before the first commitment and one adding a witness mid-chain, three
+chained commitments with the co-signature of every witness named for each, the
+proofs of a head, of a head in the earlier commitment, of a tombstone and of
+an absent subject, and nineteen cases a conforming check refuses (§14). The
+file
 [conformance/casefolding-15.1.0.json](conformance/casefolding-15.1.0.json)
-holds the case folding the slot key uses. It is Unicode data under the
-Unicode License V3, in
-[conformance/LICENSE-UNICODE](conformance/LICENSE-UNICODE).
+holds the case folding the slot key uses. It is Unicode data under the Unicode
+License V3, in [conformance/LICENSE-UNICODE](conformance/LICENSE-UNICODE).
 
 ### 4.2. Facts
 
@@ -1551,7 +1576,8 @@ discard the report at the first of these steps that fails:
 7. **The log**, for every report that carries one (§4.1.1). The consumer
    MUST fetch the commitment `log` names and the proof of the subject's slot
    in it, and check that the commitment verifies under the bureau's key with
-   the tag `fdbk-heads-v1`, that every witness in its pinned witness list has
+   the tag `fdbk-heads-v1`, that every witness its pinned witness list, moved
+   along `witness_changes`, names for the commitment's `seq` (§4.1.1) has
    co-signed it or holds it, and that the proof folds from a head holding the
    report's `subject`, `seq` and `head_hash` to the commitment's `root`. It
    discards the report when any of these fails. A consumer that cannot get
@@ -1973,18 +1999,23 @@ outside Node.js itself.
   pairs of names that fold to one slot key (a sharp s, a long s, a final
   sigma, and a Greek letter whose two combining marks match only in the
   decomposed forms of D145); a change of the witness list from one test
-  witness to two, signed by the first; two chained commitments of §4.1.1
-  signed with the test key of `fdbk-report-v1.json` and co-signed by both
-  test witnesses the key set names,
-  the second carrying one head forward unchanged, moving two up their logs,
+  witness to two before the first commitment, signed by the first, and a
+  change adding a third after the second commitment, signed by the first
+  two; three chained commitments of §4.1.1 signed with the test key of
+  `fdbk-report-v1.json`, the first two co-signed by the first two witnesses
+  and the third by all three, the second carrying one head forward
+  unchanged, moving two up their logs,
   adding a subject, and putting a tombstone in an erased subject's slot; the
   digest of every filled slot; the root of an empty tree; the proofs of a
   head, of a head in the earlier commitment, of a tombstone and of an absent
-  subject; and fifteen cases a conforming check refuses: a second head for
+  subject; and nineteen cases a conforming check refuses: a second head for
   one subject under another spelling, two spellings of one subject in one
   tree, an erasure dated after its commitment, a fork the witness refuses, a
   fork whose two sides two different witnesses co-signed, a witness list
-  changed without the signature of a witness it changes,
+  changed without the signature of a witness it changes, a joining witness
+  co-signing the commitment its change names, a joining witness co-signing
+  an earlier commitment, a joining witness skipping a commitment, a change
+  whose `after` names a commitment the bureau did not publish,
   two entries for one slot, an absence claimed where a head is, a head shown
   where a tombstone is, a broken `prev`, a skipped sequence number, a head
   that goes back, a head rewritten at the same `seq`, a slot that empties
@@ -2024,6 +2055,22 @@ deterministic, and refuses every report the vectors say it must refuse.
 
 ---
 
+
+*0.11.0-draft (2026-10-20): a witness that joins mid-chain has a defined
+start. Rule 1 of §4.1.1 said how a witness starts at a bureau's first
+commitment and not how one added through `witness_changes` starts. A change
+of the witness list now carries `after`, the commitment current when it
+takes effect, which the witnesses before it co-signed, or `null` before the
+first commitment. A joining witness's record begins there: its first
+co-signature is of the next commitment, and it never co-signs that
+commitment or any before it. The list before a change is named for every
+commitment up to `after` and the new list for every one after it, and
+§8.1.3 step 7 checks each commitment against the list named for its `seq`.
+`conformance/fdbk-heads-v1.json` gains a change adding a third witness
+after the second commitment, a third commitment co-signed by all three, and
+four refused cases. The minor version moves because the change object gains
+a member inside its signed bytes, so a change signed under 0.10.0-draft does
+not verify under this version.*
 
 *0.10.0-draft (2026-10-20): The claimant's `filed` counts are no longer public. Under rules 2 and 6 of
 §4.9, one filing moved the respondent's public `open.count` and the

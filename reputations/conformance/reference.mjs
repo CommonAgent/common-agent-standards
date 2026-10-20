@@ -230,14 +230,22 @@ export function erasuresDated(commitment, tombstones) {
 }
 
 // A witness co-signs a commitment only when it extends the last one the
-// witness co-signed for that bureau: the first, with seq 1 and no prev, or the
-// next seq whose prev is the hash of the last. So a witness never co-signs two
-// commitments with one seq. It signs, under the tag fdbk-heads-cosign-v1, the
-// JCS of the bureau, the seq and the commitment's hash.
+// witness co-signed for that bureau, or, for its first, where its record
+// starts: a witness named before the first commitment starts with seq 1 and no
+// prev, and one that joined through a change starts with the commitment after
+// the one the change names in `after`, never that one or any before it. So a
+// witness never co-signs two commitments with one seq. It signs, under the tag
+// fdbk-heads-cosign-v1, the JCS of the bureau, the seq and the commitment's
+// hash.
 export const COSIGN_TAG = "fdbk-heads-cosign-v1";
 export const cosignedObject = (commitment) => ({ bureau: commitment.bureau, commitment: commitmentHash(commitment), seq: commitment.seq });
-export function witnessCosigns(last, commitment) {
-  if (!last) return commitment.seq === 1 && commitment.prev === null ? "ok" : "the witness co-signs a bureau's first commitment first";
+export function witnessCosigns(last, commitment, start = null) {
+  if (!last && start === null) return commitment.seq === 1 && commitment.prev === null ? "ok" : "the witness co-signs a bureau's first commitment first";
+  if (!last) {
+    if (commitment.seq <= start.seq) return "a joining witness never co-signs the commitment its change names or one before it";
+    if (commitment.seq !== start.seq + 1 || commitment.prev !== start.commitment) return "a joining witness first co-signs the commitment after the one its change names";
+    return "ok";
+  }
   if (commitment.bureau !== last.bureau) return "another bureau";
   if (commitment.seq !== last.seq + 1 || commitment.prev !== commitmentHash(last)) return "it does not extend the last commitment the witness co-signed";
   return "ok";
@@ -254,19 +262,52 @@ export function cosignedByAll(commitment, cosignatures, witnesses) {
 }
 
 // A change to the witness list names the list it changes by the SHA-256 of
-// its JCS, and every co-signer on that list signs it under the tag
-// fdbk-witnesses-v1. A consumer moves its pinned list only along changes so
-// signed.
+// its JCS, and the commitment current when it takes effect in `after`: null
+// before the first commitment, or the seq and hash of the latest one, which
+// every witness on the list it changes co-signed. Every co-signer on that list
+// signs it under the tag fdbk-witnesses-v1. A consumer moves its pinned list
+// only along changes so signed. `published` maps a seq to the commitment and
+// its co-signatures, and `prior` is the `after` of the change before.
 export const WITNESSES_TAG = "fdbk-witnesses-v1";
 export const witnessListHash = (list) => createHash("sha256").update(jcs(list), "utf8").digest("hex");
-export function witnessChangeSigned(pinned, change, signatures) {
+export function witnessChangeSigned(pinned, change, signatures, { published = new Map(), prior = null } = {}) {
   if (change.previous !== witnessListHash(pinned)) return "it does not change the list the consumer pinned";
+  if (!("after" in change)) return "it does not name the commitment it takes effect after";
+  const after = change.after;
+  if (after !== null) {
+    if (typeof after !== "object" || Object.keys(after).sort().join() !== "commitment,seq" || !Number.isInteger(after.seq) || after.seq < 1) return "its after is not a seq and a commitment hash";
+    const c = published.get(after.seq);
+    if (!c || commitmentHash(c.commitment) !== after.commitment) return "its after names a commitment the bureau did not publish";
+    if (cosignedByAll(c.commitment, c.cosignatures, pinned) !== "ok") return "the witnesses it replaces have not all co-signed the commitment it names";
+    if (prior !== null && after.seq < prior.seq) return "it takes effect before the change before it";
+  } else if (prior !== null) return "it takes effect before the change before it";
   const bytes = signedBytes(WITNESSES_TAG, change);
   for (const w of pinned.filter((x) => x.kind === "cosigner")) {
     const s = signatures.find((x) => x.witness === w.id);
     if (!s || !verify(null, bytes, publicKeyOf(w.key), Buffer.from(s.sig, "base64"))) return `${w.id}, on the list it changes, has not signed it`;
   }
   return "ok";
+}
+
+/** The witnesses named for a commitment's seq: the pinned list moved along every change that takes effect before it. */
+export function witnessesFor(pinned, changes, seq) {
+  let list = pinned;
+  for (const { change } of changes) {
+    if (change.after !== null && change.after.seq >= seq) break;
+    list = change.witnesses;
+  }
+  return list;
+}
+
+/** Where a witness's record starts: null for one named before the first commitment, else the `after` of the change that added it. */
+export function witnessStart(pinned, changes, id) {
+  let list = pinned;
+  if (list.some((w) => w.id === id)) return null;
+  for (const { change } of changes) {
+    if (!list.some((w) => w.id === id) && change.witnesses.some((w) => w.id === id)) return change.after;
+    list = change.witnesses;
+  }
+  return undefined;
 }
 
 /** A commitment follows another: the next sequence number, and `prev` naming the previous one's signed bytes. */
@@ -392,26 +433,32 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
   const signChange = (id, change) => ({ witness: id, kid: wk[id].kid, sig: sign(null, signedBytes(WITNESSES_TAG, change), wk[id].privateKey).toString("base64") });
 
   // The witness list: the one a consumer pinned, the changes from it, and the
-  // list the key set names now.
+  // list the key set names now. Each change takes effect after the commitment
+  // its `after` names; the generator fills in that commitment's hash, and
+  // signs the change, once the commitments are made below.
+  const changes = file.key_set.witness_changes;
   if (WRITE) {
     file.pinned_witnesses = listOf(file.pinned_witnesses.map((w) => w.id));
     let list = file.pinned_witnesses;
-    for (const c of file.key_set.witness_changes) {
-      c.change = { bureau: file.key_set.bureau, previous: witnessListHash(list), witnesses: listOf(c.change.witnesses.map((w) => w.id)) };
-      c.signatures = list.map((w) => signChange(w.id, c.change));
+    for (const c of changes) {
+      c.change = { bureau: file.key_set.bureau, previous: witnessListHash(list), after: c.change.after === null ? null : { seq: c.change.after.seq }, witnesses: listOf(c.change.witnesses.map((w) => w.id)) };
       list = c.change.witnesses;
     }
     file.key_set.witnesses = list;
   } else {
+    const published = new Map(file.commitments.map((c) => [c.envelope.heads.seq, { commitment: c.envelope.heads, cosignatures: c.cosignatures }]));
     let list = file.pinned_witnesses;
-    for (const c of file.key_set.witness_changes) {
-      const ok = witnessChangeSigned(list, c.change, c.signatures);
+    let prior = null;
+    for (const c of changes) {
+      const ok = witnessChangeSigned(list, c.change, c.signatures, { published, prior });
       if (ok !== "ok") bad.push(`heads: a witness change: ${ok}`);
       list = c.change.witnesses;
+      prior = c.change.after;
     }
     if (jcs(list) !== jcs(file.key_set.witnesses)) bad.push("heads: the changes do not lead from the pinned witnesses to the key set's");
   }
   const witnesses = file.key_set.witnesses;
+  const namedFor = (seq) => witnessesFor(file.pinned_witnesses, changes, seq);
 
   for (const k of file.slot_keys) {
     const ka = subjectKey(k.a).toString("hex"), kb = subjectKey(k.b).toString("hex");
@@ -433,17 +480,24 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       c.signed_bytes = bytes.toString("utf8");
       c.signed_bytes_sha256 = createHash("sha256").update(bytes).digest("hex");
       c.cosigned_bytes = signedBytes(COSIGN_TAG, cosignedObject(commitment)).toString("utf8");
-      c.cosignatures = witnesses.map((w) => cosign(w.id, commitment));
+      c.cosignatures = namedFor(commitment.seq).map((w) => cosign(w.id, commitment));
     } else {
       if (root !== c.envelope.heads.root) bad.push(`${c.name}: the root is ${root}, the vector says ${c.envelope.heads.root}`);
       if (bytes.toString("utf8") !== c.signed_bytes) bad.push(`${c.name}: the signed bytes differ from the vector's`);
       if (sig !== c.envelope.bureau_sig) bad.push(`${c.name}: the signature is ${sig}, the vector says ${c.envelope.bureau_sig}`);
       if (!verify(null, bytes, publicKeyOf(key), Buffer.from(c.envelope.bureau_sig, "base64"))) bad.push(`${c.name}: the commitment does not verify`);
       if (erasuresDated(commitment, c.tombstones) !== "ok") bad.push(`${c.name}: ${erasuresDated(commitment, c.tombstones)}`);
-      const all = cosignedByAll(commitment, c.cosignatures, witnesses);
+      const named = namedFor(commitment.seq);
+      const all = cosignedByAll(commitment, c.cosignatures, named);
       if (all !== "ok") bad.push(`${c.name}: ${all}`);
-      const refused = witnessCosigns(prev ? prev.envelope.heads : null, commitment);
-      if (refused !== "ok") bad.push(`${c.name}: a witness would refuse it: ${refused}`);
+      for (const extra of c.cosignatures) if (!named.some((w) => w.id === extra.witness)) bad.push(`${c.name}: ${extra.witness} co-signed it and is not named for its seq`);
+      // Each named witness extends the last commitment it co-signed, or
+      // starts where its record starts.
+      for (const w of named) {
+        const last = prev && namedFor(prev.envelope.heads.seq).some((x) => x.id === w.id) ? prev.envelope.heads : null;
+        const refused = witnessCosigns(last, commitment, last ? null : witnessStart(file.pinned_witnesses, changes, w.id));
+        if (refused !== "ok") bad.push(`${c.name}: ${w.id} would refuse it: ${refused}`);
+      }
       if (prev) {
         const f = followsFrom(prev.envelope.heads, c.envelope.heads);
         if (f !== "ok") bad.push(`${c.name}: ${f}`);
@@ -453,7 +507,16 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
     }
     prev = c;
   }
-  if (WRITE) file.empty_root = EMPTY[256].toString("hex");
+  if (WRITE) {
+    const bySeq = new Map(file.commitments.map((c) => [c.envelope.heads.seq, c.envelope.heads]));
+    let list = file.pinned_witnesses;
+    for (const c of changes) {
+      if (c.change.after !== null) c.change.after = { seq: c.change.after.seq, commitment: commitmentHash(bySeq.get(c.change.after.seq)) };
+      c.signatures = list.map((w) => signChange(w.id, c.change));
+      list = c.change.witnesses;
+    }
+    file.empty_root = EMPTY[256].toString("hex");
+  }
   else if (EMPTY[256].toString("hex") !== file.empty_root) bad.push("heads: the root of no slots differs from the vector's");
   for (const p of file.proofs) {
     const c = byName[p.commitment];
@@ -471,7 +534,9 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
       if (f.check === "fork") {
         for (const br of f.branches) br.cosignatures = br.cosigned_by.map((id) => cosign(id, { ...byName[f.commitment].envelope.heads, ...(br.set ?? {}) }));
       } else if (f.check === "witness_change") {
-        f.change = { bureau: file.key_set.bureau, previous: witnessListHash(witnesses), witnesses: listOf(f.change.witnesses.map((w) => w.id)) };
+        const from = f.from ? listOf(f.from) : witnesses;
+        const after = f.change.after === null ? null : { seq: f.change.after.seq, commitment: f.change.after.commitment ?? commitmentHash(file.commitments.find((c) => c.envelope.heads.seq === f.change.after.seq).envelope.heads) };
+        f.change = { bureau: file.key_set.bureau, previous: witnessListHash(from), after, witnesses: listOf(f.change.witnesses.map((w) => w.id)) };
         f.signatures = f.signed_by.map((id) => signChange(id, f.change));
       }
     }
@@ -502,11 +567,16 @@ const close = (x, y, tol) => typeof x === "number" && typeof y === "number" && M
         const passing = f.branches.filter((br) => cosignedByAll({ ...byName[f.commitment].envelope.heads, ...(br.set ?? {}) }, br.cosignatures, witnesses) === "ok");
         res = passing.length ? "ok" : "no branch carries every named co-signer";
       } else if (f.check === "witness_change") {
-        res = witnessChangeSigned(witnesses, f.change, f.signatures);
+        const published = new Map(file.commitments.map((c) => [c.envelope.heads.seq, { commitment: c.envelope.heads, cosignatures: c.cosignatures }]));
+        res = witnessChangeSigned(f.from ? f.from.map((id) => witnesses.find((w) => w.id === id)) : witnesses, f.change, f.signatures, { published });
+      } else if (f.check === "join") {
+        const next = { ...byName[f.commitment].envelope.heads, ...(f.set ?? {}) };
+        res = witnessCosigns(null, next, witnessStart(file.pinned_witnesses, changes, f.witness));
       }
+      if (f.reason_code && res !== f.reason_code) bad.push(`must fail ${f.name}: it failed with "${res}"`);
       if (res === "ok") bad.push(`must fail ${f.name}: it passed`);
     }
-    console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${file.key_set.witness_changes.length} witness change, ${file.commitments.length} commitments co-signed by ${witnesses.length} witnesses, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
+    console.log(`fdbk-heads-v1: ${file.slot_keys.length} slot keys, ${changes.length} witness changes, ${file.commitments.length} commitments co-signed by the witnesses named for each, ${file.proofs.length} proofs and ${file.must_fail.length} cases that must fail checked`);
   }
 }
 
