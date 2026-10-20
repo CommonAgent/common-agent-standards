@@ -1,7 +1,7 @@
 {
   "profile": "minimal-contracting",
   "name": "The minimal contracting profile",
-  "version": "0.3.0-draft",
+  "version": "0.4.0-draft",
   "document": "profiles/MINIMAL-CONTRACTING.md",
   "page": "https://commonagent.net/minimal-contracting.html",
   "comment": "The machine-readable half of the minimal contracting profile (MINIMAL-CONTRACTING.md beside this file). For each standard it names the version the profile applies to, the sections a profile implementation implements, the sections it leaves out, and the conformance vectors it must pass. A vector entry names a file and groups in it. A group is a dotted path into the file: 'all' takes everything under the path, 'only' and 'except' select cases of a list by the case's name (its 'name', 'case', 'act' or 'id' member), and 'indexes' selects entries of a list whose entries carry no name. A file under 'excluded_vectors' is outside the profile. tools/check-profiles.mjs checks that every version, section, file, path and case named here exists.",
@@ -110,7 +110,7 @@
     },
     {
       "id": "sow",
-      "version": "0.32.0-draft",
+      "version": "0.33.0-draft",
       "required_sections": [
         "2",
         "3",
