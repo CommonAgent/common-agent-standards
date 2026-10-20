@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.2.0-draft
+**Version:** 0.3.0-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
-**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.31.0-draft · Agent Messaging 0.9.4-draft
+**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.32.0-draft · Agent Messaging 0.9.4-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.2.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.3.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -67,7 +67,7 @@ Sections 1, 10, 11 and 12 are informative.
 
 `mandate-proxy.json` is left out with §7.1.
 
-## 4. Agent SoW 0.31.0-draft
+## 4. Agent SoW 0.32.0-draft
 
 Agent SoW is the contract: who the parties are, what work is in scope, what it costs, and how it ends. Both owners sign the same document, and the runtimes enforce what it says.
 
@@ -172,6 +172,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.3.0-draft** (2026-10-20). The profile applies to Agent SoW 0.32.0-draft, whose settle act refuses a record for a task or a fixed fee window an earlier record under the engagement already settles, holds a fixed fee record within the price's ceiling, and refuses any number past 2^53 − 1. The new settle cases of `sow-acts.json` are required, except those with an operator fee or a pass-through line. The minor version moves because an implementation of 0.2.0-draft takes settlement records this version refuses.
 
 **0.2.0-draft** (2026-10-20). The settlement record. The profile applies to Agent SoW 0.31.0-draft and requires its settle act (§6.3, `agent-sow-settlement-v1`), which the provider signs for each window or task it charges. Section 6 counts it among the records of the receipt in place of saying the suite has none, and the settle cases of `sow-acts.json` are required, except the two with an operator fee. The minor version moves because an implementation of 0.1.0-draft does not produce or check settlement records.
 

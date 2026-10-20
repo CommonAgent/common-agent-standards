@@ -1,7 +1,7 @@
 {
   "profile": "minimal-contracting",
   "name": "The minimal contracting profile",
-  "version": "0.2.0-draft",
+  "version": "0.3.0-draft",
   "document": "profiles/MINIMAL-CONTRACTING.md",
   "page": "https://commonagent.net/minimal-contracting.html",
   "comment": "The machine-readable half of the minimal contracting profile (MINIMAL-CONTRACTING.md beside this file). For each standard it names the version the profile applies to, the sections a profile implementation implements, the sections it leaves out, and the conformance vectors it must pass. A vector entry names a file and groups in it. A group is a dotted path into the file: 'all' takes everything under the path, 'only' and 'except' select cases of a list by the case's name (its 'name', 'case', 'act' or 'id' member), and 'indexes' selects entries of a list whose entries carry no name. A file under 'excluded_vectors' is outside the profile. tools/check-profiles.mjs checks that every version, section, file, path and case named here exists.",
@@ -110,7 +110,7 @@
     },
     {
       "id": "sow",
-      "version": "0.31.0-draft",
+      "version": "0.32.0-draft",
       "required_sections": [
         "2",
         "3",
@@ -305,7 +305,16 @@
                 "released_before_deadline",
                 "released_in_part",
                 "settle_with_operator_fee",
-                "settle_operator_fee_not_floored"
+                "settle_operator_fee_not_floored",
+                "settle_fee_missing",
+                "settle_fee_over_quote",
+                "settle_fee_base_inflated",
+                "settle_fee_operator_differs",
+                "settle_fee_over_ceiling",
+                "usage_pass_day1",
+                "settle_pass_through",
+                "settle_pass_through_unmarked",
+                "settle_pass_through_over_upstream"
               ]
             },
             {
