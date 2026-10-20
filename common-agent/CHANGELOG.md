@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
 
+## 0.28.4-draft (2026-10-20)
+
+No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.3.0-draft, at /minimal-contracting.html. The root of the site still carries the profile's 0.1.0-draft, the version 0.28.3-draft published. Since then the profile has moved twice with Agent SoW: 0.2.0-draft requires the settle act of Agent SoW 0.31.0-draft, and 0.3.0-draft applies to Agent SoW 0.32.0-draft, whose settle act refuses a record for work an earlier record already settles, holds a fixed fee record within its ceiling, and binds an operator fee to the quote. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.28.3-draft (2026-10-20)
 
 No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at /minimal-contracting.html, in the navigation beside every standard and on the contracting band of standards.html. The profile is profiles/MINIMAL-CONTRACTING.md in this repository, with its own version, and names the smallest part of Agent Mandate, Agent SoW and Agent Messaging that lets one organization's agent contract another's. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
