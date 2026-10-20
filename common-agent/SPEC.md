@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.28.3-draft
+**Version:** 0.28.4-draft
 **Status:** Working draft, 2026-10-20. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -1624,6 +1624,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.28.4-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.3.0-draft, at /minimal-contracting.html. The root of the site still carries the profile's 0.1.0-draft, the version 0.28.3-draft published. Since then the profile has moved twice with Agent SoW: 0.2.0-draft requires the settle act of Agent SoW 0.31.0-draft, and 0.3.0-draft applies to Agent SoW 0.32.0-draft, whose settle act refuses a record for work an earlier record already settles, holds a fixed fee record within its ceiling, and binds an operator fee to the quote. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 **0.28.3-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at /minimal-contracting.html, in the navigation beside every standard and on the contracting band of standards.html. The profile is profiles/MINIMAL-CONTRACTING.md in this repository, with its own version, and names the smallest part of Agent Mandate, Agent SoW and Agent Messaging that lets one organization's agent contract another's. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
