@@ -1,0 +1,1862 @@
+{
+  "about": [
+    "Agent Mandate §8, the treasury: the draw record a settlement from it leaves (§8.4, proposed for 0.9.0-draft), the rule every draw passes (§8.2), and the sums over the records (§8.3).",
+    "Draw records are signed by the settling platform under agent-mandate-draw-v1, in canonical padded base64. The platform's key is a test key derived from the label below, as every key in these files is: its Ed25519 seed is the SHA-256 of the label.",
+    "The rule cases give the mandate as it stood at approval, the request, and the rule that refuses, or ok. Amounts are in the settling platform's integer unit."
+  ],
+  "platform_key": {
+    "label": "Agent Mandate conformance test key: settling-platform",
+    "public": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL"
+  },
+  "identifiers": [
+    {
+      "name": "a metered draw",
+      "organization": "org_vd5zvpa4ecerft8b",
+      "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+      "expect_id": "drw_aaqcabz8ecgx0s0k"
+    },
+    {
+      "name": "a refund",
+      "organization": "org_vd5zvpa4ecerft8b",
+      "txn_id": "refund:eng_harbor_freight_7:task_3",
+      "expect_id": "drw_syzjq3c0rc69zp78"
+    },
+    {
+      "name": "the same transaction under another organization",
+      "organization": "org_7k2m9q4w1x8e5r3t",
+      "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+      "expect_id": "drw_qts0gwwtgzhxd3fp"
+    }
+  ],
+  "signatures": [
+    {
+      "name": "a draw, signed by the platform",
+      "record": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "signed_bytes": "agent-mandate-draw-v1\n{\"amount\":1400000,\"at\":\"2026-09-24T15:41:08Z\",\"buyer_reference\":\"PO-2026-0917\",\"currency\":\"XCR\",\"draw\":\"v1\",\"engagement\":{\"id\":\"eng_harbor_freight_7\",\"version\":1},\"holder\":{\"account\":\"acct_9b4d2f7c\",\"person\":\"Tom Okafor, Accounts\"},\"id\":\"drw_aaqcabz8ecgx0s0k\",\"kind\":\"draw\",\"mandate\":{\"id\":\"mnd_v26kpncz0w44gtc5\",\"version\":1},\"organization\":\"org_vd5zvpa4ecerft8b\",\"settlement\":\"settled\",\"txn_id\":\"tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z\"}",
+      "expect": "valid"
+    },
+    {
+      "name": "a reversal, signed by the platform",
+      "record": {
+        "draw": "v1",
+        "id": "drw_syzjq3c0rc69zp78",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "reversal",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 400000,
+        "currency": "XCR",
+        "txn_id": "refund:eng_harbor_freight_7:task_3",
+        "settlement": "settled",
+        "at": "2026-10-02T09:00:00Z",
+        "reverses": "drw_aaqcabz8ecgx0s0k",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "GCUoOKhIct7Pmqs/lF+5VEjPk7hm7zHZYJhK5obB501fAvpmFcpuX+5FpnpkY6zXsD+5+N3zl2fcm4Gg+EjtDQ=="
+          }
+        ]
+      },
+      "expect": "valid"
+    },
+    {
+      "name": "the amount changed after signing",
+      "record": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 14000000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "invalid",
+      "why": "The signature covers the amount."
+    },
+    {
+      "name": "signed by a key that is not the platform's",
+      "record": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UBIM5HUOPITZW7FQNVPYQRYQK62T2WDMWZIL2FHDCZVZOBXFSZNGAIUC",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+iKypy4Hj6DDUGIQFLH/WbygOMGcsS8m978kHh7JgIuwErT2J/x1YmsTP9VDO8VLezaCWV4X2OvbON6d3LuUBA=="
+          }
+        ]
+      },
+      "expect": "untrusted",
+      "why": "§8.3: the platform's signature attributes the line; any other key's, however well it verifies, does not."
+    },
+    {
+      "name": "the signature in base64url",
+      "record": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "-CVRPJkKk7Ck-X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa-WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA"
+          }
+        ]
+      },
+      "expect": "invalid",
+      "why": "A draw record's signature is canonical padded base64."
+    },
+    {
+      "name": "a second signature that does not verify",
+      "record": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          },
+          {
+            "role": "platform",
+            "key": "UBIM5HUOPITZW7FQNVPYQRYQK62T2WDMWZIL2FHDCZVZOBXFSZNGAIUC",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "invalid",
+      "why": "Every signature on a record verifies, or the record is refused."
+    }
+  ],
+  "shapes": [
+    {
+      "name": "a draw",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "valid",
+      "why": "§8.3: the engagement, the mandate, the holder, the amount and the time."
+    },
+    {
+      "name": "a reversal",
+      "document": {
+        "draw": "v1",
+        "id": "drw_syzjq3c0rc69zp78",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "reversal",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 400000,
+        "currency": "XCR",
+        "txn_id": "refund:eng_harbor_freight_7:task_3",
+        "settlement": "settled",
+        "at": "2026-10-02T09:00:00Z",
+        "reverses": "drw_aaqcabz8ecgx0s0k",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "GCUoOKhIct7Pmqs/lF+5VEjPk7hm7zHZYJhK5obB501fAvpmFcpuX+5FpnpkY6zXsD+5+N3zl2fcm4Gg+EjtDQ=="
+          }
+        ]
+      },
+      "expect": "valid",
+      "why": "A refund is a record of its own; nothing is edited."
+    },
+    {
+      "name": "a member this version does not define",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ],
+        "note": "approved by phone"
+      },
+      "expect": "refused",
+      "why": "The member set is closed."
+    },
+    {
+      "name": "an id its transaction does not derive",
+      "document": {
+        "draw": "v1",
+        "id": "drw_syzjq3c0rc69zp78",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "One settlement, one record."
+    },
+    {
+      "name": "a reversal that names no draw",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "reversal",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "A reversal names the draw it undoes."
+    },
+    {
+      "name": "a draw that names a record it undoes",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ],
+        "reverses": "drw_syzjq3c0rc69zp78"
+      },
+      "expect": "refused",
+      "why": "Only a reversal does."
+    },
+    {
+      "name": "an amount of zero",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 0,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "A draw moves a positive whole number."
+    },
+    {
+      "name": "a fractional amount",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000.5,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "Integer units."
+    },
+    {
+      "name": "a negative amount",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": -1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "Value coming back is a reversal, not a negative draw."
+    },
+    {
+      "name": "a failed settlement",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "failed",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "A settlement that failed moved nothing and leaves no record."
+    },
+    {
+      "name": "a time with an offset",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T09:41:08-06:00",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "The platform's clock, in UTC."
+    },
+    {
+      "name": "no engagement version",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7"
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "The agreed version it settled under."
+    },
+    {
+      "name": "a mandate id of the wrong form",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "tom",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "§4 identifiers."
+    },
+    {
+      "name": "no holder account",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "Every line is attributed to a person's authority."
+    },
+    {
+      "name": "no signatures",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": []
+      },
+      "expect": "refused",
+      "why": "Every line is signed."
+    },
+    {
+      "name": "a signature in another role",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "XCR",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "holder",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "The settling platform signs the record."
+    },
+    {
+      "name": "a currency in lower case",
+      "document": {
+        "draw": "v1",
+        "id": "drw_aaqcabz8ecgx0s0k",
+        "organization": "org_vd5zvpa4ecerft8b",
+        "kind": "draw",
+        "engagement": {
+          "id": "eng_harbor_freight_7",
+          "version": 1
+        },
+        "mandate": {
+          "id": "mnd_v26kpncz0w44gtc5",
+          "version": 1
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts"
+        },
+        "amount": 1400000,
+        "currency": "xcr",
+        "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+        "settlement": "settled",
+        "buyer_reference": "PO-2026-0917",
+        "at": "2026-09-24T15:41:08Z",
+        "signatures": [
+          {
+            "role": "platform",
+            "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+            "signed_at": "2026-09-24T15:41:09Z",
+            "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+          }
+        ]
+      },
+      "expect": "refused",
+      "why": "Currency codes are capitals."
+    }
+  ],
+  "may_draw": [
+    {
+      "name": "within the mandate",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": true
+      },
+      "why": "§8.2: approved under a mandate in force that names the organization as payer, within its ceilings."
+    },
+    {
+      "name": "a mandate whose holder pays",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "holder"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "payer"
+      },
+      "why": "§6 rule 6: only a mandate naming the organization as payer draws on the treasury."
+    },
+    {
+      "name": "a mandate with no settlement clause",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "payer"
+      },
+      "why": "§6 rule 6: holder is the default."
+    },
+    {
+      "name": "another organization's treasury",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_7k2m9q4w1x8e5r3t",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "organization"
+      },
+      "why": "§8.1: the treasury is the organization's own."
+    },
+    {
+      "name": "approved by an account that does not hold the mandate",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_2c9f7e1a",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "holder"
+      },
+      "why": "§8.3: the draw is attributed to the holder whose authority it was made under."
+    },
+    {
+      "name": "approved before the mandate started",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-08-05T23:59:59Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "term"
+      },
+      "why": "§6 rule 7: no force before starts_at."
+    },
+    {
+      "name": "approved at the instant the mandate expired",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-11-04T00:00:00Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "term"
+      },
+      "why": "§6 rule 7: no force after expires_at."
+    },
+    {
+      "name": "in another currency",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "USD",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "currency"
+      },
+      "why": "A ceiling in one currency is not compared with an amount in another."
+    },
+    {
+      "name": "up to per_engagement exactly",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 8600000
+      },
+      "expect": {
+        "ok": true
+      },
+      "why": "10,000,000 is within 10,000,000."
+    },
+    {
+      "name": "one unit past per_engagement",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 1400000,
+        "currency": "XCR",
+        "engagement_drawn": 8600001
+      },
+      "expect": {
+        "ok": false,
+        "refused": "per_engagement"
+      },
+      "why": "The engagement's draws, this one included, stay within per_engagement."
+    },
+    {
+      "name": "a mandate with no ceiling",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 999999999,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": true
+      },
+      "why": "No ceiling, no bound."
+    },
+    {
+      "name": "an amount of zero",
+      "mandate": {
+        "mandate": "v1",
+        "version": 1,
+        "organization": "org_vd5zvpa4ecerft8b",
+        "issuer": {
+          "kind": "mandate",
+          "mandate": "mnd_c1etkcpcpr6d5gmp"
+        },
+        "holder": {
+          "account": "acct_9b4d2f7c",
+          "person": "Tom Okafor, Accounts",
+          "key": "UAZE3Y7YCJHGWIK3KKK6GE5EFKNXXNKQ7BFKI3OHG2GQTYSZPZOMEUK3"
+        },
+        "powers": [
+          "form",
+          "nda"
+        ],
+        "ceiling": {
+          "currency": "XCR",
+          "per_engagement": 10000000,
+          "per_month": 40000000
+        },
+        "scope": {
+          "offerings": [
+            "audit-freight-*"
+          ],
+          "nda_categories": [
+            "solicitation",
+            "agreement_terms",
+            "relationship"
+          ]
+        },
+        "settlement": {
+          "payer": "organization"
+        },
+        "sub_delegation": {
+          "allowed": false
+        },
+        "starts_at": "2026-08-06T00:00:00Z",
+        "expires_at": "2026-11-04T00:00:00Z",
+        "id": "mnd_v26kpncz0w44gtc5"
+      },
+      "request": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "approved_at": "2026-09-24T15:41:07Z",
+        "amount": 0,
+        "currency": "XCR",
+        "engagement_drawn": 0
+      },
+      "expect": {
+        "ok": false,
+        "refused": "amount"
+      },
+      "why": "A draw is a positive whole number."
+    }
+  ],
+  "month_to_date": [
+    {
+      "name": "the calendar month in UTC, draws only, this holder only",
+      "query": {
+        "organization": "org_vd5zvpa4ecerft8b",
+        "holder": "acct_9b4d2f7c",
+        "now": "2026-09-30T23:59:59Z"
+      },
+      "lines": [
+        {
+          "id": "drw_qbw896rpjqj9y1yj",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "draw",
+          "amount": 1000000,
+          "at": "2026-08-31T23:59:59Z",
+          "holder": {
+            "account": "acct_9b4d2f7c"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        },
+        {
+          "id": "drw_x2dpkdn2crsxwz0n",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "draw",
+          "amount": 2000000,
+          "at": "2026-09-01T00:00:00Z",
+          "holder": {
+            "account": "acct_9b4d2f7c"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        },
+        {
+          "id": "drw_45bvg3ybkk00mh15",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "draw",
+          "amount": 3000000,
+          "at": "2026-09-24T15:41:08Z",
+          "holder": {
+            "account": "acct_9b4d2f7c"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        },
+        {
+          "id": "drw_9wpg82kxv47a3jv0",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "reversal",
+          "amount": 500000,
+          "at": "2026-09-25T00:00:00Z",
+          "holder": {
+            "account": "acct_9b4d2f7c"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        },
+        {
+          "id": "drw_ravk2f34gtenkgpd",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "draw",
+          "amount": 4000000,
+          "at": "2026-09-26T00:00:00Z",
+          "holder": {
+            "account": "acct_2c9f7e1a"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        },
+        {
+          "id": "drw_sttxecp56q9fw1hh",
+          "organization": "org_7k2m9q4w1x8e5r3t",
+          "kind": "draw",
+          "amount": 5000000,
+          "at": "2026-09-27T00:00:00Z",
+          "holder": {
+            "account": "acct_9b4d2f7c"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        },
+        {
+          "id": "drw_0z0n8kjnsqkhmhv0",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "draw",
+          "amount": 6000000,
+          "at": "2026-10-01T00:00:00Z",
+          "holder": {
+            "account": "acct_9b4d2f7c"
+          },
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          }
+        }
+      ],
+      "expect": 5000000,
+      "why": "§8.3: the month-to-date sums are computed over the draw records. The first instant of the month counts and the first of the next does not; a reversal does not un-commit; another holder's and another organization's draws are theirs."
+    }
+  ],
+  "books": [
+    {
+      "name": "a draw, its partial reversal, and three that do not match",
+      "organization": "org_vd5zvpa4ecerft8b",
+      "records": [
+        {
+          "draw": "v1",
+          "id": "drw_aaqcabz8ecgx0s0k",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "draw",
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          },
+          "mandate": {
+            "id": "mnd_v26kpncz0w44gtc5",
+            "version": 1
+          },
+          "holder": {
+            "account": "acct_9b4d2f7c",
+            "person": "Tom Okafor, Accounts"
+          },
+          "amount": 1400000,
+          "currency": "XCR",
+          "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+          "settlement": "settled",
+          "buyer_reference": "PO-2026-0917",
+          "at": "2026-09-24T15:41:08Z",
+          "signatures": [
+            {
+              "role": "platform",
+              "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+              "signed_at": "2026-09-24T15:41:09Z",
+              "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+            }
+          ]
+        },
+        {
+          "draw": "v1",
+          "id": "drw_syzjq3c0rc69zp78",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "reversal",
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          },
+          "mandate": {
+            "id": "mnd_v26kpncz0w44gtc5",
+            "version": 1
+          },
+          "holder": {
+            "account": "acct_9b4d2f7c",
+            "person": "Tom Okafor, Accounts"
+          },
+          "amount": 400000,
+          "currency": "XCR",
+          "txn_id": "refund:eng_harbor_freight_7:task_3",
+          "settlement": "settled",
+          "at": "2026-10-02T09:00:00Z",
+          "reverses": "drw_aaqcabz8ecgx0s0k",
+          "signatures": [
+            {
+              "role": "platform",
+              "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+              "signed_at": "2026-09-24T15:41:09Z",
+              "sig": "GCUoOKhIct7Pmqs/lF+5VEjPk7hm7zHZYJhK5obB501fAvpmFcpuX+5FpnpkY6zXsD+5+N3zl2fcm4Gg+EjtDQ=="
+            }
+          ]
+        },
+        {
+          "draw": "v1",
+          "id": "drw_emab1abrh2m5qfvf",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "reversal",
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          },
+          "mandate": {
+            "id": "mnd_v26kpncz0w44gtc5",
+            "version": 1
+          },
+          "holder": {
+            "account": "acct_9b4d2f7c",
+            "person": "Tom Okafor, Accounts"
+          },
+          "amount": 400000,
+          "currency": "XCR",
+          "txn_id": "refund:again",
+          "settlement": "settled",
+          "at": "2026-10-02T09:00:00Z",
+          "reverses": "drw_aaqcabz8ecgx0s0k",
+          "signatures": [
+            {
+              "role": "platform",
+              "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+              "signed_at": "2026-09-24T15:41:09Z",
+              "sig": "GCUoOKhIct7Pmqs/lF+5VEjPk7hm7zHZYJhK5obB501fAvpmFcpuX+5FpnpkY6zXsD+5+N3zl2fcm4Gg+EjtDQ=="
+            }
+          ]
+        },
+        {
+          "draw": "v1",
+          "id": "drw_esyypypb5pm9kzvx",
+          "organization": "org_vd5zvpa4ecerft8b",
+          "kind": "reversal",
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          },
+          "mandate": {
+            "id": "mnd_v26kpncz0w44gtc5",
+            "version": 1
+          },
+          "holder": {
+            "account": "acct_9b4d2f7c",
+            "person": "Tom Okafor, Accounts"
+          },
+          "amount": 400000,
+          "currency": "XCR",
+          "txn_id": "refund:orphan",
+          "settlement": "settled",
+          "at": "2026-10-02T09:00:00Z",
+          "reverses": "drw_329h4a3t25rjawht",
+          "signatures": [
+            {
+              "role": "platform",
+              "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+              "signed_at": "2026-09-24T15:41:09Z",
+              "sig": "GCUoOKhIct7Pmqs/lF+5VEjPk7hm7zHZYJhK5obB501fAvpmFcpuX+5FpnpkY6zXsD+5+N3zl2fcm4Gg+EjtDQ=="
+            }
+          ]
+        },
+        {
+          "draw": "v1",
+          "id": "drw_qts0gwwtgzhxd3fp",
+          "organization": "org_7k2m9q4w1x8e5r3t",
+          "kind": "draw",
+          "engagement": {
+            "id": "eng_harbor_freight_7",
+            "version": 1
+          },
+          "mandate": {
+            "id": "mnd_v26kpncz0w44gtc5",
+            "version": 1
+          },
+          "holder": {
+            "account": "acct_9b4d2f7c",
+            "person": "Tom Okafor, Accounts"
+          },
+          "amount": 1400000,
+          "currency": "XCR",
+          "txn_id": "tandm:eng_harbor_freight_7:2026-09-24T15:41:07Z",
+          "settlement": "settled",
+          "buyer_reference": "PO-2026-0917",
+          "at": "2026-09-24T15:41:08Z",
+          "signatures": [
+            {
+              "role": "platform",
+              "key": "UB7VJJEVHDMFNUFYQWQ4DYJNFJOY5MA7FTPFC2VECYCRSN7UAESOGDGL",
+              "signed_at": "2026-09-24T15:41:09Z",
+              "sig": "+CVRPJkKk7Ck+X53QiOig2FaKOiKnu37c1bfkSrkGzfODRrFOCa+WdJBEfM8kVbXp41d2pxLRM1Y3szI7uQqDA=="
+            }
+          ]
+        }
+      ],
+      "expect": {
+        "drawn": 1400000,
+        "reversed": 400000,
+        "net": 1000000,
+        "unmatched": [
+          "drw_qts0gwwtgzhxd3fp",
+          "drw_emab1abrh2m5qfvf",
+          "drw_esyypypb5pm9kzvx"
+        ]
+      },
+      "why": "§8.3: the treasury's history is the sum of its records. A draw is reversed at most once, by no more than it drew; another organization's record is not in these books. Records the books cannot explain are listed, never summed."
+    }
+  ]
+}

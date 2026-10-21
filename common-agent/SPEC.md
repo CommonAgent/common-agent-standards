@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.28.9-draft
+**Version:** 0.28.10-draft
 **Status:** Working draft, 2026-10-20. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -1625,7 +1625,9 @@ Where each section's text came from, and what stays behind. Transport-specific t
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
 
-**0.28.9-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.1-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.6-draft, whose Task object gains the platform-written `origin` and `canceled_by` members, and requires nothing new, because it does not require Sections 7.1 and 10.8. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+**0.28.10-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.2-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.6-draft, whose Task object gains the platform-written `origin` and `canceled_by` members, and requires nothing new, because it does not require Sections 7.1 and 10.8. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
+**0.28.9-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.1-draft, at /minimal-contracting.html. The profile moves with Agent Mandate 0.9.0-draft, which gives the treasury's draw record a shape and a signature; the treasury stays outside the profile. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 **0.28.8-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the groups of standards.html in the order Identity and reach, Agents and Humans Working Together, B2B Agentic Commerce, under those names. The anchors #contracting and #doing-the-work are unchanged. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 

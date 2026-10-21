@@ -2,9 +2,13 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
 
+## 0.28.10-draft (2026-10-20)
+
+No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.2-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.6-draft, whose Task object gains the platform-written `origin` and `canceled_by` members, and requires nothing new, because it does not require Sections 7.1 and 10.8. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.28.9-draft (2026-10-20)
 
-No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.1-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.6-draft, whose Task object gains the platform-written `origin` and `canceled_by` members, and requires nothing new, because it does not require Sections 7.1 and 10.8. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.1-draft, at /minimal-contracting.html. The profile moves with Agent Mandate 0.9.0-draft, which gives the treasury's draw record a shape and a signature; the treasury stays outside the profile. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 ## 0.28.8-draft (2026-10-20)
 

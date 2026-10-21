@@ -4,6 +4,24 @@ Versions of Agent Mandate tagged in this repository, newest first. A version is
 tagged as `mandate-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentmandate.net.
 
+## 0.9.0-draft (2026-10-20)
+
+The draw record. §8 asked for a record of every draw from the treasury and
+gave it no shape, so no two settling platforms could exchange one and no
+reader could check one. §8.4 defines it: its members, an identifier derived
+from the organization and the settlement's transaction identifier that every
+reader re-derives, so one settlement leaves one record, and the settling
+platform's signature under a new tag, `agent-mandate-draw-v1` (§13). A refund
+is a reversal of its own; nothing is edited. §8 rule 2 says what a draw is
+held to: the mandate as it stood when it approved the engagement, so a later
+revocation does not stop draws on an engagement it validly formed, and the
+engagement's draws stay within `per_engagement`. §8 rule 3 says how the
+`per_month` sum is read over the records, and that check 4 reads the larger
+of the month's approved commitments and the month's draws. A new
+fixture, `conformance/mandate-treasury.json`, pins the record and the rules.
+The minor version moves because the record and its tag are new: a reader
+built against 0.8.0-draft cannot check one.
+
 ## 0.8.0-draft (2026-10-20)
 
 A mandate scoped by `scope.offerings` and silent about resources reaches no
