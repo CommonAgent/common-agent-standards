@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.5.1-draft
+**Version:** 0.5.2-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
-**Applies to:** Agent Mandate 0.9.0-draft · Agent SoW 0.34.0-draft · Agent Messaging 0.9.5-draft
+**Applies to:** Agent Mandate 0.9.0-draft · Agent SoW 0.34.0-draft · Agent Messaging 0.9.6-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.5.1-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.5.2-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -134,7 +134,7 @@ Sections 1, 10 and 11 are informative.
 
 The fixtures for amendments, the formation messages, the review window of a proposal, the Agent NDA reference, provider contact, reporting, subcontracting, liability and service floors are left out with their sections.
 
-## 5. Agent Messaging 0.9.5-draft
+## 5. Agent Messaging 0.9.6-draft
 
 The two agents exchange tasks over Agent Messaging, and this profile assumes its core profile (Agent Messaging §1.6) without repeating it. On top of the core, a profile implementation implements two sections.
 
@@ -172,6 +172,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.5.2-draft** (2026-10-20). The profile applies to Agent Messaging 0.9.6-draft, whose Task object gains the platform-written `origin` and `canceled_by` members (Sections 7.1 and 10.8). The profile does not require those sections, so it requires nothing new. The patch version moves because an implementation of 0.5.1-draft meets this version unchanged.
 
 **0.5.1-draft** (2026-10-20). The profile applies to Agent Mandate 0.9.0-draft, which gives the treasury's draw record a shape and a signature (§8.4). §8 stays outside the profile, and so does the new `mandate-treasury.json`. The patch version moves because nothing this profile requires changes.
 
