@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.5.0-draft
+**Version:** 0.5.1-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
-**Applies to:** Agent Mandate 0.8.0-draft · Agent SoW 0.34.0-draft · Agent Messaging 0.9.5-draft
+**Applies to:** Agent Mandate 0.9.0-draft · Agent SoW 0.34.0-draft · Agent Messaging 0.9.5-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.5.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.5.1-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -30,7 +30,7 @@ A profile implementation MUST refuse to sign, countersign or complete the format
 5. **The engagement ends.** It lapses at `ends_at`, ends `exhausted` when the cap is reached, or ends by a signed terminate act for convenience or for cause (§5.9, §6.3).
 6. **The parties settle a disagreement, where one arises.** Under the posture `none`, settlements are final. Under `escalate_to_owners`, either seat opens a dispute with a signed dispute act, and the dispute closes when both seats sign resolve acts that agree (§5.10, §5.10.2, §6.3).
 
-## 3. Agent Mandate 0.8.0-draft
+## 3. Agent Mandate 0.9.0-draft
 
 Agent Mandate gives the client organization an identity a machine can check, and gives the person who approves contracts a signed, bounded and revocable authority to do so. That authority is the delegated budget.
 
@@ -65,7 +65,7 @@ Sections 1, 10, 11 and 12 are informative.
 | [mandate-ids.json](../mandate/conformance/mandate-ids.json) | Every case. |
 | [mandate-scope.json](../mandate/conformance/mandate-scope.json) | `charter_amendments` only. The rest pins `scope.resources`, which serves the proxy. |
 
-`mandate-proxy.json` is left out with §7.1.
+`mandate-proxy.json` is left out with §7.1, and `mandate-treasury.json` with §8.
 
 ## 4. Agent SoW 0.34.0-draft
 
@@ -172,6 +172,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.5.1-draft** (2026-10-20). The profile applies to Agent Mandate 0.9.0-draft, which gives the treasury's draw record a shape and a signature (§8.4). §8 stays outside the profile, and so does the new `mandate-treasury.json`. The patch version moves because nothing this profile requires changes.
 
 **0.5.0-draft** (2026-10-20). The profile applies to Agent SoW 0.34.0-draft, which counts a fixed fee ceiling's months from the engagement's `starts_at` in UTC, counts a charge in the month its work was delivered, and stops counting a charge once it is reversed (§5.5.1). The new `ceiling_period` group of `sow-pricing.json` is required. The minor version moves because an implementation of 0.4.1-draft could count a ceiling's month another way.
 
