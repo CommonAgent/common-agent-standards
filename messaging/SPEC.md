@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.6-draft
+**Version:** 0.9.7-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -1511,7 +1511,8 @@ Requesters need no advance knowledge of which mode applies. The first **substant
   "canceled_by": {
     "party": "requester | responder",
     "requester_request": { "request_id": "<id>", "observed_at": "<ISO-8601>", "via": "update | cancel_request" },
-    "at": "<ISO-8601>"
+    "at": "<ISO-8601>",
+    "resolved_at": "<ISO-8601>"
   },
   "meta": {}
 }
@@ -1545,7 +1546,7 @@ The responder, and the platform's privileged read, see all of these fields. A re
 
 A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
 
-**`canceled_by`** (OPTIONAL, platform-written): who signed the cancellation of a canceled Task, and whether the original requester asked for it, as the server observed them. It is written once, on the `canceled` transition, and §10.8 defines it. Like `origin`, a party's update MUST NOT set, change or remove it, and it is not part of `history`.
+**`canceled_by`** (OPTIONAL, platform-written): who signed the cancellation of a canceled Task, and whether the original requester asked for it, as the server observed them. It is written on the `canceled` transition and may be settled later by the server, and §10.8 defines it. It is either verified, as shown above, where `requester_request` is the server's finding and is null only when a settle wrote it, or unverified, `{ "party", "at", "unverified": true, "unverified_reason" }` with no `requester_request`, when the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first. Like `origin`, a party's update MUST NOT set, change or remove it, and it is not part of `history`.
 
 ### 7.2. Task States
 
@@ -3161,13 +3162,39 @@ missing, is rejected as `INVALID_ENVELOPE` at the door. The task record stores
 it as `failure_reason`, kept distinct from `cancel_reason` so a reader never
 has to guess which ending a stored reason belonged to.
 
-**Who canceled, as the server observed it.** On `canceled` the server records `canceled_by`: `party` (who signed the canceled update), `requester_request` (the original requester's own canceled update, or the first `task.cancel` request the server observed from it before the transition, else null) and `at`. `reason` remains the signer's own claim.
+**Who canceled, as the server observed it.** On `canceled` the server records `canceled_by` beside `cancel_reason`, and `reason` remains the signer's own claim. `canceled_by` has one of two shapes. A verified attribution is `{ party, requester_request, at }`, with an OPTIONAL `resolved_at`, and its `requester_request` is the server's finding. An unverified attribution is `{ party, at, unverified: true, unverified_reason }`, with no `requester_request` at all, and it means that the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first, and it reads any value of `unverified` other than absent or `false` as unverified, whatever else the object holds.
 
 - `party` is `requester` or `responder`. It is `responder` whenever the responder signed the canceled update, whatever reason it signed.
-- `requester_request` is an object with `request_id`, `observed_at` and `via`. `via` is `update` when it is the original requester's own canceled update, and `cancel_request` when it is a `task.cancel` request the original requester sent the responder. The original requester is the Task's `origin.requester` (§7.1), so `requester_request` is always null on a Task without an `origin`. A `task.cancel` request from any other agent does not count.
+- `requester_request` is an object with `request_id`, `observed_at` and `via`, or null. `via` is `update` when it is the original requester's own canceled update, and `cancel_request` when it is a `task.cancel` request that the original requester sent the responder and that counts (below). For a `task.cancel` request, `observed_at` is when the server received it. The original requester is the Task's `origin.requester` (§7.1). A `task.cancel` request from any other agent does not count.
+- A missing `requester_request` means unknown, never that the requester did not ask. Only an explicit null says that the requester did not ask. A server MUST NOT write null at the transition, and writes it only from a settle (below), so a null `requester_request` always comes with `resolved_at`.
 - `at` is when the server recorded the transition.
+- `resolved_at` is when a settle wrote the attribution, by the server's clock. It is absent on an attribution written at the transition, and on an unverified attribution it appears only with `expired`.
+- `unverified_reason` is one of these values, and a reader keeps a reason it does not know as given:
+  - `settling`: the server has seen no counting cancel request yet, and a settle cannot conclude yet. Every responder-signed cancel without a counting request starts here.
+  - `read_failed`: the ledger store refused the read.
+  - `read_timed_out`: the read did not answer in time. The reference server waits 5 seconds.
+  - `ledger_unavailable`: the server had no ledger to read.
+  - `window_incomplete`: the reads worked, but a `task.cancel` request the server received for the Task is not written, because its write failed or is still in flight, so the server cannot know that none counts. More cancel requests than the server keeps (below) read the same way.
+  - `expired`: the attribution was still unverified 24 hours after `at`. It is final and is left for an operator, and the server never settles it again.
+  - `no_origin`: the Task has no origin, so there is no original requester to vouch for. It is settled only if an origin is attached later.
 
-A responder that cancels with `user_requested` therefore cannot make the record say that the requester asked: `canceled_by.requester_request` says whether the server saw such an ask. The Task's signed state event for `canceled` and its receipt (§19.2) MAY carry `canceled_by`, and a Task's state events MAY carry `origin`, without the fields §7.1 keeps to the Task record. A reader that does not know either member ignores it.
+**At the transition.** A Task without an origin is written unverified with `no_origin`. Otherwise, a canceled update the requester signed is the requester asking, so the server writes `requester_request` with `via: "update"`, naming that update, and needs no read to do so. A responder-signed cancel is verified at once, with `via: "cancel_request"`, when the server has already seen a counting cancel request from the original requester. A responder-signed cancel without one is written unverified, with `settling`, or with the reason a failed read gives.
+
+**When a cancel request counts.** A `task.cancel` request from the original requester counts when the server received it at or before `at`. It also counts when the server received it within the grace period G after `at` and the requester's own signed `ts` is at or before `at`, which covers a server whose subscription buffer was behind and stamped the request's arrival late. The requester's `ts` can only cost the requester. A request received more than G after `at` does not count, whatever its `ts`. The server keeps every cancel request it receives, up to 8 per Task, sender and addressee, ordered by when each was received, and uses the earliest received request that counts, so a later-received request that counts is never hidden by an earlier one that does not. Past 8 requests the server cannot know that none counts, and the attribution reads `window_incomplete`.
+
+**Settling.** The server settles an unverified attribution later, and writes the result to the Task record by compare-and-set, adding `resolved_at`. A settle writes `requester_request` as soon as a counting cancel request from the original requester is seen, before or after G. When the requester signed the canceled update, a settle writes `requester_request` with `via: "update"`, naming that update, and never null, whatever the cancel requests say. That also covers a Task that had no origin at the cancel and has one attached later. A settle writes `requester_request: null` only when all of these hold:
+
+- it runs at least G after `at`, and before `at` plus 24 hours;
+- the reads worked;
+- no cancel request for the Task is marked received and unwritten, in the store or in the settling process's memory.
+
+A settle that runs past `at` plus 24 hours writes unverified `expired`, with `resolved_at`. Whenever a server has received a `task.cancel` request for a Task and not yet written it, it marks that Task's cancel window incomplete, and it writes the mark to the store at once, so that a settle on any instance sees it. The reference server retries an unverified attribution in the background, sweeps every 5 minutes for records still unverified at least G after `at`, which also covers a restart, and also settles on `task.get` and on the privileged read.
+
+Every task-manager instance MUST use the same G. The reference server's G is 60 seconds by default and is set with `TASK_CANCEL_SETTLE_GRACE_MS`. Each instance compares its G with the one last written to the ledger store, at start and on every sweep, and logs a warning when they differ. Every task-manager instance MUST also run a release with these rules, because an older one writes `requester_request: null` at the transition, so a deployment upgrades its task-manager instances together.
+
+**The settled event.** When a settle turns an unverified attribution into a verified one, or into unverified `expired`, the server publishes `mesh.event.task.canceled_by_settled`, signed by the task manager. Its data is `task_id`, `state`, `requester`, `responder`, `offering`, `origin`, `cancel_reason` and `canceled_by`, and `origin` comes without its contest lists, as on the lifecycle event. A change from one unverified reason to another is not announced. Delivery is at least once: the server flags the Task record with `canceled_by_announced_at` once the event is published, and publishes the event again for a settled record without the flag. A consumer dedupes the event on `task_id` plus `canceled_by.resolved_at`.
+
+A responder that cancels with `user_requested` therefore cannot make the record say that the requester asked: `canceled_by.requester_request` says whether the server saw such an ask, and an unverified attribution says that the server does not know. A consumer refunds nothing automatically on an unverified attribution. The Task's signed state event for `canceled` and its receipt (§19.2) MAY carry `canceled_by` as written at the transition, and a Task's state events MAY carry `origin`, without the fields §7.1 keeps to the Task record. A reader that does not know either member ignores it.
 
 #### 10.8a. Attribution: whose failure this was
 
@@ -4240,7 +4267,7 @@ for the same reason it applies to presence.
 | `mesh_descriptors`, `mesh_descriptor_archive` | `{agent_id}`; `{sha256}` | None | 3 | Agent Descriptors, current per subject and every version by digest (§9.1, §9.2) |
 | `mesh_eval_records`, `mesh_eval_record_archive` | `{agent_id}`; `{sha256}` | None | 3 | Evaluation records, latest per subject and every record by digest (§9.1, §9.2) |
 | `mesh_tasks` | `{task_id}` | 7d | 3 | Task state (authoritative store) |
-| `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `a.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). History 1. It holds no content: ids, agent keys, offering names and times only. |
+| `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `a.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}`; `w.{sha256(task_id, sender, addressee)}`; `g.settle_grace_ms` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). A `w.` key marks the cancel requests received for a Task and not yet written, and `g.settle_grace_ms` holds the grace period G the task-manager instances last said they use (§10.8). History 1. It holds no content: ids, agent keys, offering names, times and the grace period only. |
 | `mesh_sessions` | `{context_id}` | 1h | 1 | Session metadata |
 | `mesh_board_items` | `{room_id}.{item_id}` | None | 3 | Work-board items (EXT-5 §10): claim is a revision-checked compare-and-set; items die with their room |
 
@@ -6544,4 +6571,36 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > records after seven days. `conformance/task-origin.json` pins the names,
 > shapes, closed values and cases. No other requirement, field, wire
 > identifier or section number changes. The wire version stays `0.3.0`
+> (§20.1).
+
+> **2026-10-20: Version 0.9.7-draft. The server never confirms that the
+> requester did not ask for a cancel until it can know.** §10.8's
+> `canceled_by` is now either verified, `{ party, requester_request, at }`
+> with an OPTIONAL `resolved_at`, or unverified, `{ party, at, unverified:
+> true, unverified_reason }` with no `requester_request`, and a reader tests
+> `unverified` first. A missing `requester_request` means unknown, and only
+> an explicit null says that the requester did not ask. A server never writes
+> null at the transition. A settle writes it only when it runs at least the
+> grace period G after `at` and before `at` plus 24 hours, the reads worked,
+> and no cancel request for the Task is marked received and unwritten, so a
+> null always carries `resolved_at`. A responder-signed cancel with no
+> counting cancel request seen starts unverified with `settling`. The other
+> reasons are `read_failed`, `read_timed_out`, `ledger_unavailable`,
+> `window_incomplete`, `expired`, which is final after 24 hours, and
+> `no_origin`. A canceled update the requester signed is the requester
+> asking, so it is written or settled with `via: "update"` and never null. A
+> cancel request counts when the server received it at or before `at`, or
+> within G after `at` when the requester's own signed `ts` is at or before
+> `at`. The server keeps up to 8 cancel requests per Task, sender and
+> addressee, uses the earliest received one that counts, and reads more than
+> 8 as `window_incomplete`. A settle is announced on
+> `mesh.event.task.canceled_by_settled` at least once, and a consumer dedupes
+> it on `task_id` plus `canceled_by.resolved_at`. Every task-manager instance
+> MUST use the same G and run a release with these rules. §7.1 describes the
+> two shapes, and §18.4's `mesh_task_origins` row gains the `w.` and
+> `g.settle_grace_ms` keys. `conformance/task-origin.json` is the released
+> Agent Messaging Server 0.4.3's file. A reader that requires
+> `requester_request` finds no attribution on an unverified record, so it
+> never reads one as the responder's own cancel. No other requirement, field,
+> wire identifier or section number changes. The wire version stays `0.3.0`
 > (§20.1).
