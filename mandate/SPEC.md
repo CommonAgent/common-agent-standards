@@ -695,12 +695,15 @@ settling platform's territory (§12).
    calendar month, in UTC, by the settling platform's clock. A draw
    whose outcome the platform does not yet know is counted as made. A
    reversal does not reduce the sum, because it does not undo the
-   commitment. Where the platform also holds the commitments approved in
-   the month (§6 rule 5), it SHOULD read the larger of the two sums,
-   because a commitment drawn in a later month is not yet among the draw
-   records. The treasury's history is the sum of its draw records, so an
-   audit of where the money went is a query, with every line already
-   attributed to a person and their authority.
+   commitment. A platform that settles from the treasury MUST read the
+   holder's month-to-date figure for check 4 as the larger of two sums:
+   the committed prices of the acts the holder approved in the month
+   (§6 rule 5) and the holder's draws dated in the month. Neither alone
+   is enough: a commitment drawn in a later month is not yet among the
+   draw records, and a draw in this month may settle a commitment
+   approved in an earlier one. The treasury's history is the sum of its
+   draw records, so an audit of where the money went is a query, with
+   every line already attributed to a person and their authority.
 
 The records are the books. This specification defines no accounting
 layer, because the draw records, the approval records, and the
@@ -1112,8 +1115,8 @@ edited. §8 rule 2 says what a draw is held to: the mandate as it stood when
 it approved the engagement, so a later revocation does not stop draws on an
 engagement it validly formed, and the engagement's draws stay within
 `per_engagement`. §8 rule 3 says how the `per_month` sum is read over the
-records, and that a platform also holding the month's approved commitments
-reads the larger of the two sums. A new fixture,
+records, and that check 4 reads the larger of the month's approved
+commitments and the month's draws. A new fixture,
 `conformance/mandate-treasury.json`, pins the record and the rules. The
 minor version moves because the record and its tag are new: a reader built
 against 0.8.0-draft cannot check one.*

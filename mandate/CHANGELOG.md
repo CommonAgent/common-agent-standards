@@ -16,8 +16,8 @@ is a reversal of its own; nothing is edited. §8 rule 2 says what a draw is
 held to: the mandate as it stood when it approved the engagement, so a later
 revocation does not stop draws on an engagement it validly formed, and the
 engagement's draws stay within `per_engagement`. §8 rule 3 says how the
-`per_month` sum is read over the records, and that a platform also holding
-the month's approved commitments reads the larger of the two sums. A new
+`per_month` sum is read over the records, and that check 4 reads the larger
+of the month's approved commitments and the month's draws. A new
 fixture, `conformance/mandate-treasury.json`, pins the record and the rules.
 The minor version moves because the record and its tag are new: a reader
 built against 0.8.0-draft cannot check one.
