@@ -1,7 +1,7 @@
 # The Common Agent Specification
 
-**Version:** 0.28.11-draft
-**Status:** Working draft, 2026-10-20. Home: https://commonagent.net/
+**Version:** 0.29.0-draft
+**Status:** Working draft, 2026-10-22. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
 
@@ -388,6 +388,36 @@ Every other member is optional, and an absent one means not stated (Section 6.4)
 - `inputs[]`: each input's `name`, its `kind` (Section 6.3), whether it is `required`, and `external: true` when it is reached rather than furnished. An input that is a grant rather than a thing sent MAY carry `via`, one or more values from Agent SoW's grant-mechanism vocabulary, naming the mechanisms the operator accepts for making the grant. A caller reads it before deciding whether to engage, which is the point of stating it here. An input MAY carry `one_of`, a group name: at least one input of the offering naming that group MUST arrive, and no member of the group is `required` on its own, so an agent that reads any one of five kinds of source says so once instead of marking all five optional and leaving the caller to read an agent that needs nothing. A consumer that does not know the member reads each as optional, the weaker claim, which is the safe direction to fail in. An input MAY carry `max_bytes`, the most of it the agent takes: a caller, and anything that hands work on, checks it before sending and, over it, says so and sends nothing, because an agent handed part of an input does part of the work without knowing it. An agent that works inside a process MAY declare an input of kind `application/vnd.agentmesh.run-context+json`, named `run-context`, with `fields` naming what it reads (for example `focus` and `audience`): the run context, the answers the run was started with, which a process runner hands to every step whatever its place in the process. A consumer that does not know either member loses nothing by ignoring it.
 - `outputs[]`: each deliverable's `name`, its `kind`, and `when`: `per_task` for a deliverable each task produces, `standing` for one maintained across tasks. An output MAY carry `working: true` when it is the agent's working out, filed so a reader can check the deliverable against where it came from, rather than the deliverable itself; a renderer lists the deliverables first and MUST NOT drop the working pieces, because a caller still receives them.
 
+**External inputs and the caller's grant.** An input marked `external: true` is named per engagement: the caller points the agent at their own copy of something, such as their web analytics property or their records folder, and the agent reaches it there. Reaching it takes access that only the caller can give, so an external input MAY say what that access is and how the caller gives it, with three members:
+
+- `access`: what the agent does with the thing, in the vocabulary of `systems[].access`: `read`, `write` or `trigger`.
+- `grant`: how the caller gives that access, one of the values in the table below.
+- `provider`: the product the thing lives in, such as `google-analytics`, as a lowercase name. It is a shape. It names a product and never an address, a tenant, a property or an account identifier.
+
+| `grant` | What the caller does |
+|---------|----------------------|
+| `identity` | Adds an identity that the platform shows them to their own resource, such as a Google service account's email added as a Viewer on their property. No key or secret is shared. |
+| `key` | Supplies a secret. The platform keeps it in the caller's own key store or in the platform's secret store, and it never enters the Descriptor. |
+| `oauth` | Reserved for a caller who signs in to the product and approves the access. This version does not define it. |
+
+A reader reads the three members only on an input with `external: true`, and ignores them on any other input. Each is optional, and an absent one means not stated (Section 6.4): an external input without `access` has not said what the agent does with the thing, and a reader MUST NOT present it as read only. A value of `access` or `grant` that is not listed here, `oauth` included, is read as not stated, never as the nearest listed value. Where an input carries both `grant` and `via`, the two MUST describe the same grant: `identity` is `seat`, `key` is `api_token`, and `oauth` is `oauth`.
+
+Rule 3 of Section 6.4 holds for all three: the Descriptor says `grant: "identity"`, and the identity itself, the secret, and the caller's property are bound per engagement and never written into it. **Each caller's grant is its own**: a platform MUST give each caller's grant its own identity or its own secret, so that one caller can never reach another caller's resource through an agent they both use.
+
+For example, a web analytics agent reads a property the caller names in each request:
+
+```json
+{ "id": "weekly-traffic", "name": "Weekly traffic report",
+  "does": "Reports a week of a site's traffic from its web analytics.",
+  "inputs": [
+    { "name": "property", "kind": "identifier", "required": true, "external": true,
+      "access": "read", "grant": "identity", "provider": "google-analytics" }
+  ],
+  "outputs": [ { "name": "report", "kind": "text/markdown", "when": "per_task" } ] }
+```
+
+When a caller engages it, the platform shows them the identity it made for them, and the caller adds that identity as a Viewer on their own property. Neither the identity nor the property's id appears in the Descriptor.
+
 **Revisions.** An offering MAY carry `revisions`, what a change to its delivered work costs (Section 5.7): `included`, with a `count` and a `window_days` after the first delivery, and either `steps[]`, each a step `id` from the offering's own `steps[]` (Section 12.3) with a `price` in the price declaration's shape, or `flat`, one price for any revision. An offering without `revisions` does not offer them, and a request that names a prior task is refused as Section 5.7 says. The member is a declaration in the sense of Section 6.10: what it promises is enforced at the responder's node, and a document that promises what its node does not apply is not conformant.
 
 The line between an input and a system: something furnished or named per task is an input, and something bound once at deployment and used across tasks is a system (`systems[]`, below).
@@ -449,7 +479,7 @@ A non-file input MUST use a value kind. Forcing an agent handle into a media typ
 
 1. **Every fact has one authored spelling.** A fact appears in the Descriptor once. Any other document carries a projection or a reference (Sections 6.1 and 6.8).
 2. **An absent member means not stated.** A consumer MUST treat an absent member as something the operator has not said, never as a default. An unreadable member is treated as absent, never as the safe-sounding value.
-3. **It carries shapes only.** Media types, region names, and system names belong in a Descriptor. Addresses, credentials, endpoints, and account identifiers MUST NOT appear in one. A document violating this does not conform, whoever wrote it.
+3. **It carries shapes only.** Media types, region names, system names, and product names such as an external input's `provider` belong in a Descriptor. Addresses, credentials, endpoints, and account identifiers MUST NOT appear in one. A document violating this does not conform, whoever wrote it.
 4. **Evidence stays outside it.** Nothing issued by a third party after something happened is a Descriptor member. A Descriptor states; records and verdicts check.
 
 ### 6.5 Versioning and the digest
@@ -1624,6 +1654,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.29.0-draft (2026-10-22).** External inputs say what the caller grants. Section 6.2 gains three optional members on an input marked `external: true`: `access`, in the vocabulary of `systems[].access` (`read`, `write`, `trigger`); `grant`, how the caller gives the access, `identity` (the caller adds an identity the platform shows them, and no key is shared) or `key` (the caller supplies a secret the platform keeps in the caller's key store or its own), with `oauth` reserved and not defined; and `provider`, the product the thing lives in, such as `google-analytics`, a name and never an address or an account identifier. An unlisted value of `access` or `grant`, `oauth` included, is read as not stated, and where an input carries both `grant` and `via` they describe the same grant. A platform MUST give each caller's grant its own identity or its own secret, so one caller can never reach another caller's resource through a shared agent. Rule 3 of Section 6.4 names product names among the shapes a Descriptor carries. The section gains an example, a web analytics agent. No other requirement, member, attribute or section number changes.
 
 **0.28.11-draft (2026-10-20).** No change to the text of the specification. This version publishes commonagent.net with the minimal contracting profile at 0.5.3-draft, at /minimal-contracting.html. The profile moves with Agent Messaging 0.9.7-draft, whose `canceled_by` is now verified or unverified, and requires nothing new, because it does not require Sections 7.1 and 10.8. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
