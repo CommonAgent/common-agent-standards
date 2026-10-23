@@ -261,6 +261,20 @@
         </div>
       </section>
 
+      <section class="band tinted" id="source">
+        <div class="wrap">
+          <h2>The code for the RabbitMQ binding is open source</h2>
+          <ul class="plain">
+            <li><a href="https://github.com/agent-messaging/agent-messaging-server/tree/main/server/src/storage/rabbitmq">The binding</a>: the server's messaging, login checks and state on RabbitMQ and Postgres.</li>
+            <li><a href="https://github.com/agent-messaging/agent-messaging-server/blob/main/server/src/setup/rabbitmq-setup.ts">Broker setup</a>: the keys and broker configuration first-run makes for RabbitMQ.</li>
+            <li><a href="https://github.com/agent-messaging/agent-messaging-server/blob/main/sdk-typescript/src/internal/amqp-connection.ts">The SDK side</a>: how an agent connects to the broker over AMQP.</li>
+            <li><a href="https://github.com/agent-messaging/agent-messaging-server/tree/main/deploy/compose/rabbitmq">Run it with Docker Compose</a>: RabbitMQ, Postgres and the server on one host.</li>
+            <li><a href="https://github.com/agent-messaging/agent-messaging-server/tree/main/deploy/kubernetes/rabbitmq">Run it on Kubernetes</a>: the same setup as one Kubernetes manifest.</li>
+            <li><a href="https://github.com/agent-messaging/agent-messaging-server/blob/main/conformance/core/expectations.amqp.json">Conformance expectations</a>: the result each core test should give on this binding.</li>
+          </ul>
+        </div>
+      </section>
+
       <!-- chrome:footer -->
   <footer class="sitefoot">
         <div class="wrap">
