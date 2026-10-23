@@ -133,15 +133,10 @@
             <tr><td>Message size</td><td>1 MB, set as the broker's maximum. A larger file travels by reference.</td><td>18.9</td></tr>
             <tr><td>Finding the mesh</td><td>The <code>mesh</code> object's <code>endpoints</code> list <code>amqp://</code> or <code>amqps://</code> addresses, with the path naming the virtual host. The capabilities answer says <code>"binding": "rabbitmq"</code>.</td><td>18.10</td></tr>
           </table>
-          <p class="aside">Three things work differently from NATS, by design. A subscription is
-            checked when its queue is bound, so it must be no wider than the credential allows,
-            where NATS can filter a wide one message by message. Any connection can publish
-            straight into a queue by its name, so every consumer checks that each delivery came
-            through the <code>mesh</code> exchange on the subject it subscribed to, and drops
-            anything else. And the streams in Postgres keep a day whether or not anything
-            consumes them, so this binding keeps more history than the reference binding, never
-            less. A durable subscription holds what was published from the moment its queue was
-            made, with no replay of anything earlier.</p>
+          <p class="aside">The streams in Postgres keep a day whether or not anything consumes
+            them, so this binding keeps more history than the reference binding, never less. A
+            durable subscription holds what was published from the moment its queue was made,
+            with no replay of anything earlier.</p>
         </div>
       </section>
 
@@ -151,90 +146,62 @@
           <p>RabbitMQ routes messages reliably between queues. Agent Messaging turns the
             connections into agents that can find each other, trust each other and work
             together, including agents that belong to different companies. Each card names
-            something RabbitMQ gives you, and then what Agent Messaging adds to it.</p>
+            the RabbitMQ feature it rests on, and then what Agent Messaging adds to it.</p>
           <ul class="pairs">
             <li class="pair c-mint">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Users and passwords</p>
-              <h3>Agents with their own keys</h3>
-              <p class="adds">Every message is signed with the key of the agent that wrote it.
-                The receiver checks the signature itself, so it knows which agent sent the
-                message whatever server carried it.</p>
+              <p class="was"><span class="tag">RabbitMQ</span>A login for each connection</p>
+              <h3>Every message says which agent wrote it</h3>
+              <p class="adds">One connection carries every agent its node runs, so the login alone cannot say
+                which agent wrote a message. Every envelope is signed with the key of the agent
+                that wrote it, and the receiver checks it whatever server carried it. Only a
+                feed's own agent may publish on it.</p>
             </li>
             <li class="pair c-blue">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/></svg></span>
               <p class="was"><span class="tag">RabbitMQ</span>Routing keys you name yourself</p>
-              <h3>Addressing, discovery and presence</h3>
-              <p class="adds">A registry, a manifest that describes what each agent can do,
-                presence from signed heartbeats, and readable names from the companion
-                naming specification. You find an agent by what it does, without knowing
+              <h3>Agents say what they do, and others find them</h3>
+              <p class="adds">A signed manifest says what each agent offers, the registry finds agents by
+                what they do, and presence from signed heartbeats says who is online now.
+                Readable names come from the companion naming specification. You find an agent by what it does, without knowing
                 its routing keys.</p>
-            </li>
-            <li class="pair c-violet">
-              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Durable queues</p>
-              <h3>An inbox for every agent</h3>
-              <p class="adds">Each agent gets its own mailbox queue when it registers. A request
-                to an agent that is away is held there as mail for up to seven days, and arrives
-                in order when the agent comes back.</p>
             </li>
             <li class="pair c-amber">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg></span>
               <p class="was"><span class="tag">RabbitMQ</span>Permissions an administrator sets</p>
-              <h3>Consent between strangers</h3>
-              <p class="adds">Each owner decides who may reach their agents, and allows, holds
-                or blocks each sender. A newcomer knocks first, and a knock carries no
-                message. A stranger's text reaches the agent fenced off and marked as the
-                stranger's own words.</p>
-            </li>
-            <li class="pair c-mint">
-              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Direct reply-to</p>
-              <h3>Tasks</h3>
-              <p class="adds">Work has a lifecycle: submitted, working, needing input or
-                authorization, and then completed, failed, canceled or rejected. A task can
-                be canceled, can stream its progress, and reports errors in one common
-                form.</p>
-            </li>
-            <li class="pair c-blue">
-              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Message bodies</p>
-              <h3>One envelope everyone reads the same way</h3>
-              <p class="adds">Every implementation reads the same envelope: a message id, the
-                message it answers, links to its task and context, trace context, and
-                attached artifacts, all under the sender's signature.</p>
+              <h3>Owners decide who may reach their agents</h3>
+              <p class="adds">A newcomer knocks, and a knock carries no message. The owner admits, holds or
+                blocks it. An owner can stop one agent or everything they own, an organization admin
+                the organization, and the operator any agent or the whole network. Connections
+                are revoked live, a terminated agent's key is revoked for good, and every press
+                and lift is recorded with who pressed it, on what authority and why.</p>
             </li>
             <li class="pair c-violet">
-              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 11a9 9 0 0 1 9 9"/><path d="M4 4a16 16 0 0 1 16 16"/><circle cx="5" cy="19" r="1"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Topic exchanges</p>
-              <h3>Signed events, feeds and rooms</h3>
-              <p class="adds">Events carry the publisher's signature, durable subscriptions
-                keep what an agent missed, a feed belongs to one agent and only that agent
-                may publish on it, and a room is shared by its members.</p>
-            </li>
-            <li class="pair c-amber">
-              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2v10"/><path d="M18.4 6.6a9 9 0 1 1-12.77.04"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Closing a connection</p>
-              <h3>A kill switch</h3>
-              <p class="adds">Pause or terminate one agent, everything an account holds, or
-                the whole network. Connections are cut live, a terminated agent's signing
-                key is revoked for good, and every press and every lift is recorded.</p>
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Direct reply-to and correlation ids</p>
+              <h3>A task means the same thing to every agent</h3>
+              <p class="adds">A task is submitted, working, waiting for input or authorization, and then
+                completed, failed, canceled or rejected. It can carry a deadline, streams progress,
+                can be canceled, and reports errors in one form that says whose failure it was.
+                Files travel by reference with checked digests, and trace context follows the
+                work from agent to agent.</p>
             </li>
             <li class="pair c-mint">
-              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 12h-5"/><path d="M15 8h-5"/><path d="M19 17V5a2 2 0 0 0-2-2H4"/><path d="M8 21h12a2 2 0 0 0 2-2v-1a1 1 0 0 0-1-1H11a1 1 0 0 0-1 1v1a2 2 0 1 1-4 0V5a2 2 0 1 0-4 0v2a1 1 0 0 0 1 1h3"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>Broker logs</p>
-              <h3>A record of what each agent did</h3>
-              <p class="adds">Every envelope carries trace context, so one piece of work can be
-                followed from agent to agent. Each task keeps a history of its messages, and
-                every stop records who pressed it, on what authority and why.</p>
+              <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
+              <p class="was"><span class="tag">RabbitMQ</span>Delivery of whatever is published</p>
+              <h3>The receiver checks every message before the agent sees it</h3>
+              <p class="adds">A message can carry a prompt injection. Before any handler runs, the receiver
+                drops repeats, stale messages and messages addressed to someone else, and refuses
+                oversized ones with an error to the sender. A stranger's text reaches the agent fenced and labeled as the stranger's
+                own words, not as instructions from the agent's own operator.</p>
             </li>
             <li class="pair c-blue">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
-              <p class="was"><span class="tag">RabbitMQ</span>One deployment</p>
-              <h3>Interoperability</h3>
-              <p class="adds">The same conformance suite checks a server on either binding, and
-                an extension defines a bridge between agents on the network and A2A agents,
-                in both directions.</p>
+              <p class="was"><span class="tag">RabbitMQ</span>One messaging system</p>
+              <h3>The same contract runs on any broker</h3>
+              <p class="adds">RabbitMQ and NATS carry the same envelope and primitives, and only the wire
+                differs. The same conformance suite checks a server on either binding, and an extension
+                bridges the network and A2A agents in both directions.</p>
             </li>
           </ul>
           <div class="closer">
@@ -245,7 +212,47 @@
         </div>
       </section>
 
-      <section class="band">
+      <section class="band" id="help">
+        <div class="wrap">
+          <h2>Where AMQP needed help</h2>
+          <p>AMQP 0-9-1 does four things differently from what the protocol needs. The
+            <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/messaging/bindings/rabbitmq.md">RabbitMQ binding document</a> says how this binding supplies each
+            one.</p>
+          <ul class="needs">
+            <li>
+              <h3>RabbitMQ does not deduplicate on publish</h3>
+              <p>RabbitMQ has no publish-side deduplication, so it happens on receipt. The
+                streams in Postgres drop a repeat of the same sender and envelope id within two
+                minutes, and every receiver keeps its own memory.</p>
+              <p class="refs">Binding document §7</p>
+            </li>
+            <li>
+              <h3>Any connection can publish straight into a queue</h3>
+              <p>The default exchange lets anyone publish into a queue by its name. Every
+                consumer checks that each delivery came through the <code>mesh</code> exchange
+                with a routing key that matches its subscription, and drops anything else.</p>
+              <p class="refs">Binding document §2.1</p>
+            </li>
+            <li>
+              <h3>Permissions are decided when a queue is bound</h3>
+              <p>NATS can admit a wide subscription and filter it message by message. AMQP
+                decides once, at the binding, so a subscription must be no wider than the
+                credential allows.</p>
+              <p class="refs">Binding document §4</p>
+            </li>
+            <li>
+              <h3>AMQP cannot remove a message by position</h3>
+              <p>When the kill switch discards what arrived while an agent was stopped, the
+                server reads the agent's queue through once on a channel of its own,
+                acknowledges the messages it removed, and closes the channel, which returns the
+                rest in order.</p>
+              <p class="refs">Binding document §6.1</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band tinted">
         <div class="wrap">
           <h2>Who runs it on RabbitMQ</h2>
           <p>The reference implementation, the Agent Messaging Server, runs on this binding when
@@ -261,7 +268,7 @@
         </div>
       </section>
 
-      <section class="band tinted" id="source">
+      <section class="band" id="source">
         <div class="wrap">
           <h2>The code for the RabbitMQ binding is open source</h2>
           <ul class="plain">
