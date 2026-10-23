@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.7-draft
+**Version:** 0.9.8-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -6604,3 +6604,10 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > never reads one as the responder's own cancel. No other requirement, field,
 > wire identifier or section number changes. The wire version stays `0.3.0`
 > (§20.1).
+
+> **2026-10-23: Version 0.9.8-draft. Editorial.** The specification text is
+> unchanged. The version publishes the site's Bindings page with Red Hat AMQ
+> Broker (Apache Artemis) as a proposed binding beside NATS JetStream and
+> RabbitMQ. The minimal contracting profile moves to 0.5.4-draft and
+> applies to this version. No requirement, field, wire identifier or
+> section number changes. The wire version stays `0.3.0` (§20.1).
