@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.9.11-draft (2026-10-23)
+
+Editorial, with no normative change. The site's home page leads with what Agent Messaging adds on top of a broker, with the sections What the broker already does and Who does what, and the NATS and RabbitMQ pages each show what Agent Messaging adds there and where the broker needed help (#87). The links that mean the specification, the conformance suite or the RabbitMQ binding document now point into this repository (#88). The minimal contracting profile moves to 0.5.7-draft and applies to this version. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.
+
 ## 0.9.10-draft (2026-10-23)
 
 Editorial, with no normative change. The site's RabbitMQ and NATS pages each add a short list of links to that binding's source code in the Agent Messaging Server: the server's binding, the broker setup, the SDK's connection, the Docker Compose and Kubernetes setups and, for RabbitMQ, the core conformance expectations. The minimal contracting profile moves to 0.5.6-draft and applies to this version. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.

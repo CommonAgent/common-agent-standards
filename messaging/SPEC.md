@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.10-draft
+**Version:** 0.9.11-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -6623,5 +6623,14 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > unchanged. The site's RabbitMQ and NATS pages link to each binding's source
 > code in the Agent Messaging Server. The minimal contracting profile moves to
 > 0.5.6-draft and applies to this version. No requirement, field, wire
+> identifier or section number changes. The wire version stays `0.3.0`
+> (§20.1).
+
+> **2026-10-23: Version 0.9.11-draft. Editorial.** The specification text is
+> unchanged. The site's home, NATS and RabbitMQ pages lead with what Agent
+> Messaging adds on top of a broker, and the site's links to the specification,
+> the conformance suite and the RabbitMQ binding document point into the
+> Common Agent Standards repository. The minimal contracting profile moves to
+> 0.5.7-draft and applies to this version. No requirement, field, wire
 > identifier or section number changes. The wire version stays `0.3.0`
 > (§20.1).
