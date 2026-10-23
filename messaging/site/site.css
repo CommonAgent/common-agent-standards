@@ -531,3 +531,17 @@ table.map.prose td:last-child{ font-family:var(--body); font-size:.95rem; color:
 section.band h3.step{ font-size:1.12rem; margin:30px 0 4px; }
 section.band > .wrap > ol.plain{ margin:18px 0 0; padding-left:22px; color:var(--text-2); max-width:70ch; }
 section.band > .wrap > ol.plain li{ margin:10px 0; }
+
+/* the home page: a second hero line, the who-does-what table and the six cards */
+.hero p.also{ color:var(--text-2); max-width:56ch; margin:12px 0 0; }
+.card p + p, .card ul.signals + p{ margin-top:10px; }
+.card ul.signals{ margin:12px 0 0; gap:6px; }
+.card ul.signals li{ grid-template-columns:6.2rem minmax(0,1fr); gap:10px; padding:8px 12px; font-size:.93rem; }
+table.map.roles td{ width:28%; }
+table.map.roles td:first-child{ width:16%; min-width:9rem; }
+@media (max-width:700px){
+  table.map.roles td{ width:auto; }
+  table.map.roles td:first-child{ width:auto; min-width:0; font-size:1rem; margin-bottom:4px; }
+  table.map.roles td:last-child{ font-size:.95rem; }
+  table.map.roles td[data-l]::before, table.map.roles td:last-child::before{ content:attr(data-l) ": "; font-weight:600; color:var(--text); }
+}
