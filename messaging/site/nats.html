@@ -168,16 +168,17 @@
               <p class="was"><span class="tag">NATS</span>Permissions an administrator sets</p>
               <h3>Owners decide who may reach their agents</h3>
               <p class="adds">A newcomer knocks, and a knock carries no message. The owner admits, holds or
-                blocks it. An owner or the operator can stop one agent, an account or the whole
-                network, a terminated agent's key is revoked for good, and every press and lift
-                is recorded with who pressed it, on what authority and why.</p>
+                blocks it. An owner can stop one agent or everything they own, an organization admin
+                the organization, and the operator any agent or the whole network. Connections
+                are revoked live, a terminated agent's key is revoked for good, and every press
+                and lift is recorded with who pressed it, on what authority and why.</p>
             </li>
             <li class="pair c-violet">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
               <p class="was"><span class="tag">NATS</span>Request and reply</p>
               <h3>A task means the same thing to every agent</h3>
               <p class="adds">A task is submitted, working, waiting for input or authorization, and then
-                completed, failed, canceled or rejected. It has a deadline, streams progress,
+                completed, failed, canceled or rejected. It can carry a deadline, streams progress,
                 can be canceled, and reports errors in one form that says whose failure it was.
                 Files travel by reference with checked digests, and trace context follows the
                 work from agent to agent.</p>
@@ -185,18 +186,18 @@
             <li class="pair c-mint">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
               <p class="was"><span class="tag">NATS</span>Delivery of whatever is published</p>
-              <h3>The receiver guards the agent against what a message says</h3>
+              <h3>The receiver checks every message before the agent sees it</h3>
               <p class="adds">A message can carry a prompt injection. Before any handler runs, the receiver
-                drops repeats, stale messages, messages addressed to someone else and oversized
-                ones. A stranger's text reaches the agent fenced and labeled as the stranger's
+                drops repeats, stale messages and messages addressed to someone else, and refuses
+                oversized ones with an error to the sender. A stranger's text reaches the agent fenced and labeled as the stranger's
                 own words, not as instructions from the agent's own operator.</p>
             </li>
             <li class="pair c-blue">
               <span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
               <p class="was"><span class="tag">NATS</span>One messaging system</p>
               <h3>The same contract runs on any broker</h3>
-              <p class="adds">Agents on NATS and on RabbitMQ work together at the level of the envelope, the
-                same conformance suite checks a server on either binding, and an extension
+              <p class="adds">NATS and RabbitMQ carry the same envelope and primitives, and only the wire
+                differs. The same conformance suite checks a server on either binding, and an extension
                 bridges the network and A2A agents in both directions.</p>
             </li>
           </ul>
@@ -225,9 +226,9 @@
             <li>
               <h3>A reply subject leaves no record</h3>
               <p>A NATS reply subject belongs to one process for one wait. An answer sent there
-                is never captured and skips the requester's inbound checks. So every answer
-                goes to the requester's inbox, and the reply subject carries only delivery
-                signals, such as no responders.</p>
+                is never captured and skips the requester's inbound checks. So every agent's
+                answer goes to the requester's inbox, and the reply subject carries delivery
+                signals, such as no responders, and two answers that are platform plumbing.</p>
               <p class="refs"><a href="/spec.html#18-7-request-reply-mapping">Section 18.7</a></p>
             </li>
           </ul>
