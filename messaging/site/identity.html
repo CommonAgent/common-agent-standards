@@ -115,9 +115,9 @@
           <h2>By default, the agent holds its own key</h2>
           <p>An agent makes an Ed25519 key pair where it runs. The public half is its address on the
             mesh, and the private half never leaves it. It enrolls once with a one-time key from the
-            operator, and from then on it signs every message it sends (§4.3, §5.3). The node that
+            operator, and from then on it signs every message it sends. The node that
             hosts it vouches for it, the node's account vouches for the node, and every account has an
-            owner who answers for its agents (§4.1 to §4.4, §4.9).</p>
+            owner who answers for its agents.</p>
           <div class="cards three">
             <div class="card">
               <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg></span>
@@ -135,7 +135,7 @@
               <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/></svg></span>
               <h3>It stops at once</h3>
               <p>Revoking an agent cuts its connections across the mesh while they are open, and
-                receivers refuse what it signs from then on (§4.8, §4.12).</p>
+                receivers refuse what it signs from then on.</p>
             </div>
           </div>
           <p class="aside">The default needs nothing else installed. A developer with the SDK and
@@ -152,23 +152,23 @@
           <ol class="fixed">
             <li><b>Every message proves its own sender.</b>The signature travels with the message, and
               a receiver can check it later, offline, with nothing from the sender's identity
-              provider.<span class="refs">§5.3</span></li>
+              provider.</li>
             <li><b>Every agent answers to an owner.</b>Whatever system an agent's identity comes from,
-              it belongs to an account that has an owner.<span class="refs">§4.1, §4.9</span></li>
+              it belongs to an account that has an owner.</li>
             <li><b>Stopping belongs to the mesh.</b>The kill switch works whatever state a company's
               identity provider is in. Disabling an agent there can add to it, and the mesh never
-              waits for it.<span class="refs">§4.12</span></li>
+              waits for it.</li>
             <li><b>Reading a message calls out to no one.</b>Checks happen when an agent enrolls or
               when a bridge accepts a call. Reading a message never waits on a token check against
-              someone's server.<span class="refs">§5.3</span></li>
+              someone's server.</li>
             <li><b>Companies need no setup between them.</b>Two companies' agents can talk without
               arranging federation first.</li>
             <li><b>The way in stays narrow.</b>Before an agent is admitted, there are two verbs,
               <code>describe</code> and <code>knock</code>. An identity standard never adds a
-              third.<span class="refs">§1.5, EXT-6</span></li>
+              third.</li>
             <li><b>Standards are welcome and products are optional.</b>Agent Messaging accepts open
               standards with more than one implementer, and it never requires one vendor's
-              system.<span class="refs">§1.3</span></li>
+              system.</li>
           </ol>
         </div>
       </section>
@@ -234,7 +234,7 @@
               <h3>Working with a company keeps it the person's</h3>
               <p>A personal agent that works with a company's agents stays a native agent with its own
                 owner. When a task needs it, the agent carries the person's delegation as evidence in
-                <code>on_behalf_of</code> (§4.16), and the company's agents check it.</p>
+                <code>on_behalf_of</code>, and the company's agents check it.</p>
             </div>
             <div class="card">
               <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
@@ -260,7 +260,7 @@
 <tr><th scope="row" class="req">Prove which agent this is</th><td>A workload identifier, such as a SPIFFE ID, with a credential that proves it: an X.509-SVID over mTLS or a JWT-SVID. OAuth 2.0 access tokens and other signed JWTs from an identity provider, checked against the keys the issuer publishes. Later, WIMSE workload identity tokens.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Accepted at the edge</span>A Native agent uses one to enroll. A Bridged agent presents one on every call. Each tenant lists the issuers and trust domains it trusts, and every identity they mint belongs to that tenant's account.</td></tr>
 <tr><th scope="row" class="req">Show a token belongs to its holder</th><td>DPoP (RFC 9449). Tokens bound to an mTLS certificate (RFC 8705). Later, WIMSE workload proof tokens and HTTP message signatures.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Checked when present</span>A tenant can require it, so a stolen token is useless to whoever stole it.</td></tr>
 <tr><th scope="row" class="req">Act for a person</th><td>OAuth token exchange (RFC 8693) for acting on a user's behalf. The Identity Assertion JWT Authorization Grant, which Okta ships as Cross App Access. Transaction tokens. CIBA approval. Payment mandates.</td><td><span class="r w"><span class="mk w" aria-hidden="true"></span>Carried as evidence</span>The message carries the person's delegation token, and the receiver checks it against its own audience. The mesh records the approval and never issues the token.</td></tr>
-<tr><th scope="row" class="req">Govern agents</th><td>An inventory of agents, a human owner for each, a kill switch, and an audit trail. Shared Signals (CAEP and RISC events) that tell other systems an identity was revoked.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Already in the core profile</span>Every account has an owner, the kill switch is live, and every press is recorded (§4.9, §4.12). Governance tools can read these from the server. A Shared Signals event from a trusted issuer can stop an agent at once, adding to the kill switch.</td></tr>
+<tr><th scope="row" class="req">Govern agents</th><td>An inventory of agents, a human owner for each, a kill switch, and an audit trail. Shared Signals (CAEP and RISC events) that tell other systems an identity was revoked.</td><td><span class="r n"><span class="mk n" aria-hidden="true"></span>Already in the core profile</span>Every account has an owner, the kill switch is live, and every press is recorded. Governance tools can read these from the server. A Shared Signals event from a trusted issuer can stop an agent at once, adding to the kill switch.</td></tr>
               </tbody>
             </table>
           </div>
@@ -317,12 +317,9 @@
             token against its issuer, an identity provider's disable as the only way to stop an
             agent, SAML for agents, and any requirement to use one vendor's product.</p>
           <p class="aside">All of this is in <a href="/spec.html#4-13-identity-what-is-fixed-and-what-plugs-in">Agent
-            Messaging 0.8</a>: what stays fixed (§4.13), enrollment by an outside proof
-            (<a href="/spec.html#4-14-native-enrollment-by-an-outside-proof">§4.14</a>), identity bridges
-            (<a href="/spec.html#4-15-identity-bridges">§4.15</a>), acting for a person
-            (<a href="/spec.html#4-16-acting-for-a-person">§4.16</a>), where an identity came from
-            (<a href="/spec.html#9-7-node-profile">§9.7</a>), admission by source (EXT-6 0.5.0) and stop
-            signals (§4.12). The <a href="https://github.com/agent-messaging/agent-messaging-server/releases/tag/server-v0.2.0">Agent
+            Messaging 0.8</a>: what stays fixed, enrollment by an outside proof,
+            identity bridges, acting for a person, where an identity came from, admission by
+            source (EXT-6 0.5.0) and stop signals. The <a href="https://github.com/agent-messaging/agent-messaging-server/releases/tag/server-v0.2.0">Agent
             Messaging Server 0.2</a> implements every part. Nothing changes on a server until its operator
             trusts an identity system for a tenant. Its example 07 enrolls an agent with a JWT-SVID from
             SPIRE, example 08 enrolls one agent with a DPoP-bound OAuth token and brings another in

@@ -97,7 +97,7 @@
           runs NATS. The <a href="/bindings.html">bindings page</a> compares NATS with the
           other messaging systems that could carry the protocol.</p>
         <div class="cta">
-          <a class="btn btn-primary" href="/spec.html#18-bindings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read section 18, Bindings</a>
+          <a class="btn btn-primary" href="/spec.html#18-bindings"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read the bindings in the specification</a>
           <a class="btn btn-ghost" href="/bindings.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>What any binding provides</a>
         </div>
       </div>
@@ -111,29 +111,29 @@
             <a href="/spec.html">the specification</a>. A node or SDK built for this binding
             speaks the NATS client protocol to a NATS server, which the specification calls
             a mesh server.</p>
-          <table class="map">
-            <tr><th>The protocol needs</th><th>On NATS JetStream</th><th>Section</th></tr>
-            <tr><td>Subjects and wildcards</td><td>NATS subjects. <code>*</code> matches one token and <code>&gt;</code> matches the rest.</td><td>14.2, 18.1</td></tr>
-            <tr><td>Node keys</td><td>Ed25519 NKeys. The node's public NKey is its node id.</td><td>18.2</td></tr>
-            <tr><td>Node credentials</td><td>A User JWT signed by an account signing key, carrying the node's publish and subscribe permissions.</td><td>18.2</td></tr>
-            <tr><td>Tenants</td><td>NATS accounts, with subject imports and exports between them.</td><td>15, 18.2</td></tr>
-            <tr><td>Live revocation</td><td>The Account JWT's revocations, pushed to the running servers on <code>$SYS.REQ.CLAIMS.UPDATE</code> under the full resolver.</td><td>18.2</td></tr>
-            <tr><td>Domain events</td><td>The <code>MESH_EVENTS</code> stream on <code>mesh.event.&gt;</code>, with interest retention.</td><td>18.3</td></tr>
-            <tr><td>Feeds</td><td>The <code>MESH_FEED</code> stream for stream feeds, and a KV bucket for state feeds.</td><td>18.3</td></tr>
-            <tr><td>Durable subscriptions</td><td>Durable consumers with explicit acknowledgment. Each agent has one feed consumer.</td><td>18.6</td></tr>
-            <tr><td>Mail for an offline agent</td><td><code>MESH_INBOX_{agent_id}</code>, holding up to seven days or 25 MB per agent.</td><td>16.4, 18.3</td></tr>
-            <tr><td>Presence</td><td>The <code>MESH_HEARTBEAT</code> stream, with five minutes of retention.</td><td>9.6, 18.3</td></tr>
-            <tr><td>Tasks</td><td>The <code>mesh_tasks</code> KV bucket, with updates on the <code>MESH_TASKS</code> stream.</td><td>18.4</td></tr>
-            <tr><td>The registry</td><td>The <code>mesh_registry</code> KV bucket, with the descriptor and evaluation-record buckets beside it.</td><td>9.1, 18.4</td></tr>
-            <tr><td>Files</td><td>The <code>mesh_artifacts</code> object store. Any store will do, because a file reference is opaque.</td><td>18.5</td></tr>
-            <tr><td>Request and reply</td><td>Plain publishes on inbox subjects. A NATS reply subject only signals whether the agent is connected.</td><td>18.7</td></tr>
-            <tr><td>Deduplication</td><td>The <code>Nats-Msg-Id</code> header set to the envelope id, with a two-minute window.</td><td>18.8</td></tr>
-            <tr><td>Message size</td><td>1 MB by default. A larger file travels by reference.</td><td>18.9</td></tr>
+          <table class="map prose twocol">
+            <tr><th>The protocol needs</th><th>On NATS JetStream</th></tr>
+            <tr><td>Subjects and wildcards</td><td>NATS subjects. <code>*</code> matches one token and <code>&gt;</code> matches the rest.</td></tr>
+            <tr><td>Node keys</td><td>Ed25519 NKeys. The node's public NKey is its node id.</td></tr>
+            <tr><td>Node credentials</td><td>A User JWT signed by an account signing key, carrying the node's publish and subscribe permissions.</td></tr>
+            <tr><td>Tenants</td><td>NATS accounts, with subject imports and exports between them.</td></tr>
+            <tr><td>Live revocation</td><td>The Account JWT's revocations, pushed to the running servers on <code>$SYS.REQ.CLAIMS.UPDATE</code> under the full resolver.</td></tr>
+            <tr><td>Domain events</td><td>The <code>MESH_EVENTS</code> stream on <code>mesh.event.&gt;</code>, with interest retention.</td></tr>
+            <tr><td>Feeds</td><td>The <code>MESH_FEED</code> stream for stream feeds, and a KV bucket for state feeds.</td></tr>
+            <tr><td>Durable subscriptions</td><td>Durable consumers with explicit acknowledgment. Each agent has one feed consumer.</td></tr>
+            <tr><td>Mail for an offline agent</td><td><code>MESH_INBOX_{agent_id}</code>, holding up to seven days or 25 MB per agent.</td></tr>
+            <tr><td>Presence</td><td>The <code>MESH_HEARTBEAT</code> stream, with five minutes of retention.</td></tr>
+            <tr><td>Tasks</td><td>The <code>mesh_tasks</code> KV bucket, with updates on the <code>MESH_TASKS</code> stream.</td></tr>
+            <tr><td>The registry</td><td>The <code>mesh_registry</code> KV bucket, with the descriptor and evaluation-record buckets beside it.</td></tr>
+            <tr><td>Files</td><td>The <code>mesh_artifacts</code> object store. Any store will do, because a file reference is opaque.</td></tr>
+            <tr><td>Request and reply</td><td>Plain publishes on inbox subjects. A NATS reply subject only signals whether the agent is connected.</td></tr>
+            <tr><td>Deduplication</td><td>The <code>Nats-Msg-Id</code> header set to the envelope id, with a two-minute window.</td></tr>
+            <tr><td>Message size</td><td>1 MB by default. A larger file travels by reference.</td></tr>
           </table>
           <p class="aside">The <code>MESH_EVENTS</code> stream keeps an event only while a
             consumer or a sourcing stream is interested in it. A deployment that wants the
             history of a domain creates that consumer or stream before the history it
-            wants (§18.3).</p>
+            wants.</p>
         </div>
       </section>
 
@@ -212,8 +212,7 @@
       <section class="band" id="help">
         <div class="wrap">
           <h2>Where NATS needed help</h2>
-          <p>Two things in NATS do not fit the protocol as they come, and section 18 of the
-            specification says how the reference binding handles each one.</p>
+          <p>Two things in NATS do not fit the protocol as they come, and the specification says how the reference binding handles each one.</p>
           <ul class="needs">
             <li>
               <h3>A permission names a consumer only as a whole</h3>
@@ -221,7 +220,6 @@
                 feed would need a wildcard grant, and that would let any agent take another
                 agent's deliveries. So each agent has one feed consumer named by its own key,
                 and following a feed adds that feed's subject to it.</p>
-              <p class="refs"><a href="/spec.html#18-6-consumer-configuration">Section 18.6</a></p>
             </li>
             <li>
               <h3>A reply subject leaves no record</h3>
@@ -229,7 +227,6 @@
                 is never captured and skips the requester's inbound checks. So every agent's
                 answer goes to the requester's inbox, and the reply subject carries delivery
                 signals, such as no responders, and two answers that are platform plumbing.</p>
-              <p class="refs"><a href="/spec.html#18-7-request-reply-mapping">Section 18.7</a></p>
             </li>
           </ul>
         </div>
@@ -241,7 +238,7 @@
           <p>The reference implementation, the Agent Messaging Server, runs on this binding
             and implements the core profile.</p>
           <div class="doors">
-            <a class="door c-mint" href="/spec.html#18-bindings"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>Section 18</h3><p>It holds the binding requirements and the full NATS JetStream binding.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
+            <a class="door c-mint" href="/spec.html#18-bindings"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The bindings in the specification</h3><p>It holds the binding requirements and the full NATS JetStream binding.</p><p class="go">Read it<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
             <a class="door c-blue" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>Its tests run over this binding against any server you point them at.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
           </div>
         </div>
