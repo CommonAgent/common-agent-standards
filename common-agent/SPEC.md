@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.33.1-draft
+**Version:** 0.34.0-draft
 **Status:** Working draft, 2026-10-24. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -998,6 +998,108 @@ Whoever resolves a run config for a job (Section 5.8) writes the result on the r
 
 The member is its writer's word, signed or unsigned with the rest of the record that carries it under Section 8.1. It says which values the job was handed. Whether the agent used them is what the agent's job manifest states, and the two are compared by digest.
 
+### 8.8 Security events and quarantine (proposed)
+
+**Proposed in 0.34.0-draft, for review.** This section is a proposal. It is not part of conformance (Section 14) until a later version removes this paragraph, and it may change or be withdrawn before then. Its MUST and SHOULD state what it would require once adopted.
+
+#### 8.8.1 Security events
+
+When something goes wrong, the owner needs one account of what each boundary refused, held or let through during a job, in the same words whichever node or platform produced it. A **security event** is a small signed record of one such moment: a record under Section 8.1, tag `agent-security-event-v1`, whose `act` comes from this closed list.
+
+| `act` | What happened | `reason` |
+|-------|---------------|----------|
+| `admission_refused` | The door held or blocked a sender, or refused a message its grants do not cover (Section 7.1). | `hold`, `block`, `grant_missing`, `rate_cap` |
+| `screening_flagged` | A screener answered flag or hold, or did not answer and the content went unscreened (Section 7.3). | `flag`, `hold`, `unscreened` |
+| `scope_refused` | The boundary refused a request with `SCOPE_REFUSED` (Section 6.11). | that refusal's own `reason` |
+| `signature_failed` | An envelope, a record, a Descriptor, a package or a sealed payload did not verify (Sections 4.8, 8.1, 6.6, 12.7, 7.2). | `envelope`, `record`, `descriptor`, `package`, `sealed` |
+| `package_refused` | A depot refused a publish, or an installer refused an install, update or reconfigure (Section 12.7). | `digest`, `schema`, `credential_value`, `no_ceiling`, `withdrawn`, `terminated` |
+| `credential_used` | A named credential left the owner's store for an agent, or was attached to one call on its behalf. | `placed`, `attached` |
+| `ceiling_hit` | Work was refused or paused at a ceiling (Sections 5.4, 7.5, 12.4). | `budget`, `allowance`, `system`, `job_seconds` |
+| `egress_denied` | An enforcement point refused a connection the agent tried to make. | `undeclared`, `not_allowed` |
+| `approval_asked` | Work was held for a person's yes (Sections 7.1 and 7.5). | `order`, `allowance` |
+| `approval_given` | The person said yes. | as asked |
+| `approval_refused` | The person said no, or did not answer in time. | as asked |
+| `stop_pressed` | A stop was placed on the agent (the binding's stop control). | `pause`, `terminate` |
+| `stop_lifted` | A pause was lifted. | none |
+| `outputs_quarantined` | A quarantine was issued, or applied by a recipient (8.8.2). | `manifests`, `window`, `since` |
+| `quarantine_ended` | A quarantine was released or confirmed (8.8.2). | `released`, `confirmed` |
+
+The list of acts is closed, and a new act is a new version of this specification. A `reason` a reader does not know is carried verbatim, never dropped, as with the fault vocabulary of Section 7.4.
+
+**The record.**
+
+| Member | Holds |
+|--------|-------|
+| `role`, `act` | What the emitter is (`node`, `platform`, `installer`, `depot`, `store`, `proxy` or `owner`), and the event, from the table above. |
+| `subject` | The agent the event is about: `key`, and `handle` where known. |
+| `counterparty` | The other party's key, where there is one, such as a held sender. |
+| `trace_id` | The job's trace id, 32 lowercase hex as in W3C Trace Context, as the binding carries it (Agent Messaging carries one in every envelope, its §13.1). |
+| `task_id` | The task the event happened in. An event inside a job MUST carry `trace_id` or `task_id`, and SHOULD carry both. |
+| `policy` | Where a policy decided: `kind` and `version`. The kinds are `roster` (its timestamp), `screening` (the provider's policy version, Section 7.3), `allowance` (its timestamp), `descriptor` (the bound Descriptor's digest, for a scope refusal), `run_config` (its digest, Section 8.7) and `egress`. |
+| `reason` | From the table. |
+| `decided_by` | On a refusal, as in Section 4.7. |
+| `refs[]` | The digests of the records the event points to: the screening verdict, the deployment record, the stop's record, a quarantine act, a job manifest. |
+| `count`, `first_at` | OPTIONAL. Repeats of one act with the same subject, reason and counterparty within a minute MAY be one event with a count. |
+| `produced_at`, `by`, `signatures` | The trunk. |
+
+**Shapes only.** An event carries no message body, excerpt or subject line, no credential value, no vendor name, no endpoint and no upstream error body, as with the held report (Section 7.1) and the health record (Section 7.4). A system appears by its declared name and a credential by its name. An `egress_denied` event names the declared system the destination matched, or `undeclared`, and never the destination.
+
+**Who emits.** Whoever applies a check MUST emit the event for it, signed with its own key (a node with the key its binding gives it) and never the subject's: an agent does not report on its own boundary.
+
+- The agent's node: `admission_refused`, `screening_flagged`, `scope_refused`, `signature_failed` for what it verifies, `ceiling_hit` for a budget, an allowance, a system ceiling whose `enforced_by` is `runtime`, or `job_seconds`, and the three approval events.
+- A depot or an installer: `package_refused`, and the installer `credential_used` with `placed` for each credential it places.
+- A store that releases a credential, or a proxy that attaches one: `credential_used`.
+- An egress enforcement point, where one exists: `egress_denied`.
+- The platform: `stop_pressed`, `stop_lifted`, and `ceiling_hit` for a ceiling whose `enforced_by` is `platform`.
+- The issuer of a quarantine, and each recipient that applies it: the two quarantine events.
+
+Where nothing applies a check, nothing emits, and silence means not observed (Section 8.3), never that nothing was refused. After a credential is `placed`, its uses by the agent are not observable, and the record says no more than that.
+
+**Where events go.** An emitter writes each event to a sink that the owner reads and the subject cannot write, change or delete. Events are private to the emitter's owner and to whoever runs the emitter, as the health record is (Section 7.4). They are never broadcast and never sent to a counterparty, which gets only the refusal it is already owed, so an event never breaks the silence of Section 4.7 or the indistinguishable refusal of Section 7.5.
+
+**When the sink is down, the job fails closed.** An emitter MUST keep each event in durable storage outside the subject's reach until the sink has it. A node that can neither reach its sink nor keep events locally MUST refuse new jobs, with a retryable refusal decided by rule whose reason is `events_unrecorded`, and MUST hold its running jobs at their next step until it can record again. Any other emitter refuses the act it cannot record, such as an install or a credential release. A refusal is never withheld for want of a sink: failing closed means refusing more, never admitting more. A job whose refusals leave no record cannot be investigated. The local store keeps one sink outage from stopping every agent at once.
+
+**With the other records.**
+
+- **The deployment record (8.3).** An event a deploy act caused names that record's digest in `refs`. A refused install or update produces no deployment record, so its `package_refused` event is its only record. A deployment record SHOULD carry `events_kept_by`, the key or handle of whoever keeps the subject's sink, so an incident starts from a known place.
+- **The job manifest (5.7) and the run record (8.7).** Events join a job by `trace_id` and `task_id`. A job manifest MAY carry `trace_id`, so the join needs no envelope. A run config's digest is the `policy` version of an event a run config decided.
+- **The AgentDoc (9).** An AgentDoc MUST NOT carry security events, or a count or summary of them, which would be the summary grade of Section 9.3 arrived at another way.
+
+#### 8.8.2 Quarantine
+
+A stop halts what an agent does next. Nothing marks what it already delivered. When an agent's key, package or behavior turns out to be suspect, its past outputs are suspect too, and the parties who received them need to know which ones. A **quarantine** is a signed act that names them. Where a completion carries a signed job manifest with each piece's digest (Section 5.7), the act can name exactly what it covers.
+
+**The act.** A record under Section 8.1, tag `agent-quarantine-v1`:
+
+| Member | Holds |
+|--------|-------|
+| `role`, `act` | `owner`, `organization` or `platform`; `quarantine`, `release` or `confirm`. |
+| `id` | The quarantine's id, chosen by its issuer and the same on its later acts. |
+| `subject` | The agent whose outputs are covered: `key`, and `handle` where known. |
+| `covers` | Exactly one of: `manifests`, a list of job manifests, each by `task_id` and `digest` (`sha256:` over the manifest's JCS canonical form, `sig` included); `window`, a `from` and a `to`, covering every task the subject completed in that time, with a `to` of null meaning up to this act; or `since`, an `agent_version` or a `package_sha256` and `from`, the time of the deploy that installed it, which the issuer takes from that deployment record and names in `refs`, covering every task the subject completed from then on. `window` and `since` cover tasks with or without a manifest. |
+| `handling` | `hold` or `flag`: what a recipient does with a covered piece. |
+| `reason` | A plain sentence for a person. |
+| `quarantine` | On a `release` or a `confirm`, the digest of the `quarantine` act. A release MAY name a narrower `covers`, and what it leaves out stays covered. |
+| `instructed_by` | Where the platform signed on the owner's instruction, the owner, whose authority the act then carries. |
+| `refs[]` | Digests of what the act rests on: the stop's record, the deployment record, security events, an incident record. |
+| `produced_at`, `by`, `signatures` | The trunk. |
+
+**Who may issue it.** A quarantine is signed by the subject's owner, an organization admin, or the platform that runs the subject, under the authority that may stop it (Agent Messaging §4.12: the owner, an organization admin, the operator). It is never signed with the subject's own key, because a quarantine is often issued because that key, or what runs under it, is suspect. Anyone who may issue a quarantine over the subject may confirm one. Only the issuer, or a higher authority, may release one, so an owner cannot release a platform's quarantine. A confirmed quarantine is never released. A recipient MUST verify the act's signature and the issuer's authority over the subject, and MUST carry an act that fails either check as failed (Section 8.1) and apply nothing.
+
+**What a recipient does.** A recipient is any party a covered output was delivered to. On a verified `quarantine`, its node:
+
+1. finds the covered pieces it holds, by manifest digest, or by the subject and the completion time;
+2. on `hold`, keeps them from its agent and its model and does not pass them on; on `flag`, lets them through with the reason attached, as a screening flag does (Section 7.3);
+3. tells its owner which pieces are covered, and emits `outputs_quarantined`.
+
+On a `release` it returns the released pieces to use and emits `quarantine_ended` with `released`. On a `confirm` it keeps them covered for good, tells its owner to remove or redo what was built from them, and emits `quarantine_ended` with `confirmed`. A node MUST NOT delete a piece because of a quarantine: it holds, for the reason screening holds rather than blocks (Section 7.3), and the owner decides. A recipient whose own agent delivered work produced from a held piece (its manifests' `produced_from`) SHOULD tell its owner, who MAY quarantine that work in turn. A quarantine never travels further on its own.
+
+**How it reaches recipients.** On the binding's advisory channel, as Agent Messaging does in its §13.6. The issuer MUST have the act sent to every requester its records show received a covered output.
+
+**With stop, rollback and incident response.** A stop halts what the agent does next, and a quarantine deals with what it already did. Neither implies the other, and an issuer that wants both issues both. A terminated agent's outputs stay usable unless a quarantine names them. A rollback (Section 12.7) changes the version that runs and leaves delivered outputs as they were; when that version's work is suspect, a quarantine `since` the version left goes with it. An incident record (Agent Processes, record an incident) SHOULD cite the security events of its window by digest, and a quarantine is one of the decisions its owner may take.
+
+**The events.** The issuer emits `outputs_quarantined` with `reason` the kind of `covers`, and `quarantine_ended` on a release or confirm, each naming the act's digest in `refs`. Each recipient that applies an act emits the same events under its own key.
+
 ## 9. The assembled view: the AgentDoc
 
 An agent describes itself in the Descriptor; others attest in their records; and nobody deciding whether to engage an agent wants six fetches and a mental merge. **The AgentDoc is one document that assembles them**, served from a known location, in a form a program can act on and a person can read. This chapter is the AgentDoc's normative definition; the page at https://agentdoc.net/spec.html is a rendering of it.
@@ -1670,6 +1772,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.34.0-draft (2026-10-24).** A proposal for review, with no change to what conformance requires. A new Section 8.8, marked proposed and outside conformance until a later version adopts it, drafts two records. A security event (8.8.1, tag `agent-security-event-v1`) is a small signed record of one moment a boundary refused, held or let something through, from a closed list of fifteen acts: `admission_refused`, `screening_flagged`, `scope_refused`, `signature_failed`, `package_refused`, `credential_used`, `ceiling_hit`, `egress_denied`, `approval_asked`, `approval_given`, `approval_refused`, `stop_pressed`, `stop_lifted`, `outputs_quarantined` and `quarantine_ended`. Each carries the subject, the emitter, the job's trace id or task id, the policy version where one decided, and a reason code drawn from the refusals and records the specification already defines, and carries shapes only. Whoever applies a check emits its event, never the subject; events are private to the owner; and a node that can neither reach its sink nor keep events locally starts no job. A quarantine (8.8.2, tag `agent-quarantine-v1`) is a signed act by the subject's owner or its platform that marks delivered outputs as suspect, by job manifest, by time window, or since an `agent_version` or package digest, with `release` and `confirm` acts; recipients' nodes hold or flag the covered pieces and never delete them. Agent Messaging 0.9.15-draft proposes how the act travels on its advisory channel.
 
 **0.33.1-draft (2026-10-24).** Editorial, with no normative change. The text no longer names the sponsor, except in two wire values. The opening says Agent Messaging is one network binding without naming an implementation of it, and no longer gives the protocol's former name. Section 7.1 points the invitation's binding form at Section 5 of the Agent Messaging contacts extension, EXT-4. Appendix A cites its sources as the Agent Messaging specification at agentmessaging.ai and its extensions, says what SPEC and EXT mean in its table, names the reference producers by the records they make, and no longer cites unpublished drafts or plans, so its row for Section 12 reads as the Agent Package being defined here first. The wire values `agentmesh-job-manifest-v1` (Section 5.7) and `application/vnd.agentmesh.run-context+json` (Section 6.2) are unchanged. No requirement, member, attribute or section number changes.
 
