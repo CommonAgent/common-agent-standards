@@ -153,7 +153,7 @@
 
         <h2 id="exchanges">2. The exchanges</h2>
         <ol>
-          <li><b>Deploy this.</b> This is the instruction that starts an install. It carries a package, a target host and harness, and the deploy-time decisions: which identity to use, who may call the agent at first, and whether a person attends it. The request also gives the ceiling for each system that spends, and it names any secrets the deployment needs. It never contains their values. The answer is a running agent with an identity, an address and an inbox, whose credentials were placed and whose ceilings were set before it started.</li>
+          <li><b>Deploy this.</b> This is the instruction that starts an install. It carries a package, a target host and harness, and the deploy-time decisions: which identity to use, who may call the agent at first, and whether a person attends it. The request also gives the ceiling for each system that spends, and it names any secrets the deployment needs. It never contains their values. Where the agent needs them, it names the hosts each workspace kind may be reached at and any further network destinations. The answer is a running agent with an identity, an address and an inbox, whose credentials were placed and whose ceilings were set before it started, with what it can reach on the network and what enforces that, or a statement that it runs open.</li>
           <li><b>What is deployed?</b> The answer is the inventory: each agent stood up, its package and version, its target, its identity, and the state it was last known to be in.</li>
           <li><b>How did it go?</b> The answer is the report for one deploy: what was done, what was checked, and what kind of check it was.</li>
           <li><b>Update it.</b> The implementer installs the same package at a newer version, through the same steps and checks.</li>
@@ -176,6 +176,7 @@
 
         <p><i>v0.1.0-draft (2026-08-31): this is the first draft, extracted from the deployment manager role, which previously carried these exchanges inline.</i></p>
         <p><i>v2 (2026-10-24): two exchanges are added, roll it back and reconfigure it, and a deploy sets the agent's credentials and ceilings before it starts. An implementer of v1 answers five exchanges and does not implement v2.</i></p>
+        <p><i>v3 (2026-10-24): a deploy request names the hosts each workspace kind may be reached at and any further network destinations, and the answer says what the agent can reach and what enforces it, or that it runs open. The exchanges are the same seven.</i></p>
       </div>
 
       <!-- chrome:footer -->

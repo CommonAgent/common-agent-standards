@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.3.4
+**Version:** v1.4
 **Status:** Guide
 **Date:** 2026-10-24
 
@@ -715,9 +715,13 @@ These exchanges are the role's primary interface, the deployer
    deploy-time decisions: which identity to mint or use, who may call
    the agent at first, whether a person attends it, and the ceiling for
    each system that spends. The request names the secrets the
-   deployment will need; it never contains them. The answer is a
+   deployment will need; it never contains them. Where the agent needs
+   them, it names the hosts each workspace kind may be reached at and
+   any further network destinations (§11.2, rule 11). The answer is a
    running agent with an identity, an address and an inbox, its
-   credentials placed and its ceilings set before it started, and the
+   credentials placed and its ceilings set before it started, what it
+   can reach on the network and what enforces that, or a statement that
+   it runs open where the target cannot restrict its egress, and the
    signed record.
 2. **What is deployed?** The inventory: each agent it has stood up, its
    package and version, its target, its identity, and the state it was
@@ -807,6 +811,23 @@ These exchanges are the role's primary interface, the deployer
     no new Descriptor. Credentials in a reconfigure
     are named and fetched as they are in a deploy, and a request that
     carries a credential value is refused.
+11. **Egress is recorded as provided.** Every deploy, update, rollback
+    and reconfigure, and any other act of the Common Agent Specification
+    12.7 that changes what is installed, records what the agent can reach on the network
+    after the act, in the record's `egress` (Common Agent Specification
+    8.3), as the deployment manager actually provided it. It SHOULD
+    enforce, by whatever its target supports, an allowlist of the
+    derived set of Common Agent Specification 12.4 together with the
+    further destinations the instruction names (its 12.7). A further
+    destination MUST be
+    named in the instruction and needs an offering that declares the
+    `reaches-network` authority (Common Agent Specification 6.11); an
+    instruction that names one for an agent without it is refused
+    before anything is changed, with a refusal record. Where
+    its target cannot restrict outbound traffic, it records `open` with
+    `enforced_by` of `none` and tells the owner so in its answer. It
+    MUST NOT record `allowlist` where nothing the agent cannot change
+    applies the list.
 
 ### 11.3 The record
 
@@ -835,6 +856,16 @@ document with `signatures` removed.
     { "system": "<system name>", "per": "<what the ceiling is per>",
       "number": "<the ceiling>", "enforced_by": "<the side that applies it>" }
   ],
+  "egress": {
+    "policy": "allowlist",
+    "allowed": [
+      { "name": "<system name>", "from": "system", "address": "<host name>" },
+      { "name": "network", "from": "network", "address": "<host name>" },
+      { "name": "registrar", "from": "registrar", "address": "<host name>" }
+    ],
+    "denied": ["<range or address the mechanism refuses>"],
+    "enforced_by": "<the mechanism that applies it>"
+  },
   "checks": [
     { "kind": "smoke", "passed": true, "at": "<timestamp>",
       "what": "<plain words for what the check exercised>" }
@@ -893,6 +924,17 @@ Rules:
    The act `refuse` is this role's addition to 8.3. A reader that knows
    only 8.3 can still read the record, because every member 8.3 defines
    keeps its meaning.
+10. `egress` is the member of 8.3 with the meaning given there. Every
+    deploy, update, rollback and reconfigure record carries it, as it
+    stands after the act; a reconfigure that changes it lists the change
+    under `changed`, with `what` of `egress`. Every destination the
+    mechanism lets through is listed, and one nothing declared accounts
+    for is listed with `from` of `host`. `allowlist` names in `enforced_by` the mechanism
+    that applies it, and a target that cannot restrict outbound traffic
+    is recorded as `open` with `enforced_by` of `none`. A connection the
+    mechanism refuses while the agent runs is the security event
+    `egress_denied` (Common Agent Specification 8.8.1) and is not written
+    into the record.
 
 ### 11.4 Conformance testing: the deployment manager
 
@@ -914,7 +956,13 @@ previous version under the same identity, and the record must name both
 versions. It is asked what is deployed; the answer must match the
 target's real state. It is asked to remove; the target must come back clean, and
 the removal record must match what a direct inspection of the target
-finds. Finally the harness reads every record: a smoke check reported
+finds. The harness reads the `egress` of every record against the
+target: an `allowlist` must match what the target's mechanism enforces,
+and a target that does not restrict must be recorded as `open` with
+`enforced_by` of `none`. It is given an instruction that names a
+further destination for a package with no offering that declares
+`reaches-network`; it must refuse before anything is installed, and
+record the refusal. Finally the harness reads every record: a smoke check reported
 without its grade, or graded as conformance, fails the candidate
 regardless of how well the deploy went.
 
@@ -2330,7 +2378,7 @@ grant the role.
 1. **Write the architecture.** The architect is given what the agent is for, with whatever exists: the requirements, the organization's own choices of product for each system and environment, the platform's defaults, and any earlier record. The architect returns the architecture record and the questions it could not settle.
 2. **Revise it.** The architect is given a record with what to change. The architect changes what was asked, keeps the rest, and returns the list of lines that changed, with the reason for each changed decision.
 
-The architecture record says six things:
+The architecture record says seven things:
 
 1. **The systems.** Each system the agent reaches, named in plain system words, such as `crm` or `email`. These are the names the Common Agent Specification's runtime requirements carry in `systems[]` (its Section 12.4).
 2. **The bindings.** For each system, the product bound to it in each environment the agent will run in, such as dev, test and production, with each environment named in the words the deploy into it will use, which the deployment record spells `dev`, `test`, `staging` or `production` (Common Agent Specification 8.3). The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from, as the deployment record's `provided_by` does with `customer` or `platform` (Common Agent Specification 8.3).
@@ -2338,6 +2386,7 @@ The architecture record says six things:
 4. **The kind.** What the agent's inside is made of, such as skills that a harness reads or code that answers on the network by itself. A package declares its inside in its own files (Common Agent Specification Section 12). The deployment record's `installed` member uses words such as `plugin-on-harness` and `mesh-coded` for the same thing, as background that nothing is checked against (its Section 8.3).
 5. **The limits.** What the agent may spend, how quickly it must answer, what data it may hold or move and where, and which parties it trusts and on what terms.
 6. **The decisions.** Each choice the record makes, with the reason for it, in the manner of an architecture decision record: what was decided, why, the options that were weighed, and what follows from the choice.
+7. **The egress.** For each environment, what the agent may reach on the network beyond the derived set of the Common Agent Specification 12.4: each further destination named by what it is and why the agent needs it, which only an agent with an offering that declares `reaches-network` may have (Common Agent Specification 6.11), or a statement that it needs none; and whether that environment's target can enforce an allowlist or will run the agent `open`, the two policies the deployment record's `egress` spells (Common Agent Specification 8.3). The addresses are not in the record: the owner's instruction supplies them at Deploy. A further destination is a commitment, so the architect asks for it and does not fill it in (§36.2, rule 6).
 
 ### 36.2 The contract
 
@@ -2346,7 +2395,7 @@ The architecture record says six things:
 3. **Every system is bound in every environment.** Each system MUST have a product in each environment the agent will run in. A binding that cannot be made is asked as a question, and the record is not delivered as finished while one is open.
 4. **The organization's choice wins.** Where the organization chose a product for a system in an environment, the architect MUST bind that product. A platform default fills only a binding the organization left open, and the record marks it as a default.
 5. **Every decision has a reason.** A decision without a reason MUST NOT be delivered. The architect gives the reason or asks for it.
-6. **A commitment is asked, never filled.** A spending limit, a product that neither the organization chose nor the platform offers, and access to a system the requirements do not call for are commitments somebody would be held to. The architect MUST ask for each and MUST NOT fill it in.
+6. **A commitment is asked, never filled.** A spending limit, a product that neither the organization chose nor the platform offers, access to a system the requirements do not call for, and a network destination beyond the derived set are commitments somebody would be held to. The architect MUST ask for each and MUST NOT fill it in.
 7. **The record carries no secret and no address.** It names products, and MUST NOT carry a credential value, an address or an account identifier, for the reason the Common Agent Specification gives for the package's own declarations (its Section 12.6 rule 3).
 
 The Architecture part is done when every system is named and bound in each environment the agent will run in, every decision has a reason, and every step of the design uses only systems the record named. The architect checks the first two before it delivers. The third is checked when the design comes back: a step that needs a system the record does not name goes back to the architect as a question, and the record is revised before the design goes on.

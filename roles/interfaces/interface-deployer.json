@@ -1,11 +1,11 @@
 {
   "interface": "interface-deployer",
-  "version": "v2",
+  "version": "v3",
   "title": "The deployer",
   "definition": "https://agentroles.ai/deployer.html",
   "summary": "The deployment manager role's primary interface: standing a packaged agent up, changing it while it runs, and standing it down.",
   "exchanges": [
-    { "id": "deploy", "asks": "deploy this.", "answer_carries": ["a running agent with an identity, an address and an inbox, or a refusal", "its credentials placed by name and its ceilings set before it started", "the signed deployment record at the end"] },
+    { "id": "deploy", "asks": "deploy this.", "answer_carries": ["a running agent with an identity, an address and an inbox, or a refusal", "its credentials placed by name and its ceilings set before it started", "what the agent can reach on the network and what enforces it, or a statement that it runs open", "the signed deployment record at the end"] },
     { "id": "inventory", "asks": "what is deployed?", "answer_carries": ["each agent stood up: package, version, target, identity, last known state"] },
     { "id": "report", "asks": "how did it go?", "answer_carries": ["what was done", "what was checked, and what kind of check it was"] },
     { "id": "update", "asks": "update it.", "answer_carries": ["the newer version through the same steps and checks", "the same record at the end"] },
