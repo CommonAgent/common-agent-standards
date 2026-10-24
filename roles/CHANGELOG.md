@@ -6,7 +6,7 @@ that tag is the text of that version. Its history comes from the repository of a
 
 ## v1.4 (2026-10-24)
 
-One change follows the Common Agent Specification 0.34.0-draft, whose
+One change follows the Common Agent Specification 0.36.0-draft, whose
 deployment record (8.3) gains `egress`. The deployment manager's contract
 gains rule 11 of §11.2: every deploy, update, rollback and reconfigure
 records the egress it actually provided; it SHOULD enforce an allowlist
@@ -16,8 +16,9 @@ instruction and needs an offering that declares `reaches-network`, and
 an instruction that names one without it is refused; and a target that
 cannot restrict is recorded as `open` with `enforced_by` of `none`. The
 deploy request of §11.1 names the workspace hosts and further
-destinations where the agent needs them, and its answer says when the
-agent runs open, as the deployer interface (v3) now says. The record's
+destinations where the agent needs them, and its answer says what the
+agent can reach and what enforces that, or that it runs open, as the
+deployer interface (v3) now says. The record's
 example carries `egress`, rule 10 of §11.3
 says what it holds, and §11.4 checks it against the target and adds the
 refusal case. The solution architect's architecture record (§36.1) says

@@ -719,9 +719,10 @@ These exchanges are the role's primary interface, the deployer
    them, it names the hosts each workspace kind may be reached at and
    any further network destinations (§11.2, rule 11). The answer is a
    running agent with an identity, an address and an inbox, its
-   credentials placed and its ceilings set before it started, a
-   statement that it runs open where the target cannot restrict its
-   egress, and the signed record.
+   credentials placed and its ceilings set before it started, what it
+   can reach on the network and what enforces that, or a statement that
+   it runs open where the target cannot restrict its egress, and the
+   signed record.
 2. **What is deployed?** The inventory: each agent it has stood up, its
    package and version, its target, its identity, and the state it was
    last known to be in.
@@ -811,7 +812,8 @@ These exchanges are the role's primary interface, the deployer
     are named and fetched as they are in a deploy, and a request that
     carries a credential value is refused.
 11. **Egress is recorded as provided.** Every deploy, update, rollback
-    and reconfigure records what the agent can reach on the network
+    and reconfigure, and any other act of the Common Agent Specification
+    12.7 that changes what is installed, records what the agent can reach on the network
     after the act, in the record's `egress` (Common Agent Specification
     8.3), as the deployment manager actually provided it. It SHOULD
     enforce, by whatever its target supports, an allowlist of the
