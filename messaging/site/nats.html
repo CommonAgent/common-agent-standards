@@ -107,10 +107,9 @@
         <div class="wrap">
           <h2>How the protocol maps onto NATS</h2>
           <p>Each row names something the protocol needs and the NATS or JetStream feature
-            that provides it in the reference binding. The section numbers refer to
-            <a href="/spec.html">the specification</a>. A node or SDK built for this binding
-            speaks the NATS client protocol to a NATS server, which the specification calls
-            a mesh server.</p>
+            that provides it in the reference binding. A node or SDK built for this binding speaks the NATS
+            client protocol to a NATS server, which <a href="/spec.html">the specification</a>
+            calls a mesh server.</p>
           <table class="map prose twocol">
             <tr><th>The protocol needs</th><th>On NATS JetStream</th></tr>
             <tr><td>Subjects and wildcards</td><td>NATS subjects. <code>*</code> matches one token and <code>&gt;</code> matches the rest.</td></tr>

@@ -109,10 +109,9 @@
         <div class="wrap">
           <h2>How the protocol maps onto RabbitMQ</h2>
           <p>Each row names something the protocol needs and how this binding provides it, with
-            RabbitMQ 4 carrying the messages and Postgres keeping the state. The section numbers
-            refer to <a href="/spec.html">the specification</a>. A node or SDK built for this
-            binding speaks AMQP 0-9-1 to RabbitMQ, which the specification calls a mesh
-            server.</p>
+            RabbitMQ 4 carrying the messages and Postgres keeping the state. A node or SDK built for
+            this binding speaks AMQP 0-9-1 to RabbitMQ, which <a href="/spec.html">the
+            specification</a> calls a mesh server.</p>
           <table class="map prose twocol">
             <tr><th>The protocol needs</th><th>On RabbitMQ and Postgres</th></tr>
             <tr><td>The wire</td><td>AMQP 0-9-1 over TCP on port 5672, or TLS on 5671, with one virtual host per mesh.</td></tr>
