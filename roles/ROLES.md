@@ -1,8 +1,8 @@
 # Agent Roles: working descriptions
 
-**Version:** v1
+**Version:** v1.1
 **Status:** Guide
-**Date:** 2026-10-18
+**Date:** 2026-10-24
 
 > Agent Roles is a guide. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. Each description says what a holder does, what it needs and what it refuses. The descriptions are semi-formal, and they will change as we learn. Where the text says MUST, SHOULD or MAY, read it as a plain description of what a holder does. The site at https://agentroles.ai shows each role and interface on a page of its own.
 
@@ -839,8 +839,8 @@ other stands it up.
 
 What it emits is an Agent Package as the Common Agent Specification
 defines it (Chapter 12, https://agentdoc.net/package-spec.html): an Agent
-Plugin carrying the agent's draft Descriptor and an install file beside
-the manifest, under the namespace `net.agentdoc.package`. That chapter
+Plugin carrying the agent's draft Descriptor and its runtime requirements
+beside the manifest, under the namespace `net.agentdoc.package`. That chapter
 owns the package's shape; this role owns the judgment a builder must ask
 for and the record it signs.
 

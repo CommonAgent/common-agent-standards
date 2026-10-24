@@ -37,7 +37,8 @@
 // keep the fragment. So every id those pages carried is emitted here too:
 // s1 to s15, appendix-a and changelog on the full text; s5-job-manifest and
 // s12-terms to s12-conformance as aliases there; the standalone names (kinds,
-// rules, layout, install-file and the rest) on the chapter pages. An id that
+// rules, layout, install-file and the rest) on the chapter pages. Section 12.4
+// was "The install file" until 0.30.0-draft, so its former heading id is kept too. An id that
 // stops being emitted is a link somebody holds that stops working.
 import { readFileSync, writeFileSync, cpSync, mkdirSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
@@ -276,7 +277,7 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
 {
   const SPEC_ALIASES = {
     "5.7": ["s5-job-manifest"],
-    "12.1": ["s12-terms"], "12.2": ["s12-layout"], "12.3": ["s12-descriptor"], "12.4": ["s12-install-file"],
+    "12.1": ["s12-terms"], "12.2": ["s12-layout"], "12.3": ["s12-descriptor"], "12.4": ["s12-install-file", "s12-runtime-requirements", "12-4-the-install-file"],
     "12.5": ["s12-skills"], "12.6": ["s12-rules"], "12.7": ["s12-lifecycle"], "12.8": ["s12-provenance"],
     "12.9": ["s12-out"], "12.10": ["s12-conformance"],
   };
@@ -353,13 +354,13 @@ chapter({
 });
 
 // Section 12. The standalone package page used these ids for 1 to 10.
-const PACKAGE_IDS = { "12.1": "terms", "12.2": "layout", "12.3": "descriptor", "12.4": "install-file", "12.5": "skills",
+const PACKAGE_IDS = { "12.1": "terms", "12.2": "layout", "12.3": "descriptor", "12.4": ["install-file", "runtime-requirements", "12-4-the-install-file"], "12.5": "skills",
   "12.6": "rules", "12.7": "lifecycle", "12.8": "provenance", "12.9": "out", "12.10": "conformance" };
 chapter({
   file: "package.html", active: "package", id: "s12", num: 12, name: "The Agent Package", links: true,
   sub: "This section says how an agent travels from a description to a running agent with an identity: what a package contains, how it is published to a depot and installed from one, and how a verifier checks that the agent answering is the package that was built.",
-  description: "The Agent Package, Section 12 of the Common Agent Specification: the layout, the draft Descriptor, the install file, skills, the rules, publish and install, provenance, and conformance.",
-  ids: (lvl, num) => (lvl === 3 && PACKAGE_IDS[num] ? { aliases: [PACKAGE_IDS[num]] } : null),
+  description: "The Agent Package, Section 12 of the Common Agent Specification: the layout, the draft Descriptor, the runtime requirements, skills, the rules, publish and install, provenance, and conformance.",
+  ids: (lvl, num) => (lvl === 3 && PACKAGE_IDS[num] ? { aliases: [PACKAGE_IDS[num]].flat() } : null),
   tail: `\n<p class="chapnote">Where an agent is kept before it is packaged, and how somebody comes to run a copy of their own, is Section 13 of the <a href="/spec.html#s13">specification</a>, the agent repository.</p>`,
 });
 
