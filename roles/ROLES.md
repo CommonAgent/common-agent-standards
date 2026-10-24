@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.3.3
+**Version:** v1.3.4
 **Status:** Guide
 **Date:** 2026-10-24
 

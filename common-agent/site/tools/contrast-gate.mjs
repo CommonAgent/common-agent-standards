@@ -7,7 +7,7 @@
 //
 //   node tools/contrast-gate.mjs                 the working tree (git ls-files *.html), served locally
 //   node tools/contrast-gate.mjs --root <folder> a folder of pages (deploy.sh's staging folder)
-//   node tools/contrast-gate.mjs --base https://dev.agentmesh.ai/   the live site, same page list
+//   node tools/contrast-gate.mjs --base https://commonagent.net/   the live site, same page list
 //   node tools/contrast-gate.mjs --pages a.html,b.html              only these
 //
 // deploy.sh runs it before publishing and refuses on a failure.

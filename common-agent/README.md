@@ -9,12 +9,12 @@ or a signature.
 
 It is the base of the [Common Agent Standards](../README.md), and every other
 standard in the suite builds on it. AgentMesh sponsors the suite. Nothing in
-the specification requires AgentMesh or any other network: Agent Messaging is
+the specification requires any particular network: Agent Messaging is
 one network binding of the agent it defines (Section 11).
 
 ## What is here
 
-- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.33.0-draft.
+- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.33.1-draft.
   It covers the floor every agent meets (the five questions, the exchanges, the
   refusals), the work an agent does, the Agent Descriptor (Section 6), the
   capabilities, the signed records others issue, the AgentDoc (Section 9), the
@@ -41,10 +41,11 @@ one network binding of the agent it defines (Section 11).
 
 Each version is tagged as `common-agent-v` followed by the version, such as
 `common-agent-v0.26.0-draft`, and has a GitHub release. The text of SPEC.md at
-a tag is the text of that version. Versions before 0.26.0-draft were drafted in
-the AgentMesh repository, and their changes are recorded in CHANGELOG.md. The
-specification moved here from jeffrschneider/common-agent-specification, whose
-one commit is part of this folder's history.
+a tag is the text of that version. Versions before 0.26.0-draft were drafted
+before the specification moved here, and their changes are recorded in
+CHANGELOG.md. The specification moved here from
+jeffrschneider/common-agent-specification, whose one commit is part of this
+folder's history.
 
 The site follows the repository. A push to main renders the main branch at
 <https://commonagent.net/draft/>, and a tag renders that version at

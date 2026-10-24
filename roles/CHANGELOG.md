@@ -4,6 +4,17 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.3.4 (2026-10-24)
+
+Editorial, with no change to the text of the descriptions. The catalog
+check (conformance/catalog-check.mjs, published at
+agentroles.ai/checks/catalog-check.mjs) no longer names the private
+repository it was first written in, and its usage no longer shows one
+implementation's command; it still runs any candidate the same way and
+checks the same cases. Comments in the site's build tools no longer name
+the sponsor's repositories or site. No section number, offering name or interface
+changes.
+
 ## v1.3.3 (2026-10-24)
 
 One change follows the Common Agent Specification 0.33.0-draft, whose
