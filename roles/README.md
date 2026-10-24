@@ -8,7 +8,7 @@ The site is <https://agentroles.ai/>. It shows every role and interface on a pag
 
 ## What is here
 
-- [ROLES.md](ROLES.md): the working descriptions, version v1.3.1. The site reads its families, roles, offering names and anchoring from this file.
+- [ROLES.md](ROLES.md): the working descriptions, version v1.3.2. The site reads its families, roles, offering names and anchoring from this file.
 - [interfaces/](interfaces/): a definition file for each interface, for software to read.
 - [conformance/](conformance/): the checks published so far, such as the catalog check.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.

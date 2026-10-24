@@ -4,6 +4,19 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.3.2 (2026-10-24)
+
+One change follows the Common Agent Specification 0.32.0-draft, whose
+deployment record (8.3) now defines the act `update` and the member
+`updated_from`. The deployment manager's rule 7 of §11.3 says an update
+record carries `package` for the new version and `updated_from`, with the
+same members and the Descriptor digest bound before the update, for the
+version it left, so it names both package digests and both Descriptor
+digests. Rule 9 says 8.3 defines `update` with `rollback` and
+`reconfigure`, and names `refuse` as the role's one addition. The
+deployment manager's page on agentroles.ai says the same. No section
+number, offering name, interface or wire string changes.
+
 ## v1.3.1 (2026-10-24)
 
 Two changes follow the Common Agent Specification 0.31.0-draft. The
