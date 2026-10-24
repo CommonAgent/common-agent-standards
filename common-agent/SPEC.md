@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.29.1-draft
+**Version:** 0.29.2-draft
 **Status:** Working draft, 2026-10-23. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -1654,6 +1654,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.29.2-draft (2026-10-23).** No change to the text of the specification. This version publishes commonagent.net with the Every standard page (/standards.html) no longer showing the Agent Messaging explainer video. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 **0.29.1-draft (2026-10-23).** No change to the text of the specification. This version publishes commonagent.net with the Every standard page (/standards.html) showing the Agent Messaging explainer video, with English captions, under the identity and reach group (#93). A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
