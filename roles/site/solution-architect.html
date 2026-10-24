@@ -156,7 +156,7 @@
           <li><b>Write the architecture.</b> The architect is given what the agent is for, with whatever exists: the requirements, the organization's own choices of product for each system and environment, the platform's defaults, and any earlier record. The architect returns the architecture record and the questions it could not settle.</li>
           <li><b>Revise it.</b> The architect is given a record with what to change. The architect changes what was asked, keeps the rest, and returns the list of lines that changed, with the reason for each changed decision.</li>
         </ol>
-        <p>The architecture record says six things.</p>
+        <p>The architecture record says seven things.</p>
         <ol>
           <li><b>The systems.</b> Each system the agent reaches, named in plain system words, such as <code>crm</code> or <code>email</code>. These are the names the Common Agent Specification's runtime requirements carry in <code>systems[]</code> (its Section 12.4).</li>
           <li><b>The bindings.</b> For each system, the product bound to it in each environment the agent will run in, such as dev, test and production, with each environment named in the words the deploy into it will use, which the deployment record spells <code>dev</code>, <code>test</code>, <code>staging</code> or <code>production</code> (<a href="https://commonagent.net/spec.html#8-3-the-deployment-record">Common Agent Specification 8.3</a>). The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from, as the deployment record's <code>provided_by</code> does with <code>customer</code> or <code>platform</code> (Common Agent Specification 8.3).</li>
@@ -164,6 +164,7 @@
           <li><b>The kind.</b> What the agent's inside is made of, such as skills that a harness reads or code that answers on the network by itself. A package declares its inside in its own files (Common Agent Specification <a href="https://commonagent.net/spec.html#12-how-an-agent-travels-the-agent-package">Section 12</a>). The deployment record's <code>installed</code> member uses words such as <code>plugin-on-harness</code> and <code>mesh-coded</code> for the same thing, as background that nothing is checked against (its Section 8.3).</li>
           <li><b>The limits.</b> What the agent may spend, how quickly it must answer, what data it may hold or move and where, and which parties it trusts and on what terms.</li>
           <li><b>The decisions.</b> Each choice the record makes, with the reason for it, in the manner of an architecture decision record: what was decided, why, the options that were weighed, and what follows from the choice.</li>
+          <li><b>The egress.</b> For each environment, what the agent may reach on the network beyond the <a href="https://commonagent.net/spec.html#12-4-the-runtime-requirements">derived set</a> of the Common Agent Specification, which is its systems, the network, the registrar, the model it is given and the hosts its workspace kinds are reached at: each further destination named by what it is and why the agent needs it, which only an agent with an offering that declares <code>reaches-network</code> may have (<a href="https://commonagent.net/spec.html#6-11-scope-and-authority">Common Agent Specification 6.11</a>), or a statement that it needs none; and whether that environment's target can enforce an allowlist or will run the agent <code>open</code>, the two policies the deployment record's <code>egress</code> spells (Common Agent Specification 8.3). The addresses are not in the record: the owner's instruction supplies them at Deploy. A further destination is a commitment, so the architect asks for it and does not fill it in.</li>
         </ol>
 
         <h2 id="contract">2. What it does</h2>
@@ -173,7 +174,7 @@
           <li><b>Every system is bound in every environment.</b> Each system has a product in each environment the agent will run in. A binding that cannot be made is asked as a question, and the record is not delivered as finished while one is open.</li>
           <li><b>The organization's choice wins.</b> Where the organization chose a product for a system in an environment, the architect binds that product. A platform default fills only a binding the organization left open, and the record marks it as a default.</li>
           <li><b>Every decision has a reason.</b> A decision without a reason is not delivered. The architect gives the reason or asks for it.</li>
-          <li><b>A commitment is asked, never filled.</b> A spending limit, a product that neither the organization chose nor the platform offers, and access to a system the requirements do not call for are commitments somebody would be held to. The architect asks for each and fills none of them in.</li>
+          <li><b>A commitment is asked, never filled.</b> A spending limit, a product that neither the organization chose nor the platform offers, access to a system the requirements do not call for, and a network destination beyond the derived set are commitments somebody would be held to. The architect asks for each and fills none of them in.</li>
           <li><b>The record carries no secret and no address.</b> It names products, and it carries no credential value, no address and no account identifier, for the reason the Common Agent Specification gives for the package's own declarations (its Section 12.6 rule 3).</li>
         </ol>
         <p>The Architecture part is done when every system is named and bound in each environment the agent will run in, every decision has a reason, and every step of the design uses only systems the record named. The architect checks the first two before it delivers. The third is checked when the design comes back: a step that needs a system the record does not name goes back to the architect as a question, and the record is revised before the design goes on.</p>
@@ -187,6 +188,7 @@
 
         <p><i>v1.3 (2026-10-24): first published, with the Architecture and Design stage.</i></p>
         <p><i>v1.3.1 (2026-10-24): the environments in the examples are dev, test and production, the spellings the deployment record uses, and the lifecycle link goes to the Architecture and Design stage.</i></p>
+        <p><i>v1.4 (2026-10-24): the architecture record says a seventh thing, the egress for each environment.</i></p>
       </div>
 
 <!-- chrome:footer -->

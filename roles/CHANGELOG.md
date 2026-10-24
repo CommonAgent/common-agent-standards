@@ -4,6 +4,32 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.4 (2026-10-24)
+
+One change follows the Common Agent Specification 0.34.0-draft, whose
+deployment record (8.3) gains `egress`. The deployment manager's contract
+gains rule 11 of §11.2: every deploy, update, rollback and reconfigure
+records the egress it actually provided; it SHOULD enforce an allowlist
+of the derived set of the specification's 12.4 together with the further destinations the
+instruction names; a further destination must be named in the
+instruction and needs an offering that declares `reaches-network`, and
+an instruction that names one without it is refused; and a target that
+cannot restrict is recorded as `open` with `enforced_by` of `none`. The
+deploy request of §11.1 names the workspace hosts and further
+destinations where the agent needs them, and its answer says when the
+agent runs open, as the deployer interface (v3) now says. The record's
+example carries `egress`, rule 10 of §11.3
+says what it holds, and §11.4 checks it against the target and adds the
+refusal case. The solution architect's architecture record (§36.1) says
+a seventh thing, the egress for each environment: the further
+destinations by name and reason, or none, and whether the target
+enforces an allowlist or runs open; and a network destination beyond the
+derived set joins the commitments the architect asks for (§36.2, rule
+6). The deployment manager's and the solution architect's pages say the
+same. A record made under v1.3.4 can still be read; a deploy, update,
+rollback or reconfigure record made under this version carries `egress`.
+No section number or offering name changes.
+
 ## v1.3.4 (2026-10-24)
 
 Editorial, with no change to the text of the descriptions. The catalog
