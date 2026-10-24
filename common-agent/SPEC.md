@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.30.1-draft
+**Version:** 0.30.2-draft
 **Status:** Working draft, 2026-10-24. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -1660,6 +1660,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.30.2-draft (2026-10-24).** No change to the text of the specification. This version publishes commonagent.net with the Agent Onboarding and Offboarding page (/onboarding.html) listing the three reference processes for the agents an organization runs itself, make a new agent, record an incident and retire an agent, beside the two for outside agents. They are in Agent Processes 0.7.1-draft. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 **0.30.1-draft (2026-10-24).** Editorial, with no normative change. Section 12 opens with a paragraph that states the two ways a platform can accept an agent. An agent the platform installs arrives as a package, and every package is checked, installed, updated and removed the same way. An agent the platform does not install is remote: it presents a Descriptor and registers, and its endpoint and sign-in are connection facts held outside any package. What a package carries inside is declared in its files and is not a separate kind of package. commonagent.net/package.html says the same in two sentences near the top of the page. No requirement, member, attribute or section number changes.
 

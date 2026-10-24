@@ -16,7 +16,7 @@ run closes when the person has read the agent's AgentDoc and said it
 may be listed.
 
 This is a reference process. It is a first draft for an organization to
-adopt and argue with, and it is not running anywhere. Its owner, its
+adopt and argue with. Its owner, its
 dates, its targets and its roster are blank, and the adopting
 organization fills them in. Each agent phase is held by a role the
 [Agent Roles](https://agentroles.ai/) standard defines, and any agent
@@ -73,8 +73,7 @@ AgentDoc is assembled outside the run's phases, by the platform or by a
 documenter where the adopter has one, from the deployed agent's
 descriptor and the records the run left, including the conformance
 record. The platform that hosts the catalog makes the listing from the
-descriptor. No role in Agent Roles holds the act of listing yet, so the
-phase stays with the owner.
+descriptor.
 
 There is no separate process for changing an agent. A change to a
 released agent is a run of this process whose request says what should

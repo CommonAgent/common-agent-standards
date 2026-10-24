@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
 
+## 0.30.2-draft (2026-10-24)
+
+No change to the text of the specification. This version publishes commonagent.net with the Agent Onboarding and Offboarding page (/onboarding.html) listing the three reference processes for the agents an organization runs itself, make a new agent, record an incident and retire an agent, beside the two for outside agents. They are in Agent Processes 0.7.1-draft. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.30.1-draft (2026-10-24)
 
 Editorial, with no normative change. Section 12 opens with a paragraph that states the two ways a platform can accept an agent. An agent the platform installs arrives as a package, and every package is checked, installed, updated and removed the same way. An agent the platform does not install is remote: it presents a Descriptor and registers, and its endpoint and sign-in are connection facts held outside any package. What a package carries inside is declared in its files and is not a separate kind of package. commonagent.net/package.html says the same in two sentences near the top of the page. No requirement, member, attribute or section number changes.

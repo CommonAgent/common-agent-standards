@@ -15,22 +15,19 @@ answers nobody, no listing says it does, and its AgentDoc says when it
 was retired and why.
 
 This is a reference process. It is a first draft for an organization to
-adopt and argue with, and it is not running anywhere. Its owner, its
+adopt and argue with. Its owner, its
 dates, its targets and its roster are blank, and the adopting
-organization fills them in. It has been written and has not been run
-yet. The process is written from the side of the organization that runs the agent.
+organization fills them in. The process is written from the side of
+the organization that runs the agent.
 
-Every phase in this version is a person's. The
+The agent's owner holds every phase. The
 [deployment manager](https://agentroles.ai/deployment-manager.html) in
 Agent Roles defines removal as one of its acts, and the
 [documenter](https://agentroles.ai/documenter.html) defines the
-AgentDoc. This version still keeps both acts with the owner, because a
-holder of either role may not be able to take a removal or a closing
-from a process run, and no role in Agent Roles holds the act of taking
-down a listing. An adopter whose holders
-can take those instructions gives `remove-the-agent` to the deployment
-manager and `close-the-doc` to the documenter, by an amendment, and
-keeps the owner's yes before the removal.
+AgentDoc. An adopter whose holders of those roles take instructions
+from a process run gives `remove-the-agent` to the deployment manager
+and `close-the-doc` to the documenter, by an amendment, and keeps the
+owner's yes before the removal.
 
 ## The activities
 

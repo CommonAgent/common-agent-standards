@@ -12,25 +12,23 @@ every fact and every gap, and a person reads it and decides what
 happens next. No agent in the run guesses a cause or fixes anything.
 
 This is a reference process. It is a first draft for an organization to
-adopt and argue with, and it is not running anywhere. Its owner, its
+adopt and argue with. Its owner, its
 dates, its targets and its roster are blank, and the adopting
 organization fills them in. The agent phases are held by roles the
 [Agent Roles](https://agentroles.ai/) standard defines. The process is
 written from the side of the organization that runs the agent.
 
-The first phase has a gap that the document keeps in plain sight.
-Agent Roles defines the [watcher](https://agentroles.ai/watcher.html),
-and says in its open questions that the role cannot be held yet: nothing
-yet sends a watcher a message on a schedule, and a packaged agent cannot
-yet read a platform's records of who answered and what was spent. Until
-an adopter has a watcher, a person notices and sends the trigger by
-hand, and the `notice` phase is theirs.
+The run starts when the watcher, or a person, notices. The
+[watcher](https://agentroles.ai/watcher.html) in Agent Roles notices
+from the platform's records of who answered and what was spent. A
+person who notices first names the agent and the time and sends the
+trigger, and the `notice` phase is theirs for that run.
 
 ## The activities
 
 | # | Activity | What happens | Agents |
 |---|---|---|---|
-| 1 | Notice the Failure | the quiet agent or failed job, and the time | [watcher](https://agentroles.ai/watcher.html), or a person until one is held |
+| 1 | Notice the Failure | the quiet agent or failed job, and the time | [watcher](https://agentroles.ai/watcher.html), or a person |
 | 2 | Gather the Records | the platform's and the agent's records, attached | incident owner (person) |
 | 3 | Record the Incident | a timeline naming every fact's source and every gap | [incident recorder](https://agentroles.ai/incident-recorder.html) |
 | 4 | Decide What Happens | leave it, restart it, retire it, or change it | incident owner (person) |
@@ -73,8 +71,8 @@ goal: an incident record that names every fact's source and every gap,
 phases:
   notice              - harness: the agent that went quiet or the job
                         that failed, with the time, from the platform's
-                        records; until a watcher is held, a person
-                        notices and sends the trigger by hand
+                        records, or from a person who notices and
+                        sends the trigger
                         owner: watcher            after: trigger
                         automation: <level>
   gather-the-records  - human: the person collects the platform's
@@ -109,9 +107,8 @@ deviations:
     they attach them and the record is written again
 bindings:
   roster:  <who holds each role - an agent claiming the incident
-           recorder, an agent claiming the watcher once one can be held
-           and until then a named person who notices, and a named person
-           for the incident owner>
+           recorder, an agent claiming the watcher or a named person who
+           notices, and a named person for the incident owner>
   systems: none of the phases reaches a system of its own; the records
            arrive as files
   data:    the platform's activity records, the agent's own records
@@ -154,9 +151,8 @@ open: <what nobody finished, and who may close it>
 
 ## The failure edges
 
-- **No watcher is held yet.** A person notices the failure and sends
-  the trigger by hand, and the run records who noticed it. The rest of
-  the run is the same.
+- **A person notices first.** The person sends the trigger, and the run
+  records who noticed it. The rest of the run is the same.
 - **The records leave a gap.** The timeline names it. When the person
   can fill it from records they did not attach, the run returns to
   gathering. When nobody can, the gap stays in the record as a gap.

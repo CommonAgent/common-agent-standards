@@ -19,7 +19,7 @@ organization that also wants named people to countersign the exit keeps
 the `sign-exit` gate.
 
 This is a reference process. It is a first draft for an organization to
-adopt and argue with, and it is not running anywhere. Its owner, its
+adopt and argue with. Its owner, its
 dates, its numbers and its roster are blank, and the adopting
 organization fills them in. Every phase is an act another Common Agent
 Standard already defines, and the table at the end says where each one

@@ -1,10 +1,24 @@
 # Agent Processes Specification
 
-**Version:** 0.7.0-draft
+**Version:** 0.7.1-draft
 **Status:** Working Draft
-**Date:** 2026-10-19
+**Date:** 2026-10-24
 
-**This revision.** A run MAY close with a signed close (Section 13.5.1):
+**This revision.** Editorial. The site's Reference processes section
+gains three reference processes for the agents an organization runs
+itself, kept in `processes/reference/`: `ref/dev/make-a-new-agent`,
+which turns a request into an approved spec, a test suite written before
+the scripts, a package, a deploy on the owner's yes and a conformance
+check by an agent that built none of it; `ref/dev/record-an-incident`,
+which turns a quiet agent or a failed job into a timeline that names the
+source of every fact and every gap, and leaves the decision to a person;
+and `ref/dev/retire-an-agent`, which tells whoever depends on an agent,
+takes down its listing, removes it on the owner's yes and closes its
+AgentDoc with the date and the reason. The intro of every reference
+process drops its line about whether the process has run. No rule in
+this specification changes.
+
+**0.7.0-draft.** A run MAY close with a signed close (Section 13.5.1):
 one attestation, made by the process owner in the record convention of the
 Common Agent Specification §8.1, that names every record the run left by
 the SHA-256 of its exact bytes. A reader who holds the run's records can

@@ -18,7 +18,9 @@
 //                    standards.json lists, one card each with its version, its
 //                    status, its own site and its folder on GitHub
 //   onboarding.html  agent onboarding and offboarding: two reference processes
-//                    in Agent Processes, and where each of their steps lives
+//                    in Agent Processes, and where each of their steps lives,
+//                    with the three reference processes for the agents an
+//                    organization runs itself
 //   purchase-order.html  why there is no Agent Purchase Order: where each job
 //                    of a purchase order lives in the suite instead
 //
@@ -490,10 +492,18 @@ export function renderPurchaseOrder({ draft = false } = {}) {
  *  in Agent Processes, and this page says so and points at them. */
 export function renderOnboarding({ draft = false } = {}) {
   const title = "Agent Onboarding and Offboarding";
-  const description = "Bringing an outside agent into an organization's work, and taking it out again, are written as two reference processes in Agent Processes. They are not specifications: every step is an act another Common Agent Standard already defines.";
+  const description = "Bringing an outside agent into an organization's work, and taking it out again, are written as two reference processes in Agent Processes. Three more make, look after and retire the agents an organization runs itself. They are not specifications: every step is an act another Common Agent Standard already defines.";
   const PROC = "https://agentprocesses.ai";
   const ON = `${PROC}/onboard-an-agent.html`;
   const OFF = `${PROC}/offboard-an-agent.html`;
+  const own = [
+    { href: `${PROC}/make-a-new-agent.html`, name: "Make a new agent",
+      text: "The owner approves a written spec, tests are written before the scripts, the package is deployed on the owner's yes, and an agent that built none of it checks conformance." },
+    { href: `${PROC}/record-an-incident.html`, name: "Record an incident",
+      text: "When an agent goes quiet or a job fails, the records are gathered into a timeline that names the source of every fact and every gap, and a person decides what happens next." },
+    { href: `${PROC}/retire-an-agent.html`, name: "Retire an agent",
+      text: "Whoever depends on the agent is told first, its listing is taken down, the owner approves the removal, and its AgentDoc is closed with the date and the reason." },
+  ];
   const onboard = [
     "Verify the agent against its signed Descriptor, its build, deployment and evaluation records, and its reputation report.",
     "Interview it with the five questions, and compare each answer with what it signed.",
@@ -575,7 +585,19 @@ export function renderOnboarding({ draft = false } = {}) {
         </div>
       </section>
 
-      <section class="band" id="where">
+      <section class="band" id="own-agents">
+        <div class="wrap">
+          <h2>Three more reference processes cover the agents an organization runs itself</h2>
+          <p>An organization that makes its own agents brings each one into service, looks after
+            it when something goes wrong, and takes it down when it is no longer needed. Each of
+            those is a reference process in Agent Processes too.</p>
+          <ol class="floor">
+            ${own.map((p) => `<li><span><a href="${p.href}">${esc(p.name)}${ext}</a>. ${esc(p.text)}</span></li>`).join("\n            ")}
+          </ol>
+        </div>
+      </section>
+
+      <section class="band tinted" id="where">
         <div class="wrap">
           <h2>Each step points at the standard that defines it</h2>
           <p>Verification and the interview come from the

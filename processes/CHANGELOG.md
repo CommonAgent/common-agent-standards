@@ -4,6 +4,21 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.7.1-draft (2026-10-24)
+
+- Editorial. The site's Reference processes section gains three reference
+  processes for the agents an organization runs itself, kept in
+  `processes/reference/`: `ref/dev/make-a-new-agent`, which turns a request
+  into an approved spec, a test suite written before the scripts, a package,
+  a deploy on the owner's yes and a conformance check by an agent that built
+  none of it; `ref/dev/record-an-incident`, which turns a quiet agent or a
+  failed job into a timeline that names the source of every fact and every
+  gap, and leaves the decision to a person; and `ref/dev/retire-an-agent`,
+  which tells whoever depends on an agent, takes down its listing, removes
+  it on the owner's yes and closes its AgentDoc with the date and the
+  reason. The intro of every reference process drops its line about whether
+  the process has run. No rule in this specification changes.
+
 ## 0.7.0-draft (2026-10-19)
 
 - A run MAY close with a signed close (§13.5.1): one attestation, made by

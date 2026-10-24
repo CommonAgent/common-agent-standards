@@ -18,7 +18,7 @@ The suite's home is <https://commonagent.net>.
 
 | Standard | Kind | Version | Status | Site |
 |----------|------|---------|--------|------|
-| [The Common Agent Specification](common-agent/) | The base | 0.30.1-draft | Working Draft | [commonagent.net](https://commonagent.net/spec.html) |
+| [The Common Agent Specification](common-agent/) | The base | 0.30.2-draft | Working Draft | [commonagent.net](https://commonagent.net/spec.html) |
 | [Agent Messaging](messaging/) | A Common Agent Standard | 0.9.14-draft | Working Draft | [agentmessaging.ai](https://agentmessaging.ai/) |
 | [Personal Agent Naming](naming/) | A Common Agent Standard | 0.10.3 | Published | [agentnaming.ai](https://agentnaming.ai/) |
 | [Agent Mandate](mandate/) | A Common Agent Standard | 0.9.0-draft | Working Draft | [agentmandate.net](https://agentmandate.net/) |
@@ -26,7 +26,7 @@ The suite's home is <https://commonagent.net>.
 | [Agent SoW](sow/) | A Common Agent Standard | 0.34.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
 | [Agent NDA](nda/) | A Common Agent Standard | 0.2.0-draft | Working Draft | [agentnda.net](https://agentnda.net/) |
 | [Agent Reputations](reputations/) | A Common Agent Standard | 0.11.0-draft | Draft | [agentreputations.com](https://agentreputations.com/) |
-| [Agent Processes](processes/) | A Common Agent Standard | 0.7.0-draft | Working Draft | [agentprocesses.ai](https://agentprocesses.ai/) |
+| [Agent Processes](processes/) | A Common Agent Standard | 0.7.1-draft | Working Draft | [agentprocesses.ai](https://agentprocesses.ai/) |
 | [Agent Collab](guides/collab/) | A guide | v1.1 | Guide | [agentcollab.dev](https://agentcollab.dev/) |
 | [Agent Roles](roles/) | A guide | v1.1 | Guide | [agentroles.ai](https://agentroles.ai/) |
 
