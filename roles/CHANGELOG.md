@@ -4,6 +4,24 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.3.3 (2026-10-24)
+
+One change follows the Common Agent Specification 0.33.0-draft, whose
+deployment record (8.3) now names the Descriptor bound before and after
+every act that changes a running agent. Rule 7 of §11.3 says a rollback
+record carries `descriptor_digest` for the Descriptor bound after the
+rollback, and `rolled_back_from` the `descriptor_digest` of the one bound
+before. Rule 8 says a reconfigure record carries `descriptor_digest` for
+the Descriptor bound after the change and a new member,
+`reconfigured_from`, with only the `descriptor_digest` of the one bound
+before, and that the two are equal where the change bound no new
+Descriptor. Rule 9 names `reconfigured_from` among the members 8.3
+defines. Rule 10 of §11.2 says which changes bind a new Descriptor in the
+words of 12.7, and that every reconfigure record names both digests. The
+deployment manager's page on agentroles.ai says the same. A record that
+was valid under v1.3.2 is valid under this version. No section number,
+offering name or interface changes.
+
 ## v1.3.2 (2026-10-24)
 
 One change follows the Common Agent Specification 0.32.0-draft, whose
