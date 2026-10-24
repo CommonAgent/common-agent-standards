@@ -4,6 +4,6 @@ A profile names a part of several Common Agent Standards that an implementation 
 
 | Profile | Version | Document | List |
 |---------|---------|----------|------|
-| The minimal contracting profile | 0.5.11-draft | [MINIMAL-CONTRACTING.md](MINIMAL-CONTRACTING.md) | [minimal-contracting.json](minimal-contracting.json) |
+| The minimal contracting profile | 0.5.12-draft | [MINIMAL-CONTRACTING.md](MINIMAL-CONTRACTING.md) | [minimal-contracting.json](minimal-contracting.json) |
 
 The minimal contracting profile is published at <https://commonagent.net/minimal-contracting.html>. [tools/check-profiles.mjs](../tools/check-profiles.mjs) checks that every version, section, file and case a list names exists, and the workflow runs it on every change.

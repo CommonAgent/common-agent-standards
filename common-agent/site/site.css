@@ -592,6 +592,8 @@ html{ scroll-padding-top:20px; }
 .spec td{ padding:9px 14px; border-bottom:1px solid var(--line); font-size:.95rem; color:var(--text-2); vertical-align:top; }
 .spec tr:last-child td{ border-bottom:0; }
 .spec td:first-child{ color:var(--text); }
+.spec td code{ overflow-wrap:normal; }
+.spec td:first-child code{ white-space:nowrap; }
 .spec hr{ border:0; border-top:1px solid var(--line); margin:40px 0; }
 .spec .alias{ display:block; height:0; }
 .spec p.chapnote{ font-size:.95rem; color:var(--text-2); border-left:3px solid var(--accent); padding:2px 0 2px 14px; }

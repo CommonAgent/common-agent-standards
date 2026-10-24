@@ -61,6 +61,10 @@ let body = marked.parse(mdBody);
 // Anchor the headings ourselves (stable slugs; marked no longer ships ids).
 // These slugs are the same ones dev.agentmesh.ai/spec.html used, so links with
 // a section fragment keep working through the redirect stub there.
+// Ids a heading used to have, kept beside it so links made to them still land.
+const ALIASES = {
+  "13-6-security-events-and-quarantine-notices": ["13-6-security-events-and-quarantine-notices-proposed"],
+};
 const slugCount = new Map();
 const toc = [];
 body = body.replace(/<h([1-4])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
@@ -72,7 +76,8 @@ body = body.replace(/<h([1-4])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
   slugCount.set(slug, n + 1);
   if (n) slug = `${slug}-${n}`;
   if (lvl === "2") toc.push({ slug, text });
-  return `<h${lvl} id="${slug}">${inner}<a class="hl" href="#${slug}">#</a></h${lvl}>`;
+  const aliases = (ALIASES[slug] ?? []).map((a) => `<span class="alias" id="${a}"></span>`).join("");
+  return `${aliases}<h${lvl} id="${slug}">${inner}<a class="hl" href="#${slug}">#</a></h${lvl}>`;
 });
 
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
@@ -117,6 +122,7 @@ const page = `<!DOCTYPE html>
     .toc a:hover{ color:var(--accent); text-decoration:underline; }
     .spec{ padding:10px 0 70px; }
     .spec h1{ display:none; }
+    .spec .alias{ display:block; height:0; }
     .spec h2{ font-size:1.75rem; margin:54px 0 14px; padding-top:22px; border-top:1px solid var(--line); }
     .spec h3{ font-size:1.25rem; margin:34px 0 10px; }
     .spec h4{ font-family:var(--disp); font-weight:600; font-size:1.05rem; margin:26px 0 8px; color:var(--text); }

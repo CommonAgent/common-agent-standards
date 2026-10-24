@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.34.0-draft
+**Version:** 0.35.0-draft
 **Status:** Working draft, 2026-10-24. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -998,9 +998,7 @@ Whoever resolves a run config for a job (Section 5.8) writes the result on the r
 
 The member is its writer's word, signed or unsigned with the rest of the record that carries it under Section 8.1. It says which values the job was handed. Whether the agent used them is what the agent's job manifest states, and the two are compared by digest.
 
-### 8.8 Security events and quarantine (proposed)
-
-**Proposed in 0.34.0-draft, for review.** This section is a proposal. It is not part of conformance (Section 14) until a later version removes this paragraph, and it may change or be withdrawn before then. Its MUST and SHOULD state what it would require once adopted.
+### 8.8 Security events and quarantine
 
 #### 8.8.1 Security events
 
@@ -1772,6 +1770,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.35.0-draft (2026-10-24).** Section 8.8, security events (8.8.1) and quarantine (8.8.2), is adopted as proposed in 0.34.0-draft and is now part of the specification, so its MUST and SHOULD bind. The paragraph that marked it proposed and outside conformance is removed, and its heading no longer says proposed. The text is otherwise unchanged: the closed list keeps its fifteen acts, with the three approval events `approval_asked`, `approval_given` and `approval_refused` kept separate, and a node that can neither reach its event sink nor keep events locally still refuses new jobs with `events_unrecorded` and holds its running jobs. Agent Messaging 0.9.16-draft adopts its §13.6, which carries the quarantine act. On commonagent.net, the old anchor of the section's heading still lands on it, and code in a table cell, such as an event name, no longer breaks in the middle of a word. The minor version moves because conformance now requires what Section 8.8 says. No member, attribute or section number changes.
 
 **0.34.0-draft (2026-10-24).** A proposal for review, with no change to what conformance requires. A new Section 8.8, marked proposed and outside conformance until a later version adopts it, drafts two records. A security event (8.8.1, tag `agent-security-event-v1`) is a small signed record of one moment a boundary refused, held or let something through, from a closed list of fifteen acts: `admission_refused`, `screening_flagged`, `scope_refused`, `signature_failed`, `package_refused`, `credential_used`, `ceiling_hit`, `egress_denied`, `approval_asked`, `approval_given`, `approval_refused`, `stop_pressed`, `stop_lifted`, `outputs_quarantined` and `quarantine_ended`. Each carries the subject, the emitter, the job's trace id or task id, the policy version where one decided, and a reason code drawn from the refusals and records the specification already defines, and carries shapes only. Whoever applies a check emits its event, never the subject; events are private to the owner; and a node that can neither reach its sink nor keep events locally starts no job. A quarantine (8.8.2, tag `agent-quarantine-v1`) is a signed act by the subject's owner or its platform that marks delivered outputs as suspect, by job manifest, by time window, or since an `agent_version` or package digest, with `release` and `confirm` acts; recipients' nodes hold or flag the covered pieces and never delete them. Agent Messaging 0.9.15-draft proposes how the act travels on its advisory channel.
 
