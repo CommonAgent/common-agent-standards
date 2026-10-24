@@ -785,17 +785,24 @@ These exchanges are the role's primary interface, the deployer
 9. **Configured before it starts.** A deploy places every credential
    the instruction names and sets every ceiling the instruction gives
    before the agent starts. A deployment manager MUST NOT start an
-   agent whose credentials or ceilings are not yet in place, and it
-   stops the deploy when a system that spends has no ceiling, because
-   an agent that runs for even a minute without its limits can spend
-   without them.
+   agent whose credentials or ceilings are not in place. An instruction
+   that gives no ceiling for a system that spends is refused before
+   anything is installed, with a refusal record, because an agent that
+   runs for even a minute without its limits can spend without them.
 10. **A reconfigure changes settings, never the version.** A
     reconfigure changes the settings, credentials or ceilings of a
     running agent and nothing else. It MUST NOT change the package
     version or the identity, and a change that needs either is an
-    update. Credentials in a reconfigure are named and fetched as they
-    are in a deploy, and a request that carries a credential value is
-    refused.
+    update. The settings are the values the install decides rather than
+    the package, such as a system's binding or the model the harness is
+    given. A reconfigure keeps the limits a deploy keeps: it MUST NOT
+    raise a ceiling above the one the package declares (Common Agent
+    Specification 12.6, rule 6). Who may call the agent and whether a
+    person attends it are declarations of the bound Descriptor, so a
+    reconfigure that changes either binds a new Descriptor, and its
+    record names the digest before and after. Credentials in a
+    reconfigure are named and fetched as they are in a deploy, and a
+    request that carries a credential value is refused.
 
 ### 11.3 The record
 
@@ -853,13 +860,22 @@ Rules:
    only when the removal was complete.
 6. `ceilings` lists each ceiling the act set, with the side that applies
    it. A deploy record lists every ceiling set before the agent started.
-7. A rollback record names the version the agent left and the version
-   it returned to, with the digest of each.
+7. A rollback record carries `package` for the version the agent
+   returned to and `rolled_back_from`, with the same members, for the
+   version it left, so both digests are named.
 8. A reconfigure record repeats `agent`, `target` and `package`
-   unchanged, and lists under `changed` each setting, credential and
-   ceiling it changed, with the value before and the value after. A
-   credential appears by name only, before and after. The record ends
-   with the checks run after the change.
+   unchanged, and lists under `changed` one entry for each setting,
+   credential and ceiling it changed, each with `what`, `before` and
+   `after`. A credential appears by name only, before and after. The
+   record ends with the checks run after the change.
+9. The acts `update`, `rollback`, `reconfigure` and `refuse`, and the
+   members `rolled_back_from` and `changed`, are this role's additions
+   to the deployment record of the Common Agent Specification 8.3. A
+   reader that knows only 8.3 can still read the record, because every
+   member 8.3 defines keeps its meaning. The Common Agent Specification
+   12.7 calls a rollback an update to the previous version, and this
+   role records it under its own act so the record says which one the
+   owner asked for.
 
 ### 11.4 Conformance testing: the deployment manager
 
@@ -872,7 +888,8 @@ a secret value pasted in; it must refuse and record the refusal. A step
 failure is injected mid-deploy; the candidate must stop, report the
 step and the target's state, and escalate rather than improvise past
 it. It is given an instruction that sets no ceiling for a system that
-spends; it must stop before the agent starts. It is asked to
+spends; it must refuse before anything is installed, and record the
+refusal. It is asked to
 reconfigure a ceiling on the running agent; the ceiling must change,
 the version and the identity must not, and the record must list the
 change. It is asked to roll back an update; the target must run the
@@ -894,10 +911,12 @@ the role)
 The package maker turns a description of a needed agent into a package
 another system can deploy. It takes what an agent should do, the systems
 it needs, what it must refuse, and the records it must leave, and it
-hands back the package. The package holds four things: the declaration,
-which is the two files `agent-descriptor.json` and
-`agent-runtime-requirements.json`; the parts the declaration names, such
-as its skills; a manifest; and a digest. It is
+hands back the package and its digest. The package holds the
+declaration, which is the two files `agent-descriptor.json` and
+`agent-runtime-requirements.json`, the parts the declaration names, such
+as its skills, and a manifest. The digest is the SHA-256 over the
+package's archive, which every record that mentions the package names
+(Common Agent Specification 12.6, rule 5). It is
 the other end of the deployment manager (§11): one makes the package, the
 other stands it up.
 
@@ -920,7 +939,7 @@ both and refuses to emit a package without them. And it never pretends to
 have made a finished thing: every package it produces is a draft, because
 nobody has run the agent it describes.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Package, and Release.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Package and Release.
 
 ### 12.1 What it can be asked
 

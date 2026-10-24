@@ -5,11 +5,11 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The package maker: Agent Roles</title>
-  <meta name="description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it does not invent, marking every package a draft. What it does, the record it signs, and how a holder is checked.">
+  <meta name="description" content="The package maker role: an agent that turns a description of a needed agent into a package and its digest, asking for the judgment it does not invent, marking every package a draft. What it does, the record it signs, and how a holder is checked.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
   <meta property="og:title" content="The package maker: Agent Roles">
-  <meta property="og:description" content="The package maker role: an agent that turns a description of a needed agent into an agent plugin package, asking for the judgment it does not invent, marking every package a draft. What it does, the record it signs, and how a holder is checked.">
+  <meta property="og:description" content="The package maker role: an agent that turns a description of a needed agent into a package and its digest, asking for the judgment it does not invent, marking every package a draft. What it does, the record it signs, and how a holder is checked.">
   <meta property="og:url" content="https://agentroles.ai/package-maker.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -138,18 +138,18 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The package maker</h1>
-        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-package-maker</b></span><span>alias <b>role-agent-builder</b></span><span>updated <b>2026-09-14</b></span><span class="pill portable">portable</span></div>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-package-maker</b></span><span>alias <b>role-agent-builder</b></span><span>updated <b>2026-10-24</b></span><span class="pill portable">portable</span></div>
         <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#12-role-the-package-maker">12</a>. Its primary interface is <a href="/builder.html">the builder</a>.</p>
   <!-- /chrome:entry -->
       </div>
 
       <div class="wrap spec">
-        <p>The package maker turns a description of a needed agent into a package another system can deploy. It takes what an agent should do, the systems it needs, what it has to refuse, and the records it has to leave, and it hands back the package. The package holds four things: the declaration, which is the two files <code>agent-descriptor.json</code> and <code>agent-runtime-requirements.json</code>; the parts the declaration names, such as its skills; a manifest; and a digest. It is the other end of the <a href="/deployment-manager.html">deployment manager</a>: one makes the package, the other stands it up.</p>
+        <p>The package maker turns a description of a needed agent into a package another system can deploy. It takes what an agent should do, the systems it needs, what it has to refuse, and the records it has to leave, and it hands back the package and its digest. The package holds the declaration, which is the two files <code>agent-descriptor.json</code> and <code>agent-runtime-requirements.json</code>, the parts the declaration names, such as its skills, and a manifest. The digest is the SHA-256 over the package's archive, which every record that mentions the package names. It is the other end of the <a href="/deployment-manager.html">deployment manager</a>: one makes the package, the other stands it up.</p>
         <p>Making a package is mostly authoring. The declaration and the parts are written, and building, in the sense the <a href="https://commonagent.net/spec.html#13-2-the-layout">Common Agent Specification</a> gives the word, only generates the views and writes the manifest's digests. A build adds no fact the authored files did not state.</p>
         <p>It is defined by what it will not make up. A package is only as honest as the judgment in it, and two parts of it are judgment: what the agent refuses, and what it has to record. The rest is description. The builder asks for both and refuses to emit a package without them. It also never presents a package as finished: every package it produces is a draft, because nobody has run the agent it describes.</p>
         <p>What it emits is an <a href="https://commonagent.net/package.html">Agent Package</a> as the Common Agent Specification defines it: an Agent Plugin carrying the agent's draft Descriptor and its runtime requirements beside the manifest. That chapter owns the package's shape; this role owns the judgment a builder asks for and the record it signs.</p>
 
-        <p>It holds these stages on the lifecycle map: Package, and Release (<a href="https://agenticdevelopment.ai/stages.html">agenticdevelopment.ai</a>).</p>
+        <p>It holds these stages on the lifecycle map: Package and Release (<a href="https://agenticdevelopment.ai/stages.html">agenticdevelopment.ai</a>).</p>
 
         <h2 id="role">1. The role</h2>
         <p>Describing an agent and building one are different kinds of work. A person knows what they need done; turning that into a package a runtime can load means writing a manifest at the right schema, one skill per job in a form a harness reads, and the obligations that keep the agent honest once it runs. That last part is where a description quietly turns into a set of binding rules, and it is easy to skip.</p>

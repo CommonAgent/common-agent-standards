@@ -5,11 +5,11 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The deployer interface: Agent Roles</title>
-  <meta name="description" content="The deployer interface holds the exchanges for putting an agent package on a host: deploy this, what is deployed, how did it go, update it, and remove it. It is the primary interface of the deployment manager role.">
+  <meta name="description" content="The deployer interface holds the exchanges for putting an agent package on a host and changing it while it runs: deploy this, what is deployed, how did it go, update it, roll it back, reconfigure it, and remove it. It is the primary interface of the deployment manager role.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Roles">
   <meta property="og:title" content="The deployer interface: Agent Roles">
-  <meta property="og:description" content="The deployer interface holds the exchanges for putting an agent package on a host: deploy this, what is deployed, how did it go, update it, and remove it. It is the primary interface of the deployment manager role.">
+  <meta property="og:description" content="The deployer interface holds the exchanges for putting an agent package on a host and changing it while it runs: deploy this, what is deployed, how did it go, update it, roll it back, reconfigure it, and remove it. It is the primary interface of the deployment manager role.">
   <meta property="og:url" content="https://agentroles.ai/deployer.html">
   <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -138,7 +138,7 @@
       <div class="wrap spec-hero">
         <!-- chrome:entry -->
   <h1>The deployer</h1>
-        <div class="metas"><span>name <b>interface-deployer</b></span><span>updated <b>2026-08-31</b></span><span class="pill portable">portable</span></div>
+        <div class="metas"><span>name <b>interface-deployer</b></span><span>updated <b>2026-10-24</b></span><span class="pill portable">portable</span></div>
         <p class="canon">ROLES.md describes this interface in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#111-what-it-can-be-asked">11.1</a>, as the primary interface of <a href="/deployment-manager.html">the deployment manager</a>. Software reads its definition from <a href="/interfaces/interface-deployer.json">interface-deployer.json</a>.</p>
   <!-- /chrome:entry -->
       </div>
@@ -165,7 +165,7 @@
         <ol>
           <li><b>Every exchange is answered or refused with a reason.</b> Silence is not an answer.</li>
           <li><b>A deploy request names secrets and carries no secret values.</b> An implementer refuses a request that contains a secret value, before the value is used.</li>
-          <li><b>Nothing starts unconfigured.</b> An implementer places the credentials and sets the ceilings a deploy request gives before the agent starts, and refuses a deploy that gives no ceiling for a system that spends.</li>
+          <li><b>Nothing starts unconfigured.</b> An implementer places the credentials and sets the ceilings a deploy request gives before the agent starts, and refuses, before anything is installed, a deploy request that gives no ceiling for a system that spends.</li>
           <li><b>Reports state what kind of check was run.</b> An answer to "how did it go" says whether the check was a smoke check or a conformance check. It never says only "verified".</li>
           <li><b>There is no document.</b> The signed deployment record belongs to the deployment manager role, and this interface defines none. An implementer that does not hold the role answers these exchanges and signs nothing.</li>
         </ol>
