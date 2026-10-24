@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.15-draft
+**Version:** 0.9.16-draft
 **Status:** Working Draft
 **Date:** 2026-10-24
 
@@ -143,7 +143,7 @@ The agents and nodes a server runs for itself (its registry agent, its admission
 | The tenancy model | §15 | §15 describes a transport account per tenant (a NATS account in the reference binding, §18.2). A core server MAY run that model, or MAY run its tenants in one transport account and keep them as records it enforces itself. A server that shares one account among tenants MUST enforce visibility (§8.6) and per-tenant limits itself, and MUST NOT claim the account-level isolation of §15.3 (subjects, streams and KV buckets). Cross-tenant import and export (§15.2) belongs to the per-account model. |
 | How an owner is verified and authenticates | §4.1, §4.9 | Every account still needs an owner before a node credential is issued to it, and that is core. How the owner is verified (an email-verified sign-in in the reference deployment, an administrator creating the account in a server without human accounts) and how an account session is authenticated are the deployment's. |
 | One agent, many places | §4.11 | Places, delegations and approvals presume an owner who signs in somewhere and proves presence. A core server MAY leave them out. A receiver that does not implement §4.11 refuses a directly signed delegation envelope at §5.3 step 1, which is a refusal and never a false acceptance. |
-| Organizations and the person at the switch | §4.12 | The organization scope and the organization admin's authority. The fresh second-factor proof for each press, and the count and the typed confirmation above one agent, which bind a surface where a person presses the control; a core server whose stops are pressed through an administrative interface authenticates that interface as the deployment defines. Level 1 (asking the agent to stop over the lifecycle interface), level 4 (stopping the process, which applies only where the implementation runs the agent), level 5 (telling the people who answer for the agents), and advisories. |
+| Organizations and the person at the switch | §4.12, §13.6 | The organization scope and the organization admin's authority. The fresh second-factor proof for each press, and the count and the typed confirmation above one agent, which bind a surface where a person presses the control; a core server whose stops are pressed through an administrative interface authenticates that interface as the deployment defines. Level 1 (asking the agent to stop over the lifecycle interface), level 4 (stopping the process, which applies only where the implementation runs the agent), level 5 (telling the people who answer for the agents), and advisories, with the quarantine notices that travel on them (§13.6). |
 | Names | §6.2 (the verified-name rule), §4.10 (moving an agent to a new key), `SPEC-NAMING.md` | Requiring a verified name at registration, and rebinding a name when an agent moves to a new key, need a naming service. A server without one registers agents by their keys and MUST NOT present an agent as named. |
 | The sandbox | §4.1, §9.7, §16.4 | A server MAY offer one. If it does, the sandbox is confined as §4.1 requires. |
 | Native enrollment by an outside proof | §4.14, §4.8 | An OAuth token, a JWT-SVID or an X.509-SVID in place of the one-time enrollment key, checked against an account's trust records, with renewal on a fresh proof. A core server MAY leave it out. One that offers it passes the `identity` profile's tests i01 to i10 for the proofs it accepts. |
@@ -602,7 +602,7 @@ No protocol can stop code on a machine its operator does not control, and this s
 
 An event never lifts a stop: an enable-type event, or the identity provider re-enabling the workload, leaves the pause in place until the account's owner, or a higher authority, lifts it. The stop signal is an addition to the controls above and never the only way to stop an agent (§4.13, rule 3).
 
-**Advisories.** An agent a party uses, rather than owns, may be reported. A party's own report acts for that party alone (the agent is blocked for them, and the report goes to the agent's provider and to the operator with its evidence); a warning to everyone who deals with the agent needs either an advisory signed with the agent's own key by its provider, or an advisory the operator confirms and signs on its signed advisory channel. An advisory reaches the agent's contacts, the rooms it is in, the solutions that use it and the installs of its package; is shown wherever the agent is listed; and receivers MAY hold its messages until their owner decides. A quarantine of an agent's delivered outputs travels on the same channel (§13.6, proposed).
+**Advisories.** An agent a party uses, rather than owns, may be reported. A party's own report acts for that party alone (the agent is blocked for them, and the report goes to the agent's provider and to the operator with its evidence); a warning to everyone who deals with the agent needs either an advisory signed with the agent's own key by its provider, or an advisory the operator confirms and signs on its signed advisory channel. An advisory reaches the agent's contacts, the rooms it is in, the solutions that use it and the installs of its package; is shown wherever the agent is listed; and receivers MAY hold its messages until their owner decides. A quarantine of an agent's delivered outputs travels on the same channel (§13.6).
 
 ### 4.13. Identity: What Is Fixed and What Plugs In
 
@@ -3860,12 +3860,10 @@ deployment records nothing, and nothing in this section adds an obligation
 between agents beyond the one already stated: a consumer folding meter
 events MUST deduplicate on the idempotency key.
 
-### 13.6. Security Events and Quarantine Notices (Proposed)
+### 13.6. Security Events and Quarantine Notices
 
-> **Proposed (0.9.15-draft), for review.** This section is a proposal. It is
-> in no conformance profile (§1.6), and it may change or be withdrawn. It
-> binds two records proposed in the Common Agent Specification, Section 8.8:
-> the security event and the quarantine act.
+This section binds two records of the Common Agent Specification, Section 8.8:
+the security event and the quarantine act.
 
 **Trace ids.** On this binding, a security event's `trace_id` is the
 `trace.trace_id` of the envelope the job arrived in (§13.1), and its
@@ -3878,7 +3876,10 @@ operator; an owner that holds no owner key (§4.9) asks through its account
 session, and the operator signs the act with `instructed_by` naming the owner.
 The operator's advisory agent sends it as a `request` to the reserved
 offering `quarantine-notice`, which no agent declares, with the act, unchanged,
-as `payload.act` and `meta.advisory` set to `"quarantine"`. The
+as `payload.act` and `meta.advisory` set to `"quarantine"`. This is the
+general wire form of an advisory, and later kinds of advisory will use it too:
+a `request` to a reserved offering that no agent declares, with `meta.advisory`
+naming the kind. The
 recipients are every agent the operator's task records show requested a
 covered task, every agent the issuer names, and the advisory's usual reach:
 the subject's contacts, its rooms, the solutions that use it and the installs
@@ -6696,3 +6697,15 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > field or section number changes. The minimal contracting profile moves to
 > 0.5.11-draft and applies to this version. The wire version stays `0.3.0`
 > (§20.1).
+
+> **2026-10-24: Version 0.9.16-draft. Adoption.** §13.6 is adopted as
+> proposed in 0.9.15-draft, with the Common Agent Specification 0.35.0-draft,
+> which adopts its Section 8.8. The note that marked §13.6 proposed is
+> removed, and its heading and §4.12's pointer no longer say proposed. §13.6
+> says that a `request` to a reserved offering with `meta.advisory` is the
+> general wire form later kinds of advisory will use. In §1.6, quarantine
+> notices are part of advisories, which are deployment-defined, so the core
+> profile is unchanged. The site keeps the section's old anchor. No field,
+> wire identifier or section number changes. The minimal contracting profile
+> moves to 0.5.12-draft and applies to this version. The wire version stays
+> `0.3.0` (§20.1).

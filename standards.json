@@ -19,9 +19,9 @@
       "spec": "common-agent/SPEC.md",
       "domain": "commonagent.net",
       "site": "https://commonagent.net/spec.html",
-      "version": "0.34.0-draft",
+      "version": "0.35.0-draft",
       "status": "Working Draft",
-      "tag": "common-agent-v0.34.0-draft",
+      "tag": "common-agent-v0.35.0-draft",
       "builder": "common-agent/site/tools/build-spec.mjs",
       "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
       "parts": [
@@ -37,9 +37,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.15-draft",
+      "version": "0.9.16-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.15-draft",
+      "tag": "messaging-v0.9.16-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [

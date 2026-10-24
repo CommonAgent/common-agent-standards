@@ -277,6 +277,7 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
 {
   const SPEC_ALIASES = {
     "5.7": ["s5-job-manifest"],
+    "8.8": ["8-8-security-events-and-quarantine-proposed"],
     "12.1": ["s12-terms"], "12.2": ["s12-layout"], "12.3": ["s12-descriptor"], "12.4": ["s12-install-file", "s12-runtime-requirements", "12-4-the-install-file"],
     "12.5": ["s12-skills"], "12.6": ["s12-rules"], "12.7": ["s12-lifecycle"], "12.8": ["s12-provenance"],
     "12.9": ["s12-out"], "12.10": ["s12-conformance"],

@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.9.16-draft (2026-10-24)
+
+§13.6, security events and quarantine notices, is adopted as proposed in 0.9.15-draft, with the Common Agent Specification 0.35.0-draft, which adopts its Section 8.8. The note that marked §13.6 proposed is removed, and its heading and the pointer in §4.12 no longer say proposed. §13.6 adds one sentence: a `request` to a reserved offering that no agent declares, with `meta.advisory` naming the kind, is the general wire form of an advisory, which later kinds of advisory will use too. In §1.6, quarantine notices are part of advisories, which are deployment-defined, so the core profile is unchanged. On agentmessaging.ai the section's old anchor still lands on it. No field, wire identifier or section number changes. The minimal contracting profile moves to 0.5.12-draft and applies to this version. The wire version stays 0.3.0.
+
 ## 0.9.15-draft (2026-10-24)
 
 A proposal for review, with no change to what conformance requires. A new §13.6, marked proposed and in no conformance profile, binds the security event and quarantine act proposed in the Common Agent Specification 0.34.0-draft, Section 8.8: a security event's trace id is the envelope's `trace.trace_id`, and a quarantine act travels unchanged on the operator's signed advisory channel (§4.12) to the requesters of the covered tasks and the advisory's usual reach, passes the door, and is applied by the node, never the agent. The minimal contracting profile moves to 0.5.11-draft and applies to this version. The wire version stays 0.3.0.
