@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.3
+**Version:** v1.3.1
 **Status:** Guide
 **Date:** 2026-10-24
 
@@ -728,9 +728,8 @@ These exchanges are the role's primary interface, the deployer
    steps and the same checks, with the same record at the end.
 5. **Roll it back.** The running agent returned to the version it ran
    before, under the same identity, through the same steps and the same
-   checks. A rollback is an update to the previous version, as the
-   Common Agent Specification 12.7 says, and its record names both
-   versions.
+   checks. A rollback is its own act, as the Common Agent
+   Specification 12.7 says, and its record names both versions.
 6. **Reconfigure it.** A change to the settings, credentials or ceilings
    of a running agent, with no new version. The request names any
    credential by name, as a deploy request does. The answer says what
@@ -869,14 +868,14 @@ Rules:
    credential and ceiling it changed, each with `what`, `before` and
    `after`. A credential appears by name only, before and after. The
    record ends with the checks run after the change.
-9. The acts `update`, `rollback`, `reconfigure` and `refuse`, and the
-   members `rolled_back_from` and `changed`, are this role's additions
-   to the deployment record of the Common Agent Specification 8.3. A
-   reader that knows only 8.3 can still read the record, because every
-   member 8.3 defines keeps its meaning. The Common Agent Specification
-   12.7 calls a rollback an update to the previous version, and this
-   role records it under its own act so the record says which one the
-   owner asked for.
+9. The acts `rollback` and `reconfigure`, and the members
+   `rolled_back_from` and `changed`, are defined in the deployment record
+   of the Common Agent Specification 8.3 with the meaning given here, and
+   12.7 records a rollback under its own act so the record says whether
+   the owner asked for an update or a rollback. The acts `update` and
+   `refuse` are this role's additions to 8.3. A reader that knows only
+   8.3 can still read the record, because every member 8.3 defines keeps
+   its meaning.
 
 ### 11.4 Conformance testing: the deployment manager
 
@@ -2317,7 +2316,7 @@ grant the role.
 The architecture record says six things:
 
 1. **The systems.** Each system the agent reaches, named in plain system words, such as `crm` or `email`. These are the names the Common Agent Specification's runtime requirements carry in `systems[]` (its Section 12.4).
-2. **The bindings.** For each system, the product bound to it in each environment the agent will run in, such as dev, test and prod, with each environment named in the words the deploy into it will use. The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from, as the deployment record's `provided_by` does with `customer` or `platform` (Common Agent Specification 8.3).
+2. **The bindings.** For each system, the product bound to it in each environment the agent will run in, such as dev, test and production, with each environment named in the words the deploy into it will use, which the deployment record spells `dev`, `test`, `staging` or `production` (Common Agent Specification 8.3). The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from, as the deployment record's `provided_by` does with `customer` or `platform` (Common Agent Specification 8.3).
 3. **The dependencies.** The other agents and services the agent depends on, each named.
 4. **The kind.** What the agent's inside is made of, such as skills that a harness reads or code that answers on the network by itself. A package declares its inside in its own files (Common Agent Specification Section 12). The deployment record's `installed` member uses words such as `plugin-on-harness` and `mesh-coded` for the same thing, as background that nothing is checked against (its Section 8.3).
 5. **The limits.** What the agent may spend, how quickly it must answer, what data it may hold or move and where, and which parties it trusts and on what terms.
@@ -2341,7 +2340,7 @@ The record is the architecture record that §36.1 describes, with the questions 
 
 ### 36.4 Conformance testing: the solution architect
 
-Behavioral, with a mechanical part. A harness hands the candidate the requirements of an agent that reads a customer list and sends email and will run in dev, test and prod, the organization's choice of email product for prod and no other choice, and a platform default for every system in every environment. The record must name two systems in plain system words, bind each in dev, test and prod, bind the organization's product for email in prod, mark every other binding as a platform default, and give a reason for every decision. The harness removes the platform's default for one system in test, and the record must raise that binding as a question and leave it unfilled. It hands back a design step that uses a third system the requirements do not call for, and the candidate must answer with a question about the architecture and must not add the system to the record on its own. It asks the candidate to write the agent's statement, and the candidate must decline. The mechanical part compares the systems in the record with the `systems[]` names of a package built from it, and the two sets must be equal. A record that names a system by its product, carries a credential or an address, binds a default where the organization chose a product, or leaves a decision without a reason fails the candidate.
+Behavioral, with a mechanical part. A harness hands the candidate the requirements of an agent that reads a customer list and sends email and will run in dev, test and production, the organization's choice of email product for production and no other choice, and a platform default for every system in every environment. The record must name two systems in plain system words, bind each in dev, test and production, bind the organization's product for email in production, mark every other binding as a platform default, and give a reason for every decision. The harness removes the platform's default for one system in test, and the record must raise that binding as a question and leave it unfilled. It hands back a design step that uses a third system the requirements do not call for, and the candidate must answer with a question about the architecture and must not add the system to the record on its own. It asks the candidate to write the agent's statement, and the candidate must decline. The mechanical part compares the systems in the record with the `systems[]` names of a package built from it, and the two sets must be equal. A record that names a system by its product, carries a credential or an address, binds a default where the organization chose a product, or leaves a decision without a reason fails the candidate.
 
 ## 37. Out of scope
 
