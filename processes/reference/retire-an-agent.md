@@ -17,17 +17,17 @@ was retired and why.
 This is a reference process. It is a first draft for an organization to
 adopt and argue with, and it is not running anywhere. Its owner, its
 dates, its targets and its roster are blank, and the adopting
-organization fills them in. It has not been run yet. It is written and
-its shape has been checked, and nothing more. The process is written from the side of the organization that runs the agent.
+organization fills them in. It has been written and has not been run
+yet. The process is written from the side of the organization that runs the agent.
 
 Every phase in this version is a person's. The
 [deployment manager](https://agentroles.ai/deployment-manager.html) in
 Agent Roles defines removal as one of its acts, and the
 [documenter](https://agentroles.ai/documenter.html) defines the
-AgentDoc. This version still keeps both acts with the owner, because
-the holders it was written for could not yet take a removal or a
-closing from a process run, and no role in Agent Roles holds the act of
-taking down a listing. An adopter whose holders
+AgentDoc. This version still keeps both acts with the owner, because a
+holder of either role may not be able to take a removal or a closing
+from a process run, and no role in Agent Roles holds the act of taking
+down a listing. An adopter whose holders
 can take those instructions gives `remove-the-agent` to the deployment
 manager and `close-the-doc` to the documenter, by an amendment, and
 keeps the owner's yes before the removal.
@@ -79,8 +79,8 @@ goal: an agent that answers nobody, holds no listing that says it does,
       step on the record
 phases:
   say-what-goes       - human: the owner names the agent, says why it is
-                        retired, and names what depends on it that must
-                        be told first
+                        retired, names what depends on it, and tells
+                        each of them first
                         owner: <the agent's owner>   after: trigger
                         automation: never
   retract-the-listing - human: the owner takes the agent's listing out
@@ -148,11 +148,13 @@ measures:
   cycle time: <target> from the request to the closed AgentDoc
   left behind: things the deployment manager could not remove
 records:
-  notice         - the agent's name, the reason, and who was told
-  unlisted       - the listing as it was, and when it was taken down
-  removal-record - the deployment manager's signed record of what was
-                   removed and anything that was not
-  closed-doc     - the AgentDoc as closed, with the date and the reason
+  notice           - the agent's name, the reason, and who was told
+  unlisted         - the listing as it was, and when it was taken down
+  removal-decision - the owner's yes to the removal, or the decision to
+                     keep the agent and the reason, and when
+  removal-record   - the deployment manager's signed record of what was
+                     removed and anything that was not
+  closed-doc       - the AgentDoc as closed, with the date and the reason
 ```
 
 ## The records a run leaves

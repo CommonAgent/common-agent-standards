@@ -109,8 +109,9 @@ deviations:
     they attach them and the record is written again
 bindings:
   roster:  <who holds each role - an agent claiming the incident
-           recorder, an agent claiming the watcher once one can be held,
-           and a named person for the incident owner>
+           recorder, an agent claiming the watcher once one can be held
+           and until then a named person who notices, and a named person
+           for the incident owner>
   systems: none of the phases reaches a system of its own; the records
            arrive as files
   data:    the platform's activity records, the agent's own records
@@ -127,7 +128,7 @@ records:
                     who or what noticed it
   incident-record - the timeline, each line either a fact with the
                     record it came from or a gap said to be one
-  decision        - what the person decided, and when
+  decision        - what the person decided, who decided it, and when
 ```
 
 ## The records a run leaves

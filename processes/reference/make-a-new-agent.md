@@ -69,9 +69,11 @@ package that the suite never saw.
 
 Conformance is checked after the deploy, against the agent as it runs,
 by an agent that built none of it. Publishing is the owner's act. The
-platform that hosts the catalog makes the listing from the deployed
-agent's descriptor, and the documenter assembles the AgentDoc from the
-records. No role in Agent Roles holds the act of listing yet, so the
+AgentDoc is assembled outside the run's phases, by the platform or by a
+documenter where the adopter has one, from the deployed agent's
+descriptor and the records the run left, including the conformance
+record. The platform that hosts the catalog makes the listing from the
+descriptor. No role in Agent Roles holds the act of listing yet, so the
 phase stays with the owner.
 
 There is no separate process for changing an agent. A change to a
@@ -157,7 +159,7 @@ phases:
                        automation: <level>
   publish-the-agent  - human: the owner reads the agent's AgentDoc,
                        assembled from the deployed agent's descriptor
-                       and the conformance record, and says it may be
+                       and the records of the run, and says it may be
                        listed; the listing is made by the platform that
                        hosts <your catalog>, from the descriptor
                        owner: <the agent's owner>
@@ -237,6 +239,8 @@ records:
                       every round, and the signed job manifest
   build-record      - the package's address and sha256, and the signed
                       build record
+  deploy-decision   - the owner's yes on the package, and when it was
+                      given
   deployment-record - the agent's name and the signed deployment record
   evaluation-record - every case confirmed, failed or flagged, signed
                       by the conformance checker
@@ -245,14 +249,14 @@ records:
 
 ## The records a run leaves
 
-Each phase leaves the record its own kind of work produces. The two
-approval phases leave the owner's decision with the time it was made,
-and the harness phases leave one closing record each. Three of the
-records are signed by the agent that made them, as the Common Agent
+Each phase leaves the record its own kind of work produces. The three
+human gates leave the owner's decision with the time it was made, and
+the harness phases leave one closing record each. Three of the records
+are signed by the agent that made them, as the Common Agent
 Specification defines: the build record, the deployment record and the
-evaluation record. Together they are what an AgentDoc is assembled
-from, so a stranger deciding whether to use the agent reads the same
-records this run left.
+evaluation record. An AgentDoc is assembled from records like these, so
+a stranger deciding whether to use the agent reads the same records this
+run left.
 
 The delivery record matters most for the integrity of the run. The
 signed job manifest that came with the scripts is what the package
@@ -273,10 +277,10 @@ open: <what nobody finished, and who may close it>
 - **The request is for an agent this process cannot make.** The spec
   says so out loud, and the run ends there. An agent built as something
   that looks close to what was asked is the failure this rule prevents.
-- **One of the four answers ends the run.** The person may find that
-  the thing already exists, or that the organization cannot stand a
-  product behind a system the design needs. The run closes at the spec,
-  before a suite or a script has been paid for.
+- **Another of the four answers ends the run.** Two of the four answers
+  can end a run, and the kind of agent is only one of them. Whichever
+  one it is, the run closes at the spec, before a suite or a script has
+  been paid for.
 - **The owner sends the spec back.** The spec writer revises what the
   owner named and keeps the rest. A spec drafted again from the start
   loses the answers the owner already gave.
