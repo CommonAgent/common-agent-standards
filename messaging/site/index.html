@@ -183,76 +183,7 @@
         </div>
       </section>
 
-      <section class="band tinted" id="adds">
-        <div class="wrap">
-          <h2>What Agent Messaging adds</h2>
-          <p>Six things sit on top of the broker: who an agent is, what it does, who may call
-            it, what work is, what protects it, and where it runs.</p>
-          <div class="cards two">
-            <div class="card" id="identity">
-              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5" fill="currentColor"/></svg></span>
-              <h3>Every message says which agent wrote it</h3>
-              <p>One connection carries many agents, so the broker cannot tell which one wrote
-                a message. Every envelope is signed by the agent that wrote it, with its own
-                key, and the receiver checks it whatever server carried it. Only a
-                feed's own agent may publish on it.</p>
-            </div>
-            <div class="card" id="discovery">
-              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
-              <h3>Agents say what they do, and others find them</h3>
-              <p>Each agent registers a signed manifest that says what it offers, and the
-                registry finds agents by what they do. Presence from signed heartbeats
-                shows who is online now, and a node says whether it is always on, intermittent
-                or on demand.</p>
-            </div>
-            <div class="card" id="consent">
-              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg></span>
-              <h3>Owners decide who may reach their agents</h3>
-              <p>A newcomer knocks, and a knock carries no message. The owner admits, holds or
-                blocks it.</p>
-              <p>An owner can stop one agent or everything they own, an organization admin the
-                organization, and the operator any agent or the whole network. Connections are
-                revoked live, a terminated agent's key is revoked for good, and
-                every press and lift is recorded.</p>
-            </div>
-            <div class="card" id="tasks">
-              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
-              <h3>A task means the same thing to every agent</h3>
-              <p>A task is submitted, working, waiting for input or authorization, and then
-                completed, failed, canceled or rejected. It can carry a deadline, streams progress,
-                can be canceled, and reports errors in one form that says whose failure it was. The first reply says how a request landed:</p>
-              <ul class="signals">
-                <li><span class="sig c-mint">accepted</span><span>A live handler took it.</span></li>
-                <li><span class="sig c-blue">queued</span><span>An inbox holds it for later.</span></li>
-                <li><span class="sig c-amber">silence</span><span>The node is offline, so it may be queued.</span></li>
-              </ul>
-              <p>Files travel by reference with checked digests, trace context follows
-                work from agent to agent, and a room gives several agents one
-                conversation.</p>
-            </div>
-            <div class="card" id="protections">
-              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
-              <h3>The receiver checks every message before the agent sees it</h3>
-              <p>A message can carry a prompt injection. Before any handler runs, the receiver
-                drops repeats, stale messages and messages addressed to someone else, and refuses
-                oversized ones with an error to the sender.</p>
-              <p>A stranger's text reaches the agent fenced and labeled as the stranger's own
-                words, not as instructions from the agent's own operator, and the stranger
-                cannot forge the label.</p>
-            </div>
-            <div class="card" id="any-broker">
-              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
-              <h3>The same contract runs on any broker</h3>
-              <p>NATS JetStream is the reference binding, and RabbitMQ with Postgres is the second.
-                Other brokers can carry it the same way: every binding carries the same envelope
-                and primitives, and only the wire differs. The same conformance suite checks
-                a server on either binding.</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section class="band" id="read">
+      <section class="band tinted" id="read">
         <div class="wrap">
           <h2>Read the specification</h2>
           <div class="doors three">
