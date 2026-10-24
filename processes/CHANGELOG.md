@@ -17,7 +17,10 @@ that tag is the text of that version. Its history comes from jeffrschneider/agen
   which tells whoever depends on an agent, takes down its listing, removes
   it on the owner's yes and closes its AgentDoc with the date and the
   reason. The intro of every reference process drops its line about whether
-  the process has run. No rule in this specification changes.
+  the process has run. The incident process states its first phase as the
+  watcher or a person noticing, and the make-a-new-agent and retire-an-agent
+  processes drop the sentences that said why a phase stays with the owner.
+  No rule in this specification changes.
 
 ## 0.7.0-draft (2026-10-19)
 

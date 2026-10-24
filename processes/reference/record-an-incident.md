@@ -151,8 +151,9 @@ open: <what nobody finished, and who may close it>
 
 ## The failure edges
 
-- **A person notices first.** The person sends the trigger, and the run
-  records who noticed it. The rest of the run is the same.
+- **The watcher misses it.** A person notices, names the agent and the
+  time, and sends the trigger, and the run records who noticed it. The
+  rest of the run is the same.
 - **The records leave a gap.** The timeline names it. When the person
   can fill it from records they did not attach, the run returns to
   gathering. When nobody can, the gap stays in the record as a gap.

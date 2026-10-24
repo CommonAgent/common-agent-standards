@@ -4,7 +4,7 @@ Every version of the Common Agent Specification and what it changed, newest firs
 
 ## 0.30.2-draft (2026-10-24)
 
-No change to the text of the specification. This version publishes commonagent.net with the Agent Onboarding and Offboarding page (/onboarding.html) listing the three reference processes for the agents an organization runs itself, make a new agent, record an incident and retire an agent, beside the two for outside agents. They are in Agent Processes 0.7.1-draft. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+No change to the text of the specification. This version adds a section to the Agent Onboarding and Offboarding page of commonagent.net (/onboarding.html) that lists the three reference processes for the agents an organization runs itself (make a new agent, record an incident and retire an agent) beside the two for outside agents. They are in Agent Processes 0.7.1-draft. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
 
 ## 0.30.1-draft (2026-10-24)
 

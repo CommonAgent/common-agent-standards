@@ -126,10 +126,9 @@ deviations:
 bindings:
   roster:  <who holds each role - the agent's owner (person) for every
            phase, and an agent claiming the deployment manager for the
-           removal it is instructed to make; when the deployment manager
-           can take a run's instruction to remove and a documenter can
-           close an AgentDoc, remove-the-agent and close-the-doc become
-           theirs by amendment>
+           removal it is instructed to make; an adopter whose deployment
+           manager and documenter take a run's instructions gives them
+           remove-the-agent and close-the-doc by amendment>
   systems: none of the phases reaches a system of its own
   data:    the agent's name, its listing, its deployment record and its
            AgentDoc

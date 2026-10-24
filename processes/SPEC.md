@@ -15,8 +15,11 @@ source of every fact and every gap, and leaves the decision to a person;
 and `ref/dev/retire-an-agent`, which tells whoever depends on an agent,
 takes down its listing, removes it on the owner's yes and closes its
 AgentDoc with the date and the reason. The intro of every reference
-process drops its line about whether the process has run. No rule in
-this specification changes.
+process drops its line about whether the process has run. The incident
+process states its first phase as the watcher or a person noticing, and
+the make-a-new-agent and retire-an-agent processes drop the sentences
+that said why a phase stays with the owner. No rule in this
+specification changes.
 
 **0.7.0-draft.** A run MAY close with a signed close (Section 13.5.1):
 one attestation, made by the process owner in the record convention of the

@@ -492,7 +492,7 @@ export function renderPurchaseOrder({ draft = false } = {}) {
  *  in Agent Processes, and this page says so and points at them. */
 export function renderOnboarding({ draft = false } = {}) {
   const title = "Agent Onboarding and Offboarding";
-  const description = "Bringing an outside agent into an organization's work, and taking it out again, are written as two reference processes in Agent Processes. Three more make, look after and retire the agents an organization runs itself. They are not specifications: every step is an act another Common Agent Standard already defines.";
+  const description = "Bringing an outside agent into an organization's work, and taking it out again, are written as two reference processes in Agent Processes. The first two are not specifications: every step is an act another Common Agent Standard already defines. Three more make, record incidents for and retire the agents an organization runs itself.";
   const PROC = "https://agentprocesses.ai";
   const ON = `${PROC}/onboard-an-agent.html`;
   const OFF = `${PROC}/offboard-an-agent.html`;
@@ -588,8 +588,8 @@ export function renderOnboarding({ draft = false } = {}) {
       <section class="band" id="own-agents">
         <div class="wrap">
           <h2>Three more reference processes cover the agents an organization runs itself</h2>
-          <p>An organization that makes its own agents brings each one into service, looks after
-            it when something goes wrong, and takes it down when it is no longer needed. Each of
+          <p>An organization that makes its own agents brings each one into service, writes down
+            what happened when something goes wrong, and takes it down when it is no longer needed. Each of
             those is a reference process in Agent Processes too.</p>
           <ol class="floor">
             ${own.map((p) => `<li><span><a href="${p.href}">${esc(p.name)}${ext}</a>. ${esc(p.text)}</span></li>`).join("\n            ")}
@@ -606,7 +606,9 @@ export function renderOnboarding({ draft = false } = {}) {
             <a href="https://agentnda.net/">Agent NDA</a>, the engagement and its termination are
             <a href="https://agentsow.com/">Agent SoW</a>, and the mandate and its revocation are
             <a href="https://agentmandate.net/">Agent Mandate</a>. Each reference process ends with
-            a table that links every step to the section that specifies it.</p>
+            a table that links every step to the section that specifies it. The three for an
+            organization's own agents point at the roles in <a href="https://agentroles.ai/">Agent Roles</a>
+            and the records in the Common Agent Specification.</p>
         </div>
       </section>`,
   });
