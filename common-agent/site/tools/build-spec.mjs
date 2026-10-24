@@ -313,12 +313,15 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
 }
 
 // ── the chapter pages ───────────────────────────────────────────────────────
-function chapter({ file, active, id, num, name, sub, description, ids, introAliases = [], extra = "", tail = "", links = false }) {
+function chapter({ file, active, id, num, name, sub, description, ids, introAliases = [], extra = "", tail = "", links = false, lead = "" }) {
   const s = section(id);
   const intro = introAliases.map((a) => `<span class="alias" id="${a}"></span>`).join("");
   let { html, toc } = render(s.md.replace(/^## .+\n/, ""), ids);
   html = extra ? extra(html) : html;
   html = links ? addLinks(intro + html, file) : intro + html;
+  // A lead is one plain paragraph a reader meets first, above the chapter text.
+  if (lead) html = `<p class="lead">${lead}</p>
+${html}`;
   write(file, page({
     file, active,
     title: `${name}: Section ${num} of the Common Agent Specification`,
@@ -358,6 +361,7 @@ const PACKAGE_IDS = { "12.1": "terms", "12.2": "layout", "12.3": "descriptor", "
   "12.6": "rules", "12.7": "lifecycle", "12.8": "provenance", "12.9": "out", "12.10": "conformance" };
 chapter({
   file: "package.html", active: "package", id: "s12", num: 12, name: "The Agent Package", links: true,
+  lead: "If you want a platform to run your agent, send a package. If you run it yourself, send a Descriptor and register it.",
   sub: "This section says how an agent travels from a description to a running agent with an identity: what a package contains, how it is published to a depot and installed from one, and how a verifier checks that the agent answering is the package that was built.",
   description: "The Agent Package, Section 12 of the Common Agent Specification: the layout, the draft Descriptor, the runtime requirements, skills, the rules, publish and install, provenance, and conformance.",
   ids: (lvl, num) => (lvl === 3 && PACKAGE_IDS[num] ? { aliases: [PACKAGE_IDS[num]].flat() } : null),
