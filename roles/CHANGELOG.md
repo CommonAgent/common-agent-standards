@@ -4,6 +4,31 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.3 (2026-10-24)
+
+The lifecycle stage that was called Design is now Architecture and Design.
+It is one stage with two parts, and the architecture comes first. A new
+lifecycle role, the solution architect (§36), holds the first part, and a
+person can hold it instead. It hands back an architecture record: the
+systems the agent reaches, named in the plain system words the Common Agent
+Specification's runtime requirements use in `systems[]` (12.4); the product
+bound to each system in each environment, such as dev, test and prod, where
+the organization's own choice wins and a platform default fills the rest, and
+the record says which of the two each binding came from;
+the other agents and services the agent depends on; what the agent's inside
+is made of; its limits on cost, speed, data and trust; and every decision
+with its reason. The part is done when every system is named and bound in
+each environment the agent will run in, every decision has a reason, and
+every step of the design uses only systems the record named. The record is
+checked at Package, where its systems become the package's runtime
+requirements, and at Deploy, where the deployment manager places its
+bindings. The role defines no signature tag. The spec writer (§19) and the
+solution planner (§32) hold the second part, Design, as before, and their
+chapters now say they design only with the systems the record names. Out
+of scope moves to §37 and signature tags to §38. The registry has
+twenty-four roles. No other section number, offering name, interface or
+wire string changes.
+
 ## v1.2 (2026-10-24)
 
 The deployment manager (§11) and the package maker (§12) follow three

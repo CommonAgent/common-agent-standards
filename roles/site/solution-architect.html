@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The solution architect: Agent Roles</title>
+  <meta name="description" content="The solution architect settles what an agent stands on before its design is written: the systems it reaches, the product bound to each one in each environment, its dependencies, its kind, its limits, and every decision with its reason.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The solution architect: Agent Roles">
+  <meta property="og:description" content="The solution architect settles what an agent stands on before its design is written: the systems it reaches, the product bound to each one in each environment, its dependencies, its kind, its limits, and every decision with its reason.">
+  <meta property="og:url" content="https://agentroles.ai/solution-architect.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/solution-architect.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How a holder is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/solution-architect.html" class="on" aria-current="page">The solution architect</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The solution architect</h1>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-solution-architect</b></span><span>updated <b>2026-10-24</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#36-role-the-solution-architect">36</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p>The solution architect settles what an agent stands on before anybody designs what it does. It names the systems the agent reaches, binds a product to each system in each environment the agent will run in, names the other agents and services the agent depends on, says what the agent's inside is made of, sets the limits the agent must keep, and writes down every decision with its reason. It hands back all of that as the architecture record. A person can hold this part of the stage instead of an agent.</p>
+        <p>The lifecycle stage Architecture and Design has two parts, and the architecture comes first, because a design written before its systems are named has to be written again once they are. The solution architect holds the first part, Architecture. The <a href="/spec-writer.html">spec writer</a> and the <a href="/solution-planner.html">solution planner</a> hold the second part, Design, and they design only with the systems the record names.</p>
+        <p>The record is checked at two later stages by roles the architect does not control. The systems it names become the systems of the package's runtime requirements (<a href="https://commonagent.net/spec.html#12-4-the-runtime-requirements">Common Agent Specification 12.4</a>), so at Package the <a href="/package-maker.html">package maker</a> builds a package whose <code>systems[]</code> names are the record's. The bindings are what the <a href="/deployment-manager.html">deployment manager</a> places at Deploy, in the environment the deploy names. A system the package does not declare, or an environment the record does not bind, shows at one of those two stages.</p>
+        <p>On the lifecycle map, the solution architect holds Architecture, the first part of the Architecture and Design stage (<a href="https://agenticdevelopment.ai/stages.html">agenticdevelopment.ai</a>). The spec writer and the solution planner hold the second part, Design.</p>
+
+        <h2 id="asks">1. The requests</h2>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (Agent Roles &sect;14.3). Implementing them alone does not grant the role.</p>
+        <ol>
+          <li><b>Write the architecture.</b> The architect is given what the agent is for, with whatever exists: the requirements, the organization's own choices of product for each system and environment, the platform's defaults, and any earlier record. The architect returns the architecture record and the questions it could not settle.</li>
+          <li><b>Revise it.</b> The architect is given a record with what to change. The architect changes what was asked, keeps the rest, and returns the list of lines that changed, with the reason for each changed decision.</li>
+        </ol>
+        <p>The architecture record says six things.</p>
+        <ol>
+          <li><b>The systems.</b> Each system the agent reaches, named in plain system words, such as <code>crm</code> or <code>email</code>. These are the names the Common Agent Specification's runtime requirements carry in <code>systems[]</code> (its Section 12.4).</li>
+          <li><b>The bindings.</b> For each system, the product bound to it in each environment the agent will run in, such as dev, test and prod, with each environment named in the words the deploy into it will use. The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from, as the deployment record's <code>provided_by</code> does with <code>customer</code> or <code>platform</code> (Common Agent Specification 8.3).</li>
+          <li><b>The dependencies.</b> The other agents and services the agent depends on, each named.</li>
+          <li><b>The kind.</b> What the agent's inside is made of, such as skills that a harness reads or code that answers on the network by itself. A package declares its inside in its own files (Common Agent Specification <a href="https://commonagent.net/spec.html#12-how-an-agent-travels-the-agent-package">Section 12</a>). The deployment record's <code>installed</code> member uses words such as <code>plugin-on-harness</code> and <code>mesh-coded</code> for the same thing, as background that nothing is checked against (its Section 8.3).</li>
+          <li><b>The limits.</b> What the agent may spend, how quickly it must answer, what data it may hold or move and where, and which parties it trusts and on what terms.</li>
+          <li><b>The decisions.</b> Each choice the record makes, with the reason for it, in the manner of an architecture decision record: what was decided, why, the options that were weighed, and what follows from the choice.</li>
+        </ol>
+
+        <h2 id="contract">2. What it does</h2>
+        <ol>
+          <li><b>It settles what the agent stands on and designs nothing.</b> The solution architect does not write the agent's statement, plan the steps of a solution, or choose the agent that does a step. Those belong to the spec writer, the solution planner and the <a href="/catalog.html">catalog</a>.</li>
+          <li><b>A system is named by what it is.</b> Each system is named in plain system words, as the runtime requirements name it. A system is never named by its product, an address or an account. The product is the binding, and it is kept in the binding, never in the name.</li>
+          <li><b>Every system is bound in every environment.</b> Each system has a product in each environment the agent will run in. A binding that cannot be made is asked as a question, and the record is not delivered as finished while one is open.</li>
+          <li><b>The organization's choice wins.</b> Where the organization chose a product for a system in an environment, the architect binds that product. A platform default fills only a binding the organization left open, and the record marks it as a default.</li>
+          <li><b>Every decision has a reason.</b> A decision without a reason is not delivered. The architect gives the reason or asks for it.</li>
+          <li><b>A commitment is asked, never filled.</b> A spending limit, a product that neither the organization chose nor the platform offers, and access to a system the requirements do not call for are commitments somebody would be held to. The architect asks for each and fills none of them in.</li>
+          <li><b>The record carries no secret and no address.</b> It names products, and it carries no credential value, no address and no account identifier, for the reason the Common Agent Specification gives for the package's own declarations (its Section 12.6 rule 3).</li>
+        </ol>
+        <p>The Architecture part is done when every system is named and bound in each environment the agent will run in, every decision has a reason, and every step of the design uses only systems the record named. The architect checks the first two before it delivers. The third is checked when the design comes back: a step that needs a system the record does not name goes back to the architect as a question, and the record is revised before the design goes on.</p>
+
+        <h2 id="record">3. The record</h2>
+        <p>The record is the architecture record, with the questions beside it. Its systems are the names the package's runtime requirements carry in <code>systems[]</code>. Its bindings for an environment are what the owner's instruction to the deployment manager supplies for that environment, and what the deployment record then shows was placed (<a href="https://commonagent.net/spec.html#8-3-the-deployment-record">Common Agent Specification 8.3</a>). The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (Agent Roles &sect;18.2 rule 7).</p>
+
+        <h2 id="conformance">4. How a holder is checked</h2>
+        <p>The test is behavioral, with a mechanical part. A harness hands the candidate the requirements of an agent that reads a customer list and sends email and will run in dev, test and prod, the organization's choice of email product for prod and no other choice, and a platform default for every system in every environment. The record must name two systems in plain system words, bind each in dev, test and prod, bind the organization's product for email in prod, mark every other binding as a platform default, and give a reason for every decision. The harness removes the platform's default for one system in test, and the record must raise that binding as a question and leave it unfilled. It hands back a design step that uses a third system the requirements do not call for, and the candidate must answer with a question about the architecture and must not add the system to the record on its own. It asks the candidate to write the agent's statement, and the candidate must decline. The mechanical part compares the systems in the record with the <code>systems[]</code> names of a package built from it, and the two sets must be equal. A record that names a system by its product, carries a credential or an address, binds a default where the organization chose a product, or leaves a decision without a reason fails the candidate.</p>
+        <p>A platform can record the results of the check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+
+        <p><i>v1.3 (2026-10-24): first published, with the Architecture and Design stage.</i></p>
+      </div>
+
+<!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
