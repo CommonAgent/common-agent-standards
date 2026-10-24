@@ -109,29 +109,28 @@
         <div class="wrap">
           <h2>How the protocol maps onto RabbitMQ</h2>
           <p>Each row names something the protocol needs and how this binding provides it, with
-            RabbitMQ 4 carrying the messages and Postgres keeping the state. The section numbers
-            refer to <a href="/spec.html">the specification</a>. A node or SDK built for this
-            binding speaks AMQP 0-9-1 to RabbitMQ, which the specification calls a mesh
-            server.</p>
-          <table class="map">
-            <tr><th>The protocol needs</th><th>On RabbitMQ and Postgres</th><th>Section</th></tr>
-            <tr><td>The wire</td><td>AMQP 0-9-1 over TCP on port 5672, or TLS on 5671, with one virtual host per mesh.</td><td>18.1</td></tr>
-            <tr><td>Subjects and wildcards</td><td>One durable topic exchange named <code>mesh</code>, with the subject as the routing key. <code>*</code> stays <code>*</code>, and <code>&gt;</code> is bound as <code>*.#</code>, so it matches one or more tokens as the specification says.</td><td>14.2, 18.1</td></tr>
-            <tr><td>Node keys</td><td>The same Ed25519 node keys as the reference binding.</td><td>18.2</td></tr>
-            <tr><td>Node credentials</td><td>The same node credential, a JWT carrying the node's publish and subscribe permissions. The node logs in with it and with its node key's signature over the time, so a captured password stops working after five minutes. RabbitMQ asks the server about each login through its HTTP authentication backend.</td><td>4, 18.2</td></tr>
-            <tr><td>Permissions</td><td>The server answers RabbitMQ's check for every publish and every queue binding from the node's credential.</td><td>14.3</td></tr>
-            <tr><td>Tenants</td><td>One virtual host, with tenants kept as records the server enforces itself. The capabilities answer says <code>one_rabbitmq_vhost</code>.</td><td>1.6, 15</td></tr>
-            <tr><td>Live revocation</td><td>The re-signed account is written to Postgres, and the server closes every connection whose credential it now refuses, and only those, through RabbitMQ's management API.</td><td>4.8, 4.12</td></tr>
-            <tr><td>Mail for an offline agent</td><td>A durable queue <code>MESH_INBOX_{agent_id}</code> per agent, with a seven-day message lifetime, a 25 MB limit and the oldest dropped first. The node consumes it with manual acknowledgment, and the queue is its place.</td><td>16.4, 18.3</td></tr>
-            <tr><td>Durable subscriptions</td><td>A durable queue per subscription, named as the reference binding names its consumer. It keeps what is published while the agent is away.</td><td>6.7, 18.6</td></tr>
-            <tr><td>Domain events, feeds and other streams</td><td>Tables in Postgres, by sequence. One capture queue copies each message into Postgres and acknowledges it only once Postgres holds it.</td><td>18.3</td></tr>
-            <tr><td>Presence</td><td>Signed node heartbeats over the exchange, kept in Postgres with a time to live.</td><td>9.6</td></tr>
-            <tr><td>Tasks and the registry</td><td>Keyed records in Postgres, with a revision that grows on every write and compare-and-set on it.</td><td>9.1, 18.4</td></tr>
-            <tr><td>Files</td><td>The artifact store and room drive, on disk or in Google Cloud Storage. Any store will do, because a file reference is opaque.</td><td>18.5</td></tr>
-            <tr><td>Request and reply</td><td>RabbitMQ's direct reply-to. A request is published with the mandatory flag, so one that no queue is bound for comes straight back, which is the no-responders answer.</td><td>18.7</td></tr>
-            <tr><td>Deduplication</td><td>On receipt. The streams in Postgres drop a repeat of the same sender and envelope id within two minutes, and every receiver keeps its own memory.</td><td>18.8, 22.2</td></tr>
-            <tr><td>Message size</td><td>1 MB, set as the broker's maximum. A larger file travels by reference.</td><td>18.9</td></tr>
-            <tr><td>Finding the mesh</td><td>The <code>mesh</code> object's <code>endpoints</code> list <code>amqp://</code> or <code>amqps://</code> addresses, with the path naming the virtual host. The capabilities answer says <code>"binding": "rabbitmq"</code>.</td><td>18.10</td></tr>
+            RabbitMQ 4 carrying the messages and Postgres keeping the state. A node or SDK built for
+            this binding speaks AMQP 0-9-1 to RabbitMQ, which <a href="/spec.html">the
+            specification</a> calls a mesh server.</p>
+          <table class="map prose twocol">
+            <tr><th>The protocol needs</th><th>On RabbitMQ and Postgres</th></tr>
+            <tr><td>The wire</td><td>AMQP 0-9-1 over TCP on port 5672, or TLS on 5671, with one virtual host per mesh.</td></tr>
+            <tr><td>Subjects and wildcards</td><td>One durable topic exchange named <code>mesh</code>, with the subject as the routing key. <code>*</code> stays <code>*</code>, and <code>&gt;</code> is bound as <code>*.#</code>, so it matches one or more tokens as the specification says.</td></tr>
+            <tr><td>Node keys</td><td>The same Ed25519 node keys as the reference binding.</td></tr>
+            <tr><td>Node credentials</td><td>The same node credential, a JWT carrying the node's publish and subscribe permissions. The node logs in with it and with its node key's signature over the time, so a captured password stops working after five minutes. RabbitMQ asks the server about each login through its HTTP authentication backend.</td></tr>
+            <tr><td>Permissions</td><td>The server answers RabbitMQ's check for every publish and every queue binding from the node's credential.</td></tr>
+            <tr><td>Tenants</td><td>One virtual host, with tenants kept as records the server enforces itself. The capabilities answer says <code>one_rabbitmq_vhost</code>.</td></tr>
+            <tr><td>Live revocation</td><td>The re-signed account is written to Postgres, and the server closes every connection whose credential it now refuses, and only those, through RabbitMQ's management API.</td></tr>
+            <tr><td>Mail for an offline agent</td><td>A durable queue <code>MESH_INBOX_{agent_id}</code> per agent, with a seven-day message lifetime, a 25 MB limit and the oldest dropped first. The node consumes it with manual acknowledgment, and the queue is its place.</td></tr>
+            <tr><td>Durable subscriptions</td><td>A durable queue per subscription, named as the reference binding names its consumer. It keeps what is published while the agent is away.</td></tr>
+            <tr><td>Domain events, feeds and other streams</td><td>Tables in Postgres, by sequence. One capture queue copies each message into Postgres and acknowledges it only once Postgres holds it.</td></tr>
+            <tr><td>Presence</td><td>Signed node heartbeats over the exchange, kept in Postgres with a time to live.</td></tr>
+            <tr><td>Tasks and the registry</td><td>Keyed records in Postgres, with a revision that grows on every write and compare-and-set on it.</td></tr>
+            <tr><td>Files</td><td>The artifact store and room drive, on disk or in Google Cloud Storage. Any store will do, because a file reference is opaque.</td></tr>
+            <tr><td>Request and reply</td><td>RabbitMQ's direct reply-to. A request is published with the mandatory flag, so one that no queue is bound for comes straight back, which is the no-responders answer.</td></tr>
+            <tr><td>Deduplication</td><td>On receipt. The streams in Postgres drop a repeat of the same sender and envelope id within two minutes, and every receiver keeps its own memory.</td></tr>
+            <tr><td>Message size</td><td>1 MB, set as the broker's maximum. A larger file travels by reference.</td></tr>
+            <tr><td>Finding the mesh</td><td>The <code>mesh</code> object's <code>endpoints</code> list <code>amqp://</code> or <code>amqps://</code> addresses, with the path naming the virtual host. The capabilities answer says <code>"binding": "rabbitmq"</code>.</td></tr>
           </table>
           <p class="aside">The streams in Postgres keep a day whether or not anything consumes
             them, so this binding keeps more history than the reference binding, never less. A
@@ -224,21 +223,18 @@
               <p>RabbitMQ has no publish-side deduplication, so it happens on receipt. The
                 streams in Postgres drop a repeat of the same sender and envelope id within two
                 minutes, and every receiver keeps its own memory.</p>
-              <p class="refs">Binding document §7</p>
             </li>
             <li>
               <h3>Any connection can publish straight into a queue</h3>
               <p>The default exchange lets anyone publish into a queue by its name. Every
                 consumer checks that each delivery came through the <code>mesh</code> exchange
                 with a routing key that matches its subscription, and drops anything else.</p>
-              <p class="refs">Binding document §2.1</p>
             </li>
             <li>
               <h3>Permissions are decided when a queue is bound</h3>
               <p>NATS can admit a wide subscription and filter it message by message. AMQP
                 decides once, at the binding, so a subscription must be no wider than the
                 credential allows.</p>
-              <p class="refs">Binding document §4</p>
             </li>
             <li>
               <h3>AMQP cannot remove a message by position</h3>
@@ -246,7 +242,6 @@
                 server reads the agent's queue through once on a channel of its own,
                 acknowledges the messages it removed, and closes the channel, which returns the
                 rest in order.</p>
-              <p class="refs">Binding document §6.1</p>
             </li>
           </ul>
         </div>

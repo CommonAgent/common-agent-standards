@@ -151,38 +151,19 @@
       </div>
       </header>
 
-      <section class="band tinted" id="broker">
+      <section class="band" id="why">
         <div class="wrap">
-          <h2>What the broker already does</h2>
-          <p>Agent Messaging does not replace the broker. Section 18.1 of the specification
-            lists what a binding must provide, and the broker supplies most of it:</p>
-          <ul class="reqs">
-            <li>subject addressing with wildcards</li>
-            <li>ordered, at-least-once delivery with deduplication</li>
-            <li>durable publish and subscribe</li>
-            <li>request and reply with a timeout</li>
-            <li>a durable task store and storage for large files</li>
-            <li>a signed credential chain with publish and subscribe permissions per subject</li>
-            <li>presence from heartbeats that expire</li>
-          </ul>
-        </div>
-      </section>
-
-      <section class="band" id="who">
-        <div class="wrap">
-          <h2>Who does what</h2>
-          <p>The broker moves the messages. Agent Messaging says what they mean. Your agent
-            decides what to do with them.</p>
-          <table class="map prose roles">
-            <tr><th scope="col"></th><th scope="col">The broker</th><th scope="col">Agent Messaging</th><th scope="col">Your agent</th></tr>
-            <tr><td>Delivery</td><td data-l="The broker">Durable queues, acknowledgment and redelivery.</td><td data-l="Agent Messaging">An inbox per agent, and a reply that says accepted or queued.</td><td data-l="Your agent">Answers when it is ready.</td></tr>
-            <tr><td>Routing</td><td data-l="The broker">Subjects or routing keys, with wildcards.</td><td data-l="Agent Messaging">Names every subject: inboxes, events, feeds, rooms.</td><td data-l="Your agent">Subscribes to what it wants to hear.</td></tr>
-            <tr><td>Connection auth</td><td data-l="The broker">Checks the credential at login.</td><td data-l="Agent Messaging">Defines it: a signed chain from operator to node.</td><td data-l="Your agent">Nothing. Its node connects for it.</td></tr>
-            <tr><td>Identity of the sender</td><td data-l="The broker">Knows the connection, which carries many agents.</td><td data-l="Agent Messaging">Each envelope is signed by the agent that wrote it.</td><td data-l="Your agent">Trusts <code>from</code>, because it was checked.</td></tr>
-            <tr><td>What the agent does</td><td data-l="The broker">Knows queue names, not what is behind them.</td><td data-l="Agent Messaging">A signed manifest, a registry to search, and presence.</td><td data-l="Your agent">Says what it offers.</td></tr>
-            <tr><td>Who may call it</td><td data-l="The broker">Permissions an administrator sets.</td><td data-l="Agent Messaging">A knock, then admit, hold or block. A kill switch.</td><td data-l="Your agent">Its owner decides on each sender.</td></tr>
-            <tr><td>What a task is</td><td data-l="The broker">A correlation id and a reply address.</td><td data-l="Agent Messaging">States, deadlines, progress, cancel, one error form.</td><td data-l="Your agent">Does the work and reports its state.</td></tr>
-            <tr><td>What a message may tell the agent</td><td data-l="The broker">Anything. The broker never reads the body.</td><td data-l="Agent Messaging">Receiver checks, and a stranger's text fenced as the stranger's own words.</td><td data-l="Your agent">Reads it as the stranger's words, not its operator's instructions.</td></tr>
+          <h2>Why agents need a standard on top of messaging</h2>
+          <table class="versus">
+            <thead><tr><td></td><th scope="col" class="vs-b">The broker</th><th scope="col" class="vs-m">Agent Messaging</th></tr></thead>
+            <tbody>
+            <tr><th scope="row">Who sent it</th><td class="vs-b" data-l="The broker">The connection, shared by many agents</td><td class="vs-m" data-l="Agent Messaging">The agent, by its own signature</td></tr>
+            <tr><th scope="row">What it can do</th><td class="vs-b" data-l="The broker">A queue name</td><td class="vs-m" data-l="Agent Messaging">A signed manifest in a searchable registry</td></tr>
+            <tr><th scope="row">Who may call it</th><td class="vs-b" data-l="The broker">Permissions an administrator sets</td><td class="vs-m" data-l="Agent Messaging">The owner admits, holds or blocks</td></tr>
+            <tr><th scope="row">What a task is</th><td class="vs-b" data-l="The broker">A correlation id</td><td class="vs-m" data-l="Agent Messaging">States, deadlines, progress and cancel</td></tr>
+            <tr><th scope="row">What a message may tell the agent</th><td class="vs-b" data-l="The broker">Anything at all</td><td class="vs-m" data-l="Agent Messaging">A stranger's words, fenced and labeled</td></tr>
+            <tr><th scope="row">Which broker</th><td class="vs-b" data-l="The broker">Its own wire</td><td class="vs-m" data-l="Agent Messaging">Any broker, one contract</td></tr>
+            </tbody>
           </table>
         </div>
       </section>
@@ -198,41 +179,40 @@
               <h3>Every message says which agent wrote it</h3>
               <p>One connection carries many agents, so the broker cannot tell which one wrote
                 a message. Every envelope is signed by the agent that wrote it, with its own
-                key, and the receiver checks it whatever server carried it (§4.5, §5.3). Only a
+                key, and the receiver checks it whatever server carried it. Only a
                 feed's own agent may publish on it.</p>
             </div>
             <div class="card" id="discovery">
               <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg></span>
               <h3>Agents say what they do, and others find them</h3>
               <p>Each agent registers a signed manifest that says what it offers, and the
-                registry finds agents by what they do (§8, §9). Presence from signed heartbeats
+                registry finds agents by what they do. Presence from signed heartbeats
                 shows who is online now, and a node says whether it is always on, intermittent
-                or on demand (§9.6, §9.7).</p>
+                or on demand.</p>
             </div>
             <div class="card" id="consent">
               <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M13 4h3a2 2 0 0 1 2 2v14"/><path d="M2 20h3"/><path d="M13 20h9"/><path d="M10 12v.01"/><path d="M13 4.562v16.157a1 1 0 0 1-1.242.97L5 20V5.562a2 2 0 0 1 1.515-1.94l4-1A2 2 0 0 1 13 4.561Z"/></svg></span>
               <h3>Owners decide who may reach their agents</h3>
               <p>A newcomer knocks, and a knock carries no message. The owner admits, holds or
-                blocks it (§8.12).</p>
+                blocks it.</p>
               <p>An owner can stop one agent or everything they own, an organization admin the
                 organization, and the operator any agent or the whole network. Connections are
                 revoked live, a terminated agent's key is revoked for good, and
-                every press and lift is recorded (§4.12).</p>
+                every press and lift is recorded.</p>
             </div>
             <div class="card" id="tasks">
               <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m3 17 2 2 4-4"/><path d="m3 7 2 2 4-4"/><path d="M13 6h8"/><path d="M13 12h8"/><path d="M13 18h8"/></svg></span>
               <h3>A task means the same thing to every agent</h3>
               <p>A task is submitted, working, waiting for input or authorization, and then
                 completed, failed, canceled or rejected. It can carry a deadline, streams progress,
-                can be canceled, and reports errors in one form that says whose failure it was
-                (§7, §10.8a, §12). The first reply says how a request landed (§6.4a):</p>
+                can be canceled, and reports errors in one form that says whose failure it was. The first reply says how a request landed:</p>
               <ul class="signals">
                 <li><span class="sig c-mint">accepted</span><span>A live handler took it.</span></li>
                 <li><span class="sig c-blue">queued</span><span>An inbox holds it for later.</span></li>
                 <li><span class="sig c-amber">silence</span><span>The node is offline, so it may be queued.</span></li>
               </ul>
-              <p>Files travel by reference with checked digests (§7.5), trace context follows
-                work from agent to agent (§13.1), and a room gives several agents one
+              <p>Files travel by reference with checked digests, trace context follows
+                work from agent to agent, and a room gives several agents one
                 conversation.</p>
             </div>
             <div class="card" id="protections">
@@ -240,63 +220,30 @@
               <h3>The receiver checks every message before the agent sees it</h3>
               <p>A message can carry a prompt injection. Before any handler runs, the receiver
                 drops repeats, stale messages and messages addressed to someone else, and refuses
-                oversized ones with an error to the sender (§22).</p>
+                oversized ones with an error to the sender.</p>
               <p>A stranger's text reaches the agent fenced and labeled as the stranger's own
                 words, not as instructions from the agent's own operator, and the stranger
-                cannot forge the label (§22.6).</p>
+                cannot forge the label.</p>
             </div>
             <div class="card" id="any-broker">
               <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span>
               <h3>The same contract runs on any broker</h3>
               <p>NATS JetStream is the reference binding, and RabbitMQ with Postgres is the second.
                 Other brokers can carry it the same way: every binding carries the same envelope
-                and primitives, and only the wire differs (§18.1). The same conformance suite checks
+                and primitives, and only the wire differs. The same conformance suite checks
                 a server on either binding.</p>
             </div>
           </div>
         </div>
       </section>
 
-      <section class="band" id="bindings">
+      <section class="band" id="read">
         <div class="wrap">
-          <h2>NATS and RabbitMQ carry it today</h2>
-          <p>Each binding page shows how the protocol maps onto that broker. The <a href="https://github.com/agent-messaging/agent-messaging-server">Agent
-            Messaging Server</a> is the reference implementation: one open-source server that
-            implements the <a href="/conformance.html#profiles">core profile</a>, on NATS or on RabbitMQ with Postgres.</p>
+          <h2>Read the specification</h2>
           <div class="doors three">
-            <a class="door c-blue" href="/nats.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>On NATS</h3><p>NATS JetStream is the reference binding.</p><p class="go">Agent Messaging on NATS<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-mint" href="/rabbitmq.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>On RabbitMQ</h3><p>RabbitMQ, with Postgres beside it, is the second binding.</p><p class="go">Agent Messaging on RabbitMQ<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-violet" href="/bindings.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 22v-5"/><path d="M9 8V2"/><path d="M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/></svg></span><h3>What else can carry it</h3><p>How Red Hat AMQ Broker, Kafka, the cloud services, MQTT brokers and Redis measure up.</p><p class="go">Bindings<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-          </div>
-        </div>
-      </section>
-
-      <section class="band tinted" id="related">
-        <div class="wrap">
-          <h2>How it relates to A2A, MCP and ARD</h2>
-          <p>A2A defines direct calls between agents over HTTP. Agent Messaging's task model
-            mirrors A2A's, a manifest maps to an A2A Agent Card, and an extension bridges the
-            two both ways. MCP connects an agent to its own tools, a different job. ARD covers
-            discovery across the wider ecosystem, and Agent Messaging covers the agents on one
-            network. Section 1.3 of <a href="/spec.html#1-3-related-specifications">the
-            specification</a> has the details.</p>
-        </div>
-      </section>
-
-      <section class="band">
-        <div class="wrap">
-          <h2>Names for agents</h2>
-          <p>On the wire, an agent is addressed by its public key. People need names they
-            can read and type, and those come from the companion specification, Agent
-            Naming, published at <a href="https://agentnaming.ai/">agentnaming.ai</a>. A
-            handle is a name anchored to an email address its owner controls. It resolves
-            to a signed card that carries the agent's key and the network the agent lives
-            on.</p>
-          <div class="doors">
             <a class="door c-mint" href="/spec.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg></span><h3>The specification</h3><p>Every section of Agent Messaging is on one page.</p><p class="go">Read the specification<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
             <a class="door c-blue" href="/conformance.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>The conformance suite</h3><p>Its black-box tests check a server against the core profile or the full specification.</p><p class="go">See the tests<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
             <a class="door c-violet" href="https://github.com/CommonAgent/common-agent-standards/tree/main/messaging"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><line x1="6" x2="6" y1="3" y2="15"/><circle cx="18" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><path d="M18 9a9 9 0 0 1-9 9"/></svg></span><h3>The repository</h3><p>It holds SPEC.md, the bindings, the extensions and the conformance suite.</p><p class="go">Open it on GitHub<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
-            <a class="door c-amber" href="https://agentnaming.ai/"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-4 8"/></svg></span><h3>Agent Naming</h3><p>It is the companion specification for agent handles.</p><p class="go">Go to agentnaming.ai<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
           </div>
         </div>
       </section>
