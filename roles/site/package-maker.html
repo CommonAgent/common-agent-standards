@@ -146,7 +146,7 @@
       <div class="wrap spec">
         <p>The package maker turns a description of a needed agent into a package another system can deploy. It takes what an agent should do, the systems it needs, what it has to refuse, and the records it has to leave, and it emits an agent plugin: skills, obligations, and a manifest. It is the other end of the <a href="/deployment-manager.html">deployment manager</a>: one builds the package, the other stands it up.</p>
         <p>It is defined by what it will not make up. A package is only as honest as the judgment in it, and two parts of it are judgment: what the agent refuses, and what it has to record. The rest is description. The builder asks for both and refuses to emit a package without them. It also never presents a package as finished: every package it produces is a draft, because nobody has run the agent it describes.</p>
-        <p>What it emits is an <a href="https://commonagent.net/package.html">Agent Package</a> as the Common Agent Specification defines it: an Agent Plugin carrying the agent's draft Descriptor and an install file beside the manifest. That chapter owns the package's shape; this role owns the judgment a builder asks for and the record it signs.</p>
+        <p>What it emits is an <a href="https://commonagent.net/package.html">Agent Package</a> as the Common Agent Specification defines it: an Agent Plugin carrying the agent's draft Descriptor and its runtime requirements beside the manifest. That chapter owns the package's shape; this role owns the judgment a builder asks for and the record it signs.</p>
 
         <p>It holds these stages on the lifecycle map: Build and package, and Release (<a href="https://agenticdevelopment.ai/stages.html#build">agenticdevelopment.ai</a>).</p>
 

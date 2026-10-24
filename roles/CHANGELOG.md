@@ -4,6 +4,14 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.1 (2026-10-24)
+
+The package maker (§12) follows the Common Agent Specification
+0.30.0-draft, which renamed the Agent Package's host-facing file: the
+package it emits carries the agent's draft Descriptor and its runtime
+requirements, which the specification called the install file. No role,
+interface, offering name, section number or wire string changes.
+
 ## v1 (2026-10-18)
 
 Agent Roles is a guide. Its roles and interfaces are working descriptions of
