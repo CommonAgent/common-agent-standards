@@ -22,6 +22,9 @@ Site: https://agentprocesses.ai
 | [An example catalog](./examples/marketing-catalog.md) | a marketing department's eleven processes, and where it would start |
 | [Onboard an agent](./reference/onboard-an-agent.md) | a reference process for bringing an outside agent into an organization's work |
 | [Offboard an agent](./reference/offboard-an-agent.md) | a reference process for taking an outside agent out of it again |
+| [Make a new agent](./reference/make-a-new-agent.md) | a reference process for making an agent the organization runs, from a spec the owner approves to a checked, listed agent |
+| [Record an incident](./reference/record-an-incident.md) | a reference process for writing down what happened when an agent goes quiet or fails, for a person to decide on |
+| [Retire an agent](./reference/retire-an-agent.md) | a reference process for taking down an agent the organization runs, and closing its AgentDoc |
 
 ## Where this sits
 
