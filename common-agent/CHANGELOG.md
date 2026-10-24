@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
 
+## 0.29.2-draft (2026-10-23)
+
+No change to the text of the specification. This version publishes commonagent.net with the Every standard page (/standards.html) no longer showing the Agent Messaging explainer video. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.29.1-draft (2026-10-23)
 
 No change to the text of the specification. This version publishes commonagent.net with the Every standard page (/standards.html) showing the Agent Messaging explainer video, with English captions, under the identity and reach group (#93). A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.

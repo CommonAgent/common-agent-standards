@@ -107,10 +107,6 @@ const GROUPS = {
   "identity-and-reach": {
     icon: "agent",
     text: "The Common Agent Specification defines the agent and the key it signs with, Personal Agent Naming gives it a name on an email address its owner already has, and Agent Messaging carries messages to it even while it is offline.",
-    videosText: "A short video shows what Agent Messaging adds on top of a message broker.",
-    videos: [
-      { title: "Agent Messaging, explained", standard: "messaging", file: "agent-messaging", poster: "agent-messaging-poster.jpg", captions: "agent-messaging.en.vtt", length: "2:42" },
-    ],
   },
   contracting: {
     icon: "contract",

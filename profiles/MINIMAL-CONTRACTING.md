@@ -173,7 +173,7 @@ A test runner that implements this profile runs the groups the file names and sk
 
 ## Changelog
 
-**0.5.9-draft** (2026-10-24). The profile applies to Agent Messaging 0.9.13-draft, an editorial version whose specification text is unchanged. The patch version moves because an implementation of 0.5.8-draft meets this version unchanged.
+**0.5.9-draft** (2026-10-23). The profile applies to Agent Messaging 0.9.13-draft, an editorial version whose specification text is unchanged. The patch version moves because an implementation of 0.5.8-draft meets this version unchanged.
 
 **0.5.8-draft** (2026-10-23). The profile applies to Agent Messaging 0.9.12-draft, an editorial version whose specification text is unchanged. The patch version moves because an implementation of 0.5.7-draft meets this version unchanged.
 
