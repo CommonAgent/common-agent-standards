@@ -77,6 +77,9 @@ export function rail(active) {
           <div class="items">
           ${a("/onboard-an-agent.html", "Onboard an agent", "onboard-an-agent")}
           ${a("/offboard-an-agent.html", "Offboard an agent", "offboard-an-agent")}
+          ${a("/make-a-new-agent.html", "Make a new agent", "make-a-new-agent")}
+          ${a("/record-an-incident.html", "Record an incident", "record-an-incident")}
+          ${a("/retire-an-agent.html", "Retire an agent", "retire-an-agent")}
           </div>
         </details>
         <details class="sec suite" open>
@@ -100,6 +103,9 @@ export const footer = `<footer class="sitefoot">
           <a href="/writing.html">Writing a process</a>
           <a href="/onboard-an-agent.html">Onboard an agent</a>
           <a href="/offboard-an-agent.html">Offboard an agent</a>
+          <a href="/make-a-new-agent.html">Make a new agent</a>
+          <a href="/record-an-incident.html">Record an incident</a>
+          <a href="/retire-an-agent.html">Retire an agent</a>
           <a href="/spec.html">The specification</a>
           <a href="/versions.html">Versions and changelog</a>
           <a href="${REPO_URL}">The source on GitHub</a>

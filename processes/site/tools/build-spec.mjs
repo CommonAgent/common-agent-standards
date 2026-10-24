@@ -10,6 +10,9 @@
 //   guide-catalog.html      processes/process-catalog.md, the guide to the catalog
 //   social-campaign.html    processes/examples/social-campaign.md
 //   marketing-catalog.html  processes/examples/marketing-catalog.md
+//   onboard-an-agent.html, offboard-an-agent.html, make-a-new-agent.html,
+//   record-an-incident.html, retire-an-agent.html
+//                           the reference processes in processes/reference/
 //
 // tools/render-site.sh at the repository root copies the hand-written pages
 // (index.html, automation.html, offboarding.html, catalog.html, writing.html,
@@ -60,6 +63,9 @@ const PAGE_OF = {
   "examples/marketing-catalog.md": "/marketing-catalog.html",
   "reference/onboard-an-agent.md": "/onboard-an-agent.html",
   "reference/offboard-an-agent.md": "/offboard-an-agent.html",
+  "reference/make-a-new-agent.md": "/make-a-new-agent.html",
+  "reference/record-an-incident.md": "/record-an-incident.html",
+  "reference/retire-an-agent.md": "/retire-an-agent.html",
 };
 const MOVED = {
   "https://github.com/jeffrschneider/agentcollab": "https://agentcollab.dev/",
@@ -239,6 +245,15 @@ const GUIDES = [
   { src: "reference/offboard-an-agent.md", file: "offboard-an-agent.html", active: "offboard-an-agent",
     h1: "Reference process: offboard an agent",
     description: "A reference process for taking an outside agent out of an organization's work: hand over its work, end the engagement, revoke its mandate and access, settle the money, confirm the data, file the outcome and sign an exit record." },
+  { src: "reference/make-a-new-agent.md", file: "make-a-new-agent.html", active: "make-a-new-agent",
+    h1: "Reference process: make a new agent",
+    description: "A reference process for making an agent an organization runs: write a spec the owner approves, write the tests before the scripts, make the package, deploy it on the owner's yes, and have an agent that built none of it check conformance." },
+  { src: "reference/record-an-incident.md", file: "record-an-incident.html", active: "record-an-incident",
+    h1: "Reference process: record an incident",
+    description: "A reference process for an agent that goes quiet or fails: notice it, gather the records, write a timeline that names every fact's source and every gap, and leave the decision to a person." },
+  { src: "reference/retire-an-agent.md", file: "retire-an-agent.html", active: "retire-an-agent",
+    h1: "Reference process: retire an agent",
+    description: "A reference process for taking down an agent an organization runs: tell what depends on it, take down its listing, approve and make the removal, and close its AgentDoc with the date and the reason." },
 ];
 for (const g of GUIDES) {
   const md = read(g.src);
