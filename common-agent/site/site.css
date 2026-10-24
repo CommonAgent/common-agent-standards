@@ -637,7 +637,7 @@ ol.stds{ list-style:none; padding:0; margin:26px 0 8px; display:grid; grid-templ
 .basecard .quick{ margin:0; }
 @media (max-width:1180px){ .basecard{ grid-template-columns:1fr; } }
 @media (max-width:900px){ ol.stds{ grid-template-columns:1fr; } }
-/* the two explainer videos under the hero: side by side, one above the other on narrow screens */
+/* the explainer videos on agent.html and under a group on standards.html: side by side, one above the other on narrow screens */
 ol.vids{ list-style:none; padding:0; margin:26px 0 8px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
 .vid{ display:flex; flex-direction:column; background:var(--bg); border:1px solid var(--line);
   border-top:4px solid var(--c); border-radius:14px; overflow:hidden; }

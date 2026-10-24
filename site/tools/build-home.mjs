@@ -24,7 +24,8 @@
 //
 // The cards are made from standards.json. What is written by hand is the few
 // sentences that say what the suite is, the sentence under each group's name
-// (GROUPS), the explainer videos on agent.html (VIDEOS), and the drawings on
+// (GROUPS), the explainer videos on agent.html (VIDEOS) and under a group on
+// standards.html (GROUPS, videos), and the drawings on
 // the front page's two doors (agentCell, standardsMap).
 //
 // The front page used to hold everything that is now on agent.html and
@@ -84,9 +85,12 @@ const VIDEOS = [
 ];
 function video(v) {
   const mp4 = `${MEDIA}/${v.file}.mp4`;
+  const track = v.captions
+    ? `\n                <track kind="captions" src="${MEDIA}/${v.captions}" srclang="en" label="English">`
+    : "";
   return `<li class="vid ${v.colour}">
               <video controls preload="metadata" playsinline poster="${MEDIA}/${v.poster}" width="1920" height="1080" aria-label="${esc(v.title)}">
-                <source src="${mp4}" type="video/mp4">
+                <source src="${mp4}" type="video/mp4">${track}
                 <a href="${mp4}">${esc(v.title)} (MP4)</a>
               </video>
               <div class="cap"><h3>${esc(v.title)}</h3><p class="meta"><span>length <b>${esc(v.length)}</b></span></p></div>
@@ -97,11 +101,16 @@ function video(v) {
 // has its name from standards.json as its heading, then one sentence; the
 // cards under it are the entries whose group is its id, in the order standards.json lists them unless the group
 // gives an order of its own (contracting lists them in the order an engagement
-// uses them).
+// uses them). A group's videos, the explainers of its standards, are listed
+// under its cards, each in the colour of the card of the standard it explains.
 const GROUPS = {
   "identity-and-reach": {
     icon: "agent",
     text: "The Common Agent Specification defines the agent and the key it signs with, Personal Agent Naming gives it a name on an email address its owner already has, and Agent Messaging carries messages to it even while it is offline.",
+    videosText: "A short video shows what Agent Messaging adds on top of a message broker.",
+    videos: [
+      { title: "Agent Messaging, explained", standard: "messaging", file: "agent-messaging", poster: "agent-messaging-poster.jpg", captions: "agent-messaging.en.vtt", length: "2:42" },
+    ],
   },
   contracting: {
     icon: "contract",
@@ -592,6 +601,7 @@ export function renderStandards({ draft = false } = {}) {
   const title = `Every standard: ${SUITE.suite}`;
   const description = "Every Common Agent Standard, grouped by what it does: identity and reach, Agents and Humans Working Together, and B2B Agentic Commerce. Each card gives the standard's version, its status, its own site and its folder in the repository.";
   let n = 0;
+  const colourOf = {};
   const bands = (SUITE.groups ?? []).map((g, gi) => {
     const copy = GROUPS[g.id];
     if (!copy) throw new Error(`build-home.mjs has no sentence for the group ${g.id} in standards.json`);
@@ -603,8 +613,12 @@ export function renderStandards({ draft = false } = {}) {
           <p>${esc(copy.text)}</p>
           ${copy.note ? `<p>${copy.note}</p>` : ""}
           <ol class="stds">
-            ${members.map((s) => card(s, COLOURS[n++ % COLOURS.length])).join("\n            ")}
+            ${members.map((s) => card(s, colourOf[s.id] = COLOURS[n++ % COLOURS.length])).join("\n            ")}
           </ol>
+          ${(copy.videos ?? []).length ? `${copy.videosText ? `<p>${esc(copy.videosText)}</p>` : ""}
+          <ol class="vids">
+            ${copy.videos.map((v) => video({ ...v, colour: colourOf[v.standard] ?? "c-mint" })).join("\n            ")}
+          </ol>` : ""}
         </div>
       </section>`;
   });
