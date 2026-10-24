@@ -1,8 +1,7 @@
 #!/usr/bin/env node
 // The catalog role's conformance check (https://agentroles.ai/catalog.html,
 // section 4), published at https://agentroles.ai/checks/catalog-check.mjs.
-// Its source is docs/agentroles/checks/catalog-check.mjs in the AgentMesh
-// repository. Mechanical: no model is called, by the check or, for a passing
+// Mechanical: no model is called, by the check or, for a passing
 // answer, needed by the candidate.
 //
 // The check serves a small catalog of its own over HTTP on 127.0.0.1 and
@@ -43,7 +42,6 @@
 //
 // Usage (exit 0 only when every case passes):
 //   node catalog-check.mjs --cmd "<command that starts the candidate>"
-//   node catalog-check.mjs --cmd "cd services && npx tsx src/api/catalog-source-cli.ts"   (AgentMesh's catalog agent)
 //
 // Node 22 or later, nothing else.
 

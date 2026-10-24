@@ -19,8 +19,7 @@
 //
 // Both files are written to --out (default: the site folder). Deploy scripts
 // pass their staging folder so the published copy always matches the pages.
-// This file is copied into the agentmesh.ai and dev.agentmesh.ai repositories;
-// the copy in AgentMesh/tools is the original.
+// Other sites keep copies of this file; change them together.
 import { execFileSync } from 'node:child_process';
 import { existsSync, readFileSync, readdirSync, writeFileSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';

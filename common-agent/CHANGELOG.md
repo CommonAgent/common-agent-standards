@@ -1,6 +1,10 @@
 # Changelog
 
-Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted in the AgentMesh repository and have no tags here.
+Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted before the specification moved to this repository and have no tags here.
+
+## 0.33.1-draft (2026-10-24)
+
+Editorial, with no normative change. The text names the sponsor only where it says who sponsors the standards. The opening says Agent Messaging is one network binding without naming an implementation of it, and no longer gives the protocol's former name. Section 7.1 points the invitation's binding form at Section 5 of the Agent Messaging contacts extension, EXT-4. Appendix A cites its sources as the Agent Messaging specification at agentmessaging.ai and its extensions, says what SPEC and EXT mean in its table, names the reference producers by the records they make, and no longer cites unpublished drafts or plans, so its row for Section 12 reads as the Agent Package being defined here first. The wire values `agentmesh-job-manifest-v1` (Section 5.7) and `application/vnd.agentmesh.run-context+json` (Section 6.2) are unchanged. No requirement, member, attribute or section number changes.
 
 ## 0.33.0-draft (2026-10-24)
 
