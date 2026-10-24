@@ -3876,8 +3876,9 @@ to verify carries the `trace_id` as received, which is only the sender's word.
 the operator's signed advisory channel. The issuer hands the act to the
 operator; an owner that holds no owner key (§4.9) asks through its account
 session, and the operator signs the act with `instructed_by` naming the owner.
-The operator's advisory agent sends it, unchanged, as the
-`payload` of a `request` with `meta.advisory` set to `"quarantine"`. The
+The operator's advisory agent sends it as a `request` to the reserved
+offering `quarantine-notice`, which no agent declares, with the act, unchanged,
+as `payload.act` and `meta.advisory` set to `"quarantine"`. The
 recipients are every agent the operator's task records show requested a
 covered task, every agent the issuer names, and the advisory's usual reach:
 the subject's contacts, its rooms, the solutions that use it and the installs
@@ -3885,8 +3886,10 @@ of its package. The envelope says only who delivered the act: a receiver
 verifies the act's own signature and its issuer's authority (Common Agent
 Specification §8.8.2), never the envelope's sender. A receiver's door MUST NOT
 hold or block a notice whose act verifies, and MUST NOT give it to the agent
-or its model: the node applies the act and tells the owner. A receiver that
-does not implement this section answers `OFFERING_NOT_FOUND`, and the operator
+or its model: the node handles the reserved offering itself, applies the act
+and tells the owner. A receiver that
+does not implement this section refuses the undeclared offering at its boundary
+with `OFFERING_NOT_FOUND` before anything that thinks sees it, and the operator
 records that recipient as not reached and tells the issuer.
 
 ---

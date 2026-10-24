@@ -1044,9 +1044,9 @@ The list of acts is closed, and a new act is a new version of this specification
 
 **Shapes only.** An event carries no message body, excerpt or subject line, no credential value, no vendor name, no endpoint and no upstream error body, as with the held report (Section 7.1) and the health record (Section 7.4). A system appears by its declared name and a credential by its name. An `egress_denied` event names the declared system the destination matched, or `undeclared`, and never the destination.
 
-**Who emits.** Whoever applies a check MUST emit the event for it, signed with its own key and never the subject's: an agent does not report on its own boundary.
+**Who emits.** Whoever applies a check MUST emit the event for it, signed with its own key (a node with the key its binding gives it) and never the subject's: an agent does not report on its own boundary.
 
-- The agent's node: `admission_refused`, `screening_flagged`, `scope_refused`, `signature_failed` for what it verifies, `ceiling_hit` for a budget, an allowance or `job_seconds`, and the three approval events.
+- The agent's node: `admission_refused`, `screening_flagged`, `scope_refused`, `signature_failed` for what it verifies, `ceiling_hit` for a budget, an allowance, a system ceiling whose `enforced_by` is `runtime`, or `job_seconds`, and the three approval events.
 - A depot or an installer: `package_refused`, and the installer `credential_used` with `placed` for each credential it places.
 - A store that releases a credential, or a proxy that attaches one: `credential_used`.
 - An egress enforcement point, where one exists: `egress_denied`.
@@ -1055,9 +1055,9 @@ The list of acts is closed, and a new act is a new version of this specification
 
 Where nothing applies a check, nothing emits, and silence means not observed (Section 8.3), never that nothing was refused. After a credential is `placed`, its uses by the agent are not observable, and the record says no more than that.
 
-**Where events go.** An emitter writes each event to a sink that the owner reads and the subject cannot write, change or delete. Events are private to the owner and to whoever runs the emitter, as the health record is (Section 7.4). They are never broadcast and never sent to a counterparty, which gets only the refusal it is already owed, so an event never breaks the silence of Section 4.7 or the indistinguishable refusal of Section 7.5.
+**Where events go.** An emitter writes each event to a sink that the owner reads and the subject cannot write, change or delete. Events are private to the emitter's owner and to whoever runs the emitter, as the health record is (Section 7.4). They are never broadcast and never sent to a counterparty, which gets only the refusal it is already owed, so an event never breaks the silence of Section 4.7 or the indistinguishable refusal of Section 7.5.
 
-**When the sink is down, the job fails closed.** An emitter MUST keep each event in durable storage outside the subject's reach until the sink has it. A node that can neither reach its sink nor keep events locally MUST NOT start a job, and MUST pause its running jobs until it can record again. A refusal is never withheld for want of a sink: failing closed means refusing more, never admitting more. This is a MUST because a job whose refusals leave no record cannot be investigated, which is the case the record exists for. The local store is what keeps one sink outage from stopping every agent at once.
+**When the sink is down, the job fails closed.** An emitter MUST keep each event in durable storage outside the subject's reach until the sink has it. A node that can neither reach its sink nor keep events locally MUST refuse new jobs, with a retryable refusal decided by rule whose reason is `events_unrecorded`, and MUST hold its running jobs at their next step until it can record again. Any other emitter refuses the act it cannot record, such as an install or a credential release. A refusal is never withheld for want of a sink: failing closed means refusing more, never admitting more. A job whose refusals leave no record cannot be investigated. The local store keeps one sink outage from stopping every agent at once.
 
 **With the other records.**
 
@@ -1067,24 +1067,24 @@ Where nothing applies a check, nothing emits, and silence means not observed (Se
 
 #### 8.8.2 Quarantine
 
-A stop halts what an agent does next. Nothing marks what it already delivered. When an agent's key, package or behavior turns out to be suspect, its past outputs are suspect too, and the parties who received them need to know which ones. A **quarantine** is a signed act that names them. Completions already carry a signed job manifest with each piece's digest (Section 5.7), so the act can name exactly what it covers.
+A stop halts what an agent does next. Nothing marks what it already delivered. When an agent's key, package or behavior turns out to be suspect, its past outputs are suspect too, and the parties who received them need to know which ones. A **quarantine** is a signed act that names them. Where a completion carries a signed job manifest with each piece's digest (Section 5.7), the act can name exactly what it covers.
 
 **The act.** A record under Section 8.1, tag `agent-quarantine-v1`:
 
 | Member | Holds |
 |--------|-------|
-| `role`, `act` | `owner` or `platform`; `quarantine`, `release` or `confirm`. |
+| `role`, `act` | `owner`, `organization` or `platform`; `quarantine`, `release` or `confirm`. |
 | `id` | The quarantine's id, chosen by its issuer and the same on its later acts. |
 | `subject` | The agent whose outputs are covered: `key`, and `handle` where known. |
-| `covers` | Exactly one of: `manifests`, a list of job manifests, each by `task_id` and `digest` (`sha256:` over the manifest's JCS canonical form, `sig` included); `window`, a `from` and a `to`, covering every task the subject completed in that time, with a `to` of null meaning up to this act; or `since`, an `agent_version` or a `package_sha256`, covering every task the subject completed after the deploy that installed it, with `from` the time of that deploy, taken from the deployment record named in `refs`. `window` and `since` cover tasks with or without a manifest. |
+| `covers` | Exactly one of: `manifests`, a list of job manifests, each by `task_id` and `digest` (`sha256:` over the manifest's JCS canonical form, `sig` included); `window`, a `from` and a `to`, covering every task the subject completed in that time, with a `to` of null meaning up to this act; or `since`, an `agent_version` or a `package_sha256` and `from`, the time of the deploy that installed it, which the issuer takes from that deployment record and names in `refs`, covering every task the subject completed from then on. `window` and `since` cover tasks with or without a manifest. |
 | `handling` | `hold` or `flag`: what a recipient does with a covered piece. |
 | `reason` | A plain sentence for a person. |
-| `quarantine` | On a `release` or a `confirm`, the digest of the `quarantine` act. A release MAY name a narrower `covers`, and what it leaves out stays held. |
+| `quarantine` | On a `release` or a `confirm`, the digest of the `quarantine` act. A release MAY name a narrower `covers`, and what it leaves out stays covered. |
 | `instructed_by` | Where the platform signed on the owner's instruction, the owner, whose authority the act then carries. |
 | `refs[]` | Digests of what the act rests on: the stop's record, the deployment record, security events, an incident record. |
 | `produced_at`, `by`, `signatures` | The trunk. |
 
-**Who may issue it.** A quarantine is signed by the subject's owner or by the platform that runs the subject, under the authority that may stop it (Agent Messaging §4.12: the owner, an organization admin, the operator). It is never signed with the subject's own key, because a quarantine is often issued because that key, or what runs under it, is suspect. Anyone who may issue a quarantine over the subject may confirm one. Only the issuer, or a higher authority, may release one, so an owner cannot release a platform's quarantine. A confirmed quarantine is never released. A recipient MUST verify the act's signature and the issuer's authority over the subject, and MUST treat an act that fails either check as an ordinary message.
+**Who may issue it.** A quarantine is signed by the subject's owner, an organization admin, or the platform that runs the subject, under the authority that may stop it (Agent Messaging §4.12: the owner, an organization admin, the operator). It is never signed with the subject's own key, because a quarantine is often issued because that key, or what runs under it, is suspect. Anyone who may issue a quarantine over the subject may confirm one. Only the issuer, or a higher authority, may release one, so an owner cannot release a platform's quarantine. A confirmed quarantine is never released. A recipient MUST verify the act's signature and the issuer's authority over the subject, and MUST carry an act that fails either check as failed (Section 8.1) and apply nothing.
 
 **What a recipient does.** A recipient is any party a covered output was delivered to. On a verified `quarantine`, its node:
 
@@ -1092,9 +1092,9 @@ A stop halts what an agent does next. Nothing marks what it already delivered. W
 2. on `hold`, keeps them from its agent and its model and does not pass them on; on `flag`, lets them through with the reason attached, as a screening flag does (Section 7.3);
 3. tells its owner which pieces are covered, and emits `outputs_quarantined`.
 
-On a `release` it returns the released pieces to use and emits `quarantine_ended` with `released`. On a `confirm` it keeps them held for good, tells its owner to remove or redo what was built from them, and emits `quarantine_ended` with `confirmed`. A node MUST NOT delete a piece because of a quarantine: it holds, for the reason screening holds rather than blocks (Section 7.3), and the owner decides. A recipient whose own agent delivered work produced from a held piece (its manifests' `produced_from`) SHOULD tell its owner, who MAY quarantine that work in turn. A quarantine never travels further on its own.
+On a `release` it returns the released pieces to use and emits `quarantine_ended` with `released`. On a `confirm` it keeps them covered for good, tells its owner to remove or redo what was built from them, and emits `quarantine_ended` with `confirmed`. A node MUST NOT delete a piece because of a quarantine: it holds, for the reason screening holds rather than blocks (Section 7.3), and the owner decides. A recipient whose own agent delivered work produced from a held piece (its manifests' `produced_from`) SHOULD tell its owner, who MAY quarantine that work in turn. A quarantine never travels further on its own.
 
-**How it reaches recipients.** On the binding's advisory channel, as Agent Messaging does in its §13.6. The issuer MUST send the act to every requester its records show received a covered output.
+**How it reaches recipients.** On the binding's advisory channel, as Agent Messaging does in its §13.6. The issuer MUST have the act sent to every requester its records show received a covered output.
 
 **With stop, rollback and incident response.** A stop halts what the agent does next, and a quarantine deals with what it already did. Neither implies the other, and an issuer that wants both issues both. A terminated agent's outputs stay usable unless a quarantine names them. A rollback (Section 12.7) changes the version that runs and leaves delivered outputs as they were; when that version's work is suspect, a quarantine `since` the version left goes with it. An incident record (Agent Processes, record an incident) SHOULD cite the security events of its window by digest, and a quarantine is one of the decisions its owner may take.
 
