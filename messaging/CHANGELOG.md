@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.9.14-draft (2026-10-24)
+
+Editorial, with no normative change. The site's home page drops the What Agent Messaging adds section, which repeated the comparison table (#97). The minimal contracting profile moves to 0.5.10-draft and applies to this version. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.
+
 ## 0.9.13-draft (2026-10-24)
 
 Editorial, with no normative change. The site's home page is shorter: it opens with a short video, compares the broker with Agent Messaging in full sentences, and drops the sections on what the broker already does, the bindings strip, related protocols and names. Section references are removed from the marketing pages (#91, #92, #93). The minimal contracting profile moves to 0.5.9-draft and applies to this version. No requirement, field, wire identifier or section number changes. The wire version stays 0.3.0.
