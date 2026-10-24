@@ -4,6 +4,20 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.3.1 (2026-10-24)
+
+Two changes follow the Common Agent Specification 0.31.0-draft. The
+deployment manager (§11) no longer calls a rollback an update: the
+specification now records a rollback under its own act, and its deployment
+record (8.3) defines the acts `rollback` and `reconfigure` and the members
+`rolled_back_from` and `changed` with the meaning §11.3 gives them, so rule 9
+of §11.3 says so and names `update` and `refuse` as the role's own additions.
+The solution architect (§36) spells its example environments dev, test and
+production, the spellings the deployment record uses, and says that record
+names `dev`, `test`, `staging` or `production`. On agentroles.ai the solution
+architect's page links to the Architecture and Design stage on the lifecycle
+map. No section number, offering name, interface or wire string changes.
+
 ## v1.3 (2026-10-24)
 
 The lifecycle stage that was called Design is now Architecture and Design.
