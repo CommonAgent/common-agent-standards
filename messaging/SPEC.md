@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.12-draft
+**Version:** 0.9.13-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -6641,3 +6641,10 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > contract the same way. The minimal contracting profile moves to 0.5.8-draft
 > and applies to this version. No requirement, field, wire identifier or
 > section number changes. The wire version stays `0.3.0` (§20.1).
+
+> **2026-10-24: Version 0.9.13-draft. Editorial.** The specification text is
+> unchanged. The site's home page is shorter, opens with a short video and
+> compares the broker with Agent Messaging in full sentences. The minimal
+> contracting profile moves to 0.5.9-draft and applies to this version. No
+> requirement, field, wire identifier or section number changes. The wire
+> version stays `0.3.0` (§20.1).
