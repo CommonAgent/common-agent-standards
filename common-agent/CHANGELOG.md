@@ -4,7 +4,7 @@ Every version of the Common Agent Specification and what it changed, newest firs
 
 ## 0.30.1-draft (2026-10-24)
 
-Editorial, with no normative change. Section 12 opens with a paragraph that states how a platform takes an agent. An agent the platform installs arrives as a package, and every package is checked, installed, updated and removed the same way. An agent the platform does not install is remote: it presents a Descriptor and registers, and its endpoint and sign-in are connection facts held outside any package. What a package carries inside is declared in its files and is not a separate kind of package. commonagent.net/package.html says the same in one sentence near the top of the page. No requirement, member, attribute or section number changes.
+Editorial, with no normative change. Section 12 opens with a paragraph that states the two ways a platform can accept an agent. An agent the platform installs arrives as a package, and every package is checked, installed, updated and removed the same way. An agent the platform does not install is remote: it presents a Descriptor and registers, and its endpoint and sign-in are connection facts held outside any package. What a package carries inside is declared in its files and is not a separate kind of package. commonagent.net/package.html says the same in two sentences near the top of the page. No requirement, member, attribute or section number changes.
 
 ## 0.30.0-draft (2026-10-24)
 

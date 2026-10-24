@@ -318,10 +318,10 @@ function chapter({ file, active, id, num, name, sub, description, ids, introAlia
   const intro = introAliases.map((a) => `<span class="alias" id="${a}"></span>`).join("");
   let { html, toc } = render(s.md.replace(/^## .+\n/, ""), ids);
   html = extra ? extra(html) : html;
-  html = links ? addLinks(intro + html, file) : intro + html;
   // A lead is one plain paragraph a reader meets first, above the chapter text.
-  if (lead) html = `<p class="lead">${lead}</p>
-${html}`;
+  const top = intro + (lead ? `<p class="lead">${esc(lead)}</p>
+` : "");
+  html = links ? addLinks(top + html, file) : top + html;
   write(file, page({
     file, active,
     title: `${name}: Section ${num} of the Common Agent Specification`,
