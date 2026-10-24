@@ -6702,8 +6702,9 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > proposed in 0.9.15-draft, with the Common Agent Specification 0.35.0-draft,
 > which adopts its Section 8.8. The note that marked §13.6 proposed is
 > removed, and its heading and §4.12's pointer no longer say proposed. §13.6
-> says that a `request` to a reserved offering with `meta.advisory` is the
-> general wire form later kinds of advisory will use. In §1.6, quarantine
+> says that a `request` to a reserved offering that no agent declares, with
+> `meta.advisory` naming the kind, is the general wire form later kinds of
+> advisory will use. In §1.6, quarantine
 > notices are part of advisories, which are deployment-defined, so the core
 > profile is unchanged. The site keeps the section's old anchor. No field,
 > wire identifier or section number changes. The minimal contracting profile
