@@ -8,14 +8,16 @@ that tag is the text of that version. Its history comes from the repository of a
 
 One change follows the Common Agent Specification 0.32.0-draft, whose
 deployment record (8.3) now defines the act `update` and the member
-`updated_from`. The deployment manager's rule 7 of §11.3 says an update
-record carries `package` for the new version and `updated_from`, with the
-same members and the Descriptor digest bound before the update, for the
-version it left, so it names both package digests and both Descriptor
-digests. Rule 9 says 8.3 defines `update` with `rollback` and
-`reconfigure`, and names `refuse` as the role's one addition. The
-deployment manager's page on agentroles.ai says the same. No section
-number, offering name, interface or wire string changes.
+`updated_from`. The deployment manager's record gains both. Rule 7 of
+§11.3 says an update record carries `package` for the new version,
+`descriptor_digest` for the Descriptor bound after the update, and
+`updated_from` for the version it left, with the same members as `package`
+and the Descriptor digest bound before the update, so it names both
+package digests and both Descriptor digests. Rule 9 says 8.3 defines
+`update` with `rollback` and `reconfigure`, and names `refuse` as the
+role's one addition. The deployment manager's page on agentroles.ai says
+the same. A record that was valid under v1.3.1 is valid under this
+version. No section number, offering name or interface changes.
 
 ## v1.3.1 (2026-10-24)
 

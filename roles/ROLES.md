@@ -860,10 +860,12 @@ Rules:
    only when the removal was complete.
 6. `ceilings` lists each ceiling the act set, with the side that applies
    it. A deploy record lists every ceiling set before the agent started.
-7. An update record carries `package` for the new version and
-   `updated_from`, with the same members and the `descriptor_digest` of
-   the Descriptor bound before the update, for the version it left, so
-   both package digests and both Descriptor digests are named. A rollback
+7. An update record carries `package` for the new version,
+   `descriptor_digest` (8.3) for the Descriptor bound after the update,
+   and `updated_from` for the version it left, with the same members as
+   `package` and the `descriptor_digest` of the Descriptor bound before
+   the update, so both package digests and both Descriptor digests are
+   named. A rollback
    record carries `package` for the version the agent returned to and
    `rolled_back_from`, with the same members, for the version it left, so
    both digests are named.
