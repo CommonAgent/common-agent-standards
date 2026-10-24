@@ -800,10 +800,11 @@ These exchanges are the role's primary interface, the deployer
     Specification 12.6, rule 6). A change to a member of the bound
     Descriptor that the install decides, such as `acts_for`,
     `interaction` or an offering's `ceilings`, binds a new Descriptor,
-    which keeps the same `agent_version` (Common Agent Specification
-    6.5). Every reconfigure record names the Descriptor bound before the
-    change and the one bound after (11.3, rule 8), and the two are equal
-    where the change bound no new Descriptor. Credentials in a reconfigure
+    which keeps the same `agent_version` and is told apart from the old
+    one by its digest (Common Agent Specification 6.5). Every reconfigure
+    record names the Descriptor bound before the change and the one bound
+    after (§11.3, rule 8), and the two are equal where the change bound
+    no new Descriptor. Credentials in a reconfigure
     are named and fetched as they are in a deploy, and a request that
     carries a credential value is refused.
 
@@ -881,13 +882,14 @@ Rules:
    Descriptor digests are named, and the two are equal where the change
    bound no new Descriptor. It lists under `changed` one entry for each
    setting, credential and ceiling it changed, each with `what`,
-   `before` and `after`. A credential appears by name only, before and after. The
-   record ends with the checks run after the change.
+   `before` and `after`. A credential appears by name only, before and
+   after. The record ends with the checks run after the change.
 9. The acts `update`, `rollback` and `reconfigure`, and the members
    `updated_from`, `rolled_back_from`, `reconfigured_from` and
    `changed`, are defined in the deployment record of the Common Agent
-   Specification 8.3 with the meaning given here, and 12.7 records a rollback under its own act so
-   the record says whether the owner asked for an update or a rollback.
+   Specification 8.3 with the meaning given here, and 12.7 records a
+   rollback under its own act so the record says whether the owner
+   asked for an update or a rollback.
    The act `refuse` is this role's addition to 8.3. A reader that knows
    only 8.3 can still read the record, because every member 8.3 defines
    keeps its meaning.
