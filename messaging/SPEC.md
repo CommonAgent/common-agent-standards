@@ -2,9 +2,9 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.14-draft
+**Version:** 0.9.15-draft
 **Status:** Working Draft
-**Date:** 2026-10-20
+**Date:** 2026-10-24
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
@@ -602,7 +602,7 @@ No protocol can stop code on a machine its operator does not control, and this s
 
 An event never lifts a stop: an enable-type event, or the identity provider re-enabling the workload, leaves the pause in place until the account's owner, or a higher authority, lifts it. The stop signal is an addition to the controls above and never the only way to stop an agent (§4.13, rule 3).
 
-**Advisories.** An agent a party uses, rather than owns, may be reported. A party's own report acts for that party alone (the agent is blocked for them, and the report goes to the agent's provider and to the operator with its evidence); a warning to everyone who deals with the agent needs either an advisory signed with the agent's own key by its provider, or an advisory the operator confirms and signs on its signed advisory channel. An advisory reaches the agent's contacts, the rooms it is in, the solutions that use it and the installs of its package; is shown wherever the agent is listed; and receivers MAY hold its messages until their owner decides.
+**Advisories.** An agent a party uses, rather than owns, may be reported. A party's own report acts for that party alone (the agent is blocked for them, and the report goes to the agent's provider and to the operator with its evidence); a warning to everyone who deals with the agent needs either an advisory signed with the agent's own key by its provider, or an advisory the operator confirms and signs on its signed advisory channel. An advisory reaches the agent's contacts, the rooms it is in, the solutions that use it and the installs of its package; is shown wherever the agent is listed; and receivers MAY hold its messages until their owner decides. A quarantine of an agent's delivered outputs travels on the same channel (§13.6, proposed).
 
 ### 4.13. Identity: What Is Fixed and What Plugs In
 
@@ -3860,6 +3860,35 @@ deployment records nothing, and nothing in this section adds an obligation
 between agents beyond the one already stated: a consumer folding meter
 events MUST deduplicate on the idempotency key.
 
+### 13.6. Security Events and Quarantine Notices (Proposed)
+
+> **Proposed (0.9.15-draft), for review.** This section is a proposal. It is
+> in no conformance profile (§1.6), and it may change or be withdrawn. It
+> binds two records proposed in the Common Agent Specification, Section 8.8:
+> the security event and the quarantine act.
+
+**Trace ids.** On this binding, a security event's `trace_id` is the
+`trace.trace_id` of the envelope the job arrived in (§13.1), and its
+`task_id` is the envelope's `task_id`. An event about an envelope that failed
+to verify carries the `trace_id` as received, which is only the sender's word.
+
+**Quarantine notices.** A quarantine act travels as an advisory (§4.12), on
+the operator's signed advisory channel. The issuer hands the act to the
+operator; an owner that holds no owner key (§4.9) asks through its account
+session, and the operator signs the act with `instructed_by` naming the owner.
+The operator's advisory agent sends it, unchanged, as the
+`payload` of a `request` with `meta.advisory` set to `"quarantine"`. The
+recipients are every agent the operator's task records show requested a
+covered task, every agent the issuer names, and the advisory's usual reach:
+the subject's contacts, its rooms, the solutions that use it and the installs
+of its package. The envelope says only who delivered the act: a receiver
+verifies the act's own signature and its issuer's authority (Common Agent
+Specification §8.8.2), never the envelope's sender. A receiver's door MUST NOT
+hold or block a notice whose act verifies, and MUST NOT give it to the agent
+or its model: the node applies the act and tells the owner. A receiver that
+does not implement this section answers `OFFERING_NOT_FOUND`, and the operator
+records that recipient as not reached and tells the issuer.
+
 ---
 
 ## 14. Subject Namespace
@@ -6654,3 +6683,13 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > comparison table. The minimal contracting profile moves to 0.5.10-draft
 > and applies to this version. No requirement, field, wire identifier or
 > section number changes. The wire version stays `0.3.0` (§20.1).
+
+> **2026-10-24: Version 0.9.15-draft. Proposal.** A new §13.6, marked
+> proposed and in no conformance profile, binds the security event and the
+> quarantine act proposed in the Common Agent Specification 0.34.0-draft,
+> Section 8.8: a security event's trace id is the envelope's
+> `trace.trace_id`, and a quarantine act travels on the operator's signed
+> advisory channel (§4.12). §4.12 points to it. No existing requirement,
+> field or section number changes. The minimal contracting profile moves to
+> 0.5.11-draft and applies to this version. The wire version stays `0.3.0`
+> (§20.1).
