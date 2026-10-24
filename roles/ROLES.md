@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.3.2
+**Version:** v1.3.3
 **Status:** Guide
 **Date:** 2026-10-24
 
@@ -797,12 +797,15 @@ These exchanges are the role's primary interface, the deployer
     the package, such as a system's binding or the model the harness is
     given. A reconfigure keeps the limits a deploy keeps: it MUST NOT
     raise a ceiling above the one the package declares (Common Agent
-    Specification 12.6, rule 6). Who may call the agent and whether a
-    person attends it are declarations of the bound Descriptor, so a
-    reconfigure that changes either binds a new Descriptor, and its
-    record names the digest before and after. Credentials in a
-    reconfigure are named and fetched as they are in a deploy, and a
-    request that carries a credential value is refused.
+    Specification 12.6, rule 6). A change to a member of the bound
+    Descriptor that the install decides, such as `acts_for`,
+    `interaction` or an offering's `ceilings`, binds a new Descriptor,
+    which keeps the same `agent_version` (Common Agent Specification
+    6.5). Every reconfigure record names the Descriptor bound before the
+    change and the one bound after (11.3, rule 8), and the two are equal
+    where the change bound no new Descriptor. Credentials in a reconfigure
+    are named and fetched as they are in a deploy, and a request that
+    carries a credential value is refused.
 
 ### 11.3 The record
 
@@ -865,19 +868,25 @@ Rules:
    and `updated_from` for the version it left, with the same members as
    `package` and the `descriptor_digest` of the Descriptor bound before
    the update, so both package digests and both Descriptor digests are
-   named. A rollback
-   record carries `package` for the version the agent returned to and
-   `rolled_back_from`, with the same members, for the version it left, so
-   both digests are named.
+   named. A rollback record carries `package` for the version the agent
+   returned to, `descriptor_digest` for the Descriptor bound after the
+   rollback, and `rolled_back_from` for the version it left, with the
+   same members as `package` and the `descriptor_digest` of the
+   Descriptor bound before the rollback, so both package digests and
+   both Descriptor digests are named.
 8. A reconfigure record repeats `agent`, `target` and `package`
-   unchanged, and lists under `changed` one entry for each setting,
-   credential and ceiling it changed, each with `what`, `before` and
-   `after`. A credential appears by name only, before and after. The
+   unchanged. It carries `descriptor_digest` for the Descriptor bound
+   after the change and `reconfigured_from`, with only the
+   `descriptor_digest` of the Descriptor bound before it, so both
+   Descriptor digests are named, and the two are equal where the change
+   bound no new Descriptor. It lists under `changed` one entry for each
+   setting, credential and ceiling it changed, each with `what`,
+   `before` and `after`. A credential appears by name only, before and after. The
    record ends with the checks run after the change.
 9. The acts `update`, `rollback` and `reconfigure`, and the members
-   `updated_from`, `rolled_back_from` and `changed`, are defined in the
-   deployment record of the Common Agent Specification 8.3 with the
-   meaning given here, and 12.7 records a rollback under its own act so
+   `updated_from`, `rolled_back_from`, `reconfigured_from` and
+   `changed`, are defined in the deployment record of the Common Agent
+   Specification 8.3 with the meaning given here, and 12.7 records a rollback under its own act so
    the record says whether the owner asked for an update or a rollback.
    The act `refuse` is this role's addition to 8.3. A reader that knows
    only 8.3 can still read the record, because every member 8.3 defines
