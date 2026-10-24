@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.11-draft
+**Version:** 0.9.12-draft
 **Status:** Working Draft
 **Date:** 2026-10-20
 
@@ -6634,3 +6634,10 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > 0.5.7-draft and applies to this version. No requirement, field, wire
 > identifier or section number changes. The wire version stays `0.3.0`
 > (§20.1).
+
+> **2026-10-23: Version 0.9.12-draft. Editorial.** The specification text is
+> unchanged. The site's home page names the two bindings that exist, NATS
+> JetStream and RabbitMQ with Postgres, and says other brokers can carry the
+> contract the same way. The minimal contracting profile moves to 0.5.8-draft
+> and applies to this version. No requirement, field, wire identifier or
+> section number changes. The wire version stays `0.3.0` (§20.1).
