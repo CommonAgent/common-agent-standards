@@ -12,7 +12,7 @@ agentroles.ai/checks/catalog-check.mjs) no longer names the private
 repository it was first written in, and its usage no longer shows one
 implementation's command; it still runs any candidate the same way and
 checks the same cases. Comments in the site's build tools no longer name
-the sponsor's repositories. No section number, offering name or interface
+the sponsor's repositories or site. No section number, offering name or interface
 changes.
 
 ## v1.3.3 (2026-10-24)
