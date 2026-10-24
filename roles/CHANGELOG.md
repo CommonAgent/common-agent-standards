@@ -13,7 +13,8 @@ person can hold it instead. It hands back an architecture record: the
 systems the agent reaches, named in the plain system words the Common Agent
 Specification's runtime requirements use in `systems[]` (12.4); the product
 bound to each system in each environment, such as dev, test and prod, where
-the organization's own choice wins and a platform default fills the rest;
+the organization's own choice wins and a platform default fills the rest, and
+the record says which of the two each binding came from;
 the other agents and services the agent depends on; what the agent's inside
 is made of; its limits on cost, speed, data and trust; and every decision
 with its reason. The part is done when every system is named and bound in

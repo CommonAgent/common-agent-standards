@@ -65,9 +65,9 @@
         <details class="sec" open>
           <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
-          <a href="/solution-architect.html">The solution architect</a>
           <a href="/spec-writer.html">The spec writer</a>
           <a href="/solution-planner.html" class="on" aria-current="page">The solution planner</a>
+          <a href="/solution-architect.html">The solution architect</a>
           <a href="/impact-analyst.html">The impact analyst</a>
           <a href="/catalog.html">The catalog</a>
           <a href="/test-writer.html">The test writer</a>
@@ -147,7 +147,7 @@
       <div class="wrap spec">
         <p>The solution planner turns what somebody wants done into a plan for a solution, which is several agents doing one job together, each handing its result to the next. Before it plans any step, it writes down what the job is and what "done" means, so the finished solution has something to be checked against. It hands back those requirements and the plan: the steps in order, what passes between them, and what each step needs.</p>
         <p>It does not decide which agent does each step. The <a href="/catalog.html">catalog</a> decides that at the next stage, answering each step with an agent or a solution that already exists, or with "build one". A step that nothing existing can do becomes a new agent, and the <a href="/spec-writer.html">spec writer</a> writes that agent's statement.</p>
-        <p>On the lifecycle map, the solution planner holds Requirements, and Design, which is the second part of Architecture and Design, for a solution (<a href="https://agenticdevelopment.ai/stages.html#requirements">agenticdevelopment.ai</a>). The spec writer holds the same for a single agent. The <a href="/solution-architect.html">solution architect</a> holds Architecture, the first part of that stage, and the planner plans steps that use only the systems the architecture record names.</p>
+        <p>On the lifecycle map, the solution planner holds Requirements, and Design, the second part of Architecture and Design, for a solution (<a href="https://agenticdevelopment.ai/stages.html#requirements">agenticdevelopment.ai</a>). The spec writer holds the same for a single agent. The <a href="/solution-architect.html">solution architect</a> holds Architecture, the first part of that stage, and the planner plans steps that use only the systems the architecture record names.</p>
 
         <h2 id="asks">1. The requests</h2>
         <p>These exchanges are the role's primary interface, stated here, with no entry of its own (Agent Roles &sect;14.3). Implementing them alone does not grant the role.</p>

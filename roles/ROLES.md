@@ -145,8 +145,8 @@ registry, not a rank, and a role belongs to exactly one.
   front desk (§7), the arbiter (§8), the matchmaker (§9), and the
   facilitator (§10).
 - **Lifecycle roles** act on an agent as a thing being made, proved and
-  run: the solution architect (§36), the spec writer (§19), the solution
-  planner (§32), the impact
+  run: the spec writer (§19), the solution planner (§32), the solution
+  architect (§36), the impact
   analyst (§30), the catalog (§33), the test writer (§20), the code
   writer (§21), the code critic (§22), the security reviewer (§34), the
   package maker (§12), the deployment manager (§11), the conformance
@@ -1623,7 +1623,7 @@ It is the furthest left of the lifecycle roles, and the one whose output every o
 
 Three things are never invented here, whatever the model drafting the statement would prefer: the agent's name, its price, and access to any system. Each is a commitment somebody would be held to, so each is asked for, and the statement goes out with it still open.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements, and Design, which is the second part of Architecture and Design, for a single agent. The solution planner (§32) holds the same for a solution. The solution architect (§36) holds Architecture, the first part of that stage, and the spec writer writes a statement whose steps use only the systems the architecture record names.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements, and Design, the second part of Architecture and Design, for a single agent. The solution planner (§32) holds the same for a solution. The solution architect (§36) holds Architecture, the first part of that stage, and the spec writer writes a statement whose steps use only the systems the architecture record names.
 
 ### 19.1 What it can be asked
 
@@ -2142,7 +2142,7 @@ The solution planner turns what somebody wants done into a plan for a solution, 
 
 It does not decide which agent does each step. The catalog (§33) decides that at the next stage, answering each step with an agent or a solution that already exists, or with "build one". A step that nothing existing can do becomes a new agent, and the spec writer (§19) writes that agent's statement.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements, and Design, which is the second part of Architecture and Design, for a solution. The spec writer holds the same for a single agent. The solution architect (§36) holds Architecture, the first part of that stage, and the planner plans steps that use only the systems the architecture record names.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements, and Design, the second part of Architecture and Design, for a solution. The spec writer holds the same for a single agent. The solution architect (§36) holds Architecture, the first part of that stage, and the planner plans steps that use only the systems the architecture record names.
 
 ### 32.1 What it can be asked
 
@@ -2299,11 +2299,11 @@ Mechanical. A harness gives the candidate an agent with a declaration, an identi
 
 The solution architect settles what an agent stands on before anybody designs what it does. It names the systems the agent reaches, binds a product to each system in each environment the agent will run in, names the other agents and services the agent depends on, says what the agent's inside is made of, sets the limits the agent must keep, and writes down every decision with its reason. It hands back all of that as the architecture record. A person can hold this part of the stage instead of an agent.
 
-The lifecycle stage that was called Design is now Architecture and Design. It is one stage with two parts, and the architecture comes first, because a design written before its systems are named has to be written again once they are. The solution architect holds the first part. The spec writer (§19) and the solution planner (§32) hold the second part, Design, as they did before, and they design only with the systems the record names.
+The lifecycle stage Architecture and Design has two parts, and the architecture comes first, because a design written before its systems are named has to be written again once they are. The solution architect holds the first part, Architecture. The spec writer (§19) and the solution planner (§32) hold the second part, Design, and they design only with the systems the record names.
 
 The record is checked at two later stages by roles the architect does not control. The systems it names become the systems of the package's runtime requirements (Common Agent Specification 12.4), so at Package the package maker (§12) builds a package whose `systems[]` names are the record's. The bindings are what the deployment manager (§11) places at Deploy, in the environment the deploy names. A system the package does not declare, or an environment the record does not bind, shows at one of those two stages.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Architecture and Design, the first part, Architecture. The spec writer and the solution planner hold the second part, Design.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Architecture, the first part of Architecture and Design. The spec writer and the solution planner hold the second part, Design.
 
 ### 36.1 What it can be asked
 
@@ -2317,9 +2317,9 @@ grant the role.
 The architecture record says six things:
 
 1. **The systems.** Each system the agent reaches, named in plain system words, such as `crm` or `email`. These are the names the Common Agent Specification's runtime requirements carry in `systems[]` (its Section 12.4).
-2. **The bindings.** For each system, the product bound to it in each environment the agent will run in, such as dev, test and prod. The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from.
+2. **The bindings.** For each system, the product bound to it in each environment the agent will run in, such as dev, test and prod, with each environment named in the words the deploy into it will use. The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from, as the deployment record's `provided_by` does with `customer` or `platform` (Common Agent Specification 8.3).
 3. **The dependencies.** The other agents and services the agent depends on, each named.
-4. **The kind.** What the agent's inside is made of, as the Common Agent Specification declares an inside (its Section 12): skills that a harness reads, code that answers on the network by itself, or another party's framework. The specification's words for these are `plugin-on-harness`, `mesh-coded` and `third-party-framework` (its Section 8.3).
+4. **The kind.** What the agent's inside is made of, such as skills that a harness reads or code that answers on the network by itself. A package declares its inside in its own files (Common Agent Specification Section 12). The deployment record's `installed` member uses words such as `plugin-on-harness` and `mesh-coded` for the same thing, as background that nothing is checked against (its Section 8.3).
 5. **The limits.** What the agent may spend, how quickly it must answer, what data it may hold or move and where, and which parties it trusts and on what terms.
 6. **The decisions.** Each choice the record makes, with the reason for it, in the manner of an architecture decision record: what was decided, why, the options that were weighed, and what follows from the choice.
 
@@ -2341,7 +2341,7 @@ The record is the architecture record that §36.1 describes, with the questions 
 
 ### 36.4 Conformance testing: the solution architect
 
-Behavioral, with a mechanical part. A harness hands the candidate the requirements of an agent that reads a customer list and sends email, the organization's choice of email product for prod and no other choice, and a platform default for every system in every environment. The record must name two systems in plain system words, bind each in dev, test and prod, bind the organization's product for email in prod, mark every other binding as a platform default, and give a reason for every decision. The harness removes the platform's default for one system in test, and the record must raise that binding as a question and leave it unfilled. It hands back a design step that uses a third system, and the candidate must answer with a question about the architecture or a revised record that names the system and binds it. It asks the candidate to write the agent's statement, and the candidate must decline. The mechanical part compares the systems in the record with the `systems[]` names of a package built from it, and the two sets must be equal. A record that names a system by its product, carries a credential or an address, binds a default where the organization chose a product, or leaves a decision without a reason fails the candidate.
+Behavioral, with a mechanical part. A harness hands the candidate the requirements of an agent that reads a customer list and sends email and will run in dev, test and prod, the organization's choice of email product for prod and no other choice, and a platform default for every system in every environment. The record must name two systems in plain system words, bind each in dev, test and prod, bind the organization's product for email in prod, mark every other binding as a platform default, and give a reason for every decision. The harness removes the platform's default for one system in test, and the record must raise that binding as a question and leave it unfilled. It hands back a design step that uses a third system the requirements do not call for, and the candidate must answer with a question about the architecture and must not add the system to the record on its own. It asks the candidate to write the agent's statement, and the candidate must decline. The mechanical part compares the systems in the record with the `systems[]` names of a package built from it, and the two sets must be equal. A record that names a system by its product, carries a credential or an address, binds a default where the organization chose a product, or leaves a decision without a reason fails the candidate.
 
 ## 37. Out of scope
 
