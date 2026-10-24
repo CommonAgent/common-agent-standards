@@ -157,12 +157,12 @@
           <table class="versus">
             <thead><tr><td></td><th scope="col" class="vs-b">The broker</th><th scope="col" class="vs-m">Agent Messaging</th></tr></thead>
             <tbody>
-            <tr><th scope="row">Who sent it</th><td class="vs-b" data-l="The broker">The connection, shared by many agents</td><td class="vs-m" data-l="Agent Messaging">The agent, by its own signature</td></tr>
-            <tr><th scope="row">What it can do</th><td class="vs-b" data-l="The broker">A queue name</td><td class="vs-m" data-l="Agent Messaging">A signed manifest in a searchable registry</td></tr>
-            <tr><th scope="row">Who may call it</th><td class="vs-b" data-l="The broker">Permissions an administrator sets</td><td class="vs-m" data-l="Agent Messaging">The owner admits, holds or blocks</td></tr>
-            <tr><th scope="row">What a task is</th><td class="vs-b" data-l="The broker">A correlation id</td><td class="vs-m" data-l="Agent Messaging">States, deadlines, progress and cancel</td></tr>
-            <tr><th scope="row">What a message may tell the agent</th><td class="vs-b" data-l="The broker">Anything at all</td><td class="vs-m" data-l="Agent Messaging">A stranger's words, fenced and labeled</td></tr>
-            <tr><th scope="row">Which broker</th><td class="vs-b" data-l="The broker">Its own wire</td><td class="vs-m" data-l="Agent Messaging">Any broker, one contract</td></tr>
+            <tr><th scope="row">Who sent this message?</th><td class="vs-b" data-l="The broker">It knows which program connected, but many agents can share one connection.</td><td class="vs-m" data-l="Agent Messaging">Each agent signs its own messages, so you always know which agent sent one.</td></tr>
+            <tr><th scope="row">What can this agent do?</th><td class="vs-b" data-l="The broker">It has no idea. It only knows the names of queues.</td><td class="vs-m" data-l="Agent Messaging">Each agent describes what it does, and other agents can search those descriptions.</td></tr>
+            <tr><th scope="row">Who may contact this agent?</th><td class="vs-b" data-l="The broker">An administrator sets that once for each program.</td><td class="vs-m" data-l="Agent Messaging">The agent's owner decides, one sender at a time.</td></tr>
+            <tr><th scope="row">How is a job tracked?</th><td class="vs-b" data-l="The broker">It isn't. A request goes out, and a reply may come back.</td><td class="vs-m" data-l="Agent Messaging">Every job has a deadline, shows its progress, can be canceled, and ends with a clear result.</td></tr>
+            <tr><th scope="row">Can a stranger's message give orders?</th><td class="vs-b" data-l="The broker">The broker can't tell. It delivers the message as it is.</td><td class="vs-m" data-l="Agent Messaging">A stranger's message arrives labeled as the stranger's words, so the agent can tell it apart from its owner's instructions.</td></tr>
+            <tr><th scope="row">Does it work with my broker?</th><td class="vs-b" data-l="The broker">Each broker speaks its own language.</td><td class="vs-m" data-l="Agent Messaging">The same rules work on NATS, RabbitMQ and other brokers.</td></tr>
             </tbody>
           </table>
         </div>
