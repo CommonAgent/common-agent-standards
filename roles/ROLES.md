@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.2
+**Version:** v1.3
 **Status:** Guide
 **Date:** 2026-10-24
 
@@ -145,7 +145,8 @@ registry, not a rank, and a role belongs to exactly one.
   front desk (§7), the arbiter (§8), the matchmaker (§9), and the
   facilitator (§10).
 - **Lifecycle roles** act on an agent as a thing being made, proved and
-  run: the spec writer (§19), the solution planner (§32), the impact
+  run: the solution architect (§36), the spec writer (§19), the solution
+  planner (§32), the impact
   analyst (§30), the catalog (§33), the test writer (§20), the code
   writer (§21), the code critic (§22), the security reviewer (§34), the
   package maker (§12), the deployment manager (§11), the conformance
@@ -641,7 +642,7 @@ The scope is closed. What is not on this list is refused.
     attributable, because every phase call is a signed message in the
     conversation's record. A separate minutes document would be a
     weaker second copy of something the record already holds, and the
-    family's line, quoted in §2 and again in §36, is that the records
+    family's line, quoted in §2 and again in §37, is that the records
     are the books.
 
 ### 10.3 Conformance testing: the facilitator
@@ -1470,7 +1471,7 @@ to are defined at the floor (Common Agent Specification §4.4).
 ### 17.2 The contract
 
 The seven rules that travel with the exchanges are defined at the floor
-(Common Agent Specification §4.4). One is restated here because §37
+(Common Agent Specification §4.4). One is restated here because §38
 relies on it: the entryway defines no signed statement (rule 7). The
 descriptor that exchange 2 serves is defined by the Common Agent
 Specification's Descriptor chapter and carried unchanged; whether a
@@ -1622,7 +1623,7 @@ It is the furthest left of the lifecycle roles, and the one whose output every o
 
 Three things are never invented here, whatever the model drafting the statement would prefer: the agent's name, its price, and access to any system. Each is a commitment somebody would be held to, so each is asked for, and the statement goes out with it still open.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements and Design, for a single agent. The solution planner (§32) holds the same two stages for a solution.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements, and Design, which is the second part of Architecture and Design, for a single agent. The solution planner (§32) holds the same for a solution. The solution architect (§36) holds Architecture, the first part of that stage, and the spec writer writes a statement whose steps use only the systems the architecture record names.
 
 ### 19.1 What it can be asked
 
@@ -2141,7 +2142,7 @@ The solution planner turns what somebody wants done into a plan for a solution, 
 
 It does not decide which agent does each step. The catalog (§33) decides that at the next stage, answering each step with an agent or a solution that already exists, or with "build one". A step that nothing existing can do becomes a new agent, and the spec writer (§19) writes that agent's statement.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements and Design, for a solution. The spec writer holds the same two stages for a single agent.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Requirements, and Design, which is the second part of Architecture and Design, for a solution. The spec writer holds the same for a single agent. The solution architect (§36) holds Architecture, the first part of that stage, and the planner plans steps that use only the systems the architecture record names.
 
 ### 32.1 What it can be asked
 
@@ -2290,7 +2291,59 @@ The record is the signed AgentDoc. Its form and its signature are the AgentDoc s
 
 Mechanical. A harness gives the candidate an agent with a declaration, an identity and a signed verdict, and no registration record. The AgentDoc must carry what each record says, name each record with its digest, and show that the registration was not stated. Its signature must verify. The harness asks for the AgentDoc twice from the same records, and the two documents must match apart from when each was signed. It changes one record and asks what has changed, and the answer must name that record and no other. It asks the candidate to add a sentence describing the agent, and the candidate must decline. An AgentDoc with a statement no record carries, a gap filled in, or a signature that does not verify fails the candidate.
 
-## 36. Out of scope
+## 36. Role: the solution architect
+
+**Offering name:** `role-solution-architect`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The solution architect settles what an agent stands on before anybody designs what it does. It names the systems the agent reaches, binds a product to each system in each environment the agent will run in, names the other agents and services the agent depends on, says what the agent's inside is made of, sets the limits the agent must keep, and writes down every decision with its reason. It hands back all of that as the architecture record. A person can hold this part of the stage instead of an agent.
+
+The lifecycle stage that was called Design is now Architecture and Design. It is one stage with two parts, and the architecture comes first, because a design written before its systems are named has to be written again once they are. The solution architect holds the first part. The spec writer (§19) and the solution planner (§32) hold the second part, Design, as they did before, and they design only with the systems the record names.
+
+The record is checked at two later stages by roles the architect does not control. The systems it names become the systems of the package's runtime requirements (Common Agent Specification 12.4), so at Package the package maker (§12) builds a package whose `systems[]` names are the record's. The bindings are what the deployment manager (§11) places at Deploy, in the environment the deploy names. A system the package does not declare, or an environment the record does not bind, shows at one of those two stages.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Architecture and Design, the first part, Architecture. The spec writer and the solution planner hold the second part, Design.
+
+### 36.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Write the architecture.** The architect is given what the agent is for, with whatever exists: the requirements, the organization's own choices of product for each system and environment, the platform's defaults, and any earlier record. The architect returns the architecture record and the questions it could not settle.
+2. **Revise it.** The architect is given a record with what to change. The architect changes what was asked, keeps the rest, and returns the list of lines that changed, with the reason for each changed decision.
+
+The architecture record says six things:
+
+1. **The systems.** Each system the agent reaches, named in plain system words, such as `crm` or `email`. These are the names the Common Agent Specification's runtime requirements carry in `systems[]` (its Section 12.4).
+2. **The bindings.** For each system, the product bound to it in each environment the agent will run in, such as dev, test and prod. The organization's own choice is the binding wherever it made one, a platform default fills each binding it left open, and the record says which of the two each binding came from.
+3. **The dependencies.** The other agents and services the agent depends on, each named.
+4. **The kind.** What the agent's inside is made of, as the Common Agent Specification declares an inside (its Section 12): skills that a harness reads, code that answers on the network by itself, or another party's framework. The specification's words for these are `plugin-on-harness`, `mesh-coded` and `third-party-framework` (its Section 8.3).
+5. **The limits.** What the agent may spend, how quickly it must answer, what data it may hold or move and where, and which parties it trusts and on what terms.
+6. **The decisions.** Each choice the record makes, with the reason for it, in the manner of an architecture decision record: what was decided, why, the options that were weighed, and what follows from the choice.
+
+### 36.2 The contract
+
+1. **It settles what the agent stands on and designs nothing.** The solution architect MUST NOT write the agent's statement, plan the steps of a solution, or choose the agent that does a step. Those belong to the spec writer, the solution planner and the catalog (§33).
+2. **A system is named by what it is.** Each system is named in plain system words, as the runtime requirements name it. A system MUST NOT be named by its product, an address or an account. The product is the binding, and it is kept in the binding, never in the name.
+3. **Every system is bound in every environment.** Each system MUST have a product in each environment the agent will run in. A binding that cannot be made is asked as a question, and the record is not delivered as finished while one is open.
+4. **The organization's choice wins.** Where the organization chose a product for a system in an environment, the architect MUST bind that product. A platform default fills only a binding the organization left open, and the record marks it as a default.
+5. **Every decision has a reason.** A decision without a reason MUST NOT be delivered. The architect gives the reason or asks for it.
+6. **A commitment is asked, never filled.** A spending limit, a product that neither the organization chose nor the platform offers, and access to a system the requirements do not call for are commitments somebody would be held to. The architect MUST ask for each and MUST NOT fill it in.
+7. **The record carries no secret and no address.** It names products, and MUST NOT carry a credential value, an address or an account identifier, for the reason the Common Agent Specification gives for the package's own declarations (its Section 12.6 rule 3).
+
+The Architecture part is done when every system is named and bound in each environment the agent will run in, every decision has a reason, and every step of the design uses only systems the record named. The architect checks the first two before it delivers. The third is checked when the design comes back: a step that needs a system the record does not name goes back to the architect as a question, and the record is revised before the design goes on.
+
+### 36.3 The record
+
+The record is the architecture record that §36.1 describes, with the questions beside it. Its systems are the names the package's runtime requirements carry in `systems[]`. Its bindings for an environment are what the owner's instruction to the deployment manager supplies for that environment, and what the deployment record then shows was placed (Common Agent Specification 8.3). The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 36.4 Conformance testing: the solution architect
+
+Behavioral, with a mechanical part. A harness hands the candidate the requirements of an agent that reads a customer list and sends email, the organization's choice of email product for prod and no other choice, and a platform default for every system in every environment. The record must name two systems in plain system words, bind each in dev, test and prod, bind the organization's product for email in prod, mark every other binding as a platform default, and give a reason for every decision. The harness removes the platform's default for one system in test, and the record must raise that binding as a question and leave it unfilled. It hands back a design step that uses a third system, and the candidate must answer with a question about the architecture or a revised record that names the system and binds it. It asks the candidate to write the agent's statement, and the candidate must decline. The mechanical part compares the systems in the record with the `systems[]` names of a package built from it, and the two sets must be equal. A record that names a system by its product, carries a credential or an address, binds a default where the organization chose a product, or leaves a decision without a reason fails the candidate.
+
+## 37. Out of scope
 
 - Accounting standards. Cash sums over signed records, no accrual, no
   valuation, no jurisdiction. Agent Mandate §8 states it: the records
@@ -2320,7 +2373,7 @@ Mechanical. A harness gives the candidate an agent with a declaration, an identi
   target its instruction names, and choosing targets is not part of the
   role.
 
-## 37. Signature tags
+## 38. Signature tags
 
 - `agent-bookkeeper-statement-v1`: the bookkeeper statement (§5).
 - `agent-arbiter-verdict-v1`: the arbiter verdict (§8.3).
@@ -2338,7 +2391,8 @@ Agent Specification defines for every delivery (`job-manifest-v1`, cited
 in §18.2 rule 7), and that manifest is what the next role reads. The
 impact analyst (§30), published on 2026-10-05, defines
 no signature tag for the same reason, and neither do the solution planner
-(§32), the catalog (§33) and the security reviewer (§34). The documenter
+(§32), the catalog (§33), the security reviewer (§34) and the solution
+architect (§36). The documenter
 (§35) defines no tag of its own either, because it signs each AgentDoc
 with the assembler's signature the AgentDoc specification defines.
 
