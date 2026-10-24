@@ -144,18 +144,20 @@
       </div>
 
       <div class="wrap spec">
-        <p><b>The deployer interface holds the exchanges for putting an agent package on a host.</b> There are five: deploy this, what is deployed, how did it go, update it, and remove it.</p>
+        <p><b>The deployer interface holds the exchanges for putting an agent package on a host and changing it while it runs.</b> There are seven: deploy this, what is deployed, how did it go, update it, roll it back, reconfigure it, and remove it.</p>
         <p>This is the primary interface of the <a href="/deployment-manager.html">deployment manager</a> role. Implementing it alone does not grant the role, because the role also carries its refusals, its handling of secrets, its own check, and the record its holders sign.</p>
 
         <h2 id="interface">1. The purpose</h2>
-        <p>Anything that installs agents has to be askable in a known way, or every owner writes a custom client for every installer. This interface publishes the asking side of that job, so a caller who has never met a particular deployer can still request a deploy, read the inventory, and get an agent removed.</p>
+        <p>Anything that installs agents has to be askable in a known way, or every owner writes a custom client for every installer. This interface publishes the asking side of that job, so a caller who has never met a particular deployer can still request a deploy, read the inventory, change a running agent's settings, and get an agent removed.</p>
 
         <h2 id="exchanges">2. The exchanges</h2>
         <ol>
-          <li><b>Deploy this.</b> This is the instruction that starts an install. It carries a package, a target host and harness, and the deploy-time decisions: which identity to use, who may call the agent at first, and whether a person attends it. The request names any secrets the deployment needs. It never contains their values.</li>
+          <li><b>Deploy this.</b> This is the instruction that starts an install. It carries a package, a target host and harness, and the deploy-time decisions: which identity to use, who may call the agent at first, and whether a person attends it. The request also gives the ceiling for each system that spends, and it names any secrets the deployment needs. It never contains their values. The answer is a running agent with an identity, an address and an inbox, whose credentials were placed and whose ceilings were set before it started.</li>
           <li><b>What is deployed?</b> The answer is the inventory: each agent stood up, its package and version, its target, its identity, and the state it was last known to be in.</li>
           <li><b>How did it go?</b> The answer is the report for one deploy: what was done, what was checked, and what kind of check it was.</li>
           <li><b>Update it.</b> The implementer installs the same package at a newer version, through the same steps and checks.</li>
+          <li><b>Roll it back.</b> The implementer returns the running agent to the version it ran before, under the same identity, through the same steps and checks. The answer names both versions.</li>
+          <li><b>Reconfigure it.</b> The caller asks for a change to the settings, credentials or ceilings of a running agent, and the implementer makes it with no new version. Credentials are named, as in a deploy request. The answer lists each change.</li>
           <li><b>Remove it.</b> The implementer stops the processes, removes the configuration, retires the identity, and states anything that could not be removed.</li>
         </ol>
 
@@ -163,14 +165,16 @@
         <ol>
           <li><b>Every exchange is answered or refused with a reason.</b> Silence is not an answer.</li>
           <li><b>A deploy request names secrets and carries no secret values.</b> An implementer refuses a request that contains a secret value, before the value is used.</li>
+          <li><b>Nothing starts unconfigured.</b> An implementer places the credentials and sets the ceilings a deploy request gives before the agent starts, and refuses a deploy that gives no ceiling for a system that spends.</li>
           <li><b>Reports state what kind of check was run.</b> An answer to "how did it go" says whether the check was a smoke check or a conformance check. It never says only "verified".</li>
           <li><b>There is no document.</b> The signed deployment record belongs to the deployment manager role, and this interface defines none. An implementer that does not hold the role answers these exchanges and signs nothing.</li>
         </ol>
 
         <h2 id="conformance">4. How an implementer is checked</h2>
-        <p>The test is behavioural. A harness asks all five exchanges. Each is answered or refused with a reason. A deploy request carrying a secret value is refused. An answer about a completed deploy names the kind of check that was run. An inventory answer matches what a direct inspection of the target finds.</p>
+        <p>The test is behavioural. A harness asks all seven exchanges. Each is answered or refused with a reason. A deploy request carrying a secret value is refused, and so is one that gives no ceiling for a system that spends. A reconfigure leaves the version and the identity as they were. An answer about a completed deploy names the kind of check that was run. An inventory answer matches what a direct inspection of the target finds.</p>
 
         <p><i>v0.1.0-draft (2026-08-31): this is the first draft, extracted from the deployment manager role, which previously carried these exchanges inline.</i></p>
+        <p><i>v2 (2026-10-24): two exchanges are added, roll it back and reconfigure it, and a deploy sets the agent's credentials and ceilings before it starts. An implementer of v1 answers five exchanges and does not implement v2.</i></p>
       </div>
 
       <!-- chrome:footer -->

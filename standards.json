@@ -181,9 +181,9 @@
       "spec": "roles/ROLES.md",
       "domain": "agentroles.ai",
       "site": "https://agentroles.ai/",
-      "version": "v1.1",
+      "version": "v1.2",
       "status": "Guide",
-      "tag": "roles-v1.1",
+      "tag": "roles-v1.2",
       "builder": "roles/site/tools/build-spec.mjs",
       "summary": "Agent Roles is a guide of working descriptions of jobs that recur wherever agents work. Each role says what its holder does, what it needs and what it refuses, and the descriptions will change as we learn."
     },

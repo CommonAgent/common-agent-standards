@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.1
+**Version:** v1.2
 **Status:** Guide
 **Date:** 2026-10-24
 
@@ -671,11 +671,23 @@ The deployment manager turns a package into a running agent, and can say
 afterward exactly what it did. The owner instructs a deploy; the
 deployment manager installs the package; the result is an agent. Those
 are three different things and this section keeps them apart: the acts
-below are named deploy, update, remove and refuse because they are what
-the owner asked for, and what happens inside a deploy is an install. It takes an agent package, stands it up
+below are named deploy, update, rollback, reconfigure, remove and refuse
+because they are what the owner asked for, and what happens inside a
+deploy is an install. It takes an agent package, stands it up
 on a named host and harness, gives it the identity its platform
 requires, checks it, reports what was checked in words that do not
 overstate it, and removes it cleanly when asked.
+
+A deploy includes the agent's configuration. The deployment manager
+places the agent's credentials by name and sets its ceilings before the
+agent starts, as the install procedure of the Common Agent Specification
+12.7 orders them, so there is never a moment when the agent is live
+without its credentials and its limits. What a deploy hands back is a
+running agent with an identity, an address and an inbox, its credentials
+placed and its ceilings set, and a signed deployment record. A later
+change to the settings, credentials or ceilings of a running agent is a
+reconfigure. It installs no new version, and it leaves a signed record
+of what changed.
 
 It is defined as much by restraint as by capability. It touches hosts
 and it places credentials, which makes it the most powerful role in
@@ -691,7 +703,7 @@ sense the Common Agent Specification 12.1 gives the word, is the program
 that does the thinking when a message arrives; it is not an agent, and
 an agent is what exists after the install.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Deploy, Configure, Update, Rollback and Decommission.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Deploy, Update, Rollback, Reconfigure and Decommission. Deploy includes configuring the agent before it starts, and the map has no separate stage for it.
 
 ### 11.1 What it can be asked
 
@@ -700,8 +712,12 @@ These exchanges are the role's primary interface, the deployer
 
 1. **Deploy this.** A package, a target host and harness, and the
    deploy-time decisions: which identity to mint or use, who may call
-   the agent at first, whether a person attends it. The request names
-   the secrets the deployment will need; it never contains them.
+   the agent at first, whether a person attends it, and the ceiling for
+   each system that spends. The request names the secrets the
+   deployment will need; it never contains them. The answer is a
+   running agent with an identity, an address and an inbox, its
+   credentials placed and its ceilings set before it started, and the
+   signed record.
 2. **What is deployed?** The inventory: each agent it has stood up, its
    package and version, its target, its identity, and the state it was
    last known to be in.
@@ -709,14 +725,24 @@ These exchanges are the role's primary interface, the deployer
    was checked, and what kind of check it was.
 4. **Update it.** The same package at a newer version, through the same
    steps and the same checks, with the same record at the end.
-5. **Remove it.** Processes stopped, configuration entries removed, the
+5. **Roll it back.** The running agent returned to the version it ran
+   before, under the same identity, through the same steps and the same
+   checks. A rollback is an update to the previous version, as the
+   Common Agent Specification 12.7 says, and its record names both
+   versions.
+6. **Reconfigure it.** A change to the settings, credentials or ceilings
+   of a running agent, with no new version. The request names any
+   credential by name, as a deploy request does. The answer says what
+   changed, and the record lists each change.
+7. **Remove it.** Processes stopped, configuration entries removed, the
    identity retired, and a statement of anything that could not be
    removed.
 
 ### 11.2 The contract
 
-1. **Only on instruction.** A deploy, an update, and a removal each
-   happen because the owner asked for that act. A deployment manager
+1. **Only on instruction.** A deploy, an update, a rollback, a
+   reconfigure and a removal each happen because the owner asked for
+   that act. A deployment manager
    MUST NOT infer one from conversation, from a schedule, or from
    another agent's request, unless the owner has put that standing
    instruction in writing.
@@ -749,12 +775,27 @@ These exchanges are the role's primary interface, the deployer
    service of an instructed act, and MUST NOT operate the agents it
    deploys. Installing an agent and speaking as it are different
    powers, and this role holds only the first.
-7. **Every act leaves a record.** Deploys, updates, removals, and
-   refusals each produce the signed record in §11.3. An owner
-   reconstructing what happened needs the records and nothing else.
+7. **Every act leaves a record.** Deploys, updates, rollbacks,
+   reconfigures, removals, and refusals each produce the signed record
+   in §11.3. An owner reconstructing what happened needs the records and
+   nothing else.
 8. **Removal is honest.** A removal record states what was removed and
    names anything that was not, because "removed" with a live
    credential left behind is the failure an owner cannot see.
+9. **Configured before it starts.** A deploy places every credential
+   the instruction names and sets every ceiling the instruction gives
+   before the agent starts. A deployment manager MUST NOT start an
+   agent whose credentials or ceilings are not yet in place, and it
+   stops the deploy when a system that spends has no ceiling, because
+   an agent that runs for even a minute without its limits can spend
+   without them.
+10. **A reconfigure changes settings, never the version.** A
+    reconfigure changes the settings, credentials or ceilings of a
+    running agent and nothing else. It MUST NOT change the package
+    version or the identity, and a change that needs either is an
+    update. Credentials in a reconfigure are named and fetched as they
+    are in a deploy, and a request that carries a credential value is
+    refused.
 
 ### 11.3 The record
 
@@ -779,6 +820,10 @@ document with `signatures` removed.
   "agent": { "key": "<deployed agent public key>", "handle": "<handle, if named>" },
   "declarations": { "interaction": "service", "admitted_at_start": ["<caller>"] },
   "secrets_placed": ["<secret name>"],
+  "ceilings": [
+    { "system": "<system name>", "per": "<what the ceiling is per>",
+      "number": "<the ceiling>", "enforced_by": "<the side that applies it>" }
+  ],
   "checks": [
     { "kind": "smoke", "passed": true, "at": "<timestamp>",
       "what": "<plain words for what the check exercised>" }
@@ -791,8 +836,9 @@ document with `signatures` removed.
 
 Rules:
 
-1. `act` is one of `deploy`, `update`, `remove`, `refuse`. A refusal
-   record carries `refused` with the reason in place of `checks`.
+1. `act` is one of `deploy`, `update`, `rollback`, `reconfigure`,
+   `remove`, `refuse`. A refusal record carries `refused` with the
+   reason in place of `checks`.
 2. `package.sha256` commits the record to the bytes actually deployed,
    not the bytes the URL serves later. A verifier who fetches the URL
    and gets a different digest has learned the package moved, not that
@@ -805,6 +851,15 @@ Rules:
 5. A removal record repeats `agent` and `target`, lists what was
    removed, and lists what was not under `remaining`, which is empty
    only when the removal was complete.
+6. `ceilings` lists each ceiling the act set, with the side that applies
+   it. A deploy record lists every ceiling set before the agent started.
+7. A rollback record names the version the agent left and the version
+   it returned to, with the digest of each.
+8. A reconfigure record repeats `agent`, `target` and `package`
+   unchanged, and lists under `changed` each setting, credential and
+   ceiling it changed, with the value before and the value after. A
+   credential appears by name only, before and after. The record ends
+   with the checks run after the change.
 
 ### 11.4 Conformance testing: the deployment manager
 
@@ -816,8 +871,14 @@ the bytes on the target. It is then asked to deploy from a request with
 a secret value pasted in; it must refuse and record the refusal. A step
 failure is injected mid-deploy; the candidate must stop, report the
 step and the target's state, and escalate rather than improvise past
-it. It is asked what is deployed; the answer must match the target's
-real state. It is asked to remove; the target must come back clean, and
+it. It is given an instruction that sets no ceiling for a system that
+spends; it must stop before the agent starts. It is asked to
+reconfigure a ceiling on the running agent; the ceiling must change,
+the version and the identity must not, and the record must list the
+change. It is asked to roll back an update; the target must run the
+previous version under the same identity, and the record must name both
+versions. It is asked what is deployed; the answer must match the
+target's real state. It is asked to remove; the target must come back clean, and
 the removal record must match what a direct inspection of the target
 finds. Finally the harness reads every record: a smoke check reported
 without its grade, or graded as conformance, fails the candidate
@@ -833,9 +894,17 @@ the role)
 The package maker turns a description of a needed agent into a package
 another system can deploy. It takes what an agent should do, the systems
 it needs, what it must refuse, and the records it must leave, and it
-emits an agent plugin: skills, obligations, and a manifest. It is the
-other end of the deployment manager (§11): one builds the package, the
+hands back the package. The package holds four things: the declaration,
+which is the two files `agent-descriptor.json` and
+`agent-runtime-requirements.json`; the parts the declaration names, such
+as its skills; a manifest; and a digest. It is
+the other end of the deployment manager (§11): one makes the package, the
 other stands it up.
+
+Making a package is mostly authoring. The declaration and the parts are
+written, and building, in the sense the Common Agent Specification 13.2
+gives the word, only generates the views and writes the manifest's
+digests. A build adds no fact the authored files did not state.
 
 What it emits is an Agent Package as the Common Agent Specification
 defines it (Chapter 12, https://agentdoc.net/package-spec.html): an Agent
@@ -851,7 +920,7 @@ both and refuses to emit a package without them. And it never pretends to
 have made a finished thing: every package it produces is a draft, because
 nobody has run the agent it describes.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Build and package, and Release.
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Package, and Release.
 
 ### 12.1 What it can be asked
 
