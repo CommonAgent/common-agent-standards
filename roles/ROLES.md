@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.3.1
+**Version:** v1.3.2
 **Status:** Guide
 **Date:** 2026-10-24
 
@@ -860,22 +860,28 @@ Rules:
    only when the removal was complete.
 6. `ceilings` lists each ceiling the act set, with the side that applies
    it. A deploy record lists every ceiling set before the agent started.
-7. A rollback record carries `package` for the version the agent
-   returned to and `rolled_back_from`, with the same members, for the
-   version it left, so both digests are named.
+7. An update record carries `package` for the new version,
+   `descriptor_digest` (8.3) for the Descriptor bound after the update,
+   and `updated_from` for the version it left, with the same members as
+   `package` and the `descriptor_digest` of the Descriptor bound before
+   the update, so both package digests and both Descriptor digests are
+   named. A rollback
+   record carries `package` for the version the agent returned to and
+   `rolled_back_from`, with the same members, for the version it left, so
+   both digests are named.
 8. A reconfigure record repeats `agent`, `target` and `package`
    unchanged, and lists under `changed` one entry for each setting,
    credential and ceiling it changed, each with `what`, `before` and
    `after`. A credential appears by name only, before and after. The
    record ends with the checks run after the change.
-9. The acts `rollback` and `reconfigure`, and the members
-   `rolled_back_from` and `changed`, are defined in the deployment record
-   of the Common Agent Specification 8.3 with the meaning given here, and
-   12.7 records a rollback under its own act so the record says whether
-   the owner asked for an update or a rollback. The acts `update` and
-   `refuse` are this role's additions to 8.3. A reader that knows only
-   8.3 can still read the record, because every member 8.3 defines keeps
-   its meaning.
+9. The acts `update`, `rollback` and `reconfigure`, and the members
+   `updated_from`, `rolled_back_from` and `changed`, are defined in the
+   deployment record of the Common Agent Specification 8.3 with the
+   meaning given here, and 12.7 records a rollback under its own act so
+   the record says whether the owner asked for an update or a rollback.
+   The act `refuse` is this role's addition to 8.3. A reader that knows
+   only 8.3 can still read the record, because every member 8.3 defines
+   keeps its meaning.
 
 ### 11.4 Conformance testing: the deployment manager
 
