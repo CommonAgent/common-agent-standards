@@ -1,5 +1,5 @@
 {
-  "comment": "Agent SoW: the signed acts of 6.3 (agentsow.com 0.35.0-draft). Each act is a JSON object with a closed member set: engagement, version, digest ('sha256:' and the lowercase hex SHA-256 of that version's signed bytes, 6), the kind's own members, by (the seat that signs), key (that seat's owner_key), signed_at and sig (canonical padded base64 of the 64-byte Ed25519 signature). Its signed bytes are the kind's tag, one newline, and the JCS of the act minus sig: agent-sow-terminate-v1, agent-sow-usage-v1, agent-sow-settlement-v1, agent-sow-dispute-v1, agent-sow-resolve-v1 and agent-sow-acceptance-v1. A settlement record, an acceptance act and a dispute are named by the digest of its signed bytes; a verdict by the digest of its own signed bytes (agent-arbiter-verdict-v1, one newline, JCS minus signatures). Each case names the act, its kind, the document it is made under, and for a resolve the dispute and verdict it rests on; prior lists usage acts the runtime already holds; for a settlement record, held lists the usage acts the runtime holds and earlier the settlement records it already holds. An earlier list may name the record being checked, which the runtime then holds already and compares with nothing, and records under other engagements, which settle nothing for this one (6.3). quote names an entry of quotes, the quote the charge followed (5.5.8), where the runtime holds one; a case without it holds none. unsettled is what remains unsettled under every engagement here when its dispute opens. pairs pin when a dispute under escalate_to_owners closes. For an acceptance act, delivered_at is when the delivery it judges arrived, earlier lists the acceptance acts the runtime already holds, and acceptance_signed_bytes pins one act's signed bytes and digest; an act an agent drafted carries proposed, checked as the Common Agent Specification 7.9 says (common-agent/conformance/draft-approval.json). The keys are published test seeds (sha256 of the label); 'arbiter' plays the arbiter, whose verdict signature is in the role's own encoding, base64url, as sow-disputes.json pins it. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "comment": "Agent SoW: the signed acts of 6.3 (agentsow.com 0.35.0-draft). Each act is a JSON object with a closed member set: engagement, version, digest ('sha256:' and the lowercase hex SHA-256 of that version's signed bytes, 6), the kind's own members, by (the seat that signs), key (that seat's owner_key), signed_at and sig (canonical padded base64 of the 64-byte Ed25519 signature). Its signed bytes are the kind's tag, one newline, and the JCS of the act minus sig: agent-sow-terminate-v1, agent-sow-usage-v1, agent-sow-settlement-v1, agent-sow-dispute-v1, agent-sow-resolve-v1 and agent-sow-acceptance-v1. A settlement record, an acceptance act and a dispute are named by the digest of its signed bytes; a verdict by the digest of its own signed bytes (agent-arbiter-verdict-v1, one newline, JCS minus signatures). Each case names the act, its kind, the document it is made under, and for a resolve the dispute and verdict it rests on; prior lists usage acts the runtime already holds; for a settlement record, held lists the usage acts the runtime holds and earlier the settlement records it already holds. An earlier list may name the record being checked, which the runtime then holds already and compares with nothing, and records under other engagements, which settle nothing for this one (6.3). quote names an entry of quotes, the quote the charge followed (5.5.8), where the runtime holds one; a case without it holds none. unsettled is what remains unsettled under every engagement here when its dispute opens. pairs pin when a dispute under escalate_to_owners closes. For an acceptance act, delivered_at is the instant the task that delivered the deliverable completed, earlier lists the acceptance acts the runtime already holds, and acceptance_signed_bytes pins one act's signed bytes and digest; an act an agent drafted carries proposed, checked as the Common Agent Specification 7.9 says (common-agent/conformance/draft-approval.json). The keys are published test seeds (sha256 of the label); 'arbiter' plays the arbiter, whose verdict signature is in the role's own encoding, base64url, as sow-disputes.json pins it. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
   "version": 1,
   "spec": "Agent SoW 0.35.0-draft: 6.3 (the signed acts, the acceptance act among them), 5.4.2, 15, 5.5, 5.5.1, 5.5.2, 5.5.6, 5.5.7, 5.5.8, 5.9, 5.10, 5.17, 6 (signature spelling)",
   "keys": {
@@ -4767,11 +4767,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -4780,7 +4786,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "t3Jc2DooY8YLQ35fclg04tiOQOdAfWcH7aZ04zSYJ++F63no1pCnH31HO8dSuvceQrHnYqnYlZkGB5Dl7KSQAw=="
+      "sig": "yz0I3DP6quadz/bPaaPp3P1Vw2tzCpRjNIgTzj0eE+EYET+4XwSYPfys57kI8NKFnkzbvQshB9N+ibIvmtF8Bw=="
     },
     "acceptance_reject": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4789,11 +4795,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -4806,7 +4818,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "YbaVo9JAfT2+gbfnGoRKicx8yZO2J+HAEY36wCAWT/qFQKDr8DL//dx1BZDehwb9RN5Cq5aMu2EEcvla/lrXCw=="
+      "sig": "bWlqxSszLVBvN2nfj/GOoAQ0zh6cnza/bMUKHr+e4nBcMZBfyKP+/9XQsjUqB7qJazKnGyQ10Fv7bx+DDQZwCA=="
     },
     "acceptance_reject_untested": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4815,9 +4827,12 @@
       "deliverable": "reconciliation-report",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
       "grade": "recorded",
       "reasons": [
         "The report reconciles to the wrong statement month."
@@ -4825,7 +4840,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "k4FLD4qC+p0maxHuXk1BfhvXwL7VQwa2MIhw8fIGDU8fK2Kao6xxxvpn6ucSE+fIp1aBqPk/b+NTayv8Hh0GDQ=="
+      "sig": "Nu/zeG27SNgYrRnnkTMtoiNZVBCtP9aiVPwXMILRe/xzHAUv5ObwW1Zprbcz0zusI9YgBFhiFOEAkB+M3yJxBw=="
     },
     "acceptance_accept_untested": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4834,14 +4849,17 @@
       "deliverable": "reconciliation-report",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
       "grade": "recorded",
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "6ljYECMsouuCrQHLKVJD+fAoqTgkuf9MO9mEipXMTIFEENr0JkQz3mxdt8X/lE8xtUvZREzizQHDQ/XnJmkaDw=="
+      "sig": "rSIctw16V1MQNcGpPeAVgmVKQic0Lv6x7CyaMJY/b+V/rwCfS3TsEOgKAXsXbgSwfDszQgu3aeFhHRM614aeCQ=="
     },
     "acceptance_accept_below_threshold": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4850,11 +4868,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 170,
         "of": 200
@@ -4866,7 +4890,27 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "5sTllW7164MzWF0WROZtwjCkOJ7XGxGSwzdK++uNH+Js5uNXsy05/1tn54/uDyF8l2+kYJnIzcGDU9CEq7HWCw=="
+      "sig": "aDx+5BqX0UWMUa0jAufJHeLcEhNJ5gk24tKVVupizuuqyLMWFwc402NLgvhGv2bgNwMEQeHksTHqrJb6kIYWAA=="
+    },
+    "acceptance_engagement_reject": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "settlement",
+          "digest": "sha256:b1465eb65f3d185969b060c53fe41dce281d1d0680e93a56c1d204194ecc5d6d"
+        }
+      ],
+      "grade": "recorded",
+      "reasons": [
+        "Across the engagement the reconciliations needed rework every month."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2027-02-02T10:00:00Z",
+      "sig": "Mq9SPAOFxe3YmoKUUvN5drb5+bL/34z8CqU97biYn9+IC6VPQUgYX/1hxhPs8qec+q+vd3keOoU3hsrtO0uoDw=="
     },
     "acceptance_reject_drafted": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4875,11 +4919,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -4890,14 +4940,14 @@
       ],
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
-      "signed_at": "2026-10-08T10:00:00Z",
+      "signed_at": "2026-10-08T11:15:00Z",
       "proposed": {
         "agent": "UBD3QOMXDB44MN3EN3FRKLNQWHU6N7SIC4SDM4Z6NIBZHAEM7WWJE6YT",
-        "draft": "sha256:c7da624fe037fd14df55c3c44b7d0fb44f65a54f6640e55a4e755227a3dfef14",
+        "draft": "sha256:fb3b39fab693651704e5cebcba244d0c38c27ea12196deb5e585953d941d4388",
         "drafted_at": "2026-10-08T09:41:00Z",
-        "sig": "+Ec4ZLtkLGCPWhphBUHYyRGUZgcdsmOy9FezLthvVRYI4enYQugZWJc3VE1t8CN/3ma30/IHlo0dCLrcv65wDA=="
+        "sig": "dDXpORE0jPb7QDtUSrL0vRtGd31q1zbaNcUgDGlIroXXlXd10LeOuKbLalD3dyWl7JtobT+ytONLeb96uUNKBw=="
       },
-      "sig": "CmCEj0Twkj6SWQhIcS0kCrp4NI8rEN74hQ2hqWFgrqs0aVMdpdFNQipcTkR7gG9XVyw+Rj7GqArBvw4akESzDg=="
+      "sig": "ytfSg020g9Bprg4o0+A8X4pFtma/1Lk5WrfwStnFq+uDebf42AXw2osdYBJqGj/FoGEiQbCuMUV0iVp98WJzDw=="
     },
     "acceptance_reject_drafted_then_edited": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4906,11 +4956,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -4924,11 +4980,11 @@
       "signed_at": "2026-10-08T10:00:00Z",
       "proposed": {
         "agent": "UBD3QOMXDB44MN3EN3FRKLNQWHU6N7SIC4SDM4Z6NIBZHAEM7WWJE6YT",
-        "draft": "sha256:c7da624fe037fd14df55c3c44b7d0fb44f65a54f6640e55a4e755227a3dfef14",
+        "draft": "sha256:fb3b39fab693651704e5cebcba244d0c38c27ea12196deb5e585953d941d4388",
         "drafted_at": "2026-10-08T09:41:00Z",
-        "sig": "+Ec4ZLtkLGCPWhphBUHYyRGUZgcdsmOy9FezLthvVRYI4enYQugZWJc3VE1t8CN/3ma30/IHlo0dCLrcv65wDA=="
+        "sig": "dDXpORE0jPb7QDtUSrL0vRtGd31q1zbaNcUgDGlIroXXlXd10LeOuKbLalD3dyWl7JtobT+ytONLeb96uUNKBw=="
       },
-      "sig": "MTFF+3/e5dvCMxs/8q7uMvhQ+ypMwSfBVgu0k7hxYSAt+S4aYnxJKPU60ikVz576uIT+2ZU3XxbnyDdrboCwCA=="
+      "sig": "b/6hw+tbRXhDDZUnbyTNj0HI/por75ItUQSfRzY0BPyT0zqpFNz/XeB0n3kvNXdoiOkFw7tmbpQf40+WiYnQCQ=="
     },
     "acceptance_revision_reject": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4937,11 +4993,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA3R2M",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:9760e2cf2e2adacbd05e1d151c0b01de36a5e54c24ac12e775c2d3ae8e148a1b",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:9760e2cf2e2adacbd05e1d151c0b01de36a5e54c24ac12e775c2d3ae8e148a1b"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 188,
         "of": 200
@@ -4953,7 +5015,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-14T10:00:00Z",
-      "sig": "KUJIHTu5pjuyjQgVbZTqaO0g+S7pZRXXoAfFhxYvfxA62facQsIZ6wwzkRHiqJeytNlJc1k8hQu2ijZoHwWAAA=="
+      "sig": "K+djslqawJW2rE/c5blPLhQNJeb1wQ+Is4oiSnPcs+gHCm8DxidPs5Cz16I3XAp7hqK0wlX7gFVG4m9NW8P/Aw=="
     },
     "acceptance_reject_without_reasons": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4962,11 +5024,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -4975,7 +5043,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "Dns/WOLKZNANJ8wb5Z+hdr6zvv3UkEarlrXpYO1Pnc3Dfp4cFra6hPe9PIoJnQnx5JZJvgdzzzLqKAvBogWOAQ=="
+      "sig": "Pmy+pue1pGfrsiTJtd7DM1ymbaEGWm27ioqN6rQ8mM0wUghwfpOIGf5qqqgiSclmFI7sGJdkFy9yG6x/xstmAg=="
     },
     "acceptance_reject_empty_reason": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -4984,11 +5052,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -5000,7 +5074,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "9zqpBtsR0DbcxLCVa3bVIrcQg7DS23qrOjLx9aikcDGyI3Q4MXxtAznZZ8eco0nwLXzjp0i5juL+YPxKg0fsBA=="
+      "sig": "sHGbz1DYgCBjO9JcEu8eQasvrjyrTPl93bHS5xyZyK/S4h4eN4a7Ar4WYc+hyUK6sFZrOhJvfMD4GmAshLHeAg=="
     },
     "acceptance_reject_empty_reasons": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5009,11 +5083,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -5023,7 +5103,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "BpCdcph89I9qgUSzdqb4qX2pp/A76coODEUK8nWzQDzMEtOCorMJnLxusUqEvkc3/WZBIh+qZHs614r8XoyfBA=="
+      "sig": "Dg38RsFr1GGpkpRGrVtrVdOu040xqGzRz6gr/SxWv6r05+AqWpTYrt98x0zLwfRQ9mLcB9RojOody9EHRZQ6Ag=="
     },
     "acceptance_unknown_decision": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5032,11 +5112,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "partial",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -5048,7 +5134,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "A7WadsirSYhCwfqrK3LO2pxKOWvjRkA0sH+3OSp3ksVjXpGqdsz9a1+MQB60+p83gPWHIk3ro0imjpBBR2jtDA=="
+      "sig": "gqGbjM20HuXlQ2/olyw42DOyJoLLdMI74bFhESatYIXiQi5DFC1oRbyYz1MzjJWoDCZR9vP77c1OlfhglQIHDA=="
     },
     "acceptance_by_provider": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5057,11 +5143,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5070,7 +5162,7 @@
       "by": "provider",
       "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "dT6d45jWL36wfJKnYYScx4uHK/Ufbiyb1AliZ6C5Bx05L5b7IRYFjomMBnR9rckRQQREOSyfRc49HjEKU+JxDA=="
+      "sig": "EmDLJ7OhFD9hPGLeRh19LXnKsNiLB4IWlxz7OIuNfY0nvM1jjcpOM0WWyCR7utsjeqKHkqaokjhYxnbPEbqjCw=="
     },
     "acceptance_test_set_mismatch": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5079,11 +5171,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-        "ref": "artifacts:exceptions-test-set-v2"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "ref": "artifacts:exceptions-test-set-v2"
+        }
+      ],
       "result": {
         "passed": 150,
         "of": 200
@@ -5095,7 +5193,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "0tM03BebBSeBz51ByjuuNI02E2Etjq/52y2fD94Xr8COMFdDS5CO4xgLtZOQHMwTKnZeb66QkZuMFUmHlXIHBA=="
+      "sig": "LdIpWvmUS2Hkw75Be4ge/wz6X0SA51pPixn0mspXJqOiqsU2tVZTHJEw5Rb9jFF1pmTY/diT5V5cAw35xaPIBQ=="
     },
     "acceptance_test_set_missing": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5104,9 +5202,12 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        }
+      ],
       "grade": "recorded",
       "reasons": [
         "Too many misses."
@@ -5114,7 +5215,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "AZDjeTuQfhiOa0iuikzcEjWCM5u8kMbOIPIGZmMPvNpHPhydlCQ2Wc1hxd+ylMA9lGSzFg7W8Z2nb78I6GkhBg=="
+      "sig": "ywVArLaaIzGVIxmfpM0yYz66GCO5tRSSPr8GwVFB6PlkWAudgepc0aQhZYKN++ZuI8QVE4MxkYY9PEby3qtLBg=="
     },
     "acceptance_test_set_on_untested": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5123,11 +5224,17 @@
       "deliverable": "reconciliation-report",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 200,
         "of": 200
@@ -5136,7 +5243,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "Uwn+SJ0Esr/w75SLuJlCoYYpxPCkFPZ4pSPq6EbA5H0NCT5aztYBJkAd3zhTJJjxOhhZFO24YpeXi7y1+6PsBw=="
+      "sig": "knA/ljzKhzvrJnnu/BY1TVZvdxlwZeJzyCd52Q14Q4Lr+oGI6zn+jDLt659/bvzrsgOhZrnaUgDEM6huxjjwDw=="
     },
     "acceptance_withheld_without_ref": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5145,10 +5252,16 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5157,7 +5270,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "LE/oAB71ayje9vxyf2TBbiRyonhbqn9U4BBsPYyCJrMTMngbEzyVKd2hDMSIjB6IJ/ZG77EnMA4Fy5SU5ej1Dw=="
+      "sig": "GHWg3KdDUEfkRMOKyLnaoXDFcrQd9aCUV76hW80Y4HL0ZEax0F94JNBDgQENZWNwWwfRk3iX7QdTpkNXCrbjCA=="
     },
     "acceptance_without_delivery": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5166,10 +5279,13 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5178,7 +5294,39 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "KuqPTTUV0JUdwu4+YdD0PP7SUUU1YH7RAUEL2dZ8x0ytQ1MuZRORavsNUYfcpK4zY5PwzGf7scFEs9RYWjGdCw=="
+      "sig": "LaCvRk9DpBOyXAhozh/EUUxm3T9StxPMn5bUEj8yxOt20e8tmni9onzJgetZA7eP7zcKyTiyeLU4rWVd5FHWBA=="
+    },
+    "acceptance_two_deliveries": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "delivery",
+          "digest": "sha256:9760e2cf2e2adacbd05e1d151c0b01de36a5e54c24ac12e775c2d3ae8e148a1b"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "MfUEGcnQKGtyaYqR8mtoQaMjlMRmnffGTlHWVBql7a1yTn/0uLQJsf6uKnPszU7uIE8CZ//kai8YqWLZNYtLAQ=="
     },
     "acceptance_delivery_not_a_digest": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5187,11 +5335,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "artifacts:exceptions",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "artifacts:exceptions"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5200,7 +5354,39 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "ZzVmZ1cku0uLuEVAq6lycM3I5Ux96f8puAe1AjC7VlLJ1wzaCSQdS45tvp42Kv0j7f6T02gy+FSssBh5agqsDg=="
+      "sig": "gP14ARZ2u4TIvWO54FtM+Wa5GAsodok+E1VbzqwsYIRe5v+0O78u8Y31WslzInLsIB/qFEcaDEt2xwVEqUdSAA=="
+    },
+    "acceptance_unknown_role": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        },
+        {
+          "role": "model",
+          "digest": "sha256:b1465eb65f3d185969b060c53fe41dce281d1d0680e93a56c1d204194ecc5d6d"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "wDnxQPPE5o8dAnMgBrIZuPuAOtrX68JawMA/2nplzEObaFD8sFy/72o+qU/2LDGkyENFioOrX8Ue6CTkOV2QDg=="
     },
     "acceptance_without_result": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5209,16 +5395,22 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "grade": "evidence",
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "nd8d3sm1LHkkZuUEg10gI+qrZjYKH2f/qvvGy7RzwfOZW6yCCT5UsOhE2gAwQfNwYeSGy+8hK3xen9qeFDczCg=="
+      "sig": "QxhvpZ64EaPWZ5WgAcKirebMTu3NKcqublrQqZ6fZVuwxie6qU+aojqA1hiLXqN/yEUGUvuzvpgvxF9O0WImDA=="
     },
     "acceptance_result_on_untested": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5227,9 +5419,12 @@
       "deliverable": "reconciliation-report",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
       "result": {
         "passed": 1,
         "of": 1
@@ -5238,7 +5433,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "bWiuNnc07d7UcN1zZBd8lb/ubN1/Gp5ISP0zXSPvdY3nkhREISJmhVL+1SJ59jervM5IksJNADLISUrzwkqGBA=="
+      "sig": "du7h2aZT6fO2zczlaaVQ+lx7IHFY43MPNDYQqbL6/K8cIOO/WJ3f/K0FjZ/+ZAQlB0OxAMydI2XVqMWoDEkGBA=="
     },
     "acceptance_passed_over_of": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5247,11 +5442,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 201,
         "of": 200
@@ -5260,7 +5461,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "klNkiwFGsIicGW+NmYo4I5A0dGWAWALf4CNHWwGdSqPw+x82YrXaW92cSLu5KPXGPXrjbk/85z1T9tKXmnvBAg=="
+      "sig": "JEoJyWsCq8mXTsqM6s+yUmx+ekFy5z5LOEpafzzaaZGdg+YupOMujOCWk5VgeaOakAWCimtsEBPXADMX/8gcCg=="
     },
     "acceptance_of_zero": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5269,11 +5470,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 0,
         "of": 0
@@ -5282,7 +5489,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "77YaHk3rA/Ukce0BfDtrl6Yu1iwWtxuXoda9SvzaLsV40MJkv6Un2JLnrEfgOcv9wtQo1upSjrqacD3TN6H3Aw=="
+      "sig": "Es3QNXoN71z3nA1V4CVAJ9Yk+WdilGw4+/DUuGsnxvaLBprrokVDBgDxkMCs/xLypOgq6aBw+X/eDNEz8C14BA=="
     },
     "acceptance_grade_recorded_with_test_set": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5291,11 +5498,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5304,7 +5517,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "7O1d5lmmVbXrqu7hVujQrifXIeV9MnHCuBzJr6pbihIV4COrTYhQPL19OPlESiPmxdVn7xFmmbxwqeIq1VWcCw=="
+      "sig": "65NiCS8EZh5v+npYTx2mCLjD48ej0WCvaHMme2CLaKRquATgb0spCCyA0PT02zZa4O0ZErAF3gtCy0vFBe8KDA=="
     },
     "acceptance_grade_evidence_without_test_set": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5313,14 +5526,17 @@
       "deliverable": "reconciliation-report",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
       "grade": "evidence",
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "qjUMdBgMNdR4CZpvn2Nq1OQ5k5ohKKBETbZXYPN2EkP1QIAqFXUUaQmUApS7KSzWRzBQnuZTjfWOYygOQQQwAQ=="
+      "sig": "9loHebKvDuL9LhLror+jq4SxvMEtTeCKuyyQbeCzEku9kWN2nExZYpSE8VuB7cn/j1Uk5LC2F48OSBwD4quzDg=="
     },
     "acceptance_unknown_deliverable": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5329,14 +5545,17 @@
       "deliverable": "month-end-close-summary",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
       "grade": "recorded",
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "I4/WEmVYTgma/L6pMsPdxPdETo5+/PfIJ/WGtoVf3G/TRgJ7zhwN4Kuhoy4ew7peg3oJy4P6dd0tzrfkkK53DA=="
+      "sig": "PNT3RbLbW7uFE9xBO/wBtSW7Z5V8oUAKtcT2sk/b/9jmLCA42kGRQ6JDY5wPJGhn9+XYIe89OSOkTzvb/+DgAQ=="
     },
     "acceptance_per_task_without_task": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5344,11 +5563,17 @@
       "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
       "deliverable": "exceptions",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5357,7 +5582,37 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "5ZhzN2AnkIZiLA6SC2gbl6Huikh8wOuNHunX6LOlvi8qKscGkziGmMCRdoI/HIQj06VWErFFMn0FIctMkW6qBA=="
+      "sig": "sMBXLQNXuC3HXUzZlfSjXNNpd8Z62YkZUeMNP7+gTv4UUN13Z+Ptne4ZF6R2DsTET5VXeaErGw4EB+5cHxwAAw=="
+    },
+    "acceptance_engagement_with_task": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [],
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2027-02-02T10:00:00Z",
+      "sig": "sB21WW5bOx9kQsCadTIpqIGBAMoWhKed7FLvhVSHQAlyQjN+gS1UpgCXIlQsWPOAHzqOoGKogrJWgdzHoRCODw=="
+    },
+    "acceptance_engagement_with_delivery": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2027-02-02T10:00:00Z",
+      "sig": "qDkiIG9MgGxFIaC7WzuSLkhmt1f1pK5x0uSqzd8aEW++VHg9Egdd4mdOvIK5n5kGtCwXtR/Pb94f+vhD/uhQAw=="
     },
     "acceptance_extra_member": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5366,11 +5621,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5380,7 +5641,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "JLlA1gsBVQ4R2HtCIXGeE7GM6j9DYmY2ao6yehr+8klUpLSaHjiHT8V4+P70iZ7u/uzqasYwO/c+kA4g8xD+Dg=="
+      "sig": "Ydr5nFu88hqmj6h64rs4WnImfteGEw4MTm3910oslfW6Rq4F9ySQs0buyMa0sdu7/BVRagaFyJMiR1vEl+i5Dw=="
     },
     "acceptance_rests_on_extra_member": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5389,12 +5650,18 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1",
-        "model": "judge-1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1",
+          "model": "judge-1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5403,7 +5670,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "q9c2AltVkj6Kc+0Q2usEmAjASMsaizBjVsmvnUpGTTV3FOOSpDAoTcsbgG5qdfn5kXAVkGS+W7EkKahCbZGWAQ=="
+      "sig": "tKSmJDEtnV2IH3/BzWBi0mYTGus3N13mDN5kEy9IF+VZIg+RVFDy+dgBykUF9laxgRKH+KLgRxR9rCMHRb2IBA=="
     },
     "acceptance_wrong_version_digest": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5412,11 +5679,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "accept",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 196,
         "of": 200
@@ -5425,7 +5698,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-08T10:00:00Z",
-      "sig": "BxsgFfbGQN3e9dfqXbKr91ViFI46jACm9cG0HN2vn+2E2kRz8MvrqdOGbJGNOK6oIakcFFhP6e8jmDi40TK+AA=="
+      "sig": "y0oPvE6OSsBhzznb/wA5kRPNoHDRDZuS8YizRcYAwlLaCFqXqqTIe7o25tCjzjsMyWsSDVk0TcIQLuQOe+8xAg=="
     },
     "acceptance_reject_late": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5434,11 +5707,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -5450,7 +5729,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-17T09:00:00Z",
-      "sig": "CuklNyN/qxNPnt9KswNpXaVHZ7zFa4bBc8FzJ8pvb5bkFXNhEo9Q7UG3I98cJiW9IoC61NvX7XenFrVOwmo4Aw=="
+      "sig": "MCzDbF7DfQOpC8qjZx6qiR5VV8jiC/BXFHDYntcqJESq/RD2yKcoKmlb/ZXG9r3Qd8U2VbtEB/uXXM1mfhnpAg=="
     },
     "acceptance_reject_last_second": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5459,11 +5738,17 @@
       "deliverable": "exceptions",
       "task": "task_01JA2Q7X",
       "decision": "reject",
-      "rests_on": {
-        "delivery": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d",
-        "test_set": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
-        "ref": "artifacts:exceptions-test-set-v1"
-      },
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
       "result": {
         "passed": 181,
         "of": 200
@@ -5475,7 +5760,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-17T08:59:59Z",
-      "sig": "e3+z+cKP3iyTIaI9iOMqxO+hsQ8piK0VpWJ0eGOdrNMvBqGSN19PjqjZK1HW3Q02meaakN1l8n9u3IKBIbJRAQ=="
+      "sig": "tBq03CCM+KZfm1xI1ra1SNXPXEALIM9AzXah6/z5m8ZsKMuHm9JeKrza1jUzAFU/xMcp7XOE2PZvTmMJHhTgCA=="
     },
     "dispute_cites_rejection": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5486,7 +5771,7 @@
       "cites": [
         {
           "kind": "acceptance",
-          "digest": "sha256:1d0accb92077d1489dd059d25db4fb40a88271e46a3ac88020750aa8129210e3"
+          "digest": "sha256:3fb53d2f14c1fcd5a9f1693fa0b3f5a595e280864fb1df2f4d1ca8eb153957e4"
         }
       ],
       "evidence": [],
@@ -5494,7 +5779,7 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "signed_at": "2026-10-09T10:00:00Z",
-      "sig": "G/5y5dAatdzJ3G505LW0tRWoLP2EfaNkWegCi6lGsZvuvi+hlGR3kAiqx4p4Ogzt6CTOdNWfjEpwe7eVy1BoAA=="
+      "sig": "TEDl7yE2brfV9uHF6PBlu2mdngoLbEUqHJ+XeC/uPaiPrzjGFf+s9UYgLvXQGajBH8A6zOga45OKyo5dBKrsCg=="
     },
     "dispute_contests_rejection": {
       "engagement": "sow_d03p0x038j4qyqr6",
@@ -5505,7 +5790,7 @@
       "cites": [
         {
           "kind": "acceptance",
-          "digest": "sha256:1d0accb92077d1489dd059d25db4fb40a88271e46a3ac88020750aa8129210e3"
+          "digest": "sha256:3fb53d2f14c1fcd5a9f1693fa0b3f5a595e280864fb1df2f4d1ca8eb153957e4"
         }
       ],
       "evidence": [],
@@ -5513,7 +5798,7 @@
       "by": "provider",
       "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
       "signed_at": "2026-10-09T10:00:00Z",
-      "sig": "wSW+VLyj9+qRkWJyToIvi0wTo1OmMErWWuHk4hu6ftXKW/uEPm2nvnFK252H8NkDRt4aXDPG7MFHDlrSUKMQDQ=="
+      "sig": "Wd8Tow/87HXv84dydEqBHOjv9p0Eok63GCn3cYE7Ml8hIom1jo4q3PqaXPH1qH8/TT0wYqvedYqcK0WBmPY/Dg=="
     }
   },
   "signed_bytes": {
@@ -6847,8 +7132,15 @@
       "kind": "acceptance",
       "document": "acceptance",
       "valid": true,
-      "why": "an agent drafted it and the owner signed exactly those bytes (Common Agent 7.9)",
+      "why": "an agent drafted it and the owner signed exactly those bytes later that morning; signed_at is outside the draft (Common Agent 7.9)",
       "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_engagement_reject",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "a review of the engagement as a whole at its end: no deliverable, no task, resting on a settlement record, graded recorded"
     },
     {
       "act": "acceptance_reject_drafted_then_edited",
@@ -7022,6 +7314,36 @@
       "delivered_at": "2026-10-07T09:00:00Z"
     },
     {
+      "act": "acceptance_two_deliveries",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "rests_on names exactly one delivery",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_unknown_role",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an entry's role is delivery, test_set or settlement",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_engagement_with_task",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that names no deliverable judges the engagement and names no task"
+    },
+    {
+      "act": "acceptance_engagement_with_delivery",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that judges the engagement rests on settlement records only"
+    },
+    {
       "act": "acceptance_extra_member",
       "kind": "acceptance",
       "document": "acceptance",
@@ -7034,7 +7356,7 @@
       "kind": "acceptance",
       "document": "acceptance",
       "valid": false,
-      "why": "rests_on carries delivery, test_set and ref only",
+      "why": "an entry of rests_on carries role, digest and ref only",
       "delivered_at": "2026-10-07T09:00:00Z"
     },
     {
@@ -7129,7 +7451,7 @@
   ],
   "acceptance_signed_bytes": {
     "act": "acceptance_reject",
-    "bytes": "agent-sow-acceptance-v1\n{\"by\":\"client\",\"decision\":\"reject\",\"deliverable\":\"exceptions\",\"digest\":\"sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce\",\"engagement\":\"sow_d03p0x038j4qyqr6\",\"grade\":\"evidence\",\"key\":\"UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3\",\"reasons\":[\"19 of the 200 invoices in the test set that were overbilled were not flagged.\",\"The threshold is 0.95 and the result is 0.905.\"],\"rests_on\":{\"delivery\":\"sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d\",\"ref\":\"artifacts:exceptions-test-set-v1\",\"test_set\":\"sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3\"},\"result\":{\"of\":200,\"passed\":181},\"signed_at\":\"2026-10-08T10:00:00Z\",\"task\":\"task_01JA2Q7X\",\"version\":1}",
-    "digest": "sha256:1d0accb92077d1489dd059d25db4fb40a88271e46a3ac88020750aa8129210e3"
+    "bytes": "agent-sow-acceptance-v1\n{\"by\":\"client\",\"decision\":\"reject\",\"deliverable\":\"exceptions\",\"digest\":\"sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce\",\"engagement\":\"sow_d03p0x038j4qyqr6\",\"grade\":\"evidence\",\"key\":\"UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3\",\"reasons\":[\"19 of the 200 invoices in the test set that were overbilled were not flagged.\",\"The threshold is 0.95 and the result is 0.905.\"],\"rests_on\":[{\"digest\":\"sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d\",\"role\":\"delivery\"},{\"digest\":\"sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3\",\"ref\":\"artifacts:exceptions-test-set-v1\",\"role\":\"test_set\"}],\"result\":{\"of\":200,\"passed\":181},\"signed_at\":\"2026-10-08T10:00:00Z\",\"task\":\"task_01JA2Q7X\",\"version\":1}",
+    "digest": "sha256:3fb53d2f14c1fcd5a9f1693fa0b3f5a595e280864fb1df2f4d1ca8eb153957e4"
   }
 }

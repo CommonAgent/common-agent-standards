@@ -9,12 +9,14 @@ that tag is the text of that version. Its history comes from the repository of a
 A mandate or an act an agent drafted. §6 rule 10 lets a mandate, and the
 body of an act signed under `agent-mandate-resolve-v1`, carry `proposed`,
 the marker of the Common Agent Specification 0.37.0-draft §7.9, where an
-agent drafted it and its signer approved it. The draft bytes are the
-document's signed bytes, or the act's, computed without the marker. The
-marker sits inside the bytes an identifier is derived from, every signer of
-a mandate signs over it, it does not change who may issue or revoke, and it
-grants the drafting agent nothing. A registry refuses a mandate or an act
-whose marker fails. §13 notes that the drafting agent signs under
+agent drafted it and its signer approved it. The marker sits inside the
+bytes an identifier is derived from, so a mandate's draft bytes leave out
+`id`, `signatures` and `proposed`: the agent drafts first, the identifier is
+minted with the marker in place, and the document is signed last. An act's
+draft bytes are its signed bytes without the marker. Every signer of a
+mandate signs over the marker, it does not change who may issue or revoke,
+and it grants the drafting agent nothing. A registry refuses a mandate or an
+act whose marker fails. §13 notes that the drafting agent signs under
 `common-agent-draft-v1`, a tag of the Common Agent Specification. The minor
 version moves because a registry built against 0.9.0-draft does not check
 the marker.

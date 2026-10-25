@@ -436,11 +436,15 @@ Rules:
     Common Agent Specification §7.9 (https://commonagent.net/spec.html),
     where an agent drafted it and its signer approved it. A sub-mandate an
     allocator's agent prepares for a new member of staff is the usual case.
-    The draft bytes are the document's signed bytes, or the act's, computed
-    without `proposed`. The marker is a member like any other, so it is
-    inside the bytes an identifier is derived from (§4), and every signer of
-    a mandate signs over it: where root authority signs to a threshold, each
-    signature approves exactly the bytes the agent drafted. The marker does
+    The marker is a member like any other, so it is inside the bytes an
+    identifier is derived from (§4). A mandate's draft bytes are therefore
+    its tag, one newline, and the JCS canonical JSON of the document with
+    `id`, `signatures` and `proposed` removed: the agent drafts first, the
+    identifier is minted from the document with the marker in place, and
+    the document is signed last. An act's draft bytes are its signed bytes
+    computed without `proposed`. Every signer of a mandate signs over the
+    marker, so where root authority signs to a threshold, each signature
+    approves exactly the bytes the agent drafted. The marker does
     not change who may issue or revoke, and it grants the drafting agent
     nothing: an agent that drafts a mandate holds no power under it. A
     registry MUST refuse a mandate or an act whose marker fails a check of
@@ -1144,11 +1148,13 @@ against 0.8.0-draft cannot check one.*
 lets a mandate, and the body of an act signed under
 `agent-mandate-resolve-v1`, carry `proposed`, the marker of the Common Agent
 Specification 0.37.0-draft §7.9, where an agent drafted it and its signer
-approved it. The draft bytes are the document's signed bytes, or the act's,
-computed without the marker. The marker sits inside the bytes an identifier
-is derived from, every signer of a mandate signs over it, it does not change
-who may issue or revoke, and it grants the drafting agent nothing. A
-registry refuses a mandate or an act whose marker fails. §13 notes that the
-drafting agent signs under `common-agent-draft-v1`, a tag of the Common
-Agent Specification. The minor version moves because a registry built
-against 0.9.0-draft does not check the marker.*
+approved it. The marker sits inside the bytes an identifier is derived from,
+so a mandate's draft bytes leave out `id`, `signatures` and `proposed`: the
+agent drafts first, the identifier is minted with the marker in place, and
+the document is signed last. An act's draft bytes are its signed bytes
+without the marker. Every signer of a mandate signs over the marker, it does
+not change who may issue or revoke, and it grants the drafting agent
+nothing. A registry refuses a mandate or an act whose marker fails. §13
+notes that the drafting agent signs under `common-agent-draft-v1`, a tag of
+the Common Agent Specification. The minor version moves because a registry
+built against 0.9.0-draft does not check the marker.*

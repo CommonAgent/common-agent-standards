@@ -10,27 +10,32 @@ The acceptance act. §5.10.2 said a dispute cites the acceptance act and §6.3
 let a dispute's `cites` name one, but no section defined the act, and §15
 gave a review no tag or shape. §6.3 now defines a sixth act, acceptance (tag
 `agent-sow-acceptance-v1`), which the client's seat signs over one delivered
-deliverable. It carries `decision`, `accept` or `reject`; the `deliverable`
-and, for a per-task deliverable, the `task`; `rests_on`, with the digest of
-the `delivery` it judged and, where the deliverable's acceptance clause
-commits a test set, that `test_set` digest byte for byte and, for a withheld
-set, the `ref` where its bytes are revealed; `result`, the cases `passed`
-`of` the set, wherever a test set is named; `grade`, `evidence` where the
-act rests on a committed test set and `recorded` where it rests on none; and
-`reasons`, one to sixteen, required for a rejection. A runtime refuses a
-rejection made once the deemed acceptance window has run, and a rejection of
-a delivery it already holds an acceptance of. The digest of the act's signed
-bytes names it, and §5.10.2 and the dispute act's `cites` name it that way.
-§5.4.2 says a result is recorded in the act. §15 says a review is the act,
-signed by the reviewing owner with the client seat's `owner_key`, and that
-an agent may draft it, carrying the marker of the Common Agent Specification
-0.37.0-draft §7.9. Every act of §6.3 may now carry that marker, `proposed`,
-where an agent drafted it and the owner approved it, and §6.1 says so.
-`conformance/sow-acts.json` gains a document with an acceptance clause, 36
-cases with real test-seed signatures, two disputes that cite a rejection by
-its digest, and the signed bytes of one acceptance act. The minor version
-moves because the act and its tag are new and every act may carry a member a
-runtime built against 0.34.0-draft refuses.
+deliverable, or over the engagement as a whole at its end. It carries
+`decision`, `accept` or `reject`; the `deliverable` and, for a per-task
+deliverable, the `task`; `rests_on`, in the list form of Agent Messaging
+§5.6 that §5.4.2 names, with one `delivery` entry for the delivery it judged
+and, where the deliverable's acceptance clause commits a test set, one
+`test_set` entry with that digest byte for byte and, for a withheld set, the
+`ref` where its bytes are revealed, while an act on the engagement rests
+only on `settlement` entries; `result`, the cases `passed` `of` the set,
+wherever a test set is named; `grade`, `evidence` where the act rests on a
+committed test set and `recorded` where it rests on none; and `reasons`, one
+to sixteen, required for a rejection. A runtime refuses a rejection made
+once the deemed acceptance window has run from the delivery, which is when
+the delivering task completed, and a rejection of a delivery it already
+holds an acceptance of. The digest of the act's signed bytes names it, and
+§5.10.2 and the dispute act's `cites` name it that way. §5.4.2 says a result
+is recorded in the act. §15 says a review is the act, signed by the
+reviewing owner with the client seat's `owner_key`, and that an agent may
+draft it, carrying the marker of the Common Agent Specification 0.37.0-draft
+§7.9. Every act of §6.3 may now carry that marker, `proposed`, where an
+agent drafted it and the owner approved it; its draft bytes leave out
+`proposed` and `signed_at`, and §6.1 says so. `conformance/sow-acts.json`
+gains a document with an acceptance clause, 41 cases with real test-seed
+signatures, two disputes that cite a rejection by its digest, and the signed
+bytes of one acceptance act. The minor version moves because the act and its
+tag are new and every act may carry a member a runtime built against
+0.34.0-draft refuses.
 
 ## 0.34.0-draft (2026-10-20)
 

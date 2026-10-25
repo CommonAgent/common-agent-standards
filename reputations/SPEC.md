@@ -1134,16 +1134,20 @@ An attestation is the evaluator's signed statement about one interaction:
 
 signed with the evaluator's owner key, submitted with an optional free-text note
 (stored, never scored, because text is for the subject's remediation and not for
-the formula). The owner key is the key the registry attests as the owner of the
-evaluator's agent (Agent Messaging §8.6). For an interaction under an Agent SoW
-it is the `owner_key` of the evaluator's seat, the key that signed the review the
-attestation records (Agent SoW §15), and the two MUST be the same key where both
+the formula). The owner key is the owner of the evaluator's agent as the registry
+verified it through an `owner_attestation` (Agent Messaging §8.6). A default owner,
+the hosting node's key with no attestation, is not an owner key here, so an agent
+whose owner is unattested cannot attest. For an interaction under an Agent SoW the
+owner key is the `owner_key` of the evaluator's seat, which also signs any review
+of that engagement (Agent SoW §15), and the two MUST be the same key where both
 are known.
 
 An agent MAY draft the attestation for its owner. The statement has no members to
 hold the marker of the Common Agent Specification §7.9, so the marker is submitted
-beside it, and its draft bytes are the statement in full. A bureau records the
-marker with the attestation, MUST refuse an attestation whose marker fails a check
+beside it, in the same submission as the attestation, and its draft bytes are the
+statement in full. A bureau accepts a marker only with the attestation it travels
+with, never one added to an attestation already recorded. It records the marker with
+the attestation, MUST refuse an attestation whose marker fails a check
 of §7.9, and shows that an agent drafted it wherever the attestation is surfaced.
 An attestation signed with the evaluator's agent key and not its owner's is not an
 attestation, and a bureau MUST reject it. An attestation a bureau recorded under
@@ -2100,15 +2104,16 @@ deterministic, and refuses every report the vectors say it must refuse.
 evaluator's agent key signs an attestation, while Agent SoW §15 said the
 reviewing owner signs a review, so one judgment had two signers. An
 attestation, and a value judgment under §6.6, is now signed with the
-evaluator's owner key: the key the registry attests as the owner of the
-evaluator's agent, or, for an interaction under an Agent SoW, the
-`owner_key` of the evaluator's seat, which signed the review the attestation
-records, and the two are the same key where both are known. An agent may
-draft the attestation for its owner and submits the marker of the Common
-Agent Specification 0.37.0-draft §7.9 beside it, whose draft bytes are the
-statement in full. A bureau records the marker, refuses an attestation whose
-marker fails, and shows that an agent drafted it. An attestation signed with
-the agent's key and not the owner's is rejected, and one recorded under
+evaluator's owner key: the owner of the evaluator's agent as the registry
+verified it through an `owner_attestation`, never a default owner with no
+attestation, or, for an interaction under an Agent SoW, the `owner_key` of
+the evaluator's seat, and the two are the same key where both are known. An
+agent may draft the attestation for its owner and submits the marker of the
+Common Agent Specification 0.37.0-draft §7.9 beside it in the same
+submission, whose draft bytes are the statement in full. A bureau accepts no
+marker added later, records the marker, refuses an attestation whose marker
+fails, and shows that an agent drafted it. An attestation signed with the
+agent's key and not the owner's is rejected, and one recorded under
 0.11.1-draft or earlier stays in the ledger as it was recorded. §1 defines
 the evaluator as the agent's owner, §2 says a subject is its agent key and
 an attestation is its owner's, and §6.2 rule 2 checks the owner key. No tag,

@@ -2546,7 +2546,8 @@ Every act carries these members:
 Every act MAY also carry `proposed`, the marker of the Common Agent
 Specification §7.9 (https://commonagent.net/spec.html), where an agent
 drafted the act and the seat's owner approved it. Its draft bytes are the
-act's signed bytes computed without `proposed`, and the seat's `owner_key`
+act's signed bytes computed without `proposed` and without `signed_at`, so
+the owner writes the instant it actually signs, and the seat's `owner_key`
 still signs the act: the marker records who drafted it and never changes
 who may sign it. A runtime MUST refuse an act whose marker fails a check of
 §7.9, and MUST NOT act on a drafted act until the owner has signed it.
@@ -2570,7 +2571,8 @@ runtime computes those numbers in integer arithmetic wide enough to see the
 excess, so two implementations refuse the same act and neither rounds it.
 
 Every instant an act carries, its `signed_at`, a termination's
-`effective_at`, and a window's `from` and `to`, is an RFC 3339 date-time,
+`effective_at`, a window's `from` and `to`, and a marker's `drafted_at`, is
+an RFC 3339 date-time,
 and it may carry any number of fractional digits. An instant means exactly
 the instant it names. A runtime compares instants, orders them and adds a
 notice or a deadline to them at every fractional digit either one carries,
@@ -2624,8 +2626,9 @@ only under a `time_and_materials` price.
   compute the same charge from the same act.
 
 **Acceptance** (tag `agent-sow-acceptance-v1`). The client's seat signs it,
-and it is the client's review of one delivered deliverable (§15): an
-acceptance, or a rejection with reasons. It is the record a result under
+and it is the client's review of one delivered deliverable, or of the
+engagement as a whole at its end (§15): an acceptance, or a rejection with
+reasons. It is the record a result under
 §5.4.2 is written in. The digest of its signed bytes, `sha256:` and 64
 lowercase hex digits, names the act, and a dispute's `cites` entry of kind
 `acceptance` names an acceptance act by that digest (§5.10.2).
@@ -2635,9 +2638,9 @@ lowercase hex digits, names the act, and a dispute's `cites` entry of kind
   "digest": "sha256:<digest of version 1>",
   "decision": "reject",
   "deliverable": "exceptions", "task": "task_01JA2Q7X",
-  "rests_on": { "delivery": "sha256:<the delivered artifact>",
-                "test_set": "sha256:9f2c…",
-                "ref": "artifacts:exceptions-test-set-v1" },
+  "rests_on": [ { "role": "delivery", "digest": "sha256:<the delivered artifact>" },
+                { "role": "test_set", "digest": "sha256:9f2c…",
+                  "ref": "artifacts:exceptions-test-set-v1" } ],
   "result": { "passed": 181, "of": 200 },
   "grade": "evidence",
   "reasons": [ "19 of the 200 invoices in the test set that were overbilled were not flagged." ],
@@ -2647,33 +2650,41 @@ lowercase hex digits, names the act, and a dispute's `cites` entry of kind
 
 - `decision` is `accept` or `reject`.
 - `deliverable` is the `name` of a per-task or interim deliverable the
-  version names (§5.4).
+  version names (§5.4). An act without `deliverable` judges the engagement
+  as a whole at its end, which is how a review of an engagement that names
+  no deliverable, such as one under `time_and_materials`, is made.
 - `task` is the identifier of the task whose completion delivered it, as the
   messaging layer names it, a string of 1 to 128 code points. It is REQUIRED
-  for a per-task deliverable and OPTIONAL for an interim one.
-- `rests_on` says what the act judged, in the sense of §5.4.2, and carries
-  only these members:
-  - `delivery`, REQUIRED: `sha256:` and the 64 lowercase hex digits of the
-    SHA-256 of the delivered artifact's bytes, the digest the provider's job
-    manifest names for it where the provider attached one (§5.4.3).
+  for a per-task deliverable, OPTIONAL for an interim one, and MUST be absent
+  from an act that judges the engagement.
+- `rests_on` is REQUIRED and says what the act judged, in the form of Agent
+  Messaging §5.6 that §5.4.2 names: a list of entries, each with a `role`, a
+  `digest`, `sha256:` and 64 lowercase hex digits, and an OPTIONAL `ref`. An
+  entry carries no other member. Three roles are defined, and an entry with
+  any other role is refused:
+  - `delivery`: the SHA-256 of the delivered artifact's bytes, the digest
+    the provider's job manifest names for it where the provider attached one
+    (§5.4.3). An act that names a deliverable carries exactly one, and an act
+    that judges the engagement carries none.
   - `test_set`: the test set's digest, byte for byte the
-    `acceptance.test_set.digest` the version commits for the deliverable. It
-    is REQUIRED where the deliverable's `acceptance` names a test set, and
-    MUST be absent where it names none.
-  - `ref`: where the test set's bytes can be read. It is REQUIRED where the
-    version's test set is `withheld`, since the client reveals the bytes
-    when it asserts a result (§5.4.2), and MUST resolve to bytes whose digest
-    is `test_set`. It is OPTIONAL where the set is published, and MUST be
-    absent where `test_set` is absent.
-- `result` is REQUIRED where `rests_on` carries `test_set` and MUST be absent
-  otherwise. It carries only `passed`, the cases the delivery passed, and
+    `acceptance.test_set.digest` the version commits for the deliverable. An
+    act carries exactly one where the deliverable's `acceptance` names a test
+    set, and none otherwise. Its `ref` says where the set's bytes can be
+    read. It is REQUIRED where the version's test set is `withheld`, since
+    the client reveals the bytes when it asserts a result (§5.4.2), and it
+    MUST resolve to bytes whose digest is the entry's `digest`.
+  - `settlement`: the digest of a settlement record's signed bytes (§6.3).
+    Only an act that judges the engagement carries these, one for each
+    record it judged, and it MAY carry none.
+- `result` is REQUIRED where `rests_on` carries a `test_set` entry and MUST
+  be absent otherwise. It carries only `passed`, the cases the delivery passed, and
   `of`, the cases in the set, whole numbers with `of` from 1 and `passed`
   from 0 to `of`. The delivery meets the threshold where `passed ÷ of` is at
   least the clause's `min_fraction`.
 - `grade` is the grade of the act's judgment, as §5.4.2 grades it:
-  `evidence` where `rests_on` carries `test_set`, because both parties
-  committed the measure in advance and anyone can recompute the result from
-  the revealed bytes, and `recorded` where it carries none, because the
+  `evidence` where `rests_on` carries a `test_set` entry, because both
+  parties committed the measure in advance and anyone can recompute the
+  result from the revealed bytes, and `recorded` where it carries none, because the
   judgment then rests on nothing the parties defined in advance. A runtime
   MUST refuse an act whose `grade` is not the one its `rests_on` gives it.
 - `reasons` lists 1 to 16 reasons, each a string of 1 to 1,000 code points.
@@ -2693,10 +2704,14 @@ Two rules order acceptance acts:
   states `deemed_accepted_after_days`, a runtime MUST refuse a `reject`
   whose `signed_at`, or the instant the provider received it where that is
   later, is at or after the delivery plus that many days of 86,400 seconds
-  (§5.4.2, §5.10.2 rule 3).
+  (§5.4.2, §5.10.2 rule 3). The delivery is the instant the task that
+  delivered the deliverable completed, or for an interim deliverable
+  delivered outside a task, the instant the client received it.
 - **A rejection does not undo an acceptance.** A runtime MUST refuse a
   `reject` of a delivery it already holds an `accept` act for: the same
-  `deliverable`, the same `task`, and the same `rests_on.delivery`. A
+  `deliverable`, the same `task`, and the same `delivery` entry in
+  `rests_on`, or, for an act that judges the engagement, an earlier `accept`
+  of the engagement. A
   revision is another task and another delivery (§5.4.3), so it is judged on
   its own. An `accept` MAY follow a `reject` of the same delivery: a changed
   mind is a second act, and the later act is the review that counts.
@@ -3373,14 +3388,15 @@ media type, and the task record says what was furnished, discussed, and
 delivered. Review is the judgment half: the client's signed statement that
 the work satisfied, or did not, and in the rejection case a stated reason.
 A review is the acceptance act of §6.3 (tag `agent-sow-acceptance-v1`). One
-act judges one deliverable, so a review at the end of an engagement is one
-act for each deliverable it covers.
+act judges one deliverable, or the engagement as a whole, so a review at the
+end of an engagement is one act for each deliverable it covers, or one act
+for the engagement where it names no deliverable.
 
 Rules:
 
 1. A review is signed by the reviewing owner, with the client seat's
    `owner_key` (§5.1). It names the deliverable and the delivery it judges,
-   and the task where there is one. An agent MAY draft a review. The review
+   and the task where there is one, or it judges the engagement as a whole. An agent MAY draft a review. The review
    then carries the marker of the Common Agent Specification §7.9, which
    names the agent and binds the owner's signature to exactly the bytes the
    agent drafted. A review signed with an agent's key and not the owner's is
@@ -3412,28 +3428,32 @@ takes it as an attestation signed by the same owner (Agent Reputations
 cites the acceptance act and §6.3 let a dispute's `cites` name one, but no
 section defined the act, and §15 gave a review no tag or shape. §6.3 now
 defines a sixth act, acceptance (tag `agent-sow-acceptance-v1`), which the
-client's seat signs over one delivered deliverable. It carries `decision`,
-`accept` or `reject`; the `deliverable` and, for a per-task deliverable, the
-`task`; `rests_on`, with the digest of the `delivery` it judged and, where
-the deliverable's acceptance clause commits a test set, that `test_set`
-digest byte for byte and, for a withheld set, the `ref` where its bytes are
-revealed; `result`, the cases `passed` `of` the set, wherever a test set is
-named; `grade`, `evidence` where the act rests on a committed test set and
-`recorded` where it rests on none; and `reasons`, one to sixteen, required
-for a rejection. A runtime refuses a rejection made once the deemed
-acceptance window has run, and a rejection of a delivery it already holds an
-acceptance of. The digest of the act's signed bytes names it, and §5.10.2
-and the dispute act's `cites` name it that way. §5.4.2 says a result is
-recorded in the act. §15 says a review is the act, signed by the reviewing
-owner with the client seat's `owner_key`, and that an agent may draft it,
-carrying the marker of the Common Agent Specification 0.37.0-draft §7.9.
-Every act of §6.3 may now carry that marker, `proposed`, where an agent
-drafted it and the owner approved it, and §6.1 says so.
-`conformance/sow-acts.json` gains a document with an acceptance clause, 36
-cases with real test-seed signatures, two disputes that cite a rejection by
-its digest, and the signed bytes of one acceptance act. The minor version
-moves because the act and its tag are new and every act may carry a member a
-runtime built against 0.34.0-draft refuses.
+client's seat signs over one delivered deliverable, or over the engagement
+as a whole at its end. It carries `decision`, `accept` or `reject`; the
+`deliverable` and, for a per-task deliverable, the `task`; `rests_on`, in
+the list form of Agent Messaging §5.6 that §5.4.2 names, with one `delivery`
+entry for the delivery it judged and, where the deliverable's acceptance
+clause commits a test set, one `test_set` entry with that digest byte for
+byte and, for a withheld set, the `ref` where its bytes are revealed, while
+an act on the engagement rests only on `settlement` entries; `result`, the
+cases `passed` `of` the set, wherever a test set is named; `grade`,
+`evidence` where the act rests on a committed test set and `recorded` where
+it rests on none; and `reasons`, one to sixteen, required for a rejection. A
+runtime refuses a rejection made once the deemed acceptance window has run
+from the delivery, which is when the delivering task completed, and a
+rejection of a delivery it already holds an acceptance of. The digest of the
+act's signed bytes names it, and §5.10.2 and the dispute act's `cites` name
+it that way. §5.4.2 says a result is recorded in the act. §15 says a review
+is the act, signed by the reviewing owner with the client seat's
+`owner_key`, and that an agent may draft it, carrying the marker of the
+Common Agent Specification 0.37.0-draft §7.9. Every act of §6.3 may now
+carry that marker, `proposed`, where an agent drafted it and the owner
+approved it; its draft bytes leave out `proposed` and `signed_at`, and §6.1
+says so. `conformance/sow-acts.json` gains a document with an acceptance
+clause, 41 cases with real test-seed signatures, two disputes that cite a
+rejection by its digest, and the signed bytes of one acceptance act. The
+minor version moves because the act and its tag are new and every act may
+carry a member a runtime built against 0.34.0-draft refuses.
 
 **0.34.0-draft** (2026-10-20). The month of a ceiling. §5.5.1 said a fixed
 fee ceiling is per `month` and never said when a month starts. Its months

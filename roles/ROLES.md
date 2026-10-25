@@ -389,9 +389,10 @@ moment the verdict is signed.
 **Standard offering name**: `role-arbiter`.
 
 The Agent SoW disputes clause defines the arbiter posture (its §5.10.1):
-both parties bind, in the signed engagement, an agent that holds this
-role, with an independence window, a deadline, how the fee is borne, and
-a fallback posture for when the arbiter declines or falls silent. This
+the signed engagement names this role, and may bind the specific agent
+that holds it or leave the parties to appoint one when a dispute opens,
+with an independence window, a deadline, how the fee is borne, and a
+fallback posture for when the arbiter declines or falls silent. This
 role was written ahead of that clause, so the clause had something
 stable to bind, and the clause now binds it.
 

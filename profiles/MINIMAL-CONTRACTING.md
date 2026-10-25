@@ -88,7 +88,7 @@ Agent SoW is the contract: who the parties are, what work is in scope, what it c
 | §5.11 | Confidentiality and retention. |
 | §5.17 | The buyer's reference. |
 | §6, §6.1, §6.2 | Signatures and owner keys, approval authority, and organizational authority. |
-| §6.3 | The signed acts terminate, usage, settle, dispute and resolve, with the outcome `settled`, and the marker `proposed` on any of them, checked as the Common Agent Specification §7.9 says. The cases of `common-agent/conformance/draft-approval.json` whose names start with `sow_` are the ones that apply. The acceptance act is left out with §15. |
+| §6.3 | The signed acts terminate, usage, settle, dispute and resolve, with the outcome `settled`, and the marker `proposed` on any of them, checked as the Common Agent Specification §7.9 says. The cases of [draft-approval.json](../common-agent/conformance/draft-approval.json) whose names start with `sow_` are the ones that apply. The acceptance act is left out with §15. |
 | §7, §8, §9 | The lifecycle, who enforces what, and precedence. |
 | §12.1, §12.1.1 | Formation from a standing proposal, and from a directed one. |
 
@@ -127,7 +127,8 @@ Sections 1, 10 and 11 are informative.
 |------|--------------------------------------|
 | [sow-signatures.json](../sow/conformance/sow-signatures.json) | Every case: the signed bytes, binding to `owner_key`, and the canonical padded base64 signature. |
 | [sow-pricing.json](../sow/conformance/sow-pricing.json) | The arrangement, every price case, rating without the cases for pass-through lines and operator fees, the settlement lines that are neither, the reservation, document and task states, parties, the directed proposal's clause and formation, approval, and signing. |
-| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate, usage and settle case except the two with an operator fee, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out. |
+| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate, usage and settle case except the two with an operator fee, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out, and so are the acceptance cases and the two disputes that cite an acceptance act. |
+| [draft-approval.json](../common-agent/conformance/draft-approval.json) | The cases whose names start with `sow_`: an Agent SoW act that carries the `proposed` marker. |
 | [sow-buyer-reference.json](../sow/conformance/sow-buyer-reference.json) | The form, the template, the carriage onto settlement records and receipts, and the check for a discrepancy. The three carriage cases about amendments are left out. |
 | [sow-data-use.json](../sow/conformance/sow-data-use.json) | The promises, the clause and its signing. The comparison against a stated requirement is left out. |
 | [sow-disputes.json](../sow/conformance/sow-disputes.json) | The postures and the clause. The arbiter's verdict is left out. |
@@ -173,7 +174,7 @@ A test runner that implements this profile runs the groups the file names and sk
 
 ## Changelog
 
-**0.6.0-draft** (2026-10-25). The profile applies to Agent Mandate 0.10.0-draft and Agent SoW 0.35.0-draft. Both let a signed act, and Agent Mandate a mandate, carry `proposed`, the marker of the Common Agent Specification 0.37.0-draft §7.9 that records which agent drafted it and binds the owner's signature to exactly the bytes the agent drafted. A profile implementation checks the marker wherever it appears on an act of §6.3 or on a mandate, and the `sow_` cases of `common-agent/conformance/draft-approval.json` apply. Agent SoW's new acceptance act belongs to post-engagement review (§15), which stays outside the profile, and its cases in `sow-acts.json` are left out. The minor version moves because an implementation of 0.5.12-draft refuses a valid act or mandate that carries the marker.
+**0.6.0-draft** (2026-10-25). The profile applies to Agent Mandate 0.10.0-draft and Agent SoW 0.35.0-draft. Both let a signed act, and Agent Mandate a mandate, carry `proposed`, the marker of the Common Agent Specification 0.37.0-draft §7.9 that records which agent drafted it and binds the owner's signature to exactly the bytes the agent drafted. A profile implementation checks the marker wherever it appears on an act of §6.3 or on a mandate, and the `sow_` cases of `common-agent/conformance/draft-approval.json` apply. Agent SoW's new acceptance act belongs to post-engagement review (§15), which stays outside the profile, and its cases in `sow-acts.json` are left out, with the two disputes that cite an acceptance act. The minor version moves because an implementation of 0.5.12-draft refuses a valid act or mandate that carries the marker.
 
 **0.5.12-draft** (2026-10-24). The profile applies to Agent Messaging 0.9.16-draft, which adopts §13.6, outside the sections this profile names. Quarantine notices are part of advisories, which Agent Messaging's core profile leaves deployment-defined, so the core this profile assumes is unchanged. The patch version moves because an implementation of 0.5.11-draft meets this version unchanged.
 
