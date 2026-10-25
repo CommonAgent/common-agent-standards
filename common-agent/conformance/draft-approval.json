@@ -1,0 +1,421 @@
+{
+  "comment": "The Common Agent Specification 0.37.0-draft, Section 7.9: an act an agent drafts and its owner approves. Each case is one act. Where form is member, the act is a JSON object whose own specification signs its tag, one newline, and the JCS of the object with the member at sig_at removed, and nothing is removed where the owner's signature is carried beside the object as owner_sig. The marker is the member at marker_at. The draft bytes are those signed bytes computed with the marker removed as well. Where form is beside, the act is a statement with no members, the owner signs the statement's bytes, the marker travels beside it, and the draft bytes are the statement in full. The marker carries exactly agent, draft, drafted_at and sig. draft is sha256: and the lowercase hex SHA-256 of the draft bytes. sig is the drafting agent's Ed25519 signature, in canonical padded base64, over the draft statement: common-agent-draft-v1, one newline, and the JCS of the marker with sig removed. Where the act states a signing instant (signed_at at the top level, or the member at signed_at_at), drafted_at is no later than it. An act is valid when the draft digest matches, the agent's signature verifies, drafted_at is in order, and the owner's signature by owner_key verifies over the act's signed bytes with the marker in place. A marker that fails refuses the whole act. The keys are published test seeds, each the SHA-256 of its label. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "version": 1,
+  "spec": "The Common Agent Specification 0.37.0-draft: 7.9, with Agent SoW 6.3, Agent RFP 6, Agent NDA 7.3 and Agent Reputations 6.1",
+  "draft_tag": "common-agent-draft-v1",
+  "keys": {
+    "owner": {
+      "label": "Common Agent conformance test key: owner",
+      "seed_hex": "60f9be02c8fad5de07279f8e56755706b9ff700ea75896b130e73bd9d59de459",
+      "public": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS"
+    },
+    "drafting-agent": {
+      "label": "Common Agent conformance test key: drafting-agent",
+      "seed_hex": "e82104d7bfc76178e2459e1d1e1a6cd0191c907e686524dd38fae9c854b3c0ef",
+      "public": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M"
+    },
+    "other-agent": {
+      "label": "Common Agent conformance test key: other-agent",
+      "seed_hex": "7eaa420cffb4a7080b4287e22a151468bfad317dab0c3f24226a365327622189",
+      "public": "UAJM3BP6XL7IBRPKBFFBYAKRFV73WOXZQG5QMWW4W25EDO4AU3DT6GU2"
+    }
+  },
+  "cases": [
+    {
+      "name": "sow_act_drafted",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "sig": "XanlW67B/BE8fEVZ5FUK9RgWjRxdemvOiJ/AxhmVZhbAEKT29OrIGbhh1i5jAHL7VcoySC8ys9anpB7sh9KsAg=="
+        },
+        "sig": "19szUJXxz3D/kQ9enT/5GnLMk9QkgyGkLNTluyWuB1FYM/Ttn7nWni+DaPPZxHfPSjC3h5qoNkz1c4F7WsWEDA=="
+      },
+      "valid": true,
+      "draft_bytes": "agent-sow-terminate-v1\n{\"basis\":\"convenience\",\"by\":\"client\",\"digest\":\"sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685\",\"effective_at\":\"2026-10-03T09:00:00Z\",\"engagement\":\"sow_k7m2q4x9w3e6r8t1\",\"key\":\"UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS\",\"signed_at\":\"2026-10-01T09:00:00Z\",\"version\":1}",
+      "draft_statement": "common-agent-draft-v1\n{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955\",\"drafted_at\":\"2026-10-01T08:55:00Z\"}",
+      "signed_bytes": "agent-sow-terminate-v1\n{\"basis\":\"convenience\",\"by\":\"client\",\"digest\":\"sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685\",\"effective_at\":\"2026-10-03T09:00:00Z\",\"engagement\":\"sow_k7m2q4x9w3e6r8t1\",\"key\":\"UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS\",\"proposed\":{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955\",\"drafted_at\":\"2026-10-01T08:55:00Z\",\"sig\":\"XanlW67B/BE8fEVZ5FUK9RgWjRxdemvOiJ/AxhmVZhbAEKT29OrIGbhh1i5jAHL7VcoySC8ys9anpB7sh9KsAg==\"},\"signed_at\":\"2026-10-01T09:00:00Z\",\"version\":1}",
+      "why": "the draft bytes are the act's signed bytes without proposed, their digest is draft, the agent signed the draft statement, and the owner signed the act with the marker in place"
+    },
+    {
+      "name": "sow_owner_changed_a_byte",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-04T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "sig": "XanlW67B/BE8fEVZ5FUK9RgWjRxdemvOiJ/AxhmVZhbAEKT29OrIGbhh1i5jAHL7VcoySC8ys9anpB7sh9KsAg=="
+        },
+        "sig": "gPy17q3D6EO+lrjAk2XVdMR7RT6+cJkdR/WIrJm2zSuVRrVIdb8TeBeLtSRmNoNzRmfgd4rwB+u6gcPWU4jxAg=="
+      },
+      "valid": false,
+      "why": "the owner changed effective_at after the agent drafted the act and signed the result: the owner's signature verifies, but the draft bytes no longer hash to draft, and the act is refused rather than read as an act without a marker"
+    },
+    {
+      "name": "sow_draft_only",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "sig": "XanlW67B/BE8fEVZ5FUK9RgWjRxdemvOiJ/AxhmVZhbAEKT29OrIGbhh1i5jAHL7VcoySC8ys9anpB7sh9KsAg=="
+        }
+      },
+      "valid": false,
+      "why": "a draft the owner has not signed is a draft and nothing more: the agent's signature binds nobody"
+    },
+    {
+      "name": "sow_signed_by_the_agent",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "sig": "XanlW67B/BE8fEVZ5FUK9RgWjRxdemvOiJ/AxhmVZhbAEKT29OrIGbhh1i5jAHL7VcoySC8ys9anpB7sh9KsAg=="
+        },
+        "sig": "hnk7Tc2c99kBCYzGN3rsS0nAUEqhXKXVS7PyVre+J/XQuY76WxJUQqwDLSxs3M6kEYrzT40Kde9VNLIRqMLfDw=="
+      },
+      "valid": false,
+      "why": "the act is signed by the drafting agent's key and not the owner's: the marker never makes the agent's key the act's signer"
+    },
+    {
+      "name": "sow_agent_signed_the_draft_bytes",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "sig": "bjwbBMRajb9CI0SZtsF+EYm9k07AUVI1dyni8+pl+OZnfXQTCox0R9Gf9zylpoK/qbobCEkxQpuENZvP15CHBg=="
+        },
+        "sig": "whDoL5vNEVtPqlbgMPVULzb5cSg2etmxWWBqH1MEJrF6UzoXPdYxwATgzJKbG5VoBjVEUi6imvgsxXCTFGKiAw=="
+      },
+      "valid": false,
+      "why": "the agent signed the draft bytes themselves and not the draft statement: a signature under the act's own tag is not a draft signature"
+    },
+    {
+      "name": "sow_marker_names_another_agent",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UAJM3BP6XL7IBRPKBFFBYAKRFV73WOXZQG5QMWW4W25EDO4AU3DT6GU2",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "sig": "XanlW67B/BE8fEVZ5FUK9RgWjRxdemvOiJ/AxhmVZhbAEKT29OrIGbhh1i5jAHL7VcoySC8ys9anpB7sh9KsAg=="
+        },
+        "sig": "NR5Wh7qHdAjbGdT9CoZUKlrkMEV0Tg/EddClwm8S+VKKoa3TK06eQhAyIC1tGEgng4R5iS7+1tRBAI9zpAHCCQ=="
+      },
+      "valid": false,
+      "why": "the marker names an agent whose key did not sign the draft statement"
+    },
+    {
+      "name": "sow_marker_extra_member",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T08:55:00Z",
+          "model": "any",
+          "sig": "e/6cTmQI7mCDuTbyotMJjBFMtJJPu774zut9+FO8xGWQSRJqIuOsLpbxbGG6GT59Iw771IQu5vAz0JTJXav7Ag=="
+        },
+        "sig": "gKoSJ7EKmkwMPMb86+/MkNIlNDHSq/jBuviYeaBzQ04/E4GVKnoYUw6zDtycKaLzN2qEAuRSnXRztGLyerrQBA=="
+      },
+      "valid": false,
+      "why": "the marker carries only agent, draft, drafted_at and sig, even when the agent signed the extra member"
+    },
+    {
+      "name": "sow_drafted_after_signing",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T09:00:00.001Z",
+          "sig": "DvfIGAFF8YJtP6VGdCfHU5koMYmmmmSpnZ9NUh+rn826J3AeT5gJYyxGVQiXpqRhHfUlsdnkvcP+ZyH4lW3QAQ=="
+        },
+        "sig": "UlhJ5toBGPA0T9UklmiyS/xuueuTVmPSowfC1ANBLRBhR3xBXvOo6OLeZqWr7Bw5Qf7/21eLQTPCS1bEspq6DQ=="
+      },
+      "valid": false,
+      "why": "drafted_at is one millisecond after the act's signed_at: an owner cannot approve a draft before it exists"
+    },
+    {
+      "name": "sow_drafted_at_the_signing_instant",
+      "form": "member",
+      "tag": "agent-sow-terminate-v1",
+      "sig_at": "sig",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "engagement": "sow_k7m2q4x9w3e6r8t1",
+        "version": 1,
+        "digest": "sha256:d1e32411a6fe4853d8aaf5a22b34439bb899b540d1fa31f49d49bf24c702c685",
+        "basis": "convenience",
+        "effective_at": "2026-10-03T09:00:00Z",
+        "by": "client",
+        "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+        "signed_at": "2026-10-01T09:00:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:766b5a1771a5ee2944678349b2d57bddd03967cd709fc922223c101bb0df8955",
+          "drafted_at": "2026-10-01T09:00:00Z",
+          "sig": "p8qgIrhAe5uEeRTIthapkqXJfiGRfZed/ggDWbDScjg5AhbGs4OOMntX3zgkYPc3K7sb0fGMbK/G8Qx2N/2yBQ=="
+        },
+        "sig": "MpLunoYwoAR77jMGoS+A6RA/Dj2QA0Zu9dqsQKnl7SfwEFumLGJH4iT3yEXQRAy1vpHulfyDIhRYoKHp85YrAQ=="
+      },
+      "valid": true,
+      "why": "drafted_at equal to signed_at is allowed"
+    },
+    {
+      "name": "rfp_award_drafted",
+      "form": "member",
+      "tag": "agent-rfp-resolve-v1",
+      "object": {
+        "posting": "rfp_fhk5e1q3kd73zykb",
+        "version": 1,
+        "action": "award",
+        "response": "sow_f3q8n1z6v4b7c2m5",
+        "at": "2026-09-09T14:20:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:9a50e5f62473bb94a2f142f96d61bb534e9eab67a58f90f2c53fb540dd07cdd1",
+          "drafted_at": "2026-09-09T14:02:00Z",
+          "sig": "jVX9PZ2B9h75/hLE19yuH/e7sIMXscd7/SBdAjaO4BM/CRblAtzp3UImT7jsw5HVUZ5haXpiar74rFOyNP1iAg=="
+        }
+      },
+      "owner_sig": "kuTMexP8Hscu7oy+imQ1uKUpDdtQKb/DdbRb5OqPZFVDYZEpHbfTcnJRuFxsNdq27jqanShv8ueNbplFR5nIAg==",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "valid": true,
+      "draft_bytes": "agent-rfp-resolve-v1\n{\"action\":\"award\",\"at\":\"2026-09-09T14:20:00Z\",\"posting\":\"rfp_fhk5e1q3kd73zykb\",\"response\":\"sow_f3q8n1z6v4b7c2m5\",\"version\":1}",
+      "draft_statement": "common-agent-draft-v1\n{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:9a50e5f62473bb94a2f142f96d61bb534e9eab67a58f90f2c53fb540dd07cdd1\",\"drafted_at\":\"2026-09-09T14:02:00Z\"}",
+      "signed_bytes": "agent-rfp-resolve-v1\n{\"action\":\"award\",\"at\":\"2026-09-09T14:20:00Z\",\"posting\":\"rfp_fhk5e1q3kd73zykb\",\"proposed\":{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:9a50e5f62473bb94a2f142f96d61bb534e9eab67a58f90f2c53fb540dd07cdd1\",\"drafted_at\":\"2026-09-09T14:02:00Z\",\"sig\":\"jVX9PZ2B9h75/hLE19yuH/e7sIMXscd7/SBdAjaO4BM/CRblAtzp3UImT7jsw5HVUZ5haXpiar74rFOyNP1iAg==\"},\"response\":\"sow_f3q8n1z6v4b7c2m5\",\"version\":1}",
+      "why": "the award's body carries the marker and the poster's signature over the body covers it; the body states no signing instant, so drafted_at is compared with nothing"
+    },
+    {
+      "name": "rfp_marker_moved_to_another_act",
+      "form": "member",
+      "tag": "agent-rfp-resolve-v1",
+      "object": {
+        "posting": "rfp_fhk5e1q3kd73zykb",
+        "version": 1,
+        "action": "withdraw",
+        "response": "sow_f3q8n1z6v4b7c2m5",
+        "at": "2026-09-09T14:20:00Z",
+        "proposed": {
+          "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+          "draft": "sha256:9a50e5f62473bb94a2f142f96d61bb534e9eab67a58f90f2c53fb540dd07cdd1",
+          "drafted_at": "2026-09-09T14:02:00Z",
+          "sig": "jVX9PZ2B9h75/hLE19yuH/e7sIMXscd7/SBdAjaO4BM/CRblAtzp3UImT7jsw5HVUZ5haXpiar74rFOyNP1iAg=="
+        }
+      },
+      "owner_sig": "Oa5z1yVA+KnRNJGBtblvHED3cOonZN0H3tNBxVWe7uZTWfiTqaChITW7pHm/YigiQVbQRfMsS/RKJejHBzesBA==",
+      "marker_at": "proposed",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "valid": false,
+      "why": "the agent drafted an award, and a withdrawal carrying that marker does not hash to its draft"
+    },
+    {
+      "name": "nda_act_drafted",
+      "form": "member",
+      "tag": "agent-nda-act-v1",
+      "sig_at": "signature.sig",
+      "marker_at": "act.proposed",
+      "signed_at_at": "signature.signed_at",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "act": {
+          "nda": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
+          "action": "terminate",
+          "at": "2027-03-01T12:00:00Z",
+          "reason": "The freight-audit engagement ended.",
+          "by": "recipient",
+          "proposed": {
+            "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+            "draft": "sha256:61f2aa2718fe0c4f3637fc335471d3679d177ef0da2538924520386bf9d07a5c",
+            "drafted_at": "2027-03-01T11:40:00Z",
+            "sig": "JiLOGnCyFv3fS8xIQIto5rH3TR9lG1n/D6ZDMWdH/nEf/pSb+E+MFhipbW1lgvqqqU7OfXwmo/1SWIz4eVJbBg=="
+          }
+        },
+        "signature": {
+          "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+          "signed_at": "2027-03-01T12:00:00Z",
+          "sig": "tM9p6Yex0j/6nRxAWF23re4XRxpDUgWhWta9WBYTZ/DwkIuPFXJHaQZXBnEY/xT/KJVuc+Y7Cx0n5Pbi4P/nAQ=="
+        }
+      },
+      "valid": true,
+      "draft_bytes": "agent-nda-act-v1\n{\"act\":{\"action\":\"terminate\",\"at\":\"2027-03-01T12:00:00Z\",\"by\":\"recipient\",\"digest\":\"sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15\",\"nda\":\"nda_dtzv6z8tans9k5s6\",\"reason\":\"The freight-audit engagement ended.\",\"version\":1},\"signature\":{\"key\":\"UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS\",\"signed_at\":\"2027-03-01T12:00:00Z\"}}",
+      "draft_statement": "common-agent-draft-v1\n{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:61f2aa2718fe0c4f3637fc335471d3679d177ef0da2538924520386bf9d07a5c\",\"drafted_at\":\"2027-03-01T11:40:00Z\"}",
+      "signed_bytes": "agent-nda-act-v1\n{\"act\":{\"action\":\"terminate\",\"at\":\"2027-03-01T12:00:00Z\",\"by\":\"recipient\",\"digest\":\"sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15\",\"nda\":\"nda_dtzv6z8tans9k5s6\",\"proposed\":{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:61f2aa2718fe0c4f3637fc335471d3679d177ef0da2538924520386bf9d07a5c\",\"drafted_at\":\"2027-03-01T11:40:00Z\",\"sig\":\"JiLOGnCyFv3fS8xIQIto5rH3TR9lG1n/D6ZDMWdH/nEf/pSb+E+MFhipbW1lgvqqqU7OfXwmo/1SWIz4eVJbBg==\"},\"reason\":\"The freight-audit engagement ended.\",\"version\":1},\"signature\":{\"key\":\"UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS\",\"signed_at\":\"2027-03-01T12:00:00Z\"}}",
+      "why": "the marker sits in the act's body, and the draft bytes cover the signature record without sig, so the agent drafted the signer's key and instant too"
+    },
+    {
+      "name": "nda_owner_signed_at_another_instant",
+      "form": "member",
+      "tag": "agent-nda-act-v1",
+      "sig_at": "signature.sig",
+      "marker_at": "act.proposed",
+      "signed_at_at": "signature.signed_at",
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "object": {
+        "act": {
+          "nda": "nda_dtzv6z8tans9k5s6",
+          "version": 1,
+          "digest": "sha256:98e111dee46ccf35e88bf863bd9e6021fb6d635c48a53a751f27ec2802c89c15",
+          "action": "terminate",
+          "at": "2027-03-01T12:00:00Z",
+          "reason": "The freight-audit engagement ended.",
+          "by": "recipient",
+          "proposed": {
+            "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+            "draft": "sha256:61f2aa2718fe0c4f3637fc335471d3679d177ef0da2538924520386bf9d07a5c",
+            "drafted_at": "2027-03-01T11:40:00Z",
+            "sig": "JiLOGnCyFv3fS8xIQIto5rH3TR9lG1n/D6ZDMWdH/nEf/pSb+E+MFhipbW1lgvqqqU7OfXwmo/1SWIz4eVJbBg=="
+          }
+        },
+        "signature": {
+          "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+          "signed_at": "2027-03-01T12:30:00Z",
+          "sig": "rk5b8saftHkLomRkpUQ5H2c7N9lBIYyUejeJ61M6jGIaZdQVDtkCMe8nMdmPi+TxNaT5KxigyXgUQ0e49JI/Cg=="
+        }
+      },
+      "valid": false,
+      "why": "the owner signed at another instant than the one drafted: signed_at is inside the draft, so the digest no longer matches, and the agent drafts again"
+    },
+    {
+      "name": "statement_drafted_beside",
+      "form": "beside",
+      "statement": "fdbk-attest-v1:ix_01JA2Q7X:UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A:reconcile-statement:OK:2026-10-06T10:00:00Z",
+      "owner_sig": "2Xun/sueuDlihjNsRXMUXqGNEOWDYQsP0K/yHVD5iWbOJ78G4e6yb81ARShX8E8hIZ5j7UHtF+vjiZXhEJjmCg==",
+      "marker": {
+        "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+        "draft": "sha256:f3e4be53f27c18e99bb70dba91a303b6c7dd81be0e0bf67fc5edbdcd1251e64c",
+        "drafted_at": "2026-10-06T09:50:00Z",
+        "sig": "e51y8vn4tuGD9TXZoEtEk2gcaFYHYuBFg6THTXXGPLrjQlwIIQE0Hlw0AC/YcwIXxj6IiCtwj38kXs1u5h+IDw=="
+      },
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "valid": true,
+      "draft_bytes": "fdbk-attest-v1:ix_01JA2Q7X:UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A:reconcile-statement:OK:2026-10-06T10:00:00Z",
+      "draft_statement": "common-agent-draft-v1\n{\"agent\":\"UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M\",\"draft\":\"sha256:f3e4be53f27c18e99bb70dba91a303b6c7dd81be0e0bf67fc5edbdcd1251e64c\",\"drafted_at\":\"2026-10-06T09:50:00Z\"}",
+      "why": "a colon-delimited statement has no members, so the marker travels beside it and the draft bytes are the statement in full"
+    },
+    {
+      "name": "statement_owner_changed_the_outcome",
+      "form": "beside",
+      "statement": "fdbk-attest-v1:ix_01JA2Q7X:UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A:reconcile-statement:FAILED:2026-10-06T10:00:00Z",
+      "owner_sig": "UgwzxKigIY2dnEQBafEWqNSebN62Ly2Gjh9B9WyT3MpcWZsJ3v59pWmewVR1Yd4gSilzSjx7bnG2rhEVo7U3Dw==",
+      "marker": {
+        "agent": "UBDJJZ5GXDUK2LZUMGE7YA7NFVTFZBRJYOLMYH7FPNZRDAXY5DZLRC3M",
+        "draft": "sha256:f3e4be53f27c18e99bb70dba91a303b6c7dd81be0e0bf67fc5edbdcd1251e64c",
+        "drafted_at": "2026-10-06T09:50:00Z",
+        "sig": "e51y8vn4tuGD9TXZoEtEk2gcaFYHYuBFg6THTXXGPLrjQlwIIQE0Hlw0AC/YcwIXxj6IiCtwj38kXs1u5h+IDw=="
+      },
+      "owner_key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
+      "valid": false,
+      "why": "the agent drafted OK and the owner signed FAILED: the marker beside the statement does not hash to it"
+    }
+  ]
+}

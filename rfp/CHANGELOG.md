@@ -4,6 +4,19 @@ Versions of Agent RFP tagged in this repository, newest first. A version is
 tagged as `rfp-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentrfp.net.
 
+## 0.12.0-draft (2026-10-25)
+
+An act an agent drafted. The body of an act on a posting, the award among
+them, may carry `proposed`, the marker of the Common Agent Specification
+0.37.0-draft §7.9, where an agent drafted the act and its signer approved
+it. The draft bytes are the act's signed bytes computed without the marker,
+the marker does not change who signs the act, and a board refuses an act
+whose marker fails and records no drafted act its signer has not signed
+(§6). §8 rule 3 says the poster's signature over a drafted award approves
+exactly the bytes the agent drafted. The minor version moves because a board
+built against 0.11.0-draft records acts without reading the marker, and
+could record one this version refuses.
+
 ## 0.11.0-draft (2026-10-19)
 
 A gated posting's body ref no longer names the posting. The example in

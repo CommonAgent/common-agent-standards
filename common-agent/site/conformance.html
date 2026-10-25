@@ -157,6 +157,15 @@
               work wanted never returns an open-ended offering. It is published as
               <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/common-agent/conformance/offering-scope.json">conformance/offering-scope.json</a>
               in the specification's repository.</li>
+            <li><b>Acts an agent drafts and its owner approves</b> (<a href="/spec.html#s7-9">Section 7.9</a>).
+              The fixture pins the draft bytes and the draft statement of the <code>proposed</code>
+              marker, for a marker in an act, in an act&#39;s body and beside a statement, with
+              signatures that really verify. It also holds the acts a verifier refuses: the owner
+              changed a byte after the agent drafted it, the agent signed the wrong bytes, the marker
+              names another agent, carries another member or is dated after the act, or the owner
+              never signed. It is published as
+              <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/common-agent/conformance/draft-approval.json">conformance/draft-approval.json</a>
+              in the specification's repository.</li>
           </ul>
           <p class="aside">A binding pins the byte-level constants this specification leaves
             symbolic, such as fence text and freshness windows, in its own conformance fixtures.

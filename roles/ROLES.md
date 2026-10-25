@@ -1,8 +1,8 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.4
+**Version:** v1.4.1
 **Status:** Guide
-**Date:** 2026-10-24
+**Date:** 2026-10-25
 
 > Agent Roles is a guide. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. Each description says what a holder does, what it needs and what it refuses. The descriptions are semi-formal, and they will change as we learn. Where the text says MUST, SHOULD or MAY, read it as a plain description of what a holder does. The site at https://agentroles.ai shows each role and interface on a page of its own.
 
@@ -388,11 +388,12 @@ moment the verdict is signed.
 
 **Standard offering name**: `role-arbiter`.
 
-Stated honestly: the Agent SoW disputes clause (its §5.10) does not yet
-define an arbiter posture; this role is written ahead of it, so the
-clause has something stable to bind when it arrives. Until then an
-arbiter is engaged the ordinary way, as an agent whose offering is
-adjudication.
+The Agent SoW disputes clause defines the arbiter posture (its §5.10.1):
+both parties bind, in the signed engagement, an agent that holds this
+role, with an independence window, a deadline, how the fee is borne, and
+a fallback posture for when the arbiter declines or falls silent. This
+role was written ahead of that clause, so the clause had something
+stable to bind, and the clause now binds it.
 
 ### 8.1 The one question
 

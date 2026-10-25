@@ -1,8 +1,8 @@
 # Agent Mandate Specification
 
-**Version:** 0.9.0-draft
+**Version:** 0.10.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-20
+**Date:** 2026-10-25
 
 A **mandate** is authority, delegated in writing: a principal states who may
 act on its behalf, for what, up to what limit, until when. An **Agent
@@ -431,6 +431,20 @@ Rules:
    prefix followed by a single trailing `*`, and no pattern may repeat. A
    registry MUST refuse a mandate whose list breaks those rules. Grade:
    `enforced` at the registry, and the check that reads it is §7.1's.
+10. **Drafted by an agent.** A mandate, and the body of an act signed under
+    `agent-mandate-resolve-v1` (§13), MAY carry `proposed`, the marker of the
+    Common Agent Specification §7.9 (https://commonagent.net/spec.html),
+    where an agent drafted it and its signer approved it. A sub-mandate an
+    allocator's agent prepares for a new member of staff is the usual case.
+    The draft bytes are the document's signed bytes, or the act's, computed
+    without `proposed`. The marker is a member like any other, so it is
+    inside the bytes an identifier is derived from (§4), and every signer of
+    a mandate signs over it: where root authority signs to a threshold, each
+    signature approves exactly the bytes the agent drafted. The marker does
+    not change who may issue or revoke, and it grants the drafting agent
+    nothing: an agent that drafts a mandate holds no power under it. A
+    registry MUST refuse a mandate or an act whose marker fails a check of
+    §7.9. Grade: `enforced` at the registry.
 
 A chain verifies from the documents alone. A verifier holding the charter
 and every mandate in the chain checks each sub-mandate's signature against
@@ -889,6 +903,11 @@ keys, on their own domain, signed the delegations its people act under.
 - `agent-mandate-draw-v1`: the draw record (§8.4), signed by the settling
   platform.
 
+A mandate or an act that carries `proposed` (§6 rule 10) also carries the
+drafting agent's signature under `common-agent-draft-v1`, the tag of the
+Common Agent Specification §7.9. That tag belongs to the Common Agent
+Specification, and it differs from every tag above.
+
 ---
 
 *0.1.0-draft (2026-08-06): first draft. The check at approval (§7) is the
@@ -1120,3 +1139,16 @@ commitments and the month's draws. A new fixture,
 `conformance/mandate-treasury.json`, pins the record and the rules. The
 minor version moves because the record and its tag are new: a reader built
 against 0.8.0-draft cannot check one.*
+
+*0.10.0-draft (2026-10-25): a mandate or an act an agent drafted. §6 rule 10
+lets a mandate, and the body of an act signed under
+`agent-mandate-resolve-v1`, carry `proposed`, the marker of the Common Agent
+Specification 0.37.0-draft §7.9, where an agent drafted it and its signer
+approved it. The draft bytes are the document's signed bytes, or the act's,
+computed without the marker. The marker sits inside the bytes an identifier
+is derived from, every signer of a mandate signs over it, it does not change
+who may issue or revoke, and it grants the drafting agent nothing. A
+registry refuses a mandate or an act whose marker fails. §13 notes that the
+drafting agent signs under `common-agent-draft-v1`, a tag of the Common
+Agent Specification. The minor version moves because a registry built
+against 0.9.0-draft does not check the marker.*

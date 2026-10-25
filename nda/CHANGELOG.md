@@ -4,6 +4,21 @@ Versions of Agent NDA tagged in this repository, newest first. A version is
 tagged as `nda-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.3.0-draft (2026-10-25)
+
+A signature or an act an agent drafted. A signature record (§6) and the body
+of an act (§7.3) may carry `proposed`, the marker of the Common Agent
+Specification 0.37.0-draft §7.9, where an agent drafted the record or the
+act and the signer approved it. The draft bytes are the record's signature
+bytes, or the act's signed bytes, computed without the marker. A record's
+draft names the agreement by its digest, so the agent drafted the signature
+over exactly the agreement the signer signed. The marker does not change
+which key may sign for a seat, and a record or act whose marker fails is
+refused. The closed member lists of §6 and §7.3 name `proposed`, and §11
+points at the Common Agent fixture that pins an act carrying it. The minor
+version moves because a verifier built against 0.2.0-draft refuses a record
+or act that carries the new member.
+
 ## 0.2.0-draft (2026-10-19)
 
 Signatures cover their own records, seats name the key that signs for them,
