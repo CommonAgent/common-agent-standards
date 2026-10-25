@@ -700,7 +700,6 @@
       "form": "member",
       "tag": "agent-mandate-v1",
       "object": {
-        "id": "mnd_8sysz0zm43q5ktkr",
         "mandate": "v1",
         "version": 1,
         "organization": "org_vd5zvpa4ecerft8b",
@@ -729,12 +728,13 @@
           "drafted_at": "2026-09-30T15:00:00Z",
           "sig": "3cTRhD4BigLf2Ysy0s50ATgOxOTgVoiSp0Lm3nKvB0TI38t6xEi7fT1f9eVmkXYFO+UqkQL9h2reokDtHordDg=="
         },
+        "id": "mnd_rh1dc6d0scksp4rq",
         "signatures": [
           {
             "role": "root",
             "key": "UDTU7UFIT54MKC27AEZMQPBI3JIYDBNBUO6XCU534S3D4BY3JMT6FMHS",
             "signed_at": "2026-10-01T00:00:00Z",
-            "sig": "wYnCC2RniSZao0GoaPXbAwRLpG1HWpy7ScQ38KzVGACxf5cJm193X06T71ZV9UTSn3dBdPv4td3ARa7IvFmXCw=="
+            "sig": "/u/R2Xyq7HBmT+IE85LXn/aERnTqEj1cPsJ7I1xGVuD5FfkYS0ELMo4yPXtte6tavF6qx8p4x9+ICX+HVOrPCg=="
           }
         ]
       },

@@ -2638,9 +2638,10 @@ lowercase hex digits, names the act, and a dispute's `cites` entry of kind
   "digest": "sha256:<digest of version 1>",
   "decision": "reject",
   "deliverable": "exceptions", "task": "task_01JA2Q7X",
-  "rests_on": [ { "role": "delivery", "digest": "sha256:<the delivered artifact>" },
-                { "role": "test_set", "digest": "sha256:9f2c…",
-                  "ref": "artifacts:exceptions-test-set-v1" } ],
+  "rests_on": [
+    { "role": "delivery", "digest": "sha256:<the delivered artifact>" },
+    { "role": "test_set", "digest": "sha256:9f2c…",
+      "ref": "artifacts:exceptions-test-set-v1" } ],
   "result": { "passed": 181, "of": 200 },
   "grade": "evidence",
   "reasons": [ "19 of the 200 invoices in the test set that were overbilled were not flagged." ],
@@ -2677,16 +2678,17 @@ lowercase hex digits, names the act, and a dispute's `cites` entry of kind
     Only an act that judges the engagement carries these, one for each
     record it judged, and it MAY carry none.
 - `result` is REQUIRED where `rests_on` carries a `test_set` entry and MUST
-  be absent otherwise. It carries only `passed`, the cases the delivery passed, and
-  `of`, the cases in the set, whole numbers with `of` from 1 and `passed`
-  from 0 to `of`. The delivery meets the threshold where `passed ÷ of` is at
-  least the clause's `min_fraction`.
+  be absent otherwise. It carries only `passed`, the cases the delivery
+  passed, and `of`, the cases in the set, whole numbers with `of` from 1 and
+  `passed` from 0 to `of`. The delivery meets the threshold where `passed`
+  divided by `of` is at least the clause's `min_fraction`.
 - `grade` is the grade of the act's judgment, as §5.4.2 grades it:
   `evidence` where `rests_on` carries a `test_set` entry, because both
   parties committed the measure in advance and anyone can recompute the
-  result from the revealed bytes, and `recorded` where it carries none, because the
-  judgment then rests on nothing the parties defined in advance. A runtime
-  MUST refuse an act whose `grade` is not the one its `rests_on` gives it.
+  result from the revealed bytes, and `recorded` where it carries none,
+  because the judgment then rests on nothing the parties defined in advance.
+  A runtime MUST refuse an act whose `grade` is not the one its `rests_on`
+  gives it.
 - `reasons` lists 1 to 16 reasons, each a string of 1 to 1,000 code points.
   It is REQUIRED for `reject`, since an unreasoned rejection is not a review
   (§15), and OPTIONAL for `accept`.
@@ -3396,13 +3398,12 @@ Rules:
 
 1. A review is signed by the reviewing owner, with the client seat's
    `owner_key` (§5.1). It names the deliverable and the delivery it judges,
-   and the task where there is one, or it judges the engagement as a whole. An agent MAY draft a review. The review
-   then carries the marker of the Common Agent Specification §7.9, which
-   names the agent and binds the owner's signature to exactly the bytes the
-   agent drafted. A review signed with an agent's key and not the owner's is
-   not a review.
-   Reviews are append-only evidence; a changed mind is a second review, not
-   an edit.
+   and the task where there is one, or it judges the engagement as a whole.
+   An agent MAY draft a review. The review then carries the marker of the
+   Common Agent Specification §7.9, which names the agent and binds the
+   owner's signature to exactly the bytes the agent drafted. A review signed
+   with an agent's key and not the owner's is not a review. Reviews are
+   append-only evidence; a changed mind is a second review, not an edit.
 2. Rejection carries a reason. An unreasoned rejection is not a review and
    carries no weight anywhere.
 3. A review judges work against the signed document, and renderers MUST
@@ -3448,12 +3449,12 @@ is the act, signed by the reviewing owner with the client seat's
 `owner_key`, and that an agent may draft it, carrying the marker of the
 Common Agent Specification 0.37.0-draft §7.9. Every act of §6.3 may now
 carry that marker, `proposed`, where an agent drafted it and the owner
-approved it; its draft bytes leave out `proposed` and `signed_at`, and §6.1
-says so. `conformance/sow-acts.json` gains a document with an acceptance
-clause, 41 cases with real test-seed signatures, two disputes that cite a
-rejection by its digest, and the signed bytes of one acceptance act. The
-minor version moves because the act and its tag are new and every act may
-carry a member a runtime built against 0.34.0-draft refuses.
+approved it, and its draft bytes leave out `proposed` and `signed_at`
+(§6.3); §6.1 points to it. `conformance/sow-acts.json` gains a document with
+an acceptance clause, 41 cases with real test-seed signatures, two disputes
+that cite a rejection by its digest, and the signed bytes of one acceptance
+act. The minor version moves because the act and its tag are new and every
+act may carry a member a runtime built against 0.34.0-draft refuses.
 
 **0.34.0-draft** (2026-10-20). The month of a ceiling. §5.5.1 said a fixed
 fee ceiling is per `month` and never said when a month starts. Its months

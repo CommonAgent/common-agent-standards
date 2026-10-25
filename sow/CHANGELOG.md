@@ -29,13 +29,13 @@ is recorded in the act. §15 says a review is the act, signed by the
 reviewing owner with the client seat's `owner_key`, and that an agent may
 draft it, carrying the marker of the Common Agent Specification 0.37.0-draft
 §7.9. Every act of §6.3 may now carry that marker, `proposed`, where an
-agent drafted it and the owner approved it; its draft bytes leave out
-`proposed` and `signed_at`, and §6.1 says so. `conformance/sow-acts.json`
-gains a document with an acceptance clause, 41 cases with real test-seed
-signatures, two disputes that cite a rejection by its digest, and the signed
-bytes of one acceptance act. The minor version moves because the act and its
-tag are new and every act may carry a member a runtime built against
-0.34.0-draft refuses.
+agent drafted it and the owner approved it, and its draft bytes leave out
+`proposed` and `signed_at` (§6.3); §6.1 points to it.
+`conformance/sow-acts.json` gains a document with an acceptance clause, 41
+cases with real test-seed signatures, two disputes that cite a rejection by
+its digest, and the signed bytes of one acceptance act. The minor version
+moves because the act and its tag are new and every act may carry a member a
+runtime built against 0.34.0-draft refuses.
 
 ## 0.34.0-draft (2026-10-20)
 

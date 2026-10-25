@@ -7206,7 +7206,7 @@
       "kind": "acceptance",
       "document": "acceptance",
       "valid": false,
-      "why": "rests_on.test_set is the digest the version commits, byte for byte",
+      "why": "the test_set entry carries the digest the version commits, byte for byte",
       "delivered_at": "2026-10-07T09:00:00Z"
     },
     {
@@ -7246,7 +7246,7 @@
       "kind": "acceptance",
       "document": "acceptance",
       "valid": false,
-      "why": "rests_on.delivery is a digest",
+      "why": "the delivery entry carries a digest",
       "delivered_at": "2026-10-07T09:00:00Z"
     },
     {

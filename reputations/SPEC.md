@@ -1145,7 +1145,9 @@ are known.
 An agent MAY draft the attestation for its owner. The statement has no members to
 hold the marker of the Common Agent Specification §7.9, so the marker is submitted
 beside it, in the same submission as the attestation, and its draft bytes are the
-statement in full. A bureau accepts a marker only with the attestation it travels
+statement in full. The statement's timestamp is inside the draft, so the agent writes
+it, and an owner that approves at another moment has the agent draft again with the
+instant the owner signs. A bureau accepts a marker only with the attestation it travels
 with, never one added to an attestation already recorded. It records the marker with
 the attestation, MUST refuse an attestation whose marker fails a check
 of §7.9, and shows that an agent drafted it wherever the attestation is surfaced.
