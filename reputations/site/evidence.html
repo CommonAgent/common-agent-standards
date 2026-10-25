@@ -164,7 +164,7 @@
           </figure>
 
           <h2>Attestations from the caller</h2>
-          <p>The caller knows things the transport cannot: whether the answer was right, whether it took three corrections, and whether a failure was admitted or discovered. An attestation is the caller's signed statement about one interaction, made with the same agent key its name is bound to. One key serves for the agent's identity and for everything it signs.</p>
+          <p>The caller knows things the transport cannot: whether the answer was right, whether it took three corrections, and whether a failure was admitted or discovered. An attestation is the caller's signed statement about one interaction. The caller's owner signs it with the owner key, because the owner answers for the judgment, and the caller's agent may draft it for the owner to approve.</p>
           <p>The rules on who may attest are strict on purpose.</p>
           <ul class="plain">
             <li><b>Every attestation needs a witnessed interaction.</b> It must match a fact a reporter submitted. This one rule removes drive-by reviews, most ballot stuffing and every rating of a rival the evaluator never called.</li>

@@ -1,8 +1,8 @@
 # Agent NDA Specification
 
-**Version:** 0.2.0-draft
+**Version:** 0.3.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-19
+**Date:** 2026-10-25
 
 An **Agent NDA** is a signed non-disclosure agreement between parties whose
 software agents work together. It is usually the first agreement they sign.
@@ -601,6 +601,15 @@ says so where it shows the result.
   with the unused low bits of the last data character zero. A verifier MUST
   refuse any other spelling, including base64url, a missing pad, and nonzero
   unused bits.
+- `proposed` is OPTIONAL. It is the marker of the Common Agent
+  Specification §7.9 (https://commonagent.net/spec.html), and a record
+  carries it where an agent drafted the record and the signer approved it.
+  Its draft bytes are the record's signature bytes computed without
+  `proposed` and without `signed_at`, so the signer writes the instant it
+  actually signs. They name the agreement by its digest, so the agent drafted
+  the signature over exactly the agreement the signer signed. The marker
+  does not change which key may sign for the seat, and a verifier MUST
+  refuse a record whose marker fails a check of §7.9.
 
 A record carries only the members above, and a verifier MUST refuse a record
 that carries any other. `over` is valid only on the discloser's record of a
@@ -860,12 +869,18 @@ with `signature.sig` removed, so the record is signed with the body.
   `signature.signed_at`. An act cannot take effect before it was signed.
 - `signature` carries `key`, `signed_at` and `sig`, in the spelling of §6,
   and `mandate` where the seat named in `by` names an organization (§6.2).
+- `proposed` is OPTIONAL, in `act`: the marker of the Common Agent
+  Specification §7.9, where an agent drafted the act and the signer
+  approved it. Its draft bytes are the act's signed bytes computed without
+  `act.proposed` and without `signature.signed_at`, so they cover the
+  signer's key and mandate and leave out only the instant it signs. An act
+  whose marker fails a check of §7.9 is not valid.
 
-`act` carries only `nda`, `version`, `digest`, `action`, `at`, `reason`, `by`
-and `agent`, and `signature` only `key`, `signed_at`, `sig` and `mandate`. An
-act with any other member is not valid. An act is valid only when its
-signature verifies and its key is bound to the seat named in `by`, under the
-rule of §6.
+`act` carries only `nda`, `version`, `digest`, `action`, `at`, `reason`,
+`by`, `agent` and `proposed`, and `signature` only `key`, `signed_at`, `sig`
+and `mandate`. An act with any other member is not valid. An act is valid
+only when its signature verifies and its key is bound to the seat named in
+`by`, under the rule of §6.
 
 The signer writes `at`. So an act takes effect at the later of its `at` and
 the instant its receiving verifier (§6) received it, and the receiving
@@ -1084,8 +1099,28 @@ The fixtures:
   signature in the fixtures is real. The owner keys are derived from test
   seeds the fixture publishes, and Ed25519 is deterministic, so any
   implementation reproduces each signature byte for byte.
+- `common-agent/conformance/draft-approval.json`, the fixture of the Common
+  Agent Specification §7.9, pins an act whose body carries `proposed` and a
+  signature record that carries it, each with its draft bytes, and the act
+  and record a verifier refuses because the signer changed the reason or
+  countersigned another agreement than the one the agent drafted for.
 
 ## Changelog
+
+**0.3.0-draft** (2026-10-25). A signature or an act an agent drafted. A
+signature record (§6) and the body of an act (§7.3) may carry `proposed`,
+the marker of the Common Agent Specification 0.37.0-draft §7.9, where an
+agent drafted the record or the act and the signer approved it. The draft
+bytes are the record's signature bytes, or the act's signed bytes, computed
+without the marker and without the signer's `signed_at`, so the signer
+writes the instant it actually signs. A record's draft names the agreement
+by its digest, so the agent drafted the signature over exactly the agreement
+the signer signed. The marker does not change which key may sign for a seat,
+and a record or act whose marker fails is refused. The closed member lists
+of §6 and §7.3 name `proposed`, and §11 points at the Common Agent fixture
+that pins an act and a signature record carrying it. The minor version moves
+because a verifier built against 0.2.0-draft refuses a record or act that
+carries the new member.
 
 **0.2.0-draft** (2026-10-19). Signatures cover their own records, seats name
 the key that signs for them, and acts have a defined shape. Building an

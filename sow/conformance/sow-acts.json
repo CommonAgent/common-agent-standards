@@ -1,7 +1,7 @@
 {
-  "comment": "Agent SoW: the signed acts of 6.3 (agentsow.com 0.33.0-draft). Each act is a JSON object with a closed member set: engagement, version, digest ('sha256:' and the lowercase hex SHA-256 of that version's signed bytes, 6), the kind's own members, by (the seat that signs), key (that seat's owner_key), signed_at and sig (canonical padded base64 of the 64-byte Ed25519 signature). Its signed bytes are the kind's tag, one newline, and the JCS of the act minus sig: agent-sow-terminate-v1, agent-sow-usage-v1, agent-sow-settlement-v1, agent-sow-dispute-v1 and agent-sow-resolve-v1. A settlement record and a dispute are named by the digest of its signed bytes; a verdict by the digest of its own signed bytes (agent-arbiter-verdict-v1, one newline, JCS minus signatures). Each case names the act, its kind, the document it is made under, and for a resolve the dispute and verdict it rests on; prior lists usage acts the runtime already holds; for a settlement record, held lists the usage acts the runtime holds and earlier the settlement records it already holds. An earlier list may name the record being checked, which the runtime then holds already and compares with nothing, and records under other engagements, which settle nothing for this one (6.3). quote names an entry of quotes, the quote the charge followed (5.5.8), where the runtime holds one; a case without it holds none. unsettled is what remains unsettled under every engagement here when its dispute opens. pairs pin when a dispute under escalate_to_owners closes. The keys are published test seeds (sha256 of the label); 'arbiter' plays the arbiter, whose verdict signature is in the role's own encoding, base64url, as sow-disputes.json pins it. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
+  "comment": "Agent SoW: the signed acts of 6.3 (agentsow.com 0.35.0-draft). Each act is a JSON object with a closed member set: engagement, version, digest ('sha256:' and the lowercase hex SHA-256 of that version's signed bytes, 6), the kind's own members, by (the seat that signs), key (that seat's owner_key), signed_at and sig (canonical padded base64 of the 64-byte Ed25519 signature). Its signed bytes are the kind's tag, one newline, and the JCS of the act minus sig: agent-sow-terminate-v1, agent-sow-usage-v1, agent-sow-settlement-v1, agent-sow-dispute-v1, agent-sow-resolve-v1 and agent-sow-acceptance-v1. A settlement record, an acceptance act and a dispute are named by the digest of its signed bytes; a verdict by the digest of its own signed bytes (agent-arbiter-verdict-v1, one newline, JCS minus signatures). Each case names the act, its kind, the document it is made under, and for a resolve the dispute and verdict it rests on; prior lists usage acts the runtime already holds; for a settlement record, held lists the usage acts the runtime holds and earlier the settlement records it already holds. An earlier list may name the record being checked, which the runtime then holds already and compares with nothing, and records under other engagements, which settle nothing for this one (6.3). quote names an entry of quotes, the quote the charge followed (5.5.8), where the runtime holds one; a case without it holds none. unsettled is what remains unsettled under every engagement here when its dispute opens. pairs pin when a dispute under escalate_to_owners closes. For an acceptance act, delivered_at is the instant the task that delivered the deliverable completed, earlier lists the acceptance acts the runtime already holds, and acceptance_signed_bytes pins one act's signed bytes and digest; an act an agent drafted carries proposed, checked as the Common Agent Specification 7.9 says (common-agent/conformance/draft-approval.json). The keys are published test seeds (sha256 of the label); 'arbiter' plays the arbiter, whose verdict signature is in the role's own encoding, base64url, as sow-disputes.json pins it. THE FIXTURE IS THE AUTHORITY: change it only with a spec change alongside.",
   "version": 1,
-  "spec": "Agent SoW 0.33.0-draft: 6.3 (the signed acts), 5.5, 5.5.1, 5.5.2, 5.5.6, 5.5.7, 5.5.8, 5.9, 5.10, 5.17, 6 (signature spelling)",
+  "spec": "Agent SoW 0.35.0-draft: 6.3 (the signed acts, the acceptance act among them), 5.4.2, 15, 5.5, 5.5.1, 5.5.2, 5.5.6, 5.5.7, 5.5.8, 5.9, 5.10, 5.17, 6 (signature spelling)",
   "keys": {
     "entries": {
       "stonework-owner": {
@@ -23,6 +23,11 @@
         "label": "Agent SoW conformance test key: arbiter",
         "seed_hex": "d529ebf5183d88156f8d8a1667f5f257134cd195c916c01c56f243ae8f3f8a72",
         "public": "UD3P5VL4WSDYEVH4TDXVAP7357WQQKTIPH76GIVS3KS544IBT7R7F2U2"
+      },
+      "harborandline-agent": {
+        "label": "Agent SoW conformance test key: harborandline-agent",
+        "seed_hex": "983723353bc14703cc88df20af0b586ec4c3b0a16f6cd3164c2cbb2e9a844f2e",
+        "public": "UBD3QOMXDB44MN3EN3FRKLNQWHU6N7SIC4SDM4Z6NIBZHAEM7WWJE6YT"
       }
     }
   },
@@ -31,7 +36,8 @@
     "usage": "agent-sow-usage-v1",
     "settle": "agent-sow-settlement-v1",
     "dispute": "agent-sow-dispute-v1",
-    "resolve": "agent-sow-resolve-v1"
+    "resolve": "agent-sow-resolve-v1",
+    "acceptance": "agent-sow-acceptance-v1"
   },
   "documents": {
     "agreed": {
@@ -1213,6 +1219,172 @@
         ]
       },
       "signed_bytes_digest": "sha256:ec79dc0272a22996760a8463f74cfbabca7dc23187d9342240716b943098455a"
+    },
+    "acceptance": {
+      "document": {
+        "id": "sow_d03p0x038j4qyqr6",
+        "sow": "v1",
+        "version": 1,
+        "starts_at": "2026-08-04T00:00:00Z",
+        "ends_at": "2027-02-01T00:00:00Z",
+        "language": {
+          "id": "agent-sow-standard-language",
+          "version": 4,
+          "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+        },
+        "parties": {
+          "provider": {
+            "agent": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
+            "handle": "Granite.books@stonework.example",
+            "owner": "Stonework Analytics",
+            "organization": "org_stonework",
+            "owner_key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO"
+          },
+          "client": {
+            "agent": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "handle": "Petrel.mari@harborandline.example",
+            "owner": "Harbor & Line Outfitters",
+            "organization": "org_harborandline",
+            "owner_key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3"
+          },
+          "grade": "evidence"
+        },
+        "scope": {
+          "offerings": [
+            "reconcile-statement"
+          ],
+          "examples": {
+            "in_scope": [
+              "reconcile the August statement"
+            ],
+            "out_of_scope": [
+              "file the return"
+            ]
+          },
+          "grade": "enforced"
+        },
+        "price": {
+          "arrangement": "time_and_materials",
+          "currency": "XCR",
+          "schedule": [
+            {
+              "meter": "tokens_out",
+              "unit": "1000 tokens",
+              "per": 1000,
+              "per_unit": 1500
+            },
+            {
+              "meter": "tool_calls",
+              "unit": "call",
+              "per": 1,
+              "per_unit": 2000
+            },
+            {
+              "meter": "items",
+              "unit": "invoice",
+              "per": 1,
+              "per_unit": 40000
+            },
+            {
+              "meter": "elapsed",
+              "unit": "minute",
+              "per": 60,
+              "per_unit": 12000
+            }
+          ],
+          "cap": {
+            "amount": 40000000
+          },
+          "reservation": {
+            "window_days": 30
+          },
+          "grade": "enforced"
+        },
+        "volume": {
+          "per_hour": 20,
+          "per_day": 200,
+          "grade": "enforced"
+        },
+        "change_control": {
+          "review_window_days": 7,
+          "approval": {
+            "formation": "agent",
+            "amendment": "person"
+          },
+          "approvals": [
+            {
+              "act": "amendment",
+              "authority": "person",
+              "key": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "approved_at": "2026-08-06T09:14:02Z",
+              "mandate": "mnd_harborandline_ap"
+            }
+          ],
+          "grade": "enforced"
+        },
+        "termination": {
+          "convenience_notice_hours": 48,
+          "grade": "enforced"
+        },
+        "disputes": {
+          "posture": "escalate_to_owners",
+          "grade": "evidence"
+        },
+        "confidentiality": {
+          "transport": {
+            "sealed": true,
+            "grade": "enforced"
+          },
+          "retention": {
+            "max_days": 30,
+            "grade": "enforced"
+          },
+          "promises": {
+            "no_training": true,
+            "grade": "recorded"
+          }
+        },
+        "deliverables": {
+          "per_task": [
+            {
+              "name": "reconciliation-report",
+              "media_type": "application/pdf"
+            },
+            {
+              "name": "exceptions",
+              "media_type": "application/json",
+              "acceptance": {
+                "test_set": {
+                  "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+                  "withheld": true
+                },
+                "measure": "invoices correctly flagged as overbilled",
+                "threshold": {
+                  "min_fraction": 0.95
+                },
+                "deemed_accepted_after_days": 10,
+                "grade": "evidence"
+              }
+            }
+          ],
+          "grade": "enforced"
+        },
+        "signatures": [
+          {
+            "role": "provider",
+            "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+            "signed_at": "2026-08-04T14:02:11Z",
+            "sig": "b+sPbB4dh557S52VzE4w0SFilSzHZiQUwtoZPYLk4GorZX+nUejw8IMX+7YOml4g4gRczFvvyXNa6f5Dz7ZeAQ=="
+          },
+          {
+            "role": "client",
+            "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+            "signed_at": "2026-08-04T16:47:36Z",
+            "sig": "acXtI9A/wjv/hp4HDE3kFJpRFX5xPc/StTfaHtWt2mi6h1hj2L444iwIVnMB9sT8YIVexmOPD0B+2A7Fh0+2AQ=="
+          }
+        ]
+      },
+      "signed_bytes_digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce"
     }
   },
   "unsettled": 500000,
@@ -4587,6 +4759,1046 @@
       "by": "client",
       "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
       "sig": "M6Tbun32TOPNOohsXRra8T6qZfzcimE1v4okDp55/JyOXJUwxurCPURDzl5pp0quW3DdzatntREILESeay4pCh=="
+    },
+    "acceptance_accept": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "yz0I3DP6quadz/bPaaPp3P1Vw2tzCpRjNIgTzj0eE+EYET+4XwSYPfys57kI8NKFnkzbvQshB9N+ibIvmtF8Bw=="
+    },
+    "acceptance_reject": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "19 of the 200 invoices in the test set that were overbilled were not flagged.",
+        "The threshold is 0.95 and the result is 0.905."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "bWlqxSszLVBvN2nfj/GOoAQ0zh6cnza/bMUKHr+e4nBcMZBfyKP+/9XQsjUqB7qJazKnGyQ10Fv7bx+DDQZwCA=="
+    },
+    "acceptance_reject_untested": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "reconciliation-report",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "grade": "recorded",
+      "reasons": [
+        "The report reconciles to the wrong statement month."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "Nu/zeG27SNgYrRnnkTMtoiNZVBCtP9aiVPwXMILRe/xzHAUv5ObwW1Zprbcz0zusI9YgBFhiFOEAkB+M3yJxBw=="
+    },
+    "acceptance_accept_untested": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "reconciliation-report",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "rSIctw16V1MQNcGpPeAVgmVKQic0Lv6x7CyaMJY/b+V/rwCfS3TsEOgKAXsXbgSwfDszQgu3aeFhHRM614aeCQ=="
+    },
+    "acceptance_accept_below_threshold": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 170,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "Accepted below the threshold: the misses were all one vendor, now fixed upstream."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "aDx+5BqX0UWMUa0jAufJHeLcEhNJ5gk24tKVVupizuuqyLMWFwc402NLgvhGv2bgNwMEQeHksTHqrJb6kIYWAA=="
+    },
+    "acceptance_engagement_reject": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "settlement",
+          "digest": "sha256:b1465eb65f3d185969b060c53fe41dce281d1d0680e93a56c1d204194ecc5d6d"
+        }
+      ],
+      "grade": "recorded",
+      "reasons": [
+        "Across the engagement the reconciliations needed rework every month."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2027-02-02T10:00:00Z",
+      "sig": "Mq9SPAOFxe3YmoKUUvN5drb5+bL/34z8CqU97biYn9+IC6VPQUgYX/1hxhPs8qec+q+vd3keOoU3hsrtO0uoDw=="
+    },
+    "acceptance_reject_drafted": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "19 of the 200 invoices in the test set that were overbilled were not flagged."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T11:15:00Z",
+      "proposed": {
+        "agent": "UBD3QOMXDB44MN3EN3FRKLNQWHU6N7SIC4SDM4Z6NIBZHAEM7WWJE6YT",
+        "draft": "sha256:fb3b39fab693651704e5cebcba244d0c38c27ea12196deb5e585953d941d4388",
+        "drafted_at": "2026-10-08T09:41:00Z",
+        "sig": "dDXpORE0jPb7QDtUSrL0vRtGd31q1zbaNcUgDGlIroXXlXd10LeOuKbLalD3dyWl7JtobT+ytONLeb96uUNKBw=="
+      },
+      "sig": "ytfSg020g9Bprg4o0+A8X4pFtma/1Lk5WrfwStnFq+uDebf42AXw2osdYBJqGj/FoGEiQbCuMUV0iVp98WJzDw=="
+    },
+    "acceptance_reject_drafted_then_edited": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "Most of the overbilled invoices were missed."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "proposed": {
+        "agent": "UBD3QOMXDB44MN3EN3FRKLNQWHU6N7SIC4SDM4Z6NIBZHAEM7WWJE6YT",
+        "draft": "sha256:fb3b39fab693651704e5cebcba244d0c38c27ea12196deb5e585953d941d4388",
+        "drafted_at": "2026-10-08T09:41:00Z",
+        "sig": "dDXpORE0jPb7QDtUSrL0vRtGd31q1zbaNcUgDGlIroXXlXd10LeOuKbLalD3dyWl7JtobT+ytONLeb96uUNKBw=="
+      },
+      "sig": "b/6hw+tbRXhDDZUnbyTNj0HI/por75ItUQSfRzY0BPyT0zqpFNz/XeB0n3kvNXdoiOkFw7tmbpQf40+WiYnQCQ=="
+    },
+    "acceptance_revision_reject": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA3R2M",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:9760e2cf2e2adacbd05e1d151c0b01de36a5e54c24ac12e775c2d3ae8e148a1b"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 188,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "The revision flags 188 of 200, still under the threshold of 0.95."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-14T10:00:00Z",
+      "sig": "K+djslqawJW2rE/c5blPLhQNJeb1wQ+Is4oiSnPcs+gHCm8DxidPs5Cz16I3XAp7hqK0wlX7gFVG4m9NW8P/Aw=="
+    },
+    "acceptance_reject_without_reasons": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "Pmy+pue1pGfrsiTJtd7DM1ymbaEGWm27ioqN6rQ8mM0wUghwfpOIGf5qqqgiSclmFI7sGJdkFy9yG6x/xstmAg=="
+    },
+    "acceptance_reject_empty_reason": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        ""
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "sHGbz1DYgCBjO9JcEu8eQasvrjyrTPl93bHS5xyZyK/S4h4eN4a7Ar4WYc+hyUK6sFZrOhJvfMD4GmAshLHeAg=="
+    },
+    "acceptance_reject_empty_reasons": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "Dg38RsFr1GGpkpRGrVtrVdOu040xqGzRz6gr/SxWv6r05+AqWpTYrt98x0zLwfRQ9mLcB9RojOody9EHRZQ6Ag=="
+    },
+    "acceptance_unknown_decision": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "partial",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "Some of it."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "gqGbjM20HuXlQ2/olyw42DOyJoLLdMI74bFhESatYIXiQi5DFC1oRbyYz1MzjJWoDCZR9vP77c1OlfhglQIHDA=="
+    },
+    "acceptance_by_provider": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "EmDLJ7OhFD9hPGLeRh19LXnKsNiLB4IWlxz7OIuNfY0nvM1jjcpOM0WWyCR7utsjeqKHkqaokjhYxnbPEbqjCw=="
+    },
+    "acceptance_test_set_mismatch": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+          "ref": "artifacts:exceptions-test-set-v2"
+        }
+      ],
+      "result": {
+        "passed": 150,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "Too many misses."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "LdIpWvmUS2Hkw75Be4ge/wz6X0SA51pPixn0mspXJqOiqsU2tVZTHJEw5Rb9jFF1pmTY/diT5V5cAw35xaPIBQ=="
+    },
+    "acceptance_test_set_missing": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        }
+      ],
+      "grade": "recorded",
+      "reasons": [
+        "Too many misses."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "ywVArLaaIzGVIxmfpM0yYz66GCO5tRSSPr8GwVFB6PlkWAudgepc0aQhZYKN++ZuI8QVE4MxkYY9PEby3qtLBg=="
+    },
+    "acceptance_test_set_on_untested": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "reconciliation-report",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 200,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "knA/ljzKhzvrJnnu/BY1TVZvdxlwZeJzyCd52Q14Q4Lr+oGI6zn+jDLt659/bvzrsgOhZrnaUgDEM6huxjjwDw=="
+    },
+    "acceptance_withheld_without_ref": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "GHWg3KdDUEfkRMOKyLnaoXDFcrQd9aCUV76hW80Y4HL0ZEax0F94JNBDgQENZWNwWwfRk3iX7QdTpkNXCrbjCA=="
+    },
+    "acceptance_without_delivery": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "LaCvRk9DpBOyXAhozh/EUUxm3T9StxPMn5bUEj8yxOt20e8tmni9onzJgetZA7eP7zcKyTiyeLU4rWVd5FHWBA=="
+    },
+    "acceptance_two_deliveries": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "delivery",
+          "digest": "sha256:9760e2cf2e2adacbd05e1d151c0b01de36a5e54c24ac12e775c2d3ae8e148a1b"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "MfUEGcnQKGtyaYqR8mtoQaMjlMRmnffGTlHWVBql7a1yTn/0uLQJsf6uKnPszU7uIE8CZ//kai8YqWLZNYtLAQ=="
+    },
+    "acceptance_delivery_not_a_digest": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "artifacts:exceptions"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "gP14ARZ2u4TIvWO54FtM+Wa5GAsodok+E1VbzqwsYIRe5v+0O78u8Y31WslzInLsIB/qFEcaDEt2xwVEqUdSAA=="
+    },
+    "acceptance_unknown_role": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        },
+        {
+          "role": "model",
+          "digest": "sha256:b1465eb65f3d185969b060c53fe41dce281d1d0680e93a56c1d204194ecc5d6d"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "wDnxQPPE5o8dAnMgBrIZuPuAOtrX68JawMA/2nplzEObaFD8sFy/72o+qU/2LDGkyENFioOrX8Ue6CTkOV2QDg=="
+    },
+    "acceptance_without_result": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "QxhvpZ64EaPWZ5WgAcKirebMTu3NKcqublrQqZ6fZVuwxie6qU+aojqA1hiLXqN/yEUGUvuzvpgvxF9O0WImDA=="
+    },
+    "acceptance_result_on_untested": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "reconciliation-report",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "result": {
+        "passed": 1,
+        "of": 1
+      },
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "du7h2aZT6fO2zczlaaVQ+lx7IHFY43MPNDYQqbL6/K8cIOO/WJ3f/K0FjZ/+ZAQlB0OxAMydI2XVqMWoDEkGBA=="
+    },
+    "acceptance_passed_over_of": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 201,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "JEoJyWsCq8mXTsqM6s+yUmx+ekFy5z5LOEpafzzaaZGdg+YupOMujOCWk5VgeaOakAWCimtsEBPXADMX/8gcCg=="
+    },
+    "acceptance_of_zero": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 0,
+        "of": 0
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "Es3QNXoN71z3nA1V4CVAJ9Yk+WdilGw4+/DUuGsnxvaLBprrokVDBgDxkMCs/xLypOgq6aBw+X/eDNEz8C14BA=="
+    },
+    "acceptance_grade_recorded_with_test_set": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "65NiCS8EZh5v+npYTx2mCLjD48ej0WCvaHMme2CLaKRquATgb0spCCyA0PT02zZa4O0ZErAF3gtCy0vFBe8KDA=="
+    },
+    "acceptance_grade_evidence_without_test_set": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "reconciliation-report",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "9loHebKvDuL9LhLror+jq4SxvMEtTeCKuyyQbeCzEku9kWN2nExZYpSE8VuB7cn/j1Uk5LC2F48OSBwD4quzDg=="
+    },
+    "acceptance_unknown_deliverable": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "month-end-close-summary",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "PNT3RbLbW7uFE9xBO/wBtSW7Z5V8oUAKtcT2sk/b/9jmLCA42kGRQ6JDY5wPJGhn9+XYIe89OSOkTzvb/+DgAQ=="
+    },
+    "acceptance_per_task_without_task": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "sMBXLQNXuC3HXUzZlfSjXNNpd8Z62YkZUeMNP7+gTv4UUN13Z+Ptne4ZF6R2DsTET5VXeaErGw4EB+5cHxwAAw=="
+    },
+    "acceptance_engagement_with_task": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [],
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2027-02-02T10:00:00Z",
+      "sig": "sB21WW5bOx9kQsCadTIpqIGBAMoWhKed7FLvhVSHQAlyQjN+gS1UpgCXIlQsWPOAHzqOoGKogrJWgdzHoRCODw=="
+    },
+    "acceptance_engagement_with_delivery": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:cc9208d5032a2a23b5ff52765866083882e668e03398440cac1fc150321a9b4d"
+        }
+      ],
+      "grade": "recorded",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2027-02-02T10:00:00Z",
+      "sig": "qDkiIG9MgGxFIaC7WzuSLkhmt1f1pK5x0uSqzd8aEW++VHg9Egdd4mdOvIK5n5kGtCwXtR/Pb94f+vhD/uhQAw=="
+    },
+    "acceptance_extra_member": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "score": 98,
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "Ydr5nFu88hqmj6h64rs4WnImfteGEw4MTm3910oslfW6Rq4F9ySQs0buyMa0sdu7/BVRagaFyJMiR1vEl+i5Dw=="
+    },
+    "acceptance_rests_on_extra_member": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1",
+          "model": "judge-1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "tKSmJDEtnV2IH3/BzWBi0mYTGus3N13mDN5kEy9IF+VZIg+RVFDy+dgBykUF9laxgRKH+KLgRxR9rCMHRb2IBA=="
+    },
+    "acceptance_wrong_version_digest": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:1111111111111111111111111111111111111111111111111111111111111111",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "accept",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 196,
+        "of": 200
+      },
+      "grade": "evidence",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-08T10:00:00Z",
+      "sig": "y0oPvE6OSsBhzznb/wA5kRPNoHDRDZuS8YizRcYAwlLaCFqXqqTIe7o25tCjzjsMyWsSDVk0TcIQLuQOe+8xAg=="
+    },
+    "acceptance_reject_late": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "19 of the 200 invoices in the test set that were overbilled were not flagged."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-17T09:00:00Z",
+      "sig": "MCzDbF7DfQOpC8qjZx6qiR5VV8jiC/BXFHDYntcqJESq/RD2yKcoKmlb/ZXG9r3Qd8U2VbtEB/uXXM1mfhnpAg=="
+    },
+    "acceptance_reject_last_second": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "deliverable": "exceptions",
+      "task": "task_01JA2Q7X",
+      "decision": "reject",
+      "rests_on": [
+        {
+          "role": "delivery",
+          "digest": "sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d"
+        },
+        {
+          "role": "test_set",
+          "digest": "sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3",
+          "ref": "artifacts:exceptions-test-set-v1"
+        }
+      ],
+      "result": {
+        "passed": 181,
+        "of": 200
+      },
+      "grade": "evidence",
+      "reasons": [
+        "19 of the 200 invoices in the test set that were overbilled were not flagged."
+      ],
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-17T08:59:59Z",
+      "sig": "tBq03CCM+KZfm1xI1ra1SNXPXEALIM9AzXah6/z5m8ZsKMuHm9JeKrza1jUzAFU/xMcp7XOE2PZvTmMJHhTgCA=="
+    },
+    "dispute_cites_rejection": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "posture": "escalate_to_owners",
+      "amount": 40000,
+      "cites": [
+        {
+          "kind": "acceptance",
+          "digest": "sha256:3fb53d2f14c1fcd5a9f1693fa0b3f5a595e280864fb1df2f4d1ca8eb153957e4"
+        }
+      ],
+      "evidence": [],
+      "reason": "The exceptions for task_01JA2Q7X missed the agreed threshold.",
+      "by": "client",
+      "key": "UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3",
+      "signed_at": "2026-10-09T10:00:00Z",
+      "sig": "TEDl7yE2brfV9uHF6PBlu2mdngoLbEUqHJ+XeC/uPaiPrzjGFf+s9UYgLvXQGajBH8A6zOga45OKyo5dBKrsCg=="
+    },
+    "dispute_contests_rejection": {
+      "engagement": "sow_d03p0x038j4qyqr6",
+      "version": 1,
+      "digest": "sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce",
+      "posture": "escalate_to_owners",
+      "amount": 40000,
+      "cites": [
+        {
+          "kind": "acceptance",
+          "digest": "sha256:3fb53d2f14c1fcd5a9f1693fa0b3f5a595e280864fb1df2f4d1ca8eb153957e4"
+        }
+      ],
+      "evidence": [],
+      "reason": "The rejection is wrong: the measure was met on the revealed set.",
+      "by": "provider",
+      "key": "UDCFPA7KHMXUNJJU7KJ6YTHHCN5VMIA4TKJMP57VXRUM4PRBYBA4GOPO",
+      "signed_at": "2026-10-09T10:00:00Z",
+      "sig": "Wd8Tow/87HXv84dydEqBHOjv9p0Eok63GCn3cYE7Ml8hIom1jo4q3PqaXPH1qH8/TT0wYqvedYqcK0WBmPY/Dg=="
     }
   },
   "signed_bytes": {
@@ -5874,6 +7086,338 @@
       "document": "agreed",
       "valid": false,
       "why": "the unused bits of the last character are zero"
+    },
+    {
+      "act": "acceptance_accept",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "196 of 200 meets 0.95; reasons are optional on an accept",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "a rejection with reasons, resting on the committed test set and the delivery it judged",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject_untested",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "a deliverable without an acceptance clause: no test set and no result, graded recorded",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_accept_untested",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "an accept of a deliverable without an acceptance clause",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_accept_below_threshold",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "the client may accept work that missed the threshold; nothing refuses a decision for departing from the result",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject_drafted",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "an agent drafted it and the owner signed exactly those bytes later that morning; signed_at is outside the draft (Common Agent 7.9)",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_engagement_reject",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "a review of the engagement as a whole at its end: no deliverable, no task, resting on a settlement record, graded recorded"
+    },
+    {
+      "act": "acceptance_reject_drafted_then_edited",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the owner changed the reasons after the agent drafted them, so the draft digest no longer matches",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_revision_reject",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "the runtime holds an accept of the first delivery; a revision is another task and another delivery, so rejecting it undoes no acceptance",
+      "delivered_at": "2026-10-13T09:00:00Z",
+      "earlier": [
+        "acceptance_accept"
+      ]
+    },
+    {
+      "act": "acceptance_reject_without_reasons",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "a rejection carries its reasons",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject_empty_reason",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "a reason is 1 to 1,000 code points",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject_empty_reasons",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "reasons lists 1 to 16 reasons",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_unknown_decision",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "decision is accept or reject",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_by_provider",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the client's seat signs an acceptance act",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_test_set_mismatch",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the test_set entry carries the digest the version commits, byte for byte",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_test_set_missing",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the deliverable's acceptance clause commits a test set, so the act rests on it",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_test_set_on_untested",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the deliverable commits no test set, so the act names none and carries no result",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_withheld_without_ref",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the test set was withheld, so the act names where its bytes are revealed",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_without_delivery",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the act names the delivery it judged",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_delivery_not_a_digest",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the delivery entry carries a digest",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_without_result",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that rests on a test set carries its result",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_result_on_untested",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act with no test set carries no result",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_passed_over_of",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "passed is at most of",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_of_zero",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "of is at least 1",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_grade_recorded_with_test_set",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that rests on a committed test set is graded evidence",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_grade_evidence_without_test_set",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that rests on no test set is graded recorded",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_unknown_deliverable",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the deliverable is one the version names",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_per_task_without_task",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "a per-task deliverable is judged task by task",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_two_deliveries",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "rests_on names exactly one delivery",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_unknown_role",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an entry's role is delivery, test_set or settlement",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_engagement_with_task",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that names no deliverable judges the engagement and names no task"
+    },
+    {
+      "act": "acceptance_engagement_with_delivery",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act that judges the engagement rests on settlement records only"
+    },
+    {
+      "act": "acceptance_extra_member",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an act carries no member its kind does not define",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_rests_on_extra_member",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "an entry of rests_on carries role, digest and ref only",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_wrong_version_digest",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "digest is the SHA-256 of the version's signed bytes",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject_last_second",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "one second before the 10 days of deemed acceptance run out",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject_late",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "10 days have run from the delivery, so silence has already accepted it",
+      "delivered_at": "2026-10-07T09:00:00Z"
+    },
+    {
+      "act": "acceptance_reject",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": false,
+      "why": "the runtime already holds an accept of the same delivery, and a rejection does not undo an acceptance",
+      "delivered_at": "2026-10-07T09:00:00Z",
+      "earlier": [
+        "acceptance_accept"
+      ]
+    },
+    {
+      "act": "acceptance_accept",
+      "kind": "acceptance",
+      "document": "acceptance",
+      "valid": true,
+      "why": "an accept may follow a rejection of the same delivery: a changed mind is a second act",
+      "delivered_at": "2026-10-07T09:00:00Z",
+      "earlier": [
+        "acceptance_reject"
+      ]
+    },
+    {
+      "act": "dispute_cites_rejection",
+      "kind": "dispute",
+      "document": "acceptance",
+      "valid": true,
+      "why": "the client's dispute names the rejection by the digest of its signed bytes"
+    },
+    {
+      "act": "dispute_contests_rejection",
+      "kind": "dispute",
+      "document": "acceptance",
+      "valid": true,
+      "why": "the provider's dispute contests the same rejection"
     }
   ],
   "pairs": [
@@ -5904,5 +7448,10 @@
       "closes": false,
       "why": "one seat twice is not both seats"
     }
-  ]
+  ],
+  "acceptance_signed_bytes": {
+    "act": "acceptance_reject",
+    "bytes": "agent-sow-acceptance-v1\n{\"by\":\"client\",\"decision\":\"reject\",\"deliverable\":\"exceptions\",\"digest\":\"sha256:ee91f11b2a93e33dea6f5882eec6c2d1ef2ae6dee9ceb11948e4d15a57e1b6ce\",\"engagement\":\"sow_d03p0x038j4qyqr6\",\"grade\":\"evidence\",\"key\":\"UA753LJST5GAH632MY3EBMCE7FDB6YP5XW4O6IA5SDXZTOAYWCIP3CM3\",\"reasons\":[\"19 of the 200 invoices in the test set that were overbilled were not flagged.\",\"The threshold is 0.95 and the result is 0.905.\"],\"rests_on\":[{\"digest\":\"sha256:83f3be6ab79e46c86c2de3c18d392b8b7763926bd400af2b52b05c6ede80764d\",\"role\":\"delivery\"},{\"digest\":\"sha256:797bb77a11b080a36dd3d189194ebc244647f077e9437eb50ff337705143aaa3\",\"ref\":\"artifacts:exceptions-test-set-v1\",\"role\":\"test_set\"}],\"result\":{\"of\":200,\"passed\":181},\"signed_at\":\"2026-10-08T10:00:00Z\",\"task\":\"task_01JA2Q7X\",\"version\":1}",
+    "digest": "sha256:3fb53d2f14c1fcd5a9f1693fa0b3f5a595e280864fb1df2f4d1ca8eb153957e4"
+  }
 }

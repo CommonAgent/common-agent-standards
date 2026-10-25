@@ -1,7 +1,7 @@
 # The Common Agent Specification
 
-**Version:** 0.36.0-draft
-**Status:** Working draft, 2026-10-24. Home: https://commonagent.net/
+**Version:** 0.37.0-draft
+**Status:** Working draft, 2026-10-25. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
 
@@ -895,6 +895,46 @@ These four are offered to PACT's working group as proposals, not as a competing 
 
 **Conformance.** Two fixtures, `pact-identity` and `pact-delegated`, hold every MUST, MUST NOT, SHOULD and MAY line of PACT 1.0 sections 2 to 6 as checks, each for the Provider, the personal agent, or both, with claim vectors that carry their own time.
 
+### 7.9 Acts an agent drafts and its owner approves
+
+An agent often prepares an act that binds its owner: a termination, the rejection of delivered work, the award of a posting, a review. The owner should still be the party that binds, and a reader of the act should be able to tell that an agent drafted it. This section defines one marker, `proposed`, that records two facts on a signed act: which agent drafted it, and that the owner approved exactly the bytes the agent drafted. The marker is defined once, here. Each specification that lets an act carry it says where it sits: Agent SoW §6.3 for the acts on an engagement, Agent RFP §6 for the acts on a posting, the award among them, Agent NDA §6 and §7.3 for signature records and acts, Agent Mandate §6 and §13 for mandates and the acts on them, and Agent Reputations §6.1 and §6.6 for attestations.
+
+**The marker.**
+
+```json
+"proposed": {
+  "agent": "<public key of the agent that drafted the act>",
+  "draft": "sha256:<hex SHA-256 of the draft bytes>",
+  "drafted_at": "2026-10-08T09:41:00Z",
+  "sig": "<the agent's signature over the draft statement>"
+}
+```
+
+- `agent` is the public key of the agent that drafted the act, the identity key of Section 4.1.
+- `draft` is `sha256:` and the 64 lowercase hex digits of the SHA-256 of the act's draft bytes.
+- `drafted_at` is the instant the agent finished the draft, an RFC 3339 date-time. Where the act states the instant its signer signed, `drafted_at` MUST NOT be later than it, compared at every fractional digit either one carries.
+- `sig` is the agent's Ed25519 signature (RFC 8032, without prehashing or a context) over the draft statement, in base64 with padding (RFC 4648 §4), 88 characters with the unused low bits of the last data character zero.
+
+The marker carries only these four members, and a verifier MUST refuse a marker that carries any other.
+
+**The draft bytes.** An act's draft bytes are its signed bytes as its own specification defines them, computed with the marker removed, and with the member that states when the signer signed removed as well, where the act has one. So the owner writes the true instant at which it approves, and a draft the owner approves an hour or a day later needs no new draft. A specification MAY also remove a member whose value is derived from bytes that hold the marker, such as a document's identifier, and it says so where it places the marker. Where an act is a statement with no members to hold the marker, such as a colon-delimited attestation, its specification carries the marker beside the act, in the same submission as the act, and the draft bytes are the act's signed bytes in full. A marker added beside an act after the act was delivered counts for nothing, because the owner's signature does not cover it.
+
+**The draft statement.** The agent signs the ASCII tag `common-agent-draft-v1`, one newline, and the JCS canonical JSON of the marker with `sig` removed. The tag differs from the tag of every act in the family, so the agent's signature over its draft is never a signature over the act, even where the agent's key could sign the act itself.
+
+**The owner's approval.** The owner approves the draft by signing the act, with the marker in place, under the act's own tag and with the key the act's own specification requires. The marker is inside the signed bytes, so the owner's one signature covers both the act and the statement that this agent drafted it. A verifier that finds a marker checks three things, in addition to every check the act's own specification makes:
+
+1. the SHA-256 of the draft bytes, computed from the act as received, equals `draft`;
+2. `sig` verifies by `agent` over the draft statement;
+3. `drafted_at` is not later than the act's own signing instant, where the act states one.
+
+A verifier MUST refuse an act whose marker fails any of the three. It refuses the whole act, and does not read it as an act without a marker: an act that says an agent drafted it, and cannot show it, is not the act its owner approved. Where the marker is carried beside a statement, the owner's signature covers the draft bytes and not the marker, so the marker shows that the agent signed the same bytes, and it does not show that the owner saw the marker.
+
+**One draft, one approval.** The approval binds to the exact bytes. A change to any byte the draft covers, by the owner, the owner's platform or anyone else, makes a new draft. The agent signs the new draft again, or the marker is removed and the act no longer claims an agent drafted it. A platform that holds drafts for its owners to approve SHOULD let an unapproved draft lapse after a period it states, and SHOULD NOT present a draft for approval once the state it was drafted against has moved, such as an engagement amended or a posting closed since `drafted_at`. The act's own rules still refuse an act made under a version that no longer governs.
+
+**What the marker does not change.** The drafting agent's signature binds nobody. Only the signature the act's own specification requires makes the act, and an act that carries a marker and no valid owner signature is a draft and nothing more: a runtime MUST NOT act on it. The marker does not make the agent's key a key that may sign the act, and it does not say how the owner approved. Where a specification requires a person-grade approval, such as the approval authority of Agent SoW §6.1, that requirement stands beside the marker. A renderer MUST NOT present the marker as more than it shows: this agent drafted these bytes, and the owner's key signed exactly those bytes. An act without a marker says nothing about who drafted it.
+
+**Conformance.** The fixture `draft-approval.json` pins the draft bytes and the draft statement, with real signatures, for an Agent SoW act, an Agent RFP award, an Agent NDA act and signature record, a mandate whose identifier is derived with the marker in place, and a statement carrying the marker beside it. It holds acts the owner signed later than the draft, which stand, and the acts a verifier refuses because the owner changed a byte, the agent signed the wrong bytes, the marker names another agent, carries another member or is dated after the act, or the owner never signed.
+
 ## 8. What others attest
 
 ### 8.1 The record convention
@@ -1779,6 +1819,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.37.0-draft (2026-10-25).** Section 7.9 is new: an act an agent drafts and its owner approves. It defines one marker, `proposed`, with four members: `agent`, the drafting agent's key; `draft`, the SHA-256 of the act's draft bytes, which are its signed bytes computed without the marker and without the signer's signing instant, so the owner writes the instant it actually signs; `drafted_at`, no later than that instant; and `sig`, the agent's signature over the draft statement, which is the tag `common-agent-draft-v1`, one newline, and the JCS of the marker without `sig`. A specification may also leave out a member derived from bytes that hold the marker, such as a mandate's identifier. The owner approves by signing the act with the marker in place, so one signature covers the act and the statement that the agent drafted it, and a change to any byte the draft covers makes a new draft. A verifier refuses the whole act when the marker fails. The marker binds nobody, does not make the agent's key a key that may sign the act, and does not say how the owner approved. A statement with no members, such as a colon-delimited attestation, carries the marker beside it in the same submission, and a marker added later counts for nothing. Agent SoW 0.35.0-draft, Agent RFP 0.12.0-draft, Agent NDA 0.3.0-draft, Agent Mandate 0.10.0-draft and Agent Reputations 0.12.0-draft say where it sits on their acts. A new fixture, conformance/draft-approval.json, pins it with real signatures across those specifications. The minor version moves because the section adds a member and a tag. A document that was valid under 0.36.0-draft is valid under this version.
 
 **0.36.0-draft (2026-10-24).** The deployment record (Section 8.3) gains `egress`, what the agent can reach on the network after the act: `policy`, `allowlist` or `open`; under `allowlist`, `allowed[]`, one entry for every destination the mechanism lets through, with `from` (`system`, `network`, `registrar`, `model`, `workspace`, `instruction`, or `host` for what the target lets through that nothing declared accounts for), its `name` and the `address` allowed; an optional `denied[]`, absent where nothing enforces; and `enforced_by`, a free string naming the mechanism that applies the policy, or `none`. An `allowlist` is never recorded with `enforced_by` of `none`, nor where only something the agent can change applies it, and a target that cannot restrict is recorded as `open` with `none`. A refused connection is the security event `egress_denied` (Section 8.8.1), never written back into the record. The runtime requirements (Section 12.4) gain no member: the derived set of destinations comes from the systems' bindings, the network and the registrar, the model the harness is given, and the hosts the owner's instruction names for each workspace kind, and a further destination, one outside it, needs the `reaches-network` authority and the owner's instruction to name it. The install (Section 12.7, and 12.7.1 where the owner runs the agent) provides the egress and records it on every deploy, update, rollback, reconfigure, install alongside and retire a version, deriving it again at each act from every installed version; it SHOULD enforce the allowlist by whatever the target supports, MUST NOT allow a further destination the instruction does not name, and refuses an instruction that names one for an agent without `reaches-network`. Section 6.11 defines `reaches-network` against the derived set and says the network is decided by the host and provided to the whole agent, so an `authority_decided_by` of `rule` is a claim about the network only where no offering declares `reaches-network` and the record shows an enforced allowlist with no `instruction` or `host` entry. A record that was valid under 0.35.0-draft is valid under this version.
 

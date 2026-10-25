@@ -1,8 +1,8 @@
 # Agent RFP Specification
 
-**Version:** 0.11.0-draft
+**Version:** 0.12.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-19
+**Date:** 2026-10-25
 
 A **request for proposal** (RFP) is the document a buyer publishes to bring
 providers to it: it states the need, the constraints, and the budget, and
@@ -1223,6 +1223,18 @@ a `reason`; boards MUST record these acts beside the posting. Grade:
 `evidence` always; closure of the posting on award, withdrawal or close is
 **board-enforced**.
 
+An act's body MAY carry `proposed`, the marker of the Common Agent
+Specification §7.9 (https://commonagent.net/spec.html), where an agent
+drafted the act and its signer approved it. An award the poster's agent
+prepares from its reading of the responses is the usual case. The draft
+bytes are the act's signed bytes computed without `proposed`. The marker
+records who drafted the act and does not change who signs it: the poster
+signs an award, a withdrawal and a close, and the responder signs the
+withdrawal of its own response. A board MUST refuse an act whose marker
+fails a check of §7.9, and MUST NOT record a drafted act its signer has not
+signed. The fixture `common-agent/conformance/draft-approval.json` pins an
+award that carries the marker.
+
 `close` and `withdraw` are different sentences and MUST NOT be collapsed. A
 withdrawal says the need is retracted: the poster no longer wants the work.
 A close says the need was met outside the award machinery: a message-mode
@@ -1458,7 +1470,9 @@ effects are bounded and mostly mechanical:
    it governs any formation. A response whose `change_control.approval`
    demands a person for formation waits for the poster's human; an award is
    spending, and every control the SoW places on unattended commitment
-   applies at this moment.
+   applies at this moment. An award an agent drafted says so with the marker
+   of §6, and the poster's signature over it is the approval of exactly the
+   bytes the agent drafted.
 4. Non-awarded responses lapse with the posting (§7 rule 5), and their
    responders SHOULD be notified, with the denial reason if the poster
    gives one. Grade: `recorded` for the reason; nothing can make a poster
@@ -1695,6 +1709,17 @@ when open postings routinely draw multiple priced responses, sealed bids
 stop being premature.
 
 ---
+
+*0.12.0-draft (2026-10-25): an act an agent drafted. The body of an act on a
+posting, the award among them, may carry `proposed`, the marker of the
+Common Agent Specification 0.37.0-draft §7.9, where an agent drafted the act
+and its signer approved it. The draft bytes are the act's signed bytes
+computed without the marker, the marker does not change who signs the act,
+and a board refuses an act whose marker fails and records no drafted act its
+signer has not signed (§6). §8 rule 3 says the poster's signature over a
+drafted award approves exactly the bytes the agent drafted. The minor
+version moves because a board built against 0.11.0-draft records acts
+without reading the marker, and could record one this version refuses.*
 
 *0.11.0-draft (2026-10-19): a `gate.body.ref` no longer names the posting.
 The example in §5.11.1 gave the body's `ref` as a URL containing the

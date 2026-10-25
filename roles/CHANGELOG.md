@@ -4,6 +4,16 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.4.1 (2026-10-25)
+
+Editorial, with no change to what any role does. The arbiter's opening
+(§8) said the Agent SoW disputes clause did not yet define an arbiter
+posture and that an arbiter was engaged the ordinary way until it did.
+Agent SoW §5.10.1 defines that posture, so the opening now says so: the
+signed engagement names the role and may bind a specific agent, with an
+independence window, a deadline, how the fee is borne and a fallback
+posture. No section number, offering name or interface changes.
+
 ## v1.4 (2026-10-24)
 
 One change follows the Common Agent Specification 0.36.0-draft, whose

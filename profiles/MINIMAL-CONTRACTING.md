@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.5.12-draft
+**Version:** 0.6.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-24
-**Applies to:** Agent Mandate 0.9.0-draft · Agent SoW 0.34.0-draft · Agent Messaging 0.9.16-draft
+**Date:** 2026-10-25
+**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.35.0-draft · Agent Messaging 0.9.16-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.5.12-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.6.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -30,7 +30,7 @@ A profile implementation MUST refuse to sign, countersign or complete the format
 5. **The engagement ends.** It lapses at `ends_at`, ends `exhausted` when the cap is reached, or ends by a signed terminate act for convenience or for cause (§5.9, §6.3).
 6. **The parties settle a disagreement, where one arises.** Under the posture `none`, settlements are final. Under `escalate_to_owners`, either seat opens a dispute with a signed dispute act, and the dispute closes when both seats sign resolve acts that agree (§5.10, §5.10.2, §6.3).
 
-## 3. Agent Mandate 0.9.0-draft
+## 3. Agent Mandate 0.10.0-draft
 
 Agent Mandate gives the client organization an identity a machine can check, and gives the person who approves contracts a signed, bounded and revocable authority to do so. That authority is the delegated budget.
 
@@ -46,7 +46,7 @@ Agent Mandate gives the client organization an identity a machine can check, and
 | §9 | The lifecycle, in which revoking a mandate revokes every mandate issued under it. |
 | §13 | The signature tags `agent-charter-v1`, `agent-mandate-v1` and `agent-mandate-resolve-v1`. |
 
-Three parts of these sections are left out. Under §6 rule 6 the payer is the holder, which is the default, so a mandate that names the organization as payer is outside the profile. Rules 8 and 9 of §6 serve Agent NDA and the resource proxy, and a profile implementation refuses an act that needs them. In §7 the powers `amend`, `award`, `nda` and `write` are never exercised, because the acts they cover are outside the profile. A profile implementation still validates a mandate that carries any of these, because a mandate is shared between implementations.
+Three parts of these sections are left out. Under §6 rule 6 the payer is the holder, which is the default, so a mandate that names the organization as payer is outside the profile. Rules 8 and 9 of §6 serve Agent NDA and the resource proxy, and a profile implementation refuses an act that needs them. In §7 the powers `amend`, `award`, `nda` and `write` are never exercised, because the acts they cover are outside the profile. A profile implementation still validates a mandate that carries any of these, because a mandate is shared between implementations. For the same reason it checks the marker of §6 rule 10 on a mandate or an act that carries one, as the Common Agent Specification §7.9 says.
 
 **Left out.**
 
@@ -67,7 +67,7 @@ Sections 1, 10, 11 and 12 are informative.
 
 `mandate-proxy.json` is left out with §7.1, and `mandate-treasury.json` with §8.
 
-## 4. Agent SoW 0.34.0-draft
+## 4. Agent SoW 0.35.0-draft
 
 Agent SoW is the contract: who the parties are, what work is in scope, what it costs, and how it ends. Both owners sign the same document, and the runtimes enforce what it says.
 
@@ -88,7 +88,7 @@ Agent SoW is the contract: who the parties are, what work is in scope, what it c
 | §5.11 | Confidentiality and retention. |
 | §5.17 | The buyer's reference. |
 | §6, §6.1, §6.2 | Signatures and owner keys, approval authority, and organizational authority. |
-| §6.3 | The signed acts terminate, usage, settle, dispute and resolve, with the outcome `settled`. |
+| §6.3 | The signed acts terminate, usage, settle, dispute and resolve, with the outcome `settled`, and the marker `proposed` on any of them, checked as the Common Agent Specification §7.9 says. The cases of [draft-approval.json](../common-agent/conformance/draft-approval.json) whose names start with `sow_` are the ones that apply. The acceptance act is left out with §15. |
 | §7, §8, §9 | The lifecycle, who enforces what, and precedence. |
 | §12.1, §12.1.1 | Formation from a standing proposal, and from a directed one. |
 
@@ -127,7 +127,8 @@ Sections 1, 10 and 11 are informative.
 |------|--------------------------------------|
 | [sow-signatures.json](../sow/conformance/sow-signatures.json) | Every case: the signed bytes, binding to `owner_key`, and the canonical padded base64 signature. |
 | [sow-pricing.json](../sow/conformance/sow-pricing.json) | The arrangement, every price case, rating without the cases for pass-through lines and operator fees, the settlement lines that are neither, the reservation, document and task states, parties, the directed proposal's clause and formation, approval, and signing. |
-| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate, usage and settle case except the two with an operator fee, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out. |
+| [sow-acts.json](../sow/conformance/sow-acts.json) | Every terminate, usage and settle case except the two with an operator fee, every refusal that every kind of act shares, the disputes and resolutions under `escalate_to_owners` and `none`, and the three settlement pairs. The cases for refunds, verdicts and releases are left out, and so are the acceptance cases and the two disputes that cite an acceptance act. |
+| [draft-approval.json](../common-agent/conformance/draft-approval.json) | The cases whose names start with `sow_`: an Agent SoW act that carries the `proposed` marker. |
 | [sow-buyer-reference.json](../sow/conformance/sow-buyer-reference.json) | The form, the template, the carriage onto settlement records and receipts, and the check for a discrepancy. The three carriage cases about amendments are left out. |
 | [sow-data-use.json](../sow/conformance/sow-data-use.json) | The promises, the clause and its signing. The comparison against a stated requirement is left out. |
 | [sow-disputes.json](../sow/conformance/sow-disputes.json) | The postures and the clause. The arbiter's verdict is left out. |
@@ -163,7 +164,7 @@ Each part this profile leaves out adds members, acts or documents that a profile
 - **Agent RFP.** A client that does not yet know its provider posts a request for proposals, and the award forms an Agent SoW engagement. Adding Agent RFP adds the posting, the responses and the award, and the `award` power of a mandate. Formation, the acts and the receipts stay as they are.
 - **Agent NDA.** Parties that need to share confidential material before an engagement exists sign an Agent NDA, and the engagement names it in its `nda` member (Agent SoW §5.16). Adding Agent NDA adds that member, the `nda` power and its check (Agent Mandate §7.2).
 - **Agent Reputations.** A bureau reads the records a profile engagement already leaves, which are the signed engagement, its acts and its receipts. Adding Agent Reputations adds post-engagement reviews (Agent SoW §15) and the reports a client reads before it contracts.
-- **The rest of Agent SoW and Agent Mandate.** Amendments add the `amend` power and the formation messages of §5.8. The other dispute postures add the remaining resolve outcomes of §6.3. Subcontracting, provider contact, reporting, liability and service floors each add one clause. The treasury lets the organization pay in place of the holder, and the resource proxy lets a contracted agent write into the client's systems.
+- **The rest of Agent SoW and Agent Mandate.** Amendments add the `amend` power and the formation messages of §5.8. The other dispute postures add the remaining resolve outcomes of §6.3. Post-engagement review (§15) adds the acceptance act of §6.3. Subcontracting, provider contact, reporting, liability and service floors each add one clause. The treasury lets the organization pay in place of the holder, and the resource proxy lets a contracted agent write into the client's systems.
 
 ## 8. Profile conformance
 
@@ -172,6 +173,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.6.0-draft** (2026-10-25). The profile applies to Agent Mandate 0.10.0-draft and Agent SoW 0.35.0-draft. Both let a signed act, and Agent Mandate a mandate, carry `proposed`, the marker of the Common Agent Specification 0.37.0-draft §7.9 that records which agent drafted it and binds the owner's signature to exactly the bytes the agent drafted. A profile implementation checks the marker wherever it appears on an act of §6.3 or on a mandate, and the `sow_` cases of `common-agent/conformance/draft-approval.json` apply. Agent SoW's new acceptance act belongs to post-engagement review (§15), which stays outside the profile, and its cases in `sow-acts.json` are left out, with the two disputes that cite an acceptance act. The minor version moves because an implementation of 0.5.12-draft refuses a valid act or mandate that carries the marker.
 
 **0.5.12-draft** (2026-10-24). The profile applies to Agent Messaging 0.9.16-draft, which adopts §13.6, outside the sections this profile names. Quarantine notices are part of advisories, which Agent Messaging's core profile leaves deployment-defined, so the core this profile assumes is unchanged. The patch version moves because an implementation of 0.5.11-draft meets this version unchanged.
 

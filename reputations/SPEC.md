@@ -1,7 +1,7 @@
 # Agent Reputations Specification
 
-**Version:** 0.11.1-draft
-**Date:** 2026-10-20
+**Version:** 0.12.0-draft
+**Date:** 2026-10-25
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
 **Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent NDA (confidentiality), Agent Reputations (reputation)
@@ -55,8 +55,9 @@ and answers queries with signed reports. The role parallels Personal Agent Namin
 submits interaction facts to a bureau under its own signature. A bureau accepts facts
 only from reporters it is configured to trust (§4.2).
 
-**Evaluator**: a caller (agent or the human behind one) that submits an attestation
-about an interaction it participated in.
+**Evaluator**: the party that submits an attestation about an interaction its agent
+participated in. The evaluator is the agent's owner, who signs the attestation, and
+the agent may draft it (§6.1).
 
 **Operator**: whoever runs an agent and answers for it, as the Common Agent
 Specification defines the term (its §2). A bureau identifies an agent's operator
@@ -129,8 +130,9 @@ the mesh requires a bureau to exist. An agent network without a bureau still run
 it just doesn't remember.
 
 A bureau consumes Personal Agent Naming and ANS in the usual way: it resolves handles, verifies cards, and
-pins keys per Personal Agent Naming §5.3. Attestations are signed with the same agent key a subject or
-evaluator bound in Personal Agent Naming §4. One key, one identity, every layer.
+pins keys per Personal Agent Naming §5.3. A subject is the agent key it bound in Personal Agent Naming
+§4, one key and one identity at every layer. An attestation is a judgment its evaluator's owner answers
+for, so the owner signs it, and the evaluator's agent may draft it (§6.1).
 
 ## 3. Enrollment
 
@@ -1130,9 +1132,29 @@ An attestation is the evaluator's signed statement about one interaction:
 
     fdbk-attest-v1:<interaction_id>:<subject>:<capability>:<outcome>:<ISO-8601 timestamp>
 
-signed with the evaluator's agent key bound under Personal Agent Naming, submitted with an optional
-free-text note (stored, never scored, because text is for the subject's
-remediation and not for the formula).
+signed with the evaluator's owner key, submitted with an optional free-text note
+(stored, never scored, because text is for the subject's remediation and not for
+the formula). The owner key is the owner of the evaluator's agent as the registry
+verified it through an `owner_attestation` (Agent Messaging §8.6). A default owner,
+the hosting node's key with no attestation, is not an owner key here, so an agent
+whose owner is unattested cannot attest. For an interaction under an Agent SoW the
+owner key is the `owner_key` of the evaluator's seat, which also signs any review
+of that engagement (Agent SoW §15), and the two MUST be the same key where both
+are known.
+
+An agent MAY draft the attestation for its owner. The statement has no members to
+hold the marker of the Common Agent Specification §7.9, so the marker is submitted
+beside it, in the same submission as the attestation, and its draft bytes are the
+statement in full. The statement's timestamp is inside the draft, so the agent writes
+it, and an owner that approves at another moment has the agent draft again with the
+instant the owner signs. A bureau accepts a marker only with the attestation it travels
+with, never one added to an attestation already recorded. It records the marker with
+the attestation, MUST refuse an attestation whose marker fails a check
+of §7.9, and shows that an agent drafted it wherever the attestation is surfaced.
+An attestation signed with the evaluator's agent key and not its owner's is not an
+attestation, and a bureau MUST reject it. An attestation a bureau recorded under
+0.11.1-draft or earlier, signed with the evaluator's agent key as that text
+required, stays in the ledger as it was recorded.
 
 ### 6.2. Eligibility
 
@@ -1141,7 +1163,9 @@ A bureau MUST reject an attestation unless:
 1. The `interaction_id` matches a fact from a configured reporter. **No attestation
    without a witnessed interaction.** This single rule removes drive-by reviews,
    most ballot stuffing, and all rating of rivals one has never called.
-2. The evaluator's signature verifies against its currently resolved Personal Agent Naming card.
+2. The signature verifies against the evaluator's owner key (§6.1), which the bureau resolves
+   from the evaluator's currently resolved Personal Agent Naming card and the owner its registry
+   attests, or reads from the engagement's seat.
 3. It is the evaluator's first attestation for that interaction (later ones are
    recorded as amendments, and only the final state scores).
 4. The attestation arrives within the attestation window (RECOMMENDED: 30 days from
@@ -1211,7 +1235,7 @@ resolves to `VALUE_OK` or `VALUE_POOR`:
 
     fdbk-value-v1:<interaction_id>:<subject>:<capability>:<outcome>:<amount>:<currency>:<units>:<ISO-8601 timestamp>
 
-signed with the evaluator's agent key bound under Personal Agent Naming. `amount` and `currency` are the
+signed with the evaluator's owner key, and an agent may draft it, as §6.1 says. `amount` and `currency` are the
 settled spend; `units` is the metered quantity that spend paid for, in the units
 of the engagement's meter. Both SHOULD be present, and they are signed rather than
 attached as commentary so a reader can trust them. A poor rating on a large
@@ -2077,6 +2101,26 @@ deterministic, and refuses every report the vectors say it must refuse.
 
 ---
 
+
+*0.12.0-draft (2026-10-25): the owner signs an attestation. §6.1 said the
+evaluator's agent key signs an attestation, while Agent SoW §15 said the
+reviewing owner signs a review, so one judgment had two signers. An
+attestation, and a value judgment under §6.6, is now signed with the
+evaluator's owner key: the owner of the evaluator's agent as the registry
+verified it through an `owner_attestation`, never a default owner with no
+attestation, or, for an interaction under an Agent SoW, the `owner_key` of
+the evaluator's seat, and the two are the same key where both are known. An
+agent may draft the attestation for its owner and submits the marker of the
+Common Agent Specification 0.37.0-draft §7.9 beside it in the same
+submission, whose draft bytes are the statement in full. A bureau accepts no
+marker added later, records the marker, refuses an attestation whose marker
+fails, and shows that an agent drafted it. An attestation signed with the
+agent's key and not the owner's is rejected, and one recorded under
+0.11.1-draft or earlier stays in the ledger as it was recorded. §1 defines
+the evaluator as the agent's owner, §2 says a subject is its agent key and
+an attestation is its owner's, and §6.2 rule 2 checks the owner key. No tag,
+field or formula changes. The minor version moves because a bureau built
+against 0.11.1-draft accepts attestations this version rejects.*
 
 *0.11.1-draft (2026-10-20): a witness named after the first commitment, when
 the bureau named none before, has a defined start. §4.1.1 said how a witness

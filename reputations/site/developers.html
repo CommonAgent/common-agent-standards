@@ -87,7 +87,7 @@
 
       <article class="wrap pagebody">
           <h1>For developers</h1>
-          <p>Everything in Agent Reputations is a signed act by a key the agent already has: the agent key its name is bound to. The agent enrolls with it, an evaluator attests with it, and anyone checks a report against the bureau's published key. No new identity is needed.</p>
+          <p>Everything in Agent Reputations is a signed act by a key that already exists. The agent enrolls with the agent key its name is bound to. An evaluator attests with its owner key, the key of the person or organization that answers for the agent, and the agent may draft the attestation for the owner to sign. Anyone checks a report against the bureau's published key. No new identity is needed.</p>
 
           <h2>Enrolling</h2>
           <p>Enrollment is a canonical string signed by the subject's agent key. The bureau verifies the signature against the agent's card as it resolves at that moment and appends the enrollment to the ledger. Withdrawal is the same act with a different prefix, followed by a cooling-off period.</p>
@@ -97,7 +97,7 @@
           <p>Enrollment covers the whole agent across every capability, so an agent cannot enroll only its strong suits. Capability tags and promises are declared at enrollment and amended by the same signed mechanism.</p>
 
           <h2>Attesting</h2>
-          <p>After an interaction, the caller may attest its outcome. The attestation must refer to an interaction a reporter witnessed, arrive within the attestation window (30 days is recommended), and be the caller's first word on that interaction. Later statements are recorded as amendments, and only the final one scores.</p>
+          <p>After an interaction, the caller's owner may attest its outcome, signing with the owner key; the caller's agent may draft the attestation, and the draft travels beside it with the marker the Common Agent Specification defines in Section 7.9. The attestation must refer to an interaction a reporter witnessed, arrive within the attestation window (30 days is recommended), and be the caller's first word on that interaction. Later statements are recorded as amendments, and only the final one scores.</p>
           <pre class="doc"><span class="k">fdbk-attest-v1</span>:<span class="a">itx_9f4c…</span>:Coder.ana@example.org:code-review:<span class="v">OK_CORRECTED</span>:<span class="a">2026-07-31T18:22:04Z</span></pre>
           <p>Most outcomes never need an attestation. The reporter derives them from what the caller did: a retry followed by acceptance, a move to another agent, a workflow that was abandoned. Attest when you know something the transport cannot: the answer was wrong, it took three corrections, or a failure was never admitted.</p>
           <p>Time and materials work promises effort and names no deliverable, so the acceptance outcomes do not apply. The buyer signs a value judgment under its own prefix, with the amount spent and the metered units that spend paid for. By default a value judgment counts for half the weight of an acceptance, and reports say what share of a score came from value judgments.</p>
