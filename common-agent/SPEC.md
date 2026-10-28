@@ -1,7 +1,7 @@
 # The Common Agent Specification
 
-**Version:** 0.37.0-draft
-**Status:** Working draft, 2026-10-25. Home: https://commonagent.net/
+**Version:** 0.38.0-draft
+**Status:** Working draft, 2026-10-27. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
 
@@ -684,6 +684,146 @@ From 0.6.0-draft to 0.26.0-draft a Descriptor could carry `shape`, which describ
 | `harness` | Deployment records only, in `target` (Section 8.3). |
 
 The trial declaration's `shape` (Section 7.7) and the build record's `shape` (Section 8.2) are different members with the same name, and neither changes.
+
+### 6.13 Members for people, presentation and views (proposed)
+
+**Proposed in 0.38.0-draft, for review.** This section is a proposal. It is not part of conformance (Section 14) until a later version removes this paragraph, and it may change or be withdrawn before then. Its MUST and SHOULD state what it would require once adopted. Nothing in it changes a member defined above, and a Descriptor that was valid under 0.37.0-draft stays valid whether or not it is adopted.
+
+The members above describe an agent to a reader that is a program, or a model deciding whom to engage. A person who reaches an agent through a page needs a few facts they do not carry: a name to call it by, a sentence written for them, which offerings they can start themselves, which inputs are theirs to give and which arrive from another agent, and what the agent will not do, said in words a person can act on. The first pages drawn from Descriptors alone, with no hand-written copy, found each of these missing. One agent's `does` had grown into a history of its changes, thousands of characters long, and named a private individual. Another declared twelve inputs that only other agents produce, and the page drew twelve boxes for a person to type into; the rules for reading those inputs had been filed as refusals. This section proposes the members those pages needed. The Descriptor to user interface binding (DESCRIPTOR-UI.md, published at https://commonagent.net/descriptor-ui.html) says which part of a page each member drives, and what a page shows when a member is absent.
+
+Every member here is OPTIONAL, and an absent one means not stated (Section 6.4, rule 2). A renderer that meets none of them still draws a page from the members above, which is the floor the binding requires of every renderer. A consumer that does not know these members ignores them, as Section 6.2 requires of every unknown member.
+
+#### 6.13.1 Words for a person
+
+| Member | Where | Holds |
+|--------|-------|-------|
+| `name` | The Descriptor | The agent's display name, in a few words, such as "Quiz maker". It is a name for a person to call the agent by and never an identifier: a reader MUST NOT resolve it, compare it to find an agent, or show it in place of `subject.handle` where the handle is what is being checked. |
+| `summary` | The Descriptor | One plain sentence for a person, saying what the agent does for them, of at most 200 characters. |
+| `about` | An input, an output, or a declared setting (Section 6.2) | One sentence for a person, saying what the input, output or setting is. |
+| `label` | A declared setting | The words a page shows for the setting in place of its `name`. |
+| `value_labels` | A declared setting | An object from each of the setting's `allowed` values to the words a page shows for it. A key that is not in `allowed` is ignored. |
+
+`summary` is separate from `does`. `does` is the operator's one sentence for every reader: the description of Section 4.2, the card's description (Section 6.8), and the line a model reads when it decides whom to engage. `summary` is the sentence a person reads first on a page, and it is written for that person. Where `summary` is absent, a renderer shows `does`.
+
+Neither `does` nor `summary` is a history. A Descriptor describes the agent as it stands (Section 6.5), so `does`, `summary`, an offering's `does` and every `about` SHOULD NOT carry version numbers, dates of changes, run or job identifiers, or what an earlier version did; that history belongs in the package's records and changelog (Section 12.3). They MUST NOT name a private individual, whether a person the agent worked for, a person in its material or a member of staff. An organization's public name is not a private individual's, and `organization_name` (Section 6.2) is where it belongs.
+
+#### 6.13.2 Who starts it, and who gives what
+
+| Member | Where | Holds |
+|--------|-------|-------|
+| `started_by` | An offering | Who starts the offering directly: a list holding `person`, `agent`, or both. `person` means a person starts it from a page. `agent` means other agents run it as a step in a larger job, such as a step of a process. |
+| `works_as` | An offering | How the offering is used once started: `conversation`, a turn-by-turn exchange in which each message is answered and the context of Section 5.6 carries the thread, or `job`, in which the inputs are prepared, the work is run, and the outputs are delivered. |
+| `given_by` | An input | Who supplies the input: `person`, `agent`, or `either`. `agent` means the input is a piece another agent hands over, such as a page reader's read of a site, and a person does not type it. |
+
+`works_as` says how the offering is used and says nothing about whether a person attends the agent, which is `interaction` (Section 6.2), or about whom the agent acts for, which is `acts_for`; a reader MUST NOT read any of the three from another. Where `works_as` is absent, a reader MAY treat the chat offering of Section 4.6, one whose only input is of kind `text` and whose outputs are text, as a conversation, because that is what Section 4.6 defines it to be, and treats every other offering as a job.
+
+Where `started_by` is absent, a renderer offers the offering to a person like any other and says nothing about whom it is for. Where `given_by` is absent, a renderer draws the input as one a person may give, by its kind. An input whose `given_by` is `agent` is still an input a person may supply, by loading a file another agent delivered: what the member changes is how a page asks for it, as a piece to load or hand over rather than words to type.
+
+An input that is the run context (Section 6.2) is handed by a process runner to every step. A renderer that starts the offering for a person reads its `fields` as inputs that person gives, and sends them in the run context the agent already reads.
+
+#### 6.13.3 What it will not do, for a person
+
+`will_not[]` on the Descriptor is a list of sentences, each one thing the agent will not do, written for a person deciding whether to use it. It is kept apart from two things it is easily confused with. `refusals` (Section 6.2) stays the operator's prose for every reader, the one an evaluator turns into probes. And what an input must be is said by the input's own members (its `kind`, `required`, `one_of`, `max_bytes` and `about`), never as a refusal: "a job with no site read, or one that is not a list of pages" is a rule for reading an input, and a person reading it under "What it won't do" learns nothing about what the agent declines. Where `will_not` is absent, a renderer shows `refusals`; where both are absent, it shows that the agent has not said.
+
+#### 6.13.4 Settings a page can draw
+
+The declared settings of Section 6.2 already carry what a page needs to draw them from the Descriptor alone: each setting's `name`, its `kind` (`preference` or `rule`), its `default`, its `allowed` values, and whether a sender who does not own the agent may set it (`job_may_set`). This section adds only the words of Section 6.13.1, `label`, `about` and `value_labels`, so a page need not show a setting's raw name or values. Install settings (Section 12.4) are not declared settings: they are the credentials, keys and values bound when the agent is installed, they never appear in a Descriptor, and a page MUST NOT ask a person for one when a job is prepared or run.
+
+#### 6.13.5 Presentation
+
+`presentation` on an input or an output says how a person views it, or gives it, so a renderer can bring a viewer or a picker suited to it. It is one value from a small vocabulary:
+
+| Value | A person views or gives |
+|-------|-------------------------|
+| `quiz` | Questions with choices and the answers to them. |
+| `document` | Prose to read, such as a report, a brief or a page of text. |
+| `facts` | A list of statements, each with the words it rests on and where they came from. |
+| `table` | Rows and columns. |
+| `media` | Images or video. |
+| `audio` | Sound, such as a recording or narration. |
+| `package` | A bundle of files kept together, such as an archive or a folder. |
+
+A presentation says how a person meets the thing and never what its bytes are, which is its `kind` (Section 6.3). The two are separate members and a renderer reads both: the value `document` here, prose to read, is not the value kind `document` of Section 6.3, a fetchable file whose media type is not fixed. A renderer that cannot read the bytes in the way a presentation names, such as a `facts` output whose bytes are not a list it understands, shows the thing as its kind would be shown without a presentation, which is the projection of the binding. A value the reader does not know is read as not stated, never as the nearest known value. A presentation that cannot hold for the kind, such as `audio` on `text/csv`, is a defect a checker reports.
+
+#### 6.13.6 Views
+
+`views[]` on the Descriptor lists the agent's own views: small programs, written in JavaScript, that draw one of its outputs, or the preparation of one of its offerings, inside a frame the host owns. A view is a convenience above the floor. Every page that can show a view MUST also be able to show the same thing without it, from the Descriptor's members alone, and falls back to that whenever the view does not work.
+
+Each entry carries:
+
+| Member | Holds |
+|--------|-------|
+| `id` | The view's name, unique among the Descriptor's views. |
+| `for` | What the view draws: `{ "offering": <id>, "output": <name> }` for one output of one offering, or `{ "offering": <id> }` for the preparation of that offering's inputs. |
+| `file` | Where the view is in the agent's package: a relative path with forward slashes and no `..` segment, such as `views/quiz.html`. |
+| `digest` | `sha256:` followed by 64 lowercase hex characters, the SHA-256 of the file's exact bytes. |
+| `requests` | The requests of the binding's message bridge the view may make, from its closed list: `resize`, `propose-inputs`, `save-file` and `copy-text`. A view MAY make no request at all. |
+
+A view is referenced by its digest and never by an address. `file` is a path inside the package, which a host resolves against the package it installed and nothing else, so `views[]` holds shapes only and stays within rule 3 of Section 6.4. A renderer gets a view's bytes from the installed package, from the depot that serves the package by digest (Section 12.7), or by asking the agent, as the binding defines, and uses them only when their SHA-256 equals `digest`. A view is one self-contained HTML file, its scripts and styles inside it, because it may load nothing from anywhere.
+
+A view runs only inside a frame the host owns, sandboxed, with no credentials, no network and no access to the host's page, and talks to the host only through the binding's message bridge: data in, requests out. The host keeps the frame, the design tokens it hands the view, and every control that acts, such as running a job, replying to a question, accepting an output or publishing one. A view proposes and never acts. Rule 7 of Section 12.6 says nobody runs a package's code but the agent. A view is the one exception proposed here: it is run by a renderer, only inside such a frame, never by a depot or an installer, and never with anything the agent's own code is given.
+
+A view is part of the agent's declaration, and what it draws is at declared strength (Section 6.10, rule 3). It is drawn from the output it is handed and from the Descriptor, and nothing issued by a third party enters it: a host MUST NOT hand a view records, ratings or verdicts, and MUST NOT draw a mark of its own inside the frame that a person could take for the host's word about the agent.
+
+#### 6.13.7 Kinds as specific as what the agent takes
+
+An input or output `kind` (Section 6.3) SHOULD be as specific as what the agent really takes or produces. For structured data that means a media type of its own, such as a vendor type with a structured syntax suffix (`application/vnd.example.page-read+json`), rather than `application/json`; for an output delivered as Markdown, `text/markdown` rather than `text`; and `document` only for an input that really takes any file. An input of kind `document` that reads some media types and not others MAY carry `accepts`, the list of media types it reads. A reader treats a `document` input without `accepts` as taking any file, as Section 6.3 says, and one with it as taking only those.
+
+The reason is the hand-off between agents. A page, a process editor or a runner that offers to hand one agent's output to another matches them by kind, and a broad kind matches everything that shares it. The first pages that did so offered one agent's list of facts to every agent with any JSON input, nearly twenty of them, most of which would have read it as something else; and a hand-off whose kinds fitted, from an agent that reads web pages to one that makes quizzes, was refused at the far end, because the second agent read only one particular JSON document under its broad kind. A precise kind makes the right hand-off exact and the wrong one impossible, and it costs the operator nothing to state. How a renderer ranks hand-offs by kind is the binding's.
+
+#### 6.13.8 An example
+
+A quiz maker's Descriptor, with the members above and the floor's members abbreviated:
+
+```json
+{
+  "format": "agent-descriptor-v1",
+  "agent_version": "1.4.0",
+  "name": "Quiz maker",
+  "summary": "Makes a short quiz from a page or a document you give it.",
+  "does": "Writes a multiple-choice quiz from source material, with the answers and where in the source each one comes from.",
+  "will_not": [
+    "It will not make a quiz about a person.",
+    "It will not invent a question the source does not answer."
+  ],
+  "offerings": [
+    {
+      "id": "make-a-quiz",
+      "name": "Make a quiz",
+      "does": "Writes a quiz of up to twenty questions from the source it is given.",
+      "started_by": ["person", "agent"],
+      "works_as": "job",
+      "inputs": [
+        { "name": "source", "kind": "url", "one_of": "source", "given_by": "person",
+          "about": "The address of a public page to make the quiz from." },
+        { "name": "reading", "kind": "document", "one_of": "source", "given_by": "either",
+          "accepts": ["application/pdf", "text/markdown", "application/vnd.example.page-read+json"],
+          "presentation": "document", "about": "A document, or another agent's read of a page." }
+      ],
+      "outputs": [
+        { "name": "quiz", "kind": "application/vnd.example.quiz+json", "when": "per_task",
+          "presentation": "quiz", "about": "The quiz, with the answers." }
+      ]
+    }
+  ],
+  "run_config": {
+    "settings": [
+      { "name": "questions", "kind": "rule", "default": 20, "job_may_set": true,
+        "label": "Most questions", "about": "The most questions the quiz has." },
+      { "name": "tone", "kind": "preference", "default": "plain", "allowed": ["plain", "playful"],
+        "job_may_set": true, "label": "Tone", "value_labels": { "plain": "Plain", "playful": "Playful" } }
+    ]
+  },
+  "views": [
+    { "id": "quiz", "for": { "offering": "make-a-quiz", "output": "quiz" },
+      "file": "views/quiz.html", "digest": "sha256:…", "requests": ["resize", "save-file"] }
+  ]
+}
+```
+
+#### 6.13.9 Checking them
+
+Once adopted, the check of Section 6.8 would also confirm: that `summary`, where present, is one sentence of at most 200 characters; that `started_by`, `works_as`, `given_by` and `presentation` carry values from their lists; that `will_not` is a list of strings; that each `value_labels` key is one of its setting's `allowed` values; that each `accepts` sits on an input of kind `document` and lists media types; and that each view's `id` is unique, its `for` names a declared offering and, where it names one, a declared output, its `file` is a relative path with no `..` segment and no scheme, its `digest` is well formed, and its `requests` come from the binding's list. A package check (Section 12.10) would also confirm that each view's file is in the package and hashes to its digest, and that it names no address from which a script, a style, an image, a font or a frame would be loaded. The AgentDoc (Section 9) would carry `name` and `summary` in its `identity` section, the offering and input members in `sells`, `will_not` in `refuses` as `kind: "prose"`, and each view by its `id`, `for` and `digest`, never its bytes.
 
 ## 7. Capabilities
 
@@ -1819,6 +1959,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.38.0-draft (2026-10-27).** A proposal for review, with no change to what conformance requires. A new Section 6.13, marked proposed and outside conformance until a later version adopts it, proposes Descriptor members for a page a person reads and uses. Words for a person: `name`, the agent's display name; `summary`, one plain sentence for a person, separate from `does`; `about` on an input, an output or a declared setting; and `label` and `value_labels` on a declared setting. `does`, `summary`, an offering's `does` and every `about` SHOULD NOT carry history and MUST NOT name a private individual. Who starts it and who gives what: `started_by` on an offering (`person`, `agent`, or both), `works_as` on an offering (`conversation` or `job`), and `given_by` on an input (`person`, `agent` or `either`). `will_not[]`, what the agent will not do, for a person, kept apart from `refusals` and from the rules for reading an input. `presentation` on an input or output, one of `quiz`, `document`, `facts`, `table`, `media`, `audio` and `package`. `views[]`, an agent's own JavaScript view of one output or of the preparation of one offering, referenced by a path in its package and the digest of its bytes and never by an address, run only in a sandboxed frame the host owns with no credentials and no network, with the projection as the floor; it proposes one exception to rule 7 of Section 12.6 for it. Guidance that kinds be as specific as what the agent takes, preferring a media type of its own to `application/json`, with `accepts` on an input of kind `document`. A new part of the specification, the Descriptor to user interface binding (DESCRIPTOR-UI.md, 0.1.0-draft, proposed), says which members drive which parts of a page (the descriptive panel; the runtime view, a conversation or a prepared job's inputs, settings, run, progress, questions and replies, and outputs; and the output lifecycle, draft, accepted and published), how hand-offs between agents are matched by kind, and the frame, message bridge, design tokens and fallback of a view, with how it aligns with MCP Apps and where it differs. No member defined before this version changes, and a document that was valid under 0.37.0-draft is valid under this version.
 
 **0.37.0-draft (2026-10-25).** Section 7.9 is new: an act an agent drafts and its owner approves. It defines one marker, `proposed`, with four members: `agent`, the drafting agent's key; `draft`, the SHA-256 of the act's draft bytes, which are its signed bytes computed without the marker and without the signer's signing instant, so the owner writes the instant it actually signs; `drafted_at`, no later than that instant; and `sig`, the agent's signature over the draft statement, which is the tag `common-agent-draft-v1`, one newline, and the JCS of the marker without `sig`. A specification may also leave out a member derived from bytes that hold the marker, such as a mandate's identifier. The owner approves by signing the act with the marker in place, so one signature covers the act and the statement that the agent drafted it, and a change to any byte the draft covers makes a new draft. A verifier refuses the whole act when the marker fails. The marker binds nobody, does not make the agent's key a key that may sign the act, and does not say how the owner approved. A statement with no members, such as a colon-delimited attestation, carries the marker beside it in the same submission, and a marker added later counts for nothing. Agent SoW 0.35.0-draft, Agent RFP 0.12.0-draft, Agent NDA 0.3.0-draft, Agent Mandate 0.10.0-draft and Agent Reputations 0.12.0-draft say where it sits on their acts. A new fixture, conformance/draft-approval.json, pins it with real signatures across those specifications. The minor version moves because the section adds a member and a tag. A document that was valid under 0.36.0-draft is valid under this version.
 
