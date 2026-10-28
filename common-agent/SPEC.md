@@ -771,6 +771,8 @@ An input or output `kind` (Section 6.3) SHOULD be as specific as what the agent 
 
 The reason is the hand-off between agents. A page, a process editor or a runner that offers to hand one agent's output to another matches them by kind, and a broad kind matches everything that shares it. The first pages that did so offered one agent's list of facts to every agent with any JSON input, nearly twenty of them, most of which would have read it as something else; and a hand-off whose kinds fitted, from an agent that reads web pages to one that makes quizzes, was refused at the far end, because the second agent read only one particular JSON document under its broad kind. A precise kind makes the right hand-off exact and the wrong one impossible, and it costs the operator nothing to state. How a renderer ranks hand-offs by kind is the binding's.
 
+**Content handed between agents defaults to Markdown.** A piece one agent hands another for a person or a model to read, such as a brief, a draft, a report or notes, SHOULD be Markdown, declared as `text/markdown` and never as `text`, unless the receiving agent declares another kind for it. Markdown keeps the headings, lists, tables and links a reader needs, it stays readable to a person who opens the file, and models and most renderers read it as it stands. A piece that a program reads, rather than a person or a model, takes a media type of its own as above. Either way, the kind is as specific as what the receiving agent takes, so a hand-off by kind can be exact.
+
 #### 6.13.8 An example
 
 A quiz maker's Descriptor, with the members above and the floor's members abbreviated:
@@ -824,6 +826,156 @@ A quiz maker's Descriptor, with the members above and the floor's members abbrev
 #### 6.13.9 Checking them
 
 Once adopted, the check of Section 6.8 would also confirm: that `summary`, where present, is one sentence of at most 200 characters; that `started_by`, `works_as`, `given_by` and `presentation` carry values from their lists; that `will_not` is a list of strings; that each `value_labels` key is one of its setting's `allowed` values; that each `accepts` sits on an input of kind `document` and lists media types; and that each view's `id` is unique, its `for` names a declared offering and, where it names one, a declared output, its `file` is a relative path with no `..` segment and no scheme, its `digest` is well formed, and its `requests` come from the binding's list. A package check (Section 12.10) would also confirm that each view's file is in the package and hashes to its digest, and that it names no address from which a script, a style, an image, a font or a frame would be loaded. The AgentDoc (Section 9) would carry `name` and `summary` in its `identity` section, the offering and input members in `sells`, `will_not` in `refuses` as `kind: "prose"`, and each view by its `id`, `for` and `digest`, never its bytes.
+
+### 6.14 What an agent draws on: Setup, Library and This job (proposed)
+
+**Proposed in 0.38.0-draft, for review.** This section is a proposal. It is not part of conformance (Section 14) until a later version removes this paragraph, and it may change or be withdrawn before then. Its MUST and SHOULD state what it would require once adopted. Nothing in it changes a member defined above, and a Descriptor that was valid under 0.37.0-draft stays valid whether or not it is adopted.
+
+An agent's work is shaped by more than the job it is sent. It runs with what it was connected to when it was installed, and it reads material that its organization keeps for many agents alike: a brand profile, a style guide, a glossary, templates, the systems the organization runs on, and the standard its agents are built to. This specification already keeps the first of these apart from the job: install settings (Section 12.4) and systems (Section 6.2) are bound once, while inputs and run configs (Section 5.8) are chosen for each job. The shared material has had no place of its own. It has travelled as an input, as a file copied into a package, or as a sentence in a request, so two agents of one organization can read two versions of its brand, and no record says which version shaped a piece of work. This section gives that material a place. It is the **standing asset**: a typed, versioned and approved document, layered from the agent's publisher to the job, which an agent declares in `can_use` and which a run record cites by digest.
+
+Every member here is OPTIONAL, and an absent one means not stated (Section 6.4, rule 2). A consumer that does not know these members ignores them, as Section 6.2 requires of every unknown member.
+
+#### 6.14.1 The three sources
+
+Everything an agent draws on for a job comes from one of three sources. Their names are the words a page uses for them (the Descriptor to user interface binding, Section 5.4), and each maps to members this specification defines.
+
+| Source | What it is | The members underneath | Who gives it, and when |
+|--------|------------|------------------------|------------------------|
+| **Setup** | What the agent is connected to, and with which keys. | The install settings of the runtime requirements (Section 12.4), and the systems the Descriptor names in `systems[]` with the bindings the deployment record names (Section 8.3). | The operator, once, at install. |
+| **Library** | The organization's shared material and defaults, which many agents read. | The agent's `can_use` entries (Section 6.14.4), filled from standing assets (Section 6.14.2), and the default layers of its declared settings: the author's, the solution author's, the organization's, the team's and the person's (Section 5.8). | Whoever keeps each layer, ahead of any job. |
+| **This job** | What is given to the agent for this job, and the options for this run. | The offering's `inputs[]`, and this run's layer of the run config (Section 5.8). | The sender, with each job. |
+
+Underneath the three sources there are five kinds of thing, and a reader MUST NOT read one as another: install settings, system bindings, run-config settings, inputs and standing assets. A secret lives only in an install setting, or in a caller's grant to an external input, which is that caller's own (Section 6.2). It never lives in a standing asset, a run config, an input or the Descriptor.
+
+The line between an input and a standing asset follows the one Section 6.2 draws between an input and a system. What the agent declares as an input is an input, even when it has the shape of a standing asset. A standing asset is kept, approved and read across many jobs, and it reaches the agent only through a `can_use` entry, resolved through the layers of Section 6.14.3.
+
+#### 6.14.2 Standing assets
+
+A **standing asset** is a typed, versioned, non-secret document that an organization, a team or a person keeps, and that many agents read. A brand profile, a style guide, a glossary, media templates, the organization's stack, an architecture standard and an audit checklist are standing assets.
+
+- **Its kind** is named by a schema: an absolute `https` URL that names a published shape, such as `https://schemas.example.org/brand/v1`. The version of the shape is part of the URL, because a shape edited at a stable address would silently change what every declaration that names it meant. The schema is read as a name and never fetched (Section 12.6, rule 3). It says which members of the kind are preferences and which are rules (Section 6.14.3), and whether the kind is work content or a standard (Section 6.14.6).
+- **Its version** is identified by its digest: `sha256:` followed by 64 lowercase hex characters, the SHA-256 of the document's exact bytes. A change to any byte makes a new version, and a version is never edited in place.
+- **Its owner** is the organization, team or person that keeps it and answers for it.
+- **A person approves each version.** An agent MAY draft a version, and Section 7.9's marker MAY record that it did. Only a person approves one, and a version that no person has approved MUST NOT be handed to any job.
+- **It holds no secret.** A standing asset MUST NOT contain a credential, a key, a token or any other secret value. Its keeper MUST refuse to save a version that does. A secret is an install setting (Section 6.14.1).
+
+The keeper of a standing asset holds, for each version, an entry with these members:
+
+| Member | Holds |
+|--------|-------|
+| `schema` | The kind, by its schema URL. |
+| `name` | What a person calls it, such as "Brand profile". It is a name for a person to read, and an agent matches an asset by its `schema`, never by its `name`. |
+| `version_digest` | The digest of this version's bytes. |
+| `owner` | The organization, team or person that keeps it, as its keeper names them. |
+| `approved_by` | The person who approved this version, never an agent. |
+| `approved_at` | When they approved it, as an RFC 3339 instant. |
+| `layer` | The layer the version sits at (Section 6.14.3). |
+
+A keeper SHOULD keep every version that a record cites, for as long as it keeps the record, so that a record of a run stays answerable after the asset has moved on.
+
+#### 6.14.3 Layers
+
+Standing assets are layered in the same way as the declared settings of Section 5.8, and by the same layers. From widest to closest they are:
+
+1. the **publisher**, whose versions travel in the agent's package;
+2. the **organization** the job runs for;
+3. a **team** inside that organization;
+4. the **person** running the job;
+5. **the job**, a version handed for this job only, approved by the person who hands it.
+
+The publisher is Section 5.8's author. For a step inside a solution, the solution's author holds Section 5.8's solution author layer, between the author and the organization. A publisher MAY ship one set of versions for a family of agents it publishes together, and each agent in the family reads them at its publisher's layer.
+
+Each schema says which of its members are preferences and which are rules, in the words of Section 5.8, and a member it does not mark is a preference. The layers resolve member by member, as if each member were a declared setting:
+
+- For a **preference**, such as a colour, a typeface or a tone, the closest layer that gives a value wins.
+- For a **rule**, such as a contrast floor, a word that is never used or a check that must pass, the tightest layer wins. A closer layer MAY narrow a rule and MUST NOT widen it. A list of allowed values narrows to the values every layer allows; a list of things never allowed grows to hold every layer's; a number is a ceiling, and the lowest wins; for a yes or no, no is the tighter value.
+- An organization or a team MAY lock a member, as Section 5.8 says of a setting. A keeper MUST refuse to save a version that widens a rule a layer above it states, or that gives a member a layer above it has locked another value.
+
+The result is the **resolved asset**: one document of the kind's schema, which is what the agent reads. It is handed to the agent as bytes, with its schema and the versions it was resolved from, and never as an address (Section 12.6, rule 3). How the bytes travel is the binding's.
+
+**A republisher becomes a publisher.** A party that publishes, for its own buyers, an agent it did not author is a republisher, whether it publishes a copy (Section 13.5) or a solution whose steps are other publishers' agents. For its buyers it is the publisher. A copy carries the republisher's versions at the publisher's layer, and nothing of its ancestor's publisher reaches into it (Section 13.6). A solution's author holds the solution author's layer beneath each step's own publisher, so it MAY narrow that publisher's rules and MUST NOT widen them.
+
+On a record, `layer` takes the values of `from` in Section 8.7: `author` for the publisher, `solution_author` for the author of a solution, `organization`, `team`, `person`, and `run` for the job. Where the owner's layers were applied on the agent's side and the sender cannot see which of them gave a version, the sender's record writes `owner`, as Section 8.7 does.
+
+#### 6.14.4 `can_use`: what an agent reads from a library
+
+`can_use[]` on the Descriptor declares each kind of standing asset the agent reads. It is a caller-facing fact, so it is authored in the draft Descriptor and travels in the package (Section 12.3), and the `schema` of each entry is the one address a Descriptor carries (Section 12.6, rule 3). Each entry carries:
+
+| Member | Holds |
+|--------|-------|
+| `schema` | The kind, by its schema URL. REQUIRED. No two entries name one schema. |
+| `reads` | The members of the asset the agent reads, as dotted paths such as `palette.ink`. REQUIRED, and never empty. "Reads brand profiles" is the same sentence from an agent that honours one colour and one that honours all of them, and the list of members is what a caller can check. |
+| `required` | `true` when the agent cannot do the work without a version of the kind. An absent `required` is read as false. |
+| `does` | One sentence saying what the agent does with what it reads, which is why it reads it. |
+| `without` | One sentence saying what the agent does when no version of the kind is given, such as "Uses black text on white." REQUIRED of every entry. Where `required` is true, it says that the agent refuses the job. |
+
+`without` is the member that makes the declaration complete. An agent that reads a brand profile when one is given, and does something unstated when none is, has declared half of its behaviour. `without` states the other half in words a caller can rely on.
+
+An agent reads only what its entries declare. It MUST NOT read a kind it does not declare, MUST NOT fetch a version of its own, and uses the resolved asset exactly as it is handed, as Section 5.8 requires of a setting. Where no version of a kind is handed, it does what `without` says and nothing else. Where an entry is `required` and a job is handed no version of its kind, the job is refused before any work starts, as Section 4.7.1 refuses a request that lacks a required input, with `missing` naming the entry by its `schema`.
+
+An agent that writes for a person, such as a page, a document, an image or a message, and that declares no `can_use`, has said nothing about whether its organization's material shapes what it makes. A checker SHOULD report such an agent, and an operator who means it to read nothing SHOULD declare an empty list, which is a statement.
+
+#### 6.14.5 Run records cite every version used
+
+Whoever resolves the standing assets for a job writes the member `standing_assets[]` on the record it keeps of that run, beside `run_config` (Section 8.7). It holds one entry for each version the job was handed:
+
+```json
+"standing_assets": [
+  { "schema": "https://schemas.example.org/brand/v1", "version_digest": "sha256:…", "layer": "organization" },
+  { "schema": "https://schemas.example.org/brand/v1", "version_digest": "sha256:…", "layer": "team" },
+  { "schema": "https://schemas.example.org/glossary/v1", "version_digest": "sha256:…", "layer": "author" }
+]
+```
+
+A kind that resolved from several layers has one entry for each version it was resolved from. A kind the agent declares and the job was not handed has no entry, and a reader reads the agent's `without` for it. The agent's job manifest (Section 5.7) SHOULD list, in the same shape and in the same member, the versions the agent read, so that what the job was handed and what the agent used are compared by digest, as the run config's are. A reader asks "which brand, which style guide and which standard shaped this work?" and answers it from the record alone.
+
+#### 6.14.6 Across companies
+
+When the party that starts a job is not the agent's owner, two libraries meet. Each kind is read from one of them, and the kind's schema says which. A kind whose schema does not say is work content.
+
+- **Work content** is material that shapes what the requester receives, such as a brand profile, a style guide, a glossary or templates. It comes from the **requester's** library. The requester's side resolves its own layers (its organization's, its team's, its person's and the job's) and hands the result to the agent with the job, under the requester's grant, and the agent's side resolves it over the publisher's, as Section 5.8 does with a sender's values. Like a caller's grant in Section 6.2, the grant covers that job only.
+- **Build and check standards** are material that says how the work is built or judged, such as an architecture standard or an audit checklist. They come from the **operator's** library. The agent's owner resolves them over the publisher's on the agent's side, as Section 5.8 applies the owner's layers.
+
+An agent MUST NOT use one requester's version in another requester's job. It MUST NOT keep a requester's version after the job, beyond the digest its records cite. It MUST NOT fill a kind of work content that the requester did not give with a version from its operator's library: it does what `without` says. Within one organization, the two libraries are one, and this rule changes nothing.
+
+#### 6.14.7 An example
+
+The quiz maker of Section 6.13.8 reads two kinds of standing asset:
+
+```json
+"can_use": [
+  { "schema": "https://schemas.example.org/brand/v1",
+    "reads": ["palette.ink", "palette.ground", "palette.accent", "type.heading.family"],
+    "required": false,
+    "does": "Colours the quiz page and sets its heading face.",
+    "without": "Uses black text on white, with the reader's own fonts." },
+  { "schema": "https://schemas.example.org/glossary/v1",
+    "reads": ["terms"],
+    "required": false,
+    "does": "Uses the organization's own words for its products in questions and answers.",
+    "without": "Uses the words of the source as they stand." }
+]
+```
+
+The keeper of an organization's brand profile holds this entry for its current version:
+
+```json
+{
+  "schema": "https://schemas.example.org/brand/v1",
+  "name": "Brand profile",
+  "version_digest": "sha256:…",
+  "owner": "Example Co",
+  "approved_by": "head.of.brand@example.com",
+  "approved_at": "2026-10-20T16:04:00Z",
+  "layer": "organization"
+}
+```
+
+A team at Example Co keeps its own version with a different accent colour. The brand schema marks `palette.contrast_floor` as a rule, so the team's version may raise the floor and may not lower it. A job run by a member of that team is handed the resolved profile, and the run record cites both versions, as in Section 6.14.5. When a second company engages the same quiz maker, the job carries that company's brand profile and glossary, and Example Co's own versions do not reach the work.
+
+#### 6.14.8 Checking them
+
+Once adopted, the check of Section 6.8 would also confirm that each `can_use` entry has a `schema` that is an absolute `https` URL, a non-empty `reads`, a `does` and a `without`, and that no two entries name one schema. A package check (Section 12.10) would confirm the same of the draft. A keeper that saves a version would confirm that its digest matches its bytes, that `approved_by` names a person, that it holds no secret, and that it widens no rule a layer above it states and changes no member that a layer above it has locked. A checker of a run record would confirm that each entry in `standing_assets[]` names a schema the agent declares in `can_use`, and a `layer` from the list in Section 6.14.3.
 
 ## 7. Capabilities
 
@@ -1960,7 +2112,7 @@ Where each section's text came from, and what stays behind. Transport-specific t
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
 
-**0.38.0-draft (2026-10-27).** A proposal for review, with no change to what conformance requires. A new Section 6.13, marked proposed and outside conformance until a later version adopts it, proposes Descriptor members for a page a person reads and uses. Words for a person: `name`, the agent's display name; `summary`, one plain sentence for a person, separate from `does`; `about` on an input, an output or a declared setting; and `label` and `value_labels` on a declared setting. `does`, `summary`, an offering's `does` and every `about` SHOULD NOT carry history and MUST NOT name a private individual. Who starts it and who gives what: `started_by` on an offering (`person`, `agent`, or both), `works_as` on an offering (`conversation` or `job`), and `given_by` on an input (`person`, `agent` or `either`). `will_not[]`, what the agent will not do, for a person, kept apart from `refusals` and from the rules for reading an input. `presentation` on an input or output, one of `quiz`, `document`, `facts`, `table`, `media`, `audio` and `package`. `views[]`, an agent's own JavaScript view of one output or of the preparation of one offering, referenced by a path in its package and the digest of its bytes and never by an address, run only in a sandboxed frame the host owns with no credentials and no network, with the projection as the floor; it proposes one exception to rule 7 of Section 12.6 for it. Guidance that kinds be as specific as what the agent takes, preferring a media type of its own to `application/json`, with `accepts` on an input of kind `document`. A new part of the specification, the Descriptor to user interface binding (DESCRIPTOR-UI.md, 0.1.0-draft, proposed), says which members drive which parts of a page (the descriptive panel; the runtime view, a conversation or a prepared job's inputs, settings, run, progress, questions and replies, and outputs; and the output lifecycle, draft, accepted and published), how hand-offs between agents are matched by kind, and the frame, message bridge, design tokens and fallback of a view, with how it aligns with MCP Apps and where it differs. No member defined before this version changes, and a document that was valid under 0.37.0-draft is valid under this version.
+**0.38.0-draft (2026-10-27).** A proposal for review, with no change to what conformance requires. A new Section 6.13, marked proposed and outside conformance until a later version adopts it, proposes Descriptor members for a page a person reads and uses. Words for a person: `name`, the agent's display name; `summary`, one plain sentence for a person, separate from `does`; `about` on an input, an output or a declared setting; and `label` and `value_labels` on a declared setting. `does`, `summary`, an offering's `does` and every `about` SHOULD NOT carry history and MUST NOT name a private individual. Who starts it and who gives what: `started_by` on an offering (`person`, `agent`, or both), `works_as` on an offering (`conversation` or `job`), and `given_by` on an input (`person`, `agent` or `either`). `will_not[]`, what the agent will not do, for a person, kept apart from `refusals` and from the rules for reading an input. `presentation` on an input or output, one of `quiz`, `document`, `facts`, `table`, `media`, `audio` and `package`. `views[]`, an agent's own JavaScript view of one output or of the preparation of one offering, referenced by a path in its package and the digest of its bytes and never by an address, run only in a sandboxed frame the host owns with no credentials and no network, with the projection as the floor; it proposes one exception to rule 7 of Section 12.6 for it. Guidance that kinds be as specific as what the agent takes, preferring a media type of its own to `application/json`, with `accepts` on an input of kind `document`. A new part of the specification, the Descriptor to user interface binding (DESCRIPTOR-UI.md, 0.1.0-draft, proposed), says which members drive which parts of a page (the descriptive panel; the runtime view, a conversation or a prepared job's inputs, settings, run, progress, questions and replies, and outputs; and the output lifecycle, draft, accepted and published), how hand-offs between agents are matched by kind, and the frame, message bridge, design tokens and fallback of a view, with how it aligns with MCP Apps and where it differs. A second proposed section, 6.14, says what an agent draws on, in three sources a page names Setup (install settings, and systems with their bindings), Library (`can_use` entries filled from standing assets, and the default layers of declared settings) and This job (inputs, and this run's settings), and keeps the five kinds beneath them distinct. It proposes the standing asset: a typed, versioned, non-secret document whose kind is named by a schema URL, each version identified by its SHA-256 digest, kept by an owner and approved by a person, with the entry members `schema`, `name`, `version_digest`, `owner`, `approved_by`, `approved_at` and `layer`. Standing assets are layered as declared settings are, member by member, from the publisher (Section 5.8's author) through the organization, the team and the person to the job: the closest layer wins for a preference, a closer layer may only narrow a rule, and a republisher becomes the publisher for its buyers. `can_use[]` on the Descriptor declares each kind an agent reads, with `schema`, `reads`, `required`, `does` and a new member, `without`, which says what the agent does when no version is given. A run record carries `standing_assets[]`, citing `schema`, `version_digest` and `layer` for each version a job was handed. Across companies, work content comes from the requester's library under the requester's grant, and build and check standards come from the operator's. Section 6.13.7 adds that content handed between agents for a person or a model to read defaults to Markdown, as `text/markdown`, and the binding gains Section 5.4, which groups what a page shows as Setup, Library and This job. No member defined before this version changes, and a document that was valid under 0.37.0-draft is valid under this version.
 
 **0.37.0-draft (2026-10-25).** Section 7.9 is new: an act an agent drafts and its owner approves. It defines one marker, `proposed`, with four members: `agent`, the drafting agent's key; `draft`, the SHA-256 of the act's draft bytes, which are its signed bytes computed without the marker and without the signer's signing instant, so the owner writes the instant it actually signs; `drafted_at`, no later than that instant; and `sig`, the agent's signature over the draft statement, which is the tag `common-agent-draft-v1`, one newline, and the JCS of the marker without `sig`. A specification may also leave out a member derived from bytes that hold the marker, such as a mandate's identifier. The owner approves by signing the act with the marker in place, so one signature covers the act and the statement that the agent drafted it, and a change to any byte the draft covers makes a new draft. A verifier refuses the whole act when the marker fails. The marker binds nobody, does not make the agent's key a key that may sign the act, and does not say how the owner approved. A statement with no members, such as a colon-delimited attestation, carries the marker beside it in the same submission, and a marker added later counts for nothing. Agent SoW 0.35.0-draft, Agent RFP 0.12.0-draft, Agent NDA 0.3.0-draft, Agent Mandate 0.10.0-draft and Agent Reputations 0.12.0-draft say where it sits on their acts. A new fixture, conformance/draft-approval.json, pins it with real signatures across those specifications. The minor version moves because the section adds a member and a tag. A document that was valid under 0.36.0-draft is valid under this version.
 

@@ -295,7 +295,7 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
     : s.md).join("\n");
   let { html, toc } = render(bodySections, (lvl, num) => (num && SPEC_ALIASES[num] && lvl === 3 ? { aliases: SPEC_ALIASES[num] } : null));
   const NOTES = {
-    s6: 'This chapter also has a page of its own: <a href="/descriptor.html">The Agent Descriptor</a>. Section 6.13 proposes members for pages about an agent, and <a href="/descriptor-ui.html">the Descriptor to user interface binding</a>, also proposed, says how a page is drawn from them.',
+    s6: 'This chapter also has a page of its own: <a href="/descriptor.html">The Agent Descriptor</a>. Section 6.13 proposes members for pages about an agent, and <a href="/descriptor-ui.html">the Descriptor to user interface binding</a>, also proposed, says how a page is drawn from them. Section 6.14 proposes standing assets, and what an agent draws on as Setup, Library and This job.',
     s9: 'The AgentDoc has a site of its own, with its tools and examples, at <a href="https://agentdoc.net/">agentdoc.net</a>. A catalog entry that follows the <a href="/catalog.html">catalog profile</a> links to the agent\'s AgentDoc.',
     s12: 'This chapter also has a page of its own: <a href="/package.html">The Agent Package</a>.',
   };
