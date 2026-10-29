@@ -1,9 +1,9 @@
 # The A2A Bridge: normative mapping between Agent Messaging and A2A
 
-**Version:** 0.4.0-draft
+**Version:** 0.5.0-draft
 **Status:** Working Draft
 **Date:** 2026-07-14
-**Revised:** 2026-10-16 (see §15)
+**Revised:** 2026-10-29 (see §15)
 **Applies to:** Agent Messaging 0.2 (SPEC.md) · Agent2Agent (A2A) Protocol v1.0, JSON-RPC and HTTP+JSON bindings · PACT 1.0 (§14)
 
 > This document specifies the translation between Agent Messaging and the
@@ -60,9 +60,12 @@ below are its rules 1, 2 and 4 applied to A2A, and §9.0 below is its rule 3.
 Where this section and §4.15 differ, §4.15 governs. What follows is kept for
 the A2A particulars.
 
-End-to-end Ed25519 signatures do not traverse the HTTP leg, in either
-direction. Inside the mesh, a signature on bridged traffic is the **bridge's
-vouch**, not the far party's signature. Therefore:
+For a caller with no Agent Messaging key, end-to-end Ed25519 signatures do
+not traverse the HTTP leg, in either direction. Inside the mesh, a signature
+on bridged traffic is the **bridge's vouch**, not the far party's signature.
+A caller that does hold a key carries its own signed envelope across the leg
+instead (EXT-14, Agent Messaging over A2A): the bridge relays it unchanged and
+signs nothing, and the rules below do not apply to it. For bridged traffic:
 
 1. A bridge MUST sign bridged envelopes with the hosted identity it minted,
    under its own node vouch. It MUST NOT present bridged traffic as
@@ -331,20 +334,28 @@ direction on its own account.
 **Inbound (A2A client to mesh agent).** An A2A message whose `extensions`
 lists the URI and whose `metadata["agentmesh.audience"]` is `"person"` is
 carried as a request marked for the person: the bridge signs it with the
-caller's hosted identity and `meta.audience: "person"`. A value that is not a
+caller's hosted identity and `meta.audience: "person"`, and signs the digest
+of its readable text in `meta.readable_text` (Agent Messaging §5.8). The
+message's text parts, joined, are its `payload.text`. A value that is not a
 string is refused with `InvalidParamsError` (`-32602`). The bridge answers the
 A2A caller with a Task in state `submitted` (§5) from its own task record
 (§4.1, `GetTask`), since the mesh agent's person answers, if at all, later.
 When a reply marked for a person arrives, the bridge completes that record
 with the reply as a Message carrying `metadata["agentmesh.audience"]:
-"person"`. The task is the bridge's own record of the exchange; no mesh Task
+"person"`. Only the agent the message went to may complete it. The Message's
+first part is the reply's readable text, generated from the signed reply
+(Agent Messaging §5.8, EXT-14 §6), and the reply's envelope rides in the
+Message's metadata under EXT-14's URI, so software that shows the text can
+check it. The task is the bridge's own record of the exchange; no mesh Task
 exists for it (SPEC.md §7.0).
 
 **Outbound (mesh agent to remote A2A server).** The bridge is the receiving
 node for the bridged agent, so §5.7's receiver rules bind it. When the remote
 card lists the URI, the bridge forwards a marked request with the URI in the
 message's `extensions` and `metadata["agentmesh.audience"]: "person"`, and
-the remote server keeps the rules it declared. When the remote card does not
+the remote server keeps the rules it declared. The forwarded message's first
+part is the readable text generated from the sender's signed envelope (Agent
+Messaging §5.8, EXT-14 §6). When the remote card does not
 list it, the bridge MUST refuse the request with `AUDIENCE_NOT_SUPPORTED`
 (SPEC.md §12.2) and forward nothing, even when the sender chose to send
 anyway. A native receiver that does not know the mark still receives it under
@@ -363,8 +374,9 @@ that drops it, and §5.7 has every carrier keep it.
 |---|---|
 | No credentials | Ephemeral per-session identity, sandbox-flagged; subject to the guest rate tier |
 | A bridge API key (`Authorization: Bearer <key>`) | A stable identity minted at key creation, reused across calls |
+| Its own signed envelope, under EXT-14 (with whatever credential the bridge requires) | None. The envelope travels on the caller's own signature, and the bridge relays it unchanged |
 
-Either way the identity is bridge-hosted and node-vouched (§2.1 rule 1).
+For the first two the identity is bridge-hosted and node-vouched (§2.1 rule 1).
 A2A `securitySchemes` in generated cards MUST declare exactly what the bridge
 accepts.
 
@@ -592,7 +604,8 @@ each MUST document which direction it provides. An implementation MAY
 implement either A2A binding or both (§3, §13), and MUST document which. A
 bridge that serves PACT (§14) claims PACT Identity conformance by passing
 `conformance/pact-identity.json` for the Provider role, and PACT Delegated by
-also passing `conformance/pact-delegated.json`.
+also passing `conformance/pact-delegated.json`. A bridge that lists Agent
+Messaging over A2A in its cards implements EXT-14 §2 to §7.
 
 ## 13. The HTTP+JSON Binding
 

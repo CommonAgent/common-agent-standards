@@ -38,9 +38,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.16-draft",
+      "version": "0.9.17-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.16-draft",
+      "tag": "messaging-v0.9.17-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [
@@ -57,7 +57,8 @@
         { "name": "EXT-11 Site agents", "path": "messaging/extensions/EXT-11-site-agents.md", "version": "0.1.0" },
         { "name": "EXT-12 Systems health", "path": "messaging/extensions/EXT-12-systems-health.md", "version": "0.1.0-draft" },
         { "name": "EXT-13 Guest standing", "path": "messaging/extensions/EXT-13-guest-standing.md", "version": "0.1.0-draft" },
-        { "name": "The A2A Bridge", "path": "messaging/bindings/a2a-bridge.md", "version": "0.4.0-draft" },
+        { "name": "EXT-14 Agent Messaging over A2A", "path": "messaging/extensions/EXT-14-agent-messaging-over-a2a.md", "version": "0.1.0-draft" },
+        { "name": "The A2A Bridge", "path": "messaging/bindings/a2a-bridge.md", "version": "0.5.0-draft" },
         { "name": "The RabbitMQ binding", "path": "messaging/bindings/rabbitmq.md", "version": "0.1" }
       ]
     },
@@ -70,9 +71,9 @@
       "spec": "emailing/SPEC.md",
       "domain": "agentemailing.ai",
       "site": "https://agentemailing.ai/",
-      "version": "0.2.5",
+      "version": "0.2.6",
       "status": "Published",
-      "tag": "emailing-v0.2.5",
+      "tag": "emailing-v0.2.6",
       "builder": "emailing/site/tools/build-spec.mjs",
       "summary": "Agent Emailing carries signed Agent Messaging envelopes in ordinary email, so agents with no broker connection can send each other requests and answers through any email provider. Each email opens with plain words generated from the signed message, so a person can read what the agents exchanged."
     },

@@ -2,13 +2,13 @@
 
 Signed agent messages carried by ordinary email
 
-**Version:** 0.2.5
+**Version:** 0.2.6
 **Status:** Published
 **Date:** 2026-10-29
 
 Agent Emailing says how a signed Agent Messaging envelope travels inside an ordinary email, so that two agents can exchange requests and answers through any email provider. It covers only the email parts. The envelope, its signature, the task model and the receiver protections are defined by Agent Messaging, and this document refers to them by section number. It never restates or changes them.
 
-Every section number in this document that is written "Agent Messaging §n" refers to the Agent Messaging specification, version 0.9.16. "EXT-6" and "EXT-7" are the Agent Messaging extensions of those numbers. "Personal Agent Naming §n" refers to the Personal Agent Naming specification, version 0.10.3. A bare "§n" refers to this document.
+Every section number in this document that is written "Agent Messaging §n" refers to the Agent Messaging specification, version 0.9.17. "EXT-6" and "EXT-7" are the Agent Messaging extensions of those numbers. "Personal Agent Naming §n" refers to the Personal Agent Naming specification, version 0.10.3. A bare "§n" refers to this document.
 
 ---
 
@@ -142,6 +142,8 @@ The envelope travels as an attachment, and not in a header or in the body text, 
 ### 3.3. The human part and the subject
 
 A person who opens the mailbox must be able to understand what the agents exchanged without opening any attachment. The human part says it in plain words, and the subject says it in the inbox list.
+
+This section applies Agent Messaging §5.8, readable text generated from a signed message, to email. The human part is that section's readable text, `human_text` below is its digest under this standard's own name, and the A2A Bridge applies the same rule to A2A. Where this section asks for more than Agent Messaging §5.8 (the subject, what happens next, the time zone), the more applies to email.
 
 #### What the human part is
 
@@ -595,7 +597,7 @@ The sending side may rebuild the email through the carrier's interface (§11.4) 
 
 ### 14.1. Normative
 
-- Agent Messaging, version 0.9.16, and its extensions EXT-6 (Admission) and EXT-7 (Pairwise sealing): https://agentmessaging.ai/
+- Agent Messaging, version 0.9.17, and its extensions EXT-6 (Admission) and EXT-7 (Pairwise sealing): https://agentmessaging.ai/
 - Personal Agent Naming, version 0.10.3: https://agentnaming.ai/
 - [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045) to [RFC 2049](https://www.rfc-editor.org/rfc/rfc2049): MIME
 - [RFC 2047](https://www.rfc-editor.org/rfc/rfc2047): non-ASCII text in headers
