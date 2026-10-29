@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Emailing</title>
+  <meta name="description" content="Agent Emailing lets two agents exchange signed requests and answers by ordinary email. The message is a signed Agent Messaging envelope attached to the email, so any email provider can carry it and the receiving agent checks the signature itself.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Emailing">
+  <meta property="og:title" content="Agent Emailing">
+  <meta property="og:description" content="Signed agent messages carried by ordinary email, through any email provider.">
+  <meta property="og:url" content="https://agentemailing.ai/">
+  <meta property="og:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Emailing. Signed agent messages carried by ordinary email, through any email provider.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentemailing.ai/">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Emailing">
+        <details class="sec" open>
+          <summary>Agent Emailing<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/" class="on" aria-current="page">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/providers.html#test">Conformance fixtures</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Emailing is one of the <a href="https://commonagent.net/">Common Agent Standards</a>, built on <a href="https://agentmessaging.ai/">Agent Messaging</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <div class="hero-grid">
+          <div>
+            <h1>Agent Emailing</h1>
+            <p class="lede">Agent Emailing lets two agents exchange signed requests and answers
+              by ordinary email. The message is an Agent Messaging envelope, signed by the agent
+              that wrote it and attached to the email. Any email provider can carry it, and the
+              receiving agent checks the signature itself.</p>
+            <p class="also">It is for agents that have no connection to a message broker: a
+              personal assistant, a small business's agent, or an agent at a company that has not
+              set up a broker. Such an agent needs a signing key and an email address.</p>
+            <div class="cta">
+              <a class="btn btn-primary" href="/spec.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read the specification</a>
+              <a class="btn btn-ghost" href="/example.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>See an example</a>
+            </div>
+            <p class="version">This is <!-- spec:version -->Agent Emailing 0.2.0<!-- /spec:version -->. It is built on
+              <a href="https://agentmessaging.ai/">Agent Messaging</a>.</p>
+          </div>
+
+          <figure class="tree" aria-label="The parts of an agent email">
+            <div class="bar">An agent email</div>
+            <ul>
+              <li class="top"><code>multipart/mixed</code><span>One ordinary email.</span></li>
+              <li class="in c-blue" style="--c:var(--blue)"><code>text/plain</code><span>Plain words, generated from the signed message. People read it; agents never act on it.</span></li>
+              <li class="in" style="--c:var(--accent)"><code>envelope.json</code><span>The signed envelope. This is the message.</span></li>
+              <li class="in" style="--c:var(--amber)"><code>agenda.txt, invite.ics</code><span>Files, each pinned by a digest inside the envelope.</span></li>
+            </ul>
+            <div class="note">The provider is only the pipe. It carries the attachment and never changes it.</div>
+          </figure>
+        </div>
+      </div>
+      </header>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Why email</p>
+          <h2>Every agent can have an address</h2>
+          <p>Agent Messaging carries signed messages between agents over a message broker. Many
+            agents will never connect to one. Almost every person and business already has email,
+            and email already does the one thing those agents need most: it holds a message until
+            the receiver collects it.</p>
+          <div class="cards three">
+            <div class="card">
+              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.586 17.414A2 2 0 0 0 2 18.828V21a1 1 0 0 0 1 1h3a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h1a1 1 0 0 0 1-1v-1a1 1 0 0 1 1-1h.172a2 2 0 0 0 1.414-.586l.814-.814a6.5 6.5 0 1 0-4-4z"/><circle cx="16.5" cy="7.5" r=".5"/></svg></span>
+              <h3>A key and an address</h3>
+              <p>An agent signs with its own key and receives mail at an address listed on its name
+                card. It needs no broker account and no connection that stays open.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span>
+              <h3>Mail waits</h3>
+              <p>A request to an agent that is offline waits in its mailbox. Agent Messaging already
+                accepts mail that waited for up to seven days, and Agent Emailing uses that rule.</p>
+            </div>
+            <div class="card">
+              <span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0"/><circle cx="12" cy="12" r="3"/></svg></span>
+              <h3>People can read along</h3>
+              <p>Each agent email opens with text generated from the signed message: who sent it, what was
+                asked, what was handed over and what happens next. The subject carries the state, such as
+                "done" or "needs your input", so the inbox alone tells the story.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Why a standard</p>
+          <h2>Many email providers, no shared message</h2>
+          <p>Email providers now offer inboxes built for agents. Each one has its own interface: its
+            own way to create an inbox, send, receive, and sign the notices it sends its customers.
+            None of them defines a message that one agent signs and another agent checks. A
+            provider's notice signature proves that the provider delivered something to its
+            customer. It does not prove which agent wrote it.</p>
+          <p>Agent Emailing fills that gap without asking providers to change. The signed envelope
+            travels as an attachment, so a provider only has to carry one file unchanged and
+            deliver it unchanged. A provider that does that can carry Agent Emailing without
+            knowing anything about agents.</p>
+          <p class="aside"><a href="/providers.html">Email providers</a> lists what a provider must
+            and should support, and which kinds of provider do so today.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Built on Agent Messaging</p>
+          <h2>It uses Agent Messaging and adds only the email parts</h2>
+          <p>Agent Emailing never restates or changes what Agent Messaging defines. It refers to
+            those rules by section number, and where the two seem to differ, Agent Messaging is
+            the authority.</p>
+          <table class="map twocol">
+            <tr><th>Agent Messaging defines</th><th>Agent Emailing adds</th></tr>
+            <tr><td>The envelope and its signature (§5, §4.5)</td><td>Where the envelope sits in an email, and that a receiver checks its values, not its bytes</td></tr>
+            <tr><td><code>request</code> and <code>respond</code> (§6.4, §6.5)</td><td>How each is sent as an email, and where a respond may be sent</td></tr>
+            <tr><td>Tasks and their states (§7)</td><td>How to order task updates that arrive out of order</td></tr>
+            <tr><td>Files and artifacts (§7.5)</td><td>The <code>cid:</code> reference for a file carried in the same email</td></tr>
+            <tr><td>Receiver protections (§22)</td><td>That email is judged by the seven-day mailbox window, and that the duplicate memory persists</td></tr>
+            <tr><td>Admission and sealing (EXT-6, EXT-7)</td><td>Where email senders sort at the door, and what a provider can see</td></tr>
+          </table>
+          <p>Agent Emailing is not a binding of Agent Messaging. Email does not provide what a
+            binding must provide, such as subjects, ordered delivery and presence, so an Agent
+            Emailing implementation does not claim to implement Agent Messaging. It carries these
+            parts of Agent Messaging and leaves the rest out:</p>
+          <ul class="reqs">
+            <li>Carried: requests, including knocks and cancellations</li>
+            <li>Carried: responds, task updates and errors</li>
+            <li>Left out: the registry and discovery</li>
+            <li>Left out: publish and subscribe</li>
+            <li>Left out: presence</li>
+            <li>Left out: streaming</li>
+            <li>Left out: rooms</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Two modes</p>
+          <h2>Signed by the agent, or by a bridge</h2>
+          <div class="doors">
+            <a class="door c-mint" href="/spec.html#4-1-native-mode">
+              <h3>Native mode</h3>
+              <p>The agent holds its own key and signs the envelope. The receiver checks the
+                signature exactly as it would on a broker. The address the mail came from plays no
+                part in who sent it.</p>
+              <p class="go">Section 4.1</p>
+            </a>
+            <a class="door c-violet" href="/spec.html#4-2-bridged-mode">
+              <h3>Bridged mode</h3>
+              <p>A person sends plain email. A bridge hosts an identity for them and signs for
+                them, but only when their domain authenticated the message. Receivers hold bridged
+                senders for their owner's review by default.</p>
+              <p class="go">Section 4.2</p>
+            </a>
+          </div>
+          <p class="after">An email with no envelope from a sender no bridge hosts never reaches an
+            agent's model or tools. Its owner may review it, or it is discarded.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Test it</p>
+          <h2>Fixtures a provider can run</h2>
+          <p>The conformance folder holds seventeen email files and nineteen cases: a four-email thread,
+            a forwarded email, a stale one, a tampered one, one whose text does not match its signed
+            message, a forgery that fails every trust check, a bounce, a bridged sender, and more. Every envelope in them is really signed with published test keys. A provider
+            passes the carrier test when the envelope and the file in the first fixture arrive
+            unchanged.</p>
+          <div class="cta">
+            <a class="btn btn-ghost" href="/providers.html#test">How to run the fixtures</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Emailing</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

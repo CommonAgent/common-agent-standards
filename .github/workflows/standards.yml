@@ -5,7 +5,7 @@
 # the specifications, the links in each standard's folder, the Agent
 # Reputations test vectors against its reference script
 # (reputations/conformance/reference.mjs), and, for each
-# standard with a builder (common-agent, messaging, naming, processes, rfp, sow, nda, mandate, reputations, roles and collab), its site
+# standard with a builder (common-agent, messaging, emailing, naming, processes, rfp, sow, nda, mandate, reputations, roles and collab), its site
 # rendered at /draft/, the contrast gate over every page, and the links in the
 # rendered pages. A tag <id>-v<version> (such as messaging-v0.9.0-draft) checks
 # and renders that one standard at /<version>/ and at the root.
@@ -27,7 +27,7 @@
 #   DEPLOY_SITES          true to publish
 #   <ID>_HOSTS            for each standard with a builder other than
 #                         common-agent, with <ID> its id in capitals (MESSAGING,
-#                         NAMING, PROCESSES, RFP, SOW, NDA, MANDATE, REPUTATIONS, ROLES, COLLAB): the hosts to clear, separated by
+#                         EMAILING, NAMING, PROCESSES, RFP, SOW, NDA, MANDATE, REPUTATIONS, ROLES, COLLAB): the hosts to clear, separated by
 #                         spaces
 # Repository secrets:
 #   GCP_PROJECT           the Google Cloud project that holds the sites
