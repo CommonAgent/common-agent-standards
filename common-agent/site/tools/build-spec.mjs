@@ -49,7 +49,7 @@ import { dirname, resolve, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { marked } from "marked";
 import { SITE, REPO_URL, SUITE_REPO, headLinks, rail, footer, tailScript } from "./chrome.mjs";
-import { renderHome, renderAgent, renderStandards, renderPurchaseOrder, renderOnboarding, copySuiteAssets } from "../../../site/tools/build-home.mjs";
+import { renderHome, renderAgent, renderStandards, renderPurchaseOrder, renderOnboarding, renderTransports, copySuiteAssets } from "../../../site/tools/build-home.mjs";
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
 const REPO = resolve(ROOT, "..");
@@ -521,6 +521,7 @@ write("agent.html", renderAgent({ draft: DRAFT }));
 write("standards.html", renderStandards({ draft: DRAFT }));
 write("onboarding.html", renderOnboarding({ draft: DRAFT }));
 write("purchase-order.html", renderPurchaseOrder({ draft: DRAFT }));
+write("any-transport.html", renderTransports({ draft: DRAFT }));
 copySuiteAssets(OUT);
 {
   const s14 = section("s14").md.replace(/^## .+\n/, "");

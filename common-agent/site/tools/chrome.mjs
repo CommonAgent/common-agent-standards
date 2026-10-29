@@ -72,6 +72,7 @@ export function rail(active) {
           <div class="items">
           ${a("/", "Home", "home")}
           ${a("/standards.html", "Every standard", "standards")}
+          ${a("/any-transport.html", "One agent, any transport", "any-transport")}
           ${a("/minimal-contracting.html", "The minimal contracting profile", "minimal-contracting")}
           ${others}
           ${a("/purchase-order.html", "Agent Purchase Order", "purchase-order")}
