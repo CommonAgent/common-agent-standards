@@ -890,3 +890,41 @@ ol.gs-steps h3.sub{ font-size:1.05rem; margin:18px 0 4px; }
   .hero-grid .emblem-hero{ order:-1; justify-self:start; width:auto; height:auto; background:none; margin:0 0 6px; }
   .hero-grid .emblem-hero img{ width:96px; height:96px; filter:drop-shadow(0 12px 22px rgba(10,20,23,.25)); }
 }
+/* ── the article: the quote-thread figure and the results still to come ── */
+.rail nav a[href$="/article-why-agent-emailing.html"]{ --i:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z'/%3E%3Cpath d='M14 2v5h6'/%3E%3Cpath d='M9 13h6M9 17h4'/%3E%3C/svg%3E"); }
+.qt{ margin:22px 0 0; display:grid; gap:12px; max-width:820px; padding:18px; background:var(--surface); border:1px solid var(--line); border-radius:16px; }
+.qt-msg{ position:relative; background:var(--bg); border:1px solid var(--line); border-radius:12px; padding:14px 16px; overflow:hidden; }
+.qt-msg + .qt-msg::before{ content:""; position:absolute; left:31px; top:-13px; width:2px; height:12px; background:var(--line); }
+.qt-head{ display:grid; grid-template-columns:32px minmax(0,1fr); gap:10px; align-items:start; }
+.qt-head p{ margin:0; }
+.qt-from{ font-size:.9rem; color:var(--text-2); overflow-wrap:anywhere; }
+.qt-from b{ color:var(--text); font-weight:600; }
+.qt-subj{ font-size:.95rem; font-weight:600; color:var(--text); overflow-wrap:anywhere; }
+.qt-badges{ display:flex; flex-wrap:wrap; gap:8px; margin:10px 0 8px 42px; }
+.qt-text{ margin:0 0 0 42px; font-size:.92rem; color:var(--text-2); }
+.qt-fail{ border:2px solid var(--v-bad); padding-top:0; }
+.qt-failbar{ display:flex; align-items:center; gap:10px; margin:0 -16px 12px; padding:10px 16px; background:var(--v-bad); color:#FFFFFF; font-size:.95rem; }
+.qt-failbar b{ color:#FFFFFF; letter-spacing:.03em; }
+.qt-failbar .bi{ width:20px; height:20px; stroke-width:2.4; }
+.interop-pending{ margin:22px 0 0; padding:14px 18px; border:2px dashed var(--v-info); border-radius:12px; background:var(--l-info-bg); color:var(--l-info-ink); max-width:820px; }
+.interop-pending p{ margin:0; color:var(--l-info-ink); }
+.interop-pending a, .interop-pending b{ color:var(--l-info-ink); }
+@media (max-width:700px){ .qt{ padding:10px; } .qt-badges, .qt-text{ margin-left:0; } .qt-msg + .qt-msg::before{ left:27px; } }
+
+/* ── the interop results tables: wide screens scroll inside their own box; phones reflow ── */
+.tablebox{ margin:18px 0 0; overflow-x:auto; }
+table.caps.interop{ min-width:1180px; }
+table.caps.interop-auth{ min-width:880px; }
+table.caps.interop td .state, table.caps.interop-auth td .state{ white-space:normal; }
+table.caps tr.not-run td{ color:var(--text-2); }
+table.caps tr.not-run .state{ --sf:#475569; --sc:#FFFFFF; }
+@media (max-width:900px){
+  .tablebox{ overflow-x:visible; }
+  table.caps.interop, table.caps.interop-auth{ min-width:0; }
+  table.caps tr.not-run td[data-l]::before{ content:none; }
+}
+
+.interop-summary{ margin:22px 0 0; padding:18px 20px; border:1px solid var(--line); border-left:5px solid var(--v-ok); border-radius:14px; background:var(--bg); max-width:860px; }
+.interop-summary h3{ font-size:1.15rem; margin:0 0 8px; }
+.interop-summary p{ margin:0 0 10px; color:var(--text-2); }
+.interop-summary p:last-child{ margin:0; }
