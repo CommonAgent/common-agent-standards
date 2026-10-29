@@ -99,6 +99,13 @@ jobs:
       - name: The unseen-states cases (Agent Messaging §7.3.1), against the reference reading
         run: node messaging/conformance/lib/check-unseen-states.mjs
 
+      - name: The A2A Bridge's fixture set, against the reference readings
+        run: node messaging/conformance/lib/check-a2a-bridge-fixture.mjs
+
+      - name: One quote over three transports, the same checks on every recorded run
+        working-directory: messaging/conformance/cross-transport
+        run: node check.mjs results/*.json
+
       - name: The standards to check, from standards.json
         id: plan
         env:

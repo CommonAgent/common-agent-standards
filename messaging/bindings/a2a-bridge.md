@@ -1,6 +1,6 @@
 # The A2A Bridge: normative mapping between Agent Messaging and A2A
 
-**Version:** 0.7.0-draft
+**Version:** 0.8.0-draft
 **Status:** Working Draft
 **Date:** 2026-07-14
 **Revised:** 2026-10-29 (see §15)
@@ -630,7 +630,15 @@ implement either A2A binding or both (§3, §13), and MUST document which. A
 bridge that serves PACT (§14) claims PACT Identity conformance by passing
 `conformance/pact-identity.json` for the Provider role, and PACT Delegated by
 also passing `conformance/pact-delegated.json`. A bridge that lists Agent
-Messaging over A2A in its cards implements EXT-14 §2 to §7.
+Messaging over A2A in its cards implements EXT-14 §2 to §11.
+
+`conformance/a2a-bridge.json` is the fixture set for this mapping and EXT-14:
+signed and unsigned callers, a forged message, the state spellings with
+`exhausted`, the answer on an existing task, the knock and the reading of a
+queued acknowledgement, and readable text. An implementation reads it in its
+own tests, and `conformance/lib/check-a2a-bridge-fixture.mjs` checks it
+against reference readings. `conformance/cross-transport/` runs one quote
+over a broker, email and this bridge with the same checks.
 
 ## 13. The HTTP+JSON Binding
 

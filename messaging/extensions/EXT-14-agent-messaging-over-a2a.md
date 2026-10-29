@@ -4,7 +4,7 @@
 |---|---|
 | **URI** | `mesh://extensions/agent-messaging-over-a2a/v1` |
 | **Status** | Draft. Implemented by the Agent Messaging Server's A2A gateway from release 0.4.6. |
-| **Version** | 0.3.0-draft (the card from the Descriptor, §10, and the budget, §11). 0.2.0-draft: the conversation, §8, and the knock, §9. 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
+| **Version** | 0.3.1-draft (§13 names the fixture set). 0.3.0-draft: the card from the Descriptor, §10, and the budget, §11. 0.2.0-draft: the conversation, §8, and the knock, §9. 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
 | **Requires** | Agent Messaging §5.1 to §5.3 (the envelope and its signature), §5.7 (messages for the person), §5.8 (readable text), §22 (inbound protections); the A2A Bridge (`../bindings/a2a-bridge.md`); A2A 1.0 extensions (A2A §4.6) |
 
 The A2A Bridge lets a stock A2A client call an agent on a mesh. Without this
@@ -454,6 +454,6 @@ says. A budget bounds what the agent's work may cost; it is not a payment.
 
 ## 13. Conformance
 
-A bridge that lists this extension implements §2 to §11. A signed caller
+`../conformance/a2a-bridge.json` pins the cases of §4 to §9 and of Agent Messaging §5.8 as they apply here, and an implementation reads it in its own tests. A bridge that lists this extension implements §2 to §11. A signed caller
 implements §2 (finding the card), §3 and §6, and verifies the envelopes it
 gets back. The A2A Bridge §12 says what else a bridge claims.
