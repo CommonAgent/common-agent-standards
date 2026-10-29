@@ -4,6 +4,10 @@ Versions of Agent Emailing tagged in this repository, newest first. A version is
 tagged as `emailing-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.2.1 (2026-10-29)
+
+No change to the text of the specification. This version publishes agentemailing.ai with a Get started page (/getting-started.html) that runs the Agent Emailing Server (https://github.com/Agent-Emailing/agent-emailing-server) for one agent and says how to run the conformance cases against any implementation, and with an Implementations section on the Email providers page that names the reference implementation and says, for each provider adapter, whether it has carried real signed email or was tested against the provider's documentation only. The specification page notes, under Section 12, where the reference implementation and the cases are. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.2.0 (2026-10-29)
 
 The human part becomes required and is generated from the envelope (§3.3). It

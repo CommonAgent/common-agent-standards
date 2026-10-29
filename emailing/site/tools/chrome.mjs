@@ -75,6 +75,7 @@ export function rail(active) {
           <summary>Agent Emailing${chev}</summary>
           <div class="items">
           ${a("/", "What it is", "home")}
+          ${a("/getting-started.html", "Get started", "start")}
           ${a("/spec.html", "The specification", "spec")}
           ${a("/example.html", "An example", "example")}
           ${a("/providers.html", "Email providers", "providers")}
@@ -98,6 +99,7 @@ export function rail(active) {
 export const footer = `<footer class="sitefoot">
         <div class="wrap">
           <span>Agent Emailing</span>
+          <a href="/getting-started.html">Get started</a>
           <a href="/spec.html">The specification</a>
           <a href="/example.html">An example</a>
           <a href="/providers.html">Email providers</a>
@@ -120,7 +122,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "example.html": "example", "providers.html": "providers", "404.html": "" };
+const PAGES = { "index.html": "home", "getting-started.html": "start", "example.html": "example", "providers.html": "providers", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {
