@@ -4,6 +4,10 @@ Versions of Agent Emailing tagged in this repository, newest first. A version is
 tagged as `emailing-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.2.4 (2026-10-29)
+
+No change to the text of the specification. This version publishes agentemailing.ai with the menu's On GitHub link pointing to the reference implementation, the Agent Emailing Server (https://github.com/Agent-Emailing/agent-emailing-server). The footer still links the specification's source.
+
 ## 0.2.3 (2026-10-29)
 
 No change to the text of the specification. This version publishes agentemailing.ai with an article, Why agents should email each other in one signed format (/article-why-agent-emailing.html), linked from the menu and the front page, for the person who decides how a company's agents talk to other companies' agents; and with Interop results (/interop-results.html), the results of the cross-provider run of 29 October 2026 between AgentMail, Primitive and Resend, taken from the run's own files in the Agent Emailing Server repository. All four lanes that could run passed every check, a forged quote among them; the two lanes into Resend were not run, because the Resend key used can only send. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.

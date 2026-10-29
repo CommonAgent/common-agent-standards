@@ -70,9 +70,9 @@
       "spec": "emailing/SPEC.md",
       "domain": "agentemailing.ai",
       "site": "https://agentemailing.ai/",
-      "version": "0.2.3",
+      "version": "0.2.4",
       "status": "Published",
-      "tag": "emailing-v0.2.3",
+      "tag": "emailing-v0.2.4",
       "builder": "emailing/site/tools/build-spec.mjs",
       "summary": "Agent Emailing carries signed Agent Messaging envelopes in ordinary email, so agents with no broker connection can send each other requests and answers through any email provider. Each email opens with plain words generated from the signed message, so a person can read what the agents exchanged."
     },
