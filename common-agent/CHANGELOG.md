@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted before the specification moved to this repository and have no tags here.
 
+## 0.38.3 (2026-10-29)
+
+No change to the text of the specification. This version publishes commonagent.net with the page One agent, any transport (/any-transport.html) updated for Agent Messaging 0.9.17-draft and its extension EXT-14, Agent Messaging over A2A, as proven on AgentMesh's dev mesh with the Agent Messaging Server 0.4.6: on the A2A Bridge, a caller that holds a key now signs its own messages and the bridge passes them through unchanged, the answer carries the agent's own signed envelope, and a message for the person opens with readable text generated from the signed message under the rule Agent Messaging §5.8 now states for every carrier. The open item that said A2A had no readable-text rule is removed. The other A2A cells and open items are unchanged.
+
 ## 0.38.2 (2026-10-29)
 
 No change to the text of the specification. This version publishes commonagent.net with the page One agent, any transport (/any-transport.html) without its section references, so it reads as plain prose; every claim on it is unchanged.
