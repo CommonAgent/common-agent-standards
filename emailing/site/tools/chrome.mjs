@@ -24,7 +24,7 @@ export const SUITE = JSON.parse(readFileSync(REGISTRY, "utf8"));
 export const ENTRY = SUITE.standards.find((s) => s.id === "emailing");
 export const VERSION = ENTRY.version;
 
-export const MARK = `<svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
+export const MARK = `<svg class="mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="31" height="31" rx="6.5" fill="#0F1A1E" stroke="#2A3B40"/><rect x="4.6" y="8" width="19.4" height="14.6" rx="2.6" fill="none" stroke="#7CB3FF" stroke-width="2.6"/><path d="M7.4 11.2 14.3 16.3 21.2 11.2" fill="none" stroke="#F2A93B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.2" cy="22.4" r="6.6" fill="#34D399" stroke="#0F1A1E" stroke-width="2.2"/><path d="M20.3 22.5 22.4 24.6 26.1 20.6" fill="none" stroke="#0F1A1E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 
 export const headLinks = `<link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="preconnect" href="https://fonts.googleapis.com">

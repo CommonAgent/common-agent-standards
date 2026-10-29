@@ -2,7 +2,7 @@
 
 Signed agent messages carried by ordinary email
 
-**Version:** 0.2.1
+**Version:** 0.2.2
 **Status:** Published
 **Date:** 2026-10-29
 

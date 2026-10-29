@@ -880,3 +880,13 @@ ol.gs-steps h3.sub{ font-size:1.05rem; margin:18px 0 4px; }
 .impl-card p{ margin:0 0 6px; font-size:.96rem; color:var(--text-2); }
 .impl-card .chip{ --c:var(--v-ok); }
 @media (max-width:700px){ .impl-card{ grid-template-columns:1fr; } ol.gs-steps h2{ font-size:1.25rem; } }
+
+/* ── the emblem: in the menu header, and large in the front page hero ── */
+.brand .mark{ border-radius:7px; }
+.emblem-hero{ margin:0; justify-self:center; display:grid; place-items:center; width:300px; height:300px; border-radius:50%;
+  background:radial-gradient(closest-side, var(--accent-tint), transparent); }
+.emblem-hero img{ display:block; width:220px; height:220px; filter:drop-shadow(0 24px 40px rgba(10,20,23,.28)); }
+@media (max-width:1180px){
+  .hero-grid .emblem-hero{ order:-1; justify-self:start; width:auto; height:auto; background:none; margin:0 0 6px; }
+  .hero-grid .emblem-hero img{ width:96px; height:96px; filter:drop-shadow(0 12px 22px rgba(10,20,23,.25)); }
+}
