@@ -102,6 +102,9 @@ jobs:
       - name: The A2A Bridge's fixture set, against the reference readings
         run: node messaging/conformance/lib/check-a2a-bridge-fixture.mjs
 
+      - name: The security reviewer's fixtures (Agent Roles §34.4), as make-fixtures.mjs writes them
+        run: node roles/conformance/security-reviewer/make-fixtures.mjs --check
+
       - name: One quote over three transports, the same checks on every recorded run
         working-directory: messaging/conformance/cross-transport
         run: node check.mjs results/*.json

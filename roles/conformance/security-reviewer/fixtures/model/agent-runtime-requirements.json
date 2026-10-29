@@ -1,0 +1,16 @@
+{
+  "format": "agent-runtime-requirements-v1",
+  "runtimes": [
+    { "name": "node", "version": ">=22", "purpose": "runs the script that writes the forecast" }
+  ],
+  "binaries": [],
+  "dependencies": [],
+  "systems": [
+    { "name": "text-reasoning", "kind": "model", "protocols": ["anthropic-messages"] }
+  ],
+  "ceilings": [],
+  "directories": [
+    { "name": "records", "purpose": "one folder per job, holding the sentence as it was written" }
+  ],
+  "job_seconds": 60
+}

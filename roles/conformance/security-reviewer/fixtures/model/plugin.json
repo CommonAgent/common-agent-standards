@@ -1,0 +1,21 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "forecast-writer",
+  "version": "1.0.0",
+  "description": "Writes tomorrow's forecast for a city as one plain sentence.",
+  "license": "Apache-2.0",
+  "extensions": {
+    "net.agentdoc.package": {
+      "descriptor": {
+        "path": "agent-descriptor.json",
+        "sha256": "e30cfd9b21cdfc30d5ce80a901f35c76af17ba566c1fcbe1a05a85da26464771"
+      },
+      "runtime_requirements": {
+        "path": "agent-runtime-requirements.json",
+        "sha256": "5e9dc9af44e84d6c716c8ee58769ca6d2557c9e54c7eb96ab0b513b958e88758"
+      },
+      "built": true,
+      "draft": true
+    }
+  }
+}
