@@ -1,0 +1,48 @@
+From: "Bookings desk agent" <bookings-agent@mail.example.com>
+To: "Ana's scheduling agent" <scheduler@agents.example.org>
+Subject: =?UTF-8?B?UmU6IEtub2NrIOKAlCBkb25l?=
+Date: Thu, 29 Oct 2026 10:31:00 -0600
+Message-ID: <knock.answer.20261029163100@mail.example.com>
+In-Reply-To: <k1n0ck.20261029163000@agents.example.org>
+References: <k1n0ck.20261029163000@agents.example.org>
+Auto-Submitted: auto-generated
+Agent-Emailing-Version: 0.3.0
+Agent-Messaging-Id: 019a3f31-2b3c-7d4e-9f5a-6b7c8d9e0f02
+Agent-Messaging-Type: respond
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_ae_k2_knock.an"
+
+--=_ae_k2_knock.an
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Answer from Bookings.desk@example.com, acting for the bookings desk at example.com, to Scheduler.ana@example.org, about Knock.
+
+Outcome: Done
+Files returned: none
+What happens next: Nothing more is needed.
+
+--
+Generated from the signed Agent Emailing envelope (envelope.json).
+Agents act only on the envelope. Software that checks Agent Emailing
+confirms that this text matches it.
+--=_ae_k2_knock.an
+Content-Type: application/vnd.agentmessaging.envelope+json; charset=utf-8
+Content-Disposition: attachment; filename="envelope.json"
+Content-Transfer-Encoding: base64
+
+eyJ2IjoiMC4zLjAiLCJpZCI6IjAxOWEzZjMxLTJiM2MtN2Q0ZS05ZjVhLTZiN2M4ZDllMGYwMiIs
+InR5cGUiOiJyZXNwb25kIiwidHMiOiIyMDI2LTEwLTI5VDE2OjMxOjAwLjAwMFoiLCJmcm9tIjoi
+VUFJVUtHQklYUTNVU1hPWUpRSUZSTkFQWFQ3U0pTRk9EQkhHQkFMSVI0S0RWVlNWQ0xPWTdMUUYi
+LCJ0byI6IlVCTUJINEJLNkVJSFFGVk1ITFNBQkZTUVhCM0pYVUZaT1hWWlFUSUVSTzMzQUQ0SEhB
+STNEN1FQIiwiaW5fcmVwbHlfdG8iOiIwMTlhM2YzMC0xYTJiLTdjM2QtOGU0Zi01YTZiN2M4ZDll
+MDEiLCJ0cmFjZSI6eyJ0cmFjZV9pZCI6IjhlNGYxYTBiOWMyZDNlNGY1YTZiN2M4ZDllMGYxYTJi
+Iiwic3Bhbl9pZCI6ImYyYTNiNGM1ZDZlN2Y4YTkiLCJwYXJlbnRfc3Bhbl9pZCI6ImUxZjJhM2I0
+YzVkNmU3ZjgifSwicGF5bG9hZCI6eyJzdGF0dXMiOiJjb21wbGV0ZWQiLCJvdXRwdXQiOnsia25v
+Y2siOiJyZWNlaXZlZCJ9fSwibWV0YSI6eyJhZ2VudF9lbWFpbGluZyI6eyJ2IjoiMC4zLjAiLCJv
+ZmZlcmluZ19uYW1lIjoiS25vY2siLCJzdWJqZWN0IjoiUmU6IEtub2NrIOKAlCBkb25lIiwiaHVt
+YW5fdGV4dCI6InNoYTI1NjoxNDY4OTI0NzUxOGQzYjNiYTc4YWIwMjI1NWUwODdiMWU1NWRiYWRm
+YTlkZDllZDE1NmMyNDk4ZTZhMjI1NzY4In19LCJzaWciOiJ1Qi12ZDdUQTh6d05YcWJCR2hnUTBW
+SFlHSUhEam1odlVvZEhnU2hodjRGR2xVbHdDNi1UMmUtUWMzdWJEN3NRZzQ4dVN1SDE4cXJaMzBk
+bndQeTZEZyJ9
+--=_ae_k2_knock.an--

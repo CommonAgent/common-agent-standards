@@ -2,11 +2,11 @@
 
 The fixtures and cases of [SPEC.md](../SPEC.md) §12.
 
-- [cases.json](cases.json): the nineteen cases, the test keys, and the
+- [cases.json](cases.json): the thirty-two cases, the inputs a case may give, the test keys, and the
   canonical form of the four envelopes of the example thread.
 - [cards.json](cards.json): the test name cards, signed by a test registrar as
   Personal Agent Naming §5.3 describes.
-- [fixtures/](fixtures/): seventeen email files. Every envelope and every name
+- [fixtures/](fixtures/): twenty-five email files. Every envelope and every name
   card in them is really signed with published test keys, which control
   nothing.
 - [check-fixtures.mjs](check-fixtures.mjs): a small reference receiver that

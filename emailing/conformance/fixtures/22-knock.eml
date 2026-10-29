@@ -1,0 +1,44 @@
+From: "Ana's scheduling agent" <scheduler@agents.example.org>
+To: "Bookings desk agent" <bookings-agent@mail.example.com>
+Subject: =?UTF-8?B?S25vY2sg4oCUIHJlcXVlc3Q=?=
+Date: Thu, 29 Oct 2026 10:30:00 -0600
+Message-ID: <k1n0ck.20261029163000@agents.example.org>
+Auto-Submitted: auto-generated
+Agent-Emailing-Version: 0.3.0
+Agent-Messaging-Id: 019a3f30-1a2b-7c3d-8e4f-5a6b7c8d9e01
+Agent-Messaging-Type: request
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_ae_k1_k1n0ck.2"
+
+--=_ae_k1_k1n0ck.2
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+Request from Scheduler.ana@example.org, acting for Ana Lima, to Bookings.desk@example.com.
+
+Asked for: Knock
+Handed over: nothing
+What happens next: Bookings.desk@example.com will do the work or ask for what it needs. Its answer will arrive in this thread.
+
+--
+Generated from the signed Agent Emailing envelope (envelope.json).
+Agents act only on the envelope. Software that checks Agent Emailing
+confirms that this text matches it.
+--=_ae_k1_k1n0ck.2
+Content-Type: application/vnd.agentmessaging.envelope+json; charset=utf-8
+Content-Disposition: attachment; filename="envelope.json"
+Content-Transfer-Encoding: base64
+
+eyJ2IjoiMC4zLjAiLCJpZCI6IjAxOWEzZjMwLTFhMmItN2MzZC04ZTRmLTVhNmI3YzhkOWUwMSIs
+InR5cGUiOiJyZXF1ZXN0IiwidHMiOiIyMDI2LTEwLTI5VDE2OjMwOjAwLjAwMFoiLCJmcm9tIjoi
+VUJNQkg0Qks2RUlIUUZWTUhMU0FCRlNRWEIzSlhVRlpPWFZaUVRJRVJPMzNBRDRISEFJM0Q3UVAi
+LCJ0byI6IlVBSVVLR0JJWFEzVVNYT1lKUUlGUk5BUFhUN1NKU0ZPREJIR0JBTElSNEtEVlZTVkNM
+T1k3TFFGIiwidHJhY2UiOnsidHJhY2VfaWQiOiI4ZTRmMWEwYjljMmQzZTRmNWE2YjdjOGQ5ZTBm
+MWEyYiIsInNwYW5faWQiOiJlMWYyYTNiNGM1ZDZlN2Y4IiwicGFyZW50X3NwYW5faWQiOm51bGx9
+LCJwYXlsb2FkIjp7Im9mZmVyaW5nIjoia25vY2siLCJpbnB1dCI6e319LCJtZXRhIjp7ImFnZW50
+X2VtYWlsaW5nIjp7InYiOiIwLjMuMCIsIm9mZmVyaW5nX25hbWUiOiJLbm9jayIsInN1YmplY3Qi
+OiJLbm9jayDigJQgcmVxdWVzdCIsImh1bWFuX3RleHQiOiJzaGEyNTY6MzNkNzk0YTJhMmUwYzRk
+ZjBmNjBjOGYwNjQxY2IxZDczNzEyYzc3M2U0MTNhMjYxOWFhYTg0ZTY0MGRhN2FkMiJ9fSwic2ln
+IjoiVG10R3pNR19ZZDNBRFN5RGhmRmw4ejBMU2hIM0ZYaHJJSmFBZ3IwbzVRRjdtamVUMXJ6V3pX
+VzZkRDhLMkxJODJ4ZllEOXJ4ckhkWE5QdTZ0Z3kzRFEifQ==
+--=_ae_k1_k1n0ck.2--

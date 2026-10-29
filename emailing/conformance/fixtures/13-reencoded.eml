@@ -4,7 +4,8 @@ Subject: =?UTF-8?B?Qm9vayBhIG1lZXRpbmcg4oCUIHJlcXVlc3Q=?=
 Date: Thu, 29 Oct 2026 10:14:03 -0600
 Message-ID: <a7f3c9e1.20261029161403@agents.example.org>
 Auto-Submitted: auto-generated
-Agent-Emailing-Version: 0.2.0
+Agent-Emailing-Version: 0.3.0
+Agent-Messaging-Id: 019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01
 Agent-Messaging-Type: request
 Agent-Messaging-Context: 019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00
 MIME-Version: 1.0
@@ -33,15 +34,15 @@ Content-Disposition: attachment; filename="envelope.json"
 Content-Transfer-Encoding: quoted-printable
 
 {
-  "sig": "ImjEoUQLP-q2wIIsTg-MLoPSLnmhYc3V0_O5lg3ZqrUKwGvN9Cww9LLLryOAsPTPl=
-n00MMOMln_LXgYJ_83mBg",
+  "sig": "aF1cjzsPjjf19LAk_LL9UBe7mmvTL5kun9nspVEGGuk8KqnmLlnZriHGRKKQQ0PLM=
+J-i42zlDp5GfyrvImGCCQ",
   "meta": {
     "agent_emailing": {
       "human_text": "sha256:57d73202194c47d6b948f662ce5993eed4275223eaafc1d=
 585ad375693411df5",
       "subject": "Book a meeting =E2=80=94 request",
       "offering_name": "Book a meeting",
-      "v": "0.2.0"
+      "v": "0.3.0"
     }
   },
   "payload": {

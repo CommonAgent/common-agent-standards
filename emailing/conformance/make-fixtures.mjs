@@ -95,10 +95,10 @@ const IDS = {
 };
 const AGENDA_CID = "agenda.019a3f1c@agents.example.org";
 const INVITE_CID = "invite.019a3f22@mail.example.com";
-const ctxFrom = (from, to) => ({ sender: { handle: from.handle, actsFor: from.actsFor }, receiver: { handle: to.handle }, offeringName: OFFERING, timeZone: TZ });
+const ctxFrom = (from, to, offeringName = OFFERING) => ({ sender: { handle: from.handle, actsFor: from.actsFor }, receiver: { handle: to.handle }, offeringName, timeZone: TZ });
 
-function build(unsigned, from, to) {
-  const { env, text, subject } = withHuman(unsigned, ctxFrom(from, to));
+function build(unsigned, from, to, offeringName = OFFERING) {
+  const { env, text, subject } = withHuman(unsigned, ctxFrom(from, to, offeringName));
   const signed = signEnvelope(env, from.key);
   if (!verifyEnvelope(signed)) throw new Error(`does not verify: ${signed.id}`);
   return { env: signed, text, subject };
@@ -143,6 +143,7 @@ const M4 = build({
   payload: {
     status: "completed",
     text: "Booked: Tuesday 3 November, 10:00 to 10:30 Mountain time. The invitation is attached.",
+    price: { amount_micro: 1500000, currency: "USD" },
     output: { start: "2026-11-03T17:00:00Z", end: "2026-11-03T17:30:00Z", confirmation: "BK-4471" },
   },
   artifacts: [{
@@ -151,6 +152,28 @@ const M4 = build({
     created_at: "2026-10-29T16:23:12.000Z",
   }],
 }, DESK, ANA);
+const KNOCK_ID = "019a3f30-1a2b-7c3d-8e4f-5a6b7c8d9e01";
+const KNOCK = build({
+  v: "0.3.0", id: KNOCK_ID, type: "request", ts: "2026-10-29T16:30:00.000Z",
+  from: REQ.id, to: RESP.id,
+  trace: { trace_id: "8e4f1a0b9c2d3e4f5a6b7c8d9e0f1a2b", span_id: "e1f2a3b4c5d6e7f8", parent_span_id: null },
+  payload: { offering: "knock", input: {} },
+}, ANA, DESK, "Knock");
+const KNOCK_ANSWER = build({
+  v: "0.3.0", id: "019a3f31-2b3c-7d4e-9f5a-6b7c8d9e0f02", type: "respond", ts: "2026-10-29T16:31:00.000Z",
+  from: RESP.id, to: REQ.id, in_reply_to: KNOCK_ID,
+  trace: { trace_id: "8e4f1a0b9c2d3e4f5a6b7c8d9e0f1a2b", span_id: "f2a3b4c5d6e7f8a9", parent_span_id: "e1f2a3b4c5d6e7f8" },
+  payload: { status: "completed", output: { knock: "received" } },
+}, DESK, ANA, "Knock");
+// A request whose text is longer than the inbound size cap of Agent Messaging
+// §22.5: 65,536 UTF-16 code units.
+const LONG_TEXT = "Please add these parts to the quote. ".repeat(1800).trim();
+const OVERSIZED = build({
+  v: "0.3.0", id: "019a3f32-3c4d-7e5f-8a6b-7c8d9e0f1a03", type: "request", ts: "2026-10-29T16:32:00.000Z",
+  from: REQ.id, to: RESP.id,
+  trace: { trace_id: "9f5a2b1c0d3e4f5a6b7c8d9e0f1a2b3c", span_id: "a3b4c5d6e7f8a9b0", parent_span_id: null },
+  payload: { offering: "book-meeting", text: LONG_TEXT, input: {} },
+}, ANA, DESK);
 const STALE = request1({ id: "019a0b55-2c10-7a3e-8f41-6b7c8d9e0f01", ts: "2026-10-20T15:02:00.000Z" });
 
 // ── MIME ────────────────────────────────────────────────────────────────────
@@ -202,15 +225,19 @@ const MSGID = {
   r2: "<0e5d2b77-c1a4-4f0e-9b3a-5c6d7e8f9a0b@mail.example.com>",
   r3: "<b81c4d02.20261029161905@agents.example.org>",
   r4: "<5f2a9c13-8e7d-4b61-a2c0-9d8e7f6a5b4c@mail.example.com>",
+  k1: "<k1n0ck.20261029163000@agents.example.org>",
+  k2: "<knock.answer.20261029163100@mail.example.com>",
+  r5: "<b1g.20261029163200@agents.example.org>",
+  r6: "<c4d5e6f7.20261029162900@agents.example.org>",
 };
-const DATE = { r1: "Thu, 29 Oct 2026 10:14:03 -0600", r2: "Thu, 29 Oct 2026 10:16:40 -0600", r3: "Thu, 29 Oct 2026 10:19:05 -0600", r4: "Thu, 29 Oct 2026 10:23:12 -0600" };
+const DATE = { r1: "Thu, 29 Oct 2026 10:14:03 -0600", r2: "Thu, 29 Oct 2026 10:16:40 -0600", r3: "Thu, 29 Oct 2026 10:19:05 -0600", r4: "Thu, 29 Oct 2026 10:23:12 -0600", k1: "Thu, 29 Oct 2026 10:30:00 -0600", k2: "Thu, 29 Oct 2026 10:31:00 -0600", r5: "Thu, 29 Oct 2026 10:32:00 -0600", r6: "Thu, 29 Oct 2026 10:29:00 -0600" };
 
 function agentEmail(key, m, from, to, files, { headers = {}, text = m.text, envelope = m.env, envOpts, extraEnvelope, refs = [] } = {}) {
   return message(hdrs({
     From: party(from), To: party(to), Subject: encodeWords(m.subject), Date: DATE[key], "Message-ID": MSGID[key],
     "In-Reply-To": refs.length ? refs[refs.length - 1] : null, References: refs.length ? refs.join(" ") : null,
     "Auto-Submitted": "auto-generated", "Agent-Emailing-Version": EMAILING_VERSION,
-    "Agent-Messaging-Type": envelope.type, "Agent-Messaging-Task": envelope.task_id ?? null, "Agent-Messaging-Context": envelope.context_id,
+    "Agent-Messaging-Id": envelope.id, "Agent-Messaging-Type": envelope.type, "Agent-Messaging-Task": envelope.task_id ?? null, "Agent-Messaging-Context": envelope.context_id ?? null,
     ...headers,
   }), `=_ae_${key}_${MSGID[key].slice(1, 9)}`, [
     textPart(text), envelopePart(envelope, envOpts), ...(extraEnvelope ? [envelopePart(extraEnvelope)] : []), ...files,
@@ -267,6 +294,32 @@ const bounce = message([
   ["Content-Type: text/rfc822-headers", "", `From: ${party(ANA)}`, `To: ${party(DESK)}`, `Subject: ${encodeWords(M1.subject)}`, `Message-ID: ${MSGID.r1}`].join(CRLF),
 ]).replace('multipart/mixed; boundary="=_ae_dsn_01"', 'multipart/report; report-type=delivery-status; boundary="=_ae_dsn_01"');
 
+// item 4: a plain email with an attachment, for the bridge
+const NOTES = Buffer.from("Thursday works for me after 13:00.\nAna\n", "utf8");
+const bridgedAttachment = message([
+  `From: "Ana Lima" <ana@example.org>`, `To: <${DESK.address}>`,
+  "Subject: Notes for the planning meeting", "Date: Fri, 30 Oct 2026 09:10:00 -0600",
+  "Message-ID: <CAF9.ana.notes.2026@example.org>",
+], "=_ae_plain_notes", [
+  textPart("My notes for Thursday are attached.\n\nAna"),
+  ["Content-Type: text/plain; name=\"notes.txt\"", "Content-Disposition: attachment; filename=\"notes.txt\"", "Content-Transfer-Encoding: base64", "", b64(NOTES)].join(CRLF),
+]);
+// item 7: a bounce whose returned headers carry a Message-ID the carrier assigned
+const bounceNewId = message([
+  "From: Mail Delivery Subsystem <mailer-daemon@agents.example.org>", `To: <bounces+a7f3c9e1@agents.example.org>`,
+  "Subject: Undelivered Mail Returned to Sender", "Date: Thu, 29 Oct 2026 10:14:22 -0600",
+  "Message-ID: <dsn2.a7f3c9e1@agents.example.org>", "Auto-Submitted: auto-replied",
+], "=_ae_dsn_02", [
+  textPart(`Your message to ${DESK.address} could not be delivered.\nThe mailbox does not exist.`),
+  ["Content-Type: message/delivery-status", "", "Reporting-MTA: dns; agents.example.org", "",
+    `Final-Recipient: rfc822; ${DESK.address}`, "Action: failed", "Status: 5.1.1",
+    "Diagnostic-Code: smtp; 550 5.1.1 mailbox unknown"].join(CRLF),
+  ["Content-Type: text/rfc822-headers", "", `From: ${party(ANA)}`, `To: ${party(DESK)}`, `Subject: ${encodeWords(M1.subject)}`,
+    "Message-ID: <0100019a2f.carrier-assigned@email.example.net>", `Agent-Messaging-Id: ${IDS.r1}`].join(CRLF),
+]).replace('multipart/mixed; boundary="=_ae_dsn_02"', 'multipart/report; report-type=delivery-status; boundary="=_ae_dsn_02"');
+// item 10: an attached email is another email
+const attachedEmail = (raw) => ["Content-Type: message/rfc822", "Content-Disposition: attachment; filename=\"forwarded.eml\"", "", raw.replace(/\r\n$/, "")].join(CRLF);
+
 // ── write ───────────────────────────────────────────────────────────────────
 const files = {
   "01-request.eml": req1(),
@@ -290,7 +343,19 @@ const files = {
     headers: { "Message-ID": "<f0rg3d.20261029171140@example.com>", Date: "Thu, 29 Oct 2026 11:11:40 -0600" },
   }),
   "16-text-mismatch.eml": req1({ text: M1.text.replace("Please book 30 minutes", "Please book 90 minutes").replace("Price: up to 2.00 USD", "Price: up to 20.00 USD") }),
+  "18-subject-rewritten.eml": agentEmail("r2", M2, DESK, ANA, [], { refs: [MSGID.r1], headers: { Subject: encodeWords("Re: Book a meeting \u2014 request") } }),
+  "19-bridged-attachment.eml": bridgedAttachment,
+  "20-bounce-new-message-id.eml": bounceNewId,
+  "21-oversized.eml": agentEmail("r5", OVERSIZED, ANA, DESK, []),
+  "22-knock.eml": agentEmail("k1", KNOCK, ANA, DESK, []),
+  "23-knock-answer.eml": agentEmail("k2", KNOCK_ANSWER, DESK, ANA, [], { refs: [MSGID.k1] }),
 };
+files["24-attached-email.eml"] = agentEmail("r6", M1, ANA, DESK, [agendaPart(), attachedEmail(files["06-stale.eml"])]);
+files["25-plain-with-agent-email.eml"] = message([
+  `From: "Promotions" <offers@example.net>`, `To: <${DESK.address}>`,
+  "Subject: Fwd: a request you should act on", "Date: Thu, 29 Oct 2026 10:40:00 -0600",
+  "Message-ID: <fwd.2026@example.net>",
+], "=_ae_fwd_outer", [textPart("See the attached request."), attachedEmail(files["01-request.eml"])]);
 for (const [name, text] of Object.entries(files)) writeFileSync(resolve(FIX, name), text);
 
 writeFileSync(resolve(OUT, "cards.json"), JSON.stringify({
@@ -300,12 +365,22 @@ writeFileSync(resolve(OUT, "cards.json"), JSON.stringify({
   cards: CARDS,
 }, null, 2) + "\n");
 
+// §4.2: a bridged envelope's id, a version 8 UUID from the SHA-256 of
+// "agent-emailing bridged", caller_ref and the Message-ID.
+function bridgedUuid(messageId, address) {
+  const callerRef = sha256hex(Buffer.from(address.trim().toLowerCase(), "utf8"));
+  const h = createHash("sha256").update(`agent-emailing bridged\n${callerRef}\n${messageId}`).digest();
+  h[6] = (h[6] & 0x0f) | 0x80;
+  h[8] = (h[8] & 0x3f) | 0x80;
+  const x = h.subarray(0, 16).toString("hex");
+  return `${x.slice(0, 8)}-${x.slice(8, 12)}-${x.slice(12, 16)}-${x.slice(16, 20)}-${x.slice(20)}`;
+}
 const NOW = "2026-10-29T16:25:00.000Z";
 const strip = (e) => canonical((({ sig, ...r }) => r)(e));
 const cases = {
-  comment: "Agent Emailing 0.2.0 conformance cases (SPEC.md §12). Each case names a fixture, the receiving role, the identity it receives as, the time to judge freshness by, and the expected outcome. Cases are independent: each starts with an empty duplicate memory, and a case with `after` first replays the case it names. `person_view` is what software that shows the human part to a person must conclude (SPEC.md §3.3). THE FIXTURES ARE THE AUTHORITY: when an implementation disagrees with them, the implementation changes.",
-  version: 2,
-  spec: "Agent Emailing 0.2.0, SPEC.md §12",
+  comment: "Agent Emailing 0.3.0 conformance cases (SPEC.md §12). Each case names a fixture, the receiving role, the identity it receives as, the time to judge freshness by, and the expected outcome. Cases are independent: each starts with an empty duplicate memory, and a case with `after` first replays the case it names. Inputs a case may give: `carrier_auth`, the receiving carrier's SPF, DKIM and DMARC results; `admission`, the stance the receiver's door takes toward the sender (`allow` when absent); `standing`, how the sender's standing came out (a vouch and a verified name card when absent); `memory_bound`, the duplicate memory's bound; and `sent`, the sending agent's own records of the emails it sent. `person_view` is what software that shows the human part to a person must conclude (SPEC.md §3.3). THE FIXTURES ARE THE AUTHORITY: when an implementation disagrees with them, the implementation changes.",
+  version: 3,
+  spec: "Agent Emailing 0.3.0, SPEC.md §12",
   identities: {
     comment: "TEST VECTORS. They are not real identities and control nothing. The requester seed is the published seed of Agent Messaging's conformance fixtures (messaging/conformance/inbound-protections.json). The other seeds are minted here as SHA-256 of 'agent-emailing test vector: <label>', encoded as NKey seeds.",
     requester_seed: REQ.seed, requester: REQ.id,
@@ -333,7 +408,7 @@ const cases = {
     { id: "e03", fixture: "03-request-answer.eml", role: "receiving agent and mail program", receive_as: RESP.id, now: NOW,
       expect: { deliver: true, mode: "native", task: TASK, state: "answer", reply: "the agent's own answer", person_view: "matches" }, spec: "§10" },
     { id: "e04", fixture: "04-respond-done.eml", role: "receiving agent and mail program", receive_as: REQ.id, now: NOW,
-      expect: { deliver: true, mode: "native", correlates_to: IDS.r3, task: TASK, state: "done", files: { "invite.ics": "verified" }, reply: "none", person_view: "matches" }, spec: "§3.6, §10" },
+      expect: { deliver: true, mode: "native", correlates_to: IDS.r3, task: TASK, state: "done", files: { "invite.ics": "verified" }, reply: "none", person_view: "matches", price_stated: "1.50 USD" }, spec: "§3.3, §3.6, §10" },
     { id: "e05", fixture: "05-forwarded.eml", role: "receiving agent", receive_as: THIRD.id, now: NOW,
       expect: { deliver: false, refusal: "misaddressed", reply: "none", local_signal: true }, spec: "§7.1; Agent Messaging §22.4" },
     { id: "e06", fixture: "06-stale.eml", role: "receiving agent", receive_as: RESP.id, now: NOW,
@@ -355,8 +430,8 @@ const cases = {
       expect: { deliver: true, mode: "native", files: { "agenda.txt": "verified" } }, spec: "§3.2 (the envelope is compared by its values, not its bytes)" },
     { id: "e14", fixture: "01-request.eml", role: "receiving agent", receive_as: RESP.id, now: NOW, after: "e01",
       expect: { deliver: false, refusal: "duplicate", reply: "none" }, spec: "§7.1; Agent Messaging §22.2" },
-    { id: "e15", fixture: "14-bounce.eml", role: "sending agent", receive_as: REQ.id, now: NOW,
-      expect: { deliver: false, outcome_for_request: { request: IDS.r1, outcome: "undeliverable", status: "5.1.1" }, reply: "none" }, spec: "§8" },
+    { id: "e15", fixture: "14-bounce.eml", role: "sending agent", receive_as: REQ.id, now: NOW, sent: [{ request: IDS.r1, message_id: MSGID.r1 }],
+      expect: { deliver: false, outcome_for_request: { request: IDS.r1, outcome: "undeliverable", status: "5.1.1", matched_by: "Message-ID" }, reply: "none" }, spec: "§8" },
     { id: "e16", fixture: "15-bridged-plain.eml", role: "bridge", receive_as: RESP.id, now: "2026-10-30T14:45:00.000Z",
       carrier_auth: { spf: "pass", dkim: [{ domain: "example.org", result: "pass", aligned: true }], dmarc: "pass" },
       expect: { deliver: "as a bridged request", mode: "bridged", identity_bridge: { front: "email", caller_kind: "email", caller_ref: sha256hex(Buffer.from("ana@example.org", "utf8")) }, admission_tier: "bridged", default_stance: "hold" },
@@ -372,9 +447,51 @@ const cases = {
       comment: "Ana's request, changed after it was signed and sent from an address that is not on her name card. Its signature does not verify, so the agent refuses it silently; software that shows it to a person shows that it failed.",
       expect: { deliver: false, refusal: "IDENTITY_MISMATCH", reply: "none", local_signal: true, person_view: "fail: do not trust this email" },
       spec: "§4.4, §6.1, §3.3; Agent Messaging §5.3" },
+    { id: "e20", fixture: "18-subject-rewritten.eml", role: "receiving agent and mail program", receive_as: REQ.id, now: NOW,
+      comment: "The respond that needs input, sent with a reply shortcut that kept the request's subject. The agent acts on the envelope; software that shows it to a person warns, because the subject is not the one the sender signed.",
+      expect: { deliver: true, mode: "native", correlates_to: IDS.r1, state: "needs your input", reply: "none", person_view: "warn: the text does not match the signed message" }, spec: "§3.3" },
+    { id: "e21", fixture: "19-bridged-attachment.eml", role: "bridge", receive_as: RESP.id, now: "2026-10-30T15:15:00.000Z",
+      carrier_auth: { spf: "pass", dkim: [{ domain: "example.org", result: "pass", aligned: true }], dmarc: "pass" },
+      expect: { deliver: "as a bridged request", mode: "bridged", admission_tier: "bridged", bridged_request: {
+        id: bridgedUuid("<CAF9.ana.notes.2026@example.org>", "ana@example.org"), offering: "message", text: "My notes for Thursday are attached.\n\nAna", subject: "Notes for the planning meeting",
+        files: [{ name: "notes.txt", media_type: "text/plain", size: NOTES.length, digest: `sha256:${sha256hex(NOTES)}` }] } },
+      spec: "§4.2" },
+    { id: "e22", fixture: "19-bridged-attachment.eml", role: "bridge", receive_as: RESP.id, now: "2026-10-30T15:15:00.000Z", after: "e21",
+      carrier_auth: { spf: "pass", dkim: [{ domain: "example.org", result: "pass", aligned: true }], dmarc: "pass" },
+      comment: "The same plain email delivered again. Its envelope id is derived from its Message-ID, so the duplicate memory refuses it.",
+      expect: { deliver: false, refusal: "duplicate", reply: "none" }, spec: "§4.2, §7.1" },
+    { id: "e23", fixture: "20-bounce-new-message-id.eml", role: "sending agent", receive_as: REQ.id, now: NOW, sent: [{ request: IDS.r1, message_id: MSGID.r1 }],
+      comment: "The carrier replaced the request's Message-ID, so the returned headers name one the sender never recorded. The Agent-Messaging-Id header still names the request.",
+      expect: { deliver: false, outcome_for_request: { request: IDS.r1, outcome: "undeliverable", status: "5.1.1", matched_by: "envelope id" }, reply: "none" }, spec: "§3.5, §8" },
+    { id: "e24", fixture: "03-request-answer.eml", role: "receiving agent", receive_as: RESP.id, now: NOW, after: "e01", memory_bound: 1,
+      comment: "The duplicate memory holds one entry, e01's, still inside the window. A new agent email is held rather than an entry forgotten.",
+      expect: { deliver: false, outcome: "held", refusal: "duplicate memory at its bound", reply: "none", local_signal: true }, spec: "§7.1" },
+    { id: "e25", fixture: "01-request.eml", role: "receiving agent", receive_as: RESP.id, now: NOW, standing: { vouched: false, reverse_lookup: "refused" },
+      comment: "No vouch, and the registrar refused the reverse lookup. The email is treated as a knock, not blocked.",
+      expect: { deliver: false, outcome: "knock", reaches_model: false, held_attempt_report: "recorded", reply: "none" }, spec: "§6.2, §7.4" },
+    { id: "e26", fixture: "01-request.eml", role: "receiving agent", receive_as: RESP.id, now: NOW, standing: { vouched: false, reverse_lookup: "no card" },
+      comment: "No vouch, and the registrar answered that the key has no card. The sender is anonymous, and the default stance blocks it.",
+      expect: { deliver: false, admission_tier: "anonymous", reaches_model: false, reply: "none" }, spec: "§6.2" },
+    { id: "e27", fixture: "21-oversized.eml", role: "receiving agent", receive_as: RESP.id, now: "2026-10-29T16:35:00.000Z", admission: "hold",
+      comment: "The envelope's text is longer than the inbound size cap, and the door holds this sender. No answer is sent.",
+      expect: { deliver: false, refusal: "too large", reply: "none", local_signal: true }, spec: "§7.2; Agent Messaging §22.5" },
+    { id: "e28", fixture: "21-oversized.eml", role: "receiving agent", receive_as: RESP.id, now: "2026-10-29T16:35:00.000Z", admission: "allow",
+      comment: "The same email from a sender the door lets in. It is answered with CONTEXT_TOO_LARGE.",
+      expect: { deliver: false, refusal: "too large", reply: "CONTEXT_TOO_LARGE", local_signal: true }, spec: "§7.2; Agent Messaging §22.5, §22.7" },
+    { id: "e29", fixture: "22-knock.eml", role: "receiving agent", receive_as: RESP.id, now: "2026-10-29T16:35:00.000Z",
+      expect: { deliver: "as a knock", reaches_model: false, held_attempt_report: "recorded", reply: "a signed respond in the same thread" }, spec: "§7.4; EXT-6 §9.3" },
+    { id: "e30", fixture: "23-knock-answer.eml", role: "receiving agent and mail program", receive_as: REQ.id, now: "2026-10-29T16:35:00.000Z",
+      expect: { deliver: true, mode: "native", correlates_to: KNOCK_ID, output: { knock: "received" }, reply: "none", person_view: "matches" }, spec: "§7.4" },
+    { id: "e31", fixture: "24-attached-email.eml", role: "receiving agent", receive_as: RESP.id, now: NOW,
+      comment: "A valid agent email with another agent email attached inside it. Only the outer email's parts count, so it has one envelope part, not two.",
+      expect: { deliver: true, mode: "native", files: { "agenda.txt": "verified" }, reply: "the agent's own answer" }, spec: "§3.1" },
+    { id: "e32", fixture: "25-plain-with-agent-email.eml", role: "receiving agent", receive_as: RESP.id, now: NOW,
+      carrier_auth: { spf: "none", dkim: [], dmarc: "none" },
+      comment: "A plain email from a stranger with an agent email attached inside it. The attached envelope does not count, so the outer email has none.",
+      expect: { deliver: false, refusal: "no envelope and no admitted bridged sender", reaches_model: false, reply: "none" }, spec: "§3.1, §4.3" },
   ],
   carrier_test: {
-    comment: "A carrier passes when it carries 01-request.eml from one of its addresses to another and the receiving side can recover, from what the carrier delivers, an envelope whose canonical form equals envelopes.request.canonical, an agenda.txt whose SHA-256 equals files['agenda.txt'].sha256, and a text part whose digest equals the envelope's meta.agent_emailing.human_text (SPEC.md §11.2, §12.3).",
+    comment: "A carrier passes when it carries 01-request.eml from one of its addresses to another and the receiving side can recover, from what the carrier delivers, an envelope whose canonical form equals envelopes.request.canonical, an agenda.txt whose SHA-256 equals files['agenda.txt'].sha256, and a text part whose digest equals the envelope's meta.agent_emailing.human_text, taken from the raw message or, where the carrier gives none, from the adapter's text (SPEC.md §11.2, §11.4, §12.3).",
   },
 };
 writeFileSync(resolve(OUT, "cases.json"), JSON.stringify(cases, null, 2) + "\n");

@@ -1,8 +1,8 @@
-# Agent Emailing 0.2
+# Agent Emailing 0.3
 
 Signed agent messages carried by ordinary email
 
-**Version:** 0.2.6
+**Version:** 0.3.0
 **Status:** Published
 **Date:** 2026-10-29
 
@@ -124,7 +124,7 @@ multipart/mixed
 └── text/calendar, application/pdf and others: file parts, each with a Content-ID
 ```
 
-A receiver MUST find the envelope part by its media type, wherever it sits in the MIME tree, and MUST NOT depend on its position. An email with more than one envelope part MUST be refused whole, silently, with a local signal (§7.2). An email with no envelope part is not an agent email, and §4.3 says what happens to it.
+A receiver MUST find the envelope part by its media type, wherever it sits in the outer email's own MIME tree, and MUST NOT depend on its position. An email attached inside the email (a `message/rfc822` part) is another email: a receiver MUST NOT look inside it for an envelope part, and an envelope part inside it does not count toward the parts of the outer email. An email with more than one envelope part MUST be refused whole, silently, with a local signal (§7.2). An email with no envelope part is not an agent email, and §4.3 says what happens to it.
 
 ### 3.2. The envelope part
 
@@ -160,7 +160,7 @@ In plain words, the human part MUST state:
 2. **What was asked:** the offering, by the name the receiving agent's manifest gives it (Agent Messaging §8.1), or by its `id` when no name is known.
 3. **What was handed over:** each attached file, by its name. When nothing is attached, it says so.
 4. **For a respond:** the outcome in words (done, needs your input, declined, failed, and the others in the table below), the result in a sentence, what is needed when more input is needed, and each file returned, by name.
-5. **The price, where there is one:** a request's cost ceiling (Agent Messaging §7.7), or an amount a respond reports.
+5. **The price, where there is one:** a request's cost ceiling (Agent Messaging §7.7), or the amount a respond reports in `payload.price`. `payload.price` is a money object as Agent Messaging §19.3 defines it, `{ "amount_micro": <integer>, "currency": "<ISO 4217 code>" }`, and states what the responder charges for the work this respond reports. A respond that charges nothing leaves it out.
 6. **What happens next,** or what the person must do.
 
 The message's own text (`payload.text`), where there is one, MUST appear in the human part word for word. Times SHOULD be shown in the time zone of the person who will read them, where the sender knows it, and otherwise in UTC.
@@ -186,6 +186,8 @@ The subject MUST be the offering in words, followed by a dash and the state, so 
 
 Every email in a thread except the first begins with `Re: `. A subject with characters outside ASCII, such as the dash, is encoded as [RFC 2047](https://www.rfc-editor.org/rfc/rfc2047) says.
 
+The sender sets the subject itself, on every email, from the envelope it is sending. A sender MUST NOT use a carrier's reply operation, or any other shortcut, that writes the subject from the email being answered, because that subject carries the earlier state. Where a carrier's reply operation sets the subject on its own, the sender sends a new email instead and sets `In-Reply-To` and `References` itself (§3.6).
+
 #### The signed summary
 
 So that anyone can tell whether the text and the subject are the ones the sender signed, the sender MUST put an `agent_emailing` object in the envelope's `meta`, which the envelope signature covers (Agent Messaging §5.2, §5.7):
@@ -193,7 +195,7 @@ So that anyone can tell whether the text and the subject are the ones the sender
 ```json
 "meta": {
   "agent_emailing": {
-    "v": "0.2.0",
+    "v": "0.3.0",
     "offering_name": "Book a meeting",
     "subject": "Book a meeting — request",
     "human_text": "sha256:<64 lowercase hex>"
@@ -246,7 +248,8 @@ A sender MAY add these hint headers when its carrier allows it:
 
 | Hint header | Copies |
 |---|---|
-| `Agent-Emailing-Version` | The version of this standard, `0.2.0` |
+| `Agent-Emailing-Version` | The version of this standard, `0.3.0` |
+| `Agent-Messaging-Id` | The envelope's `id` |
 | `Agent-Messaging-Type` | The envelope's `type` |
 | `Agent-Messaging-Task` | The envelope's `task_id` |
 | `Agent-Messaging-Context` | The envelope's `context_id` |
@@ -291,6 +294,14 @@ Agent Messaging §4.15 lists the fronts `https`, `mcp` and `a2a` and the caller 
 **The credential is the sender's domain authentication.** Agent Messaging §4.15, rule 5, says a bridge checks a credential on every call. For email, that credential is a DMARC pass ([RFC 9989](https://www.rfc-editor.org/rfc/rfc9989)) for the `From` domain, with an aligned DKIM signature ([RFC 6376](https://www.rfc-editor.org/rfc/rfc6376)). A bridge MUST NOT host an identity for, or sign for, a message without an aligned DMARC pass. Such a message is handled as §4.3 says.
 
 This credential is weaker than an OAuth token. It proves that the sender's domain sent the message, and it relies on that domain to have authenticated its own user. A receiver sorts a bridged sender into EXT-6's `bridged` tier, whose default stance is `hold` (EXT-6 §4, §10).
+
+**What the bridge signs.** The bridge turns a plain email into a `request` envelope as follows:
+
+- `payload.offering` is the offering the bridge's operator names for plain email to the receiving agent, its default offering. When the operator names none, it is `message`.
+- `payload.text` is the email's `text/plain` body, decoded and normalized as §3.3 normalizes the human part. An email with no `text/plain` part has the text of its `text/html` part, with the markup removed, normalized the same way.
+- `payload.subject` is the email's decoded subject, when it has one.
+- Each attachment of the email becomes an entry of `payload.files` (Agent Messaging §7.5.3), with `name`, `media_type`, `size` and `digest` (§3.4). The bridge delivers the attachments' bytes together with the envelope, as §3.4 says a relaying bridge does.
+- `id` is derived from the email's own `Message-ID`, so that a redelivered email yields the same envelope `id` and the duplicate memory refuses it (§7.1). It is a version 8 UUID ([RFC 9562](https://www.rfc-editor.org/rfc/rfc9562)) made from the first 16 bytes of the SHA-256 of the UTF-8 string `agent-emailing bridged`, a newline, the sender's `caller_ref`, a newline, and the `Message-ID` with its angle brackets, with the version and variant bits set as RFC 9562 says. An email with no `Message-ID` uses its subject, a newline and `payload.text` in its place.
 
 A bridge that answers a bridged sender sends a plain email to the sender's address. Its human part carries the agent's answer. It MAY also carry the envelope part.
 
@@ -358,6 +369,8 @@ Agent Messaging §5.3, step 2, says a receiver SHOULD confirm through the regist
 
 A sender with neither has no verified identity and is `anonymous` (EXT-6 §4). In every case, revoked and stopped keys are refused as Agent Messaging §5.3, step 2, requires.
 
+**When the lookup is refused.** A registrar MAY refuse a reverse lookup, for example when it rate-limits them (Personal Agent Naming §5.4). A refused lookup is not an answer that the key has no name. When the registry has no vouch for the sender and the reverse lookup was refused, rather than answered, the receiver MUST NOT sort the sender as `anonymous` and block it. It treats the email as a knock (EXT-6 §9.3): the email does not reach the agent, and the owner sees a held attempt naming the sender, as §7.4 says. The shared rule for a refused lookup is Agent Messaging's and Personal Agent Naming's, and this paragraph is its form for email.
+
 ### 6.3. What email authentication adds
 
 SPF ([RFC 7208](https://www.rfc-editor.org/rfc/rfc7208)), DKIM ([RFC 6376](https://www.rfc-editor.org/rfc/rfc6376)) and DMARC ([RFC 9989](https://www.rfc-editor.org/rfc/rfc9989)) prove that a domain sent a message. They do not identify an agent. A DKIM signature can be replayed to other recipients, and forwarding and mailing lists often break it. Agent Emailing uses them for three things only:
@@ -393,7 +406,7 @@ When the domain of a sender's handle is the same as the aligned DKIM domain of t
 Agent Messaging §22 applies in full to agent email. Email delivery is a mailbox delivery path, so:
 
 - **Freshness** (Agent Messaging §22.3): a receiver MUST judge an agent email by the mailbox `max_age`, which is 7 days by default, and never by the live window. Mail can wait days in retry queues. The bound for a clock running fast, `max_clock_skew_ahead`, applies unchanged.
-- **Duplicates** (Agent Messaging §22.2): carriers redeliver, and webhooks retry. A receiver MUST keep its `(from, id)` memory across restarts for at least as long as its mailbox `max_age`. Agent Messaging allows that memory to be kept in process. For agent email it MUST persist, because the window it must cover is days, not minutes.
+- **Duplicates** (Agent Messaging §22.2): carriers redeliver, and webhooks retry. A receiver MUST keep its `(from, id)` memory across restarts for at least as long as its mailbox `max_age`, 7 days by default. Agent Messaging allows that memory to be kept in process. For agent email it MUST persist, because the window it must cover is days, not minutes. The memory MUST also be bounded, and a receiver MAY drop an entry whose envelope the freshness window would already refuse. When the memory reaches its bound with every entry still inside the window, the receiver MUST NOT forget an entry to make room: it holds each new agent email, unopened and undelivered, until an entry leaves the window, and raises a local signal. Forgetting an entry inside the window would let a replay through. This rests on Agent Messaging §22.2 allowing a receiver to hold new mail rather than evict a remembered entry.
 - **Addressing** (Agent Messaging §22.4): a forwarded or redirected agent email arrives at an agent its envelope does not name, and MUST be refused silently.
 - **Size** (Agent Messaging §22.5) and **fencing** (Agent Messaging §22.6) apply to the envelope's payload. The human part is never shown to a model, fenced or not (§3.3).
 
@@ -410,7 +423,7 @@ A receiver handles an incoming email in this order:
 7. Resolve the `cid:` references (§3.4).
 8. Hand the envelope to the agent, with its payload text fenced (Agent Messaging §22.6).
 
-Refusals at steps 3 to 5 are silent toward the sender, with a local signal, as Agent Messaging §22.7 gives. An oversized envelope is answered with `CONTEXT_TOO_LARGE` where §5.3 allows a respond.
+Refusals at steps 3 to 5 are silent toward the sender, with a local signal, as Agent Messaging §22.7 gives. An oversized envelope is refused at step 5, but its `CONTEXT_TOO_LARGE` answer waits for step 6: the receiver sends it only to a sender that admission lets in (EXT-6), and only where §5.3 allows a respond. A sender that is held or blocked gets no answer, so the size check never tells a stranger that the mailbox is read.
 
 ### 7.3. Automatic mail and loops
 
@@ -424,6 +437,12 @@ An agent email with a valid envelope is not an automatic reply in this sense, ev
 
 A receiving agent MUST NOT request or send message disposition notifications ([RFC 8098](https://www.rfc-editor.org/rfc/rfc8098)). They would tell any sender, including one that is not admitted, that the mailbox is read.
 
+### 7.4. Knocks
+
+A knock is a `request` on the `knock` offering, with an empty input (EXT-6 §9.3). Over email it travels like any request, and the receiver applies §7.2 up to step 6. A knock never reaches the agent: the receiver records it as a held attempt for the owner (EXT-6 §9.1).
+
+The receiver answers a knock by email with a signed `respond` in the same thread: `in_reply_to` is the knock's `id`, the email's `In-Reply-To` is the knock email's `Message-ID`, and the subject follows §3.3. It sends the answer only to a verified address (§5.3), at most once per knock. The answer is the same for every outcome, as EXT-6 §9.3 requires: `payload.status` is `completed`, and `payload.output` is `{ "knock": "received" }`. A sender the door lets in MAY be told so with `admitted: true` and the agent's declared `extensions` in `payload.output`, as EXT-6 §9.3 allows. Nothing in the answer says whether the sender is held, blocked or unknown.
+
 ---
 
 ## 8. Delivery signals
@@ -432,7 +451,7 @@ Agent Messaging gives a requester three kinds of signal: the accept signal, the 
 
 - **No accept signal.** The accept signal is a live-delivery signal only, and a request drained from a mailbox MUST NOT get one (Agent Messaging §6.4a). Agent email is mailbox delivery. A receiving agent that needs time SHOULD answer early in task mode, with a `submitted` or `working` status and a `task_id` (Agent Messaging §6.4, §7.2), which tells the requester the same thing.
 - **No queued acknowledgement.** It rides a transport reply channel (Agent Messaging §6.4a), and email has none.
-- **Bounces.** A delivery status notification ([RFC 3464](https://www.rfc-editor.org/rfc/rfc3464)) for an agent email tells the sender the email did not reach the mailbox. A status of class 5 means the request is **undeliverable**. A status of class 4 means it is **deferred** and the carrier is still trying. These are local outcomes for the sending agent's own records. They are not envelopes and carry no Agent Messaging error code. A sender matches a notification to its request by the `Message-ID` it recorded when it sent the request, or by the carrier's own message identifier.
+- **Bounces.** A delivery status notification ([RFC 3464](https://www.rfc-editor.org/rfc/rfc3464)) for an agent email tells the sender the email did not reach the mailbox. A status of class 5 means the request is **undeliverable**. A status of class 4 means it is **deferred** and the carrier is still trying. These are local outcomes for the sending agent's own records. They are not envelopes and carry no Agent Messaging error code. A sender matches a notification to its request by the request's envelope `id` where the notification carries it, and otherwise by the `Message-ID` it recorded when it sent the request, or by the carrier's own message identifier. The envelope `id` is carried in the returned message's envelope part, when the notification returns the whole message, or in its `Agent-Messaging-Id` header (§3.5), when it returns only the headers. A sender SHOULD set that header wherever its carrier allows it, because some carriers replace the sender's `Message-ID`, and then the `id` is the only match.
 - **The carrier's send result.** A carrier that reports "delivered" means the receiving mail server accepted the email. It says nothing about the receiving agent.
 - **Silence.** Silence means the request is possibly still waiting (Agent Messaging §6.4). A requester SHOULD set `payload.config.timeout_ms`, and any budget deadline (Agent Messaging §7.7), in hours or days rather than seconds.
 
@@ -523,16 +542,28 @@ interface CarrierAdapter {
     raw?: Uint8Array;                   // the RFC 5322 message, when available
     headers: [string, string][];
     attachments: { filename?: string; contentType: string; contentId?: string; bytes: Uint8Array }[];
+    text?: string;                      // the human part; REQUIRED when raw is absent
+    html?: string;                      // the HTML alternative, when there is one
     auth?: { spf: string; dkim: { domain: string; result: string; aligned: boolean }[]; dmarc: string };
     receivedAt: string;
   }) => Promise<void>): void;
 
   /** The delivery outcome of a sent email (§8). */
   status(carrierId: string): Promise<{ state: "delivered" | "deferred" | "bounced" | "unknown"; dsnStatus?: string }>;
+
+  /** OPTIONAL. For a carrier that pushes by webhook: the server routes the
+   *  carrier's HTTP call here, with the raw body. The adapter checks the
+   *  carrier's own signature first (§7.2 step 1), answers 401 when it fails,
+   *  and hands each email to the receive handler. */
+  webhook?(req: { path: string; headers: Record<string, string>; body: Uint8Array }): Promise<{ status: number; body?: string }>;
+
+  /** OPTIONAL. Bounces and deferrals the carrier pushes: the push form of
+   *  status() (§8). */
+  onStatus?(handler: (ev: { carrierId: string; state: "delivered" | "deferred" | "bounced"; dsnStatus?: string; messageId?: string; at?: string }) => Promise<void>): void;
 }
 ```
 
-An adapter MUST NOT change the bytes of the envelope part or of any file part. An adapter MUST pass through every attachment whose media type is `application/vnd.agentmessaging.envelope+json`.
+An adapter MUST NOT change the bytes of the envelope part or of any file part. An adapter MUST pass through every attachment whose media type is `application/vnd.agentmessaging.envelope+json`. An adapter whose carrier gives no raw message MUST give the human part as `text`, and `html` when there is one, so that the check of §3.3 and the third check of §12.3 can run. `webhook` and `onStatus` are optional: an adapter offers them where its carrier pushes mail or delivery events.
 
 ### 11.5. Carriers that check envelopes
 
@@ -556,9 +587,9 @@ A conforming implementation MUST NOT claim that it implements Agent Messaging, o
 
 ### 12.2. The fixtures
 
-The conformance folder holds email fixtures, `conformance/fixtures/*.eml`, a list of cases, `conformance/cases.json`, and test name cards, `conformance/cards.json`, signed by a test registrar. Each case names a fixture, the role that receives it, the agent key it is received as, the time to judge freshness by, the carrier's authentication results where they matter, and the expected outcome. Every envelope in the fixtures is really signed with published test keys, which control nothing.
+The conformance folder holds email fixtures, `conformance/fixtures/*.eml`, a list of cases, `conformance/cases.json`, and test name cards, `conformance/cards.json`, signed by a test registrar. Each case names a fixture, the role that receives it, the agent key it is received as, the time to judge freshness by, the carrier's authentication results where they matter, and the expected outcome. Where a case needs them, it also gives the stance the receiver's door takes toward the sender, how the sender's standing came out, the bound of the duplicate memory, and the sending agent's records of the emails it sent. Every envelope in the fixtures is really signed with published test keys, which control nothing.
 
-The cases cover: a four-email thread of request, a respond that needs input, the answer, and a respond that is done; a human part that disagrees with its envelope; a forgery whose signature, sender and text all fail; a forwarded email, a stale envelope, a tampered envelope, hint headers that disagree with the envelope, a file whose digest does not match, two envelope parts, an automatic reply, an email with no envelope from a stranger, an envelope re-encoded by a carrier, a duplicate, a bounce, and a bridged sender with and without an aligned DMARC pass.
+The cases cover: a four-email thread of request, a respond that needs input, the answer, and a respond that is done; a human part that disagrees with its envelope; a forgery whose signature, sender and text all fail; a forwarded email, a stale envelope, a tampered envelope, hint headers that disagree with the envelope, a file whose digest does not match, two envelope parts, an automatic reply, an email with no envelope from a stranger, an envelope re-encoded by a carrier, a duplicate, a bounce matched by its `Message-ID` and a bounce matched by the envelope `id` when the carrier replaced the `Message-ID`, a bridged sender with and without an aligned DMARC pass, a bridged email with an attachment and the same email delivered twice, a respond whose subject a reply shortcut wrote, a duplicate memory at its bound, a sender whose reverse lookup was refused and one whose key has no card, an oversized envelope from a held sender and from an admitted one, a knock and its answer, an agent email with another agent email attached inside it, a plain email with an agent email attached inside it, and a respond that reports its price.
 
 The fixtures are the authority. When an implementation disagrees with them, the implementation changes.
 
@@ -568,7 +599,7 @@ A carrier passes when it carries `01-request.eml` from one of its addresses to a
 
 - an envelope whose canonical form equals `envelopes.request.canonical` in `cases.json`;
 - an `agenda.txt` whose SHA-256 equals the value in `cases.json`; and
-- a text part whose digest equals the envelope's `meta.agent_emailing.human_text` (§3.3).
+- a text part whose digest equals the envelope's `meta.agent_emailing.human_text` (§3.3), taken from the raw message or, where the carrier gives none, from the adapter's `text` (§11.4).
 
 The sending side may rebuild the email through the carrier's interface (§11.4) rather than send the fixture's bytes, as long as it attaches the envelope and the file unchanged.
 
@@ -608,6 +639,7 @@ The sending side may rebuild the email through the carrier's interface (§11.4) 
 - [RFC 5322](https://www.rfc-editor.org/rfc/rfc5322): Internet Message Format
 - [RFC 6376](https://www.rfc-editor.org/rfc/rfc6376): DKIM
 - [RFC 7208](https://www.rfc-editor.org/rfc/rfc7208): SPF
+- [RFC 9562](https://www.rfc-editor.org/rfc/rfc9562): UUIDs
 - [RFC 9989](https://www.rfc-editor.org/rfc/rfc9989): DMARC
 
 ### 14.2. Informative
@@ -621,6 +653,8 @@ The sending side may rebuild the email through the carrier's interface (§11.4) 
 ---
 
 ## Change history
+
+**0.3.0, 2026-10-29.** Fixes ten of the gaps found building the reference implementation. CHANGELOG.md lists them, one line each.
 
 **0.2.0, 2026-10-29.** The human part becomes required and is generated from the envelope (§3.3). It states who sent it and for whom, what was asked, what was handed over, the outcome, the price and what happens next. The subject carries the offering and the state. The envelope's `meta.agent_emailing` signs the text's digest and the subject, and software that shows the text to a person checks it and warns when it differs. The fixtures follow these rules, the example thread grows to four emails, case e18 covers a human part that disagrees with its envelope, and case e19 a forgery that fails the signature, the name card and the text checks.
 
