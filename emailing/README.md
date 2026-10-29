@@ -14,7 +14,7 @@ of Agent Messaging.
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.2.1, status Published.
+- [SPEC.md](SPEC.md): the specification, version 0.2.2, status Published.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 - [conformance/](conformance/README.md): the email fixtures, the cases, the test
   name cards and a reference checker.
@@ -23,7 +23,7 @@ of Agent Messaging.
 ## Versions
 
 Each version is tagged as `emailing-v` followed by the version, such as
-`emailing-v0.2.1`, and has a release on GitHub. The site of the standard is
+`emailing-v0.2.2`, and has a release on GitHub. The site of the standard is
 <https://agentemailing.ai/>.
 
 ## Licence

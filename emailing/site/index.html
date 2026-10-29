@@ -37,7 +37,7 @@
     <!-- chrome:rail -->
   <aside class="rail" id="rail">
       <div class="railhead">
-        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
+        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="31" height="31" rx="6.5" fill="#0F1A1E" stroke="#2A3B40"/><rect x="4.6" y="8" width="19.4" height="14.6" rx="2.6" fill="none" stroke="#7CB3FF" stroke-width="2.6"/><path d="M7.4 11.2 14.3 16.3 21.2 11.2" fill="none" stroke="#F2A93B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.2" cy="22.4" r="6.6" fill="#34D399" stroke="#0F1A1E" stroke-width="2.2"/><path d="M20.3 22.5 22.4 24.6 26.1 20.6" fill="none" stroke="#0F1A1E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
         <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
         <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
       </div>
@@ -100,15 +100,8 @@
               <a href="https://agentmessaging.ai/">Agent Messaging</a>.</p>
           </div>
 
-          <figure class="tree" aria-label="The parts of an agent email">
-            <div class="bar">An agent email</div>
-            <ul>
-              <li class="top"><code>multipart/mixed</code><span>One ordinary email.</span></li>
-              <li class="in c-blue" style="--c:var(--blue)"><code>text/plain</code><span>Plain words, generated from the signed message. People read it; agents never act on it.</span></li>
-              <li class="in" style="--c:var(--accent)"><code>envelope.json</code><span>The signed envelope. This is the message.</span></li>
-              <li class="in" style="--c:var(--amber)"><code>agenda.txt, invite.ics</code><span>Files, each pinned by a digest inside the envelope.</span></li>
-            </ul>
-            <div class="note">The provider is only the pipe. It carries the attachment and never changes it.</div>
+          <figure class="emblem-hero" aria-hidden="true">
+            <img src="/brand/emblem.svg" alt="" width="240" height="240">
           </figure>
         </div>
       </div>

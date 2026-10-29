@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@600&family=IBM+Plex+Sans:wght@500&family=IBM+Plex+Mono:wght@400&display=block" rel="stylesheet">
+<style>
+  html,body{margin:0;padding:0}
+  .card{width:1200px;height:630px;position:relative;overflow:hidden;background:#0b1214;
+    font-family:'IBM Plex Sans',sans-serif;color:#e8eeec}
+  /* the same faint grid and corner washes as the Agent Messaging card */
+  .grid{position:absolute;inset:0;
+    background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);
+    background-size:60px 60px;
+    -webkit-mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),rgba(0,0,0,0) 55%);mask-image:linear-gradient(to bottom,rgba(0,0,0,.9),rgba(0,0,0,0) 55%)}
+  .wash-l{position:absolute;left:-200px;top:-260px;width:700px;height:520px;background:radial-gradient(closest-side,rgba(242,169,59,.10),transparent)}
+  .wash-r{position:absolute;right:-220px;top:-300px;width:820px;height:600px;background:radial-gradient(closest-side,rgba(52,211,153,.14),transparent)}
+  .row{position:absolute;left:96px;top:200px;display:flex;align-items:center;gap:38px}
+  .emblem{width:128px;height:128px}
+  .emblem svg{display:block;width:128px;height:128px}
+  h1{margin:0;font-family:'Space Grotesk',sans-serif;font-weight:600;font-size:76px;letter-spacing:-.5px;color:#eef3f1}
+  .tag{position:absolute;left:96px;top:382px;font-size:36px;font-weight:500;color:#e6ecea}
+  .dom{position:absolute;left:96px;top:536px;font-family:'IBM Plex Mono',monospace;font-size:26px;color:#8fa29d}
+</style></head>
+<body><div class="card">
+  <div class="grid"></div><div class="wash-l"></div><div class="wash-r"></div>
+  <div class="row">
+    <div class="emblem"><!-- emblem --></div>
+    <h1>Agent Emailing</h1>
+  </div>
+  <div class="tag">Signed agent messages, carried by ordinary email</div>
+  <div class="dom">agentemailing.ai</div>
+</div></body></html>
