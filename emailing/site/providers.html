@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Emailing: email providers</title>
+  <meta name="description" content="What an email provider must and should support to carry Agent Emailing, which kinds of provider do so today, and how to run the conformance fixtures.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Emailing">
+  <meta property="og:title" content="Agent Emailing: email providers">
+  <meta property="og:description" content="What an email provider must and should support to carry Agent Emailing.">
+  <meta property="og:url" content="https://agentemailing.ai/providers.html">
+  <meta property="og:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Emailing. Signed agent messages carried by ordinary email, through any email provider.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentemailing.ai/providers.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Emailing">
+        <details class="sec" open>
+          <summary>Agent Emailing<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html" class="on" aria-current="page">Email providers</a>
+          <a href="/providers.html#test">Conformance fixtures</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Emailing is one of the <a href="https://commonagent.net/">Common Agent Standards</a>, built on <a href="https://agentmessaging.ai/">Agent Messaging</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow">Email providers</span>
+        <h1>What a provider needs to carry it</h1>
+        <p class="lede">Any email provider can carry Agent Emailing if it does three things. This
+          page lists what a provider must and should support, describes which kinds of provider do
+          so today, and explains how to test one.</p>
+        <p class="also">The provider never signs anything and is never trusted to have checked
+          anything. It carries an attachment and delivers it unchanged.</p>
+      </div>
+      </header>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Required</p>
+          <h2>What a provider must support</h2>
+          <ul class="needs">
+            <li>
+              <h3>1. Send an attachment unchanged</h3>
+              <p>The sender chooses the attachment's media type and filename, and the bytes arrive
+                unchanged after decoding.</p>
+              <p class="refs">Section 11.2</p>
+            </li>
+            <li>
+              <h3>2. Deliver an attachment unchanged</h3>
+              <p>The receiving side can get the attachment's exact bytes, from the raw message or
+                as an attachment download.</p>
+              <p class="refs">Section 11.2</p>
+            </li>
+            <li>
+              <h3>3. Sign with DKIM aligned to the sender's domain</h3>
+              <p>Every message is DKIM-signed with the signing domain aligned to the From domain. A
+                domain the provider manages is enough.</p>
+              <p class="refs">Sections 6.4 and 11.2</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Recommended</p>
+          <h2>What a provider should support</h2>
+          <ol class="reqlist">
+            <li><b>Push delivery</b> of inbound mail: a webhook, a websocket, server-sent events, or
+              IMAP IDLE. Polling works, but it adds delay.</li>
+            <li><b>At-least-once delivery with a stable event identifier</b>, so a receiver can tell a
+              retry from a new email.</li>
+            <li><b>Inbound authentication results</b>: SPF, each DKIM signature with its domain and
+              result, and DMARC with alignment. Bridged mode needs these.</li>
+            <li><b>Threading fields</b> on sending, or a reply operation that sets them, so people
+              see one thread.</li>
+            <li><b>Custom headers</b>, at least <code>Auto-Submitted</code>, then the optional hint
+              headers.</li>
+            <li><b>A custom sending domain</b>, so an organization can send from its own domain.</li>
+            <li><b>Delivery status reporting</b> for bounces and deferrals.</li>
+            <li><b>Keeping inbound mail for at least seven days</b>, the mailbox window.</li>
+            <li><b>Leaving the text part unchanged</b>, with no added footer or banner. Software that
+              checks the human part warns when the text was changed.</li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">Kinds of provider</p>
+          <h2>Which kinds of provider meet it</h2>
+          <p>This table describes kinds of provider, not products. The names in the last column are
+            examples for reference, linked to their own documentation. They are not
+            recommendations.</p>
+          <ul class="legend">
+            <li><span class="r n"><span class="mk n"></span>usually</span></li>
+            <li><span class="r w"><span class="mk w"></span>varies</span></li>
+            <li><span class="r x"><span class="mk x"></span>rarely</span></li>
+          </ul>
+          <table class="caps">
+            <thead>
+              <tr><th>Kind</th><th>Required items</th><th>Push delivery</th><th>Authentication results</th><th>Custom headers</th><th>Examples</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Inbox services built for agents<small>An inbox per agent, created through an interface.</small></td>
+                <td data-l="Required items"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Push delivery"><span class="r n"><span class="mk n"></span>usually</span> webhooks, websockets or server-sent events</td>
+                <td data-l="Authentication results"><span class="r w"><span class="mk w"></span>varies</span></td>
+                <td data-l="Custom headers"><span class="r w"><span class="mk w"></span>varies</span> from any header to a short list</td>
+                <td data-l="Examples"><a href="https://docs.agentmail.to/">AgentMail</a>, <a href="https://docs.primitive.dev/docs">Primitive</a>, <a href="https://developer.nylas.com/docs/v3/getting-started/agent-accounts.md">Nylas Agent Accounts</a>, <a href="https://mailtrap.io/agent-inbox/">Mailtrap</a>, <a href="https://docs.hostinger.com/emails/agentic-mail">Hostinger Agentic Mail</a>, <a href="https://www.producthunt.com/posts/robotomail">Robotomail</a></td>
+              </tr>
+              <tr>
+                <td>Sending services that also receive<small>Built for application mail, with an inbound feature.</small></td>
+                <td data-l="Required items"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Push delivery"><span class="r n"><span class="mk n"></span>usually</span> webhooks</td>
+                <td data-l="Authentication results"><span class="r w"><span class="mk w"></span>varies</span></td>
+                <td data-l="Custom headers"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Examples"><a href="https://resend.com/docs/dashboard/receiving/introduction">Resend</a>, <a href="https://documentation.mailgun.com/docs/mailgun/user-manual/receive-forward-store/receive-http">Mailgun</a>, <a href="https://postmarkapp.com/developer/webhooks/inbound-webhook">Postmark</a>, <a href="https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/securing-your-parse-webhooks">SendGrid</a></td>
+              </tr>
+              <tr>
+                <td>Cloud mail infrastructure<small>Raw sending and receiving that you assemble yourself.</small></td>
+                <td data-l="Required items"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Push delivery"><span class="r n"><span class="mk n"></span>usually</span> notifications to your code</td>
+                <td data-l="Authentication results"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Custom headers"><span class="r n"><span class="mk n"></span>usually</span>, though some set their own Message-ID</td>
+                <td data-l="Examples"><a href="https://docs.aws.amazon.com/ses/latest/dg/receiving-email-concepts.html">Amazon SES</a></td>
+              </tr>
+              <tr>
+                <td>Mail routed to code at the network edge<small>Inbound mail runs a function you write.</small></td>
+                <td data-l="Required items"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Push delivery"><span class="r n"><span class="mk n"></span>usually</span> the function runs for each message</td>
+                <td data-l="Authentication results"><span class="r w"><span class="mk w"></span>varies</span></td>
+                <td data-l="Custom headers"><span class="r w"><span class="mk w"></span>varies</span></td>
+                <td data-l="Examples"><a href="https://developers.cloudflare.com/email-service/">Cloudflare Email Service</a></td>
+              </tr>
+              <tr>
+                <td>A person's own mailbox, through an interface<small>The agent uses a mailbox a person already has.</small></td>
+                <td data-l="Required items"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Push delivery"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Authentication results"><span class="r w"><span class="mk w"></span>varies</span></td>
+                <td data-l="Custom headers"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Examples"><a href="https://developers.google.com/gmail/api/reference/rest/v1/users.messages/get">Gmail API</a>, with low daily sending limits (<a href="https://support.google.com/mail/answer/22839">500 a day</a> for a personal account, <a href="https://knowledge.workspace.google.com/admin/gmail/gmail-sending-limits-in-google-workspace">2,000</a> for a work account) and agent mail mixed into a person's own</td>
+              </tr>
+              <tr>
+                <td>A mail server you run<small>Your own SMTP and IMAP servers.</small></td>
+                <td data-l="Required items"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Push delivery"><span class="r n"><span class="mk n"></span>usually</span> IMAP IDLE</td>
+                <td data-l="Authentication results"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Custom headers"><span class="r n"><span class="mk n"></span>usually</span></td>
+                <td data-l="Examples">Any standard mail server. You keep its reputation and deliverability yourself.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">From their documentation</p>
+          <h2>What some providers document today</h2>
+          <p>Each entry below says what the provider's public documentation said on 29 October 2026,
+            with a link to it. Providers change, so check their documentation before relying on an
+            entry. Every provider listed here documents the first two required items. Check how each
+            one signs mail from your domain with DKIM in its own documentation. The list is in
+            alphabetical order.</p>
+          <table class="caps">
+            <thead>
+              <tr><th>Provider</th><th>Attachments</th><th>Exact bytes on receipt</th><th>Push delivery</th><th>Custom headers</th><th>Notes</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AgentMail</td>
+                <td data-l="Attachments"><a href="https://docs.agentmail.to/api-reference/inboxes/messages/send.md">Chosen content type</a>; 6 MB per request inline, 10 MB per message over <a href="https://docs.agentmail.to/imap-smtp.md">SMTP</a></td>
+                <td data-l="Exact bytes on receipt"><a href="https://docs.agentmail.to/messages.md">The raw message</a> by download link</td>
+                <td data-l="Push delivery"><a href="https://docs.agentmail.to/webhook-verification.md">Signed webhooks</a>, websockets, IMAP IDLE</td>
+                <td data-l="Custom headers">A <code>headers</code> map on sending</td>
+                <td data-l="Notes">Inbound messages carry SPF, DKIM and DMARC results. <a href="https://docs.agentmail.to/custom-domains.md">Custom domains</a> on paid plans.</td>
+              </tr>
+              <tr>
+                <td>Amazon SES</td>
+                <td data-l="Attachments">You build the raw message</td>
+                <td data-l="Exact bytes on receipt"><a href="https://docs.aws.amazon.com/ses/latest/dg/receiving-email-action-s3.html">The raw message</a>, stored to S3</td>
+                <td data-l="Push delivery"><a href="https://docs.aws.amazon.com/ses/latest/dg/receiving-email-concepts.html">Notifications</a> to your code</td>
+                <td data-l="Custom headers">Yes, in the raw message</td>
+                <td data-l="Notes">Sets its own Message-ID and Date (<a href="https://docs.aws.amazon.com/cli/latest/reference/ses/send-raw-email.html">documentation</a>), which section 3.6 allows for.</td>
+              </tr>
+              <tr>
+                <td>Cloudflare Email Service</td>
+                <td data-l="Attachments">Raw message on reply, or SMTP</td>
+                <td data-l="Exact bytes on receipt"><a href="https://developers.cloudflare.com/email-routing/email-workers/runtime-api/">The raw message</a> in a Worker</td>
+                <td data-l="Push delivery">A Worker runs for each message</td>
+                <td data-l="Custom headers">In a raw reply; forwarding adds only <code>X-</code> headers</td>
+                <td data-l="Notes">Outbound messages up to 5 MiB, inbound up to 25 MiB (<a href="https://developers.cloudflare.com/email-service/platform/limits/">limits</a>).</td>
+              </tr>
+              <tr>
+                <td>Mailgun</td>
+                <td data-l="Attachments">Yes</td>
+                <td data-l="Exact bytes on receipt"><a href="https://documentation.mailgun.com/docs/mailgun/user-manual/receive-forward-store/receive-http">The raw message</a>, posted by a route</td>
+                <td data-l="Push delivery">Routes post to your URL</td>
+                <td data-l="Custom headers">Parameters that start with <code>h:</code></td>
+                <td data-l="Notes">Sends from your own domain.</td>
+              </tr>
+              <tr>
+                <td>Nylas Agent Accounts</td>
+                <td data-l="Attachments">Yes, or a raw message</td>
+                <td data-l="Exact bytes on receipt"><a href="https://developer.nylas.com/docs/v3/email/headers-mime-data">The raw message</a> on request</td>
+                <td data-l="Push delivery">Webhooks</td>
+                <td data-l="Custom headers"><code>custom_headers</code> on sending</td>
+                <td data-l="Notes">A hosted inbox per agent, on a Nylas domain or your own (<a href="https://www.nylas.com/products/agent-accounts">product page</a>).</td>
+              </tr>
+              <tr>
+                <td>Primitive</td>
+                <td data-l="Attachments"><a href="https://docs.primitive.dev/docs/sending">Chosen content type</a>; up to 100 files and 30 MiB</td>
+                <td data-l="Exact bytes on receipt"><a href="https://docs.primitive.dev/docs/webhook-payload">The raw message</a>, with a SHA-256 for it and for each attachment</td>
+                <td data-l="Push delivery">Signed webhooks, hosted functions</td>
+                <td data-l="Custom headers">Only <code>Auto-Submitted</code>, <code>X-Auto-Response-Suppress</code> and <code>Precedence</code></td>
+                <td data-l="Notes">Detailed SPF, DKIM and DMARC results. New agent accounts start able to reply only. <a href="https://docs.primitive.dev/docs/domains">Custom domains</a>.</td>
+              </tr>
+              <tr>
+                <td>Resend</td>
+                <td data-l="Attachments"><a href="https://resend.com/docs/api-reference/emails/send-email">Yes</a>, up to 40 MB per email</td>
+                <td data-l="Exact bytes on receipt"><a href="https://resend.com/docs/api-reference/emails/retrieve-received-email">The raw message</a> by download link</td>
+                <td data-l="Push delivery">Webhooks, with the content fetched afterwards</td>
+                <td data-l="Custom headers">A <code>headers</code> object on sending</td>
+                <td data-l="Notes">Sends from your own domain.</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="caption">Not yet checked against their documentation: Hostinger Agentic Mail,
+            Mailtrap, Postmark, Robotomail, SendGrid, and smaller inbox services.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">For builders</p>
+          <h2>One adapter per provider</h2>
+          <p>A bridge, or an agent's runtime, that should work with any provider puts a small adapter
+            in front of each one. The adapter turns the provider's interface into four operations:
+            say what the provider supports, send one email, receive inbound mail, and report a sent
+            email's delivery status. It never changes the bytes of the envelope or of a file.</p>
+          <p>The full interface is in
+            <a href="/spec.html#11-4-the-adapter-interface">section 11.4 of the specification</a>.</p>
+        </div>
+      </section>
+
+      <section class="band" id="test">
+        <div class="wrap">
+          <p class="kicker">Test a provider</p>
+          <h2>The conformance fixtures</h2>
+          <p>The fixtures are email files with really signed envelopes, and a list of cases that
+            says what each one must produce. The keys are published test keys and control
+            nothing.</p>
+          <ul class="plain">
+            <li><a href="/conformance/cases.json">cases.json</a>: the nineteen cases, the test keys, and the
+              canonical form of the four envelopes of the thread. <a href="/conformance/cards.json">cards.json</a>:
+              the test name cards.</li>
+            <li><a href="/conformance/fixtures/01-request.eml">01-request.eml</a>, <a href="/conformance/fixtures/02-respond-input.eml">02-respond-input.eml</a>, <a href="/conformance/fixtures/03-request-answer.eml">03-request-answer.eml</a> and
+              <a href="/conformance/fixtures/04-respond-done.eml">04-respond-done.eml</a>: a four-email thread, each with a human part generated from its envelope.</li>
+            <li><a href="/conformance/fixtures/05-forwarded.eml">05-forwarded.eml</a>, <a href="/conformance/fixtures/06-stale.eml">06-stale.eml</a>, <a href="/conformance/fixtures/07-tampered.eml">07-tampered.eml</a>: refused silently.</li>
+            <li><a href="/conformance/fixtures/08-hint-mismatch.eml">08-hint-mismatch.eml</a>: headers that disagree with the envelope, which the receiver ignores.</li>
+            <li><a href="/conformance/fixtures/09-file-digest.eml">09-file-digest.eml</a>: a file that does not match its digest.</li>
+            <li><a href="/conformance/fixtures/10-two-envelopes.eml">10-two-envelopes.eml</a>, <a href="/conformance/fixtures/11-auto-reply.eml">11-auto-reply.eml</a>, <a href="/conformance/fixtures/12-stranger.eml">12-stranger.eml</a>: never handed to the agent.</li>
+            <li><a href="/conformance/fixtures/13-reencoded.eml">13-reencoded.eml</a>: the envelope re-encoded and re-laid out, which must still verify.</li>
+            <li><a href="/conformance/fixtures/14-bounce.eml">14-bounce.eml</a>: a bounce for the request.</li>
+            <li><a href="/conformance/fixtures/15-bridged-plain.eml">15-bridged-plain.eml</a>: plain email from a person, for a bridge.</li>
+            <li><a href="/conformance/fixtures/16-text-mismatch.eml">16-text-mismatch.eml</a>: a human part that disagrees with its envelope. The agent acts on
+              the envelope; software that shows the text to a person warns.</li>
+            <li><a href="/conformance/fixtures/17-forged.eml">17-forged.eml</a>: a forgery whose signature, sender and text all
+              fail. The agent refuses it; software that shows it to a person shows that it failed.</li>
+          </ul>
+          <h3 class="sub">The carrier test</h3>
+          <p>A provider passes when it carries <code>01-request.eml</code> from one of its addresses to
+            another, and the receiving side recovers an envelope whose canonical form equals the one in
+            <code>cases.json</code>, an <code>agenda.txt</code> whose SHA-256 equals the one listed there,
+            and a text part whose digest equals the one the envelope signs. The sending side may rebuild
+            the email through the provider's own interface, as long as it attaches the envelope and the
+            file unchanged and leaves the text unchanged.</p>
+          <h3 class="sub">The reference checker</h3>
+          <p><a href="/conformance/check-fixtures.mjs">check-fixtures.mjs</a> is a small reference
+            receiver. Download the <code>conformance</code> folder, with <a href="/conformance/lib.mjs">lib.mjs</a>
+            and <a href="/conformance/mail.mjs">mail.mjs</a> beside it, and run it with Node.js 20 or later.
+            It needs nothing else installed.</p>
+          <pre class="code">node conformance/check-fixtures.mjs
+<span class="c"># pass  e01  01-request.eml</span>
+<span class="c"># ...</span>
+<span class="c"># all 19 cases pass</span></pre>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Emailing</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Emailing: an example</title>
+  <meta name="description" content="Two agents book a meeting by email. This is the thread as a person sees it in their inbox, with the checks that software which reads Agent Emailing shows, followed by the raw emails and envelopes.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Emailing">
+  <meta property="og:title" content="Agent Emailing: an example">
+  <meta property="og:description" content="Two agents book a meeting by email, as a person sees it in their inbox.">
+  <meta property="og:url" content="https://agentemailing.ai/example.html">
+  <meta property="og:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Emailing. Signed agent messages carried by ordinary email, through any email provider.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentemailing.ai/example.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Emailing">
+        <details class="sec" open>
+          <summary>Agent Emailing<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html" class="on" aria-current="page">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/providers.html#test">Conformance fixtures</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Emailing is one of the <a href="https://commonagent.net/">Common Agent Standards</a>, built on <a href="https://agentmessaging.ai/">Agent Messaging</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow">An example</span>
+        <h1>What a person sees</h1>
+        <p class="lede">Ana Lima's scheduling agent asks the bookings agent at example.com to book a
+          meeting. The bookings agent offers two times, Ana's agent picks one, and the bookings agent
+          sends the invitation. Four emails pass between the two agents. This is how they look in
+          the mailbox of Ana's agent.</p>
+        <p class="also">Each email opens with text generated from the signed message, so Ana can read
+          what was asked, what was handed over and what happens next without opening an
+          attachment. Every email on this page is a conformance fixture, and every signature is
+          real. The keys are published test keys and control nothing.</p>
+      </div>
+      </header>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">The thread</p>
+          <h2>Book a meeting, in four emails</h2>
+          <p class="notice"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+            <span>The badges are what software that checks Agent Emailing shows after it checks each
+            email. A mail program that does not check Agent Emailing shows the same emails and the
+            same text, without the badges. This page computes every badge from the fixture it sits
+            on, and shows a badge only when that check passes.</span></p>
+<!-- example:client -->
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">The badges</p>
+          <h2>What each badge means</h2>
+<!-- example:legend -->
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">A failure</p>
+          <h2>An email that fails the trust checks</h2>
+          <p>Someone took Ana's signed request, changed it to ask for 90 minutes with a 20.00 USD limit and a
+            charge to her account, and sent it from an address that is not on her name card. Every check
+            below is computed from the email itself. The signature fails because the envelope changed after
+            it was signed. The sender check fails because the address is not on the card. The text check
+            fails because the text is not the text that was signed.</p>
+<!-- example:forged -->
+          <p class="caption">This is fixture <a href="/conformance/fixtures/17-forged.eml">17-forged.eml</a>, case e19.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">A warning</p>
+          <h2>When the text does not match</h2>
+          <p>This request was signed asking for 30 minutes with a price limit of 2.00 USD. Its text was
+            then changed to say 90 minutes and 20.00 USD. The signature still verifies, because the
+            envelope was not touched. The text check fails, so checking software warns the person and
+            shows what the signed message says. The bookings agent never reads the text at all.</p>
+<!-- example:mismatch -->
+          <p class="caption">This is fixture <a href="/conformance/fixtures/16-text-mismatch.eml">16-text-mismatch.eml</a>,
+            case e18.</p>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
+          <p class="kicker">For implementers</p>
+          <h2>The emails as sent</h2>
+          <p>Each email below is shown exactly as sent. Headers are in teal, the optional hint headers
+            in violet, and base64 in grey. The decoded envelope follows each one.</p>
+
+          <details class="fold">
+            <summary><span class="state st-request">Request</span> 01-request.eml, from Ana's scheduling agent</summary>
+            <!-- eml:01-request.eml -->
+            <h3 class="sub">The decoded envelope</h3>
+            <!-- envelope:request -->
+          </details>
+          <details class="fold">
+            <summary><span class="state st-input">Needs your input</span> 02-respond-input.eml, from the bookings desk agent</summary>
+            <!-- eml:02-respond-input.eml -->
+            <h3 class="sub">The decoded envelope</h3>
+            <!-- envelope:respond_input -->
+          </details>
+          <details class="fold">
+            <summary><span class="state st-answer">Answer</span> 03-request-answer.eml, from Ana's scheduling agent</summary>
+            <!-- eml:03-request-answer.eml -->
+            <h3 class="sub">The decoded envelope</h3>
+            <!-- envelope:request_answer -->
+          </details>
+          <details class="fold">
+            <summary><span class="state st-done">Done</span> 04-respond-done.eml, from the bookings desk agent</summary>
+            <!-- eml:04-respond-done.eml -->
+            <h3 class="sub">The decoded envelope</h3>
+            <!-- envelope:respond_done -->
+          </details>
+          <details class="fold">
+            <summary><span class="state st-fail">Fail</span> 17-forged.eml, the forgery</summary>
+            <!-- eml:17-forged.eml -->
+          </details>
+          <details class="fold">
+            <summary>The two name cards the sender badges rest on</summary>
+            <p>Signed by a test registrar, as Personal Agent Naming §5.3 describes. They are in
+              <a href="/conformance/cards.json">cards.json</a>.</p>
+            <!-- cards -->
+          </details>
+
+          <h3 class="sub">What to notice</h3>
+          <ul class="plain">
+            <li>Correlation is inside the envelope. The answer to the request carries the request's
+              <code>id</code> in <code>in_reply_to</code>, and every message after the first carries
+              the same <code>task_id</code>. The email Message-IDs are not the envelope ids
+              (<a href="/spec.html#3-6-correlation-and-threading">section 3.6</a>).</li>
+            <li>The envelope's <code>meta.agent_emailing</code> signs the subject and the digest of the
+              text. That is what lets software tell whether the text a person reads is the text the
+              sender signed.</li>
+            <li>Each file is a <code>cid:</code> reference with its size and digest, so the unsigned file
+              part cannot be swapped (<a href="/spec.html#3-4-file-parts-and-the-cid-reference">section 3.4</a>).</li>
+            <li>Each agent found the other's address on its verified name card. A handle has the form of
+              an email address, but it is not one, and nobody sends mail to it
+              (<a href="/spec.html#5-2-a-handle-is-not-an-email-address">section 5.2</a>).</li>
+          </ul>
+
+          <h3 class="sub">The order of checks</h3>
+          <p>A receiving agent handles each email in the order of
+            <a href="/spec.html#7-2-the-order-of-checks">section 7.2</a>:</p>
+          <ol class="reqlist">
+            <li>It checks the provider's own notice signature, where the provider sends one.</li>
+            <li>It parses the email and finds exactly one envelope part. Two are refused (fixture 10).</li>
+            <li>It verifies the envelope's signature. A changed value fails here (fixtures 07 and 17).</li>
+            <li>It checks for a duplicate, then the seven-day mailbox window, then that <code>to</code> is its own key (fixtures 05 and 06, case e14).</li>
+            <li>It decides the sender's standing and applies its owner's admission rules (EXT-6).</li>
+            <li>It checks each file's size and digest against the envelope (fixture 09).</li>
+            <li>It hands the envelope to the agent, with the payload text fenced as Agent Messaging §22.6 requires. It never reads the human part.</li>
+          </ol>
+          <p>Software that shows the email to a person checks the human part and the subject against the
+            envelope, as <a href="/spec.html#3-3-the-human-part-and-the-subject">section 3.3</a> says, and
+            warns when they differ (fixture 16).</p>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Emailing</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
