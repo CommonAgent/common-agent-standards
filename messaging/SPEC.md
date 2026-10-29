@@ -2,9 +2,9 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.16-draft
+**Version:** 0.9.17-draft
 **Status:** Working Draft
-**Date:** 2026-10-24
+**Date:** 2026-10-29
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
@@ -699,7 +699,7 @@ A **bridge** is a node (§4) that hosts mesh identities for callers that hold no
 **The rules (normative).**
 
 1. **A bridge is a node.** It connects with its own node credential and registers each hosted identity under its own vouch (§4.4). Every distinct caller gets its own hosted identity, and a bridge MUST NOT share one mesh identity among callers in a way that makes their traffic indistinguishable.
-2. **The bridge's signature is its vouch.** The envelope signature on bridged traffic is the hosted identity's, made by the bridge. A bridge MUST NOT present bridged traffic as signed by the caller, and a receiver MUST NOT treat it as native.
+2. **The bridge's signature is its vouch.** The envelope signature on bridged traffic is the hosted identity's, made by the bridge. A bridge MUST NOT present bridged traffic as signed by the caller, and a receiver MUST NOT treat it as native. A caller that holds an Agent Messaging key does not need a bridge to sign for it. Over A2A it carries its own signed envelope (EXT-14), the bridge relays it unchanged and signs nothing, and the envelope is native: it carries no bridge marker, and the receiver sorts the sender by its own key.
 3. **One lasting identity per caller.** A caller presenting the same credential identity gets the same mesh key across calls, restarts and evictions. The bridge persists the association keyed by `caller_ref`, a non-reversible handle, and never by anything a caller could present. The hosted identity's signing seed is protected as any private key is.
 4. **Every message says it is bridged.** A hosted identity's manifest carries the extension `mesh://extensions/identity-bridge/v1` and the marker below in its `meta`, is `unlisted` when it serves no offerings, and its node is attested no higher than `trust_tier: standard` (§9.7). Every envelope the bridge sends for a caller carries the marker in the envelope's `meta`, where the envelope signature covers it:
 
@@ -1008,6 +1008,41 @@ An agent MUST NOT declare it unless its `acts_for` is `person`, every path that 
 - *Old receivers.* A receiver that predates this section ignores the mark, which is why the declaration exists and why the sending SDK refuses until its person chooses otherwise.
 
 `conformance/audience.json` pins the readings of the mark, really-signed envelopes that show stripping or adding the mark fails verification, the receiver's routing table, the refusal at the door, the frame's `audience:` line and the server's cases. The core profile's test c25 checks the task manager.
+
+### 5.8. Readable Text Generated from a Signed Message
+
+A person often sees a message as text: an email's body, a part of an A2A message, a line in an app. The envelope is what was signed and what the agents act on. The text a person reads has to say the same thing, or a person can approve what the agents never agreed. This section is the one rule for that text. Agent Emailing §3.3 applies it to email, and EXT-14 §6 applies it to A2A.
+
+**The text is generated, never written.** Text that a carrier shows a person in place of a signed envelope MUST be generated from the envelope, and from the facts the sender's and the receiver's verified name cards state (Personal Agent Naming §5.1). It MUST NOT be written separately, by hand or by a model, because then it can say something the agents did not act on.
+
+**What it states.** The text MUST state, in plain words:
+
+1. who sent the message: the sender's handle, or its agent ID when no handle is known;
+2. for a message for the person (§5.7), its `payload.text`, word for word;
+3. for a `request`, the offering, by the name the receiving agent's manifest gives it (§8.1) or by its `id`;
+4. for a `respond`, the outcome in words;
+5. each file the envelope carries, by name;
+6. the price, where there is one: a request's `cost_ceiling` (§7.7) or an amount a respond reports.
+
+A carrier MAY state more, and Agent Emailing does. For a message for the person, the text is generated as `From <sender>`, an empty line, `payload.text`, and, after another empty line, one line `Attached: <name>` for each file. Generating it the same way lets a sender and a checker that hold the same envelope produce the same text.
+
+**The signer signs its digest.** The signer puts the digest of the text in the envelope's `meta`, which the signature covers:
+
+```json
+"meta": { "readable_text": { "v": 1, "text": "sha256:<64 lowercase hex>" } }
+```
+
+`text` is the SHA-256 of the text after it is normalized: line endings made LF, spaces and tabs at the end of each line removed, empty lines at the end removed, and encoded as UTF-8. The signer generates the text from the envelope without this member, adds the member, then signs. Agent Emailing keeps its own member for the same digest, `meta.agent_emailing.human_text` (Agent Emailing §3.3), and a checker reads either. A sender that sends a message for the person through the SDK's own call signs the digest of the generated text there.
+
+**Who reads it.** A receiving agent MUST NOT act on the readable text, MUST NOT give it to a model, a tool or an offering handler, and MUST NOT treat any difference between it and the envelope as meaningful. What a model may read is the envelope's payload, under §22.6.
+
+**The check.** Software that shows the text to a person SHOULD check it against the envelope first:
+
+1. the envelope's signature verifies (§5.3);
+2. the normalized text's digest equals the signed digest; and
+3. the text states the sender, the `payload.text` of a message for the person word for word, and every file name the envelope carries.
+
+When any part of the check fails, the software SHOULD warn the person that the text differs from the signed message, and SHOULD show what the envelope says. It MUST NOT show any sign that the message was checked unless every part of the check passed. A message with no signed digest fails the check.
 
 ---
 
@@ -4192,6 +4227,7 @@ suite, `docs/implementation-status.md`, not here.
 | `mesh://extensions/allowance/v1` | **Draft** (see `extensions/EXT-8-allowance.md`) | The owner-side spending ceiling: a signed, node-held **allowance** document (declared token→money cost model; per-task/context/day ceilings in integer micro-units) that the agent's own node meters against and enforces through §7.7 refusal-with-estimate (`BUDGET_INSUFFICIENT`). The budget's complement: it guards the owner's money, crosses no trust boundary, and rides no envelope. Platform role is visibility only (spend rollups over §19.2 receipts, `mesh.event.agent.allowance_exceeded`, EXT-3 class `allowance`); settlement and cross-agent constraints out of scope. |
 | `mesh://extensions/screening/v1` | **Draft** (see `extensions/EXT-10-screening.md`) | Who reads inbound content before an agent does. A recipient-side socket: the node consults a provider the OWNER chose — an HTTPS service or a mesh agent — and gets back pass / flag / hold, where a hold routes to the EXT-6 door rather than deleting anything. Screening is local because a sealed payload (EXT-7) opens only on the recipient's node, so anything upstream would cover unsealed traffic alone and read as covering all of it. Five call sites: message delivery, room history replay, room file fetch, work-board read, and outbound send. **The protocol carries no detector and never will** — a shipped detector makes every miss the platform's, and an account with no provider configured is unscreened and must be told so in that word. |
 | `mesh://extensions/audience/v1` | **Draft** (see §5.7) | Messages for the person behind an agent. Only an agent whose Common Agent Specification `acts_for` is `person` declares this URI, and every other receiver written to this version refuses a message marked for a person at its door with `AUDIENCE_NOT_SUPPORTED`. A sender marks a `request`, a `respond` or a room post with `meta.audience: "person"`, under its signature; a receiver that declares this URI in its manifest never gives such a message to a handler or a model, surfaces it to its person, and lets the agent read it only when the person allows, framed, with nothing in it taken as an instruction. A sending SDK checks the declaration and refuses with `AUDIENCE_NOT_SUPPORTED` until its person chooses to send anyway. The server's part (carrying the mark, and a task manager that applies no marked update) is in the core profile (§1.6). |
+| `mesh://extensions/agent-messaging-over-a2a/v1` | **Draft** (see `extensions/EXT-14-agent-messaging-over-a2a.md`) | Agent Messaging over A2A. A caller that holds an Agent Messaging key carries its own signed envelope in an A2A message's metadata; a bridge checks it (signature, addressee, freshness, offering), relays it unchanged and signs nothing, and returns the agent's own signed envelope beside the A2A result. A message for the person carries readable text generated from the envelope (§5.8). How a signed caller finds an agent's card from its name card's `a2a` endpoint. |
 | Sessions (`connect`/`disconnect`) | Candidate | The parked session operations (§10.1 and §10.2), if a durable-session extension is ever needed beyond `context_id`. |
 
 Extensions whose normative text lives outside this document are collected in
@@ -6710,3 +6746,22 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > wire identifier or section number changes. The minimal contracting profile
 > moves to 0.5.12-draft and applies to this version. The wire version stays
 > `0.3.0` (§20.1).
+
+> **2026-10-29: Version 0.9.17-draft. Signed messages over A2A, and readable
+> text.** A new §5.8 is the one rule for text a carrier shows a person in
+> place of a signed envelope: it is generated from the envelope and verified
+> name cards, never written separately; it states the sender, a message for
+> the person's `payload.text` word for word, the offering or the outcome,
+> each file and the price; the signer signs its digest in
+> `meta.readable_text` (`v` and `text`, the SHA-256 of the normalized
+> text); a receiving agent never acts on it; and software that shows it
+> checks it against the envelope and warns when they differ. Agent Emailing
+> §3.3 is this rule for email, with its own member for the digest. A new
+> extension, EXT-14 Agent Messaging over A2A
+> (`mesh://extensions/agent-messaging-over-a2a/v1`), lets a caller that holds
+> a key carry its own signed envelope across the A2A Bridge, which relays it
+> unchanged; §17.5 lists it, and §4.15 rule 2 says that such an envelope is
+> native, not bridged. The Agent Messaging Server's A2A gateway implements it
+> from release 0.4.6. The A2A Bridge moves to 0.5.0-draft. No existing
+> requirement, field or wire identifier changes, and no section is
+> renumbered. The wire version stays `0.3.0` (§20.1).

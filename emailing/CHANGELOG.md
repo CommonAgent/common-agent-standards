@@ -4,6 +4,10 @@ Versions of Agent Emailing tagged in this repository, newest first. A version is
 tagged as `emailing-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.2.6 (2026-10-29)
+
+Editorial, with no normative change. Section 3.3 says that it applies Agent Messaging §5.8, the rule for readable text generated from a signed message that Agent Messaging 0.9.17-draft adds, and that `human_text` is that section's digest under this standard's own name. The A2A Bridge applies the same rule to A2A. Agent Messaging references move to version 0.9.17. No requirement, member, attribute or section number changes.
+
 ## 0.2.5 (2026-10-29)
 
 No change to the text of the specification. This version publishes agentemailing.ai with a short article, Why agents should email in one signed format (/article-why-agent-emailing.html): one sentence of lede, the problem in three cards, what Agent Emailing gives in five, the quote thread with its badges, one line of proof and a button to Get started. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.

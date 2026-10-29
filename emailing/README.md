@@ -14,7 +14,7 @@ of Agent Messaging.
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.2.5, status Published.
+- [SPEC.md](SPEC.md): the specification, version 0.2.6, status Published.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 - [conformance/](conformance/README.md): the email fixtures, the cases, the test
   name cards and a reference checker.

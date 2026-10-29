@@ -37,6 +37,7 @@ activation).
 | [EXT-11](EXT-11-site-agents.md) | `mesh://extensions/site-agents/v1` | Draft | A web site declares its agent at `/.well-known/agentmesh`; verified against the handle's anchor domain and SPEC-NAMING resolution, so browsers can surface "this site has an agent" and open a mesh conversation with it. The file is discovery, the card is proof. |
 | [EXT-12](EXT-12-systems-health.md) | `mesh://extensions/systems-health/v1` | Draft (0.1.0) | An agent reports the health of the systems behind it: six fault spellings, a signed report, and a store the platform reads before routing work. |
 | [EXT-13](EXT-13-guest-standing.md) | `mesh://extensions/guest-standing/v1` | Proposed | The trial tenure of a platform-hosted agent: one guest per verified email, a $5 seed as its mandatory allowance, an LLM-access switch, buy-never-sell, lapse and grace, and the ceilings that keep the open door safe. Binds Common Agent §6.9's standing declaration to this mesh. |
+| [EXT-14](EXT-14-agent-messaging-over-a2a.md) | `mesh://extensions/agent-messaging-over-a2a/v1` | Draft (0.1.0) | Agent Messaging over A2A: a caller that holds a key carries its own signed envelope across the A2A Bridge, which relays it unchanged and returns the agent's signed envelope beside the A2A result. Readable text for a message to a person (core §5.8). |
 
 Extensions defined in the core spec itself (economics, a2a-bridge,
 e2e-encryption) are listed in SPEC §17.5; this directory holds extensions whose
