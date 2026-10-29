@@ -4,7 +4,8 @@ Subject: =?UTF-8?B?Qm9vayBhIG1lZXRpbmcg4oCUIHJlcXVlc3Q=?=
 Date: Tue, 20 Oct 2026 09:02:00 -0600
 Message-ID: <old.20261020@agents.example.org>
 Auto-Submitted: auto-generated
-Agent-Emailing-Version: 0.2.0
+Agent-Emailing-Version: 0.3.0
+Agent-Messaging-Id: 019a0b55-2c10-7a3e-8f41-6b7c8d9e0f01
 Agent-Messaging-Type: request
 Agent-Messaging-Context: 019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00
 MIME-Version: 1.0
@@ -49,12 +50,12 @@ ZXJpY2EvRGVudmVyIiwiYXR0ZW5kZWUiOiJhbmFAZXhhbXBsZS5vcmcifSwiZmlsZXMiOlt7Im5h
 bWUiOiJhZ2VuZGEudHh0IiwibWVkaWFfdHlwZSI6InRleHQvcGxhaW4iLCJyZWYiOiJjaWQ6YWdl
 bmRhLjAxOWEzZjFjQGFnZW50cy5leGFtcGxlLm9yZyIsInNpemUiOjI4NCwiZGlnZXN0Ijoic2hh
 MjU2OmM0MTE1NTA1MzM5YjQwYzg3NWQwNmYxNjg4ZTk5NzUwMGQwMmM5ZDdiNDIwZmM4NTQ4ZGQ1
-MTkzMTRiMjA0YzQifV19LCJtZXRhIjp7ImFnZW50X2VtYWlsaW5nIjp7InYiOiIwLjIuMCIsIm9m
+MTkzMTRiMjA0YzQifV19LCJtZXRhIjp7ImFnZW50X2VtYWlsaW5nIjp7InYiOiIwLjMuMCIsIm9m
 ZmVyaW5nX25hbWUiOiJCb29rIGEgbWVldGluZyIsInN1YmplY3QiOiJCb29rIGEgbWVldGluZyDi
 gJQgcmVxdWVzdCIsImh1bWFuX3RleHQiOiJzaGEyNTY6NTdkNzMyMDIxOTRjNDdkNmI5NDhmNjYy
-Y2U1OTkzZWVkNDI3NTIyM2VhYWZjMWQ1ODVhZDM3NTY5MzQxMWRmNSJ9fSwic2lnIjoiQTFRc0tC
-V2Z2eUFEMzFUUTBjYlREMzhjRFdCMnZISGJmSDBVZVdpS2pITEZJR0VyUWJEcV8ycmZxS3JVSUJs
-emtvN045TUNkX2NJYU5GSE9DUy1wQ0EifQ==
+Y2U1OTkzZWVkNDI3NTIyM2VhYWZjMWQ1ODVhZDM3NTY5MzQxMWRmNSJ9fSwic2lnIjoiNGdYU2p1
+WEg0VEk4Z3I2ZmZTaFFPRDIyblA3OE92XzlUdmIzMm9UUU9XTU1pNmRMeHZ4a2pTWnNPdURmQzNW
+aDN4V2NROHpwSl9veDN5aFVNUjFEQlEifQ==
 --=_ae_r1_a7f3c9e1
 Content-Type: text/plain; name="agenda.txt"
 Content-Disposition: attachment; filename="agenda.txt"

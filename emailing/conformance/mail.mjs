@@ -11,7 +11,7 @@
 import { createPublicKey, sign, verify } from "node:crypto";
 import { keypairFromSeed, canonical, sha256hex } from "./lib.mjs";
 
-export const EMAILING_VERSION = "0.2.0";
+export const EMAILING_VERSION = "0.3.0";
 export const MEDIA = "application/vnd.agentmessaging.envelope+json";
 
 // ── MIME ────────────────────────────────────────────────────────────────────
@@ -187,6 +187,7 @@ export function checkHuman(mail, env, senderHandle) {
   }
   if (env.type === "respond") need(`Outcome: ${cap(stateOf(env))}`, "the outcome");
   if (env.budget?.cost_ceiling) need(money(env.budget.cost_ceiling), "the price");
+  if (!isSealed(env) && p.price) need(money(p.price), "the price");
   const digest_ok = Boolean(textPart) && ae.human_text === textDigest(text);
   const subject_ok = Boolean(ae.subject) && ae.subject === subject;
   return { digest_ok, subject_ok, facts_ok: !missing.length, missing, matches: digest_ok && subject_ok && !missing.length, text, subject };

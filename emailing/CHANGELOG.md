@@ -4,6 +4,24 @@ Versions of Agent Emailing tagged in this repository, newest first. A version is
 tagged as `emailing-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.3.0 (2026-10-29)
+
+Fixes gaps found building the Agent Emailing Server, the reference implementation. One line per fix:
+
+- **Carrier interface (§11.4).** An inbound message may carry its `text` and `html` parts, and a carrier may offer `webhook(req)` for pushed mail and `onStatus(handler)` for pushed bounces. A carrier that gives no raw message must give the text. The carrier test (§12.3) takes the text from either.
+- **Subjects (§3.3).** The sender sets each email's subject itself and must not use a carrier's reply shortcut that rewrites it. Case e20.
+- **Duplicate memory (§7.1).** The memory covers 7 days and is bounded. When it is full with every entry still inside the window, new agent email is held rather than an entry forgotten. This rests on Agent Messaging §22.2 allowing it. Case e24.
+- **Plain email through a bridge (§4.2).** The bridge signs a `request` on the agent's default offering, `message` when none is named, with the body as `payload.text`, the subject, each attachment as a `payload.files` entry, and an `id` derived from the email's own `Message-ID`, so a redelivered email is caught as a duplicate. Cases e21 and e22.
+- **A refused reverse lookup (§6.2).** When the registrar refuses the lookup and no vouch exists, the email is treated as a knock, not blocked as anonymous. Cases e25 and e26.
+- **Bounces (§3.5, §8).** A sender matches a bounce by the envelope `id`, from the returned envelope part or the new `Agent-Messaging-Id` hint header, before the `Message-ID`, which some carriers replace. Cases e15 and e23.
+- **Too large (§7.2).** An oversized envelope is refused at the size check, but its `CONTEXT_TOO_LARGE` answer goes only to a sender admission lets in. Cases e27 and e28.
+- **Knocks (§7.4).** A knock by email is answered with a signed `respond` in the same thread, the same for every outcome. Cases e29 and e30.
+- **Attached emails (§3.1).** Only the outer email's own parts are searched for the envelope and its files. An email attached inside it does not count. Cases e31 and e32.
+- **The price of a respond (§3.3).** The amount a respond reports is `payload.price`, a money object (Agent Messaging §19.3), and the human part states it. Case e04.
+- **Task states over email** are not in this version. They wait on the shared rule Agent Messaging is adding.
+
+The fixtures are regenerated: every agent email now carries the `Agent-Messaging-Id` header, the done respond carries its price, and fixtures 18 to 25 are new. `cases.json` is version 3, with thirty-two cases.
+
 ## 0.2.6 (2026-10-29)
 
 Editorial, with no normative change. Section 3.3 says that it applies Agent Messaging §5.8, the rule for readable text generated from a signed message that Agent Messaging 0.9.17-draft adds, and that `human_text` is that section's digest under this standard's own name. The A2A Bridge applies the same rule to A2A. Agent Messaging references move to version 0.9.17. No requirement, member, attribute or section number changes.

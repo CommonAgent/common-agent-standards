@@ -1,0 +1,22 @@
+From: "Ana Lima" <ana@example.org>
+To: <bookings-agent@mail.example.com>
+Subject: Notes for the planning meeting
+Date: Fri, 30 Oct 2026 09:10:00 -0600
+Message-ID: <CAF9.ana.notes.2026@example.org>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_ae_plain_notes"
+
+--=_ae_plain_notes
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+My notes for Thursday are attached.
+
+Ana
+--=_ae_plain_notes
+Content-Type: text/plain; name="notes.txt"
+Content-Disposition: attachment; filename="notes.txt"
+Content-Transfer-Encoding: base64
+
+VGh1cnNkYXkgd29ya3MgZm9yIG1lIGFmdGVyIDEzOjAwLgpBbmEK
+--=_ae_plain_notes--
