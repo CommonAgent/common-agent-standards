@@ -910,3 +910,21 @@ ol.gs-steps h3.sub{ font-size:1.05rem; margin:18px 0 4px; }
 .interop-pending p{ margin:0; color:var(--l-info-ink); }
 .interop-pending a, .interop-pending b{ color:var(--l-info-ink); }
 @media (max-width:700px){ .qt{ padding:10px; } .qt-badges, .qt-text{ margin-left:0; } .qt-msg + .qt-msg::before{ left:27px; } }
+
+/* ── the interop results tables: wide screens scroll inside their own box; phones reflow ── */
+.tablebox{ margin:18px 0 0; overflow-x:auto; }
+table.caps.interop{ min-width:1180px; }
+table.caps.interop-auth{ min-width:880px; }
+table.caps.interop td .state, table.caps.interop-auth td .state{ white-space:normal; }
+table.caps tr.not-run td{ color:var(--text-2); }
+table.caps tr.not-run .state{ --sf:#475569; --sc:#FFFFFF; }
+@media (max-width:900px){
+  .tablebox{ overflow-x:visible; }
+  table.caps.interop, table.caps.interop-auth{ min-width:0; }
+  table.caps tr.not-run td[data-l]::before{ content:none; }
+}
+
+.interop-summary{ margin:22px 0 0; padding:18px 20px; border:1px solid var(--line); border-left:5px solid var(--v-ok); border-radius:14px; background:var(--bg); max-width:860px; }
+.interop-summary h3{ font-size:1.15rem; margin:0 0 8px; }
+.interop-summary p{ margin:0 0 10px; color:var(--text-2); }
+.interop-summary p:last-child{ margin:0; }

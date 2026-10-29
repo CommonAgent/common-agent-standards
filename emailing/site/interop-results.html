@@ -37,7 +37,7 @@
     <!-- chrome:rail -->
   <aside class="rail" id="rail">
       <div class="railhead">
-        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
+        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="28" height="28" aria-hidden="true" focusable="false"><rect x=".5" y=".5" width="31" height="31" rx="6.5" fill="#0F1A1E" stroke="#2A3B40"/><rect x="4.6" y="8" width="19.4" height="14.6" rx="2.6" fill="none" stroke="#7CB3FF" stroke-width="2.6"/><path d="M7.4 11.2 14.3 16.3 21.2 11.2" fill="none" stroke="#F2A93B" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="23.2" cy="22.4" r="6.6" fill="#34D399" stroke="#0F1A1E" stroke-width="2.2"/><path d="M20.3 22.5 22.4 24.6 26.1 20.6" fill="none" stroke="#0F1A1E" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
         <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
         <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
       </div>
@@ -84,9 +84,14 @@
       <div class="wrap hero">
         <span class="eyebrow">Interop results</span>
         <h1>A quote request across email providers</h1>
-        <p class="lede">Agents on different email providers exchanged a signed quote request and a signed
-          quote through the <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing
-          Server</a>. A forged quote was sent too, and had to be refused.</p>
+        <p class="lede">On 29 October 2026, from 13:06 to 13:09 Mountain time, agents on AgentMail, Primitive and
+          Resend exchanged a quote request through the <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent
+          Emailing Server</a>. Every lane that could run passed every check, including a forged quote that was
+          refused. Two lanes could not run, because the Resend key used can only send.</p>
+        <p class="also">The results below are taken from the run's own files:
+          <a href="https://github.com/Agent-Emailing/agent-emailing-server/blob/7123bbf/docs/interop-2026-10-29.md">interop-2026-10-29.md</a>,
+          <a href="https://github.com/Agent-Emailing/agent-emailing-server/blob/7123bbf/docs/interop-2026-10-29.json">interop-2026-10-29.json</a> and the script that ran it,
+          <a href="https://github.com/Agent-Emailing/agent-emailing-server/blob/7123bbf/tools/interop.mjs">tools/interop.mjs</a> (<code>npm run interop</code>).</p>
       </div>
       </header>
 
@@ -95,11 +100,22 @@
           <p class="kicker">What was tested</p>
           <h2>The test</h2>
           <!-- interop:method -->
-          <p>A buyer's agent asks a supplier's agent for a quote, with a specification sheet attached. The
-            supplier's agent answers with a signed quote and a quote document. Each pair of providers carries
-            the thread in both directions. A forged quote, changed after it was signed and sent from an
-            address that is not on the supplier's name card, must be refused by the buyer's agent and shown
-            to a person as a failure.</p>
+          <p>A buyer's purchasing agent at example.org asks a supplier's sales agent at example.com for a quote,
+            in four emails in one thread:</p>
+          <ol class="reqlist">
+            <li><b>Request:</b> the request, with a parts list (CSV) and a limit of 500.00 USD.</li>
+            <li><b>Needs your input:</b> a question about a split delivery.</li>
+            <li><b>Answer:</b> the buyer's answer.</li>
+            <li><b>Done:</b> the quote (PDF), the price and the delivery dates.</li>
+          </ol>
+          <p>A lane &ldquo;X &rarr; Y&rdquo; puts the buyer on provider X and the supplier on provider Y, so emails 1
+            and 3 travel from X to Y, and emails 2 and 4 from Y to X. Each lane also runs the carrier test of
+            <a href="/spec.html#12-3-the-carrier-test">section 12.3</a> from X to Y, and sends a forged quote from Y to
+            X: email 4 with its price raised after it was signed. The buyer's server must refuse the forgery, and the
+            check a mail program runs must show it as a failure.</p>
+          <p>Every email is checked for delivery and time, signature, name card, text and subject, files, thread and
+            task state, with the custom headers that arrived and the authentication results the receiving provider
+            reports.</p>
           <!-- /interop:method -->
         </div>
       </section>
@@ -109,9 +125,66 @@
           <p class="kicker">Results</p>
           <h2>The results</h2>
           <!-- interop:table -->
-          <div class="interop-pending" role="note">
-            <p><b>The results table goes here,</b> exactly as the test reports it.</p>
+          <div class="tablebox">
+          <table class="caps interop">
+            <thead><tr><th>Lane</th><th>Delivered</th><th>Seconds per email</th><th>Threading</th><th>Signature</th><th>Name card</th><th>Text and subject</th><th>Files</th><th>Task state</th><th>Carrier test</th><th>Forged quote refused</th><th>Forged quote, person view</th></tr></thead>
+            <tbody>
+            <tr><td>AgentMail → Primitive</td><td data-l="Delivered"><span class="state st-done">4 of 4</span></td><td data-l="Seconds per email">3.4, 9.6, 3.8, 12.5</td><td data-l="Threading"><span class="state st-done">kept</span></td><td data-l="Signature"><span class="state st-done">pass</span></td><td data-l="Name card"><span class="state st-done">pass</span></td><td data-l="Text and subject"><span class="state st-done">pass</span></td><td data-l="Files"><span class="state st-done">pass</span></td><td data-l="Task state"><span class="state st-done">pass</span></td><td data-l="Carrier test"><span class="state st-done">pass</span></td><td data-l="Forged quote refused"><span class="state st-done">pass (IDENTITY_MISMATCH, silent)</span></td><td data-l="Forged quote, person view"><span class="state st-done">pass (FAIL shown)</span></td></tr>
+            <tr><td>Primitive → AgentMail</td><td data-l="Delivered"><span class="state st-done">4 of 4</span></td><td data-l="Seconds per email">6.6, 2.8, 11.7, 2.4</td><td data-l="Threading"><span class="state st-done">kept</span></td><td data-l="Signature"><span class="state st-done">pass</span></td><td data-l="Name card"><span class="state st-done">pass</span></td><td data-l="Text and subject"><span class="state st-done">pass</span></td><td data-l="Files"><span class="state st-done">pass</span></td><td data-l="Task state"><span class="state st-done">pass</span></td><td data-l="Carrier test"><span class="state st-done">pass</span></td><td data-l="Forged quote refused"><span class="state st-done">pass (IDENTITY_MISMATCH, silent)</span></td><td data-l="Forged quote, person view"><span class="state st-done">pass (FAIL shown)</span></td></tr>
+            <tr><td>Resend → AgentMail</td><td data-l="Delivered"><span class="state st-done">4 of 4</span></td><td data-l="Seconds per email">6.7, 6, 13.3, 4.9</td><td data-l="Threading"><span class="state st-done">kept</span></td><td data-l="Signature"><span class="state st-done">pass</span></td><td data-l="Name card"><span class="state st-done">pass</span></td><td data-l="Text and subject"><span class="state st-done">pass</span></td><td data-l="Files"><span class="state st-done">pass</span></td><td data-l="Task state"><span class="state st-done">pass</span></td><td data-l="Carrier test"><span class="state st-done">pass</span></td><td data-l="Forged quote refused"><span class="state st-done">pass (IDENTITY_MISMATCH, silent)</span></td><td data-l="Forged quote, person view"><span class="state st-done">pass (FAIL shown)</span></td></tr>
+            <tr><td>Resend → Primitive</td><td data-l="Delivered"><span class="state st-done">4 of 4</span></td><td data-l="Seconds per email">3.4, 5.2, 4.9, 5.2</td><td data-l="Threading"><span class="state st-done">kept</span></td><td data-l="Signature"><span class="state st-done">pass</span></td><td data-l="Name card"><span class="state st-done">pass</span></td><td data-l="Text and subject"><span class="state st-done">pass</span></td><td data-l="Files"><span class="state st-done">pass</span></td><td data-l="Task state"><span class="state st-done">pass</span></td><td data-l="Carrier test"><span class="state st-done">pass</span></td><td data-l="Forged quote refused"><span class="state st-done">pass (IDENTITY_MISMATCH, silent)</span></td><td data-l="Forged quote, person view"><span class="state st-done">pass (FAIL shown)</span></td></tr>
+            <tr class="not-run"><td>AgentMail → Resend</td><td data-l="Delivered" colspan="11"><span class="state">Not run</span> Resend's key can only send, so a supplier on Resend cannot receive the request.</td></tr>
+            <tr class="not-run"><td>Primitive → Resend</td><td data-l="Delivered" colspan="11"><span class="state">Not run</span> Resend's key can only send, so a supplier on Resend cannot receive the request.</td></tr>
+            </tbody>
+          </table>
           </div>
+          <p class="caption">Seconds per email are for emails 1 to 4 in order. A file check of
+            &ldquo;pass&rdquo; covers the emails that carry files: the request's parts list and the quote.</p>
+          <h3 class="sub">What could not run</h3>
+          <p>AgentMail &rarr; Resend and Primitive &rarr; Resend were not run. The Resend key used can only send, so a
+            supplier on Resend could not receive the request.</p>
+          <h3 class="sub">The Resend party</h3>
+          <p>The Resend party sends through Resend and receives in a Google Workspace mailbox read through the Gmail
+            API, because the Resend key can only send. So in the Resend &rarr; AgentMail and Resend &rarr; Primitive
+            lanes, emails 2 and 4 arrived in that mailbox, not at Resend.</p>
+          <h3 class="sub">What the providers kept and reported</h3>
+          <p>Mail sent through Primitive arrived with only the <code>Auto-Submitted</code> header, because Primitive
+            accepts only three custom headers on outbound mail. Mail sent through AgentMail and Resend arrived with all
+            of its custom headers. Nothing an agent acts on depends on them: everything is in the signed envelope.</p>
+          <p>SPF and DMARC passed on every email. DKIM was aligned for agentmail.to, primitive.email and agentmesh.ai.
+            When AgentMail received mail sent through Resend, it reported a DKIM pass without naming the domain.</p>
+          <div class="tablebox">
+          <table class="caps interop-auth">
+            <thead><tr><th>Lane</th><th>Email</th><th>Custom headers that arrived</th><th>SPF, DKIM, DMARC, as the receiving side reports them</th></tr></thead>
+            <tbody>
+            <tr><td>AgentMail → Primitive</td><td data-l="Email">1, request (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmail.to:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>AgentMail → Primitive</td><td data-l="Email">2, needs your input (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim primitive.email:pass (aligned); dmarc pass</td></tr>
+            <tr><td>AgentMail → Primitive</td><td data-l="Email">3, answer (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmail.to:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>AgentMail → Primitive</td><td data-l="Email">4, done (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim primitive.email:pass (aligned); dmarc pass</td></tr>
+            <tr><td>Primitive → AgentMail</td><td data-l="Email">1, request (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim primitive.email:pass (aligned); dmarc pass</td></tr>
+            <tr><td>Primitive → AgentMail</td><td data-l="Email">2, needs your input (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmail.to:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>Primitive → AgentMail</td><td data-l="Email">3, answer (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim primitive.email:pass (aligned); dmarc pass</td></tr>
+            <tr><td>Primitive → AgentMail</td><td data-l="Email">4, done (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmail.to:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>Resend → AgentMail</td><td data-l="Email">1, request (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim pass (no domain named); dmarc pass</td></tr>
+            <tr><td>Resend → AgentMail</td><td data-l="Email">2, needs your input (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmail.to:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>Resend → AgentMail</td><td data-l="Email">3, answer (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim pass (no domain named); dmarc pass</td></tr>
+            <tr><td>Resend → AgentMail</td><td data-l="Email">4, done (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmail.to:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>Resend → Primitive</td><td data-l="Email">1, request (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmesh.ai:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>Resend → Primitive</td><td data-l="Email">2, needs your input (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim primitive.email:pass (aligned); dmarc pass</td></tr>
+            <tr><td>Resend → Primitive</td><td data-l="Email">3, answer (buyer → supplier)</td><td data-l="Custom headers that arrived">Auto-Submitted, Agent-Emailing-Version, Agent-Messaging-Type, Agent-Messaging-Task, Agent-Messaging-Context</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim agentmesh.ai:pass (aligned), amazonses.com:pass; dmarc pass</td></tr>
+            <tr><td>Resend → Primitive</td><td data-l="Email">4, done (supplier → buyer)</td><td data-l="Custom headers that arrived">Auto-Submitted</td><td data-l="SPF, DKIM, DMARC">spf pass; dkim primitive.email:pass (aligned); dmarc pass</td></tr>
+            </tbody>
+          </table>
+          </div>
+          <h3 class="sub">Fixes found on the way</h3>
+          <p>The run found two faults in the server, both fixed before the results above (the
+            <a href="https://github.com/Agent-Emailing/agent-emailing-server/commit/7123bbf">commit</a> says so):</p>
+          <ul class="plain">
+            <li>The AgentMail poller now looks back, because a message's timestamp is its sender's Date in whole
+              seconds, and it remembers what it has handed over.</li>
+            <li>Idempotency keys now cover the sender, the recipients and the subject, so the same envelope sent to
+              another address is not taken as a retry.</li>
+          </ul>
           <!-- /interop:table -->
         </div>
       </section>
