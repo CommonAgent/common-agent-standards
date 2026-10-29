@@ -4,7 +4,7 @@
 |---|---|
 | **URI** | `mesh://extensions/agent-messaging-over-a2a/v1` |
 | **Status** | Draft. Implemented by the Agent Messaging Server's A2A gateway from release 0.4.6. |
-| **Version** | 0.2.0-draft (the conversation, §8, and the knock, §9). 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
+| **Version** | 0.3.0-draft (the card from the Descriptor, §10, and the budget, §11). 0.2.0-draft: the conversation, §8, and the knock, §9. 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
 | **Requires** | Agent Messaging §5.1 to §5.3 (the envelope and its signature), §5.7 (messages for the person), §5.8 (readable text), §22 (inbound protections); the A2A Bridge (`../bindings/a2a-bridge.md`); A2A 1.0 extensions (A2A §4.6) |
 
 The A2A Bridge lets a stock A2A client call an agent on a mesh. Without this
@@ -43,7 +43,7 @@ in `capabilities.extensions[]`:
   "uri": "mesh://extensions/agent-messaging-over-a2a/v1",
   "description": "Agent Messaging over A2A: a caller that holds an Agent Messaging key carries its own signed envelope in this extension's metadata, and the gateway passes it through unchanged. Answers carry the agent's signed envelope.",
   "required": false,
-  "params": { "signed_envelope": true, "readable_text": true }
+  "params": { "signed_envelope": true, "readable_text": true, "budget": true }
 }
 ```
 
@@ -340,7 +340,101 @@ knock is with the owner and that nothing more is needed, and
 knock where they see every knock (EXT-6 §9.1), with the caller's hosted
 identity or its own key.
 
-## 10. Security considerations
+## 10. The card from the Descriptor
+
+The Common Agent Specification makes an agent's Descriptor the one
+description of it, and every other description a projection of the
+Descriptor. An A2A card is one such projection. So a bridge that generates a
+card for an agent that published a Descriptor generates it from the
+Descriptor itself, not from the registration manifest's copy of it.
+
+**What comes from the Descriptor.** Where the agent published a Descriptor
+(the manifest points to it by digest and the registry keeps it, Agent Messaging §8.13), the generated card
+takes:
+
+- its `description` from the Descriptor's `does`;
+- its `version` from `agent_version`;
+- one skill for each offering the Descriptor describes and the agent's
+  manifest declares, with the skill's `name` from the offering's `name` and
+  its `description` from the offering's `does`. An offering the Descriptor
+  describes and the agent does not declare gets no skill, because a skill
+  the agent does not answer cannot be called;
+- each skill's `inputModes` and `outputModes` from the media types among its
+  inputs' and outputs' `kind`, beside `application/json` and `text/plain`.
+
+Everything else on the card (the interfaces, the security schemes, the
+capabilities) is the A2A Bridge §8.1's. An agent that published no
+Descriptor gets the card §8.1 makes from its manifest.
+
+**What the card cannot hold.** An A2A card declares media types, not the
+inputs and outputs of the work. The extension's entry in
+`capabilities.extensions[]` carries them in its `params`:
+
+```json
+"params": {
+  "signed_envelope": true,
+  "readable_text": true,
+  "budget": true,
+  "descriptor": {
+    "url": "https://<bridge-host>/agents/<agent-id>/descriptor.json",
+    "digest": "sha256:<64 lowercase hex>"
+  },
+  "offerings": {
+    "quote": {
+      "inputs": [{ "name": "item", "kind": "text", "required": true }],
+      "outputs": [{ "name": "quote", "kind": "application/pdf", "when": "per_task" }],
+      "input_schema": { "type": "object", "required": ["item"] }
+    }
+  }
+}
+```
+
+- `descriptor.digest` is the SHA-256 of the Descriptor's exact bytes, as the
+  registry holds them.
+- `descriptor.url` is where the bridge serves those bytes, unchanged. A
+  bridge MUST serve them there, with the same admission as the card, and a
+  caller that reads them SHOULD check them against the digest.
+- `offerings` has one member per skill on the card: the offering's `inputs`
+  and `outputs` from the Descriptor, and its `input_schema` and
+  `output_schema` from the manifest where it declares them (Agent Messaging
+  §8.5).
+
+## 11. The budget
+
+A request on the mesh carries its budget (Agent Messaging §7.7): the most
+the work may cost, the latest it may finish, or both. The agent applies it
+to the task, refuses with an estimate when the work would not fit it, and
+pauses when the money runs out. Over A2A the budget travels the same way.
+
+- **A signed caller** puts the budget in its own envelope, where its
+  signature covers it. The bridge relays it with the rest of the envelope.
+- **A caller with no key** puts it under the extension's URI in the
+  message's `metadata`, as `budget`, in the same shape:
+
+  ```json
+  { "budget": { "revision": 0, "deadline": "2026-11-14T17:00:00Z",
+                "cost_ceiling": { "amount_micro": 5000000, "currency": "USD" } } }
+  ```
+
+  The bridge checks it as Agent Messaging §7.7 checks a budget, and requires
+  `revision` 0, as for any new request. A budget that fails the check is
+  refused with `InvalidParamsError` (`-32602`) and
+  `data.agentmesh_code: "INVALID_BUDGET"`, and nothing is sent. Otherwise the
+  bridge carries it on the request it signs for the caller.
+
+A budget is for a new request. An answer on an existing task (§8) carries
+none, because a task's budget changes only by revision (Agent Messaging
+§7.7).
+
+**Refusals.** An agent's budget refusal (`BUDGET_INSUFFICIENT`, or a pause
+with `BUDGET_EXHAUSTED`) reaches the caller as the A2A Bridge §7 maps it, with
+the refusal's `details`, such as the estimate, in the error's `data.details`,
+so the caller can decide whether to try again with more.
+
+The bridge's own fee is a separate matter, disclosed as the A2A Bridge §9.2
+says. A budget bounds what the agent's work may cost; it is not a payment.
+
+## 12. Security considerations
 
 - **What the bridge can no longer do.** With a carried envelope the bridge
   cannot change the request, cannot send it as a different sender and cannot
@@ -358,8 +452,8 @@ identity or its own key.
   holds or blocks is answered with the same queued acknowledgement as on the
   mesh, and §9 says how the bridge answers it on A2A.
 
-## 11. Conformance
+## 13. Conformance
 
-A bridge that lists this extension implements §2 to §9. A signed caller
+A bridge that lists this extension implements §2 to §11. A signed caller
 implements §2 (finding the card), §3 and §6, and verifies the envelopes it
 gets back. The A2A Bridge §12 says what else a bridge claims.

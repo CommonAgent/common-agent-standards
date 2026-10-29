@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.18-draft
+**Version:** 0.9.19-draft
 **Status:** Working Draft
 **Date:** 2026-10-29
 
@@ -4242,7 +4242,7 @@ suite, `docs/implementation-status.md`, not here.
 | `mesh://extensions/allowance/v1` | **Draft** (see `extensions/EXT-8-allowance.md`) | The owner-side spending ceiling: a signed, node-held **allowance** document (declared token→money cost model; per-task/context/day ceilings in integer micro-units) that the agent's own node meters against and enforces through §7.7 refusal-with-estimate (`BUDGET_INSUFFICIENT`). The budget's complement: it guards the owner's money, crosses no trust boundary, and rides no envelope. Platform role is visibility only (spend rollups over §19.2 receipts, `mesh.event.agent.allowance_exceeded`, EXT-3 class `allowance`); settlement and cross-agent constraints out of scope. |
 | `mesh://extensions/screening/v1` | **Draft** (see `extensions/EXT-10-screening.md`) | Who reads inbound content before an agent does. A recipient-side socket: the node consults a provider the OWNER chose — an HTTPS service or a mesh agent — and gets back pass / flag / hold, where a hold routes to the EXT-6 door rather than deleting anything. Screening is local because a sealed payload (EXT-7) opens only on the recipient's node, so anything upstream would cover unsealed traffic alone and read as covering all of it. Five call sites: message delivery, room history replay, room file fetch, work-board read, and outbound send. **The protocol carries no detector and never will** — a shipped detector makes every miss the platform's, and an account with no provider configured is unscreened and must be told so in that word. |
 | `mesh://extensions/audience/v1` | **Draft** (see §5.7) | Messages for the person behind an agent. Only an agent whose Common Agent Specification `acts_for` is `person` declares this URI, and every other receiver written to this version refuses a message marked for a person at its door with `AUDIENCE_NOT_SUPPORTED`. A sender marks a `request`, a `respond` or a room post with `meta.audience: "person"`, under its signature; a receiver that declares this URI in its manifest never gives such a message to a handler or a model, surfaces it to its person, and lets the agent read it only when the person allows, framed, with nothing in it taken as an instruction. A sending SDK checks the declaration and refuses with `AUDIENCE_NOT_SUPPORTED` until its person chooses to send anyway. The server's part (carrying the mark, and a task manager that applies no marked update) is in the core profile (§1.6). |
-| `mesh://extensions/agent-messaging-over-a2a/v1` | **Draft** (see `extensions/EXT-14-agent-messaging-over-a2a.md`) | Agent Messaging over A2A. A caller that holds an Agent Messaging key carries its own signed envelope in an A2A message's metadata; a bridge checks it (signature, addressee, freshness, offering), relays it unchanged and signs nothing, and returns the agent's own signed envelope beside the A2A result. A message for the person carries readable text generated from the envelope (§5.8). How a signed caller finds an agent's card from its name card's `a2a` endpoint. From 0.2.0: an A2A caller's answer to an `input_required` Task goes to the same mesh Task, and a first contact the agent's door has not let in is answered `auth-required` with how to be let in, the same for held, blocked and absent, with a content-free knock. |
+| `mesh://extensions/agent-messaging-over-a2a/v1` | **Draft** (see `extensions/EXT-14-agent-messaging-over-a2a.md`) | Agent Messaging over A2A. A caller that holds an Agent Messaging key carries its own signed envelope in an A2A message's metadata; a bridge checks it (signature, addressee, freshness, offering), relays it unchanged and signs nothing, and returns the agent's own signed envelope beside the A2A result. A message for the person carries readable text generated from the envelope (§5.8). How a signed caller finds an agent's card from its name card's `a2a` endpoint. From 0.2.0: an A2A caller's answer to an `input_required` Task goes to the same mesh Task, and a first contact the agent's door has not let in is answered `auth-required` with how to be let in, the same for held, blocked and absent, with a content-free knock. From 0.3.0: the card is generated from the agent's Descriptor where it published one, with each offering's inputs, outputs and schemas and the Descriptor's link and digest in the extension's params, and a caller with no key carries its budget in the extension's metadata. |
 | Sessions (`connect`/`disconnect`) | Candidate | The parked session operations (§10.1 and §10.2), if a durable-session extension is ever needed beyond `context_id`. |
 
 Extensions whose normative text lives outside this document are collected in
@@ -6816,3 +6816,20 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > Task's metadata. The Agent Messaging Server's A2A gateway implements EXT-14
 > 0.2.0 from release 0.4.7. No existing requirement, field, wire identifier or
 > section number changes. The wire version stays `0.3.0` (§20.1).
+
+> **2026-10-29: Version 0.9.19-draft. The A2A card from the Descriptor, and
+> the budget over A2A.** EXT-14 moves to 0.3.0-draft. Where an agent published
+> an Agent Descriptor (§8.13), a bridge generates its A2A card from the
+> Descriptor itself: the description, the version, and one skill for each
+> offering the agent both describes and declares, with the skill's modes from
+> the media types among its inputs and outputs. The extension's `params`
+> carry each offering's inputs and outputs and the manifest's
+> `input_schema` and `output_schema`, and link to the Descriptor with the
+> SHA-256 of its exact bytes, which the bridge serves (EXT-14 §10). A caller
+> with no key carries its budget (§7.7) in the extension's metadata; the
+> bridge checks it and carries it on the request, and a budget refusal
+> reaches the caller with its estimate (EXT-14 §11). The A2A Bridge moves to
+> 0.7.0-draft (§7, §8.1). The Agent Messaging Server's A2A gateway implements
+> EXT-14 0.3.0 from release 0.4.8. No existing requirement, field, wire
+> identifier or section number changes. The wire version stays `0.3.0`
+> (§20.1).

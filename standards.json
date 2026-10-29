@@ -38,9 +38,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.18-draft",
+      "version": "0.9.19-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.18-draft",
+      "tag": "messaging-v0.9.19-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [
@@ -57,8 +57,8 @@
         { "name": "EXT-11 Site agents", "path": "messaging/extensions/EXT-11-site-agents.md", "version": "0.1.0" },
         { "name": "EXT-12 Systems health", "path": "messaging/extensions/EXT-12-systems-health.md", "version": "0.1.0-draft" },
         { "name": "EXT-13 Guest standing", "path": "messaging/extensions/EXT-13-guest-standing.md", "version": "0.1.0-draft" },
-        { "name": "EXT-14 Agent Messaging over A2A", "path": "messaging/extensions/EXT-14-agent-messaging-over-a2a.md", "version": "0.2.0-draft" },
-        { "name": "The A2A Bridge", "path": "messaging/bindings/a2a-bridge.md", "version": "0.6.0-draft" },
+        { "name": "EXT-14 Agent Messaging over A2A", "path": "messaging/extensions/EXT-14-agent-messaging-over-a2a.md", "version": "0.3.0-draft" },
+        { "name": "The A2A Bridge", "path": "messaging/bindings/a2a-bridge.md", "version": "0.7.0-draft" },
         { "name": "The RabbitMQ binding", "path": "messaging/bindings/rabbitmq.md", "version": "0.1" }
       ]
     },
