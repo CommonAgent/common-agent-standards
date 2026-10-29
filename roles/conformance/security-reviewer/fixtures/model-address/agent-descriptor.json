@@ -1,0 +1,28 @@
+{
+  "format": "agent-descriptor-v1",
+  "agent_version": "1.0.0",
+  "name": "Forecast writer",
+  "summary": "Writes tomorrow's forecast for a city as one plain sentence.",
+  "does": "Turns the forecast figures a caller hands over into one plain sentence, with the model its owner binds. It reaches nothing else.",
+  "offerings": [
+    {
+      "id": "write-the-forecast",
+      "name": "Write the forecast",
+      "does": "Turns tomorrow's forecast figures for a city into one plain sentence.",
+      "inputs": [
+        { "name": "forecast", "kind": "application/json", "required": true }
+      ],
+      "outputs": [
+        { "name": "sentence", "kind": "text", "when": "per_task" }
+      ],
+      "how": { "control": "script", "intelligence": "called", "cost": "none", "contract": "full" }
+    }
+  ],
+  "refusals": "Saying anything the forecast it was handed does not say. It writes the forecast and nothing else.\nKeeping the forecast it was handed once the job is done.",
+  "records": [
+    { "name": "the sentence as written", "when": "per_task", "file": "*/sentence.txt" }
+  ],
+  "systems": [
+    { "name": "text-reasoning", "access": "trigger", "needs": "to turn the forecast figures the caller hands over into one plain sentence", "leaves": true }
+  ]
+}

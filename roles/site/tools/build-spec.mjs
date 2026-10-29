@@ -10,7 +10,10 @@
 //   interfaces/*.json           roles/interfaces/, copied unchanged
 //   checks/catalog-check.mjs    roles/conformance/catalog-check.mjs, copied
 //                               unchanged, at the address §33 gives for it
-//   SPEC.md                     a short note at the address the old site served
+//   checks/security-reviewer/   roles/conformance/security-reviewer/, the
+//                               harness for §34.4 with its README and its
+//                               fixtures, copied unchanged
+//   SPEC.md                    a short note at the address the old site served
 //                               the specification at, pointing to the directory
 //
 // Agent Roles is a guide of working descriptions, so the site has no
@@ -23,7 +26,7 @@
 // beside them, moves every link under the base (/draft/ or /<version>/),
 // checks contrast and publishes. The generated pages are never committed and
 // never edited by hand.
-import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync, readdirSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, copyFileSync, cpSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -171,6 +174,8 @@ ${rows}
 
 // ── the conformance check and the Markdown ──────────────────────────────────
 copy("conformance/catalog-check.mjs", "checks/catalog-check.mjs");
+cpSync(resolve(STANDARD, "conformance/security-reviewer"), resolve(OUT, "checks/security-reviewer"), { recursive: true });
+console.log("checks/security-reviewer/ copied from roles/conformance/security-reviewer/");
 // The old site served the specification at /SPEC.md. A bucket cannot
 // redirect a Markdown file, so the address keeps a short note in its place.
 writeFileSync(resolve(OUT, "SPEC.md"), `# Agent Roles has moved\n\nAgent Roles is a guide of working descriptions, and this file is no longer published here.\n\n- Every role and interface: ${SITE}/directory.html\n- The descriptions, ROLES.md: ${SOURCE}\n`);

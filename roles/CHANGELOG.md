@@ -4,6 +4,26 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.5.1 (2026-10-29)
+
+No change to the text of the descriptions. This version publishes the
+security reviewer's conformance harness, which runs the test §34.4 states:
+conformance/security-reviewer/run.mjs, published with its README and
+fixtures at agentroles.ai/checks/security-reviewer/. Its fixtures are four
+small Agent Packages, as folders and as archives packed deterministically as
+rule 5 of the Common Agent Specification's 12.6 says, with their SHA-256
+digests: a package that declares one system at read access; the same package
+with one program changed to reach a system its declaration does not name; a
+package that declares a model system; and that package with one program
+changed to call the model at an address the program carries. The harness
+starts a candidate with a request file that names the package, the owner's
+spending limit and what is asked, reads back the statement or the refusal as
+Markdown with YAML front matter, and reports each check with its reason, and
+as JSON. It grades only what §34.4 says. The security reviewer's page links
+it. A version of this guide is what publishes the site's root, so a page and
+a file of the site are published with a patch version. No section number,
+offering name or interface changes.
+
 ## v1.5 (2026-10-29)
 
 One change follows the Common Agent Specification 0.39.0, which gives
