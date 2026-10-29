@@ -928,3 +928,9 @@ table.caps tr.not-run .state{ --sf:#475569; --sc:#FFFFFF; }
 .interop-summary h3{ font-size:1.15rem; margin:0 0 8px; }
 .interop-summary p{ margin:0 0 10px; color:var(--text-2); }
 .interop-summary p:last-child{ margin:0; }
+
+/* ── the short article: one-line cards ── */
+.cards.short .card{ display:flex; align-items:center; gap:14px; }
+.cards.short .card h3{ margin:0; font-size:1.08rem; line-height:1.35; }
+.cards.gives .card h3{ margin:12px 0 4px; font-size:1.08rem; line-height:1.3; }
+.cards.gives .card p{ font-size:.95rem; }
