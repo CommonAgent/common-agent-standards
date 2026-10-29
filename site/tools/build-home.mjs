@@ -516,7 +516,7 @@ export function renderTransports({ draft = false } = {}) {
     { what: "What it does", rule: `One signed Agent Descriptor, served by the agent; every other description is projected from it.`,
       broker: `The registration manifest projects the Descriptor and carries its pointer and digest. <code>describe</code> serves the public block without running the agent.`,
       email: `Agent Emailing carries no Descriptor exchange. A correspondent reads the Descriptor where the operator serves it, such as the <code>describe</code> door over HTTPS. The subject names the offering by the manifest's name for it.`,
-      https: `The bridge generates an A2A card for each exposed agent from its manifest, which projects the Descriptor. Input and output schemas do not carry over: a card declares modes, not schemas.` },
+      https: `The bridge generates the A2A card from the agent's Descriptor itself where the agent published one. What a card cannot hold, each offering's inputs, outputs and schemas, rides in the card's extension entry with a link to the Descriptor and its digest, and the bridge serves the Descriptor's bytes there.` },
     { what: "The message", rule: `Every message is a signed envelope that verifies on its own signature, whatever carried it.`,
       broker: `The signed envelope, checked against <code>from</code> by every receiver.`,
       email: `The same signed envelope, as an attachment, checked the same way. Headers are hints only.`,
@@ -524,11 +524,11 @@ export function renderTransports({ draft = false } = {}) {
     { what: "The work", rule: `One set of task states and legal transitions.`,
       broker: `The task states, a durable task store, progress on the task's subject, and the accept signal on live delivery.`,
       email: `The same states. Every update is a respond in the thread, applied in the order of its signed time. There is no accept signal, and a performer often sends no <code>working</code> update.`,
-      https: `The bridge maps each state one to one, though its table does not list <code>exhausted</code>. When an agent asks for more input, the bridge reports the state but does not yet relay the caller's answer on its JSON-RPC and HTTP+JSON routes.` },
+      https: `The bridge maps each state, and <code>exhausted</code> becomes <code>canceled</code> with a note in the task's metadata, since A2A has no such state. When an agent asks for more input, the caller sees it and answers on the same task, and the bridge carries the answer to the same mesh task. A caller that reads the task only when it asks may miss <code>working</code>, which the shared rule allows.` },
     { what: "Receiver protections", rule: `Signature first, then duplicates, freshness, addressing, size and fencing; strangers knock first.`,
       broker: `Every check on every delivery path. The owner's roster sorts every sender, and a stranger knocks.`,
       email: `The same checks, judged by the 7-day mailbox window, with a duplicate memory that lasts across restarts and a <code>to</code> check that refuses forwarded mail. Plain mail from a stranger never reaches the agent.`,
-      https: `On the mesh side the receiving agent applies every check to the bridge's envelope, and a bridged sender sorts into its own tier, held by default. The HTTPS leg relies on TLS and the caller's bridge key. The bridge defines no A2A form of the knock.` },
+      https: `The receiving agent applies every check to the envelope: the caller's own, or the bridge's for a bridged caller, which sorts into its own tier, held by default. A first contact the agent's door has not let in is answered in A2A's <code>auth-required</code> state with a note on how to be let in, the same answer for held, blocked and absent, and a knock carries no words.` },
     { what: "What a person sees", rule: `Views drawn from signed data, never written separately (<a href="/descriptor-ui.html">the Descriptor UI binding</a>).`,
       broker: `Pages about the agent are drawn from its Descriptor (<a href="/descriptor-ui.html">Descriptor UI binding</a>). A message for the person is marked, and its text is the signed payload. Other messages have no generated readable text.`,
       email: `Every email opens with text generated from the signed envelope, its digest signed, and checking software warns when it differs. Pages about the agent follow the Descriptor UI binding.`,
@@ -536,11 +536,11 @@ export function renderTransports({ draft = false } = {}) {
     { what: "Your OK", rule: `A budget travels with the work; the owner's allowance stays with the agent; an act the agent drafts carries the owner's approval.`,
       broker: `The budget rides the signed request. The agent's runtime enforces the allowance and can put a question to the owner.`,
       email: `The same runtime rules hold, because they live with the agent, not the transport. The budget travels in the signed envelope, and the human part states its price. Agent Emailing adds no approval step of its own.`,
-      https: `The allowance still holds at the agent's runtime. The bridge's mapping carries no budget for an A2A caller's request. The bridge discloses its own fee and gives typed refusals, payment required among them.` },
+      https: `The allowance still holds at the agent's runtime. A signed caller's budget rides its own envelope, and a caller with no key puts it in the request's extension metadata; the agent applies it to the task either way, and a refusal comes back with its estimate. The bridge discloses its own fee and gives typed refusals, payment required among them.` },
     { what: "Proof", rule: `Conformance is checked mechanically, against fixtures that are the authority.`,
       broker: `The conformance suite runs the core profile against a running server on either binding (<a href="https://agentmessaging.ai/conformance.html">the suite</a>).`,
       email: `19 cases over 17 really signed emails, and a carrier test for providers. The reference server passes all 19.`,
-      https: `The mapping says what an implementation must implement to claim conformance, and the suite's test i11 checks the bridged marker. There is no fixture set for the JSON-RPC mapping itself yet.` },
+      https: `A fixture set for the mapping covers signed and unsigned callers, a forged message, the task states, the answer on an existing task, the knock and readable text, and the reference gateway passes every case. The suite's test i11 checks the bridged marker.` },
   ];
   const head = `<tr><th scope="col">What stays the same</th><th scope="col">Agent Messaging<small>a message broker</small></th><th scope="col">Agent Emailing<small>ordinary email</small></th><th scope="col">The A2A Bridge<small>HTTPS</small></th></tr>`;
   const body = rows.map((r) => `<tr>
@@ -558,9 +558,7 @@ export function renderTransports({ draft = false } = {}) {
       p: `The A2A Bridge lets a stock A2A client call a mesh agent with no mesh code, and puts any A2A server on the mesh as an addressable agent.` },
   ];
   const open = [
-    `<b>Task-state words live in more than one place.</b> The Common Agent Specification, Agent Messaging, the A2A Bridge's mapping and Agent Emailing's subject words each list them, and the bridge's table leaves out <code>exhausted</code>. They should become one list, in the Common Agent Specification.`,
-    `<b>There is no shared rule for a transport that cannot report progress.</b> Over email a performer often sends no <code>working</code> update. Agent Emailing refuses a transition that Agent Messaging does not allow, so <code>input_required</code> straight to <code>completed</code> is not allowed, and the reference implementation accepts it as a two-step move by way of <code>working</code>, a choice the standard leaves open. The family needs one rule for every transport like it.`,
-    `<b>There is no cross-transport conformance test yet.</b> Each transport has its own fixtures. The same quote request, sent over all three and checked the same way, would show that only delivery changes.`,
+    `<b>Task-state words live in more than one place.</b> The Common Agent Specification, Agent Messaging, the A2A Bridge's mapping and Agent Emailing's subject words each list them. They should become one list, in the Common Agent Specification.`,
   ];
   const sites = [
     ["The Common Agent Specification", "/spec.html"],

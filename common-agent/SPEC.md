@@ -1,6 +1,6 @@
 # The Common Agent Specification
 
-**Version:** 0.38.3
+**Version:** 0.38.4
 **Status:** Published, 2026-10-29. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
@@ -2172,6 +2172,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.38.4 (2026-10-29).** No change to the text of the specification. This version publishes commonagent.net with the page One agent, any transport (/any-transport.html) updated for Agent Messaging 0.9.18-draft to 0.9.20-draft, as proven on AgentMesh's dev mesh with the Agent Messaging Server 0.4.7 and 0.4.8. On the A2A Bridge: the card is generated from the agent's Descriptor, with each offering's inputs, outputs and schemas and a link to the Descriptor by digest; exhausted maps to canceled with a note, and a caller's answer to a task waiting for input reaches the same mesh task; a first contact the door has not let in is answered auth-required with a note on how to be let in, and a knock carries no words; a caller's budget reaches the agent; and a fixture set covers the mapping. Two open items are removed, because Agent Messaging §7.3.1 is now the shared rule for a transport that cannot report progress and one quote request now runs over all three transports with the same checks; the item on task-state words no longer mentions the bridge's missing exhausted.
 
 **0.38.3 (2026-10-29).** No change to the text of the specification. This version publishes commonagent.net with the page One agent, any transport (/any-transport.html) updated for Agent Messaging 0.9.17-draft and its extension EXT-14, Agent Messaging over A2A, as proven on AgentMesh's dev mesh with the Agent Messaging Server 0.4.6: on the A2A Bridge, a caller that holds a key now signs its own messages and the bridge passes them through unchanged, the answer carries the agent's own signed envelope, and a message for the person opens with readable text generated from the signed message under the rule Agent Messaging §5.8 now states for every carrier. The open item that said A2A had no readable-text rule is removed. The other A2A cells and open items are unchanged.
 
