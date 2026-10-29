@@ -126,7 +126,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "getting-started.html": "start", "article-why-agent-emailing.html": "why", "interop-results.html": "", "example.html": "example", "providers.html": "providers", "404.html": "" };
+const PAGES = { "index.html": "home", "getting-started.html": "start", "article-why-agent-emailing.html": "why", "example.html": "example", "providers.html": "providers", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {

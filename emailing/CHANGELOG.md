@@ -6,7 +6,7 @@ that tag is the text of that version.
 
 ## 0.2.4 (2026-10-29)
 
-No change to the text of the specification. This version publishes agentemailing.ai with the menu's On GitHub link pointing to the reference implementation, the Agent Emailing Server (https://github.com/Agent-Emailing/agent-emailing-server). The footer still links the specification's source.
+No change to the text of the specification. This version publishes agentemailing.ai with the menu's On GitHub link pointing to the reference implementation, the Agent Emailing Server (https://github.com/Agent-Emailing/agent-emailing-server). The footer still links the specification's source. The interop results page is removed.
 
 ## 0.2.3 (2026-10-29)
 
