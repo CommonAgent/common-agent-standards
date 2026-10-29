@@ -21,6 +21,9 @@
 //                    in Agent Processes, and where each of their steps lives,
 //                    with the three reference processes for the agents an
 //                    organization runs itself
+//   any-transport.html  one agent, any transport: what the Common Agent
+//                    Specification fixes, and how it holds on Agent Messaging,
+//                    Agent Emailing and the A2A Bridge
 //   purchase-order.html  why there is no Agent Purchase Order: where each job
 //                    of a purchase order lives in the suite instead
 //
@@ -110,6 +113,7 @@ const GROUPS = {
   "identity-and-reach": {
     icon: "agent",
     text: "The Common Agent Specification defines the agent and the key it signs with, Personal Agent Naming gives it a name on an email address its owner already has, and Agent Messaging carries messages to it even while it is offline.",
+    note: 'The same agent can be reached through a message broker, through ordinary email or over HTTPS. <a href="/any-transport.html">One agent, any transport</a> says what stays the same on each, and where it does not yet.',
   },
   contracting: {
     icon: "contract",
@@ -489,6 +493,145 @@ export function renderPurchaseOrder({ draft = false } = {}) {
   });
 }
 
+/** any-transport.html: one agent, any transport. The few things the Common
+ *  Agent Specification fixes hold whether an agent is reached through Agent
+ *  Messaging, Agent Emailing or the A2A Bridge; only delivery changes. Every
+ *  cell names the section it rests on, and says so where a transport does not
+ *  do something yet. */
+export function renderTransports({ draft = false } = {}) {
+  const title = "One agent, any transport";
+  const description = "The same agent, with the same key, the same Descriptor, the same signed message and the same task states, reached through Agent Messaging, Agent Emailing or the A2A Bridge. Only delivery changes. A table says how each thing holds on each transport, and where it does not yet.";
+  const CA = (s, t) => `<a href="/spec.html#${s}">${t}</a>`;
+  const AM = (s, t) => `<a href="https://agentmessaging.ai/spec.html#${s}">${t}</a>`;
+  const AE = (s, t) => `<a href="https://agentemailing.ai/spec.html#${s}">${t}</a>`;
+  const BR = (s, t) => `<a href="${SUITE_REPO}/blob/main/messaging/bindings/a2a-bridge.md#${s}">${t}</a>`;
+  const PAN = (s, t) => `<a href="https://agentnaming.ai/spec.html#${s}">${t}</a>`;
+  const EXT = (file, s, t) => `<a href="${SUITE_REPO}/blob/main/messaging/extensions/${file}${s ? `#${s}` : ""}">${t}</a>`;
+  const AE71 = "7-1-agent-messaging-%C2%A722-on-the-email-path";
+  const rows = [
+    { what: "Who you are", rule: `One Ed25519 key is the agent's identity, and a name is an attestation bound to it (${CA("s4-1", "§4.1")}, ${PAN("4-1-agent-key-pairing-the-primary-path", "Personal Agent Naming §4.1")}).`,
+      broker: `The key is the agent's ID and signs every envelope (${AM("4-3-agent-identity", "§4.3")}, ${AM("4-5-message-identity-assertion", "§4.5")}). Registration needs a verified name bound to the key (${AM("6-2-register", "§6.2")}).`,
+      email: `In native mode the agent signs with its own key. Its address is the verified <code>email</code> endpoint on its name card, and a handle is never used as an address (${AE("4-1-native-mode", "§4.1")}, ${AE("5-1-the-email-endpoint-on-a-name-card", "§5.1")}). A sender with no node can stand on a key-bound name (${AE("6-2-the-standing-of-a-native-sender", "§6.2")}).`,
+      https: `The far party's own key does not cross the HTTPS leg. The bridge holds a mesh key for each A2A caller and each attached A2A server, and marks it as bridged (${BR("21-trust-boundary-rules-normative", "Bridge §2.1")}, ${BR("9-inbound-caller-identity", "§9")}, ${AM("4-15-identity-bridges", "Agent Messaging §4.15")}). A name card can list an A2A endpoint (${PAN("5-1-the-card", "Personal Agent Naming §5.1")}).` },
+    { what: "What it does", rule: `One signed Agent Descriptor, served by the agent; every other description is projected from it (${CA("s4-9", "§4.9")}, ${CA("s6-8", "§6.8")}).`,
+      broker: `The registration manifest projects the Descriptor and carries its pointer and digest (${AM("8-13-the-descriptor-pointer", "§8.13")}). <code>describe</code> serves the public block without running the agent (${AM("10-14-describe", "§10.14")}).`,
+      email: `Agent Emailing carries no Descriptor exchange (${AE("2-2-what-does-not", "§2.2")}). A correspondent reads the Descriptor where the operator serves it, such as the <code>describe</code> door over HTTPS. The subject names the offering by the manifest's name for it (${AE("3-3-the-human-part-and-the-subject", "§3.3")}).`,
+      https: `The bridge generates an A2A card for each exposed agent from its manifest, which projects the Descriptor (${BR("81-inbound-mesh-manifest--generated-agent-card", "Bridge §8.1")}, ${CA("s6-8", "§6.8")}). Input and output schemas do not carry over: a card declares modes, not schemas.` },
+    { what: "The message", rule: `Every message is a signed envelope that verifies on its own signature, whatever carried it (${AM("5-message-envelope", "Agent Messaging §5")}, ${CA("s11", "§11")}).`,
+      broker: `The signed envelope, checked against <code>from</code> by every receiver (${AM("5-3-identity-verification", "§5.3")}).`,
+      email: `The same signed envelope, as an attachment, checked the same way. Headers are hints only (${AE("3-2-the-envelope-part", "§3.2")}, ${AE("6-1-the-envelope-is-authoritative", "§6.1")}).`,
+      https: `The envelope stops at the bridge. The HTTPS leg carries A2A JSON-RPC messages, which are not signed envelopes. On the mesh side the bridge signs for the caller's hosted identity, and the envelope says it is bridged (${BR("21-trust-boundary-rules-normative", "Bridge §2.1")}).` },
+    { what: "The work", rule: `One set of task states and legal transitions (${CA("s5-2", "§5.2")}).`,
+      broker: `The task states, a durable task store, progress on the task's subject, and the accept signal on live delivery (${AM("7-2-task-states", "§7.2")}, ${AM("6-4a-the-accept-signal", "§6.4a")}).`,
+      email: `The same states. Every update is a respond in the thread, applied in the order of its signed time (${AE("10-tasks-and-ordering", "§10")}). There is no accept signal, and a performer often sends no <code>working</code> update (${AE("8-delivery-signals", "§8")}).`,
+      https: `The bridge maps each state one to one (${BR("5-task-state-mapping", "Bridge §5")}), though its table does not list <code>exhausted</code>. When an agent asks for more input, the bridge reports the state but does not yet relay the caller's answer on its JSON-RPC and HTTP+JSON routes (${BR("11-out-of-scope-this-version", "§11")}).` },
+    { what: "Receiver protections", rule: `Signature first, then duplicates, freshness, addressing, size and fencing; strangers knock first (${CA("s4-8", "§4.8")}, ${CA("s7-1", "§7.1")}).`,
+      broker: `Every check on every delivery path (${AM("22-inbound-protections-receiver-obligations", "§22")}). The owner's roster sorts every sender, and a stranger knocks (${EXT("EXT-6-admission.md", "", "EXT-6")}).`,
+      email: `The same checks, judged by the 7-day mailbox window, with a duplicate memory that lasts across restarts and a <code>to</code> check that refuses forwarded mail (${AE(AE71, "§7.1")}). Plain mail from a stranger never reaches the agent (${AE("4-3-email-with-no-envelope", "§4.3")}).`,
+      https: `On the mesh side the receiving agent applies every check to the bridge's envelope, and a bridged sender sorts into its own tier, held by default (${EXT("EXT-6-admission.md", "4-tiers-deterministic-pre-model", "EXT-6 §4")}). The HTTPS leg relies on TLS and the caller's bridge key (${BR("9-inbound-caller-identity", "Bridge §9")}). The bridge defines no A2A form of the knock.` },
+    { what: "What a person sees", rule: `Views drawn from signed data, never written separately (${CA("s6-13", "§6.13")}, <a href="/descriptor-ui.html">the Descriptor UI binding</a>).`,
+      broker: `Pages about the agent are drawn from its Descriptor (<a href="/descriptor-ui.html">Descriptor UI binding</a>). A message for the person is marked, and its text is the signed payload (${AM("5-7-messages-for-the-person-behind-an-agent", "§5.7")}). Other messages have no generated readable text.`,
+      email: `Every email opens with text generated from the signed envelope, its digest signed, and checking software warns when it differs (${AE("3-3-the-human-part-and-the-subject", "§3.3")}). Pages about the agent follow the Descriptor UI binding.`,
+      https: `The A2A card is generated, never hand-written (${BR("81-inbound-mesh-manifest--generated-agent-card", "Bridge §8.1")}). A message for the person travels as an A2A extension (${BR("84-messages-for-the-person-040", "§8.4")}). There is no rule for readable text generated from signed data.` },
+    { what: "Your OK", rule: `A budget travels with the work; the owner's allowance stays with the agent; an act the agent drafts carries the owner's approval (${CA("s5-4", "§5.4")}, ${CA("s7-5", "§7.5")}, ${CA("s7-9", "§7.9")}).`,
+      broker: `The budget rides the signed request (${AM("7-7-budget", "§7.7")}). The agent's runtime enforces the allowance and can put a question to the owner (${EXT("EXT-8-allowance.md", "", "EXT-8")}).`,
+      email: `The same runtime rules hold, because they live with the agent, not the transport. The budget travels in the signed envelope, and the human part states its price (${AE("3-3-the-human-part-and-the-subject", "§3.3")}). Agent Emailing adds no approval step of its own.`,
+      https: `The allowance still holds at the agent's runtime (${CA("s7-5", "§7.5")}). The bridge's mapping carries no budget for an A2A caller's request (${BR("6-payload--parts-mapping", "Bridge §6")}). The bridge discloses its own fee and gives typed refusals, payment required among them (${BR("91-gateway-refusals-are-typed", "§9.1")}, ${BR("92-the-operators-fee-is-disclosed", "§9.2")}).` },
+    { what: "Proof", rule: `Conformance is checked mechanically, against fixtures that are the authority (${CA("s14", "§14")}).`,
+      broker: `The conformance suite runs the core profile against a running server on either binding (${AM("1-6-conformance-profiles", "§1.6")}, <a href="https://agentmessaging.ai/conformance.html">the suite</a>).`,
+      email: `19 cases over 17 really signed emails, and a carrier test for providers (${AE("12-conformance", "§12")}). The reference server passes all 19.`,
+      https: `The mapping says what an implementation must implement to claim conformance (${BR("12-conformance", "Bridge §12")}), and the suite's test i11 checks the bridged marker. There is no fixture set for the JSON-RPC mapping itself yet.` },
+  ];
+  const head = `<tr><th scope="col">What stays the same</th><th scope="col">Agent Messaging<small>a message broker</small></th><th scope="col">Agent Emailing<small>ordinary email</small></th><th scope="col">The A2A Bridge<small>HTTPS</small></th></tr>`;
+  const body = rows.map((r) => `<tr>
+              <th scope="row"><b>${esc(r.what)}</b><span>${r.rule}</span></th>
+              <td data-l="Agent Messaging">${r.broker}</td>
+              <td data-l="Agent Emailing">${r.email}</td>
+              <td data-l="The A2A Bridge">${r.https}</td>
+            </tr>`).join("\n            ");
+  const good = [
+    { key: "A broker is live", icon: "messaging", colour: "c-mint",
+      p: `Agent Messaging delivers in moments, shows who is online now (${AM("9-6-presence-service", "presence")}), publishes events to every subscriber (${AM("6-6-emit", "emit")} and ${AM("6-7-subscribe", "subscribe")}), and streams long answers.` },
+    { key: "Email reaches anyone", icon: "emailing", colour: "c-blue",
+      p: `Agent Emailing reaches any agent with an address, through any provider, holds mail while the agent is away, and lets a person read the thread in their own mail program (<a href="https://agentemailing.ai/">agentemailing.ai</a>).` },
+    { key: "HTTPS reaches A2A", icon: "globe", colour: "c-violet",
+      p: `The A2A Bridge lets a stock A2A client call a mesh agent with no mesh code, and puts any A2A server on the mesh as an addressable agent (${BR("1-purpose", "Bridge §1")}).` },
+  ];
+  const open = [
+    `<b>A2A has no readable-text rule.</b> Agent Emailing requires the text a person reads to be generated from the signed message and checked against it. Nothing says the same for a message that crosses the A2A Bridge.`,
+    `<b>Task-state words live in more than one place.</b> The Common Agent Specification (§5.2), Agent Messaging (§7.2), the A2A Bridge's mapping (§5) and Agent Emailing's subject words (§3.3) each list them, and the bridge's table leaves out <code>exhausted</code>. They should become one list, in the Common Agent Specification.`,
+    `<b>There is no shared rule for a transport that cannot report progress.</b> Over email a performer often sends no <code>working</code> update. Agent Emailing (§10) refuses a transition that Agent Messaging §7.3 does not allow, so <code>input_required</code> straight to <code>completed</code> is not allowed, and the reference implementation accepts it as a two-step move by way of <code>working</code>, a choice the standard leaves open. The family needs one rule for every transport like it.`,
+    `<b>There is no cross-transport conformance test yet.</b> Each transport has its own fixtures. The same quote request, sent over all three and checked the same way, would show that only delivery changes.`,
+  ];
+  const sites = [
+    ["The Common Agent Specification", "/spec.html"],
+    ["Agent Messaging", "https://agentmessaging.ai/"],
+    ["Agent Emailing", "https://agentemailing.ai/"],
+    ["The A2A Bridge", `${SUITE_REPO}/blob/main/messaging/bindings/a2a-bridge.md`],
+    ["Personal Agent Naming", "https://agentnaming.ai/"],
+    ["The Descriptor UI binding", "/descriptor-ui.html"],
+  ];
+  return shell({
+    file: "any-transport.html", active: "any-transport", title: `${title}: ${SUITE.suite}`, description, ogType: "article",
+    body: `      <header class="herobg">
+      <div class="wrap hero">
+        <h1>${esc(title)}</h1>
+        <p class="lede">One agent, one signed message, any transport.</p>
+        <p class="also">An agent can be reached through a message broker with Agent Messaging, through
+          ordinary email with Agent Emailing, or over HTTPS through the A2A Bridge. The few things the
+          Common Agent Specification fixes about an agent hold on all three. Only delivery changes. This page
+          says how each one holds on each transport, with the section it rests on, and says plainly where a
+          transport does not do something yet.</p>
+        <p class="version">${stampFor(draft)}</p>
+      </div>
+      </header>
+
+      <section class="band" id="table">
+        <div class="wrap">
+          <h2>What stays the same</h2>
+          <p>The first column states the rule and where the Common Agent Specification fixes it. Each other
+            column says how that rule holds on one transport, as its specification stands today.</p>
+          <div class="xt-wrap">
+          <table class="xt">
+            <thead>${head}</thead>
+            <tbody>
+            ${body}
+            </tbody>
+          </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="band tinted" id="good-at">
+        <div class="wrap">
+          <h2>What each transport is good at</h2>
+          <ol class="problems">
+            ${good.map((x) => `<li class="${x.colour}"><h3 class="key">${ico(ICONS[x.icon])}${x.key}</h3><p>${x.p}</p></li>`).join("\n            ")}
+          </ol>
+        </div>
+      </section>
+
+      <section class="band" id="open">
+        <div class="wrap">
+          <h2>Where the family is not consistent yet</h2>
+          <p>These are open work, written down so that nobody mistakes them for done.</p>
+          <ul class="plain open-list">
+            ${open.map((x) => `<li>${x}</li>`).join("\n            ")}
+          </ul>
+        </div>
+      </section>
+
+      <section class="band tinted" id="sites">
+        <div class="wrap">
+          <h2>The standards on this page</h2>
+          <ul class="plain">
+            ${sites.map(([n, h]) => `<li><a href="${h}">${esc(n)}</a></li>`).join("\n            ")}
+          </ul>
+        </div>
+      </section>`,
+  });
+}
+
 /** onboarding.html: agent onboarding and offboarding are reference processes
  *  in Agent Processes, and this page says so and points at them. */
 export function renderOnboarding({ draft = false } = {}) {
@@ -710,6 +853,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   writeFileSync(resolve(out, "standards.html"), renderStandards({ draft }));
   writeFileSync(resolve(out, "onboarding.html"), renderOnboarding({ draft }));
   writeFileSync(resolve(out, "purchase-order.html"), renderPurchaseOrder({ draft }));
+  writeFileSync(resolve(out, "any-transport.html"), renderTransports({ draft }));
   copySuiteAssets(out);
-  console.log(`index.html, agent.html, standards.html, purchase-order.html and onboarding.html written to ${out}`);
+  console.log(`index.html, agent.html, standards.html, purchase-order.html, onboarding.html and any-transport.html written to ${out}`);
 }

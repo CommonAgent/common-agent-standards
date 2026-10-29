@@ -742,3 +742,32 @@ ol.problems p{ margin:0; font-size:.95rem; line-height:1.5; color:var(--text-2);
 .bigdoor .go .nw{ white-space:nowrap; }
 ol.problems h3.key{ font-family:var(--disp); font-size:1.25rem; letter-spacing:-.01em; text-transform:none; margin:0 0 8px; }
 ol.problems h3.key .ico{ width:20px; height:20px; }
+
+/* ── any-transport.html: the table of what stays the same ── */
+.xt-wrap{ margin:22px 0 0; border:1px solid var(--line); border-radius:12px; background:var(--bg); overflow-x:auto; }
+table.xt{ border-collapse:collapse; width:100%; min-width:880px; table-layout:fixed; }
+table.xt thead th{ text-align:left; vertical-align:bottom; padding:12px 14px; background:var(--surface); border-bottom:1px solid var(--line);
+  font-family:var(--disp); font-size:.98rem; font-weight:700; color:var(--text); }
+table.xt thead th small{ display:block; margin-top:2px; font-family:var(--body); font-size:.8rem; font-weight:400; color:var(--text-3); }
+table.xt thead th:first-child{ width:24%; }
+table.xt tbody th, table.xt td{ padding:12px 14px; border-bottom:1px solid var(--line); vertical-align:top; text-align:left; font-size:.92rem; line-height:1.55; }
+table.xt tbody tr:last-child > *{ border-bottom:0; }
+table.xt tbody th{ background:var(--surface); font-weight:400; color:var(--text-2); }
+table.xt tbody th b{ display:block; font-family:var(--disp); font-size:1.02rem; font-weight:700; color:var(--text); margin-bottom:4px; }
+table.xt td{ color:var(--text-2); }
+table.xt code{ font-family:var(--wire); font-size:.86em; color:var(--accent); background:var(--accent-tint); border-radius:5px; padding:1px 5px; overflow-wrap:anywhere; }
+table.xt a{ color:var(--accent); overflow-wrap:anywhere; }
+ul.open-list li{ margin:12px 0; }
+ul.open-list b{ color:var(--text); }
+ul.open-list code{ font-family:var(--wire); font-size:.86em; color:var(--accent); background:var(--accent-tint); border-radius:5px; padding:1px 5px; }
+@media (max-width:900px){
+  .xt-wrap{ overflow-x:visible; border:0; background:none; }
+  table.xt, table.xt tbody, table.xt tr, table.xt th, table.xt td{ display:block; width:auto; min-width:0; }
+  table.xt{ table-layout:auto; }
+  table.xt thead{ display:none; }
+  table.xt tbody tr{ border:1px solid var(--line); border-radius:12px; overflow:hidden; margin:0 0 14px; background:var(--bg); }
+  table.xt tbody th{ border-bottom:1px solid var(--line); }
+  table.xt td{ border-bottom:1px solid var(--line); }
+  table.xt td[data-l]::before{ content:attr(data-l); display:block; margin-bottom:3px; font-family:var(--disp);
+    font-size:.78rem; font-weight:700; letter-spacing:.05em; text-transform:uppercase; color:var(--text-3); }
+}
