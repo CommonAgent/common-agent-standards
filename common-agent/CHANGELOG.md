@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted before the specification moved to this repository and have no tags here.
 
+## 0.38.2 (2026-10-29)
+
+No change to the text of the specification. This version publishes commonagent.net with the page One agent, any transport (/any-transport.html) without its section references, so it reads as plain prose; every claim on it is unchanged.
+
 ## 0.38.1 (2026-10-29)
 
 No change to the text of the specification. This version publishes commonagent.net with a page that says what stays the same when one agent is reached through different transports, One agent, any transport (/any-transport.html), linked from the menu and from the identity and reach group of the Every standard page. A table states how the agent's key and name, its Descriptor, the signed message, the task states, the receiver protections, what a person sees, the owner's OK and conformance hold on Agent Messaging, Agent Emailing and the A2A Bridge, each with the section it rests on and plainly where a transport does not do something yet, and the page lists four places where the family is not consistent yet. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
