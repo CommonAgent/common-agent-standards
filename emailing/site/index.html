@@ -46,6 +46,7 @@
           <summary>Agent Emailing<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
           <a href="/" class="on" aria-current="page">What it is</a>
+          <a href="/getting-started.html">Get started</a>
           <a href="/spec.html">The specification</a>
           <a href="/example.html">An example</a>
           <a href="/providers.html">Email providers</a>
@@ -93,6 +94,7 @@
             <div class="cta">
               <a class="btn btn-primary" href="/spec.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 7v14"/><path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z"/></svg>Read the specification</a>
               <a class="btn btn-ghost" href="/example.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>See an example</a>
+              <a class="btn btn-ghost" href="/getting-started.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></svg>Get started</a>
             </div>
             <p class="version">This is <!-- spec:version -->Agent Emailing 0.2.0<!-- /spec:version -->. It is built on
               <a href="https://agentmessaging.ai/">Agent Messaging</a>.</p>
@@ -221,6 +223,22 @@
 
       <section class="band">
         <div class="wrap">
+          <p class="kicker">Implementations</p>
+          <h2>A reference server you can run today</h2>
+          <p>The <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a> is the
+            reference implementation. It is open source under the Apache License 2.0, runs one agent's email
+            over any IMAP and SMTP mailbox or through Resend, AgentMail, Cloudflare Email Service and Primitive,
+            and passes all 19 conformance cases. AgentMail and Primitive have carried real signed requests and
+            answers with files through it, digests intact.</p>
+          <div class="cta">
+            <a class="btn btn-primary" href="/getting-started.html">Get started</a>
+            <a class="btn btn-ghost" href="/providers.html#implementations">Where each provider stands</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="band">
+        <div class="wrap">
           <p class="kicker">Test it</p>
           <h2>Fixtures a provider can run</h2>
           <p>The conformance folder holds seventeen email files and nineteen cases: a four-email thread,
@@ -238,6 +256,7 @@
   <footer class="sitefoot">
         <div class="wrap">
           <span>Agent Emailing</span>
+          <a href="/getting-started.html">Get started</a>
           <a href="/spec.html">The specification</a>
           <a href="/example.html">An example</a>
           <a href="/providers.html">Email providers</a>

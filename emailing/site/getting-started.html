@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent Emailing: get started</title>
+  <meta name="description" content="Run the Agent Emailing Server for one agent: install it, make a key, connect an agent, point it at a mailbox or an email provider, and check an email. Then run the conformance cases against your own implementation.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Emailing">
+  <meta property="og:title" content="Agent Emailing: get started">
+  <meta property="og:description" content="Run the Agent Emailing Server for one agent, and run the conformance cases against your own implementation.">
+  <meta property="og:url" content="https://agentemailing.ai/getting-started.html">
+  <meta property="og:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Emailing. Signed agent messages carried by ordinary email, through any email provider.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentemailing.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentemailing.ai/getting-started.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Emailing home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="2.5" y="7" width="23" height="17" rx="3.2" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4 9l10 7.5L24 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/><circle cx="25" cy="23" r="5.4" style="fill:var(--surface)" stroke="currentColor" stroke-width="2.2"/><path d="M22.6 23.1l1.7 1.7 3-3.4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Emailing</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Emailing">
+        <details class="sec" open>
+          <summary>Agent Emailing<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/getting-started.html" class="on" aria-current="page">Get started</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/providers.html#test">Conformance fixtures</a>
+          <a href="/versions.html">Versions and changelog</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Emailing is one of the <a href="https://commonagent.net/">Common Agent Standards</a>, built on <a href="https://agentmessaging.ai/">Agent Messaging</a>. Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <span class="eyebrow">Get started</span>
+        <h1>Give an agent an email address</h1>
+        <p class="lede">The <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a>
+          is the reference implementation of this standard. It holds one agent's key, watches its
+          mailbox, checks every email, hands verified requests to the agent, and sends the agent's
+          signed answers back in the same thread.</p>
+        <p class="also">You need Node.js 22 or later, and a mailbox for the agent: its IMAP and SMTP
+          settings, or an account with one of the email providers below. The server is free and open
+          source under the Apache License 2.0, and needs nothing else installed to run.</p>
+      </div>
+      </header>
+
+      <section class="band gs">
+        <div class="wrap">
+          <ol class="gs-steps">
+            <li>
+              <h2><span class="gs-n">1</span>Install</h2>
+              <pre class="code">git clone https://github.com/Agent-Emailing/agent-emailing-server.git
+cd agent-emailing-server
+npm install
+npm run build</pre>
+            </li>
+
+            <li>
+              <h2><span class="gs-n">2</span>Make the agent's key</h2>
+              <pre class="code">mkdir -p state
+node dist/server/cli.js keygen --out state/agent.seed</pre>
+              <p>It prints the agent's id, its public key. Keep the seed file secret: it signs everything
+                the agent sends. Publish the agent's mailbox as the <code>email</code> endpoint on its
+                name card, so other agents can find it
+                (<a href="/spec.html#5-1-the-email-endpoint-on-a-name-card">section 5.1</a>).</p>
+            </li>
+
+            <li>
+              <h2><span class="gs-n">3</span>Connect a local agent</h2>
+              <p>The agent is code you write. The server POSTs each verified email to it and sends
+                whatever it answers. This small example answers every request with what it was asked:</p>
+              <pre class="code">AGENT_TOKEN=change-me node examples/echo-agent.mjs &amp;</pre>
+              <p>It listens on <code>http://127.0.0.1:8080/deliver</code>, the address the example
+                configuration points at. The agent is only ever handed envelopes that passed every
+                check, with the sender's text framed for a model. The
+                <a href="https://github.com/Agent-Emailing/agent-emailing-server/blob/main/docs/agent-interface.md">agent interface</a>
+                describes what it receives and how it answers. To run the server inside your own program
+                instead, pass a <code>deliver</code> function, as the server's README shows.</p>
+            </li>
+
+            <li>
+              <h2><span class="gs-n">4</span>Run the server</h2>
+              <h3 class="sub">Against a mailbox, over IMAP and SMTP</h3>
+              <p>Copy the example configuration and fill in the agent's address and its mail server.</p>
+              <pre class="code">cp examples/config.imap-smtp.json config.json
+MAILBOX_PASSWORD=... AGENT_TOKEN=change-me SERVER_TOKEN=change-me-too \
+  node dist/server/cli.js serve --config config.json</pre>
+              <h3 class="sub">Against an email provider</h3>
+              <p>Change the <code>carrier</code> block of the configuration. Secrets are never in the
+                file: each is named by the environment variable that holds it. For Resend there is an
+                example configuration, <code>examples/config.resend.json</code>. For AgentMail and
+                Primitive the block is:</p>
+              <pre class="code">"carrier": { "type": "agentmail", "apiKeyEnv": "AGENTMAIL_API_KEY", "inboxId": "&lt;your inbox&gt;" }
+
+"carrier": { "type": "primitive", "apiKeyEnv": "PRIMITIVE_API_KEY", "address": "&lt;the agent's address&gt;" }</pre>
+              <p>Cloudflare Email Service runs through a Worker, which the server's
+                <code>examples/cloudflare-worker/</code> folder holds. The
+                <a href="https://github.com/Agent-Emailing/agent-emailing-server/blob/main/docs/provider-interface.md">provider interface</a>
+                lists every carrier's settings, and <a href="/providers.html#implementations">Email providers</a>
+                says which have been proven on real mail.</p>
+            </li>
+
+            <li>
+              <h2><span class="gs-n">5</span>Check one email</h2>
+              <p>The command line checks an email the way a mail program would, and says what an agent
+                would do with it. Try it on the first conformance fixture, with the test name cards and the
+                time the case is judged at:</p>
+              <pre class="code">curl -O https://agentemailing.ai/conformance/fixtures/01-request.eml
+curl -O https://agentemailing.ai/conformance/cards.json
+node dist/server/cli.js check 01-request.eml --cards cards.json --now 2026-10-29T16:25:00Z</pre>
+              <pre class="code out"><span class="c">For a person: the text matches the signed message
+  ok   signature (the envelope's signature verifies)
+  ok   text digest
+  ok   subject
+  ok   states the sender
+  ok   states what was asked
+  ok   states the message word for word
+  ok   names the file agenda.txt
+  ok   states the price</span></pre>
+              <p>Try <code>17-forged.eml</code> with <code>--now 2026-10-29T17:15:00Z</code> to see a
+                failure. Add <code>--as &lt;agent id&gt;</code> to see the agent's verdict too: deliver,
+                hold or refuse, with the reason. Without <code>--now</code> the check uses the time it is
+                run at, and the test name cards, which were valid for one hour, no longer verify.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="band" id="conformance">
+        <div class="wrap">
+          <p class="kicker">Your own implementation</p>
+          <h2>Run the conformance cases</h2>
+          <p>The cases are the same for every implementation. Each one names an email fixture, the role
+            that receives it, the agent it is received as, the time to judge it at, and the outcome it must
+            produce. Every envelope in them is really signed with published test keys, which control
+            nothing.</p>
+          <ol class="reqlist">
+            <li>Download <a href="/conformance/cases.json">cases.json</a>,
+              <a href="/conformance/cards.json">cards.json</a> and the
+              <a href="/providers.html#test">seventeen fixtures</a>.</li>
+            <li>Give each fixture to your receiver as the case says, judged at the case's
+              <code>now</code>, and compare its verdict with the case's <code>expect</code>. A case with
+              <code>after</code> first replays the case it names.</li>
+            <li>Where a case has a <code>person_view</code>, run your mail-program check too, and compare
+              that.</li>
+          </ol>
+          <p>To see how it is done, <a href="/conformance/check-fixtures.mjs">check-fixtures.mjs</a> is a
+            small reference receiver that runs every case. The Agent Emailing Server runs every case twice,
+            against its library and against a running server, with <code>npm run conformance</code>.</p>
+          <pre class="code">node conformance/check-fixtures.mjs
+<span class="c"># pass  e01  01-request.eml</span>
+<span class="c"># ...</span>
+<span class="c"># all 19 cases pass</span></pre>
+          <p class="aside">An implementation that passes every case can be listed under
+            <a href="/providers.html#implementations">Implementations</a>. Open an issue in the
+            <a href="https://github.com/CommonAgent/common-agent-standards">Common Agent Standards
+            repository</a> with a link to the implementation and its results.</p>
+        </div>
+      </section>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Emailing</span>
+          <a href="/getting-started.html">Get started</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/example.html">An example</a>
+          <a href="/providers.html">Email providers</a>
+          <a href="/versions.html">Versions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/emailing">GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>

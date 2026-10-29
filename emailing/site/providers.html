@@ -46,6 +46,7 @@
           <summary>Agent Emailing<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
           <div class="items">
           <a href="/">What it is</a>
+          <a href="/getting-started.html">Get started</a>
           <a href="/spec.html">The specification</a>
           <a href="/example.html">An example</a>
           <a href="/providers.html" class="on" aria-current="page">Email providers</a>
@@ -288,6 +289,62 @@
         </div>
       </section>
 
+      <section class="band" id="implementations">
+        <div class="wrap">
+          <p class="kicker">Implementations</p>
+          <h2>The reference implementation and its adapters</h2>
+          <div class="impl-card">
+            <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span>
+            <div>
+              <h3><a href="https://github.com/Agent-Emailing/agent-emailing-server">The Agent Emailing Server</a></h3>
+              <p>TypeScript on Node.js 22, with no dependencies at run time, under the Apache License 2.0. It
+                runs one agent's email: native and bridged modes, a built-in IMAP and SMTP provider, and
+                adapters for Resend, AgentMail, Cloudflare Email Service and Primitive.</p>
+              <p>All 19 conformance cases pass, against its library and against a running server.
+                <a href="/getting-started.html">Get started</a> shows how to run it.</p>
+            </div>
+          </div>
+          <p>Each adapter is built to the provider's documentation and tested against it. Some have also
+            carried real, signed agent email. This is where each stood on 29 October 2026.</p>
+          <table class="caps">
+            <thead>
+              <tr><th>Provider</th><th>Where it stands</th><th>What has been shown</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>AgentMail</td>
+                <td data-l="Where it stands"><span class="state st-done">Proven live</span></td>
+                <td data-l="What has been shown">A signed request and a signed respond, each with a file, went through real AgentMail inboxes. Both files arrived with their signed digests intact, and the carrier test of section 12.3 passed.</td>
+              </tr>
+              <tr>
+                <td>Primitive</td>
+                <td data-l="Where it stands"><span class="state st-done">Proven live</span></td>
+                <td data-l="What has been shown">The same round trip through real Primitive addresses, with digests intact, and the carrier test passed. Primitive accepts only three custom headers, so the hint headers were dropped, and everything still arrived whole.</td>
+              </tr>
+              <tr>
+                <td>Resend</td>
+                <td data-l="Where it stands"><span class="state st-input">Sending proven</span></td>
+                <td data-l="What has been shown">Sending: the carrier test and a signed request reached a real mailbox, both passing. Receiving and delivery status were tested against Resend's documentation only.</td>
+              </tr>
+              <tr>
+                <td>IMAP and SMTP<small>Built into the server</small></td>
+                <td data-l="Where it stands"><span class="state st-input">Partly proven</span></td>
+                <td data-l="What has been shown">Connection, TLS and sign-in handling against a real mail server. A signed round trip through a real mailbox has not been run yet. Tested against local IMAP and SMTP servers with the conformance fixtures.</td>
+              </tr>
+              <tr>
+                <td>Cloudflare Email Service</td>
+                <td data-l="Where it stands"><span class="state st-request">Documentation only</span></td>
+                <td data-l="What has been shown">Built, with an example Worker, and tested against Cloudflare's documentation only. It has not carried real mail yet.</td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="aside">Other implementations are welcome. Run the <a href="/getting-started.html#conformance">conformance
+            cases</a> against yours, then open an issue in the
+            <a href="https://github.com/CommonAgent/common-agent-standards">Common Agent Standards repository</a>
+            with a link to it and its results, and it will be listed here.</p>
+        </div>
+      </section>
+
       <section class="band">
         <div class="wrap">
           <p class="kicker">For builders</p>
@@ -333,6 +390,10 @@
             and a text part whose digest equals the one the envelope signs. The sending side may rebuild
             the email through the provider's own interface, as long as it attaches the envelope and the
             file unchanged and leaves the text unchanged.</p>
+          <h3 class="sub">Against an implementation</h3>
+          <p>The <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a> runs every
+            case twice, against its library and against a running server, with <code>npm run conformance</code>.
+            <a href="/getting-started.html#conformance">Get started</a> says how to run the cases against your own.</p>
           <h3 class="sub">The reference checker</h3>
           <p><a href="/conformance/check-fixtures.mjs">check-fixtures.mjs</a> is a small reference
             receiver. Download the <code>conformance</code> folder, with <a href="/conformance/lib.mjs">lib.mjs</a>
@@ -349,6 +410,7 @@
   <footer class="sitefoot">
         <div class="wrap">
           <span>Agent Emailing</span>
+          <a href="/getting-started.html">Get started</a>
           <a href="/spec.html">The specification</a>
           <a href="/example.html">An example</a>
           <a href="/providers.html">Email providers</a>
