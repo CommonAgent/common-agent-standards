@@ -1,6 +1,6 @@
 # The A2A Bridge: normative mapping between Agent Messaging and A2A
 
-**Version:** 0.6.0-draft
+**Version:** 0.7.0-draft
 **Status:** Working Draft
 **Date:** 2026-07-14
 **Revised:** 2026-10-29 (see §15)
@@ -235,7 +235,9 @@ input, and structured mesh output arrives as a DataPart.
 
 Mesh error codes (SPEC.md §12) map to A2A JSON-RPC errors as follows.
 Unlisted mesh codes map to `-32603` (Internal error). The original mesh code
-MUST be preserved in the JSON-RPC error's `data.agentmesh_code` field.
+MUST be preserved in the JSON-RPC error's `data.agentmesh_code` field. A
+budget refusal (`BUDGET_INSUFFICIENT`, `BUDGET_EXHAUSTED`) also keeps its
+`details`, such as the estimate, in `data.details` (EXT-14 §11).
 
 | AgentMesh error code | JSON-RPC code | A2A error type |
 |---|---|---|
@@ -276,8 +278,15 @@ Served per exposed agent at
 | bridge marker (§8.3) | `capabilities.extensions[]` entry |
 
 Mesh `input_schema` / `output_schema` have no agent card equivalent (cards
-declare media-type modes, not schemas); they are surfaced through the bridge
-extension's `documentationUrl`.
+declare media-type modes, not schemas). A bridge that implements Agent
+Messaging over A2A carries them, with each offering's inputs and outputs, in
+that extension's `params` (EXT-14 §10).
+
+Where the agent published an Agent Descriptor (SPEC.md §8.13), the table
+above yields to it: the card's description, version and skills are generated
+from the Descriptor itself, the extension's `params` link to the Descriptor
+with its digest, and the bridge serves the Descriptor's bytes there (EXT-14
+§10). The manifest supplies only what the Descriptor does not hold.
 
 ### 8.2. Outbound: Agent Card → Mesh Manifest
 
