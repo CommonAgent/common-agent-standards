@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Why Agent Emailing</title>
-  <meta name="description" content="Your agents will email other companies' agents. Ad hoc email proves nothing about who sent a request or what it said, and each email provider has its own interface. Agent Emailing gives every agent email a signed message that any provider can carry and anyone can check.">
+  <title>Why agents should email in one signed format</title>
+  <meta name="description" content="When your agents email other companies' agents, every message should prove who sent it and what it says. Agent Emailing makes that true, through any email provider.">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Emailing">
   <meta property="og:title" content="Why Agent Emailing">
-  <meta property="og:description" content="Why agents that email other companies' agents should use one signed message, not ad hoc email or each provider's own interface.">
+  <meta property="og:description" content="When your agents email other companies' agents, every message should prove who sent it and what it says.">
   <meta property="og:url" content="https://agentemailing.ai/article-why-agent-emailing.html">
   <meta property="og:image" content="https://agentemailing.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -83,122 +83,41 @@
       <header class="herobg">
       <div class="wrap hero">
         <span class="eyebrow">Article</span>
-        <h1>Why agents should email each other in one signed format</h1>
-        <p class="lede">Your agents will soon send requests to other companies' agents, and receive
-          theirs. Many of those agents will be reached by email. This article explains why they should
-          use Agent Emailing for it, rather than ordinary email written ad hoc, or the interface of
-          whichever email provider each side happens to use.</p>
-        <p class="also">It is written for the person who decides how a company's agents talk to the
-          outside world: an architect, a platform lead, or a builder.</p>
+        <h1>Why agents should email in one signed format</h1>
+        <p class="lede">When your agents email other companies' agents, every message should prove who sent it and what it says.</p>
       </div>
       </header>
 
       <section class="band">
         <div class="wrap">
           <p class="kicker">The problem</p>
-          <h2>An email from &ldquo;an agent&rdquo; proves nothing</h2>
-          <p>More and more agents have email addresses of their own. Several companies now sell inboxes
-            built for agents, and each has its own interface: its own way to create an inbox, send,
-            receive, and tell its customer that mail arrived. Examples are
-            <a href="https://docs.agentmail.to/">AgentMail</a>,
-            <a href="https://docs.primitive.dev/docs">Primitive</a>,
-            <a href="https://www.nylas.com/products/agent-accounts">Nylas Agent Accounts</a>,
-            <a href="https://blog.cloudflare.com/email-for-agents/">Cloudflare Email Service</a> and
-            <a href="https://resend.com/docs/dashboard/receiving/introduction">Resend</a>.</p>
-          <p>None of them defines a message that one agent signs and another agent checks. So when your
-            agent receives an email that claims to come from a supplier's agent, it cannot rule out any of
-            these three things:</p>
-          <div class="cards three">
-            <div class="card">
-              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span>
-              <h3>A forged request</h3>
-              <p>Anyone can write any From address. An email that says it is from a supplier's agent may be
-                from someone else entirely.</p>
-            </div>
-            <div class="card">
-              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/></svg></span>
-              <h3>An altered quote</h3>
-              <p>A forwarded or relayed email can be changed on the way. A price, a quantity or an
-                attachment can be different from what the sender wrote.</p>
-            </div>
-            <div class="card">
-              <span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="M9 15h6"/></svg></span>
-              <h3>Text that says one thing</h3>
-              <p>An email can carry readable text and a data attachment that disagree. A person reads the
-                text. The agent acts on the data.</p>
-            </div>
+          <h2>Email alone proves nothing</h2>
+          <div class="cards three short">
+            <div class="card"><span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg></span><h3>Anyone can claim to be an agent.</h3></div>
+            <div class="card"><span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 20h9"/><path d="M16.38 3.62a1 1 0 0 1 3 3L7.37 18.64a2 2 0 0 1-.86.5l-2.87.84a.5.5 0 0 1-.62-.62l.84-2.87a2 2 0 0 1 .5-.86z"/></svg></span><h3>A quote can be changed after it is sent.</h3></div>
+            <div class="card"><span class="chip c-amber"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/></svg></span><h3>People can't see what their agents agreed to.</h3></div>
           </div>
-          <p>The people who answer for those agents have a problem too. When two agents have exchanged a
-            dozen emails, the owner of the mailbox cannot easily tell what was asked, what was promised
-            and what was agreed.</p>
         </div>
       </section>
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker">What the format gives you</p>
-          <h2>One signed message, carried by any provider</h2>
-          <p>Agent Emailing puts a signed <a href="https://agentmessaging.ai/">Agent Messaging</a> envelope
-            inside an ordinary email, as an attachment. Everything else follows from that.</p>
-          <ul class="needs">
-            <li>
-              <h3>The sender and every field verify</h3>
-              <p>The envelope is signed with the sending agent's own key. The receiver checks the signature
-                itself, whichever provider carried the email, and even after it was forwarded or passed
-                through a mailing list. A changed field fails the check.</p>
-              <p class="refs">Sections 3.2 and 6.1</p>
-            </li>
-            <li>
-              <h3>Attachments cannot be swapped</h3>
-              <p>Each file is named in the envelope with its size and its SHA-256 digest. A file that does
-                not match is refused, and the rest of the message is still delivered.</p>
-              <p class="refs">Section 3.4</p>
-            </li>
-            <li>
-              <h3>People read what the agents acted on</h3>
-              <p>Each email opens with plain text generated from the signed message: who sent it, for whom,
-                what was asked, what was handed over, the price and what happens next. Its digest is signed
-                too, so software can check the text against the envelope and warn when they differ.</p>
-              <p class="refs">Section 3.3</p>
-            </li>
-            <li>
-              <h3>The inbox tells the story</h3>
-              <p>The subject carries the request and its state: "Quote for 200 chairs — request", then
-                "needs your input", then "done". A person scanning the inbox sees where every piece of work
-                stands.</p>
-              <p class="refs">Section 3.3</p>
-            </li>
-            <li>
-              <h3>Tasks and answers stay in one thread</h3>
-              <p>A request, a question back, the answer and the result belong to one task, correlated inside
-                the signed envelope rather than by headers a provider may rewrite.</p>
-              <p class="refs">Sections 3.6 and 10</p>
-            </li>
-            <li>
-              <h3>Switch providers without changing agents</h3>
-              <p>The provider only carries an attachment unchanged. An agent built on one provider talks to
-                an agent built on another, and either side can change provider without the other noticing.</p>
-              <p class="refs">Section 11</p>
-            </li>
-            <li>
-              <h3>Email agents and mesh agents speak the same message</h3>
-              <p>The envelope is Agent Messaging's. An agent reached by email and an agent on a message broker
-                exchange the same signed requests and answers, with the same task model and the same
-                receiver protections.</p>
-              <p class="refs">Section 1.3</p>
-            </li>
-          </ul>
+          <p class="kicker">What you get</p>
+          <h2>What Agent Emailing gives you</h2>
+          <div class="cards three gives">
+            <div class="card"><span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span><h3>Signed end to end, through any provider</h3><p>The receiving agent checks the signature itself.</p></div>
+            <div class="card"><span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg></span><h3>Files can't be swapped</h3><p>Every attachment is pinned inside the signed message.</p></div>
+            <div class="card"><span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="m9 15 2 2 4-4"/></svg></span><h3>A person reads exactly what the agents signed</h3><p>The readable text is made from the signed message.</p></div>
+            <div class="card"><span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span><h3>The inbox tells the story</h3><p>Each subject shows the state: request, needs your input, done.</p></div>
+            <div class="card"><span class="chip c-violet"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg></span><h3>Switch providers, keep your agents</h3><p>Any provider that carries an attachment unchanged will do.</p></div>
+          </div>
         </div>
       </section>
 
       <section class="band">
         <div class="wrap">
           <p class="kicker">What it looks like</p>
-          <h2>A quote thread, as checking software shows it</h2>
-          <p>A buyer's agent at example.org asks a supplier's agent at example.com for a quote. The supplier
-            sends it back, signed, with the quote attached. Then a forged quote arrives from an address that
-            is not on the supplier's name card, with a lower price and a different attachment. Software that
-            checks Agent Emailing shows each email like this.</p>
+          <h2>A quote thread, checked</h2>
           <div class="qt" role="figure" aria-label="An illustration of a quote thread: a request and a signed quote that pass every check, and a forged quote that fails">
             <div class="qt-msg">
               <div class="qt-head"><span class="avatar sm av-a" aria-hidden="true">BA</span>
@@ -223,79 +142,18 @@
               <p class="qt-text">It claims 140.00 USD each and attaches a different quote.pdf. The buyer's agent never acts on it.</p>
             </div>
           </div>
-          <p class="caption">An illustration. <a href="/example.html">An example</a> shows a real thread
-            from the conformance fixtures, with every badge computed from the email it sits on.</p>
+          <p class="caption">An illustration. <a href="/example.html">See a real thread</a>.</p>
         </div>
       </section>
 
       <section class="band">
         <div class="wrap">
-          <p class="kicker">Why not a provider's interface</p>
-          <h2>Providers carry the email. The standard defines the message.</h2>
-          <p>An agent inbox service is a good way to give an agent an address, and Agent Emailing is meant to
-            run on top of them. What a provider's interface cannot give you is a message the other company's
-            agent can check, because the other company may use a different provider, or none.</p>
-          <p>Providers do sign what they send their own customers. AgentMail signs its webhooks through
-            <a href="https://docs.agentmail.to/webhook-verification.md">Svix</a>, and Primitive signs each
-            webhook with an <a href="https://docs.primitive.dev/docs/webhook-payload">HMAC in a
-            <code>Primitive-Signature</code> header</a>. Those signatures prove that the provider delivered
-            something to its customer. They say nothing about which agent wrote it, and they stop at the
-            provider's edge. The Agent Emailing envelope is signed by the agent and checked by the agent at
-            the other end, across any provider.</p>
-          <p>Providers also differ in what they let you send. Primitive accepts only three custom headers on
-            outbound mail (<a href="https://docs.primitive.dev/docs/sending">its documentation</a>), and
-            Amazon SES sets its own Message-ID
-            (<a href="https://docs.aws.amazon.com/cli/latest/reference/ses/send-raw-email.html">its documentation</a>).
-            Agent Emailing puts everything an agent acts on inside the envelope, so it survives both.</p>
-        </div>
-      </section>
-
-      <section class="band">
-        <div class="wrap">
-          <p class="kicker">The proof</p>
-          <h2>It runs, and it has been tested across providers</h2>
-          <div class="cards two">
-            <div class="card">
-              <span class="chip c-mint"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span>
-              <h3>A reference implementation</h3>
-              <p>The <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a>
-                is open source under the Apache License 2.0. It runs one agent's email over any IMAP and SMTP
-                mailbox, or through Resend, AgentMail, Cloudflare Email Service and Primitive.</p>
-            </div>
-            <div class="card">
-              <span class="chip c-blue"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg></span>
-              <h3>19 conformance cases</h3>
-              <p>Every implementation runs the same cases over 17 really signed emails, from a valid thread to
-                a forgery. The reference server passes all 19, against its library and against a running
-                server. <a href="/providers.html#test">The fixtures</a> are on this site.</p>
-            </div>
-          </div>
-          <!-- interop:summary -->
-          <div class="interop-summary">
-            <h3>Across three providers</h3>
-            <p>On 29 October 2026, a buyer's agent asked a supplier's agent for a quote in four emails, on every
-              lane between AgentMail, Primitive and Resend that could run. All four of those lanes delivered 4 of 4
-              emails, each taking between 2.4 and 13.3 seconds, and passed every check: signature, name card, text and
-              subject, files, task state and threading, and the carrier test. In each lane a forged quote, its price
-              raised after it was signed, was refused by the buyer's server without an answer and shown to a person
-              as a failure.</p>
-            <p>Two lanes were not run: AgentMail to Resend and Primitive to Resend, because the Resend key used can only
-              send. For the same reason, in the lanes from Resend the Resend agent received its emails in a Google
-              Workspace mailbox read through the Gmail API.</p>
-          </div>
-          <!-- /interop:summary -->
-        </div>
-      </section>
-
-      <section class="band">
-        <div class="wrap">
-          <p class="kicker">How to start</p>
-          <h2>Give one agent an address and try it</h2>
-          <p>Install the reference server, make a key, connect an agent, and point it at a mailbox or a
-            provider. It takes a few commands.</p>
+          <p class="kicker">Proof</p>
+          <h2>It works today</h2>
+          <p>The <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a> is open source.
+            It has been tested live across AgentMail, Primitive and Resend, and it refused a forged quote.</p>
           <div class="cta">
             <a class="btn btn-primary" href="/getting-started.html">Get started</a>
-            <a class="btn btn-ghost" href="/spec.html">Read the specification</a>
           </div>
         </div>
       </section>

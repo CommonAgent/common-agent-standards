@@ -4,6 +4,10 @@ Versions of Agent Emailing tagged in this repository, newest first. A version is
 tagged as `emailing-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.2.5 (2026-10-29)
+
+No change to the text of the specification. This version publishes agentemailing.ai with a short article, Why agents should email in one signed format (/article-why-agent-emailing.html): one sentence of lede, the problem in three cards, what Agent Emailing gives in five, the quote thread with its badges, one line of proof and a button to Get started. A version of this specification is what publishes the site's root, so a page of the site is published with a patch version. No requirement, member, attribute or section number changes.
+
 ## 0.2.4 (2026-10-29)
 
 No change to the text of the specification. This version publishes agentemailing.ai with the menu's On GitHub link pointing to the reference implementation, the Agent Emailing Server (https://github.com/Agent-Emailing/agent-emailing-server). The footer still links the specification's source. The interop results page is removed.
