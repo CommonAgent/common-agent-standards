@@ -62,7 +62,7 @@ export const PAGES = {
   "code-critic": { date: "2026-10-05",
     summary: "Reads a change to a package and hands back findings, each naming a file and a line, for a person to decide on. It reads the scripts and any change to what the package declares. It changes nothing and gives no overall grade." },
   "security-reviewer": { date: "2026-10-29",
-    summary: "Before an agent is installed, writes down what it may reach and why, what it may spend, what it must never do, and what was accepted knowingly. It refuses a package whose programs reach a system it does not declare, or whose owner set no spending limit. It grants nothing and changes nothing." },
+    summary: "Before an agent is installed, writes down what it may reach and why, what it may spend, what it must never do, and what was accepted knowingly. It refuses a package whose programs reach a system it does not declare, or whose owner set no spending limit, and warns about a program that carries its own address for a system it does declare. It grants nothing and changes nothing." },
   "package-maker": { date: "2026-10-24",
     summary: "Turns a description of a needed agent into a package and its digest. The package holds the declaration, the parts it names and a manifest. The package names the agent's skills, the systems it needs and its obligations. It asks for what it must not invent, which is what the agent refuses and the records it must leave, and refuses to emit a package without them. Every package is a draft, because nobody has run it. It is checked by its refusals and its records." },
   "deployment-manager": { date: "2026-10-24",

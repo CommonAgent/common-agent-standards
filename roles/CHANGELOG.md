@@ -4,6 +4,28 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.6 (2026-10-29)
+
+The security reviewer warns, rather than refuses, when a program carries
+its own address for a system the declaration names, following the Common
+Agent Specification 0.40.0, under which a depot warns about an address
+written in a script instead of refusing the package. Contract item 3 of
+§34.2 keeps its first sentence as it stood in v1.4.1: the reviewer refuses
+to pass a package whose programs reach a system the declaration does not
+name, and names that system. In place of the sentence v1.5 added, a
+program that carries its own address for a declared system, such as a
+declared model called at an address written into the program, now gets a
+warning that names the file and the address and is listed in the
+statement, and a reason written in the statement does not remove it. The
+sentence v1.5 added about signing in to a model with another credential
+is removed with it. The test of §34.4 now requires that the candidate does
+not refuse that package for the address alone and that its statement
+carries the warning. The harness at conformance/security-reviewer/
+(version 1.1.0) grades its third case that way, and reads warnings from a
+new front matter member, `warnings`. Its fixtures are unchanged, and it
+still has twelve checks. The security reviewer's page says the same. No
+section number or offering name changes.
+
 ## v1.5.1 (2026-10-29)
 
 No change to the text of the descriptions. This version publishes the
