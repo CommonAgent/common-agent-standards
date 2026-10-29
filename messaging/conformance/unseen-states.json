@@ -1,0 +1,27 @@
+{
+  "fixture": "unseen-states",
+  "spec": "Agent Messaging §7.3.1, Updates a Transport Does Not Carry",
+  "comment": "A view of a Task that a transport does not show every update of (a requester over email, a caller over A2A) fills a gap only through submitted and working. Each case gives the last state the view saw (null for none) and the state of the update it receives. 'applies' says whether the view takes the update; 'passed_through' lists, in order, the states it takes as passed through but not seen. A refused update is TASK_INVALID_TRANSITION. lib/check-unseen-states.mjs runs every case against a reference reading of the rule.",
+  "cases": [
+    { "name": "first update in submitted", "last": null, "update": "submitted", "applies": true, "passed_through": [] },
+    { "name": "first update in working", "last": null, "update": "working", "applies": true, "passed_through": ["submitted"] },
+    { "name": "first update asks for input (no working seen)", "last": null, "update": "input_required", "applies": true, "passed_through": ["submitted", "working"] },
+    { "name": "first update asks for credentials", "last": null, "update": "auth_required", "applies": true, "passed_through": ["submitted", "working"] },
+    { "name": "first update completed (email, done at once)", "last": null, "update": "completed", "applies": true, "passed_through": ["submitted", "working"] },
+    { "name": "first update declined", "last": null, "update": "rejected", "applies": true, "passed_through": ["submitted"] },
+    { "name": "first update stopped at its cap", "last": null, "update": "exhausted", "applies": true, "passed_through": ["submitted"] },
+    { "name": "answer given, done, no working seen", "last": "input_required", "update": "completed", "applies": true, "passed_through": ["working"] },
+    { "name": "answer given, failed, no working seen", "last": "input_required", "update": "failed", "applies": true, "passed_through": ["working"] },
+    { "name": "answer given, asks again", "last": "input_required", "update": "input_required", "applies": true, "passed_through": ["working"] },
+    { "name": "credentials given, done", "last": "auth_required", "update": "completed", "applies": true, "passed_through": ["working"] },
+    { "name": "a legal next state needs no gap", "last": "working", "update": "completed", "applies": true, "passed_through": [] },
+    { "name": "a pause canceled is a legal next state", "last": "input_required", "update": "canceled", "applies": true, "passed_through": [] },
+    { "name": "submitted to done, working unseen", "last": "submitted", "update": "completed", "applies": true, "passed_through": ["working"] },
+    { "name": "nothing leaves a terminal state", "last": "completed", "update": "working", "applies": false },
+    { "name": "a second terminal state is refused", "last": "failed", "update": "completed", "applies": false },
+    { "name": "canceled stays canceled", "last": "canceled", "update": "input_required", "applies": false },
+    { "name": "back to submitted is never a path", "last": "working", "update": "submitted", "applies": false },
+    { "name": "declined is reachable only from submitted", "last": "working", "update": "rejected", "applies": false },
+    { "name": "an unknown state is refused", "last": "working", "update": "paused", "applies": false }
+  ]
+}

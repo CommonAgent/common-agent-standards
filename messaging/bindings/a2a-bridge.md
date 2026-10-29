@@ -1,6 +1,6 @@
 # The A2A Bridge: normative mapping between Agent Messaging and A2A
 
-**Version:** 0.5.0-draft
+**Version:** 0.6.0-draft
 **Status:** Working Draft
 **Date:** 2026-07-14
 **Revised:** 2026-10-29 (see §15)
@@ -141,6 +141,8 @@ AgentMesh responders choose between a **bare terminal response**
 | Bare terminal response (`task_id: null`, status `completed`) | `{"message": {...}}` — direct Message, role `ROLE_AGENT`, parts from `output` (§6) |
 | Bare terminal response, status `failed` / `rejected` | JSON-RPC error (§7) |
 | Task response (responder-assigned `task_id`, non-terminal) | `{"task": {...}}` — Task object, states per §5 |
+| The queued acknowledgement with `delivered: true` or `paused: true` (SPEC.md §6.4a) | `{"task": {...}}` in `submitted`, whose id is the request id; a later reply that names the request completes it |
+| The queued acknowledgement without either (the agent has not let the caller in) | `{"task": {...}}` in `auth-required` that says how to be let in (EXT-14 §9) |
 
 ### 4.4. `SendStreamingMessage` Event Mapping
 
@@ -176,8 +178,10 @@ A metadata hint naming an undeclared offering MUST be rejected with
 
 ## 5. Task-State Mapping
 
-The state sets are identical by design (SPEC.md §7 mirrors A2A §4.1.3). Only
-the spelling differs per A2A binding convention:
+The state sets were identical by design (SPEC.md §7 mirrors A2A §4.1.3), and
+only the spelling differs per A2A binding convention, with one exception:
+Agent Messaging's `exhausted`, for work that stopped because its engagement's
+cap was reached (SPEC.md §7.2), has no A2A state.
 
 | AgentMesh state | A2A protobuf enum | A2A JSON string |
 |---|---|---|
@@ -189,9 +193,20 @@ the spelling differs per A2A binding convention:
 | `failed` | `TASK_STATE_FAILED` | `failed` |
 | `canceled` | `TASK_STATE_CANCELED` | `canceled` |
 | `rejected` | `TASK_STATE_REJECTED` | `rejected` |
+| `exhausted` | `TASK_STATE_CANCELED`, with `"agentmesh.state": "exhausted"` in the Task's `metadata` | `canceled`, with the same `metadata` |
 
-The mapping is total in both directions; a bridge MUST NOT invent, merge, or
-drop states.
+The mapping is total from Agent Messaging to A2A, and a bridge MUST NOT
+invent, merge, or drop states. `exhausted` maps to `canceled` because it is
+the one A2A state that means "stopped short of the objective, nobody's
+fault": `completed` would claim the work was done, and SPEC.md §7.2 forbids
+recording it as `failed`. The `metadata` member keeps the difference for a
+caller that reads it. From A2A to Agent Messaging, `canceled` is always
+`canceled`; a bridge never turns an A2A state into `exhausted`.
+
+A caller reads a Task only when it asks, so its view can skip states, such as
+`working` between `input-required` and `completed`. It applies what it reads
+as SPEC.md §7.3.1 says. A caller's answer to an `input-required` Task is
+carried to the mesh Task as EXT-14 §8 says.
 
 ## 6. Payload ↔ Parts Mapping
 
@@ -586,11 +601,12 @@ already holds.
 
 Stated so nobody discovers them the hard way: A2A push notifications
 (webhooks), `ListTasks`/`SubscribeToTask`, extended agent cards, FileParts,
-the gRPC binding, multi-turn `input-required` conversations initiated by
-bridged agents on the JSON-RPC and HTTP+JSON routes (the state maps, but the
-bridge does not yet relay the continuation message; PACT conversations, §14,
-do continue by `contextId`), and OAuth flows on either leg except PACT's
-delegated authority on the inbound leg (§14.8).
+the gRPC binding, multi-turn `input-required` conversations in the outbound
+direction (a remote A2A server that asks a mesh caller for more input: the
+state maps, but the bridge does not yet relay the mesh caller's answer;
+inbound, EXT-14 §8 carries an A2A caller's answer to a mesh agent, and PACT
+conversations, §14, continue by `contextId`), and OAuth flows on either leg
+except PACT's delegated authority on the inbound leg (§14.8).
 
 ## 12. Conformance
 

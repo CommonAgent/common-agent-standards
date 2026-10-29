@@ -4,7 +4,7 @@
 |---|---|
 | **URI** | `mesh://extensions/agent-messaging-over-a2a/v1` |
 | **Status** | Draft. Implemented by the Agent Messaging Server's A2A gateway from release 0.4.6. |
-| **Version** | 0.1.0-draft |
+| **Version** | 0.2.0-draft (the conversation, §8, and the knock, §9). 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
 | **Requires** | Agent Messaging §5.1 to §5.3 (the envelope and its signature), §5.7 (messages for the person), §5.8 (readable text), §22 (inbound protections); the A2A Bridge (`../bindings/a2a-bridge.md`); A2A 1.0 extensions (A2A §4.6) |
 
 The A2A Bridge lets a stock A2A client call an agent on a mesh. Without this
@@ -222,9 +222,125 @@ Task in `submitted` whose id is the carried envelope's id, as for a bridged
 caller (the A2A Bridge §4.3, §6.4a). The agent's late answer, when it comes, is
 addressed to the signer. The bridge watches the signer's inbox for it while
 the task record lasts and completes the task with it, applying only an answer
-the agent signed.
+the agent signed. An acknowledgement that means the agent has not let the
+signer in is answered as §9 says.
 
-## 8. Security considerations
+## 8. Answering on the same task
+
+An agent that needs more from its caller pauses its task in
+`input_required` or `auth_required` (Agent Messaging §7.3). On A2A the caller
+answers by sending a new message with the same `taskId` and `contextId` (A2A
+§3.4.3). The bridge carries that answer to the mesh as the follow-up
+`request` Agent Messaging §7.3 names, on the same mesh task, so the agent
+resumes its own task.
+
+**Seeing that the agent is waiting.** `GetTask` follows the task as the
+mesh reports it, not only as its first answer left it. A task the agent
+paused reads `input-required` (or `auth-required`), and its status message
+carries the words of the agent's update, such as the question it asks
+(`payload.message`). A caller reads the task only when it asks, so it may
+never see `working`; it applies what it reads as Agent Messaging §7.3.1 says,
+which lets `input-required` follow nothing and `completed` follow
+`input-required`.
+
+**A caller with no key.** The bridge sends a follow-up request from the
+caller's hosted identity, with:
+
+- the task's id in the envelope's `task_id`;
+- the task's `context_id`;
+- the offering the task's first request named;
+- the answer's parts as `input`, mapped as the A2A Bridge §6 maps any
+  message.
+
+The bridge MUST refuse, before sending anything:
+
+- a `taskId` that names no task of this caller's on this agent, with
+  `TaskNotFoundError` (`-32001`), as A2A §3.4.2 requires;
+- a `contextId` that differs from the task's, with `InvalidParamsError`
+  (`-32602`), as A2A §3.4.3 requires;
+- an answer to a task that is not waiting for input, with
+  `InvalidParamsError` (`-32602`) and
+  `data.agentmesh_code: "TASK_INVALID_TRANSITION"`.
+
+The result is the task as the agent's answer leaves it: `working`,
+`completed` with the output as its status message, or paused again.
+
+**A signed caller.** The caller signs the follow-up request itself, with
+the task's id in its `task_id` and the task's `context_id`, and carries it
+as §3 says. The bridge checks and relays it like any carried request, and
+§4's check 7 holds `message.taskId` and `message.contextId` to the
+envelope's.
+
+**`exhausted`.** A2A has no state for work that stopped because the money
+ran out (Agent Messaging §7.2). The bridge maps it to `canceled` (the A2A
+Bridge §5) and puts `"agentmesh.state": "exhausted"` in the task's
+`metadata`, so a caller can tell work that stopped at its cap from work
+somebody canceled.
+
+## 9. The knock
+
+A stranger knocks before it talks (EXT-6 §9.3, Common Agent §7.1). The knock
+carries no words, never reaches the agent's model, and gets the same answer
+whether the sender is held, blocked, or knocking on an agent that does not
+exist. Over email, plain mail from a stranger never reaches the agent (Agent
+Emailing §4.3). This section gives A2A the same door.
+
+**A first contact the door has not let in.** A door that holds a sender, or
+blocks it, answers its request with the queued acknowledgement (Agent
+Messaging §6.4a), in the same words either way and without `delivered`. The
+agent's own node may sign it, or the mesh's admission service answering for
+the agent (EXT-6 §7). Only a message put in the agent's inbox is
+acknowledged with `delivered: true`, and a paused agent's acknowledgement
+says `paused: true`. So the bridge reads the acknowledgement and never its
+signer. One that says neither means the agent has not let the caller in, and
+the bridge answers the A2A caller with a task in `auth-required` whose id is
+the request's id and whose status message says, in plain words:
+
+- that the agent's owner has not let the caller in;
+- that what it sent is with the owner, who decides, and that nothing
+  reaches the agent until they do;
+- that if the owner lets it in, a reply that names the request lands on
+  this task, so it polls `GetTask`;
+- how to knock without sending anything (below).
+
+The task's `metadata` carries `"agentmesh.admission": "held"`. The answer is
+the same for a held caller, a blocked one and an agent that does not exist,
+because the acknowledgement is the same. The bridge MUST NOT answer
+`rejected`, which would tell a blocked caller that it is blocked. An
+acknowledgement that says `delivered: true` or `paused: true` stays a task in
+`submitted`, as the A2A Bridge §4.3 says.
+
+**The knock itself.** A caller asks to be let in, and says nothing else, by
+sending a message that lists the extension's URI and carries, under that URI
+in `metadata`, a `knock` object:
+
+```json
+{ "knock": { "via": "Quote desk at example.com", "grants": [] } }
+```
+
+`via` is a short label of at most 80 characters and `grants` names grants
+from EXT-6 §6.1, both optional, as on the mesh. Any other member, or a `via`
+or `grants` of the wrong shape, is refused with `InvalidParamsError`
+(`-32602`) and `data.agentmesh_code: "KNOCK_CARRIES_NO_MESSAGE"`, and nothing
+is sent.
+
+- **A caller with no key.** The bridge sends the content-free `knock`
+  request from the caller's hosted identity, with only `via` and `grants`.
+  It MUST NOT send the message's parts: a knock carries no words.
+- **A signed caller.** It signs a `request` on the `knock` offering itself,
+  with the same input, and carries it as §3 says. The bridge relays it.
+
+**The answer.** A caller the door lets in (the door's answer says
+`admitted: true`, EXT-6 §9.3) gets a Message whose one data part is
+`{ "admitted": true, "extensions": [ … ] }`, with the agent's signed answer
+beside it. Every other outcome, held, blocked, rate-limited or no such agent,
+gets the same task in `auth-required`, with a status message that says the
+knock is with the owner and that nothing more is needed, and
+`"agentmesh.admission": "knocked"` in its `metadata`. The owner sees the
+knock where they see every knock (EXT-6 §9.1), with the caller's hosted
+identity or its own key.
+
+## 10. Security considerations
 
 - **What the bridge can no longer do.** With a carried envelope the bridge
   cannot change the request, cannot send it as a different sender and cannot
@@ -239,10 +355,11 @@ the agent signed.
 - **Admission is the receiver's.** A signed caller is a native sender. The
   agent's door sorts it by its key, and a key the mesh does not know sorts as
   `anonymous`, whose default is `block` (EXT-6 §4). A first contact the door
-  holds is answered with the same queued acknowledgement as on the mesh.
+  holds or blocks is answered with the same queued acknowledgement as on the
+  mesh, and §9 says how the bridge answers it on A2A.
 
-## 9. Conformance
+## 11. Conformance
 
-A bridge that lists this extension implements §2 to §7. A signed caller
+A bridge that lists this extension implements §2 to §9. A signed caller
 implements §2 (finding the card), §3 and §6, and verifies the envelopes it
 gets back. The A2A Bridge §12 says what else a bridge claims.
