@@ -59,6 +59,7 @@ export function rail(active) {
           ${a("/agent.html", "The Common Agent", "agent")}
           ${a("/spec.html", "The specification", "spec")}
           ${a("/descriptor.html", "The Agent Descriptor", "descriptor")}
+          ${a("/descriptor-ui.html", "The Descriptor UI binding", "descriptor-ui")}
           ${a("/package.html", "The Agent Package", "package")}
           ${a("/catalog.html", "The catalog profile", "catalog")}
           ${a("/versions.html", "Versions and changelog", "versions")}

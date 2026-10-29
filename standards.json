@@ -19,13 +19,14 @@
       "spec": "common-agent/SPEC.md",
       "domain": "commonagent.net",
       "site": "https://commonagent.net/spec.html",
-      "version": "0.37.0-draft",
-      "status": "Working Draft",
-      "tag": "common-agent-v0.37.0-draft",
+      "version": "0.38.0",
+      "status": "Published",
+      "tag": "common-agent-v0.38.0",
       "builder": "common-agent/site/tools/build-spec.mjs",
       "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
       "parts": [
-        { "name": "The catalog profile", "path": "common-agent/CATALOG-PROFILE.md", "version": "0.1.0-draft" }
+        { "name": "The catalog profile", "path": "common-agent/CATALOG-PROFILE.md", "version": "0.1.0-draft" },
+        { "name": "The Descriptor to user interface binding", "path": "common-agent/DESCRIPTOR-UI.md", "version": "0.1.0" }
       ]
     },
     {

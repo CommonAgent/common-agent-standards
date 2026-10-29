@@ -15,6 +15,9 @@
 //   descriptor.html   Section 6, the Agent Descriptor, as a page of its own
 //   package.html      Section 12, the Agent Package, as a page of its own
 //   versions.html     every version and the changelog
+//   descriptor-ui.html
+//                     the Descriptor to user interface binding, DESCRIPTOR-UI.md,
+//                     a part of the specification with a version of its own
 //   catalog.html      the catalog profile, CATALOG-PROFILE.md, a part of the
 //                     specification with a version of its own
 //   minimal-contracting.html
@@ -66,6 +69,8 @@ const DRAFT = process.argv.includes("--draft");
 const STATIC = ["conformance.html", "404.html", "site.css", "favicon.svg", "ga.js", "brand", "ns", ".well-known", "api"];
 // The catalog profile, a part of the specification with a version of its own.
 const PROFILE_MD = resolve(REPO, "CATALOG-PROFILE.md");
+// The Descriptor to user interface binding, from 0.38.0.
+const UI_MD = resolve(REPO, "DESCRIPTOR-UI.md");
 // The minimal contracting profile, a profile of the suite's contracting
 // standards kept at the repository root beside its machine-readable list.
 const MINIMAL_MD = resolve(REPO, "..", "profiles", "MINIMAL-CONTRACTING.md");
@@ -278,6 +283,8 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
   const SPEC_ALIASES = {
     "5.7": ["s5-job-manifest"],
     "8.8": ["8-8-security-events-and-quarantine-proposed"],
+    "6.13": ["6-13-members-for-people-presentation-and-views-proposed"],
+    "6.14": ["6-14-what-an-agent-draws-on-setup-library-and-this-job-proposed"],
     "12.1": ["s12-terms"], "12.2": ["s12-layout"], "12.3": ["s12-descriptor"], "12.4": ["s12-install-file", "s12-runtime-requirements", "12-4-the-install-file"],
     "12.5": ["s12-skills"], "12.6": ["s12-rules"], "12.7": ["s12-lifecycle"], "12.8": ["s12-provenance"],
     "12.9": ["s12-out"], "12.10": ["s12-conformance"],
@@ -290,7 +297,7 @@ const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console
     : s.md).join("\n");
   let { html, toc } = render(bodySections, (lvl, num) => (num && SPEC_ALIASES[num] && lvl === 3 ? { aliases: SPEC_ALIASES[num] } : null));
   const NOTES = {
-    s6: 'This chapter also has a page of its own: <a href="/descriptor.html">The Agent Descriptor</a>.',
+    s6: 'This chapter also has a page of its own: <a href="/descriptor.html">The Agent Descriptor</a>. Section 6.13 adds members for pages about an agent, and <a href="/descriptor-ui.html">the Descriptor to user interface binding</a> says how a page is drawn from them. Section 6.14 defines standing assets, and what an agent draws on as Setup, Library and This job.',
     s9: 'The AgentDoc has a site of its own, with its tools and examples, at <a href="https://agentdoc.net/">agentdoc.net</a>. A catalog entry that follows the <a href="/catalog.html">catalog profile</a> links to the agent\'s AgentDoc.',
     s12: 'This chapter also has a page of its own: <a href="/package.html">The Agent Package</a>.',
   };
@@ -354,7 +361,7 @@ chapter({
     if (!html.includes(at)) { console.warn("descriptor.html: no 'Checking a Descriptor' paragraph for #conformance"); return html; }
     return html.replace(at, `<span class="alias" id="conformance"></span>${at}`);
   },
-  tail: `\n<p class="chapnote">The AgentDoc is assembled from an agent's Descriptor and the records others sign about it. It is Section 9 of the <a href="/spec.html#s9">specification</a> and has a site of its own at <a href="https://agentdoc.net/">agentdoc.net</a>.</p>`,
+  tail: `\n<p class="chapnote">How a page about an agent is drawn from its Descriptor is set out in <a href="/descriptor-ui.html">the Descriptor to user interface binding</a>.</p>\n<p class="chapnote">The AgentDoc is assembled from an agent's Descriptor and the records others sign about it. It is Section 9 of the <a href="/spec.html#s9">specification</a> and has a site of its own at <a href="https://agentdoc.net/">agentdoc.net</a>.</p>`,
 });
 
 // Section 12. The standalone package page used these ids for 1 to 10.
@@ -395,6 +402,37 @@ chapter({
     sub: "The catalog profile is optional metadata on an ARD entry. It tells a buyer what an agent charges, what others have recorded about it, where to ask whether it is reachable, and who signed the listing.",
     meta: metaLine(pVersion, pStatus.split(/[,.]/)[0].trim(), (pDate.match(/\d{4}-\d{2}-\d{2}/) ?? [pDate])[0]),
     extraHero: `${applies}<p class="canon">${pStamp}${DRAFT ? "" : " This page is the normative text of the profile."}</p>`,
+    toc: toc.filter((t) => t.lvl === 2),
+    body: html,
+  }));
+}
+
+// ── descriptor-ui.html: the Descriptor to user interface binding ───────────
+// DESCRIPTOR-UI.md is a part of the specification with a version of its own,
+// from 0.38.0, optional for conformance.
+// It is rendered whole, like the catalog profile.
+{
+  let src = readFileSync(UI_MD, "utf8").replace(/\r\n/g, "\n");
+  const uh = src.match(/^# (.+)\n+\*\*Version:\*\*\s*(.+)\n\*\*Status:\*\*\s*(.+)\n\*\*Date:\*\*\s*(.+)\n(?:\*\*Applies to:\*\*\s*(.+)\n)?/);
+  if (!uh) throw new Error(`${UI_MD} does not start with the title, Version, Status and Date lines`);
+  const [, uTitle, uVersion, uStatus, uDate, uApplies] = uh.map((x) => x?.trim());
+  src = src.slice(uh[0].length);
+  let uCommit = "";
+  if (commit) { try { git("diff", "--quiet", "HEAD", "--", "DESCRIPTOR-UI.md"); uCommit = commit; } catch { /* uncommitted */ } }
+  const uStamp = `Rendered ${GENERATED} from <span class="mono">DESCRIPTOR-UI.md</span> in the <a href="${REPO_URL}">Common Agent Standards repository</a>${refText}${uCommit ? `, commit <span class="mono">${uCommit}</span>` : ""}.`
+    + (DRAFT ? ` This copy follows the main branch, which can be ahead of the published version at <a href="${SITE}/">commonagent.net</a>.` : "");
+  const { html, toc } = render(src);
+  const applies = uApplies ? `<p class="canon">It applies to ${esc(uApplies.replace(/\s*·\s*/g, ", "))}.</p>` : "";
+  write("descriptor-ui.html", page({
+    file: "descriptor-ui.html", active: "descriptor-ui",
+    title: `${uTitle} ${uVersion}`,
+    ogTitle: uTitle,
+    description: "The Descriptor to user interface binding: which members of an Agent Descriptor drive which parts of a page, the runtime view and the output lifecycle, hand-offs by kind, and an agent's own sandboxed views with the projection as the floor.",
+    eyebrow: "A part of the specification",
+    h1: esc(uTitle),
+    sub: "A page about an agent is one more projection of its Descriptor. This binding says which members drive which parts of the page, what the page shows when a member is absent, and how an agent may supply a view of its own.",
+    meta: metaLine(uVersion, uStatus.split(/[,.]/)[0].trim(), (uDate.match(/\d{4}-\d{2}-\d{2}/) ?? [uDate])[0]),
+    extraHero: `${applies}<p class="canon">${uStamp} This page is the text of the binding, which is optional for conformance.</p>`,
     toc: toc.filter((t) => t.lvl === 2),
     body: html,
   }));

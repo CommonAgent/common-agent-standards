@@ -14,7 +14,7 @@ one network binding of the agent it defines (Section 11).
 
 ## What is here
 
-- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.37.0-draft.
+- **[SPEC.md](SPEC.md)**: the Common Agent Specification, version 0.38.0.
   It covers the floor every agent meets (the five questions, the exchanges, the
   refusals), the work an agent does, the Agent Descriptor (Section 6), the
   capabilities, the signed records others issue, the AgentDoc (Section 9), the
@@ -28,6 +28,12 @@ one network binding of the agent it defines (Section 11).
   proposals, reputation and liveness pointers, evidence labels, signed
   entries, audience, publish and fetch calls, and a link to the agent's
   AgentDoc. Readable at <https://commonagent.net/catalog.html>.
+- **[DESCRIPTOR-UI.md](DESCRIPTOR-UI.md)**: the Descriptor to user interface
+  binding, version 0.1.0, optional for conformance. It
+  says which members of a Descriptor drive which parts of a page about an
+  agent, and how an agent may supply a sandboxed view of its own, with the
+  page drawn from the Descriptor as the floor. Readable at
+  <https://commonagent.net/descriptor-ui.html> once a version adopts it.
 - **[conformance/](conformance/)**: the fixtures that pin the byte-exact
   obligations this specification owns. Section 14 says how conformance is
   checked.
