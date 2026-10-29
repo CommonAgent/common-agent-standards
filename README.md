@@ -18,7 +18,7 @@ The suite's home is <https://commonagent.net>.
 
 | Standard | Kind | Version | Status | Site |
 |----------|------|---------|--------|------|
-| [The Common Agent Specification](common-agent/) | The base | 0.38.0-draft | Working Draft | [commonagent.net](https://commonagent.net/spec.html) |
+| [The Common Agent Specification](common-agent/) | The base | 0.38.0 | Published | [commonagent.net](https://commonagent.net/spec.html) |
 | [Agent Messaging](messaging/) | A Common Agent Standard | 0.9.16-draft | Working Draft | [agentmessaging.ai](https://agentmessaging.ai/) |
 | [Personal Agent Naming](naming/) | A Common Agent Standard | 0.10.3 | Published | [agentnaming.ai](https://agentnaming.ai/) |
 | [Agent Mandate](mandate/) | A Common Agent Standard | 0.10.0-draft | Working Draft | [agentmandate.net](https://agentmandate.net/) |

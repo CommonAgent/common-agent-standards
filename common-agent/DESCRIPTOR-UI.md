@@ -1,11 +1,11 @@
 # The Descriptor to user interface binding
 
-**Version:** 0.1.0-draft
-**Status:** Proposed, for review
-**Date:** 2026-10-27
-**Applies to:** the Common Agent Specification 0.38.0-draft · MCP Apps 2026-01-26, for comparison only (Section 9.7)
+**Version:** 0.1.0
+**Status:** Published
+**Date:** 2026-10-29
+**Applies to:** the Common Agent Specification 0.38.0 · MCP Apps 2026-01-26, for comparison only (Section 9.7)
 
-**Proposed, for review.** This whole document is a proposal. It is not part of conformance to the Common Agent Specification until a version of the specification adopts it, and it may change or be withdrawn before then. Its MUST and SHOULD state what it would require once adopted. It reads the members the specification defines in Section 6, and the members Sections 6.13 and 6.14 propose beside them.
+**Optional.** This binding is not required for conformance to the Common Agent Specification: a renderer that does not follow it still conforms to the specification. A renderer that claims this binding meets Section 10. It reads the members the specification defines in Section 6, including the optional members of Sections 6.13 and 6.14.
 
 An agent's Descriptor (the Common Agent Specification, Section 6) is written once, by its operator, and every other document about the agent is derived from it or points into it. A page that shows an agent to a person is one more such document. Today each page is written by hand, or drawn from whatever members a particular renderer happens to read, and two pages for one agent say different things, which is the drift Section 6.1 exists to end. This binding says which members of a Descriptor drive which parts of a rendered page, what a page shows when a member is absent, and how an agent may supply a view of its own without leaving those rules.
 
@@ -40,7 +40,7 @@ The specification's rules bind a page as they bind every consumer of a Descripto
 
 A renderer MUST be able to draw, for any Descriptor that passes the check of Section 6.8, the descriptive panel of Section 4, the runtime view of Section 5 for each offering a person may start, the output lifecycle of Section 6, and the hand-offs of Section 7, using only the Descriptor's members, the documents it points to, and the job records and manifests of the person's own jobs, and, for Setup and Library (Section 5.4), the deployment record and the standing assets the layers hold. A renderer MAY lay these out as it likes, in its own design, and MAY leave a part out of a page that has no use for it, such as the runtime view on a page that only lists agents. What it MUST NOT do is show a part drawn from something other than these sources, or show an absent member as a value.
 
-A Descriptor that carries none of the members proposed in Section 6.13 still has a projection: a page drawn from `does`, the offerings, their inputs and outputs, `refusals`, `escalates`, `limits`, the ceilings and the declared settings. The members of Section 6.13 make that page better; they are not what makes it possible.
+A Descriptor that carries none of the members of Section 6.13 still has a projection: a page drawn from `does`, the offerings, their inputs and outputs, `refusals`, `escalates`, `limits`, the ceilings and the declared settings. The members of Section 6.13 make that page better; they are not what makes it possible.
 
 ## 4. The descriptive panel
 
@@ -141,7 +141,7 @@ Where the Descriptor declares a view for an output or an offering (Section 6.13.
 
 ### 9.2 Getting the bytes
 
-A renderer gets a view's bytes from the package the host installed, from the depot by the package's digest (Section 12.7), or by asking the agent. An agent that declares views MUST answer a view request, carrying a view's `digest`, with that view's exact bytes. The request is answered like entryway exchange 2 (Section 4.4): from the package's bytes, by the node or platform on the agent's behalf, without invoking the agent's model, tools or memory, and with the same rate limits. Whatever the source, a renderer uses the bytes only when their SHA-256 equals the declared `digest`, and otherwise draws the projection. A view's bytes are never fetched from an address the Descriptor names, because it names none.
+A renderer gets a view's bytes from the package the host installed, else from the depot by the package's digest (Section 12.7), and asks the agent only where neither has them. An agent that declares views and whose package no public depot serves MUST answer a view request, carrying a view's `digest`, with that view's exact bytes; any other agent that declares views MAY. The request is answered like entryway exchange 2 (Section 4.4): from the package's bytes, by the node or platform on the agent's behalf, without invoking the agent's model, tools or memory, and with the same rate limits. Whatever the source, a renderer uses the bytes only when their SHA-256 equals the declared `digest`, and otherwise draws the projection. A view's bytes are never fetched from an address the Descriptor names, because it names none.
 
 ### 9.3 The frame
 
@@ -210,7 +210,7 @@ The differences follow from three rules. A Descriptor carries shapes and never b
 
 ## 10. Conformance
 
-A renderer conforms to this binding when it draws the projection of Sections 3 to 8 for every Descriptor that passes Section 6.8; shows each absent member as not stated and never as a value; never asks a person for a credential or an install setting; draws a prepared job's inputs, settings, run, progress, questions and outputs as Section 5.3 says, sending inputs as Section 4.7.1 says; tells a refusal from a question; shows a job as delivered only when its deliverable arrived; groups where the work comes from as Setup, Library and This job, as Section 5.4 says; leaves accepting and publishing to the person; makes hand-offs by kind only and reports one it cannot place; and, where it shows views, runs them only in a frame that meets Section 9.3, speaks only the bridge of Section 9.4, checks every view's digest, and falls back as Section 9.6 says. An agent conforms when every view it declares is in its package with a matching digest, names no address from which anything would be loaded, uses only the requests it declares, and is served by digest as Section 9.2 says.
+A renderer conforms to this binding when it draws the projection of Sections 3 to 8 for every Descriptor that passes Section 6.8; shows each absent member as not stated and never as a value; never asks a person for a credential or an install setting; draws a prepared job's inputs, settings, run, progress, questions and outputs as Section 5.3 says, sending inputs as Section 4.7.1 says; tells a refusal from a question; shows a job as delivered only when its deliverable arrived; groups where the work comes from as Setup, Library and This job, as Section 5.4 says; leaves accepting and publishing to the person; makes hand-offs by kind only and reports one it cannot place; and, where it shows views, which is optional, runs them only in a frame that meets Section 9.3, speaks only the bridge of Section 9.4, checks every view's digest, and falls back as Section 9.6 says. An agent conforms when every view it declares is in its package with a matching digest, names no address from which anything would be loaded, uses only the requests it declares, and is served by digest as Section 9.2 says.
 
 A conformance fixture for this binding would pin Descriptors with and without the members of Section 6.13, the projection each must yield in terms a program can check (which parts are present, which say not stated, which inputs are fields and which are pieces), a set of hand-off pairs with the matches each must and must not yield, and views that must load and views that must fall back. None is drafted yet.
 
