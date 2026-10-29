@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.17-draft
+**Version:** 0.9.18-draft
 **Status:** Working Draft
 **Date:** 2026-10-29
 
@@ -1645,6 +1645,21 @@ A request first seen after its Task existed binds nothing, because a request tha
 | `submitted` | `rejected` | Responder declines the Task before processing begins. |
 
 Transitions not listed in this table are invalid. Implementations MUST reject invalid state transitions with a `TASK_INVALID_TRANSITION` error.
+
+#### 7.3.1. Updates a Transport Does Not Carry
+
+The table above governs the Task's record: the responder's own record and the task manager's (§7.4) pass through every state it names, in a legal order. Not every transport shows every one of those states to the requester. Over email a performer often sends no `working` update (Agent Emailing §10). Over A2A a caller reads the Task only when it asks (the A2A Bridge §4.1). In both cases the requester's view can go from nothing to `input_required`, or from `input_required` to `completed`, though the record went through `submitted` and `working` on the way.
+
+This is the one rule for such a view, on every transport:
+
+1. **The record stays legal.** A responder records every transition it makes, in a legal order, whether or not its transport carries the update. A transport that does not carry an update never makes a skipped state legal on the record.
+2. **A view fills gaps only through `submitted` and `working`.** A party that keeps a view of a Task it does not record (a requester, or a carrier's copy for a requester) and receives an update whose state is not a legal next state of the last state it saw applies it when a legal path leads there through `submitted` or `working` or both, and no other state. It takes the states on that path as passed through, not as seen. Its first update for a Task may be any state that a path from `submitted` reaches in this way.
+3. **Every other gap is refused.** An update that only a path through another state would reach (`input_required`, `auth_required`, or a terminal state) is refused with `TASK_INVALID_TRANSITION`, as the table requires. So is any update after a terminal state, because no path leaves one.
+4. **Order comes from the record, not from arrival.** A view applies updates in the order their envelopes' `ts` gives (Agent Emailing §10 does so for email), and an update older than the last one applied changes nothing.
+
+A carrier that shows the view to a person MAY say that the passed-through states were not reported, and MUST NOT present them as reported. The states this rule fills, `submitted` and `working`, carry nothing the requester has to act on, which is why filling them changes no outcome; the states it never fills are the ones that ask the requester for something or end the Task.
+
+`conformance/unseen-states.json` pins the cases: each gives the last state a view saw and the update's state, and says whether the view applies it and which states it takes as passed through.
 
 ### 7.4. Task Persistence
 
@@ -4227,7 +4242,7 @@ suite, `docs/implementation-status.md`, not here.
 | `mesh://extensions/allowance/v1` | **Draft** (see `extensions/EXT-8-allowance.md`) | The owner-side spending ceiling: a signed, node-held **allowance** document (declared token→money cost model; per-task/context/day ceilings in integer micro-units) that the agent's own node meters against and enforces through §7.7 refusal-with-estimate (`BUDGET_INSUFFICIENT`). The budget's complement: it guards the owner's money, crosses no trust boundary, and rides no envelope. Platform role is visibility only (spend rollups over §19.2 receipts, `mesh.event.agent.allowance_exceeded`, EXT-3 class `allowance`); settlement and cross-agent constraints out of scope. |
 | `mesh://extensions/screening/v1` | **Draft** (see `extensions/EXT-10-screening.md`) | Who reads inbound content before an agent does. A recipient-side socket: the node consults a provider the OWNER chose — an HTTPS service or a mesh agent — and gets back pass / flag / hold, where a hold routes to the EXT-6 door rather than deleting anything. Screening is local because a sealed payload (EXT-7) opens only on the recipient's node, so anything upstream would cover unsealed traffic alone and read as covering all of it. Five call sites: message delivery, room history replay, room file fetch, work-board read, and outbound send. **The protocol carries no detector and never will** — a shipped detector makes every miss the platform's, and an account with no provider configured is unscreened and must be told so in that word. |
 | `mesh://extensions/audience/v1` | **Draft** (see §5.7) | Messages for the person behind an agent. Only an agent whose Common Agent Specification `acts_for` is `person` declares this URI, and every other receiver written to this version refuses a message marked for a person at its door with `AUDIENCE_NOT_SUPPORTED`. A sender marks a `request`, a `respond` or a room post with `meta.audience: "person"`, under its signature; a receiver that declares this URI in its manifest never gives such a message to a handler or a model, surfaces it to its person, and lets the agent read it only when the person allows, framed, with nothing in it taken as an instruction. A sending SDK checks the declaration and refuses with `AUDIENCE_NOT_SUPPORTED` until its person chooses to send anyway. The server's part (carrying the mark, and a task manager that applies no marked update) is in the core profile (§1.6). |
-| `mesh://extensions/agent-messaging-over-a2a/v1` | **Draft** (see `extensions/EXT-14-agent-messaging-over-a2a.md`) | Agent Messaging over A2A. A caller that holds an Agent Messaging key carries its own signed envelope in an A2A message's metadata; a bridge checks it (signature, addressee, freshness, offering), relays it unchanged and signs nothing, and returns the agent's own signed envelope beside the A2A result. A message for the person carries readable text generated from the envelope (§5.8). How a signed caller finds an agent's card from its name card's `a2a` endpoint. |
+| `mesh://extensions/agent-messaging-over-a2a/v1` | **Draft** (see `extensions/EXT-14-agent-messaging-over-a2a.md`) | Agent Messaging over A2A. A caller that holds an Agent Messaging key carries its own signed envelope in an A2A message's metadata; a bridge checks it (signature, addressee, freshness, offering), relays it unchanged and signs nothing, and returns the agent's own signed envelope beside the A2A result. A message for the person carries readable text generated from the envelope (§5.8). How a signed caller finds an agent's card from its name card's `a2a` endpoint. From 0.2.0: an A2A caller's answer to an `input_required` Task goes to the same mesh Task, and a first contact the agent's door has not let in is answered `auth-required` with how to be let in, the same for held, blocked and absent, with a content-free knock. |
 | Sessions (`connect`/`disconnect`) | Candidate | The parked session operations (§10.1 and §10.2), if a durable-session extension is ever needed beyond `context_id`. |
 
 Extensions whose normative text lives outside this document are collected in
@@ -5342,6 +5357,19 @@ to run the work once.
 - Eviction MUST be by **first-seen order** (oldest out first). An implementation
   MAY size the memory as it likes and MAY persist it, but MUST NOT make it
   unbounded.
+- **A memory as long as the window.** A receiver whose transport accepts
+  envelopes over a long window, such as the mailbox drain's (§22.3) or the
+  seven days of Agent Emailing, MAY keep each pair for the whole of the window
+  in which it would still accept that envelope, instead of evicting by count.
+  Such a memory is still bounded: it has a size cap, and an entry leaves it
+  only when its envelope could no longer pass §22.3. When the cap is reached,
+  the receiver MUST NOT evict an entry that is still inside its window.
+  It holds each new envelope instead, unchecked and undelivered, where it
+  arrived (the mailbox, the provider's inbox), and checks it once an entry
+  has aged out, or refuses it with a retryable error where the transport has a
+  reply path. A receiver that keeps such a memory MUST persist it, because a
+  restart that forgot it would reopen the window it exists to close. It closes
+  the eviction gap below; the restart gap is closed by the persistence.
 - Every envelope that reaches this check MUST be recorded, **including one that
   a later check then refuses.** This ordering is load-bearing: §22.3 gives a
   mailbox-drained envelope a much wider age window than a live one, so an
@@ -5351,6 +5379,7 @@ to run the work once.
 What this does **not** cover, stated plainly so nobody mistakes it for more:
 
 - **Eviction.** A duplicate arriving after its entry was evicted is accepted.
+  A memory as long as the window (above) evicts nothing still inside it.
 - **Restart.** An in-process memory forgets everything when the process
   restarts, so the same duplicate is accepted after a restart.
 - **Which path ran it.** This memory makes the work happen once; it does not
@@ -5362,7 +5391,7 @@ What this does **not** cover, stated plainly so nobody mistakes it for more:
   this bounded memory, and an evicted entry is a second dispatch and a second
   answer. §16.4 bounds the drain for exactly this reason.
 
-Neither of the first two is a defect, and neither is fixed by growing the memory. They are the
+For a memory that evicts by count, neither of the first two is a defect, and neither is fixed by growing the memory. They are the
 reason **§22.3 is not optional**: duplicate rejection catches a *repeat*, and
 the freshness window catches the *replay that duplicate rejection has
 forgotten*. A bounded memory is safe only because nothing outside the freshness
@@ -6765,3 +6794,25 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > from release 0.4.6. The A2A Bridge moves to 0.5.0-draft. No existing
 > requirement, field or wire identifier changes, and no section is
 > renumbered. The wire version stays `0.3.0` (§20.1).
+
+> **2026-10-29: Version 0.9.18-draft. Views that miss updates, a memory as
+> long as the window, and the conversation over A2A.** A new §7.3.1 is the one
+> rule for a transport that does not show the requester every update, such as
+> email and A2A: the Task's record still passes through every state in a legal
+> order, and a view of it fills a gap only through `submitted` and
+> `working`, so `input_required` may follow nothing and `completed` may
+> follow `input_required`; every other gap, and any update after a terminal
+> state, is refused with `TASK_INVALID_TRANSITION`, and updates apply in the
+> order of their `ts`. `conformance/unseen-states.json` pins the cases, and
+> `conformance/lib/check-unseen-states.mjs` runs them. §22.2 lets a receiver
+> whose transport accepts envelopes over a long window keep each `(from, id)`
+> pair for the whole window under a size cap, persisted, and hold new
+> envelopes rather than evict one still inside it when the cap is reached.
+> EXT-14 moves to 0.2.0-draft: an A2A caller's answer to an `input_required`
+> Task goes to the same mesh Task (§8), and a first contact the agent's door
+> has not let in is answered `auth-required` with how to be let in, with a
+> content-free knock (§9). The A2A Bridge moves to 0.6.0-draft and maps
+> `exhausted` to `canceled` with `"agentmesh.state": "exhausted"` in the
+> Task's metadata. The Agent Messaging Server's A2A gateway implements EXT-14
+> 0.2.0 from release 0.4.7. No existing requirement, field, wire identifier or
+> section number changes. The wire version stays `0.3.0` (§20.1).

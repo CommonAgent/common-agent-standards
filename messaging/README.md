@@ -6,9 +6,9 @@ Agent Messaging is a Common Agent Standard, kept in the [Common Agent Standards 
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.9.17-draft, status Working Draft.
+- [SPEC.md](SPEC.md): the specification, version 0.9.18-draft, status Working Draft.
 - [extensions/](extensions/): the extensions, each versioned on its own. The index is [extensions/README.md](extensions/README.md).
-- [bindings/a2a-bridge.md](bindings/a2a-bridge.md): the A2A Bridge, the normative mapping between Agent Messaging and A2A, version 0.5.0-draft.
+- [bindings/a2a-bridge.md](bindings/a2a-bridge.md): the A2A Bridge, the normative mapping between Agent Messaging and A2A, version 0.6.0-draft.
 - [bindings/rabbitmq.md](bindings/rabbitmq.md): the RabbitMQ binding, version 0.1.
 - [conformance/](conformance/): the conformance fixtures and checks.
 - [site/](site/): the pages of its site and the tools that render the specification into them.
