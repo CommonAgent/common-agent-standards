@@ -4,6 +4,22 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.5 (2026-10-29)
+
+One change follows the Common Agent Specification 0.39.0, which gives
+model access one shape in every agent and says that a script carrying its
+own address has gone around its declaration even where the system it
+reaches is declared. The security reviewer's contract item 3 of §34.2
+said only that the reviewer refuses a package whose programs reach a
+system the declaration does not name, so a program that called a declared
+model at an address of its own could be passed. Item 3 now says that a
+program that carries its own address for a system, or that signs in to a
+model with anything other than the credential its declaration names, has
+gone around the declaration, and the reviewer refuses to pass it, naming
+the file and the address. The test of §34.4 adds that case, and the
+security reviewer's page says the same. No section number or offering
+name changes.
+
 ## v1.4.1 (2026-10-25)
 
 Editorial, with no change to what any role does. The arbiter's opening
