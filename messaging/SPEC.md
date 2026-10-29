@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.19-draft
+**Version:** 0.9.20-draft
 **Status:** Working Draft
 **Date:** 2026-10-29
 
@@ -6833,3 +6833,17 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > EXT-14 0.3.0 from release 0.4.8. No existing requirement, field, wire
 > identifier or section number changes. The wire version stays `0.3.0`
 > (§20.1).
+
+> **2026-10-29: Version 0.9.20-draft. Proof for the A2A Bridge.** The
+> conformance suite gains `conformance/a2a-bridge.json`, the fixture set for
+> the A2A Bridge's mapping and EXT-14: signed and unsigned callers, a forged
+> message, the state spellings with `exhausted`, the answer on an existing
+> task, the knock and the reading of a queued acknowledgement, and readable
+> text (§5.8), really signed with the suite's published test seed, with a
+> reference checker. `conformance/cross-transport/` runs one quote request
+> over a broker, over email (Agent Emailing) and over the A2A Bridge with the
+> same seven checks, and keeps each run's transcripts; the run of
+> 2026-10-29 passed every check on all three. The A2A Bridge moves to
+> 0.8.0-draft and EXT-14 to 0.3.1-draft, each naming the fixture set. No
+> requirement, field, wire identifier or section number changes. The wire
+> version stays `0.3.0` (§20.1).

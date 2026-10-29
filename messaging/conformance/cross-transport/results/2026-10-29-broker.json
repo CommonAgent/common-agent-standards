@@ -1,0 +1,212 @@
+{
+  "transport": "broker",
+  "environment": "AgentMesh's dev mesh (NATS), ws://localhost:4443; the supplier hosted on a node, the buyer a key that signs its own envelopes",
+  "run_at": "2026-10-29T20:33:05.237Z",
+  "parties": {
+    "buyer": "UBBIHDIEJW6OE22XB4I3N3LCQSU5LQXTQPWIJUJZ52353QUCNTFOL2RB",
+    "supplier": "UASDC4DR7EZTJU66K4YYO7WLJVX6XZR4GZGGVFTIAVLT3GG5E3UPXOZ6"
+  },
+  "messages": [
+    {
+      "v": "0.3.0",
+      "id": "01a1895d-beb3-7000-a7e2-2c45e88f7d73",
+      "type": "request",
+      "ts": "2026-10-29T20:33:04.691Z",
+      "from": "UBBIHDIEJW6OE22XB4I3N3LCQSU5LQXTQPWIJUJZ52353QUCNTFOL2RB",
+      "trace": {
+        "trace_id": "c31c3e7327d66bd7951ba014f90af9c5",
+        "span_id": "379fc0315e07a29b",
+        "parent_span_id": null
+      },
+      "to": "UASDC4DR7EZTJU66K4YYO7WLJVX6XZR4GZGGVFTIAVLT3GG5E3UPXOZ6",
+      "budget": {
+        "revision": 0,
+        "deadline": "2026-11-01T20:33:04Z",
+        "cost_ceiling": {
+          "amount_micro": 500000000,
+          "currency": "USD"
+        }
+      },
+      "payload": {
+        "offering": "request-quote",
+        "input": {
+          "parts_list": "parts-list.csv",
+          "deliver_to": "Denver, CO",
+          "text": "Please quote the parts in the attached list, delivered to our plant in Denver."
+        },
+        "files": [
+          {
+            "name": "parts-list.csv",
+            "media_type": "text/csv",
+            "size": 144,
+            "digest": "sha256:943807ea4f8ed4974618aa107ce8b80ae6497c5318ce051ccc1a13706c5d5ee8",
+            "ref": "urn:xt:parts-list.csv"
+          }
+        ]
+      },
+      "sig": "jqmTZSwtwv5iLnuPErSaZd7hNgbkthrIg5dvI7HwpsD8gdf1wu4Y_BHmoJQCUaxjGGAiqbn2DXtb-BzBY4TQCg"
+    },
+    {
+      "v": "0.3.0",
+      "id": "01a1895d-bf0a-7000-a092-1f3824ded92c",
+      "type": "respond",
+      "ts": "2026-10-29T20:33:04.778Z",
+      "from": "UASDC4DR7EZTJU66K4YYO7WLJVX6XZR4GZGGVFTIAVLT3GG5E3UPXOZ6",
+      "trace": {
+        "trace_id": "c31c3e7327d66bd7951ba014f90af9c5",
+        "span_id": "5d0c5b821ba89857",
+        "parent_span_id": "379fc0315e07a29b"
+      },
+      "to": "UBBIHDIEJW6OE22XB4I3N3LCQSU5LQXTQPWIJUJZ52353QUCNTFOL2RB",
+      "task_id": "01a1895d-bf05-7000-8e0a-53a1aa491191",
+      "in_reply_to": "01a1895d-beb3-7000-a7e2-2c45e88f7d73",
+      "payload": {
+        "status": "input_required",
+        "message": "Two items, GB-0410 and CP-0032, have a 3-week lead time. Is a split delivery fine?",
+        "problems": [
+          {
+            "input": "split_delivery",
+            "problem": "missing",
+            "description": "Is a split delivery fine?",
+            "expected": "true or false"
+          }
+        ]
+      },
+      "sig": "bjzmpmsSCQ9kKDt68ZEM1wiepHDzRd2VSkkx42JpIAaSZN0Iz9VnqFc96sJB8kOe7z9Ve5Gvm7N0Cr9yz6ybCg"
+    },
+    {
+      "v": "0.3.0",
+      "id": "01a1895d-bfd8-7000-bcc5-9a583f7fdf17",
+      "type": "request",
+      "ts": "2026-10-29T20:33:04.984Z",
+      "from": "UBBIHDIEJW6OE22XB4I3N3LCQSU5LQXTQPWIJUJZ52353QUCNTFOL2RB",
+      "trace": {
+        "trace_id": "c9d9dbd8c66b9360251f0b9b68865cec",
+        "span_id": "792eb0aef3453a3f",
+        "parent_span_id": null
+      },
+      "to": "UASDC4DR7EZTJU66K4YYO7WLJVX6XZR4GZGGVFTIAVLT3GG5E3UPXOZ6",
+      "task_id": "01a1895d-bf05-7000-8e0a-53a1aa491191",
+      "payload": {
+        "offering": "request-quote",
+        "input": {
+          "split_delivery": true,
+          "text": "Yes, a split delivery is fine."
+        }
+      },
+      "sig": "oWiS7gdfENWh2jFegIGcsvtwOfuIagTQ_5C3pSWpNwTkC504diNkr9UazpJR5_zpcE8onEOxpOn0w2mra3gfCQ"
+    },
+    {
+      "v": "0.3.0",
+      "id": "01a1895d-bfdf-7000-9b63-7e37b6ca6799",
+      "type": "respond",
+      "ts": "2026-10-29T20:33:04.991Z",
+      "from": "UASDC4DR7EZTJU66K4YYO7WLJVX6XZR4GZGGVFTIAVLT3GG5E3UPXOZ6",
+      "trace": {
+        "trace_id": "c9d9dbd8c66b9360251f0b9b68865cec",
+        "span_id": "759b461c821954c2",
+        "parent_span_id": "792eb0aef3453a3f"
+      },
+      "to": "UBBIHDIEJW6OE22XB4I3N3LCQSU5LQXTQPWIJUJZ52353QUCNTFOL2RB",
+      "in_reply_to": "01a1895d-bfd8-7000-bcc5-9a583f7fdf17",
+      "payload": {
+        "status": "completed",
+        "output": {
+          "text": "Quote Q-2026-1029: 412.50 USD for all four items. Items BR-6204 and SH-1220 ship on 2026-11-06; GB-0410 and CP-0032 ship on 2026-11-20.",
+          "quote_id": "Q-2026-1029",
+          "total": "412.50 USD",
+          "deliveries": [
+            {
+              "items": [
+                "BR-6204",
+                "SH-1220"
+              ],
+              "date": "2026-11-06"
+            },
+            {
+              "items": [
+                "GB-0410",
+                "CP-0032"
+              ],
+              "date": "2026-11-20"
+            }
+          ],
+          "price": {
+            "amount_micro": 412500000,
+            "currency": "USD"
+          },
+          "files": [
+            {
+              "name": "quote-Q-2026-1029.pdf",
+              "media_type": "application/pdf",
+              "size": 1088,
+              "digest": "sha256:3396706a5df5c43f36ae9adc0f0130d61806c6fb42f8202791b31055a6689264",
+              "ref": "urn:xt:quote-Q-2026-1029.pdf"
+            }
+          ]
+        }
+      },
+      "sig": "DGB9-3et06FZ5JTOXNhbRjZG5dgMGwzoNLP65lGphMFgkE9Zhii-A0j5GSuUkxENKHSJKcojl5gkx6iUWlabBA"
+    }
+  ],
+  "buyer_view": [
+    "input_required",
+    "completed"
+  ],
+  "forged": {
+    "envelope": {
+      "v": "0.3.0",
+      "id": "01a1895d-bfdf-7000-9b63-7e37b6ca6799",
+      "type": "respond",
+      "ts": "2026-10-29T20:33:04.991Z",
+      "from": "UASDC4DR7EZTJU66K4YYO7WLJVX6XZR4GZGGVFTIAVLT3GG5E3UPXOZ6",
+      "trace": {
+        "trace_id": "c9d9dbd8c66b9360251f0b9b68865cec",
+        "span_id": "759b461c821954c2",
+        "parent_span_id": "792eb0aef3453a3f"
+      },
+      "to": "UBBIHDIEJW6OE22XB4I3N3LCQSU5LQXTQPWIJUJZ52353QUCNTFOL2RB",
+      "in_reply_to": "01a1895d-bfd8-7000-bcc5-9a583f7fdf17",
+      "payload": {
+        "status": "completed",
+        "output": {
+          "text": "Quote Q-2026-1029: 4125.00 USD for all four items. Items BR-6204 and SH-1220 ship on 2026-11-06; GB-0410 and CP-0032 ship on 2026-11-20.",
+          "quote_id": "Q-2026-1029",
+          "total": "4125.00 USD",
+          "deliveries": [
+            {
+              "items": [
+                "BR-6204",
+                "SH-1220"
+              ],
+              "date": "2026-11-06"
+            },
+            {
+              "items": [
+                "GB-0410",
+                "CP-0032"
+              ],
+              "date": "2026-11-20"
+            }
+          ],
+          "price": {
+            "amount_micro": 4125000000,
+            "currency": "USD"
+          },
+          "files": [
+            {
+              "name": "quote-Q-2026-1029.pdf",
+              "media_type": "application/pdf",
+              "size": 1088,
+              "digest": "sha256:3396706a5df5c43f36ae9adc0f0130d61806c6fb42f8202791b31055a6689264",
+              "ref": "urn:xt:quote-Q-2026-1029.pdf"
+            }
+          ]
+        }
+      },
+      "sig": "DGB9-3et06FZ5JTOXNhbRjZG5dgMGwzoNLP65lGphMFgkE9Zhii-A0j5GSuUkxENKHSJKcojl5gkx6iUWlabBA"
+    },
+    "refused": true,
+    "how": "the receive path's decode refused it: the signature does not verify against from (Agent Messaging §5.3)"
+  }
+}

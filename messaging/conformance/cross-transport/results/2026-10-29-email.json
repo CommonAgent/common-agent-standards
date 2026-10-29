@@ -1,0 +1,279 @@
+{
+  "transport": "email",
+  "environment": "two Agent Emailing Servers on a loopback network (raw MIME, rendered and parsed again)",
+  "run_at": "2026-10-29T20:30:02.834Z",
+  "parties": {
+    "buyer": "UAGKEUEG2XMTMZWCUZHERWQZO5GPEBWSDU64HHZJTMNH2PURKID6CVT7",
+    "supplier": "UB434QFKVUYG4SE6EHM3MVZBLNBU7S3DOPMZ6RHWG4T2ZQQQJZ7IJ72Y"
+  },
+  "messages": [
+    {
+      "v": "0.3.0",
+      "id": "01a1895a-f82a-7195-99c6-d6fa3e9f90ce",
+      "type": "request",
+      "ts": "2026-10-29T20:30:02.793Z",
+      "from": "UAGKEUEG2XMTMZWCUZHERWQZO5GPEBWSDU64HHZJTMNH2PURKID6CVT7",
+      "to": "UB434QFKVUYG4SE6EHM3MVZBLNBU7S3DOPMZ6RHWG4T2ZQQQJZ7IJ72Y",
+      "trace": {
+        "trace_id": "571af66eb83c3eb8b7e51b7f5585ad1b",
+        "span_id": "93561f9802fdaf95",
+        "parent_span_id": null
+      },
+      "context_id": "01a1895a-f82a-7480-bfa0-5e485bb53335",
+      "budget": {
+        "deadline": "2026-11-01T20:30:02Z",
+        "revision": 0,
+        "cost_ceiling": {
+          "amount_micro": 500000000,
+          "currency": "USD"
+        }
+      },
+      "payload": {
+        "offering": "request-quote",
+        "text": "Please quote the parts in the attached list, delivered to our plant in Denver.",
+        "input": {
+          "parts_list": "parts-list.csv",
+          "deliver_to": "Denver, CO"
+        },
+        "files": [
+          {
+            "name": "parts-list.csv",
+            "media_type": "text/csv",
+            "ref": "cid:parts-list.csv.7cfc6f4e1bec@agents.example.org",
+            "size": 144,
+            "digest": "sha256:943807ea4f8ed4974618aa107ce8b80ae6497c5318ce051ccc1a13706c5d5ee8"
+          }
+        ],
+        "config": {
+          "timeout_ms": 259200000
+        }
+      },
+      "meta": {
+        "agent_emailing": {
+          "v": "0.2.0",
+          "offering_name": "Request a quote",
+          "subject": "Request a quote — request",
+          "human_text": "sha256:65367c4284f872b1787cca52b358eee3dd1a6a2e60d178754f0f2aa6f08f2c2b"
+        }
+      },
+      "sig": "mFybRMJlO5m1Ohaxyo67TEV0lYScnaBx8akwa8ACe-AhbUIOH3tKvmb_BPDHTq3HmGdGoWixg6po1kMpi1M8Bw"
+    },
+    {
+      "v": "0.3.0",
+      "id": "01a1895a-f83f-70de-aa93-f0e0d05711a4",
+      "type": "respond",
+      "ts": "2026-10-29T20:30:02.814Z",
+      "from": "UB434QFKVUYG4SE6EHM3MVZBLNBU7S3DOPMZ6RHWG4T2ZQQQJZ7IJ72Y",
+      "to": "UAGKEUEG2XMTMZWCUZHERWQZO5GPEBWSDU64HHZJTMNH2PURKID6CVT7",
+      "trace": {
+        "trace_id": "571af66eb83c3eb8b7e51b7f5585ad1b",
+        "span_id": "10d5556beba9a3f0",
+        "parent_span_id": "93561f9802fdaf95"
+      },
+      "task_id": "01a1895a-f83e-78e1-936c-3a04b699faa2",
+      "in_reply_to": "01a1895a-f82a-7195-99c6-d6fa3e9f90ce",
+      "context_id": "01a1895a-f82a-7480-bfa0-5e485bb53335",
+      "payload": {
+        "status": "input_required",
+        "text": "Two items, GB-0410 and CP-0032, have a 3-week lead time. Is a split delivery fine?",
+        "problems": [
+          {
+            "input": "split_delivery",
+            "problem": "missing",
+            "description": "Is a split delivery fine?",
+            "expected": "true or false"
+          }
+        ]
+      },
+      "meta": {
+        "agent_emailing": {
+          "v": "0.2.0",
+          "offering_name": "Request a quote",
+          "subject": "Re: Request a quote — needs your input",
+          "human_text": "sha256:4807252a5cfb1d7cdd5fd1219e9c7b53f12f040884dbf71d34a112163cd12a00"
+        }
+      },
+      "sig": "f7STRhTFdXnVHp7lOqFtLBFwB1Jh7Y6SMyE5Klrj0Gdu_QdeXUguKU7qlcRL-gZzPV0UQVcVez6a4DczFbZeDg"
+    },
+    {
+      "v": "0.3.0",
+      "id": "01a1895a-f846-7a6f-95a7-313af7a8f9ac",
+      "type": "request",
+      "ts": "2026-10-29T20:30:02.822Z",
+      "from": "UAGKEUEG2XMTMZWCUZHERWQZO5GPEBWSDU64HHZJTMNH2PURKID6CVT7",
+      "to": "UB434QFKVUYG4SE6EHM3MVZBLNBU7S3DOPMZ6RHWG4T2ZQQQJZ7IJ72Y",
+      "trace": {
+        "trace_id": "207894f4d098203adb3855c7520feb91",
+        "span_id": "57920485ead3d787",
+        "parent_span_id": null
+      },
+      "task_id": "01a1895a-f83e-78e1-936c-3a04b699faa2",
+      "context_id": "01a1895a-f82a-7480-bfa0-5e485bb53335",
+      "payload": {
+        "offering": "request-quote",
+        "text": "Yes, a split delivery is fine.",
+        "input": {
+          "split_delivery": true
+        },
+        "config": {
+          "timeout_ms": 259200000
+        }
+      },
+      "meta": {
+        "agent_emailing": {
+          "v": "0.2.0",
+          "offering_name": "Request a quote",
+          "subject": "Re: Request a quote — answer",
+          "human_text": "sha256:6ef3bd20344001a6ec6042b60900a434db57cb2f4d55024a8477fbd2db04b5ec"
+        }
+      },
+      "sig": "zHfo_4Gr2N4GxN3L4M8zJ-yDTeOmKATE6felrg9nOA99TUaZxOhXrzGPmaAIzwSyW1H7QjR9ouY7q1uusmu0BQ"
+    },
+    {
+      "v": "0.3.0",
+      "id": "01a1895a-f84b-74d3-98ab-106dd1b8f8d3",
+      "type": "respond",
+      "ts": "2026-10-29T20:30:02.827Z",
+      "from": "UB434QFKVUYG4SE6EHM3MVZBLNBU7S3DOPMZ6RHWG4T2ZQQQJZ7IJ72Y",
+      "to": "UAGKEUEG2XMTMZWCUZHERWQZO5GPEBWSDU64HHZJTMNH2PURKID6CVT7",
+      "trace": {
+        "trace_id": "207894f4d098203adb3855c7520feb91",
+        "span_id": "a084548571bc916a",
+        "parent_span_id": "57920485ead3d787"
+      },
+      "task_id": "01a1895a-f83e-78e1-936c-3a04b699faa2",
+      "in_reply_to": "01a1895a-f846-7a6f-95a7-313af7a8f9ac",
+      "context_id": "01a1895a-f82a-7480-bfa0-5e485bb53335",
+      "payload": {
+        "status": "completed",
+        "text": "Quote Q-2026-1029: 412.50 USD for all four items. Items BR-6204 and SH-1220 ship on 2026-11-06; GB-0410 and CP-0032 ship on 2026-11-20.",
+        "output": {
+          "quote_id": "Q-2026-1029",
+          "total": "412.50 USD",
+          "deliveries": [
+            {
+              "items": [
+                "BR-6204",
+                "SH-1220"
+              ],
+              "date": "2026-11-06"
+            },
+            {
+              "items": [
+                "GB-0410",
+                "CP-0032"
+              ],
+              "date": "2026-11-20"
+            }
+          ]
+        },
+        "price": {
+          "amount_micro": 412500000,
+          "currency": "USD"
+        }
+      },
+      "artifacts": [
+        {
+          "id": "01a1895a-f84b-7aeb-8f90-2dab484b5018",
+          "name": "quote-Q-2026-1029.pdf",
+          "parts": [
+            {
+              "name": "quote-Q-2026-1029.pdf",
+              "media_type": "application/pdf",
+              "ref": "cid:quote-Q-2026-1029.pdf.1a412b38d4d9@mail.example.com",
+              "size": 1088,
+              "digest": "sha256:3396706a5df5c43f36ae9adc0f0130d61806c6fb42f8202791b31055a6689264"
+            }
+          ],
+          "created_at": "2026-10-29T20:30:02.827Z"
+        }
+      ],
+      "meta": {
+        "agent_emailing": {
+          "v": "0.2.0",
+          "offering_name": "Request a quote",
+          "subject": "Re: Request a quote — done",
+          "human_text": "sha256:69045a8b9bce5a35a567a0d1eaffa8f707a28a0da90a4b4f985686a495583da3"
+        }
+      },
+      "sig": "T4jBW2V0Ih7eDyL-wzlY5e5Pzv2G14Ns-9adXYFW_12Zt_BsyZse4vEoVvNRHQz56DiAEEBZ-tvQ6huI3v4_Cw"
+    }
+  ],
+  "buyer_view": [
+    "input_required",
+    "completed"
+  ],
+  "forged": {
+    "envelope": {
+      "v": "0.3.0",
+      "id": "01a1895a-f84b-74d3-98ab-106dd1b8f8d3",
+      "type": "respond",
+      "ts": "2026-10-29T20:30:02.827Z",
+      "from": "UB434QFKVUYG4SE6EHM3MVZBLNBU7S3DOPMZ6RHWG4T2ZQQQJZ7IJ72Y",
+      "to": "UAGKEUEG2XMTMZWCUZHERWQZO5GPEBWSDU64HHZJTMNH2PURKID6CVT7",
+      "trace": {
+        "trace_id": "207894f4d098203adb3855c7520feb91",
+        "span_id": "a084548571bc916a",
+        "parent_span_id": "57920485ead3d787"
+      },
+      "task_id": "01a1895a-f83e-78e1-936c-3a04b699faa2",
+      "in_reply_to": "01a1895a-f846-7a6f-95a7-313af7a8f9ac",
+      "context_id": "01a1895a-f82a-7480-bfa0-5e485bb53335",
+      "payload": {
+        "status": "completed",
+        "text": "Quote Q-2026-1029: 4125.00 USD for all four items. Items BR-6204 and SH-1220 ship on 2026-11-06; GB-0410 and CP-0032 ship on 2026-11-20.",
+        "output": {
+          "quote_id": "Q-2026-1029",
+          "total": "4125.00 USD",
+          "deliveries": [
+            {
+              "items": [
+                "BR-6204",
+                "SH-1220"
+              ],
+              "date": "2026-11-06"
+            },
+            {
+              "items": [
+                "GB-0410",
+                "CP-0032"
+              ],
+              "date": "2026-11-20"
+            }
+          ]
+        },
+        "price": {
+          "amount_micro": 4125000000,
+          "currency": "USD"
+        }
+      },
+      "artifacts": [
+        {
+          "id": "01a1895a-f84b-7aeb-8f90-2dab484b5018",
+          "name": "quote-Q-2026-1029.pdf",
+          "parts": [
+            {
+              "name": "quote-Q-2026-1029.pdf",
+              "media_type": "application/pdf",
+              "ref": "cid:quote-Q-2026-1029.pdf.1a412b38d4d9@mail.example.com",
+              "size": 1088,
+              "digest": "sha256:3396706a5df5c43f36ae9adc0f0130d61806c6fb42f8202791b31055a6689264"
+            }
+          ],
+          "created_at": "2026-10-29T20:30:02.827Z"
+        }
+      ],
+      "meta": {
+        "agent_emailing": {
+          "v": "0.2.0",
+          "offering_name": "Request a quote",
+          "subject": "Re: Request a quote — done",
+          "human_text": "sha256:69045a8b9bce5a35a567a0d1eaffa8f707a28a0da90a4b4f985686a495583da3"
+        }
+      },
+      "sig": "T4jBW2V0Ih7eDyL-wzlY5e5Pzv2G14Ns-9adXYFW_12Zt_BsyZse4vEoVvNRHQz56DiAEEBZ-tvQ6huI3v4_Cw"
+    },
+    "refused": true,
+    "how": "the buyer's server refused it silently: the signature does not verify (Agent Emailing §4.4)"
+  }
+}
