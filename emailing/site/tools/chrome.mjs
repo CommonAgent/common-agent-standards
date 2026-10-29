@@ -15,6 +15,8 @@ import { fileURLToPath } from "node:url";
 
 export const SUITE_REPO = "https://github.com/CommonAgent/common-agent-standards";
 export const REPO_URL = `${SUITE_REPO}/tree/main/emailing`;
+// The menu leads with the reference implementation; the spec source stays in the footer.
+export const SERVER_URL = "https://github.com/Agent-Emailing/agent-emailing-server";
 export const FAMILY = "https://commonagent.net/";
 export const SITE = "https://agentemailing.ai";
 const LEFT_OUT = new Set(["emailing", "work-patterns"]);
@@ -82,7 +84,7 @@ export function rail(active) {
           ${a("/providers.html", "Email providers", "providers")}
           ${a("/providers.html#test", "Conformance fixtures", "")}
           ${a("/versions.html", "Versions and changelog", "versions")}
-          ${a(REPO_URL, "On GitHub", "", true)}
+          ${a(SERVER_URL, "On GitHub", "", true)}
           </div>
         </details>
         <details class="sec suite" open>
@@ -124,7 +126,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "getting-started.html": "start", "article-why-agent-emailing.html": "why", "interop-results.html": "", "example.html": "example", "providers.html": "providers", "404.html": "" };
+const PAGES = { "index.html": "home", "getting-started.html": "start", "article-why-agent-emailing.html": "why", "example.html": "example", "providers.html": "providers", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {
