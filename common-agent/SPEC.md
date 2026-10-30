@@ -1,7 +1,7 @@
 # The Common Agent Specification
 
-**Version:** 0.40.0
-**Status:** Published, 2026-10-29. Home: https://commonagent.net/
+**Version:** 0.40.1
+**Status:** Published, 2026-10-30. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
 
@@ -1930,6 +1930,8 @@ An agent whose scripts call a model declares the model as a system of kind `mode
 
 `MODEL_NAME`, `MODEL_ENDPOINT` and `MODEL_PROTOCOL` are non-secret values that the instruction supplies, and `MODEL_KEY` is a credential that the instruction names. A script MUST read all four from its environment and from nowhere else. It MUST NOT carry a value of its own for any of them, as a default or in any other way. Where `MODEL_NAME`, `MODEL_ENDPOINT` or `MODEL_PROTOCOL` is empty, or `MODEL_PROTOCOL` holds a value outside the entry's `protocols`, the script stops before it calls anything and says which setting stopped it.
 
+**The answer budget.** One more setting is optional: `MODEL_MAX_OUTPUT_TOKENS`, the most tokens one answer may hold, a whole number above zero. It is a non-secret value the instruction MAY supply, read on every run like the four. Where it is absent or empty, a script uses its own budget, because unlike the four settings a budget is not a fact about where the model is: a script MAY carry a default, and a job MAY name a budget of its own for a call that needs less. Where it is set, it is the budget for every call whose job names none. An installer that binds it refuses, before anything is changed, a value that is not a whole number above zero. A script stops on such a value before it calls anything and says so. Whoever runs the agent raises it where answers are cut off at the budget, and lowers it where the endpoint serves a model whose ceiling is lower.
+
 **The formats.** `MODEL_PROTOCOL` takes one of three values. The list is closed. A host MUST refuse a value outside it, and an installer MUST refuse, before anything is changed, an instruction that gives a value outside it or outside the entry's `protocols`. The list changes only in a new version of this specification.
 
 | Value | The request |
@@ -2228,6 +2230,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.40.1 (2026-10-30).** Section 12.4.1 gains an optional setting beside the four, `MODEL_MAX_OUTPUT_TOKENS`: the most tokens one answer may hold, read on every run, so whoever runs the agent can raise a budget that cuts answers off, or lower it for a model with a lower ceiling, without a new version. Where it is not set, a script uses its own budget. An installer that binds it refuses a value that is not a whole number above zero. Nothing that conformed to 0.40.0 stops conforming, and no section number changes.
 
 **0.40.0 (2026-10-29).** An address literal in a script is now a warning, not a refusal. Rule 2 of Section 12.6 and the address check of Section 12.10 are otherwise unchanged: a script that carries its own endpoint has still gone around its declaration, and what counts as an address literal is the same. A checker reports each literal as a warning against rule 2, with the file, the line and the literal, and does not fail the package for it. A depot MUST NOT refuse a package for an address literal. It publishes the package with a plain warning naming each file and each address, and shows the warning to the publisher in its answer to the publish and to a reader in the package's listing and in what its search returns. The warning stays with that version for as long as it is served, and a reason the publisher writes does not remove it. The refusals that came before 0.39.0 are unchanged, among them addresses in the three authored declarations (rule 3), credential values and hidden characters, and so are a depot's refusal of a model system entry that Section 12.4.1 does not allow and an installer's refusal of a `MODEL_PROTOCOL` outside its list. Because this version follows 0.39.0 on the same day, the former names `TEXT_MODEL` and `TEXT_API_KEY` are accepted in 0.39.0 and 0.40.0 and are removed in 0.41.0. The minor version moves because what conformance requires changes: a package that a depot refused under 0.39.0 for an address literal alone is published under this version, with the warning. No section number changes.
 
