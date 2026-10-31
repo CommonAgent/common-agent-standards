@@ -1,8 +1,8 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.6
+**Version:** v1.7
 **Status:** Guide
-**Date:** 2026-10-29
+**Date:** 2026-10-30
 
 > Agent Roles is a guide. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. Each description says what a holder does, what it needs and what it refuses. The descriptions are semi-formal, and they will change as we learn. Where the text says MUST, SHOULD or MAY, read it as a plain description of what a holder does. The site at https://agentroles.ai shows each role and interface on a page of its own.
 
@@ -1798,6 +1798,18 @@ The scripts, the writer's account, and the record of every round. The role defin
 ### 21.4 Conformance testing: the code writer
 
 Behavioral. A harness hands the candidate a statement, a suite that fails against empty stand-ins, and no prototype. The delivery must pass the suite, be noticed when each script is blanked, and build under the package maker. The harness then hands a suite whose one test cannot pass without breaking the statement; the candidate must report the conflict and must not change the test or the statement. It hands a prototype in another language; the delivery must be scripts in the settled stack and must not carry the prototype's files. Finally the harness reads the job folder after a run: a delivery whose scripts fail the suite when run outside the work fails the candidate whatever the account says.
+
+### 21.5 Held through a hand-off
+
+Any coding agent may hold this role, not only an agent made for it: a hosted or local coding session such as Claude Code, Codex or Cursor, or a person at a keyboard. That is safe for the same reason the role is safe at all, which is that none of the check is the writer's. Such a holder is given a hand-off instead of a job message, and its delivery comes back through the same check. A code writer the lifecycle hosts takes the same hand-off, so a person who has no coding agent loses nothing.
+
+1. **The hand-off is a build folder on a branch.** The host writes the build folder as one commit on a branch of a repository the holder can work in, and opens a pull request titled "Write the scripts". The folder holds the agent's declarations, the suite under test/, every script the statement names under scripts/ (the released script where there is one, otherwise a stub that exports what the suite imports), every other file the package carries at its own path, and the local check under .adlc/.
+2. **The house rules are written in the folder.** AGENTS.md states the rules of §21.2 for whoever reads it: write only under scripts/; change no test and no declaration; report a test that cannot pass without breaking the statement instead of changing it; stay in the settled stack; reach a model only through the shared caller and its declared settings; write no address and no credential into a script; and reach no network from a test run. It names the local check, `node .adlc/check.mjs`, which runs the same check the host runs, and exit 0 means the work is ready to hand back.
+3. **The fence is a lock of digests.** build.lock.json carries the digest of every pinned file. The host compares the delivery against the digests it kept when it issued the hand-off, never against the copy in the folder, which the holder could change. Only scripts/ may change, and a new test file may be added. A changed or removed test, or a changed declaration, sends the work back to the spec and test stages.
+4. **The check runs as the pull request's checks.** When the holder marks the pull request ready, the host runs the check on its newest commit and posts each part as a check, with its findings as a comment the holder can read and fix. The parts are the fence; a static review of the files the holder may change, for credential values, hidden characters and addresses the statement does not declare; and the suite, then the suite once per script with that script blanked. The suite runs in the account's own sandbox and never where the host keeps credentials, because it is the first time code nobody has reviewed is executed. A folder the fence or the static review refuses is not run at all.
+5. **A green check is not acceptance.** A passing check moves nothing on its own. A person's OK accepts the delivery, and only on the commit the check passed. The package maker then packs from the merged commit, never from an archive the holder made, and the record names the holder of the Code stage.
+
+The commits on the branch are the record of every round (§21.2 rule 6). A holder through a hand-off is checked as §21.4 says, with the harness reading the pull request in place of the job folder.
 
 ## 22. Role: the code critic
 
