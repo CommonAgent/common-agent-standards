@@ -4,6 +4,20 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.7 (2026-10-30)
+
+The code writer can be held by any coding agent through a hand-off. A new
+§21.5 says that a hosted or local coding session, or a person, may hold the
+role when it is given the build folder on a branch with a pull request
+titled "Write the scripts", the house rules in AGENTS.md, and the fence in
+build.lock.json, which the host checks against the digests it kept when it
+issued the hand-off. The check runs as the pull request's checks: the
+fence, a static review of the files the holder may change, and the suite
+with each script blanked, run in the account's own sandbox. A passing check
+accepts nothing; a person's OK does, and the package maker packs from the
+merged commit. The code writer's page says the same. No section number or
+offering name changes.
+
 ## v1.6 (2026-10-29)
 
 The security reviewer warns, rather than refuses, when a program carries
