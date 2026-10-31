@@ -2,6 +2,10 @@
 
 Every version of the Common Agent Specification and what it changed, newest first. Each entry was written into the specification when its version was drafted, and is reproduced here word for word. A version is tagged in the Common Agent Standards repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`, and the text of [SPEC.md](SPEC.md) at that tag is the text of that version. Versions before 0.26.0-draft were drafted before the specification moved to this repository and have no tags here.
 
+## 0.40.2 (2026-10-30)
+
+Rule 2 of Section 12.6 says that an address a standing asset hands an agent is a handed address, as an address an external input names already was. Where an entry of `can_use` names in its `reads` a member that holds an address, such as a brand profile's `logo.mark.href`, the address in the version a job is handed was approved by a person with that version, and the entry declares that the agent reads it, so a script that reaches it has not gone around its declaration. The entry's `schema` is still never fetched, and an address a script writes down itself is still a fault against rule 2. Nothing that conformed to 0.40.1 stops conforming, and no section number changes.
+
 ## 0.40.1 (2026-10-30)
 
 Section 12.4.1 gains an optional setting beside the four, `MODEL_MAX_OUTPUT_TOKENS`: the most tokens one answer may hold, read on every run, so whoever runs the agent can raise a budget that cuts answers off, or lower it for a model with a lower ceiling, without a new version. Where it is not set, a script uses its own budget. An installer that binds it refuses a value that is not a whole number above zero. Nothing that conformed to 0.40.0 stops conforming, and no section number changes.
