@@ -1,13 +1,17 @@
 # The Common Agent catalog profile
 
-**Version:** 0.1.0-draft
+**Version:** 0.2.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-18
-**Applies to:** Agentic Resource Discovery (ARD) v0.91 · the Common Agent Specification 0.28.0-draft · Agent SoW 0.23.1-draft · Agent Reputations 0.3.1-draft · Agent Messaging 0.9.1-draft
+**Date:** 2026-11-01
+**Applies to:** Agentic Resource Discovery (ARD) v0.91 · the Common Agent Specification 0.28.0-draft · Agent SoW 0.23.1-draft · Agent Reputations 0.3.1-draft · Agent Messaging 0.9.1-draft · Agent Processes 0.8.0
+
+**This revision.** An entry can describe a process (Section 14): a process document its owner runs for others, listed with signed offers like an agent, or a reference process listed to be adopted. The entry pins the document by digest, copies its header, names the agent that answers for it, and discloses every phase held by another owner's agent and every phase a person holds. Nothing that conformed to 0.1.0-draft stops conforming, and no section number changes.
 
 A catalog lists agents so that people and programs can find them. ARD, the Agentic Resource Discovery specification (https://agenticresourcediscovery.org/spec/), already defines what a listed entry looks like, where a publisher serves its entries, and how a client searches a registry. Agent Messaging cedes catalog and search to ARD (Agent Messaging, Section 1.3), and this profile keeps that division. It adds no second entry format and no second search API.
 
 What ARD leaves to others is what a buyer needs before contracting an agent: what the agent charges and under which signed terms, what a reputation bureau has recorded about it, where to ask whether it is reachable, how much the catalog knows about each statement, who signed the entry, and who may see it. This profile defines each of those as optional entry metadata under a Common Agent JSON-LD namespace, the extension seam ARD v0.91 provides (ARD, Section 3.4). A reader that knows only ARD still reads every entry, because every term this profile adds is one it may ignore. The profile also defines two calls ARD does not have, publishing an entry and fetching one by its identifier, and a link from each entry to the agent's AgentDoc (the Common Agent Specification, Section 9).
+
+An entry can also describe a process offered to others, listed with signed offers the same way, or a reference process listed to be adopted (Section 14).
 
 This document is a part of the Common Agent Specification. Where it borrows a term from ARD, Agent SoW, Agent Reputations or Agent Messaging, that specification is the authority for the term, and where they disagree with this document, they govern.
 
@@ -48,6 +52,8 @@ The terms are these. The third column says who states each one, which decides wh
 | `ca:offers` | The offers derived from the agent's standing proposals (Section 3). | publisher |
 | `ca:liveness` | Where to ask whether the agent is reachable (Section 5). | publisher |
 | `ca:audience` | Who may see the entry (Section 9). | publisher |
+| `ca:process` | The process document a process entry lists, pinned by digest (Section 14). | publisher |
+| `ca:runner` | The agent that runs a listed process and answers for it (Section 14). | publisher |
 | `proof` | The publisher's Data Integrity proof over the entry (Section 8). | publisher |
 | `ca:reputation` | Pointers to bureau reports, with the context a score needs (Section 4). | catalog |
 | `ca:lastSeen` | When the catalog last observed the agent's presence (Section 5). | catalog |
@@ -380,6 +386,56 @@ A reader that knows only ARD sees an A2A agent with a name, a card address, two 
 
 **DIDs.** The profile uses `did:web` for publishers and catalogs and `did:key` for agents' own keys, as Section 8 describes, and needs no other DID method.
 
+## 14. A process entry
+
+An entry can describe a process instead of an agent: a process document written to the Agent Processes Specification (https://agentprocesses.ai/spec.html), which its owner runs for others, or a reference process published to be adopted. Agent SoW already lets an engagement's scope be one process at one version (Agent SoW, Section 5.2.1), and this section is how such a process is listed, priced and found the way an agent is.
+
+A process entry has `type` set to `text/vnd.agent-process`, and its `url` serves the process document's text. It carries two terms the other entries do not:
+
+| Term | What it carries | Stated by |
+|---|---|---|
+| `ca:process` | The document the entry lists, pinned by digest, with the header fields a reader needs to choose it. | publisher |
+| `ca:runner` | The agent that runs the process for its owner and answers for every engagement of it. | publisher |
+
+```json
+"ca:process": {
+  "id": "northwind/explore-a-topic",
+  "label": "v3",
+  "digest": "sha256:9f2a…",
+  "spec": "0.8.0",
+  "owner": "Research team, Northwind",
+  "goal": "five cards, one per angle, each with its sources",
+  "from": "ref/res/explore-a-topic v1",
+  "example": "https://northwind.example/runs/explore-a-topic/run-41",
+  "carries": [
+    { "name": "topic", "what": "the words, a link or a document to explore", "required": true }
+  ],
+  "held_outside": ["fact-checker.verity.example"],
+  "person_phases": ["approve-the-cards"],
+  "reference": false
+},
+"ca:runner": {
+  "subject": "did:key:z6MkrN…",
+  "agentdoc": { "url": "https://northwind.example/.well-known/agentdoc.json", "page": "https://northwind.example/.well-known/agentdoc" }
+}
+```
+
+- `id`, `label`, `owner`, `goal`, `from`, `example` and `carries` are copied from the document's own header and trigger (Agent Processes, Sections 4 and 5.4), so the entry keeps nothing the document does not say. `spec` is the version of Agent Processes the document is written to.
+- `digest` is `sha256:` over the bytes served at `url`. It is REQUIRED, because an engagement is pinned to the digest and not to the label (Agent SoW, Section 5.2.1).
+- `held_outside` names every agent of another owner that holds a phase, and `person_phases` names every phase a person holds or must sign, each by the document's own phase key. Both are REQUIRED on an entry that carries an offer, and an empty list says there are none. They are what a process scope exists to disclose, and a listing that hid them would hide exactly that.
+- `reference` is `true` for a reference process (Agent Processes, Section 15). A reference process has no owner and no runs, so its entry carries no `owner`, no `example`, no `ca:runner` and no `ca:offers`. It is listed to be found and adopted, not engaged.
+
+The rules that govern a process entry:
+
+1. **The digest is checked.** A catalog MUST compute the digest of the bytes served at `url` and MUST NOT list the entry where it differs from `ca:process.digest`. A changed document is a new entry version, published again with its new digest.
+2. **An offer names the process, not an offering.** In a process entry, each offer in `ca:offers` carries `process`, `{ "id", "digest" }`, in place of `offering`, and is derived from a standing proposal whose scope names that process at that digest. Every rule of Section 3 applies to it unchanged. A catalog MUST NOT list an offer whose proposal names another process or another digest.
+3. **Somebody answers for it.** An entry that carries an offer MUST carry `ca:runner`, the agent that holds the provider seat for every engagement of the process (Agent SoW, Section 5.2.1). Its AgentDoc's `subject.id` MUST denote the same key as `ca:runner.subject`.
+4. **A process has no presence of its own.** A process entry MUST NOT carry `ca:subject`, `ca:liveness` or `ca:lastSeen`. A reader that needs to know whether the process can run now asks about its runner, through the runner's own entry or AgentDoc.
+5. **Reputation is the runner's.** A process entry MAY carry `ca:reputation` pointers whose `capability` is the process's `id`, where a bureau has rated runs of that process. Every rule of Section 4 applies.
+6. **The inputs are the document's.** An entry's representative queries SHOULD be the scope's `in_scope` examples, as Agent SoW, Section 12.2 says of every listing, and the entry MUST NOT describe an input the document's `carries:` lines do not name.
+
+A catalog that follows this profile and lists processes also MUST check every process entry's digest (rule 1), MUST check each process offer against its proposal's process and digest (rule 2), and MUST NOT list an offer on a process entry with no `ca:runner` (rule 3). A reader MUST treat a process entry's `held_outside` and `person_phases` as part of the offer, and show them with any price it shows.
+
 ## Appendix A: the JSON-LD context
 
 Served at `https://commonagent.net/ns/catalog/v1.jsonld`.
@@ -395,6 +451,8 @@ Served at `https://commonagent.net/ns/catalog/v1.jsonld`.
     "ca:offers": { "@id": "ca:offers", "@type": "@json" },
     "ca:liveness": { "@id": "ca:liveness", "@type": "@json" },
     "ca:audience": { "@id": "ca:audience" },
+    "ca:process": { "@id": "ca:process", "@type": "@json" },
+    "ca:runner": { "@id": "ca:runner", "@type": "@json" },
     "ca:reputation": { "@id": "ca:reputation", "@type": "@json" },
     "ca:lastSeen": { "@id": "ca:lastSeen", "@type": "@json" },
     "ca:evidence": { "@id": "ca:evidence", "@type": "@json" },

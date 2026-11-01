@@ -19,13 +19,13 @@
       "spec": "common-agent/SPEC.md",
       "domain": "commonagent.net",
       "site": "https://commonagent.net/spec.html",
-      "version": "0.40.2",
+      "version": "0.40.3",
       "status": "Published",
-      "tag": "common-agent-v0.40.2",
+      "tag": "common-agent-v0.40.3",
       "builder": "common-agent/site/tools/build-spec.mjs",
       "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
       "parts": [
-        { "name": "The catalog profile", "path": "common-agent/CATALOG-PROFILE.md", "version": "0.1.0-draft" },
+        { "name": "The catalog profile", "path": "common-agent/CATALOG-PROFILE.md", "version": "0.2.0-draft" },
         { "name": "The Descriptor to user interface binding", "path": "common-agent/DESCRIPTOR-UI.md", "version": "0.1.0" }
       ]
     },
@@ -183,9 +183,9 @@
       "spec": "processes/SPEC.md",
       "domain": "agentprocesses.ai",
       "site": "https://agentprocesses.ai/",
-      "version": "0.8.0-draft",
-      "status": "Working Draft",
-      "tag": "processes-v0.8.0-draft",
+      "version": "0.8.0",
+      "status": "Published",
+      "tag": "processes-v0.8.0",
       "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
     },

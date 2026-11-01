@@ -1,7 +1,7 @@
 # The Common Agent Specification
 
-**Version:** 0.40.2
-**Status:** Published, 2026-10-30. Home: https://commonagent.net/
+**Version:** 0.40.3
+**Status:** Published, 2026-11-01. Home: https://commonagent.net/
 
 Outside a governed network, "agent" is a marketing word: it obliges nothing, so it tells a reader nothing. This specification defines the agent as a testable claim. An agent is a party with a verifiable identity that answers a small set of exchanges to anyone, declares its standing facts in one authored place, refuses what it does not do in a typed and named way, and accumulates signed records of what others have checked about it. Every clause here is checkable by a program or a signature, never by trust in the word.
 
@@ -2230,6 +2230,8 @@ Where each section's text came from, and what stays behind. Transport-specific t
 ## Changelog
 
 Every version of this specification and what it changed is recorded in [CHANGELOG.md](CHANGELOG.md), newest first. Each version is tagged in this repository as `common-agent-v` followed by the version, such as `common-agent-v0.26.0-draft`. The entry for this version, as it appears there:
+
+**0.40.3 (2026-11-01).** The catalog profile moves to 0.2.0-draft: an entry can describe a process (catalog profile, Section 14), a process document its owner runs for others, listed with signed offers like an agent, or a reference process listed to be adopted. The entry has `type` `text/vnd.agent-process`, pins the document by the digest of its bytes, copies its header and the items its trigger carries, names in `ca:runner` the agent that answers for every engagement of it, and discloses every phase held by another owner's agent and every phase a person holds. An offer on a process entry names the process and its digest in place of an offering, and comes from a standing proposal whose scope is that process at that digest (Agent SoW, Section 5.2.1). A process has no presence of its own, so its entry carries no `ca:subject` and no liveness. The JSON-LD context gains `ca:process` and `ca:runner`. Nothing that conformed to 0.40.2 stops conforming, and no section number changes.
 
 **0.40.2 (2026-10-30).** Rule 2 of Section 12.6 says that an address a standing asset hands an agent is a handed address, as an address an external input names already was. Where an entry of `can_use` names in its `reads` a member that holds an address, such as a brand profile's `logo.mark.href`, the address in the version a job is handed was approved by a person with that version, and the entry declares that the agent reads it, so a script that reaches it has not gone around its declaration. The entry's `schema` is still never fetched, and an address a script writes down itself is still a fault against rule 2. Nothing that conformed to 0.40.1 stops conforming, and no section number changes.
 

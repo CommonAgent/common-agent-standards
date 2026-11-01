@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Name** | `agentprocesses.ai/ext/start-form v1` |
-| **Extends** | Agent Processes 0.8.0-draft and later (Section 20) |
+| **Extends** | Agent Processes 0.8.0 and later (Section 20) |
 | **Status** | Draft |
 | **Version** | 1 |
 
