@@ -58,6 +58,7 @@ export function rail(active) {
           ${a("/offboarding.html", "Example: employee offboarding", "offboarding")}
           ${a("/catalog.html", "The catalog", "catalog")}
           ${a("/writing.html", "Writing a process", "writing")}
+          ${a("/what-goes-where.html", "What goes where", "what-goes-where")}
           </div>
         </details>
         <details class="sec" open>
@@ -101,6 +102,7 @@ export const footer = `<footer class="sitefoot">
           <a href="/offboarding.html">Example: employee offboarding</a>
           <a href="/catalog.html">The catalog</a>
           <a href="/writing.html">Writing a process</a>
+          <a href="/what-goes-where.html">What goes where</a>
           <a href="/onboard-an-agent.html">Onboard an agent</a>
           <a href="/offboard-an-agent.html">Offboard an agent</a>
           <a href="/make-a-new-agent.html">Make a new agent</a>
@@ -125,7 +127,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "automation.html": "automation", "offboarding.html": "offboarding", "catalog.html": "catalog", "writing.html": "writing", "404.html": "" };
+const PAGES = { "index.html": "home", "automation.html": "automation", "offboarding.html": "offboarding", "catalog.html": "catalog", "writing.html": "writing", "what-goes-where.html": "what-goes-where", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {

@@ -38,6 +38,7 @@ stops being true. A catalog is what makes forty documents usable.
 | feeds | header | the process ids that consume it |
 | status | header | documented, running, or retired |
 | version | header | the version in effect, and its date |
+| example | header | where to see what a run produced, when the document names one (`example:`) |
 
 Every field is copied from the process document. The catalog does not
 store anything of its own, so when the two disagree, the process document
