@@ -4,6 +4,23 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.9.0 (2026-11-01)
+
+- Test runs (§21). A process can be tested by a program. A test run
+  follows a test case kept beside the document: `carried:` (what the run
+  is handed), `answer:` (how each approval is answered, approve, changes
+  or reject, in order where a phase runs more than once), `stand-in:`
+  (what a phase that reaches outside returns in place of acting) and
+  `expect:` (what must be true at the end). The record says `mode: test`
+  and names the test case; every answer is the test case's, never a
+  person's; no phase reaches outside; test runs are kept out of anything a
+  reader relies on for the real work. A test case written for another
+  digest of the document is refused. A process MAY have a suite.
+- §7.3: an approval waits for a person on every real run; a test run is
+  the one exception, and §17.3 gains the matching obligations.
+- No process document changes, so no document in the corpus fails
+  anything new.
+
 ## 0.8.0 (2026-11-01)
 
 - Published. Earlier versions were working drafts.

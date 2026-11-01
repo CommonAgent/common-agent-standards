@@ -183,9 +183,9 @@
       "spec": "processes/SPEC.md",
       "domain": "agentprocesses.ai",
       "site": "https://agentprocesses.ai/",
-      "version": "0.8.0",
+      "version": "0.9.0",
       "status": "Published",
-      "tag": "processes-v0.8.0",
+      "tag": "processes-v0.9.0",
       "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
     },

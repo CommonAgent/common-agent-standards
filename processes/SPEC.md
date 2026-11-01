@@ -1,10 +1,23 @@
 # Agent Processes Specification
 
-**Version:** 0.8.0
+**Version:** 0.9.0
 **Status:** Published
 **Date:** 2026-11-01
 
-**This revision.** Three things a process could not say, and a place for
+**This revision.** A process can be tested by a program (Section 21).
+A test run follows a test case, kept beside the document, that says what
+the run is handed, how each approval is answered (approve, changes or
+reject, in order where a phase runs more than once), what each phase
+that reaches outside returns in place of acting, and what must be true
+when the run ends. Its record says `mode: test` and names the test case,
+every answer is recorded as the test case's and never as a person's, no
+phase reaches outside, and test runs are kept apart from real runs.
+Section 7.3's rule that an approval waits for a person now says real
+run, and names the test run as its one exception. A process MAY have a
+suite of test cases. Nothing in a process document changes, so no
+document in the corpus fails anything new.
+
+**0.8.0.** Three things a process could not say, and a place for
 everything else. A trigger can now say what a run is handed when it
 starts, written `carries:` under the trigger (Section 5.4): each item by
 name, what it is, and whether a run may start without it. `from:` can
@@ -139,7 +152,8 @@ otherwise have to guess at are decided.
 A process document, its phase graph, its handoffs, its bindings and the records
 a run must produce; the four automation levels and what each obliges of whatever
 runs the process; the reference profile and what adopting a reference process
-produces; and what it means to claim that a document conforms.
+produces; how a process is tested by a run that follows a test case;
+and what it means to claim that a document conforms.
 
 ### 1.2 What this does not specify
 
@@ -250,8 +264,8 @@ A document MUST carry `PROCESS:`, `id:`, `trigger:`, `goal:`, `phases:` and
 Sections 4 to 13 specify each part. Section 14 covers failure edges, which are
 deliberately not normative. Section 15 specifies the reference profile, 16
 translation, 17 conformance, 18 versioning, 19 what all of it means
-when a run spans two organizations, and 20 extensions and how to tell
-what belongs in one.
+when a run spans two organizations, 20 extensions and how to tell
+what belongs in one, and 21 test runs.
 
 ## 4. The header
 
@@ -1746,12 +1760,18 @@ approves it. Approval is an act, so the same rule `never` states applies
 here: a window that expires, a notification nobody answers, or a default
 that proceeds on silence MUST NOT be recorded as an approval.
 
-The rule holds on every run. A runtime MUST NOT pass a `supervised`
-phase without a person's approval on the first run of a new version, on
-a trial or test run, or on a run started by the person who would
-approve it. A runtime that wants a phase to run without an approval is
-asking for a lower level, and a lower level is an amendment to the
-document (Section 18), made by its owner and visible to every reader.
+The rule holds on every real run. A runtime MUST NOT pass a
+`supervised` phase without a person's approval on the first run of a
+new version, on a run started by the person who would approve it, or on
+any other real run. A runtime that wants a real run to proceed without
+an approval is asking for a lower level, and a lower level is an
+amendment to the document (Section 18), made by its owner and visible to
+every reader.
+
+A test run (Section 21) is the one exception. Its approvals are answered
+by the test case it follows, and its record says so: a test case's
+answer is never recorded as a person's approval, and a run that is not
+recorded as a test is never answered by one.
 
 The record MUST name the approver and MUST record when the approval was
 given. Where the phase feeds a handoff, the record of the approval
@@ -3095,7 +3115,7 @@ with its own id, a version 1 and a `from:` line (section 15.6).
 
 A runtime is whatever carries out a run: a workflow engine, an agent, a
 person with the document open, or any combination (section 2). It
-conforms by what it does with ten sets of obligations.
+conforms by what it does with eleven sets of obligations.
 
 **The graph (section 6).** A runtime MUST NOT begin a phase before every
 phase its `after:` line names has closed. A runtime MUST allow phases
@@ -3150,8 +3170,16 @@ item, MUST record the refusal when it refuses one, MUST NOT fill an
 name in the run record what the run was handed.
 
 **Approvals (section 7.3).** A runtime MUST NOT pass a `supervised` or
-`never` phase without a person acting on any run, the first run of a new
-version and a trial run included.
+`never` phase without a person acting on any real run, the first run of
+a new version included.
+
+**Test runs (section 21).** A runtime MUST record a test run's mode and
+test case when it starts and never change them, MUST record each answer
+a test case gives as the test case's and never as a person's, MUST NOT
+let a test case answer a run not recorded as a test, MUST refuse a test
+case written for another digest of the document, MUST NOT let a phase
+that reaches outside act in a test run, and MUST keep test runs out of
+anything a reader relies on for the real work.
 
 **Extensions (section 20).** A runtime MUST run a document whose
 extensions it does not know as if their lines were absent, MUST NOT let
@@ -3486,3 +3514,113 @@ specification, beginning with two: `start-form`, which says how a form
 asks a person for the trigger's items, and `typed-handoffs`, which says
 what type each handoff is and how a runtime converts one that does not
 fit the phase that receives it.
+
+---
+
+## 21. Test runs
+
+A process is tested by running it. Somebody has to hand the run its
+items, answer its approvals and stand in for the things it would do to
+the outside world, and somebody has to say afterwards whether it did what
+it should. When that somebody is a program, such as a test suite, a
+release check or a continuous integration job, nobody is there to
+approve, and a rule that every approval waits for a person would make
+the process impossible to test.
+
+A test run answers that without pretending a person was there. It is a
+run that follows a test case, and its record says so from the first line
+to the last.
+
+### 21.1 The test case
+
+A test case is a short plain-text document kept beside the process
+document, never inside it. It names the process by `id:` and by the
+digest of the document's text, and it says four things:
+
+```
+TEST: revise-then-publish          for: northwind/explore-a-topic
+                                   digest: sha256:9f2a…
+carried: topic = the market for heat pumps in Norway
+answer: approve-the-cards = changes: the third card has no source
+answer: approve-the-cards = approve
+stand-in: publish-the-cards = a receipt naming the address it would
+          have published to
+expect: goal reached
+expect: ran plan-the-angles, write-the-cards, approve-the-cards,
+        write-the-cards, approve-the-cards, publish-the-cards
+expect: write-the-cards hands on five cards, each with a source
+```
+
+- **`carried:`** lines are what the run is handed, one per item the
+  trigger carries (Section 5.4), by the item's name.
+- **`answer:`** lines answer the phases a person would sign, by phase
+  key: `approve`, `changes:` with the words a person would write, or
+  `reject:` with the reason. A phase that runs more than once takes its
+  answers in order, so a test case can send work back and check that it
+  comes round again. A phase that waits for an answer the test case does
+  not give stops the test, and the result says which.
+- **`stand-in:`** lines say what a phase that reaches outside returns in
+  place of acting (Section 21.3), by phase key.
+- **`expect:`** lines say what must be true when the run ends: whether
+  the goal was reached, which phases ran in order, repeats included, and
+  what a phase hands on, in words or in a form a program can check.
+
+A test case refers to phases, handoffs and items by their keys in the
+document, as an extension does (Section 20.3). It does not change the
+document, and the same document runs the same way in a test run as in a
+real one, except where this section says otherwise.
+
+Where a test case was written for a digest the document no longer has,
+a runtime MUST refuse to run it and say so. A test that passes against a
+document it was not written for says nothing.
+
+### 21.2 What a test run records
+
+A test run's run record opens with the mode and the test case, and they
+MUST NOT change afterwards:
+
+```
+RUN: research/explore-a-topic v3 · run 52
+started: <date> by <the program that started it>
+mode: test   case: revise-then-publish
+```
+
+Every phase a person would sign is recorded as answered by the test
+case, naming it, with the answer and the time. A runtime MUST NOT record
+a test case's answer as a person's approval or signature, and MUST NOT
+let a test case answer a phase in a run whose record does not say
+`mode: test`. The close names whether each expectation was met. An
+expectation the runtime could not check is recorded as not checked,
+never as met.
+
+### 21.3 A test run does not reach outside
+
+A phase that sends something out of the organization, publishes, pays,
+signs on the organization's behalf or spends without a ceiling MUST NOT
+act in a test run. It returns its `stand-in:` instead, recorded as a
+stand-in, or, where the test case gives none, the test stops at that
+phase and the result says why. A runtime decides which phases these are
+from what it knows of the holder, and where it cannot tell it treats the
+phase as one that reaches outside.
+
+### 21.4 A test run is not a real run
+
+A test run's records are kept apart from real runs. A runtime MUST NOT
+count a test run as a run of the process in anything a reader relies on
+for the real work, such as how often it runs, how long it takes, what it
+cost or what it produced, and MUST NOT present a test run's output as
+the process's output. A catalog's `example:` names a real run, never a
+test run.
+
+### 21.5 A suite
+
+A process MAY have a suite: the set of test cases kept beside it. A
+suite passes when every test case in it passes. A runtime that changes
+how it runs a document, and an owner who amends one, SHOULD run the
+suite before the change is used for real work, and a reader who is
+asked to rely on a process may ask to see the suite and its last
+results.
+
+A test case and a suite are not part of the process document, for the
+reason Section 20.1's third test gives: what a run is handed and how its
+approvals are answered differ from one run to the next.
