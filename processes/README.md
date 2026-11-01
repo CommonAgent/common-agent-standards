@@ -25,6 +25,8 @@ Site: https://agentprocesses.ai
 | [Make a new agent](./reference/make-a-new-agent.md) | a reference process for making an agent the organization runs, from a spec the owner approves to a checked, listed agent |
 | [Record an incident](./reference/record-an-incident.md) | a reference process for writing down what happened when an agent goes quiet or fails, for a person to decide on |
 | [Retire an agent](./reference/retire-an-agent.md) | a reference process for taking down an agent the organization runs, and closing its AgentDoc |
+| [Extension: start-form](./extensions/start-form-v2.md) | how a form asks a person for the items a trigger carries ([version 1](./extensions/start-form.md)) |
+| [Extension: typed-handoffs](./extensions/typed-handoffs-v2.md) | what type each handoff is, how one is converted, and how a program builds an input from it ([version 1](./extensions/typed-handoffs.md)) |
 
 ## Where this sits
 

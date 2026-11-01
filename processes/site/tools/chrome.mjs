@@ -66,6 +66,7 @@ export function rail(active) {
           <div class="items">
           ${a("/spec.html", "The specification", "spec")}
           ${a("/versions.html", "Versions and changelog", "versions")}
+          ${a("/ext/", "Extensions", "ext")}
           ${a("/guide-process.html", "Guide: writing down a process", "guide-process")}
           ${a("/guide-catalog.html", "Guide: the process catalog", "guide-catalog")}
           ${a("/social-campaign.html", "Example: a social campaign", "social-campaign")}
@@ -110,6 +111,7 @@ export const footer = `<footer class="sitefoot">
           <a href="/retire-an-agent.html">Retire an agent</a>
           <a href="/spec.html">The specification</a>
           <a href="/versions.html">Versions and changelog</a>
+          <a href="/ext/">Extensions</a>
           <a href="${REPO_URL}">The source on GitHub</a>
           <a href="${FAMILY}">The Common Agent Standards</a>
         </div>
