@@ -2,9 +2,9 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.20-draft
+**Version:** 0.9.21-draft
 **Status:** Working Draft
-**Date:** 2026-10-29
+**Date:** 2026-11-01
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
@@ -4243,6 +4243,7 @@ suite, `docs/implementation-status.md`, not here.
 | `mesh://extensions/screening/v1` | **Draft** (see `extensions/EXT-10-screening.md`) | Who reads inbound content before an agent does. A recipient-side socket: the node consults a provider the OWNER chose — an HTTPS service or a mesh agent — and gets back pass / flag / hold, where a hold routes to the EXT-6 door rather than deleting anything. Screening is local because a sealed payload (EXT-7) opens only on the recipient's node, so anything upstream would cover unsealed traffic alone and read as covering all of it. Five call sites: message delivery, room history replay, room file fetch, work-board read, and outbound send. **The protocol carries no detector and never will** — a shipped detector makes every miss the platform's, and an account with no provider configured is unscreened and must be told so in that word. |
 | `mesh://extensions/audience/v1` | **Draft** (see §5.7) | Messages for the person behind an agent. Only an agent whose Common Agent Specification `acts_for` is `person` declares this URI, and every other receiver written to this version refuses a message marked for a person at its door with `AUDIENCE_NOT_SUPPORTED`. A sender marks a `request`, a `respond` or a room post with `meta.audience: "person"`, under its signature; a receiver that declares this URI in its manifest never gives such a message to a handler or a model, surfaces it to its person, and lets the agent read it only when the person allows, framed, with nothing in it taken as an instruction. A sending SDK checks the declaration and refuses with `AUDIENCE_NOT_SUPPORTED` until its person chooses to send anyway. The server's part (carrying the mark, and a task manager that applies no marked update) is in the core profile (§1.6). |
 | `mesh://extensions/agent-messaging-over-a2a/v1` | **Draft** (see `extensions/EXT-14-agent-messaging-over-a2a.md`) | Agent Messaging over A2A. A caller that holds an Agent Messaging key carries its own signed envelope in an A2A message's metadata; a bridge checks it (signature, addressee, freshness, offering), relays it unchanged and signs nothing, and returns the agent's own signed envelope beside the A2A result. A message for the person carries readable text generated from the envelope (§5.8). How a signed caller finds an agent's card from its name card's `a2a` endpoint. From 0.2.0: an A2A caller's answer to an `input_required` Task goes to the same mesh Task, and a first contact the agent's door has not let in is answered `auth-required` with how to be let in, the same for held, blocked and absent, with a content-free knock. From 0.3.0: the card is generated from the agent's Descriptor where it published one, with each offering's inputs, outputs and schemas and the Descriptor's link and digest in the extension's params, and a caller with no key carries its budget in the extension's metadata. |
+| `mesh://extensions/receipts/v1` | **Draft** (see `extensions/EXT-15-receipts.md`) | Receipts: the network's signed record of one call (who did it, when, how long, what it cost line by line, whether the charge settled, what ran), asked for in `payload.config.receipt` (`none`, `summary` or `full`), recorded for every call, sent as its own message after the answer and never delaying it, and never written by the agent. |
 | Sessions (`connect`/`disconnect`) | Candidate | The parked session operations (§10.1 and §10.2), if a durable-session extension is ever needed beyond `context_id`. |
 
 Extensions whose normative text lives outside this document are collected in
@@ -6847,3 +6848,21 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > 0.8.0-draft and EXT-14 to 0.3.1-draft, each naming the fixture set. No
 > requirement, field, wire identifier or section number changes. The wire
 > version stays `0.3.0` (§20.1).
+
+> **2026-11-01: Version 0.9.21-draft. Receipts.** A new extension,
+> `extensions/EXT-15-receipts.md` (`mesh://extensions/receipts/v1`), is the
+> network's signed record of one call: who did it, when, how long it took,
+> what it cost line by line, whether the charge settled, and what ran, in a
+> summary and a full tier, with steps for work of several steps. A caller
+> asks for one in `payload.config.receipt` (`none`, `summary` or `full`),
+> and its account's standing default applies when it does not say. The
+> issuer records one for every call it charges and sends it only when asked,
+> as its own message after the answer, which it never delays; the agent
+> never writes one. It is signed in the Common Agent record convention under
+> the tag `agent-call-receipt-v1`, and is the same document by broker
+> (the reserved offering `call-receipt`), by email (a signed attachment and
+> a plain summary) and over A2A (the Task's metadata, provisional first),
+> and readable with the job. A receipt never names the model behind an
+> agent or the caller's balance. §17.5 lists it. No existing requirement,
+> field, wire identifier or section number changes. The wire version stays
+> `0.3.0` (§20.1).
