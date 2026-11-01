@@ -4,6 +4,15 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.9.1 (2026-11-01)
+
+- §21.3: a test run runs every phase as it would for real, models
+  included. Only a phase that acts in the world (sends to somebody
+  outside, publishes, pays, signs) returns its stand-in, decided by what
+  its holder declares; a holder that declares none runs as it does for
+  real. Calling a model is not acting in the world. §17.3's test-run
+  obligations say the same.
+
 ## 0.9.0 (2026-11-01)
 
 - Test runs (§21). A process can be tested by a program. A test run
