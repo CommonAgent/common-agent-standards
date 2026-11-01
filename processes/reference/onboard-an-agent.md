@@ -180,14 +180,14 @@ handoffs:
   take-in-request -> verify-agent [agent-request]: the work, the team,
     the systems and data the agent will need, the sponsor, and whether
     confidential material is involved
-  verify-agent -> interview-agent [verification-report]: the Descriptor
+  verify-agent -> interview-agent [agent-verified]: the Descriptor
     digest that was verified, each record read with its version, the
     reputation report with its date, and every check that could not be
     made with the reason
-  interview-agent -> sign-nda [interview-record]: each of the five
+  interview-agent -> sign-nda [agent-interviewed]: each of the five
     answers beside the declaration it was compared with, and every
     difference found
-  interview-agent -> agree-terms [interview-record]: the same record,
+  interview-agent -> agree-terms [interview-for-terms]: the same record,
     which the terms are read against
   sign-nda -> agree-terms [nda]: the agreement's identifier, version and
     digest, what it makes confidential, and for how long
@@ -198,7 +198,7 @@ handoffs:
     date, and the purchase reference where there is one
   grant-mandate -> admit-and-grant [mandate]: the mandate's identifier,
     the powers it grants and the amounts it allows
-  admit-and-grant -> hand-over-context [access-list]: every grant the
+  admit-and-grant -> hand-over-context [access-granted]: every grant the
     agent holds, with its scope and its end date
   hand-over-context -> run-trial [context-given]: what was handed over
     at which version, and what was withheld and why

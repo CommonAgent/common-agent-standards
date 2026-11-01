@@ -210,7 +210,7 @@ handoffs:
   note-confidentiality -> sign-exit [surviving-terms]: each
     confidentiality term that outlasts the engagement, with its end date
   file-outcome -> sign-exit [outcome-filed]: the same record
-  sign-exit -> record-learnings [exit-record]: the countersigned exit
+  sign-exit -> record-learnings [exit-signed]: the countersigned exit
   file-outcome -> record-learnings [outcome-filed]: the same record
 deviations:
   sign-exit -> withdraw-access [grant-still-open]: a grant still works

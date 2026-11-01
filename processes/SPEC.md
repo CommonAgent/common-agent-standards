@@ -1,10 +1,19 @@
 # Agent Processes Specification
 
-**Version:** 0.9.1
+**Version:** 0.9.2
 **Status:** Published
 **Date:** 2026-11-01
 
-**This revision.** A test is a test of the real thing (Section 21.3).
+**This revision.** A test case is pinned to the digest of the process's
+shape, which leaves out the `bindings:` block (Section 21.1), so
+swapping or upgrading the agent that holds a role keeps a suite valid
+and a change to the process itself does not. A deviation line may end
+with `limit: <n>`, the most times one run may take that way back
+(Section 6.7.1). The five reference processes kept in this repository no
+longer reuse a handoff key as a record key (Section 8.6), and the three
+that named no quality gate now name one (Section 12.2).
+
+**0.9.1.** A test is a test of the real thing (Section 21.3).
 Every phase of a test run runs as it would for real, models included;
 only a phase that acts in the world, by sending to somebody outside,
 publishing, paying or signing, returns its stand-in instead, decided by
@@ -1533,6 +1542,18 @@ process needs explained. The line carries the edge, which is the part a
 runtime can act on. The prose carries the scope, the judgment and the
 reason, which is the part a person acts on at two in the morning
 (Section 14.1).
+
+A deviation line MAY end with `limit: <n>`, the most times one run may
+take that way back. A run that would take it once more does not: it
+stops at that phase, and the run record says the limit was reached. The
+limit is part of the process, because a way back that can be taken
+forever changes what the process does, so it is written on the line and
+never left to a runtime's setting.
+
+```
+  run-the-suite -> wire-it [suite-failed]: the failing test cases and
+    what each one saw   limit: 3
+```
 
 Where a document carries deviation lines and a diagram, they MUST agree.
 Where they disagree, the document governs.
@@ -3542,7 +3563,7 @@ to the last.
 
 A test case is a short plain-text document kept beside the process
 document, never inside it. It names the process by `id:` and by the
-digest of the document's text, and it says four things:
+digest of the document's shape, and it says four things:
 
 ```
 TEST: revise-then-publish          for: northwind/explore-a-topic
@@ -3577,9 +3598,17 @@ document, as an extension does (Section 20.3). It does not change the
 document, and the same document runs the same way in a test run as in a
 real one, except where this section says otherwise.
 
-Where a test case was written for a digest the document no longer has,
-a runtime MUST refuse to run it and say so. A test that passes against a
-document it was not written for says nothing.
+The digest of a document's shape is the SHA-256 of its text with the
+`bindings:` block left out. Who holds each role and which systems it
+uses change whenever an organization swaps an agent or upgrades one, and
+those are exactly the changes a suite should be run against, not
+refused by. Everything else is in the digest: the phases, their order,
+their automation levels, the gates, the ways back, the handoffs and
+what the trigger carries.
+
+Where a test case was written for a shape the document no longer has, a
+runtime MUST refuse to run it and say so. A test that passes against a
+process it was not written for says nothing.
 
 ### 21.2 What a test run records
 

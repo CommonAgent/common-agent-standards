@@ -4,6 +4,19 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.9.2 (2026-11-01)
+
+- §21.1: a test case is pinned to the digest of the process's shape, the
+  SHA-256 of its text with the `bindings:` block left out. Swapping or
+  upgrading the agent that holds a role keeps a suite valid; changing the
+  process itself does not.
+- §6.7.1: a deviation line MAY end with `limit: <n>`, the most times one
+  run may take that way back; the run stops there and says so.
+- The five reference processes in `processes/reference/` no longer reuse a
+  handoff key as a record key (§8.6), and onboard-an-agent no longer gives
+  two handoffs one key. make-a-new-agent, record-an-incident
+  and retire-an-agent now name a quality gate (§12.2).
+
 ## 0.9.1 (2026-11-01)
 
 - §21.3: a test run runs every phase as it would for real, models

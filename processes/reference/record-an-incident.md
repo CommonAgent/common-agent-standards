@@ -94,7 +94,7 @@ phases:
                         after: record-the-incident
                         automation: never
 handoffs:
-  notice -> gather-the-records [alarm]: the agent's name, the time, and
+  notice -> gather-the-records [alarm-raised]: the agent's name, the time, and
     what the watcher or the person saw
   gather-the-records -> record-the-incident [records]: the platform's
     activity records and the agent's own records for the window, as
@@ -118,6 +118,8 @@ policy:
   the agent being recorded is never contacted by the recorder
   the decision is a person's, every time
 measures:
+  quality gate: no incident record states a fact without naming its
+                source, or decides what to do in place of a person
   cycle time: <target> from the notice to the decision
   gaps: intervals in the timeline no record covers
 records:

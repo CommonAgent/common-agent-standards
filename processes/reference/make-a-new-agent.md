@@ -165,14 +165,14 @@ phases:
                        after: check-conformance
                        automation: never
 handoffs:
-  write-the-spec -> approve-the-spec [spec]: the spec, the four answers
+  write-the-spec -> approve-the-spec [spec-drafted]: the spec, the four answers
     as the person settled them, and the list of what the request left
     open
   approve-the-spec -> write-the-suite [approved-spec]: the spec as the
     owner left it, with who approved it and when
   approve-the-spec -> write-the-scripts [approved-spec]: the same spec,
     and the prototype when one came with the request
-  write-the-suite -> write-the-scripts [suite]: every test file, and the
+  write-the-suite -> write-the-scripts [suite-written]: every test file, and the
     note of what the suite could not cover
   approve-the-spec -> make-the-package [approved-spec]: the spec as the
     owner left it, which names the scripts the package must ship
@@ -225,6 +225,8 @@ policy:
   a prototype is read as the most exact statement of what was wanted
     and is never shipped as it stands
 measures:
+  quality gate: no agent is deployed whose conformance check failed,
+                or whose package differs from the one the owner approved
   cycle time: <target> from the request to the deployed agent's name
   rounds: revisions before the owner approves the spec, and before the
           conformance check passes

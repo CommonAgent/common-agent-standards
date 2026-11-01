@@ -108,9 +108,9 @@ phases:
                         after: remove-the-agent
                         automation: <level>
 handoffs:
-  say-what-goes -> retract-the-listing [notice]: the agent's name, the
+  say-what-goes -> retract-the-listing [notice-given]: the agent's name, the
     reason, and who was told
-  retract-the-listing -> approve-the-removal [unlisted]: the listing as
+  retract-the-listing -> approve-the-removal [listing-retracted]: the listing as
     it was, and when it was taken down
   approve-the-removal -> remove-the-agent [approved-removal]: the
     agent's name, with who approved the removal and when
@@ -141,6 +141,8 @@ policy:
   the agent's name stays claimed; a retired name is not given to
     another agent
 measures:
+  quality gate: no agent is removed while anything that depends on it
+                has not been told
   cycle time: <target> from the request to the closed AgentDoc
   left behind: things the deployment manager could not remove
 records:
