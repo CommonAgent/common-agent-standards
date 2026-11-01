@@ -1,10 +1,28 @@
 # Agent Processes Specification
 
-**Version:** 0.7.1-draft
+**Version:** 0.8.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-24
+**Date:** 2026-11-01
 
-**This revision.** Editorial. The site's Reference processes section
+**This revision.** Three things a process could not say, and a place for
+everything else. A trigger can now say what a run is handed when it
+starts, written `carries:` under the trigger (Section 5.4): each item by
+name, what it is, and whether a run may start without it. `from:` can
+now name a process copied from another organization, not only a
+reference process, and a copy leaves the original's people behind
+(Section 4). A document can name `example:`, somewhere to see what a run
+produced, and the catalog gains the column that copies it. A phase a
+person must approve is approved on every run, the first run of a new
+version included (Section 7.3). And a document can carry extensions
+(Section 20): optional parts with their own published definitions, for
+what only software needs, such as how a start form is drawn or how one
+phase's output is typed and converted for the next. Section 20.1 gives
+the four tests that decide whether something belongs in this
+specification, in an extension, in whatever starts runs, or in the
+catalog. Every new part is optional, so no document in the corpus fails
+anything new.
+
+**0.7.1-draft.** Editorial. The site's Reference processes section
 gains three reference processes for the agents an organization runs
 itself, kept in `processes/reference/`: `ref/dev/make-a-new-agent`,
 which turns a request into an approved spec, a test suite written before
@@ -180,8 +198,10 @@ A process document is plain text. Its parts appear in this order:
     from: <reference process> v<n>
     owner: <who>                          effective: <date>
     trigger: <what starts a run>
+             carries: <name> - <what it is>, <required or optional>
     concurrency: <what may overlap>
     goal: <what is true when a run closes>
+    example: <where to see what a run produced>
     phases:
       <phase-name> - <how it resolves>: <what happens>
                      owner: <role>   after: <phase>
@@ -200,14 +220,18 @@ A process document is plain text. Its parts appear in this order:
       <a rule a run is held to>
     measures:
       <what a run is measured on>
+    extensions:
+      <extension> v<n>
+        <lines the extension defines>
 
 A document MUST carry `PROCESS:`, `id:`, `trigger:`, `goal:`, `phases:` and
 `handoffs:`. Everything else is REQUIRED only where a later section says so.
 
 Sections 4 to 13 specify each part. Section 14 covers failure edges, which are
 deliberately not normative. Section 15 specifies the reference profile, 16
-translation, 17 conformance, 18 versioning, and 19 what all of it means
-when a run spans two organizations.
+translation, 17 conformance, 18 versioning, 19 what all of it means
+when a run spans two organizations, and 20 extensions and how to tell
+what belongs in one.
 
 ## 4. The header
 
@@ -299,7 +323,9 @@ somebody's process at version 1.
 ### `from:`
 
 `from:` records where the document came from. It MUST name a reference
-process and a version, in the form `ref/<domain>/<slug> v<n>`.
+process and a version, in the form `ref/<domain>/<slug> v<n>`, or
+another organization's process document, in the form given at the end
+of this section.
 
 A document adopted from a reference process MUST carry `from:`. A
 reference process MUST also carry the line in its own document block,
@@ -314,6 +340,23 @@ document and a version of that document. A reference process has no
 owner, no runs and no records, so a `from:` line pointing at one is a
 statement about lineage, not about a live system somewhere.
 
+A document copied from another organization's process document, rather
+than adopted from a reference process, MAY carry `from:` naming that
+document. It is written with the owner first, then the document's `id:`
+and the version copied, in the form `<owner> <id> v<n>`:
+
+```
+from: northwind.example research/explore-a-topic v3
+```
+
+The same rules hold: it is provenance and nothing else, the copy is the
+copier's from the moment it is made, and the original never reaches into
+it. One more rule holds because the original was a working document and
+not a reference: a copy MUST NOT carry the people the original's roster
+named. It carries a blank in each of their places (Section 15.4), and
+the copier fills the blanks with their own people. Roles, phases,
+handoffs and everything else come across as they were.
+
 ### `goal:`
 
 `goal:` MUST state what exists when a run is done.
@@ -323,6 +366,22 @@ the close of the graph (Section 6). "every ask on the table closed as
 given, traded or refused, each with a reason and a named approver, and
 one written position both sides hold" is a goal. "negotiate with the
 buyer" is not.
+
+### `example:`
+
+`example:` is OPTIONAL. It names somewhere a reader can see what a run of
+this process produced: a published output, or a run record the reader is
+allowed to open.
+
+```
+example: https://northwind.example/runs/explore-a-topic/run-41
+```
+
+A catalog copies it into its `example` column, so the catalog keeps
+nothing of its own. A reference process MUST NOT carry one, because a
+reference process has no runs (Section 15.5). An example says what one
+run made. It is not a promise about what the next run will make, and a
+runtime MUST NOT read anything from it.
 
 ### `bounded-by:`
 
@@ -707,6 +766,45 @@ event happened, the work never started, and no record exists that says
 so. This is why `concurrency:` is required rather than recommended.
 A document that does not answer the question forces the runtime to
 guess, and the guess is invisible.
+
+### 5.4 `carries:` what a run is handed
+
+Section 8.2 says what the trigger carries is stated in the trigger. A
+document MAY state it item by item, as indented `carries:` lines under
+the trigger sentence, one item per line:
+
+```
+trigger: a person asks for a topic to be explored
+         carries: topic - the words, a link or a document to explore,
+                  required
+         carries: reader - who the result is for, optional
+```
+
+Each item has a name, what it is in words, and `required` or
+`optional`. The name is a key, written like a phase key, and it MUST be
+unique among the document's items. Handoffs, policy and extensions refer
+to an item by its name.
+
+Where a document carries `carries:` lines:
+
+- The items are the trigger's handoff. The phases with no `after:` line
+  take them in, and Section 8.4 applies to them as to any handoff.
+- A runtime MUST NOT start a run without every `required` item. It
+  refuses the run and records the refusal, the same way it records a
+  trigger it refuses under Section 5.3.
+- An `optional` item a run was not handed is absent from that run. A
+  runtime MUST NOT fill it with a default the document does not state.
+- What a run was handed is part of its run record (Section 13.2), item
+  by item, so the record says what the run started from.
+
+How a person is asked for the items is not this specification's
+business. A form, a message, an email with attachments and a person
+reading the list aloud all hand a run the same items. A runtime that
+draws a form can describe it with an extension (Section 20).
+
+A clock trigger usually carries nothing, and a document without
+`carries:` lines is complete. The sentence remains the trigger, and the
+items say only what arrives with it.
 
 ---
 
@@ -1627,6 +1725,13 @@ approves it. Approval is an act, so the same rule `never` states applies
 here: a window that expires, a notification nobody answers, or a default
 that proceeds on silence MUST NOT be recorded as an approval.
 
+The rule holds on every run. A runtime MUST NOT pass a `supervised`
+phase without a person's approval on the first run of a new version, on
+a trial or test run, or on a run started by the person who would
+approve it. A runtime that wants a phase to run without an approval is
+asking for a lower level, and a lower level is an amendment to the
+document (Section 18), made by its owner and visible to every reader.
+
 The record MUST name the approver and MUST record when the approval was
 given. Where the phase feeds a handoff, the record of the approval
 SHOULD travel with what crosses, so the next phase can see that the
@@ -2348,6 +2453,15 @@ version that was effective at the time, not against today's page. A run
 record that follows the document forward destroys the only evidence of
 what the run was actually held to.
 
+Where the document carries `carries:` lines (Section 5.4), the run record
+also names each item the run was handed, by its item name, and says of
+each `optional` item whether it arrived:
+
+```
+carried: topic = <the words, or a reference to the document>
+carried: reader - not given
+```
+
 Where the document carries `confidential-under:`, the run record also
 holds every refusal the runtime made under it, each as a `REFUSED:`
 record naming the phase or handoff, the agent, its owner, the agreement
@@ -2915,7 +3029,12 @@ A conforming process document:
   first three a reader checks with both documents open, and the last by
   following the `runs process` lines through every document in the
   chain;
-- satisfies every MUST in sections 4 to 13.
+- where it carries `carries:` lines, gives every item a name no other
+  item has (Section 5.4);
+- where it carries `from:` naming another organization's document,
+  carries none of that document's people (Section 4);
+- satisfies every MUST in sections 4 to 13, and in Section 20 where it
+  carries extensions.
 
 The handoff check is the one a second implementer gets wrong, because a
 handoff is not always a graph edge. A document may state a handoff for a
@@ -2955,7 +3074,7 @@ with its own id, a version 1 and a `from:` line (section 15.6).
 
 A runtime is whatever carries out a run: a workflow engine, an agent, a
 person with the document open, or any combination (section 2). It
-conforms by what it does with seven sets of obligations.
+conforms by what it does with ten sets of obligations.
 
 **The graph (section 6).** A runtime MUST NOT begin a phase before every
 phase its `after:` line names has closed. A runtime MUST allow phases
@@ -3002,6 +3121,22 @@ level and the outer phase's level, close the phase only when the inner
 run closes having reached its goal, refuse an inner run whose document
 is already in the chain of runs that started it, and MUST NOT leave an
 inner run open when the outer run is abandoned.
+
+**The trigger's items (section 5.4).** Where a document carries
+`carries:` lines, a runtime MUST NOT start a run without every `required`
+item, MUST record the refusal when it refuses one, MUST NOT fill an
+`optional` item with a default the document does not state, and MUST
+name in the run record what the run was handed.
+
+**Approvals (section 7.3).** A runtime MUST NOT pass a `supervised` or
+`never` phase without a person acting on any run, the first run of a new
+version and a trial run included.
+
+**Extensions (section 20).** A runtime MUST run a document whose
+extensions it does not know as if their lines were absent, MUST NOT let
+an extension it knows override anything the document states outside the
+`extensions:` block, and MUST NOT write lines this specification does
+not define anywhere but that block.
 
 **Confidentiality (section 4).** Where a document carries
 `confidential-under:`, a runtime that implements the key MUST check,
@@ -3222,3 +3357,109 @@ counterparty may be running any number of its own runs against the same
 subject, and this side cannot see them. A document MUST NOT state a
 concurrency rule it can only keep by assuming what the other
 organization is doing.
+
+---
+
+## 20. Extensions
+
+A runtime that is software needs things a reader does not: how to draw
+the form that asks a person for the trigger's items, what type each
+handoff is when one program hands it to another, how to convert one
+phase's output into what the next phase reads. None of that changes the
+work, and a person running the process from the page never needs it.
+It still has to be written down somewhere both the author and the
+runtime can read, or it ends up in one runtime's own database, where
+nobody else can.
+
+An extension is that somewhere. It is an optional part of a process
+document, defined by its own published document, which a runtime that
+knows it reads and a runtime that does not know it ignores.
+
+### 20.1 What goes where
+
+Four tests decide where a thing belongs. Ask them in order and stop at
+the first one that answers yes.
+
+1. **Does it change the work?** Who does a phase, in what order, which
+   phases a person must sign, where the work goes back, what passes
+   between phases, what a run is handed, and what a run leaves behind.
+   If it changes any of these, it belongs in this specification and in
+   the document itself, because whatever changes the work has to be
+   visible to the owner, versioned and signed.
+2. **Would a person running the process from the page need it?** If
+   yes, it belongs in this specification. If only software needs it,
+   and it is the same for every run, it belongs in an extension.
+3. **Is it the same for every run?** If it differs from one run to the
+   next, it is not part of the process at all. It is something a run is
+   handed (Section 5.4), and saved sets of those answers or settings
+   belong to whatever starts runs, not to the document.
+4. **Is it about finding or showing the process rather than doing it?**
+   Then it belongs in the catalog, which copies every field it shows
+   from the document. A field the catalog needs and the document lacks
+   is added to the document's header, as `example:` was.
+
+The tests are in that order because the first is the one that matters.
+A setting that skips an approval on the first run, a default that
+fills an item the trigger was not handed, or a form that starts a run
+halfway through the graph all change the work. Calling any of them an
+extension, a setting or a feature does not move it out of the document.
+
+### 20.2 The block
+
+A document carries its extensions in an `extensions:` block, the last
+block of the document. Each extension starts with a line naming it and
+the version of its definition, and the lines under it are written in
+the form that definition gives:
+
+```
+extensions:
+  agentprocesses.ai/ext/start-form v1
+    topic: label "What to explore"   hint "Paste words, a link or a file"
+  agentprocesses.ai/ext/typed-handoffs v1
+    plan-the-angles -> write-the-cards: application/json
+```
+
+The name is the address of the extension's definition without its
+scheme. Anyone MAY publish an extension at an address they control.
+
+### 20.3 The rules
+
+- An extension MUST NOT change the work. Every test in Section 20.1
+  that sends something to this specification sends it out of every
+  extension, and a definition that does any of those things is not an
+  extension of this specification.
+- An extension refers to phases, handoffs and the trigger's items by
+  their keys in the document. It MUST NOT give any of them a second
+  name.
+- A runtime that does not know an extension MUST run the document as if
+  the extension's lines were absent, and the run MUST be the same run in
+  every respect Section 20.1 test 1 names. It SHOULD say, in the run
+  record, which extensions it ignored.
+- A runtime that knows an extension MUST NOT let it override anything
+  the document states outside the `extensions:` block. Where the two
+  disagree, the document governs.
+- A document MUST NOT be held non-conformant because a reader or a
+  runtime does not know one of its extensions.
+- Lines this specification does not define SHOULD NOT appear outside
+  the `extensions:` block, and a runtime MUST NOT write any there. A
+  runtime's private data written into the header or the phase list makes
+  a document only that runtime can read.
+
+### 20.4 A definition
+
+An extension's definition is a short published document. It MUST say:
+
+- its name and version, and that it extends Agent Processes;
+- what it adds, and which software needs it;
+- the form of its lines, and what each refers to by key;
+- why it passes the four tests of Section 20.1, test by test.
+
+A new version of a definition is a new version number. A document
+names the version it was written against, so a definition can change
+without changing the meaning of a document already written.
+
+The extensions this specification's authors publish are listed with the
+specification, beginning with two: `start-form`, which says how a form
+asks a person for the trigger's items, and `typed-handoffs`, which says
+what type each handoff is and how a runtime converts one that does not
+fit the phase that receives it.

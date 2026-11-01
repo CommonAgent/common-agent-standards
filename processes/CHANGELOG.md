@@ -4,6 +4,37 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.8.0-draft (2026-11-01)
+
+- A trigger can say what a run is handed when it starts, written
+  `carries:` under the trigger sentence (§5.4): each item by name, what it
+  is, and `required` or `optional`. The items are the trigger's handoff. A
+  runtime does not start a run without every required item, fills no
+  optional item with a default the document does not state, and names in
+  the run record what the run was handed (§13.2, §17.3).
+- `from:` can name a process copied from another organization, written
+  `<owner> <id> v<n>`, not only a reference process (§4). A copy carries
+  none of the original's people, and blanks stand in their places.
+- A document can name `example:`, somewhere to see what a run produced
+  (§4). The catalog gains an `example` column that copies it, so the
+  catalog still keeps nothing of its own.
+- A `supervised` phase is approved by a person on every run, the first run
+  of a new version, a trial run and a run started by the approver included
+  (§7.3, §17.3). Skipping an approval is a lower level, and a lower level
+  is an amendment.
+- Extensions (§20): an optional `extensions:` block, the last in the
+  document, for what only software needs. Each extension is defined by its
+  own published document and named by its address and version. An
+  extension never changes the work; a runtime that does not know one runs
+  the document as if its lines were absent; and lines this specification
+  does not define go nowhere else. §20.1 gives the four tests that decide
+  whether something belongs in this specification, in an extension, in
+  whatever starts runs, or in the catalog. The first two extensions are
+  published beside the specification: `start-form` and `typed-handoffs`
+  (`processes/extensions/`).
+- Every new part is optional, so no document in the corpus fails anything
+  new.
+
 ## 0.7.1-draft (2026-10-24)
 
 - Editorial. The site's Reference processes section gains three reference
