@@ -1,7 +1,7 @@
 # Agent Processes Specification
 
-**Version:** 0.8.0-draft
-**Status:** Working Draft
+**Version:** 0.8.0
+**Status:** Published
 **Date:** 2026-11-01
 
 **This revision.** Three things a process could not say, and a place for
@@ -19,8 +19,11 @@ what only software needs, such as how a start form is drawn or how one
 phase's output is typed and converted for the next. Section 20.1 gives
 the four tests that decide whether something belongs in this
 specification, in an extension, in whatever starts runs, or in the
-catalog. Every new part is optional, so no document in the corpus fails
-anything new.
+catalog. A process offered to others, or a reference process published to be
+adopted, is listed under the Common Agent catalog profile's process
+entry, which copies the document's header and pins it by digest
+(Section 1.3). Every new part is optional, so no document in the
+corpus fails anything new.
 
 **0.7.1-draft.** Editorial. The site's Reference processes section
 gains three reference processes for the agents an organization runs
@@ -148,6 +151,23 @@ whatever an organization already runs.
 It also does not specify the wrapper a catalog publishes a document in. A
 publisher may present a process with a diagram, an activity table and a summary,
 or as the document alone. The document is the normative artifact.
+
+### 1.3 Listing a process
+
+A process its owner runs for others, and a reference process published
+to be adopted, is listed in a catalog as a process entry under the
+Common Agent catalog profile, Section 14
+(https://commonagent.net/catalog.html#14-a-process-entry). The entry copies the
+document's header and the items its trigger carries (Sections 4 and
+5.4), pins the document by the digest of its text, names the agent
+that runs it, and discloses every phase held by another owner's agent
+and every phase a person holds. Where the process is priced or can be
+engaged, its offers come from a standing proposal whose scope is this
+process at that digest (Agent SoW, Section 5.2.1).
+
+Nothing in this specification depends on the listing. The document is
+complete without one, and where a listing and the document disagree,
+the document governs.
 
 ## 2. Terminology
 
@@ -377,8 +397,9 @@ allowed to open.
 example: https://northwind.example/runs/explore-a-topic/run-41
 ```
 
-A catalog copies it into its `example` column, so the catalog keeps
-nothing of its own. A reference process MUST NOT carry one, because a
+A catalog copies it into its `example` column, and a process entry
+under the Common Agent catalog profile copies it the same way
+(Section 1.3), so neither keeps anything of its own. A reference process MUST NOT carry one, because a
 reference process has no runs (Section 15.5). An example says what one
 run made. It is not a promise about what the next run will make, and a
 runtime MUST NOT read anything from it.
@@ -3395,7 +3416,9 @@ the first one that answers yes.
    belong to whatever starts runs, not to the document.
 4. **Is it about finding or showing the process rather than doing it?**
    Then it belongs in the catalog, which copies every field it shows
-   from the document. A field the catalog needs and the document lacks
+   from the document. A process listed for others to find and engage
+   is a process entry under the Common Agent catalog profile (Section
+   1.3), which copies the same way. A field the catalog needs and the document lacks
    is added to the document's header, as `example:` was.
 
 The tests are in that order because the first is the one that matters.

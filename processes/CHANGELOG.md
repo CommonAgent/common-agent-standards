@@ -4,7 +4,14 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
-## 0.8.0-draft (2026-11-01)
+## 0.8.0 (2026-11-01)
+
+- Published. Earlier versions were working drafts.
+- A process offered to others, or a reference process published to be
+  adopted, is listed as a process entry under the Common Agent catalog
+  profile, Section 14, which copies the header, pins the document by
+  digest, names the agent that runs it and discloses the phases held
+  outside and by people (§1.3).
 
 - A trigger can say what a run is handed when it starts, written
   `carries:` under the trigger sentence (§5.4): each item by name, what it

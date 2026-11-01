@@ -8,6 +8,8 @@
     "ca:offers": { "@id": "ca:offers", "@type": "@json" },
     "ca:liveness": { "@id": "ca:liveness", "@type": "@json" },
     "ca:audience": { "@id": "ca:audience" },
+    "ca:process": { "@id": "ca:process", "@type": "@json" },
+    "ca:runner": { "@id": "ca:runner", "@type": "@json" },
     "ca:reputation": { "@id": "ca:reputation", "@type": "@json" },
     "ca:lastSeen": { "@id": "ca:lastSeen", "@type": "@json" },
     "ca:evidence": { "@id": "ca:evidence", "@type": "@json" },
