@@ -1,10 +1,16 @@
 # Agent Processes Specification
 
-**Version:** 0.9.0
+**Version:** 0.9.1
 **Status:** Published
 **Date:** 2026-11-01
 
-**This revision.** A process can be tested by a program (Section 21).
+**This revision.** A test is a test of the real thing (Section 21.3).
+Every phase of a test run runs as it would for real, models included;
+only a phase that acts in the world, by sending to somebody outside,
+publishing, paying or signing, returns its stand-in instead, decided by
+what its holder declares. Calling a model is not acting in the world.
+
+**0.9.0.** A process can be tested by a program (Section 21).
 A test run follows a test case, kept beside the document, that says what
 the run is handed, how each approval is answered (approve, changes or
 reject, in order where a phase runs more than once), what each phase
@@ -3178,7 +3184,8 @@ test case when it starts and never change them, MUST record each answer
 a test case gives as the test case's and never as a person's, MUST NOT
 let a test case answer a run not recorded as a test, MUST refuse a test
 case written for another digest of the document, MUST NOT let a phase
-that reaches outside act in a test run, and MUST keep test runs out of
+that acts in the world act in a test run, MUST run every other phase as
+it would for real, and MUST keep test runs out of
 anything a reader relies on for the real work.
 
 **Extensions (section 20).** A runtime MUST run a document whose
@@ -3559,7 +3566,7 @@ expect: write-the-cards hands on five cards, each with a source
   answers in order, so a test case can send work back and check that it
   comes round again. A phase that waits for an answer the test case does
   not give stops the test, and the result says which.
-- **`stand-in:`** lines say what a phase that reaches outside returns in
+- **`stand-in:`** lines say what a phase that acts in the world returns in
   place of acting (Section 21.3), by phase key.
 - **`expect:`** lines say what must be true when the run ends: whether
   the goal was reached, which phases ran in order, repeats included, and
@@ -3593,15 +3600,26 @@ let a test case answer a phase in a run whose record does not say
 expectation the runtime could not check is recorded as not checked,
 never as met.
 
-### 21.3 A test run does not reach outside
+### 21.3 A test run does not act in the world
 
-A phase that sends something out of the organization, publishes, pays,
-signs on the organization's behalf or spends without a ceiling MUST NOT
-act in a test run. It returns its `stand-in:` instead, recorded as a
-stand-in, or, where the test case gives none, the test stops at that
-phase and the result says why. A runtime decides which phases these are
-from what it knows of the holder, and where it cannot tell it treats the
-phase as one that reaches outside.
+A test is a test of the real thing. Every phase of a test run runs as it
+would in a real run, with the same holders, the same models and the same
+systems, except the phases that act in the world.
+
+A phase acts in the world when it sends a message to somebody outside
+the organization, publishes or posts where others can read it, pays, or
+signs on the organization's behalf. Such a phase MUST NOT act in a test
+run. It returns its `stand-in:` instead, recorded as a stand-in, or,
+where the test case gives none, the test stops at that phase and the
+result says why.
+
+Calling a model is not acting in the world. A model the organization
+uses is part of how a phase does its work, and a test that replaced it
+would test something other than the process. A runtime decides which
+phases act in the world from what each holder declares, and a holder
+that declares none of these acts runs in a test run exactly as it runs
+for real. A test case MAY still give a stand-in for any phase, to test
+the rest of the process without it.
 
 ### 21.4 A test run is not a real run
 
