@@ -29,7 +29,7 @@
 // on GitHub when it has no page here), and the guides' links to the old
 // home of Agent Collab, which moved after the guides were written, go to the
 // site it has now.
-import { readFileSync, writeFileSync, mkdirSync, existsSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync, existsSync, readdirSync } from "node:fs";
 import { execFileSync } from "node:child_process";
 import { dirname, resolve, posix } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -67,6 +67,17 @@ const PAGE_OF = {
   "reference/record-an-incident.md": "/record-an-incident.html",
   "reference/retire-an-agent.md": "/retire-an-agent.html",
 };
+// The extensions this standard's authors publish (Section 20.4), each at the
+// address its name gives: agentprocesses.ai/ext/<name>/ is the newest
+// version, and /ext/<name>/v<n>.html every version. extensions/<name>.md is
+// version 1, extensions/<name>-v<n>.md version n.
+const EXT_DIR = resolve(STANDARD, "extensions");
+const EXTENSIONS = (existsSync(EXT_DIR) ? readdirSync(EXT_DIR) : []).filter((f) => f.endsWith(".md")).map((f) => {
+  const m = /^([a-z0-9-]+?)(?:-v(\d+))?\.md$/.exec(f);
+  if (!m) throw new Error(`extensions/${f} is not named <name>.md or <name>-v<n>.md`);
+  return { src: `extensions/${f}`, name: m[1], version: Number(m[2] ?? 1) };
+}).sort((a, b) => a.name.localeCompare(b.name) || a.version - b.version);
+for (const e of EXTENSIONS) PAGE_OF[e.src] = `/ext/${e.name}/v${e.version}.html`;
 const MOVED = {
   "https://github.com/jeffrschneider/agentcollab": "https://agentcollab.dev/",
   "https://github.com/jeffrschneider/agentprocesses": REPO_URL,
@@ -160,7 +171,7 @@ ${body}
 </html>
 `;
 }
-const write = (file, html) => { writeFileSync(resolve(OUT, file), html); console.log(`${file} written: ${(html.length / 1024).toFixed(0)} KB`); };
+const write = (file, html) => { mkdirSync(dirname(resolve(OUT, file)), { recursive: true }); writeFileSync(resolve(OUT, file), html); console.log(`${file} written: ${(html.length / 1024).toFixed(0)} KB`); };
 const source = (rel) => `<a href="${SUITE_REPO}/blob/main/processes/${rel}">processes/${rel}</a>`;
 const stamp = (rel) => `Rendered from ${source(rel)} in the Common Agent Standards repository${commit ? `, at commit <span class="mono">${commit}</span>` : ""}.`;
 
@@ -268,6 +279,68 @@ for (const g of GUIDES) {
     h1,
     canon: `${stamp(g.src)} The <a href="/spec.html">specification</a> is the normative text.`,
     toc, body: html,
+  }));
+}
+
+// ── the extensions ──────────────────────────────────────────────────────────
+// Each version of each extension on a page of its own; the newest also at the
+// extension's own address, which is what its name in a document points to
+// (Section 20.2: the name is the address of the definition without its scheme).
+if (EXTENSIONS.length) {
+  const names = [...new Set(EXTENSIONS.map((e) => e.name))];
+  const read1 = (e) => {
+    const md = read(e.src);
+    const t = md.match(/^# (.+)\n/);
+    if (!t) throw new Error(`${e.src} does not start with a title`);
+    // The first paragraph after the table says what the extension is for.
+    const lede = md.slice(t[0].length).split(/\n{2,}/).map((p) => p.trim()).find((p) => p && !p.startsWith("|")) ?? "";
+    return { ...e, md, title: t[1].trim(), body: md.slice(t[0].length), lede: plain(marked.parseInline(lede.replace(/\s*\n\s*/g, " "))) };
+  };
+  const all = EXTENSIONS.map(read1);
+  const versionsOf = (name) => all.filter((e) => e.name === name);
+  const others = (e) => versionsOf(e.name).filter((x) => x !== e);
+  const otherLine = (e) => {
+    const rest = others(e);
+    return rest.length ? ` Other versions: ${rest.map((x) => `<a href="/ext/${x.name}/v${x.version}.html">version ${x.version}</a>`).join(", ")}.` : "";
+  };
+  const extPage = (e, file, newest) => {
+    const { html, toc } = anchor(relink(marked.parse(e.body), e.src));
+    return page({
+      file, active: "ext",
+      title: `${e.title}: Agent Processes`,
+      description: e.lede.slice(0, 300),
+      h1: e.title,
+      metas: `<div class="metas">${chip("name", `agentprocesses.ai/ext/${e.name} v${e.version}`)}${chip("version", String(e.version))}</div>`,
+      canon: `${stamp(e.src)}${newest ? ` This is the newest version, at the extension's own address.` : ""}${otherLine(e)} An extension is defined by Section 20 of the <a href="/spec.html#s20">specification</a>.`,
+      toc, body: html,
+    });
+  };
+  for (const e of all) write(`ext/${e.name}/v${e.version}.html`, extPage(e, `ext/${e.name}/v${e.version}.html`, false));
+  for (const name of names) {
+    const newest = versionsOf(name).at(-1);
+    write(`ext/${name}/index.html`, extPage(newest, `ext/${name}/`, true));
+  }
+  const rows = names.map((name) => {
+    const v = versionsOf(name);
+    const newest = v.at(-1);
+    return `  <tr><td><a href="/ext/${name}/"><span class="mono">agentprocesses.ai/ext/${esc(name)}</span></a></td><td>${v.map((x) => `<a href="/ext/${name}/v${x.version}.html">v${x.version}</a>`).join(", ")}</td><td>${esc(newest.lede)}</td></tr>`;
+  }).join("\n");
+  const body = `<p>An extension is an optional part of a process document, for what only software needs: how a form asks for the trigger's items, what type each handoff is, how one program's output becomes the next program's input. A document carries its extensions in an <span class="mono">extensions:</span> block, the last block of the document, each named by its address and the version of its definition. A runtime that does not know an extension runs the document as if its lines were absent. Section 20 of the <a href="/spec.html#s20">specification</a> says what may be an extension and what must stay in the document.</p>
+<p>These are the extensions the specification's authors publish. Each one's name is its address here, and the newest version of its definition is at that address.</p>
+<table>
+  <thead><tr><th>Name</th><th>Versions</th><th>What it adds</th></tr></thead>
+  <tbody>
+${rows}
+  </tbody>
+</table>
+<p>Anyone may publish an extension at an address they control (Section 20.2).</p>`;
+  write("ext/index.html", page({
+    file: "ext/", active: "ext",
+    title: "Extensions: Agent Processes",
+    description: "The extensions to Agent Processes its authors publish, each at its own address: start-form and typed-handoffs, with every version of each.",
+    h1: "Extensions",
+    canon: `Rendered from the definitions in <a href="${SUITE_REPO}/tree/main/processes/extensions">processes/extensions</a> in the Common Agent Standards repository${commit ? `, at commit <span class="mono">${commit}</span>` : ""}.`,
+    body,
   }));
 }
 
