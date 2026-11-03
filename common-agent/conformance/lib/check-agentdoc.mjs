@@ -28,7 +28,11 @@
 //                              tier, rank, stars, trust, trust_label,
 //                              trust_level or trust_mark, or a key ending in
 //                              _score, _rating, _grade, _badge, _tier, _rank
-//                              or _stars (case does not matter).
+//                              or _stars (case does not matter). One exception:
+//                              a `grade` of enforced, evidence or recorded is an
+//                              Agent SoW clause grade (Agent SoW Section 3) on a
+//                              quoted clause, which grades the clause, not the
+//                              agent, and Agent SoW requires it shown.
 //   visibility-supports-claim  a member presented as enforced is an object
 //                              under `sections` carrying "enforced": true. It
 //                              is supported where `sections.shape.visibility`
@@ -96,6 +100,8 @@ const SECTIONS = ["identity", "shape", "asked", "role", "sells", "access", "refu
 const PACKAGE_NAMES = ["subject", "standing", "access", "handling", "shape.visibility", "sells.offerings.price"];
 const GRADE_KEYS = new Set(["score", "rating", "grade", "badge", "badges", "tier", "rank", "stars", "trust", "trust_label", "trust_level", "trust_mark"]);
 const GRADE_ENDINGS = ["_score", "_rating", "_grade", "_badge", "_tier", "_rank", "_stars"];
+// An Agent SoW clause carries one of these grades (Agent SoW Section 3). A `grade` with one of these values grades a quoted clause, not the agent.
+const CLAUSE_GRADES = new Set(["enforced", "evidence", "recorded"]);
 const CLAIM_KEYS = ["does", "focus", "role", "can_do", "capabilities", "skills", "examples"];
 
 const isObj = (v) => v !== null && typeof v === "object" && !Array.isArray(v);
@@ -153,6 +159,7 @@ export function checkAgentDoc(doc) {
   for (const [o, path] of objects(doc, "")) {
     for (const k of Object.keys(o)) {
       const key = k.toLowerCase();
+      if (key === "grade" && CLAUSE_GRADES.has(String(o[k]))) continue;
       if (GRADE_KEYS.has(key) || GRADE_ENDINGS.some((e) => key.endsWith(e))) {
         add("no-summary-grade", `${path}.${k}`.replace(/^\./, ""), `${k} is a summary grade, and an AgentDoc carries none`);
       }

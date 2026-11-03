@@ -63,11 +63,13 @@ package AgentDoc is fixed to its package and not to a moment, so it carries no
 | [pass-card-and-signed-descriptor.json](agentdoc/pass-card-and-signed-descriptor.json) | passes | A card and the subject's signed Descriptor. The Descriptor is the case `with_optional_members` in descriptor-floor.json, its digest is real and its signature verifies. |
 | [pass-open-offerings-verifiable.json](agentdoc/pass-open-offerings-verifiable.json) | passes | An open-with-focus and an open-ended offering at visibility verifiable, with ceilings shown as enforced. |
 | [pass-package.json](agentdoc/pass-package.json) | passes | A package AgentDoc, with `package` in place of `subject`. |
+| [pass-sow-clause-grade.json](agentdoc/pass-sow-clause-grade.json) | passes | A promise quoted from Agent SoW terms keeps its clause grade, which grades the clause, not the agent. |
 | [fail-sources-exist.json](agentdoc/fail-sources-exist.json) | fails `sources-exist` | A section cites a source the document does not list. |
 | [fail-section-has-source-missing.json](agentdoc/fail-section-has-source-missing.json) | fails `section-has-source` | A section has no `from`. |
 | [fail-section-has-source-empty.json](agentdoc/fail-section-has-source-empty.json) | fails `section-has-source` | A section has an empty `from`. |
 | [fail-no-summary-grade-top-level.json](agentdoc/fail-no-summary-grade-top-level.json) | fails `no-summary-grade` | The document carries a trust label. |
 | [fail-no-summary-grade-in-standing.json](agentdoc/fail-no-summary-grade-in-standing.json) | fails `no-summary-grade` | The standing section averages a report it carries. |
+| [fail-no-summary-grade-letter-grade.json](agentdoc/fail-no-summary-grade-letter-grade.json) | fails `no-summary-grade` | The same quoted promise with a letter grade, which reads as a grade of the agent. |
 | [fail-visibility-supports-claim-opaque.json](agentdoc/fail-visibility-supports-claim-opaque.json) | fails `visibility-supports-claim` | Ceilings are shown as enforced at visibility opaque. |
 | [fail-visibility-supports-claim-observed.json](agentdoc/fail-visibility-supports-claim-observed.json) | fails `visibility-supports-claim` | A job ceiling is shown as enforced at visibility observed, away from the door. |
 | [fail-decided-by-rule-model.json](agentdoc/fail-decided-by-rule-model.json) | fails `decided-by-rule` | A ceiling the model keeps is shown as enforced. |
