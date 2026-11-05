@@ -815,7 +815,24 @@ export function renderStandards({ draft = false } = {}) {
       <span class="alias" id="standards"></span>
       ${bands.join("\n\n      ")}
 
-      <section class="band${(SUITE.groups ?? []).length % 2 ? "" : " tinted"}" id="repository">
+      <section class="band${(SUITE.groups ?? []).length % 2 ? "" : " tinted"}" id="related">
+        <div class="wrap">
+          <h2>Related sites</h2>
+          <p>These sites describe how agents built on the suite are documented, made and judged. They are not
+            standards with a version of their own, so they have no card above.</p>
+          <ul>
+            <li><a href="https://agentdoc.net/">AgentDoc</a>: the one document that says what an agent is,
+              assembled from its card, its Agent Descriptor and the
+              <a href="https://agentdoc.net/attestation.html">attestations</a> others sign about it.</li>
+            <li><a href="https://agenticdevelopment.ai/">Agentic Development</a>: the lifecycle whose
+              stages produce the records an attestation rests on.</li>
+            <li><a href="https://agentrating.net/">Agent Rating</a>: a grade from AAA to D for each
+              version of an agent, worked out from its attestations by a published method.</li>
+          </ul>
+        </div>
+      </section>
+
+      <section class="band${(SUITE.groups ?? []).length % 2 ? " tinted" : ""}" id="repository">
         <div class="wrap">
           <h2>Every standard is kept in one repository</h2>
           <p>Each standard has a folder in <a href="${SUITE_REPO}">${SUITE_REPO.replace("https://", "")}</a>
