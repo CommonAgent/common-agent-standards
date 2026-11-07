@@ -301,7 +301,7 @@
               <p>TypeScript on Node.js 22, with no dependencies at run time, under the Apache License 2.0. It
                 runs one agent's email: native and bridged modes, a built-in IMAP and SMTP provider, and
                 adapters for Resend, AgentMail, Cloudflare Email Service and Primitive.</p>
-              <p>All 19 conformance cases pass, against its library and against a running server.
+              <p>All 19 conformance cases of Agent Emailing 0.2 pass, against its library and against a running server.
                 <a href="/getting-started.html">Get started</a> shows how to run it.</p>
             </div>
           </div>
@@ -368,7 +368,7 @@
             says what each one must produce. The keys are published test keys and control
             nothing.</p>
           <ul class="plain">
-            <li><a href="/conformance/cases.json">cases.json</a>: the nineteen cases, the test keys, and the
+            <li><a href="/conformance/cases.json">cases.json</a>: the thirty-four cases, the test keys, and the
               canonical form of the four envelopes of the thread. <a href="/conformance/cards.json">cards.json</a>:
               the test name cards.</li>
             <li><a href="/conformance/fixtures/01-request.eml">01-request.eml</a>, <a href="/conformance/fixtures/02-respond-input.eml">02-respond-input.eml</a>, <a href="/conformance/fixtures/03-request-answer.eml">03-request-answer.eml</a> and
@@ -384,6 +384,14 @@
               the envelope; software that shows the text to a person warns.</li>
             <li><a href="/conformance/fixtures/17-forged.eml">17-forged.eml</a>: a forgery whose signature, sender and text all
               fail. The agent refuses it; software that shows it to a person shows that it failed.</li>
+            <li><a href="/conformance/fixtures/18-subject-rewritten.eml">18-subject-rewritten.eml</a>: a respond whose subject a reply shortcut wrote, which software that shows it to a person warns about.</li>
+            <li><a href="/conformance/fixtures/19-bridged-attachment.eml">19-bridged-attachment.eml</a>: plain email with an attachment, for a bridge, delivered once and then again.</li>
+            <li><a href="/conformance/fixtures/20-bounce-new-message-id.eml">20-bounce-new-message-id.eml</a>: a bounce matched by the envelope id, because the carrier replaced the Message-ID.</li>
+            <li><a href="/conformance/fixtures/21-oversized.eml">21-oversized.eml</a>: an envelope over the size cap, answered only when the sender is let in.</li>
+            <li><a href="/conformance/fixtures/22-knock.eml">22-knock.eml</a> and <a href="/conformance/fixtures/23-knock-answer.eml">23-knock-answer.eml</a>: a knock and its answer in the same thread.</li>
+            <li><a href="/conformance/fixtures/24-attached-email.eml">24-attached-email.eml</a> and <a href="/conformance/fixtures/25-plain-with-agent-email.eml">25-plain-with-agent-email.eml</a>: an email attached inside an email, which does not count.</li>
+            <li><a href="/conformance/fixtures/26-legacy-request.eml">26-legacy-request.eml</a>: the request as an Agent Emailing 0.2 or 0.3 sender writes it, in a 0.3.0 envelope, which a receiver still accepts.</li>
+            <li><a href="/conformance/fixtures/27-envelope-task-field.eml">27-envelope-task-field.eml</a>: a 0.4.0 envelope that also carries <code>context_id</code>, which a receiver refuses.</li>
           </ul>
           <h3 class="sub">The carrier test</h3>
           <p>A provider passes when it carries <code>01-request.eml</code> from one of its addresses to
@@ -404,7 +412,7 @@
           <pre class="code">node conformance/check-fixtures.mjs
 <span class="c"># pass  e01  01-request.eml</span>
 <span class="c"># ...</span>
-<span class="c"># all 19 cases pass</span></pre>
+<span class="c"># all 34 cases pass</span></pre>
         </div>
       </section>
 

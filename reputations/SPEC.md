@@ -1,7 +1,7 @@
 # Agent Reputations Specification
 
-**Version:** 0.12.0-draft
-**Date:** 2026-10-25
+**Version:** 0.13.0-draft
+**Date:** 2026-11-07
 **Status:** Draft; first bureau implementation in progress alongside a reference mesh stack
 **Canonical source:** SPEC.md (this document). Hosted at https://agentreputations.com.
 **Family:** Agent Messaging (transport), Personal Agent Naming (naming), the Agent Name Service or ANS (domain identity), Agent SoW (engagements), Agent NDA (confidentiality), Agent Reputations (reputation)
@@ -541,11 +541,12 @@ The **reporter** is the platform runtime that enforced the engagement.
 | Completion claimed with a required artifact missing or malformed | fact | `FAILED_SILENT` |
 | Task failed, reported as failed by the subject | fact | `FAILED` |
 | Task declined up front | fact | `DECLINED` (candor, never quality) |
-| Task parked `input_required` awaiting the caller (SoW §5.3) | excluded from quality; counted as a fact statistic |
+| Task parked in `TASK_STATE_INPUT_REQUIRED` awaiting the caller (SoW §5.3) | excluded from quality; counted as a fact statistic |
 | Post-engagement review: accepted (SoW §15) | attestation | `OK` |
 | Post-engagement review: rejected with reasons (SoW §15) | attestation | `FAILED_SILENT` |
 | Termination for cause by the client (SoW §5.9) | fact, recorded; MAY feed `contract_violations_90d`; not quality-scored in v1 |
 | Time and materials engagement concluded on reaching its not-to-exceed cap, the `exhausted` state (SoW §5.5.5) | fact, recorded; witnesses the engagement for §6.6; not quality-scored |
+| Task in flight ended by that cap, which shows as `TASK_STATE_CANCELED` with the outcome `exhausted` in Agent Messaging's budget extension (SoW §5.5.5) | fact, recorded with the engagement; not quality-scored, and never `FAILED` |
 | Time and materials review: the buyer judged the spend worthwhile (SoW §15) | attestation | `VALUE_OK` (§6.6) |
 | Time and materials review: the buyer judged the spend not worthwhile, with reasons (SoW §15) | attestation | `VALUE_POOR` (§6.6) |
 | Request refused at the provider's admission gate because it names an offering or a process outside the scope (SoW §5.2, §5.2.1) | stop (§4.6) | `STOPPED`, class `scope`, recorded about the client |
@@ -2101,6 +2102,8 @@ deterministic, and refuses every report the vectors say it must refuse.
 
 ---
 
+
+*0.13.0-draft (2026-11-07): tasks carry A2A's states. Agent SoW 0.36.0-draft makes a task an A2A Task with A2A's states, so the engagement evidence table of §4.4 names `TASK_STATE_INPUT_REQUIRED` for a parked task, and gains a row for a task the not-to-exceed cap ended. On the wire that task is `TASK_STATE_CANCELED` with the outcome `exhausted` in Agent Messaging's budget extension. It is recorded as a fact with its engagement, is not quality-scored, and never resolves to `FAILED`. No outcome code and no part of the formula changes.*
 
 *0.12.0-draft (2026-10-25): the owner signs an attestation. §6.1 said the
 evaluator's agent key signs an attestation, while Agent SoW §15 said the

@@ -18,21 +18,21 @@ The suite's home is <https://commonagent.net>.
 
 | Standard | Kind | Version | Status | Site |
 |----------|------|---------|--------|------|
-| [The Common Agent Specification](common-agent/) | The base | 0.40.3 | Published | [commonagent.net](https://commonagent.net/spec.html) |
-| [Agent Messaging](messaging/) | A Common Agent Standard | 0.9.20-draft | Working Draft | [agentmessaging.ai](https://agentmessaging.ai/) |
-| [Agent Emailing](emailing/) | A Common Agent Standard | 0.2.6 | Published | [agentemailing.ai](https://agentemailing.ai/) |
+| [The Common Agent Specification](common-agent/) | The base | 0.41.0 | Published | [commonagent.net](https://commonagent.net/spec.html) |
+| [Agent Messaging](messaging/) | A Common Agent Standard | 0.10.0-draft | Working Draft | [agentmessaging.ai](https://agentmessaging.ai/) |
+| [Agent Emailing](emailing/) | A Common Agent Standard | 0.4.0 | Published | [agentemailing.ai](https://agentemailing.ai/) |
 | [Personal Agent Naming](naming/) | A Common Agent Standard | 0.10.3 | Published | [agentnaming.ai](https://agentnaming.ai/) |
 | [Agent Mandate](mandate/) | A Common Agent Standard | 0.10.0-draft | Working Draft | [agentmandate.net](https://agentmandate.net/) |
 | [Agent RFP](rfp/) | A Common Agent Standard | 0.12.0-draft | Working Draft | [agentrfp.net](https://agentrfp.net/) |
-| [Agent SoW](sow/) | A Common Agent Standard | 0.35.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
+| [Agent SoW](sow/) | A Common Agent Standard | 0.36.0-draft | Working Draft | [agentsow.com](https://agentsow.com/) |
 | [Agent NDA](nda/) | A Common Agent Standard | 0.3.0-draft | Working Draft | [agentnda.net](https://agentnda.net/) |
-| [Agent Reputations](reputations/) | A Common Agent Standard | 0.12.0-draft | Draft | [agentreputations.com](https://agentreputations.com/) |
+| [Agent Reputations](reputations/) | A Common Agent Standard | 0.13.0-draft | Draft | [agentreputations.com](https://agentreputations.com/) |
 | [Agent Processes](processes/) | A Common Agent Standard | 0.9.2 | Published | [agentprocesses.ai](https://agentprocesses.ai/) |
 | [Agent Collab](guides/collab/) | A guide | v1.1 | Guide | [agentcollab.dev](https://agentcollab.dev/) |
 | [Agent Roles](roles/) | A guide | v1.7 | Guide | [agentroles.ai](https://agentroles.ai/) |
 
 Agent Messaging's extensions are in [messaging/extensions/](messaging/extensions/),
-and its bindings, the A2A Bridge and the RabbitMQ binding, are in
+and its bindings, A2A over Agent Messaging, the A2A Bridge and the RabbitMQ binding, are in
 [messaging/bindings/](messaging/bindings/). Agent Collab is a library of
 playbooks and is kept under [guides/](guides/) as a guide. Agent Roles is a guide
 of working descriptions of recurring jobs, kept in [roles/](roles/).

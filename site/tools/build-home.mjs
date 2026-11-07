@@ -521,10 +521,10 @@ export function renderTransports({ draft = false } = {}) {
       broker: `The signed envelope, checked against <code>from</code> by every receiver.`,
       email: `The same signed envelope, as an attachment, checked the same way. Headers are hints only.`,
       https: `A caller with a key carries its own signed envelope inside the A2A message. The bridge checks it, passes it on unchanged and signs nothing, and the answer comes back with the agent's own signed envelope. For a caller with no key the envelope stops at the bridge, which signs for the caller's hosted identity and says it is bridged.` },
-    { what: "The work", rule: `One set of task states and legal transitions.`,
-      broker: `The task states, a durable task store, progress on the task's subject, and the accept signal on live delivery.`,
-      email: `The same states. Every update is a respond in the thread, applied in the order of its signed time. There is no accept signal, and a performer often sends no <code>working</code> update.`,
-      https: `The bridge maps each state, and <code>exhausted</code> becomes <code>canceled</code> with a note in the task's metadata, since A2A has no such state. When an agent asks for more input, the caller sees it and answers on the same task, and the bridge carries the answer to the same mesh task. A caller that reads the task only when it asks may miss <code>working</code>, which the shared rule allows.` },
+    { what: "The work", rule: `One task model, A2A's: its Task, its states and its lifecycle.`,
+      broker: `A2A's operations in signed frames, a durable task store, events on the task's stream subject, and the accept signal on live delivery.`,
+      email: `The same A2A Tasks. Every update is a respond in the thread that holds the whole Task, numbered so that it is applied in order. There is no accept signal, and a performer often sends no <code>TASK_STATE_WORKING</code> update.`,
+      https: `Both sides carry the same A2A objects, so the bridge moves them and translates no state. A task the cap of its engagement ended is <code>TASK_STATE_CANCELED</code> with the outcome <code>exhausted</code> in the budget extension, on either side. When an agent asks for more input, the caller sees it and answers on the same task. A caller that reads the task only when it asks may miss <code>TASK_STATE_WORKING</code>.` },
     { what: "Receiver protections", rule: `Signature first, then duplicates, freshness, addressing, size and fencing; strangers knock first.`,
       broker: `Every check on every delivery path. The owner's roster sorts every sender, and a stranger knocks.`,
       email: `The same checks, judged by the 7-day mailbox window, with a duplicate memory that lasts across restarts and a <code>to</code> check that refuses forwarded mail. Plain mail from a stranger never reaches the agent.`,
@@ -539,7 +539,7 @@ export function renderTransports({ draft = false } = {}) {
       https: `The allowance still holds at the agent's runtime. A signed caller's budget rides its own envelope, and a caller with no key puts it in the request's extension metadata; the agent applies it to the task either way, and a refusal comes back with its estimate. The bridge discloses its own fee and gives typed refusals, payment required among them.` },
     { what: "Proof", rule: `Conformance is checked mechanically, against fixtures that are the authority.`,
       broker: `The conformance suite runs the core profile against a running server on either binding (<a href="https://agentmessaging.ai/conformance.html">the suite</a>).`,
-      email: `19 cases over 17 really signed emails, and a carrier test for providers. The reference server passes all 19.`,
+      email: `34 cases over 27 really signed emails, and a carrier test for providers. The reference server passed all 19 cases of Agent Emailing 0.2.`,
       https: `A fixture set for the mapping covers signed and unsigned callers, a forged message, the task states, the answer on an existing task, the knock and readable text, and the reference gateway passes every case. The suite's test i11 checks the bridged marker.` },
   ];
   const head = `<tr><th scope="col">What stays the same</th><th scope="col">Agent Messaging<small>a message broker</small></th><th scope="col">Agent Emailing<small>ordinary email</small></th><th scope="col">The A2A Bridge<small>HTTPS</small></th></tr>`;

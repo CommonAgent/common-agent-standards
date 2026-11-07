@@ -183,7 +183,7 @@ const chip = (k, v) => `<span>${k} <b>${esc(v)}</b></span>`;
   const CONF = /(<h2 id="12-conformance">[\s\S]*?<\/h2>)/;
   if (!CONF.test(anchored.html)) throw new Error("SPEC.md has no section 12, Conformance");
   const html = anchored.html.replace(CONF, (h) => `${h}
-<p class="impl-note"><b>From this site:</b> the <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a>, the reference implementation, passes every case. The cases and fixtures are in <a href="/conformance/cases.json">conformance/</a>, and <a href="/getting-started.html#conformance">Get started</a> says how to run them against your own implementation.</p>`);
+<p class="impl-note"><b>From this site:</b> the <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a>, the reference implementation, passed every case of Agent Emailing 0.2. The cases and fixtures are in <a href="/conformance/cases.json">conformance/</a>, and <a href="/getting-started.html#conformance">Get started</a> says how to run them against your own implementation.</p>`);
   write("spec.html", page({
     file: "spec.html", active: "spec",
     title: `${TITLE}: the specification`,

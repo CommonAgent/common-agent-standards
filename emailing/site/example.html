@@ -189,8 +189,8 @@
           <h3 class="sub">What to notice</h3>
           <ul class="plain">
             <li>Correlation is inside the envelope. The answer to the request carries the request's
-              <code>id</code> in <code>in_reply_to</code>, and every message after the first carries
-              the same <code>task_id</code>. The email Message-IDs are not the envelope ids
+              <code>id</code> in <code>in_reply_to</code>, and every message after the first names
+              the same A2A Task id, inside the A2A object the envelope carries. The email Message-IDs are not the envelope ids
               (<a href="/spec.html#3-6-correlation-and-threading">section 3.6</a>).</li>
             <li>The envelope's <code>meta.agent_emailing</code> signs the subject and the digest of the
               text. That is what lets software tell whether the text a person reads is the text the

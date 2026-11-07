@@ -11,7 +11,7 @@
 import { createPublicKey, sign, verify } from "node:crypto";
 import { keypairFromSeed, canonical, sha256hex } from "./lib.mjs";
 
-export const EMAILING_VERSION = "0.2.0";
+export const EMAILING_VERSION = "0.4.0";
 export const MEDIA = "application/vnd.agentmessaging.envelope+json";
 
 // ── MIME ────────────────────────────────────────────────────────────────────
@@ -69,26 +69,90 @@ export function decodeWords(s) {
     enc.toUpperCase() === "B" ? Buffer.from(text, "base64").toString("utf8") : decodeQP(text.replace(/_/g, " ")).toString("utf8"));
 }
 
+// ── reading a frame ─────────────────────────────────────────────────────────
+// A 0.4.0 envelope carries A2A objects (A2A over Agent Messaging §4). A 0.3.0
+// envelope carries the request payloads and task fields of Agent Messaging 0.9,
+// which a receiver still accepts in the window of SPEC.md §3.2. view() reads
+// either one into the few facts the subject, the human part and the checks need.
+export const EXT = {
+  offering: "https://agentmessaging.ai/extensions/offering/v1",
+  budget: "https://agentmessaging.ai/extensions/budget/v1",
+  refs: "https://agentmessaging.ai/extensions/artifact-refs/v1",
+  cancel: "https://agentmessaging.ai/extensions/cancel/v1",
+  failure: "https://agentmessaging.ai/extensions/failure/v1",
+};
+const LEGACY_STATE = {
+  submitted: "TASK_STATE_SUBMITTED", working: "TASK_STATE_WORKING", completed: "TASK_STATE_COMPLETED",
+  failed: "TASK_STATE_FAILED", canceled: "TASK_STATE_CANCELED", rejected: "TASK_STATE_REJECTED",
+  input_required: "TASK_STATE_INPUT_REQUIRED", auth_required: "TASK_STATE_AUTH_REQUIRED", exhausted: "TASK_STATE_CANCELED",
+};
+const isSealed = (env) => env.payload?.v === "sealedpayload.v1";
+const textOf = (parts) => {
+  const t = (parts ?? []).filter((x) => typeof x.text === "string").map((x) => x.text);
+  return t.length ? t.join("\n") : null;
+};
+const fileOf = (x) => ({ name: x.filename, media_type: x.mediaType, ref: x.url, size: x.metadata?.[EXT.refs]?.size, digest: x.metadata?.[EXT.refs]?.digest });
+const urlParts = (parts) => (parts ?? []).filter((x) => typeof x.url === "string").map(fileOf);
+const problemsOf = (parts) => (parts ?? []).flatMap((x) => (Array.isArray(x.data?.problems) ? x.data.problems : []));
+
+/** The facts of one envelope, from a 0.4.0 frame or a 0.3.0 envelope. */
+export function view(env) {
+  const p = env.payload ?? {};
+  const base = { wire: env.v, type: env.type, sealed: isSealed(env), error: env.error ?? null };
+  if (base.sealed) return { ...base, text: null, files: [], returned: [], problems: [], taskId: null, contextId: null,
+    state: typeof env.meta?.a2a_state === "string" ? env.meta.a2a_state : null, exhausted: false, reason: null };
+  if (!p.a2a) {
+    const c = env.budget?.cost_ceiling;
+    return { ...base, offering: p.offering, cancel: p.offering === "task.cancel",
+      taskId: env.task_id ?? null, contextId: env.context_id ?? null,
+      text: typeof p.text === "string" ? p.text : null, files: p.files ?? [],
+      returned: (env.artifacts ?? []).flatMap((a) => (a.parts ?? []).filter((x) => x.ref)),
+      state: LEGACY_STATE[p.status] ?? null, exhausted: p.status === "exhausted", problems: p.problems ?? [],
+      ceiling: c ? { amountMicro: c.amount_micro, currency: c.currency } : null,
+      deadline: env.budget?.deadline ?? null, price: p.price ?? null };
+  }
+  const a = p.a2a;
+  if (env.type === "request") {
+    const msg = a.params?.message;
+    const budget = msg?.metadata?.[EXT.budget];
+    const cancel = a.method === "CancelTask";
+    return { ...base, method: a.method, cancel, offering: msg?.metadata?.[EXT.offering]?.offering,
+      taskId: (cancel ? a.params?.id : msg?.taskId) ?? null, contextId: msg?.contextId ?? null,
+      text: textOf(msg?.parts), files: urlParts(msg?.parts), returned: [], state: null, problems: [],
+      ceiling: budget?.costCeiling ?? null, deadline: budget?.deadline ?? null, price: null };
+  }
+  const r = a.result ?? {};
+  const task = r.task ?? null;
+  const answer = r.message ?? task?.status?.message ?? null;
+  return { ...base, taskId: task?.id ?? r.message?.taskId ?? null, contextId: task?.contextId ?? r.message?.contextId ?? null,
+    messageAnswer: Boolean(r.message) && !task, text: textOf(answer?.parts), files: [],
+    returned: [...(task?.artifacts ?? []).flatMap((x) => urlParts(x.parts)), ...urlParts(answer?.parts)],
+    state: task?.status?.state ?? null, exhausted: task?.metadata?.[EXT.budget]?.outcome === "exhausted",
+    reason: task?.metadata?.[EXT.failure]?.reason ?? task?.metadata?.[EXT.cancel]?.reason ?? null,
+    problems: problemsOf(answer?.parts), ceiling: null, deadline: null, price: p.price ?? null };
+}
+
 // ── states, the subject and the human part ──────────────────────────────────
 const OUTCOME = {
-  completed: "done", input_required: "needs your input", auth_required: "needs your input",
-  rejected: "declined", failed: "failed", canceled: "canceled", exhausted: "stopped at its limit",
-  submitted: "in progress", working: "in progress",
+  TASK_STATE_COMPLETED: "done", TASK_STATE_INPUT_REQUIRED: "needs your input", TASK_STATE_AUTH_REQUIRED: "needs your input",
+  TASK_STATE_REJECTED: "declined", TASK_STATE_FAILED: "failed", TASK_STATE_CANCELED: "canceled",
+  TASK_STATE_SUBMITTED: "in progress", TASK_STATE_WORKING: "in progress",
 };
-/** The state word of SPEC.md §3.3's subject table. */
+/** The state word of SPEC.md §3.3's subject table. A Task the cap of its
+ *  engagement ended is TASK_STATE_CANCELED with the budget extension's outcome
+ *  "exhausted", and reads "stopped at its limit". */
 export function stateOf(env) {
-  if (env.type === "request") {
-    if (env.payload?.offering === "task.cancel") return "cancel";
-    return env.task_id ? "answer" : "request";
-  }
-  return OUTCOME[env.payload?.status] ?? "update";
+  const v = view(env);
+  if (v.type === "request") return v.cancel ? "cancel" : v.taskId ? "answer" : "request";
+  if (v.messageAnswer) return "done";
+  if (v.exhausted) return "stopped at its limit";
+  return OUTCOME[v.state] ?? "update";
 }
 export const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
-const isSealed = (env) => env.payload?.v === "sealedpayload.v1";
 
 export function subjectFor(env, offeringName) {
   const base = `${offeringName} — ${stateOf(env)}`;
-  return env.type === "respond" || env.task_id ? `Re: ${base}` : base;
+  return env.type === "respond" || view(env).taskId ? `Re: ${base}` : base;
 }
 
 /** SPEC.md §3.3: decoded to Unicode, line endings made LF, trailing spaces and
@@ -98,14 +162,13 @@ export function normalizeText(text) {
 }
 export const textDigest = (text) => `sha256:${sha256hex(Buffer.from(normalizeText(text), "utf8"))}`;
 
-export const money = (c) => `${(c.amount_micro / 1e6).toFixed(2)} ${c.currency}`;
+export const money = (c) => `${((c.amountMicro ?? c.amount_micro) / 1e6).toFixed(2)} ${c.currency}`;
 export function when(iso, tz) {
   const parts = new Intl.DateTimeFormat("en-GB", { timeZone: tz, weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).formatToParts(new Date(iso));
   const p = Object.fromEntries(parts.map((x) => [x.type, x.value]));
   return `${p.weekday} ${p.day} ${p.month} ${p.year}, ${p.hour}:${p.minute} ${tz === "America/Denver" ? "Mountain time" : tz}`;
 }
 const fileLine = (f) => `${f.name ?? "a file"} (${f.media_type}, ${f.size} bytes)`;
-const returnedFiles = (env) => (env.artifacts ?? []).flatMap((a) => (a.parts ?? []).filter((x) => x.ref));
 
 const NEXT = {
   "needs your input": "Reply with what is asked for. The work waits for your answer.",
@@ -120,8 +183,8 @@ const NEXT = {
  *  cards state. ctx: { sender: { handle, actsFor }, receiver: { handle },
  *  offeringName, timeZone }. */
 export function renderHuman(env, ctx) {
-  const p = env.payload ?? {};
-  const sealed = isSealed(env);
+  const v = view(env);
+  const sealed = v.sealed;
   const forWhom = ctx.sender.actsFor ? `, acting for ${ctx.sender.actsFor},` : "";
   const state = stateOf(env);
   const L = [];
@@ -130,11 +193,11 @@ export function renderHuman(env, ctx) {
     L.push(`${kind} from ${ctx.sender.handle}${forWhom} to ${ctx.receiver.handle}.`, "");
     L.push(`Asked for: ${ctx.offeringName}`);
     if (sealed) L.push("Message: sealed. Only the receiving agent can read it.");
-    else if (typeof p.text === "string") L.push(`Message: ${p.text}`);
-    const files = sealed ? [] : p.files ?? [];
+    else if (v.text !== null) L.push(`Message: ${v.text}`);
+    const files = sealed ? [] : v.files;
     L.push(`Handed over: ${files.length ? files.map(fileLine).join("; ") : sealed ? "anything attached is sealed" : "nothing"}`);
-    if (env.budget?.cost_ceiling) L.push(`Price: up to ${money(env.budget.cost_ceiling)}`);
-    if (env.budget?.deadline) L.push(`Answer needed by: ${when(env.budget.deadline, ctx.timeZone)}`);
+    if (v.ceiling) L.push(`Price: up to ${money(v.ceiling)}`);
+    if (v.deadline) L.push(`Answer needed by: ${when(v.deadline, ctx.timeZone)}`);
     L.push(`What happens next: ${state === "answer"
       ? `${ctx.receiver.handle} continues the work with this answer. Its reply will arrive in this thread.`
       : state === "cancel" ? `${ctx.receiver.handle} stops the work and confirms in this thread.`
@@ -143,12 +206,13 @@ export function renderHuman(env, ctx) {
     L.push(`Answer from ${ctx.sender.handle}${forWhom} to ${ctx.receiver.handle}, about ${ctx.offeringName}.`, "");
     L.push(`Outcome: ${cap(state)}`);
     if (sealed) L.push("Result: sealed. Only the receiving agent can read it.");
-    else if (typeof p.text === "string") L.push(`Result: ${p.text}`);
-    else if (env.error?.message) L.push(`Result: ${env.error.message}`);
-    if (!sealed && Array.isArray(p.problems) && p.problems.length) L.push(`Needed from you: ${p.problems.map((x) => x.description).join(" ")}`);
-    const files = sealed ? [] : returnedFiles(env);
+    else if (v.text !== null) L.push(`Result: ${v.text}`);
+    else if (v.error?.message) L.push(`Result: ${v.error.message}`);
+    if (!sealed && v.reason) L.push(`Reason: ${v.reason}`);
+    if (!sealed && v.problems.length) L.push(`Needed from you: ${v.problems.map((x) => x.description).join(" ")}`);
+    const files = sealed ? [] : v.returned;
     L.push(`Files returned: ${files.length ? files.map(fileLine).join("; ") : "none"}`);
-    if (p.price) L.push(`Price: ${money(p.price)}`);
+    if (v.price) L.push(`Price: ${money(v.price)}`);
     L.push(`What happens next: ${state === "done"
       ? files.length ? "Nothing more is needed. Open the attached files to use the result." : "Nothing more is needed."
       : NEXT[state] ?? "Updates will arrive in this thread."}`);
@@ -164,7 +228,7 @@ export function renderHuman(env, ctx) {
 export function withHuman(env, ctx) {
   const text = renderHuman(env, ctx);
   const subject = subjectFor(env, ctx.offeringName);
-  const meta = { ...(env.meta ?? {}), agent_emailing: { v: EMAILING_VERSION, offering_name: ctx.offeringName, subject, human_text: textDigest(text) } };
+  const meta = { ...(env.meta ?? {}), agent_emailing: { v: ctx.emailingVersion ?? EMAILING_VERSION, offering_name: ctx.offeringName, subject, human_text: textDigest(text) } };
   return { env: { ...env, meta }, text, subject };
 }
 
@@ -177,16 +241,18 @@ export function checkHuman(mail, env, senderHandle) {
   const subject = decodeWords(header(mail.headers, "subject"));
   const missing = [];
   const need = (v, what) => { if (v && !norm.includes(v)) missing.push(what); };
-  const p = env.payload ?? {};
+  const v = view(env);
   need(senderHandle, "the sender");
   need(ae.offering_name, "what was asked");
-  if (!isSealed(env)) {
-    need(typeof p.text === "string" ? p.text : null, "the message");
-    for (const f of p.files ?? []) need(f.name, `the file ${f.name}`);
-    for (const x of returnedFiles(env)) need(x.name, `the file ${x.name}`);
+  if (!v.sealed) {
+    need(v.text, "the message");
+    for (const f of v.files) need(f.name, `the file ${f.name}`);
+    for (const x of v.returned) need(x.name, `the file ${x.name}`);
   }
   if (env.type === "respond") need(`Outcome: ${cap(stateOf(env))}`, "the outcome");
-  if (env.budget?.cost_ceiling) need(money(env.budget.cost_ceiling), "the price");
+  if (v.ceiling) need(money(v.ceiling), "the price");
+  if (!v.sealed && v.price) need(money(v.price), "the price");
+  if (!v.sealed && v.reason) need(`Reason: ${v.reason}`, "the reason");
   const digest_ok = Boolean(textPart) && ae.human_text === textDigest(text);
   const subject_ok = Boolean(ae.subject) && ae.subject === subject;
   return { digest_ok, subject_ok, facts_ok: !missing.length, missing, matches: digest_ok && subject_ok && !missing.length, text, subject };

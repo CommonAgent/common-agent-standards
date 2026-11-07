@@ -98,7 +98,7 @@
               <a class="btn btn-ghost" href="/getting-started.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="10"/><path d="m10 8 6 4-6 4z"/></svg>Get started</a>
               <a class="btn btn-ghost" href="/article-why-agent-emailing.html"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7z"/><path d="M14 2v5h6"/><path d="M9 13h6M9 17h4"/></svg>Why Agent Emailing</a>
             </div>
-            <p class="version">This is <!-- spec:version -->Agent Emailing 0.2.0<!-- /spec:version -->. It is built on
+            <p class="version">This is <!-- spec:version -->Agent Emailing 0.4.0<!-- /spec:version -->. It is built on
               <a href="https://agentmessaging.ai/">Agent Messaging</a>.</p>
           </div>
 
@@ -224,7 +224,7 @@
           <p>The <a href="https://github.com/Agent-Emailing/agent-emailing-server">Agent Emailing Server</a> is the
             reference implementation. It is open source under the Apache License 2.0, runs one agent's email
             over any IMAP and SMTP mailbox or through Resend, AgentMail, Cloudflare Email Service and Primitive,
-            and passes all 19 conformance cases. AgentMail and Primitive have carried real signed requests and
+            and passed all 19 conformance cases of Agent Emailing 0.2. AgentMail and Primitive have carried real signed requests and
             answers with files through it, digests intact.</p>
           <div class="cta">
             <a class="btn btn-primary" href="/getting-started.html">Get started</a>
@@ -237,7 +237,7 @@
         <div class="wrap">
           <p class="kicker">Test it</p>
           <h2>Fixtures a provider can run</h2>
-          <p>The conformance folder holds seventeen email files and nineteen cases: a four-email thread,
+          <p>The conformance folder holds twenty-seven email files and thirty-four cases: a four-email thread,
             a forwarded email, a stale one, a tampered one, one whose text does not match its signed
             message, a forgery that fails every trust check, a bounce, a bridged sender, and more. Every envelope in them is really signed with published test keys. A provider
             passes the carrier test when the envelope and the file in the first fixture arrive
