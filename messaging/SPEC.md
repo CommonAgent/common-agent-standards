@@ -804,7 +804,7 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 
 A `request` or `respond` between agents carries an A2A operation or its answer in `payload.a2a`, as §6.4 and §6.5 say. The A2A objects carry the Task id, the context id and the artifacts, so a 0.4.0 envelope has no fields for them.
 
-**The 0.3.0 envelope.** Wire version 0.3.0 envelopes have three more fields: `task_id`, `context_id` and `artifacts` (§5.2), and their calls use the payloads of §6.8. A node written to this version MUST accept them during the transition window of §20.1, and the A2A binding's §14 says the same.
+**The 0.3.0 envelope.** Wire version 0.3.0 envelopes have four more fields: `task_id`, `context_id`, `budget` and `artifacts` (§5.2), and their calls use the payloads of §6.8. A node written to this version MUST accept them during the transition window of §20.1, and the A2A binding's §14 says the same.
 
 ### 5.2. Field Definitions
 
@@ -1591,7 +1591,7 @@ A client needs no advance knowledge of which applies. The first **substantive** 
 
 ### 7.1. Who May Read a Task, and What Is Recorded Beside It
 
-**Who may read a Task.** `GetTask`, `ListTasks`, `SubscribeToTask` and `CancelTask` answer only the server agent, the agent that created the Task with its first message, and the agents that agent delegated to (§4.11), as the A2A binding §10 says. Anyone else gets `TaskNotFoundError`, so a Task's existence is not disclosed. The client is known from the frame's verified signature (§5.3); no other credential is involved. `ListTasks` lists only the Tasks the asking client may read.
+**Who may read a Task.** `GetTask`, `ListTasks`, `SubscribeToTask` and `CancelTask` answer only the server agent and the agent that created the Task with its first message, including a place acting as that agent under its delegation (§4.11), as the A2A binding §10 says. Anyone else gets `TaskNotFoundError`, so a Task's existence is not disclosed. The client is known from the frame's verified signature (§5.3); no other credential is involved. `ListTasks` lists only the Tasks the asking client may read.
 
 **The stored record.** The task store (§7.4) keeps each A2A Task exactly as A2A gives it, keyed by its A2A Task id. Beside it, never inside it, the server keeps a record of facts A2A has no place for (A2A binding §11). A party never writes the record. The shape in which a binding stores it is the binding's (§18.4); its contents are these:
 
@@ -7273,3 +7273,37 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > agent or the caller's balance. §17.5 lists it. No existing requirement,
 > field, wire identifier or section number changes. The wire version stays
 > `0.3.0` (§20.1).
+
+> **2026-11-07: Version 0.10.0-draft. A2A's model instead of a copy.** An A2A
+> contributor pointed out that Agent Messaging defined its own task model when
+> the transport should reuse the semantics of the protocol it carries. This
+> version does that. Every call between agents is now an A2A operation
+> (`SendMessage`, `GetTask`, `CancelTask` and the rest), carried over the mesh
+> by a new A2A custom protocol binding, `bindings/a2a.md`
+> (`https://agentmessaging.ai/bindings/a2a/v1`), with A2A's operation names
+> and objects verbatim. A `request` carries `payload.a2a.method` and
+> `payload.a2a.params`, and a `respond` carries `payload.a2a.result` (§6.4,
+> §6.5). §1.3 makes A2A the authority for operations, Tasks, Messages, Parts,
+> Artifacts and the Agent Card, and closes the open decision on method names.
+> §7 no longer defines a task object, states or transitions: it says how a
+> mesh stores and delivers A2A Tasks (the durable store keyed by the A2A Task
+> id, the update and stream subjects, who may read a Task, and the record kept
+> beside it), and §7.3.1 is restated in A2A's state names. Artifacts are A2A
+> Artifacts and Parts, and a large file is a `url` Part with the artifact
+> references extension (§7.5). The context is A2A's `contextId` (§7.6). The
+> budget is the budget extension, and each budget outcome has an A2A state:
+> `exhausted` is no longer a state of its own, and the Task ends
+> `TASK_STATE_CANCELED` with the outcome `exhausted` (§7.2, §7.7). The manifest
+> publishes as an A2A Agent Card that lists the binding (§8.14). Streaming,
+> cancellation and Task reads point at A2A's operations (§10.5, §10.8, §11),
+> and errors from A2A carry A2A's names (§12). §17.5 lists the six A2A
+> extensions the binding defines (offering, budget, audience, economics,
+> artifact references, cancel). What A2A has no place for (presence, events,
+> admission, the accept signal, signed identity, receipts) stays Agent
+> Messaging's own and is unchanged. The wire version moves to `0.4.0`, whose
+> envelope has no `task_id`, `context_id`, `budget` or `artifacts`. A node
+> written to this version still accepts 0.3.0 envelopes until its operator
+> ends the transition window (§20.1), and §6.8, §11.7 and the 0.3.0 rows of
+> §12.2 describe the 0.3.0 form so that nothing deployed is left undescribed.
+> Section numbers that other documents cite (§7.2, §7.3, §7.3.1, §10.5,
+> §10.8, §11.2, §11.6) are kept; §6.8, §8.14 and §11.7 are new.
