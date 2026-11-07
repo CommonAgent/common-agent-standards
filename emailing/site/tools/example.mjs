@@ -11,7 +11,7 @@
 import { readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { verifyEnvelope, sha256hex } from "../../conformance/lib.mjs";
-import { parseMail, leaves, header, decodeWords, stateOf, cap, checkHuman, verifyCard, money, MEDIA, EMAILING_VERSION } from "../../conformance/mail.mjs";
+import { parseMail, leaves, header, decodeWords, stateOf, cap, checkHuman, verifyCard, money, view, MEDIA, EMAILING_VERSION } from "../../conformance/mail.mjs";
 
 const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 
@@ -204,11 +204,11 @@ export function exampleSections(root) {
       </div>`;
 
   // The text mismatch: a good signature, a text that is not the signed one.
-  const e = mm.env;
+  const e = view(mm.env);
   const said = [
-    `<li><span class="lbl">Message:</span> ${esc(e.payload.text)}</li>`,
-    ...(e.budget?.cost_ceiling ? [`<li><span class="lbl">Price:</span> up to ${esc(money(e.budget.cost_ceiling))}</li>`] : []),
-    `<li><span class="lbl">Handed over:</span> ${esc(e.payload.files.map((f) => f.name).join(", "))}</li>`,
+    `<li><span class="lbl">Message:</span> ${esc(e.text)}</li>`,
+    ...(e.ceiling ? [`<li><span class="lbl">Price:</span> up to ${esc(money(e.ceiling))}</li>`] : []),
+    `<li><span class="lbl">Handed over:</span> ${esc(e.files.map((f) => f.name).join(", "))}</li>`,
   ].join("");
   const gives = mm.human.missing;
   const why = [!mm.human.digest_ok && "The text is not the one the sender signed.",
