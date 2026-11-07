@@ -208,6 +208,11 @@ function trialReplyReceiptOk(m, u) {
   const md = m.metadata ?? {};
   const t = md[u.trial], r = md[u.reply], rc = md[u.receipts];
   if (t !== undefined && (t?.trial !== true || md["https://agentmessaging.ai/extensions/budget/v1"] !== undefined)) return false;
+  if (t?.requester !== undefined) {
+    const q = t.requester;
+    if (typeof q?.id !== "string" || !q.id || !["visitor", "account"].includes(q.kind)) return false;
+    if (q.kind === "visitor" && (q.signedIn !== undefined || q.verified !== undefined)) return false;
+  }
   if (r !== undefined && (typeof r?.inReplyTo !== "string" || typeof m.contextId !== "string" || Object.keys(r).some((k) => k !== "inReplyTo"))) return false;
   if (rc !== undefined && !["summary", "full"].includes(rc?.receipt)) return false;
   return true;
@@ -253,13 +258,13 @@ function readWhole(frames) {
 }
 
 // Binding §12.1, the A2A Bridge §4.5: which offering a Message calls.
-function routeOffering(declared, md, window) {
+function routeOffering(declared, md, window, dflt) {
   const ext = md[EXT.offering]?.offering;
   const old = window ? (md["agentmesh.offering"] ?? md["agentmesh.skill"]) : undefined;
   const refuse = { error: -32602, offerings: declared };
   if (ext !== undefined && old !== undefined && ext !== old) return refuse;
   const named = ext ?? old;
-  if (named === undefined) return declared.length === 1 ? { offering: declared[0] } : refuse;
+  if (named === undefined) return declared.length === 1 ? { offering: declared[0] } : (dflt && declared.includes(dflt) ? { offering: dflt } : refuse);
   if (!declared.includes(named)) return refuse;
   return ext === undefined ? { offering: named, added: true } : { offering: named };
 }
@@ -471,7 +476,7 @@ section("no streaming without subjects", [{ name: "UnsupportedOperationError" }]
 });
 
 const of = fx.offering;
-section("offering routing", of.cases, (c) => { const got = routeOffering(c.declared, c.metadata, c.window); return same(got, c.expect) ? true : `got ${JSON.stringify(got)}`; });
+section("offering routing", of.cases, (c) => { const got = routeOffering(c.declared, c.metadata, c.window, c.default); return same(got, c.expect) ? true : `got ${JSON.stringify(got)}`; });
 section("the added offering key", [{ name: "the bridge adds the extension's key and nothing else" }], () => {
   const f = of.added_key.frame;
   const fp = frameProblem(f);

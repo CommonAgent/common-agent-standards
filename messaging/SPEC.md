@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.10.1-draft
+**Version:** 0.10.2-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -7344,3 +7344,7 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > §12.10), and rides in a Task's metadata only over the A2A Bridge. The binding
 > also carries trial work, replies sent as a new call and receipt requests
 > (§12.8 to §12.10). No section number changes; the wire version stays 0.4.0.
+
+> **0.10.2-draft (2026-11-07).** The binding (0.4.2-draft) lets an agent name a
+> default offering for Messages that name none (§12.1), and carries the person a
+> trusted host vouches for on a trial (§12.8). No section number changes.

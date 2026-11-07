@@ -2,7 +2,7 @@
 
 An A2A custom protocol binding that carries A2A's operations and data model over an Agent Messaging mesh
 
-**Version:** 0.4.1-draft
+**Version:** 0.4.2-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -345,8 +345,13 @@ the extension's URI as the key.
 
 On a Message: `{"offering": "<offering id>"}`. An agent that declares exactly
 one offering serves it when a Message names none. An agent that declares
-several and receives a Message naming none, or naming one it does not declare,
-answers `InvalidParamsError` and lists its offerings in the error's data.
+several MAY name one of them as its default, in the extension's `params` on its
+Agent Card: `{"default": "<offering id>"}`. A Message naming no offering then
+goes to the default, which suits an agent people write to in plain words, such
+as a front desk. An agent with several offerings and no default that receives
+a Message naming none, or any agent that receives a Message naming an offering
+it does not declare, answers `InvalidParamsError` and lists its offerings in the
+error's data.
 
 ### 12.2. Budget
 
@@ -446,6 +451,15 @@ the refusal's fixed fields under this URI: `{"refusal": "TRIAL_REFUSED",
 "reason": "<reason>", "limit": <number, where there is one>, ...}`, the
 reasons and fields being those §7.7 lists. A trial the node admits runs as an
 ordinary Task, and its receipt is a trial receipt (EXT-15).
+
+A host that sends trials on behalf of the people it lists agents for (the
+Common Agent Specification §7.7, Hosts) says whom a trial is for in the same object: `{"trial": true,
+"requester": {"id": "<the host's stable identifier>", "kind": "visitor"}}`
+for a visitor with no account, or `"kind": "account"` with `signedIn` and
+`verified` for an account holder. A node honours `requester` only from a host
+it trusts, as §7.7 says, and counts the trial against that requester; from
+anyone else it ignores the member, and the sending agent is the requester. A
+vouched visitor is never signed in or verified.
 
 ### 12.9. Replies
 
