@@ -4,6 +4,10 @@ Versions of Agent Messaging tagged in this repository, newest first. A version i
 tagged as `messaging-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history up to 0.8 comes from agent-messaging/agent-messaging. Version 0.9.0-draft, the extensions and the bindings come from the AgentMesh repository, where they were drafted.
 
+## 0.10.2-draft (2026-11-07)
+
+Two additions to the binding (0.4.2-draft), both optional. An agent with several offerings may name one as its default in the offering extension's `params` on its Agent Card, so a Message that names no offering reaches it instead of being refused; a front desk that people write to in plain words needs this (§12.1). And the trial extension carries an optional `requester`, the visitor or account a trusted host vouches for (Common Agent Specification §7.7, Hosts), so trial counts on wire 0.4.0 are kept per person as they are on 0.3.0 (§12.8). The fixture set gains the cases. No other requirement changes; the wire version stays 0.4.0.
+
 ## 0.10.1-draft (2026-11-07)
 
 Where a receipt goes on a mesh, and what the earlier drafts of this version left out. On a mesh at wire 0.4.0 a receipt is never written into the Task, because only the server agent's frames change a Task: it travels as its own message after the answer, as EXT-15 §8.1 says, and rides in a Task's metadata only over the A2A Bridge (the binding 0.4.1-draft §12.10, EXT-15 0.2.1-draft). Since 0.10.0-draft the binding also carries trial work, replies sent as a new call and receipt requests (§12.8 to §12.10), and the A2A Bridge (0.9.2-draft) says what an A2A error and an early cancel do to a held Task. No other requirement, field or section number changes. The wire version stays 0.4.0.

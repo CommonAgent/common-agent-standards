@@ -7613,7 +7613,7 @@
     ]
   },
   "trial_reply_receipt": {
-    "comment": "Binding §12.8 to §12.10 (0.4.0-draft). A trial is {trial: true} under the trial extension's URI on the Message that starts the work, and never with a budget; a refused trial is a TASK_STATE_REJECTED Task with {refusal: TRIAL_REFUSED, reason} under the same URI, the reason from the Common Agent Specification §7.7. A reply sent as a new call carries the received Message's contextId and {inReplyTo: messageId} under the reply extension's URI. A receipt is asked for with {receipt: summary or full} under EXT-15's URI on the starting Message.",
+    "comment": "Binding §12.8 to §12.10 (0.4.2-draft). A trial is {trial: true}, with an optional requester a trusted host vouches for ({id, kind: visitor} or {id, kind: account, signedIn, verified}; a visitor is never signed in or verified), under the trial extension's URI on the Message that starts the work, and never with a budget; a refused trial is a TASK_STATE_REJECTED Task with {refusal: TRIAL_REFUSED, reason} under the same URI, the reason from the Common Agent Specification §7.7. A reply sent as a new call carries the received Message's contextId and {inReplyTo: messageId} under the reply extension's URI. A receipt is asked for with {receipt: summary or full} under EXT-15's URI on the starting Message.",
     "uris": {
       "trial": "https://agentmessaging.ai/extensions/trial/v1",
       "reply": "https://agentmessaging.ai/extensions/reply/v1",
@@ -7651,6 +7651,69 @@
         "metadata": {
           "https://agentmessaging.ai/extensions/trial/v1": {
             "trial": "yes"
+          }
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "a trial for a vouched visitor",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/trial/v1": {
+            "trial": true,
+            "requester": {
+              "id": "visitor-7f3a",
+              "kind": "visitor"
+            }
+          }
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a trial for an account holder",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/trial/v1": {
+            "trial": true,
+            "requester": {
+              "id": "acct-19",
+              "kind": "account",
+              "signedIn": true,
+              "verified": false
+            }
+          }
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a vouched visitor is never signed in",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/trial/v1": {
+            "trial": true,
+            "requester": {
+              "id": "visitor-7f3a",
+              "kind": "visitor",
+              "signedIn": true
+            }
+          }
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "a requester of an unknown kind",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/trial/v1": {
+            "trial": true,
+            "requester": {
+              "id": "x",
+              "kind": "robot"
+            }
           }
         },
         "expect": {
@@ -8305,7 +8368,7 @@
     }
   },
   "offering": {
-    "comment": "Binding §12.1; the A2A Bridge §4.5. The offering a Message calls is the offering extension's value in its metadata. One declared offering serves a Message that names none; with several, naming none or an undeclared one is InvalidParamsError (-32602) listing the offerings. During the transition window the older keys agentmesh.offering and agentmesh.skill are still read from a caller with no key: the bridge adds the extension's key with the same value before it signs, and refuses the two disagreeing.",
+    "comment": "Binding §12.1 (0.4.2-draft); the A2A Bridge §4.5. The offering a Message calls is the offering extension's value in its metadata. One declared offering serves a Message that names none, and so does a declared default (params.default on the card); with several and no default, naming none or an undeclared one is InvalidParamsError (-32602) listing the offerings. During the transition window the older keys agentmesh.offering and agentmesh.skill are still read from a caller with no key: the bridge adds the extension's key with the same value before it signs, and refuses the two disagreeing.",
     "uri": "https://agentmessaging.ai/extensions/offering/v1",
     "cases": [
       {
@@ -8348,6 +8411,57 @@
           "offerings": [
             "quote",
             "stock"
+          ]
+        }
+      },
+      {
+        "name": "none named, several declared, one the default",
+        "declared": [
+          "chat",
+          "help"
+        ],
+        "default": "chat",
+        "metadata": {},
+        "window": true,
+        "expect": {
+          "offering": "chat"
+        }
+      },
+      {
+        "name": "a named offering wins over the default",
+        "declared": [
+          "chat",
+          "help"
+        ],
+        "default": "chat",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/offering/v1": {
+            "offering": "help"
+          }
+        },
+        "window": true,
+        "expect": {
+          "offering": "help"
+        }
+      },
+      {
+        "name": "an undeclared offering is refused even with a default",
+        "declared": [
+          "chat",
+          "help"
+        ],
+        "default": "chat",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/offering/v1": {
+            "offering": "launch"
+          }
+        },
+        "window": true,
+        "expect": {
+          "error": -32602,
+          "offerings": [
+            "chat",
+            "help"
           ]
         }
       },

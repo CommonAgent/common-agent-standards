@@ -464,12 +464,16 @@ const REPLY = "https://agentmessaging.ai/extensions/reply/v1";
 const RECEIPTS = "mesh://extensions/receipts/v1";
 const BUDGET_URI = "https://agentmessaging.ai/extensions/budget/v1";
 const trialReplyReceipt = {
-  comment: "Binding §12.8 to §12.10 (0.4.0-draft). A trial is {trial: true} under the trial extension's URI on the Message that starts the work, and never with a budget; a refused trial is a TASK_STATE_REJECTED Task with {refusal: TRIAL_REFUSED, reason} under the same URI, the reason from the Common Agent Specification §7.7. A reply sent as a new call carries the received Message's contextId and {inReplyTo: messageId} under the reply extension's URI. A receipt is asked for with {receipt: summary or full} under EXT-15's URI on the starting Message.",
+  comment: "Binding §12.8 to §12.10 (0.4.2-draft). A trial is {trial: true}, with an optional requester a trusted host vouches for ({id, kind: visitor} or {id, kind: account, signedIn, verified}; a visitor is never signed in or verified), under the trial extension's URI on the Message that starts the work, and never with a budget; a refused trial is a TASK_STATE_REJECTED Task with {refusal: TRIAL_REFUSED, reason} under the same URI, the reason from the Common Agent Specification §7.7. A reply sent as a new call carries the received Message's contextId and {inReplyTo: messageId} under the reply extension's URI. A receipt is asked for with {receipt: summary or full} under EXT-15's URI on the starting Message.",
   uris: { trial: TRIAL, reply: REPLY, receipts: RECEIPTS },
   messages: [
     { name: "a trial request", metadata: { [TRIAL]: { trial: true } }, expect: { ok: true } },
     { name: "a trial with a budget is refused", metadata: { [TRIAL]: { trial: true }, [BUDGET_URI]: { deadline: "2026-11-20T17:00:00Z", revision: 0 } }, expect: { ok: false } },
     { name: "trial must be true", metadata: { [TRIAL]: { trial: "yes" } }, expect: { ok: false } },
+    { name: "a trial for a vouched visitor", metadata: { [TRIAL]: { trial: true, requester: { id: "visitor-7f3a", kind: "visitor" } } }, expect: { ok: true } },
+    { name: "a trial for an account holder", metadata: { [TRIAL]: { trial: true, requester: { id: "acct-19", kind: "account", signedIn: true, verified: false } } }, expect: { ok: true } },
+    { name: "a vouched visitor is never signed in", metadata: { [TRIAL]: { trial: true, requester: { id: "visitor-7f3a", kind: "visitor", signedIn: true } } }, expect: { ok: false } },
+    { name: "a requester of an unknown kind", metadata: { [TRIAL]: { trial: true, requester: { id: "x", kind: "robot" } } }, expect: { ok: false } },
     { name: "a reply naming the message it answers", contextId: "ctx-r1", metadata: { [REPLY]: { inReplyTo: "msg-r0" } }, expect: { ok: true } },
     { name: "a reply with no contextId", metadata: { [REPLY]: { inReplyTo: "msg-r0" } }, expect: { ok: false } },
     { name: "the 0.3.0 snake case in a reply", contextId: "ctx-r1", metadata: { [REPLY]: { in_reply_to: "msg-r0" } }, expect: { ok: false } },
@@ -508,12 +512,15 @@ const carrierWithoutSubjects = {
 
 // ------------------------------------------------------------------- offering
 const offeringRouting = {
-  comment: "Binding §12.1; the A2A Bridge §4.5. The offering a Message calls is the offering extension's value in its metadata. One declared offering serves a Message that names none; with several, naming none or an undeclared one is InvalidParamsError (-32602) listing the offerings. During the transition window the older keys agentmesh.offering and agentmesh.skill are still read from a caller with no key: the bridge adds the extension's key with the same value before it signs, and refuses the two disagreeing.",
+  comment: "Binding §12.1 (0.4.2-draft); the A2A Bridge §4.5. The offering a Message calls is the offering extension's value in its metadata. One declared offering serves a Message that names none, and so does a declared default (params.default on the card); with several and no default, naming none or an undeclared one is InvalidParamsError (-32602) listing the offerings. During the transition window the older keys agentmesh.offering and agentmesh.skill are still read from a caller with no key: the bridge adds the extension's key with the same value before it signs, and refuses the two disagreeing.",
   uri: EXT.offering,
   cases: [
     { name: "the extension names a declared offering", declared: ["quote", "stock"], metadata: offering("quote"), window: true, expect: { offering: "quote" } },
     { name: "none named, one declared", declared: ["quote"], metadata: {}, window: true, expect: { offering: "quote" } },
     { name: "none named, several declared", declared: ["quote", "stock"], metadata: {}, window: true, expect: { error: -32602, offerings: ["quote", "stock"] } },
+    { name: "none named, several declared, one the default", declared: ["chat", "help"], default: "chat", metadata: {}, window: true, expect: { offering: "chat" } },
+    { name: "a named offering wins over the default", declared: ["chat", "help"], default: "chat", metadata: offering("help"), window: true, expect: { offering: "help" } },
+    { name: "an undeclared offering is refused even with a default", declared: ["chat", "help"], default: "chat", metadata: offering("launch"), window: true, expect: { error: -32602, offerings: ["chat", "help"] } },
     { name: "an undeclared offering", declared: ["quote", "stock"], metadata: offering("launch"), window: true, expect: { error: -32602, offerings: ["quote", "stock"] } },
     { name: "the older key, inside the window", declared: ["quote", "stock"], metadata: { "agentmesh.offering": "stock" }, window: true, expect: { offering: "stock", added: true } },
     { name: "the pre-rename key, inside the window", declared: ["quote", "stock"], metadata: { "agentmesh.skill": "stock" }, window: true, expect: { offering: "stock", added: true } },
