@@ -8,7 +8,7 @@
 // 2026-10-11, when the specification was renamed Agent Messaging and given this
 // site; dev.agentmesh.ai/spec.html is now a redirect stub. Do not add a second
 // builder anywhere else.
-import { readFileSync, writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync, mkdirSync } from "node:fs";
 import { execSync } from "node:child_process";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -22,9 +22,21 @@ const SRC = explicit ?? resolve(STANDARD, "SPEC.md");
 const OUT = resolve(arg("--out") ?? ROOT);
 import { REPO_URL, headLinks, rail, footer, tailScript } from "./chrome.mjs";
 
+// One page per document: the specification at /spec.html, and each binding
+// that has a URI of its own at that URI, so the URI an Agent Card names opens
+// the binding's text (A2A §5.8).
+const PAGES = [
+  { src: SRC, explicit, out: resolve(OUT, "spec.html"), url: "https://agentmessaging.ai/spec.html", eyebrow: "The specification", kind: "the specification", source: "SPEC.md", railKey: "spec" },
+  ...(explicit ? [] : [
+    { src: resolve(STANDARD, "bindings/a2a.md"), explicit: false, out: resolve(OUT, "bindings/a2a/v1/index.html"), url: "https://agentmessaging.ai/bindings/a2a/v1", eyebrow: "A binding", kind: "an A2A custom protocol binding", source: "bindings/a2a.md", railKey: "bindings" },
+  ]),
+];
+for (const p of PAGES) render(p);
+
+function render({ src, explicit, out, url, eyebrow, kind, source, railKey }) {
 let md, commit = "";
 try {
-  md = readFileSync(SRC, "utf8");
+  md = readFileSync(src, "utf8");
   // The commit stamp is only true when the page is rendered from this
   // repository's own checkout. A file named on the command line may be
   // anything, so it gets no stamp rather than a misleading one.
@@ -34,7 +46,7 @@ try {
     } catch { /* no local repo info */ }
   }
 } catch {
-  throw new Error(`cannot read ${SRC}`);
+  throw new Error(`cannot read ${src}`);
 }
 
 md = md.replace(/\r\n/g, "\n");
@@ -44,7 +56,7 @@ md = md.replace(/\r\n/g, "\n");
 // dropped from the body. Everything after the Date line, the naming note
 // included, stays in the body.
 const head = md.match(/^# (.+)\n+(?:([^*\n][^\n]*)\n+)?\*\*Version:\*\*[\s\S]*?\*\*Date:\*\*.*\n/);
-if (!head) throw new Error("SPEC.md does not start with the expected title and Version/Status/Date block");
+if (!head) throw new Error(`${source} does not start with the expected title and Version/Status/Date block`);
 const title = head[1].trim();
 const subtitle = (head[2] ?? "").trim();
 const meta = {};
@@ -83,7 +95,7 @@ body = body.replace(/<h([1-4])>([\s\S]*?)<\/h\1>/g, (m, lvl, inner) => {
 const esc = (s) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const tocHtml = toc.map(t => `<a href="#${t.slug}">${t.text}</a>`).join("\n            ");
 const generated = new Date().toISOString().slice(0, 10);
-const description = `${title}: ${subtitle || "the specification"}. The full text, rendered from SPEC.md. The Agent Messaging Server is the reference implementation.`;
+const description = `${title}: ${subtitle || kind}. The full text, rendered from ${source}. The Agent Messaging Server is the reference implementation.`;
 
 const page = `<!DOCTYPE html>
 <html lang="en">
@@ -91,20 +103,20 @@ const page = `<!DOCTYPE html>
   <meta charset="UTF-8">
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>${esc(title)}: the specification</title>
+  <title>${esc(title)}: ${kind === "the specification" ? kind : "the binding"}</title>
   <meta name="description" content="${esc(description)}">
   <meta property="og:type" content="article">
   <meta property="og:site_name" content="Agent Messaging">
   <meta property="og:title" content="${esc(title)}">
   <meta property="og:description" content="${esc(description)}">
-  <meta property="og:url" content="https://agentmessaging.ai/spec.html">
+  <meta property="og:url" content="${url}">
   <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
   <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
-  <link rel="canonical" href="https://agentmessaging.ai/spec.html">
+  <link rel="canonical" href="${url}">
   ${headLinks}
   <style>
     html{ scroll-behavior:smooth; scroll-padding-top:20px; }
@@ -158,12 +170,12 @@ const page = `<!DOCTYPE html>
 <body>
   <div class="layout">
 
-    ${rail("spec")}
+    ${rail(railKey)}
 
     <main class="main">
 
       <div class="wrap spec-hero">
-        <span class="eyebrow">The specification</span>
+        <span class="eyebrow">${eyebrow}</span>
         <h1>${esc(title)}</h1>
         <div class="metas">
           <span>version <b>${meta.version}</b></span>
@@ -171,7 +183,7 @@ const page = `<!DOCTYPE html>
           <span>date <b>${meta.date}</b></span>
         </div>
         <p class="canon">Rendered ${generated}${commit ? ` from commit <span class="mono">${commit}</span>` : ""}.
-          The canonical source is SPEC.md, published with the conformance suite at
+          The canonical source is ${source}, published with the conformance suite at
           <a href="${REPO_URL}">${REPO_URL}</a>
           (the <span class="mono">conformance/</span> fixtures this specification cites live there).</p>
         <nav class="toc" aria-label="Sections">
@@ -192,5 +204,7 @@ ${body}
 </html>
 `;
 
-writeFileSync(resolve(OUT, "spec.html"), page);
-console.log(`spec.html written: ${(page.length / 1024).toFixed(0)} KB, ${toc.length} sections, ${title}, ${meta.version} (${meta.date})${commit ? ", commit " + commit : ""}`);
+mkdirSync(dirname(out), { recursive: true });
+writeFileSync(out, page);
+console.log(`${source} written to ${out}: ${(page.length / 1024).toFixed(0)} KB, ${toc.length} sections, ${title}, ${meta.version} (${meta.date})${commit ? ", commit " + commit : ""}`);
+}
