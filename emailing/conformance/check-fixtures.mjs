@@ -11,7 +11,7 @@ import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import { verifyEnvelope, sha256hex } from "./lib.mjs";
-import { parseMail, leaves, header, stateOf, checkHuman } from "./mail.mjs";
+import { parseMail, leaves, header, stateOf, checkHuman, view } from "./mail.mjs";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 // Run from tools/ in the source folder, or from conformance/ on the site.
@@ -66,6 +66,10 @@ function receive(c) {
   if (!verifyEnvelope(env)) return { ...out, refusal: "IDENTITY_MISMATCH", local_signal: true,
     // §3.3: software that shows it to a person must not present it as checked.
     ...(c.expect.person_view ? { person_view: "fail: do not trust this email" } : {}) };
+  // §3.2: in a 0.4.0 frame the Task id, the context id and the artifacts live
+  // in the A2A object, never in the envelope (A2A over Agent Messaging §4).
+  if (env.v === "0.4.0" && ["task_id", "context_id", "artifacts"].some((k) => k in env))
+    return { ...out, refusal: "INVALID_ENVELOPE", local_signal: true };
 
   // Agent Messaging §22.2, remembered before it is judged; then §22.3 with the
   // mailbox window; then §22.4, byte for byte.
@@ -76,19 +80,20 @@ function receive(c) {
   if (Number.isNaN(drift) || drift < -SKEW_AHEAD_MS || drift > MAILBOX_WINDOW_MS) return { ...out, refusal: "stale", local_signal: true };
   if (env.to !== undefined && env.to !== c.receive_as) return { ...out, refusal: "misaddressed", local_signal: true };
 
-  const result = { deliver: true, mode: "native", acted_on: "the envelope", state: stateOf(env) };
-  if (env.task_id) result.task = env.task_id;
+  const v = view(env);
+  const result = { deliver: true, mode: "native", wire: env.v, acted_on: "the envelope", state: stateOf(env) };
+  if (v.taskId) result.task = v.taskId;
   // §3.5: hint headers never change what is done.
   const hintType = header(mail.headers, "agent-messaging-type");
   const hintCtx = header(mail.headers, "agent-messaging-context");
-  if ((hintType && hintType !== env.type) || (hintCtx && hintCtx !== env.context_id)) {
+  if ((hintType && hintType !== env.type) || (hintCtx && hintCtx !== v.contextId)) {
     result.acted_on = `the envelope, as type ${env.type}`; result.local_signal = true;
   }
   if (env.type === "request") result.reply = "the agent's own answer";
   else { result.reply = "none"; result.correlates_to = env.in_reply_to; }
 
   // §3.4: resolve cid: references inside this email, checking size and digest.
-  const refs = [...(env.payload?.files ?? []), ...(env.artifacts ?? []).flatMap((a) => a.parts ?? [])].filter((r) => r.ref?.startsWith("cid:"));
+  const refs = [...v.files, ...v.returned].filter((r) => r.ref?.startsWith("cid:"));
   if (refs.length) {
     result.files = {};
     for (const r of refs) {

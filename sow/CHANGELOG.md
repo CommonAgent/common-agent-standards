@@ -4,6 +4,22 @@ Versions of Agent SoW tagged in this repository, newest first. A version is
 tagged as `sow-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentsow.com.
 
+## 0.36.0-draft (2026-11-07)
+
+Tasks carry A2A's states. Agent Messaging now carries A2A's own
+operations and data model and has no task model of its own, so a task here
+is an A2A Task with A2A's states, spelled as A2A spells them (§2,
+`TASK_STATE_INPUT_REQUIRED` in §5.3 and §11). The engagement state `exhausted`
+of §7.1 is unchanged, and so is what it means: the not-to-exceed cap ended
+the work, artifacts produced before the cap remain, and nothing past the cap
+is billable. What changes is how a task the cap ends shows on the wire. A2A
+has no state for it, so the task ends in `TASK_STATE_CANCELED` with
+`{"outcome": "exhausted"}` in its metadata under the URI of Agent Messaging's
+budget extension, `https://agentmessaging.ai/extensions/budget/v1` (§5.5.5,
+§5.5.8). A runtime still MUST NOT record such a task as failed, and MUST NOT
+retry it. The `task_state` block of `conformance/sow-pricing.json` pins the
+state, the metadata and the states it is reached from in A2A's spelling.
+
 ## 0.35.0-draft (2026-10-25)
 
 The acceptance act. §5.10.2 said a dispute cites the acceptance act and §6.3

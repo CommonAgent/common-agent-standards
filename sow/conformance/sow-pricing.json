@@ -1,6 +1,6 @@
 {
   "comment": "Agent SoW pricing arrangements and the directed standing proposal (agentsow.com 0.11.0-draft). Pins the bytes where two independent implementations drift: the three arrangement strings, the fixed-fee, time-and-materials and no-charge price clauses, the MANDATORY not-to-exceed cap and the MANDATORY reservation window and the refusals around both, the rule that a no_charge clause carries the arrangement and its grade and NOTHING ELSE, the machine-readable `per` divisor that turns raw meter counts into billable units, rating against the cap (including what the provider absorbs past it and, since 0.9.0-draft, the operator fee the cap also has to cover), pass-through settlement lines and their upstream receipt, the reservation window arithmetic, the 7.1 document states including `exhausted`, the 6.2 organization/mandate fields, the 12.1.1 named counterparty (who may form, when the offer ends, and why no public listing is derived from it), the 12.1 qualifications a counterparty must meet before its countersign is accepted (the closed kind vocabulary, the grade each kind can honestly carry, and the refusal that names the unmet condition), and really-signed documents whose canonical bytes both SDKs must reproduce exactly. MONEY IS COMPUTED ONE WAY THROUGHOUT: by flooring. 5.5.2 floors a rated line and 5.5.8 floors an operator fee, so two implementations doing integer arithmetic cannot disagree by one. THE FIXTURE IS THE AUTHORITY: when a test against it fails, fix the implementation; when the fixture itself is believed wrong, change it only with a spec change alongside.",
-  "version": 2,
+  "version": 3,
   "spec": "Agent SoW 0.11.0-draft: 2 (terminology), 5.5 (arrangement), 5.5.1 (fixed fee), 5.5.2 (time and materials), 5.5.3 (the cap, which bounds what the client pays), 5.5.4 (reservation and the window), 5.5.5 (reaching the cap), 5.5.6 (pass-through lines), 5.5.7 (no charge), 5.5.8 (operator fees, floored and exactly checked), 6 (signatures), 6.1 (approval authority), 6.2 (organizational authority), 7.1 (document states), 12.1 (qualifications), 12.1.1 (the named counterparty)",
   "identities": {
     "sender_seed": "SUAEGDPNTWXACIF45CA23BUY36RIMWZXW5LEHSEOK2ONS5JWJ7PBC2EWBA",
@@ -1559,15 +1559,20 @@
     ]
   },
   "task_state": {
-    "comment": "5.5.5: a task in flight when the cap is reached also ends `exhausted`, with whatever artifacts exist attached, billed no further than the cap. In the mesh SDKs that makes `exhausted` a ninth Task state (Agent Messaging, messaging/SPEC.md 7.3), terminal and NOT cancelable - messaging/conformance/cancel.json's `not_cancelable_from` carries it for that reason.",
-    "state": "exhausted",
+    "comment": "5.5.5: a task in flight when the cap is reached also ends there, with whatever artifacts exist attached, billed no further than the cap. A task is an A2A Task, and A2A has no state for this outcome, so on the wire the task is TASK_STATE_CANCELED, a terminal state, with {\"outcome\": \"exhausted\"} in its metadata under the URI of Agent Messaging's budget extension (messaging/bindings/a2a.md 12.2). It is NOT a failure: a runtime MUST NOT put it in TASK_STATE_FAILED, record it as failed, or retry it. Being terminal, it is not cancelable (A2A TaskNotCancelableError). Before 0.36.0-draft this was a ninth task state, exhausted.",
+    "state": "TASK_STATE_CANCELED",
+    "metadata": {
+      "https://agentmessaging.ai/extensions/budget/v1": {
+        "outcome": "exhausted"
+      }
+    },
     "terminal": true,
     "is_failure": false,
     "reachable_from": [
-      "submitted",
-      "working",
-      "input_required",
-      "auth_required"
+      "TASK_STATE_SUBMITTED",
+      "TASK_STATE_WORKING",
+      "TASK_STATE_INPUT_REQUIRED",
+      "TASK_STATE_AUTH_REQUIRED"
     ]
   },
   "party": {
