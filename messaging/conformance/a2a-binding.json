@@ -320,10 +320,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 0
                 }
               },
-              "sig": "YdCj_rsxm2bPSuvbWckt6mMrsIb9v7D8PI13blNATBTc7DMP7-vEejEz3OFHkWmADW9NgxysEjZY78hj_k83AQ"
+              "sig": "Bf6ohAat7qpIVBbYBLGxgek_r6S-Nmew8diHbtsj3cZe-2c7my8tVtSykMquhwN1NGdSnLyELs4URZpcdgLPCA"
             }
           },
           {
@@ -352,10 +353,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 1
                 }
               },
-              "sig": "1l887iWoIdTGfGyAlyBPMWr8TBvmlFNlBK31tgVLN2dZ82Q3Rx5DTps7xUmZYbxcGEPfXKzJ5xBar_tsbOJ6Dg"
+              "sig": "Tz_glLCeBfZYt4YYVviXWBe39_E8WQQXPgSeLi-my5xg6Tg2lZe-UYp6U0sWwu1mdWuRWtMM8V-XNY0D4pamCQ"
             }
           },
           {
@@ -391,10 +393,11 @@
                       "lastChunk": false
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 2
                 }
               },
-              "sig": "NhxYQfiMCm_DRyMl0B3ju20lgLqGLXXRHS3_pIWADAwPdTbCMjz5qrwmb96DhLJwyyVYYWtRKv9_DtGyNJDiBQ"
+              "sig": "1-HveK1rp2nrecnmFFp9hRygfwenAQOFhJvp0CFN4ecy0YV2hOBrbFkxV1Q27RP9l7l3te8smV2rxGXbv2IiDw"
             }
           },
           {
@@ -429,10 +432,11 @@
                       "lastChunk": true
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 3
                 }
               },
-              "sig": "2d_z4hCB_qLmYF2w2NS8WMngzE5-RdjogJw08jxCMN5YD-Wb3gR07ToV9bYfOHP94WagnXItZy9Uuzu10SoVAw"
+              "sig": "_g97QXeo_wXaBkMafaWGc3YwstJos6zyNB6XdPLWMlj_rHz9ufl2wk5oYjg2N5BwdoMO-5GA9KmaTWSeFvHDAA"
             }
           },
           {
@@ -461,11 +465,12 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 4,
                   "final": true
                 }
               },
-              "sig": "CbLDh0u92m3ViT6vyzfMBzmmz1reUqI3mUbI51uAHYzOVUJOdO0nSMjyzCqAOrWQL0zExNw97vClo46mzLb-Dg"
+              "sig": "0ObKhEVyAp22nrPydfiiwTFqUt0EQJqWGBK3_QJVHKz_fVsquOmb9xP6qqso2tr_tp2p-G4ZtEMK4xfPrhObAg"
             }
           }
         ],
@@ -946,10 +951,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000017",
                   "seq": 0
                 }
               },
-              "sig": "a7Oz9j-BRylyy-J1Ys_jHoi2koQWOdSeIiVfCkhmLT4HIqsVvXmC1f38iwj0HxQMqDD-_iA8c3f46xKuN_fABA"
+              "sig": "ybJ4e3q83QcdCJV3E6iV1z2e1JQaxuw0ld0gSs5E9tqVIxEkqiOoBj0f7nTzCMxmTHeidBKdon7KOZ5n8KYJDQ"
             }
           },
           {
@@ -978,11 +984,12 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000017",
                   "seq": 1,
                   "final": true
                 }
               },
-              "sig": "58Gfq8-oBr5r2ulMomQt6i0T1t1s17p3z69fgD99rvxnQpsxU5L_HD9Hlc8nRirwNB_245FQrtK8f3fC9sl-AA"
+              "sig": "T8Cz0yE-thjqr4opara-o8nwf6tJtfmpE4m0jeCA2CRKnJWgvun7_6wCJUaTxZZr8ZZReQtrWRzPVJNLrGYZAQ"
             }
           }
         ],
@@ -2917,6 +2924,76 @@
             }
           }
         }
+      },
+      {
+        "name": "an operation A2A does not define",
+        "error": "MethodNotFoundError",
+        "unknown_method": true,
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000052",
+            "type": "request",
+            "ts": "2026-11-07T18:00:10.400Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "LaunchTask",
+                "params": {
+                  "id": "task-9f2c"
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0"
+              }
+            },
+            "sig": "bZgs2EL0ZsaXQEGtfHY2d2XC_yEGlBTlytgHAIIiCyDCZQhgXVL_uP5MZR9BwYbD0ZPur-6FpUOhsoVUJv4oDg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000053",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:10.600Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000052",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {}
+            },
+            "error": {
+              "code": "MethodNotFoundError",
+              "message": "No operation LaunchTask.",
+              "details": {
+                "a2a": {
+                  "code": -32601,
+                  "data": {}
+                }
+              },
+              "retryable": false
+            },
+            "sig": "EDkXv9T6ac7nQawBMJdenR2tgu5iYUolfL_E35pHcq-oopepTGGUgHW8x9oG1ROp3LiodL6yYT2qshpQqAEmCA"
+          }
+        ],
+        "jsonrpc": {
+          "jsonrpc": "2.0",
+          "id": 1,
+          "error": {
+            "code": -32601,
+            "message": "No operation LaunchTask."
+          }
+        },
+        "http": null
       }
     ],
     "channel": [
@@ -3169,13 +3246,13 @@
     ]
   },
   "part_by_reference": {
-    "comment": "Binding §6, §12.5; the A2A Bridge §6. A Part too large to travel inline is a url Part whose value is an Agent Messaging artifact reference, with the artifact references extension giving its size and digest. Inbound it passes unchanged; outbound to a caller with no key the bridge may replace only the url with an HTTPS link, keeping size and digest.",
+    "comment": "Binding §6, §12.5; the A2A Bridge §6. A Part too large to travel inline is a url Part whose value is an Agent Messaging artifact reference, with the artifact references extension giving its size and digest. The extension may sit on a reference of any carrier (a cid: attachment by email, an https: URL), and wherever it sits it must be well formed. Inbound it passes unchanged; outbound to a caller with no key the bridge may replace only the url with an HTTPS link, keeping size and digest.",
     "frames": [
       {
         "v": "0.4.0",
-        "id": "0199b000-0000-7000-8000-000000000052",
+        "id": "0199b000-0000-7000-8000-000000000054",
         "type": "request",
-        "ts": "2026-11-07T18:00:10.400Z",
+        "ts": "2026-11-07T18:00:10.800Z",
         "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
         "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
         "trace": {
@@ -3222,7 +3299,7 @@
             "A2A-Version": "1.0"
           }
         },
-        "sig": "6BdZLwhsdMOJ-wGu9FuTC5Yt9yxiZLwI9dFlk6ZpIf9oJKpe2Btaca3pnVv0aqQ-fV0CWhL6sgZtseuA4C1CBA"
+        "sig": "GPlvhaivmxdhx1hZT0TJWnPGASwq-m9tnFFX8p5Y9OZmwd6g-geHyr-dy-YrqXOlhpf2iW__MxnCgu7rHUPiAw"
       }
     ],
     "http": {
@@ -3447,7 +3524,7 @@
     ]
   },
   "stream_resume": {
-    "comment": "Binding §8. The first event reaches the client's inbox; the rest are published to mesh.task.{taskId}.stream, each with payload.a2a.seq counting from 0, and the last carries final: true. A client that loses its connection resumes its durable subscription after the last event it acknowledged; a redelivered event is dropped by seq. A gap it cannot close sends it to SubscribeToTask. Nothing after final is read. The events, in seq order, are the bridge's Server-Sent Events, one StreamResponse each.",
+    "comment": "Binding §8 (0.3.0-draft). The first event reaches the client's inbox; the rest are published to mesh.task.{taskId}.stream. Several streams of one Task share that subject, so every frame carries payload.a2a.streamId, the id of the request frame that opened the stream, and payload.a2a.seq counting from 0 within it; a client reads only its own stream's frames. The stream ends where A2A says, at a terminal state or with the Message that answers without a Task, and that frame carries final: true; an interrupted state keeps it open, and final on any other event is a broken stream. A client that loses its connection resumes its durable subscription after the last event it acknowledged; a redelivered event is dropped by seq. A gap it cannot close sends it to SubscribeToTask. Nothing after final is read. The events, in seq order, are the bridge's Server-Sent Events, one StreamResponse each.",
     "request": {
       "v": "0.4.0",
       "id": "0199b000-0000-7000-8000-000000000005",
@@ -3517,10 +3594,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 0
                 }
               },
-              "sig": "YdCj_rsxm2bPSuvbWckt6mMrsIb9v7D8PI13blNATBTc7DMP7-vEejEz3OFHkWmADW9NgxysEjZY78hj_k83AQ"
+              "sig": "Bf6ohAat7qpIVBbYBLGxgek_r6S-Nmew8diHbtsj3cZe-2c7my8tVtSykMquhwN1NGdSnLyELs4URZpcdgLPCA"
             }
           },
           {
@@ -3549,10 +3627,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 1
                 }
               },
-              "sig": "1l887iWoIdTGfGyAlyBPMWr8TBvmlFNlBK31tgVLN2dZ82Q3Rx5DTps7xUmZYbxcGEPfXKzJ5xBar_tsbOJ6Dg"
+              "sig": "Tz_glLCeBfZYt4YYVviXWBe39_E8WQQXPgSeLi-my5xg6Tg2lZe-UYp6U0sWwu1mdWuRWtMM8V-XNY0D4pamCQ"
             }
           },
           {
@@ -3588,10 +3667,11 @@
                       "lastChunk": false
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 2
                 }
               },
-              "sig": "NhxYQfiMCm_DRyMl0B3ju20lgLqGLXXRHS3_pIWADAwPdTbCMjz5qrwmb96DhLJwyyVYYWtRKv9_DtGyNJDiBQ"
+              "sig": "1-HveK1rp2nrecnmFFp9hRygfwenAQOFhJvp0CFN4ecy0YV2hOBrbFkxV1Q27RP9l7l3te8smV2rxGXbv2IiDw"
             }
           },
           {
@@ -3631,10 +3711,11 @@
                       "lastChunk": false
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 2
                 }
               },
-              "sig": "NhxYQfiMCm_DRyMl0B3ju20lgLqGLXXRHS3_pIWADAwPdTbCMjz5qrwmb96DhLJwyyVYYWtRKv9_DtGyNJDiBQ"
+              "sig": "1-HveK1rp2nrecnmFFp9hRygfwenAQOFhJvp0CFN4ecy0YV2hOBrbFkxV1Q27RP9l7l3te8smV2rxGXbv2IiDw"
             }
           },
           {
@@ -3669,10 +3750,11 @@
                       "lastChunk": true
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 3
                 }
               },
-              "sig": "2d_z4hCB_qLmYF2w2NS8WMngzE5-RdjogJw08jxCMN5YD-Wb3gR07ToV9bYfOHP94WagnXItZy9Uuzu10SoVAw"
+              "sig": "_g97QXeo_wXaBkMafaWGc3YwstJos6zyNB6XdPLWMlj_rHz9ufl2wk5oYjg2N5BwdoMO-5GA9KmaTWSeFvHDAA"
             }
           },
           {
@@ -3701,11 +3783,12 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 4,
                   "final": true
                 }
               },
-              "sig": "CbLDh0u92m3ViT6vyzfMBzmmz1reUqI3mUbI51uAHYzOVUJOdO0nSMjyzCqAOrWQL0zExNw97vClo46mzLb-Dg"
+              "sig": "0ObKhEVyAp22nrPydfiiwTFqUt0EQJqWGBK3_QJVHKz_fVsquOmb9xP6qqso2tr_tp2p-G4ZtEMK4xfPrhObAg"
             }
           }
         ],
@@ -3807,10 +3890,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 0
                 }
               },
-              "sig": "YdCj_rsxm2bPSuvbWckt6mMrsIb9v7D8PI13blNATBTc7DMP7-vEejEz3OFHkWmADW9NgxysEjZY78hj_k83AQ"
+              "sig": "Bf6ohAat7qpIVBbYBLGxgek_r6S-Nmew8diHbtsj3cZe-2c7my8tVtSykMquhwN1NGdSnLyELs4URZpcdgLPCA"
             }
           },
           {
@@ -3839,10 +3923,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 1
                 }
               },
-              "sig": "1l887iWoIdTGfGyAlyBPMWr8TBvmlFNlBK31tgVLN2dZ82Q3Rx5DTps7xUmZYbxcGEPfXKzJ5xBar_tsbOJ6Dg"
+              "sig": "Tz_glLCeBfZYt4YYVviXWBe39_E8WQQXPgSeLi-my5xg6Tg2lZe-UYp6U0sWwu1mdWuRWtMM8V-XNY0D4pamCQ"
             }
           },
           {
@@ -3878,10 +3963,11 @@
                       "lastChunk": false
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 2
                 }
               },
-              "sig": "NhxYQfiMCm_DRyMl0B3ju20lgLqGLXXRHS3_pIWADAwPdTbCMjz5qrwmb96DhLJwyyVYYWtRKv9_DtGyNJDiBQ"
+              "sig": "1-HveK1rp2nrecnmFFp9hRygfwenAQOFhJvp0CFN4ecy0YV2hOBrbFkxV1Q27RP9l7l3te8smV2rxGXbv2IiDw"
             }
           },
           {
@@ -3916,10 +4002,11 @@
                       "lastChunk": true
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 3
                 }
               },
-              "sig": "2d_z4hCB_qLmYF2w2NS8WMngzE5-RdjogJw08jxCMN5YD-Wb3gR07ToV9bYfOHP94WagnXItZy9Uuzu10SoVAw"
+              "sig": "_g97QXeo_wXaBkMafaWGc3YwstJos6zyNB6XdPLWMlj_rHz9ufl2wk5oYjg2N5BwdoMO-5GA9KmaTWSeFvHDAA"
             }
           },
           {
@@ -3948,11 +4035,12 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 4,
                   "final": true
                 }
               },
-              "sig": "CbLDh0u92m3ViT6vyzfMBzmmz1reUqI3mUbI51uAHYzOVUJOdO0nSMjyzCqAOrWQL0zExNw97vClo46mzLb-Dg"
+              "sig": "0ObKhEVyAp22nrPydfiiwTFqUt0EQJqWGBK3_QJVHKz_fVsquOmb9xP6qqso2tr_tp2p-G4ZtEMK4xfPrhObAg"
             }
           }
         ],
@@ -4054,10 +4142,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 0
                 }
               },
-              "sig": "YdCj_rsxm2bPSuvbWckt6mMrsIb9v7D8PI13blNATBTc7DMP7-vEejEz3OFHkWmADW9NgxysEjZY78hj_k83AQ"
+              "sig": "Bf6ohAat7qpIVBbYBLGxgek_r6S-Nmew8diHbtsj3cZe-2c7my8tVtSykMquhwN1NGdSnLyELs4URZpcdgLPCA"
             }
           },
           {
@@ -4086,10 +4175,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 1
                 }
               },
-              "sig": "1l887iWoIdTGfGyAlyBPMWr8TBvmlFNlBK31tgVLN2dZ82Q3Rx5DTps7xUmZYbxcGEPfXKzJ5xBar_tsbOJ6Dg"
+              "sig": "Tz_glLCeBfZYt4YYVviXWBe39_E8WQQXPgSeLi-my5xg6Tg2lZe-UYp6U0sWwu1mdWuRWtMM8V-XNY0D4pamCQ"
             }
           },
           {
@@ -4124,10 +4214,11 @@
                       "lastChunk": true
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 3
                 }
               },
-              "sig": "2d_z4hCB_qLmYF2w2NS8WMngzE5-RdjogJw08jxCMN5YD-Wb3gR07ToV9bYfOHP94WagnXItZy9Uuzu10SoVAw"
+              "sig": "_g97QXeo_wXaBkMafaWGc3YwstJos6zyNB6XdPLWMlj_rHz9ufl2wk5oYjg2N5BwdoMO-5GA9KmaTWSeFvHDAA"
             }
           }
         ],
@@ -4188,10 +4279,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 0
                 }
               },
-              "sig": "YdCj_rsxm2bPSuvbWckt6mMrsIb9v7D8PI13blNATBTc7DMP7-vEejEz3OFHkWmADW9NgxysEjZY78hj_k83AQ"
+              "sig": "Bf6ohAat7qpIVBbYBLGxgek_r6S-Nmew8diHbtsj3cZe-2c7my8tVtSykMquhwN1NGdSnLyELs4URZpcdgLPCA"
             }
           },
           {
@@ -4220,10 +4312,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 1
                 }
               },
-              "sig": "1l887iWoIdTGfGyAlyBPMWr8TBvmlFNlBK31tgVLN2dZ82Q3Rx5DTps7xUmZYbxcGEPfXKzJ5xBar_tsbOJ6Dg"
+              "sig": "Tz_glLCeBfZYt4YYVviXWBe39_E8WQQXPgSeLi-my5xg6Tg2lZe-UYp6U0sWwu1mdWuRWtMM8V-XNY0D4pamCQ"
             }
           },
           {
@@ -4259,10 +4352,11 @@
                       "lastChunk": false
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 2
                 }
               },
-              "sig": "NhxYQfiMCm_DRyMl0B3ju20lgLqGLXXRHS3_pIWADAwPdTbCMjz5qrwmb96DhLJwyyVYYWtRKv9_DtGyNJDiBQ"
+              "sig": "1-HveK1rp2nrecnmFFp9hRygfwenAQOFhJvp0CFN4ecy0YV2hOBrbFkxV1Q27RP9l7l3te8smV2rxGXbv2IiDw"
             }
           },
           {
@@ -4297,10 +4391,11 @@
                       "lastChunk": true
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 3
                 }
               },
-              "sig": "2d_z4hCB_qLmYF2w2NS8WMngzE5-RdjogJw08jxCMN5YD-Wb3gR07ToV9bYfOHP94WagnXItZy9Uuzu10SoVAw"
+              "sig": "_g97QXeo_wXaBkMafaWGc3YwstJos6zyNB6XdPLWMlj_rHz9ufl2wk5oYjg2N5BwdoMO-5GA9KmaTWSeFvHDAA"
             }
           },
           {
@@ -4329,20 +4424,21 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 4,
                   "final": true
                 }
               },
-              "sig": "CbLDh0u92m3ViT6vyzfMBzmmz1reUqI3mUbI51uAHYzOVUJOdO0nSMjyzCqAOrWQL0zExNw97vClo46mzLb-Dg"
+              "sig": "0ObKhEVyAp22nrPydfiiwTFqUt0EQJqWGBK3_QJVHKz_fVsquOmb9xP6qqso2tr_tp2p-G4ZtEMK4xfPrhObAg"
             }
           },
           {
             "subject": "mesh.task.task-7f00.stream",
             "frame": {
               "v": "0.4.0",
-              "id": "0199b000-0000-7000-8000-000000000053",
+              "id": "0199b000-0000-7000-8000-000000000064",
               "type": "respond",
-              "ts": "2026-11-07T18:00:10.600Z",
+              "ts": "2026-11-07T18:00:52.000Z",
               "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
               "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
               "in_reply_to": "0199b000-0000-7000-8000-000000000005",
@@ -4362,10 +4458,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 5
                 }
               },
-              "sig": "9Sowb_ZFB4oU5tUk0KT8XpZC3kZaaeTuMUhPFSCZ5xluRuxFl0uIvdW-bgdeElSHxcGt2h4fePfUuEIkM5slAA"
+              "sig": "B6eA7NO_f8u8NYEP5RmvaesFfFbFlHEYsEWouSzdtt9Y0-HKa7Bji3ZZ1r0bPnd3oeGrkNosY_utbbqLSFBmDg"
             }
           }
         ],
@@ -4468,10 +4565,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 0
                 }
               },
-              "sig": "YdCj_rsxm2bPSuvbWckt6mMrsIb9v7D8PI13blNATBTc7DMP7-vEejEz3OFHkWmADW9NgxysEjZY78hj_k83AQ"
+              "sig": "Bf6ohAat7qpIVBbYBLGxgek_r6S-Nmew8diHbtsj3cZe-2c7my8tVtSykMquhwN1NGdSnLyELs4URZpcdgLPCA"
             }
           },
           {
@@ -4500,10 +4598,11 @@
                       }
                     }
                   },
+                  "streamId": "0199b000-0000-7000-8000-000000000005",
                   "seq": 1
                 }
               },
-              "sig": "1l887iWoIdTGfGyAlyBPMWr8TBvmlFNlBK31tgVLN2dZ82Q3Rx5DTps7xUmZYbxcGEPfXKzJ5xBar_tsbOJ6Dg"
+              "sig": "Tz_glLCeBfZYt4YYVviXWBe39_E8WQQXPgSeLi-my5xg6Tg2lZe-UYp6U0sWwu1mdWuRWtMM8V-XNY0D4pamCQ"
             }
           }
         ],
@@ -4523,6 +4622,458 @@
           "complete": false,
           "gap_at": 1,
           "next": "SubscribeToTask"
+        }
+      },
+      {
+        "name": "an interrupted state keeps the stream open, and another stream of the Task on the same subject is skipped by streamId",
+        "request": {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000055",
+          "type": "request",
+          "ts": "2026-11-07T18:00:50.200Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "SendStreamingMessage",
+              "params": {
+                "message": {
+                  "messageId": "msg-s2",
+                  "role": "ROLE_USER",
+                  "parts": [
+                    {
+                      "text": "Quote 30 units of part 7743."
+                    }
+                  ],
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/offering/v1": {
+                      "offering": "quote"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "sig": "TfujAj3w0KcIZH42HsiawbP8dD8p5cU2VUGwYYFW_3h9x4XaZA86_W8DeFJvsd0yAmKeOuaLpWlniExSctk9BQ"
+        },
+        "deliveries": [
+          {
+            "subject": "inbox",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000056",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:50.400Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000055",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "task": {
+                      "id": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_WORKING",
+                        "timestamp": "2026-11-07T18:00:50.500Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000055",
+                  "seq": 0
+                }
+              },
+              "sig": "4_ARGpz3I0p7EzOQozja-ufMbCuMuDf1lBJPlrHgUYt9E11h-VhVoLPYJrS1rwKoOVilw31sNqQ_pu_k5tCQDQ"
+            }
+          },
+          {
+            "subject": "mesh.task.task-8a00.stream",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000057",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:50.600Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000055",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "statusUpdate": {
+                      "taskId": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_INPUT_REQUIRED",
+                        "message": {
+                          "messageId": "st-s2",
+                          "role": "ROLE_AGENT",
+                          "parts": [
+                            {
+                              "text": "Do you accept a split delivery?"
+                            }
+                          ]
+                        },
+                        "timestamp": "2026-11-07T18:00:51.000Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000055",
+                  "seq": 1
+                }
+              },
+              "sig": "NeqxUha_oIFNvYCdRPv06RhcHWDcv9Xragc4_Rq6AK2ZIj-EHHFJ3P483ep0SJSFs5E6cU5bhV_riKMB4fxeAw"
+            }
+          },
+          {
+            "subject": "inbox",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000061",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:51.400Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000060",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "task": {
+                      "id": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_INPUT_REQUIRED",
+                        "message": {
+                          "messageId": "st-s2",
+                          "role": "ROLE_AGENT",
+                          "parts": [
+                            {
+                              "text": "Do you accept a split delivery?"
+                            }
+                          ]
+                        },
+                        "timestamp": "2026-11-07T18:00:51.000Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000060",
+                  "seq": 0
+                }
+              },
+              "sig": "ZNK6MpOUj3PTn332ctMP80ARd2kjxGicjayhBIBfBsoL4bVII0r_xF6dXM3YzEbS8nY5lFVkdhLqDKVa45gUAw"
+            }
+          },
+          {
+            "subject": "mesh.task.task-8a00.stream",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000058",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:50.800Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000055",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "statusUpdate": {
+                      "taskId": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_WORKING",
+                        "timestamp": "2026-11-07T18:01:50.000Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000055",
+                  "seq": 2
+                }
+              },
+              "sig": "B065inx5zfN_z4jXHsiCKBgtS56K0qFs2nog-ezcQ4CJnr7Ze1qQVUAu8-ovVKyMlEm9MPlfwJjDGpGkEAhcDg"
+            }
+          },
+          {
+            "subject": "mesh.task.task-8a00.stream",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000062",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:51.600Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000060",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "statusUpdate": {
+                      "taskId": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_WORKING",
+                        "timestamp": "2026-11-07T18:01:50.000Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000060",
+                  "seq": 1
+                }
+              },
+              "sig": "_82mcLQvg56tiFTT8jqGA3pkAO4wLDatUXNETPSAfZBVlNrMG8FyqHPyIjIQ21_KabxkC9OCdJTa0yrJrmWkBw"
+            }
+          },
+          {
+            "subject": "mesh.task.task-8a00.stream",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000059",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:51.000Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000055",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "statusUpdate": {
+                      "taskId": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_COMPLETED",
+                        "timestamp": "2026-11-07T18:02:20.000Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000055",
+                  "seq": 3,
+                  "final": true
+                }
+              },
+              "sig": "ijXKaO3C00ZtbO5UOcreRzCFUJmQ9_1atCdmKe8wL_o7TsQsVIn8DHKSVhI0dc-JGoobv0SgU4RlJpgCRY6-Bg"
+            }
+          }
+        ],
+        "expect": {
+          "events": [
+            {
+              "task": {
+                "id": "task-8a00",
+                "contextId": "ctx-8a00",
+                "status": {
+                  "state": "TASK_STATE_WORKING",
+                  "timestamp": "2026-11-07T18:00:50.500Z"
+                }
+              }
+            },
+            {
+              "statusUpdate": {
+                "taskId": "task-8a00",
+                "contextId": "ctx-8a00",
+                "status": {
+                  "state": "TASK_STATE_INPUT_REQUIRED",
+                  "message": {
+                    "messageId": "st-s2",
+                    "role": "ROLE_AGENT",
+                    "parts": [
+                      {
+                        "text": "Do you accept a split delivery?"
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-11-07T18:00:51.000Z"
+                }
+              }
+            },
+            {
+              "statusUpdate": {
+                "taskId": "task-8a00",
+                "contextId": "ctx-8a00",
+                "status": {
+                  "state": "TASK_STATE_WORKING",
+                  "timestamp": "2026-11-07T18:01:50.000Z"
+                }
+              }
+            },
+            {
+              "statusUpdate": {
+                "taskId": "task-8a00",
+                "contextId": "ctx-8a00",
+                "status": {
+                  "state": "TASK_STATE_COMPLETED",
+                  "timestamp": "2026-11-07T18:02:20.000Z"
+                }
+              }
+            }
+          ],
+          "complete": true,
+          "skipped": 2
+        }
+      },
+      {
+        "name": "final on an interrupted state is a broken stream",
+        "request": {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000055",
+          "type": "request",
+          "ts": "2026-11-07T18:00:50.200Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "SendStreamingMessage",
+              "params": {
+                "message": {
+                  "messageId": "msg-s2",
+                  "role": "ROLE_USER",
+                  "parts": [
+                    {
+                      "text": "Quote 30 units of part 7743."
+                    }
+                  ],
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/offering/v1": {
+                      "offering": "quote"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "sig": "TfujAj3w0KcIZH42HsiawbP8dD8p5cU2VUGwYYFW_3h9x4XaZA86_W8DeFJvsd0yAmKeOuaLpWlniExSctk9BQ"
+        },
+        "deliveries": [
+          {
+            "subject": "inbox",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000056",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:50.400Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000055",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "task": {
+                      "id": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_WORKING",
+                        "timestamp": "2026-11-07T18:00:50.500Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000055",
+                  "seq": 0
+                }
+              },
+              "sig": "4_ARGpz3I0p7EzOQozja-ufMbCuMuDf1lBJPlrHgUYt9E11h-VhVoLPYJrS1rwKoOVilw31sNqQ_pu_k5tCQDQ"
+            }
+          },
+          {
+            "subject": "mesh.task.task-8a00.stream",
+            "frame": {
+              "v": "0.4.0",
+              "id": "0199b000-0000-7000-8000-000000000063",
+              "type": "respond",
+              "ts": "2026-11-07T18:00:51.800Z",
+              "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+              "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+              "in_reply_to": "0199b000-0000-7000-8000-000000000055",
+              "trace": {
+                "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+                "span_id": "00f067aa0ba902b7"
+              },
+              "payload": {
+                "a2a": {
+                  "result": {
+                    "statusUpdate": {
+                      "taskId": "task-8a00",
+                      "contextId": "ctx-8a00",
+                      "status": {
+                        "state": "TASK_STATE_INPUT_REQUIRED",
+                        "message": {
+                          "messageId": "st-s2",
+                          "role": "ROLE_AGENT",
+                          "parts": [
+                            {
+                              "text": "Do you accept a split delivery?"
+                            }
+                          ]
+                        },
+                        "timestamp": "2026-11-07T18:00:51.000Z"
+                      }
+                    }
+                  },
+                  "streamId": "0199b000-0000-7000-8000-000000000055",
+                  "seq": 1,
+                  "final": true
+                }
+              },
+              "sig": "zW1qucu6Qnt7_6SLoBPulcFsqi8yZj3RLyrs_uSEowJDoKtkWFGPuZeTPRVCX-Tw3JmHOl0iRJ5JbXkKK8AbAA"
+            }
+          }
+        ],
+        "expect": {
+          "events": [
+            {
+              "task": {
+                "id": "task-8a00",
+                "contextId": "ctx-8a00",
+                "status": {
+                  "state": "TASK_STATE_WORKING",
+                  "timestamp": "2026-11-07T18:00:50.500Z"
+                }
+              }
+            }
+          ],
+          "complete": false,
+          "broken": "final on an event that does not end the stream"
         }
       }
     ],
@@ -4629,7 +5180,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000054",
+            "id": "0199b000-0000-7000-8000-000000000065",
             "type": "request",
             "ts": "2026-11-07T18:00:00.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -4664,16 +5215,16 @@
                 "A2A-Version": "1.0"
               }
             },
-            "sig": "G0b03HKJYAs-2xbnnUMZGTgIQ9WMAwvgPS4q-iFlo29ZIkrOr8AEqBzNPLQTWVJTwZ6xR2jWBy3WbGBUIvkQAg"
+            "sig": "LZVpXH8M81FXPBdqRmt3WyhhcDBw2X6xFW8Gq33Zv0ngDOIpzszVEER0lZxIekB1ZhXlz4KkmkneWmjOMHDlBQ"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000055",
+            "id": "0199b000-0000-7000-8000-000000000066",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000054",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000065",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -4692,7 +5243,7 @@
                 }
               }
             },
-            "sig": "pBSiilXkuazHhFS9dd-x7llYWIKYoj21s1otwbMRXJdieGiBzIXCtLrze32l76sRzhJQSIjS-Q1Hjd8eM3qHDQ"
+            "sig": "jS3J1ZE6mD_SFNr0Nc4e9Wb6UUntUwbIdExWsD5xvOKWeZjpdN1eVs8eR60F4r6VV38wVbGVvCgEghFUlGc_AA"
           }
         ],
         "http": {
@@ -4739,7 +5290,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000056",
+            "id": "0199b000-0000-7000-8000-000000000067",
             "type": "request",
             "ts": "2026-11-07T18:10:00.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -4761,16 +5312,16 @@
                 "A2A-Version": "1.0"
               }
             },
-            "sig": "vuwVtFBhTNjHkOQtpnmeMKYU9TTLnQPeW4segrrwj0eW3aAHDeujdLiaBBfSn9bDlcyJJCp-tq6aeSK4h34oCA"
+            "sig": "lc5okyJtUHVbrzRo5LcDViJ4z2uTa_4CoIeZnlV8kX_Q6rX0b1zfca88oIiW_W9Vk2tSimw5EYlpyeok1ij-Aw"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000057",
+            "id": "0199b000-0000-7000-8000-000000000068",
             "type": "respond",
             "ts": "2026-11-07T18:10:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000056",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000067",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -4796,7 +5347,7 @@
                 }
               }
             },
-            "sig": "LuxkzqGD6gVdJ9e2LDggRyybPF0jU2LBXEx3TZfebnN-aDVjf7hYNlwI_jyB--y2cw73HnF2gEqnU3w70qciDw"
+            "sig": "CvdSv3ieC_Ge7KpPcf25PG-SGGqVBei1_SQ2gEkKPaYbmKI8M_-6zT85Kwf6WRUu5mxa40nZidRrtwOFsNb6BA"
           }
         ],
         "http": {
@@ -4835,7 +5386,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000058",
+            "id": "0199b000-0000-7000-8000-000000000069",
             "type": "request",
             "ts": "2026-11-07T19:30:00.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -4857,16 +5408,16 @@
                 "A2A-Version": "1.0"
               }
             },
-            "sig": "rGzh4TjHU5vu4oyX6ZiS0lGY0jf8zL3DjRG_V8o1P_-bNS8p5mu4vvtrX4iOcAs1XEaczyuKqthk9d9NiHdVDg"
+            "sig": "6PDc_akVWjR8nrd0DXup0AqDqzn74wcV4jpEZiYPmVEb6UROhoE5iZ7f-STyGXq67civQzb5eEU4ca_1bU6nDQ"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000059",
+            "id": "0199b000-0000-7000-8000-000000000070",
             "type": "respond",
             "ts": "2026-11-07T19:30:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000058",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000069",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -4897,7 +5448,7 @@
                 }
               }
             },
-            "sig": "rSJJ6qtKIzP6epxZrtvVP8DOOeW3GXqD5WXUuACqezaOGIiDr3LbnSeDvm1NtUo3TmWnmVgGs1Yt1scG2GN4DA"
+            "sig": "kLsQkdFMVZnFZdau23uXLsgkVm4FFHSFtiixXZCPC-RpMdkZSKn5twDRF1aIbmZyOpb7ZwnNIriu1DlYzp1oDg"
           }
         ],
         "http": {
@@ -4940,7 +5491,7 @@
     ]
   },
   "budget": {
-    "comment": "Binding §12.2 (0.2.0-draft). The budget travels on the Message that starts or revises the work, under the budget extension's URI, in camelCase. Each outcome is a Task state with the outcome named in the Task's metadata under that URI: insufficient (with estimate) and deadline_unmeetable (with earliestCompletion) in TASK_STATE_REJECTED, ceiling_reached (with spent and estimateToFinish) in TASK_STATE_INPUT_REQUIRED, and exhausted in TASK_STATE_CANCELED with its artifacts kept. A client that knows the extension never records an exhausted Task as failed and never retries it; sending any other canceled or refused work again is the client's choice (may_retry). A paused Task resumes on a Message with a higher revision. During the transition window the older mark agentmesh.state: exhausted (the A2A Bridge §5.2) reads as exhausted.",
+    "comment": "Binding §12.2 (0.3.0-draft), with the completed_late mark: a Task in TASK_STATE_COMPLETED that finished after its deadline carries {outcome: completed_late}, a marker and not a failure. The budget travels on the Message that starts or revises the work, under the budget extension's URI, in camelCase. Each outcome is a Task state with the outcome named in the Task's metadata under that URI: insufficient (with estimate) and deadline_unmeetable (with earliestCompletion) in TASK_STATE_REJECTED, ceiling_reached (with spent and estimateToFinish) in TASK_STATE_INPUT_REQUIRED, and exhausted in TASK_STATE_CANCELED with its artifacts kept. A client that knows the extension never records an exhausted Task as failed and never retries it; sending any other canceled or refused work again is the client's choice (may_retry). A paused Task resumes on a Message with a higher revision. During the transition window the older mark agentmesh.state: exhausted (the A2A Bridge §5.2) reads as exhausted.",
     "uri": "https://agentmessaging.ai/extensions/budget/v1",
     "blocks": {
       "valid": [
@@ -5023,7 +5574,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000061",
+            "id": "0199b000-0000-7000-8000-000000000072",
             "type": "request",
             "ts": "2026-11-07T18:00:00.400Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -5045,16 +5596,16 @@
                 "A2A-Version": "1.0"
               }
             },
-            "sig": "RrH4T9amDg6ohvutcBY3e-W98yukIQdfiGFkRU6240XTf0XYhI17q_f5H6MwwU1slEVbrM0C9bRuyB71a-AgBw"
+            "sig": "1zQUoJ3Jm8A9AhxCgWZHYMNN8O_S4Qz3QHt31bdJeBxum2IGclZA2E7YGzq9WiJwUgfLYxrbrbqIVoqRoWBcCg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000062",
+            "id": "0199b000-0000-7000-8000-000000000073",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.600Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000061",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000072",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -5096,7 +5647,7 @@
                 }
               }
             },
-            "sig": "zADkJTInfIMoxWBa8JSa6S4Y_YWV2IPR52lxwutslUG5iZ4CaHoO5l_Cl4-YQU5YqfBcTqXbjldCmmu08Gq6Dw"
+            "sig": "7L17DEFmDTkUrLv8GkqlKZdrWUMEdljJd6A02sdWe1atZX9BkckckfwA1sqsZwkAzS48G1OqWz-HV6pTPx-eBA"
           }
         ],
         "window": true,
@@ -5158,7 +5709,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000060",
+            "id": "0199b000-0000-7000-8000-000000000071",
             "type": "request",
             "ts": "2026-11-07T18:00:00.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -5205,16 +5756,16 @@
                 "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1, https://agentmessaging.ai/extensions/budget/v1"
               }
             },
-            "sig": "Ys3FKvS0dx7WvrtcT3ZVsXyu4nryjzKvcgsv_AH8pabqjEzFTfMU3vOzAQO2YO7dsBopPtPjRv9ONI80aC2tAg"
+            "sig": "P3xuYoFemtg7wSacTRp62NNwrKjt4qer37MBsF_KvUgEL9avYFLyeBhvXMXcjzE_hpcSFwMo3jAeW_uqJRiFCg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000063",
+            "id": "0199b000-0000-7000-8000-000000000074",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.800Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000060",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000071",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -5251,7 +5802,7 @@
                 }
               }
             },
-            "sig": "KGWWEcABMtEKvQFZCYuSYHvoiOMfPFybQbgtIFLcHBzNAb_PojMWUc_4j95h1G-aZP84TYArIk3kkoCIIlxVDw"
+            "sig": "egt1DP1DuJM99-nxzA5_4-IPvnzq_ENbaLCzsERDCxC7_XIq5UzxKPGhVnkdpOtFzWwkB8rgp3srAfA3uvXMBA"
           }
         ],
         "window": true,
@@ -5335,7 +5886,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000060",
+            "id": "0199b000-0000-7000-8000-000000000071",
             "type": "request",
             "ts": "2026-11-07T18:00:00.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -5382,16 +5933,16 @@
                 "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1, https://agentmessaging.ai/extensions/budget/v1"
               }
             },
-            "sig": "Ys3FKvS0dx7WvrtcT3ZVsXyu4nryjzKvcgsv_AH8pabqjEzFTfMU3vOzAQO2YO7dsBopPtPjRv9ONI80aC2tAg"
+            "sig": "P3xuYoFemtg7wSacTRp62NNwrKjt4qer37MBsF_KvUgEL9avYFLyeBhvXMXcjzE_hpcSFwMo3jAeW_uqJRiFCg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000064",
+            "id": "0199b000-0000-7000-8000-000000000075",
             "type": "respond",
             "ts": "2026-11-07T18:00:01.000Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000060",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000071",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -5425,7 +5976,7 @@
                 }
               }
             },
-            "sig": "0tuIBQZSVsiaDp7ZgxPH8p9F4O-NJ5gloeJYoBfRy1d7nMJ1LmEjD1MbIciJQmNNZTtSGCl66r4FZCXCoAyGBw"
+            "sig": "kzwFNgmSQ-ZeRd2fzTLQoKVjarOfM76SG17bVxbOISUqqnQU9Nyepu54tR5ng9wwzc0YvJmAuVBASWgtcp5gDQ"
           }
         ],
         "window": true,
@@ -5506,7 +6057,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000065",
+            "id": "0199b000-0000-7000-8000-000000000076",
             "type": "request",
             "ts": "2026-11-07T18:00:01.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -5528,16 +6079,16 @@
                 "A2A-Version": "1.0"
               }
             },
-            "sig": "HDKm4LP_CTl3kGYbH-YAhBHoVA-KPMHLiAyJfHOB1oFydZgKihcBnT9Hds5AqEzl4dNcdY2kBx-5VHLia0odDQ"
+            "sig": "kdJCHQo1tSpcNAKIY7r2LIeaUCZfclkmcdouNtuvdFzPzATwTNLEP79aGY-juU0CKu20T7CrrDE6jMgEd7-vBg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000066",
+            "id": "0199b000-0000-7000-8000-000000000077",
             "type": "respond",
             "ts": "2026-11-07T18:00:01.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000065",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000076",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -5587,7 +6138,7 @@
                 }
               }
             },
-            "sig": "XzoY3kZoHhYZEHRUCvUOs3iV2Nms6Atv__IjzhgHgelvSkhiRJqv5jFn2cj0NzBm7DRBzKoQJIJ1LOSs237aDg"
+            "sig": "UYyoR6QDOuWj3NCl1DhYDwxoK8H1rFkGDr6rMJ33UlrefLW3DXjGsSl5nQHRwQHEr4dcfCtx_hO69RzFS7d4Cw"
           }
         ],
         "window": true,
@@ -5657,7 +6208,7 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000067",
+            "id": "0199b000-0000-7000-8000-000000000078",
             "type": "request",
             "ts": "2026-11-07T18:00:01.600Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -5703,16 +6254,16 @@
                 "A2A-Extensions": "https://agentmessaging.ai/extensions/budget/v1"
               }
             },
-            "sig": "qWsiMxV0VOcxbiFSxUtaM1VTnf1X4iPfVZV49S1NPPBAyBTCOg0c-hv5tJ2cCHRl9C8krS21GlQw_UftMQWDDA"
+            "sig": "y9fjN6cw9wwss889DKOFKp1JibTdKde4Ya-zgUsQHEpe0zKmXqOH9em0VP7_f6QiR3VvDe1c5_pnIgdnaEoUDQ"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000068",
+            "id": "0199b000-0000-7000-8000-000000000079",
             "type": "respond",
             "ts": "2026-11-07T18:00:01.800Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000067",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000078",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -5731,7 +6282,7 @@
                 }
               }
             },
-            "sig": "6qM16bLl_4FLgGFKUGNC7LbWRQZj4_7mU3w3y4jxPLk8nbmx2PVT-kWbSYYAMdRuOIV9MQ4mlBXWSGYLvofYAg"
+            "sig": "sOEieesdrFz1VrUnZ4Abaqu1NK_a310HQNrTBoYHfprrq59Kkde1H1ghlUEkkS3I_g1UPl0kxSZ2hXqlJd2RAQ"
           }
         ],
         "window": true,
@@ -5899,6 +6450,141 @@
         }
       },
       {
+        "name": "completed after the deadline",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000080",
+            "type": "request",
+            "ts": "2026-11-07T18:00:02.000Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "GetTask",
+                "params": {
+                  "id": "task-b11"
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0"
+              }
+            },
+            "sig": "c7sNtMEEttD0F-WNZ0JpYvSUmhBE0d3unjHzKbyTMyFHG1whDnBjmW5ilgL_ITmDsq43vk9m8RNYEysPDRAMAw"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000081",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:02.200Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000080",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-b11",
+                  "contextId": "ctx-b11",
+                  "status": {
+                    "state": "TASK_STATE_COMPLETED",
+                    "message": {
+                      "messageId": "st-b11",
+                      "role": "ROLE_AGENT",
+                      "parts": [
+                        {
+                          "text": "Done, a day after the deadline."
+                        }
+                      ]
+                    },
+                    "timestamp": "2026-11-08T19:00:00.000Z"
+                  },
+                  "artifacts": [
+                    {
+                      "artifactId": "art-b11",
+                      "name": "summary",
+                      "parts": [
+                        {
+                          "text": "Five of five jurisdictions summarized."
+                        }
+                      ]
+                    }
+                  ],
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/budget/v1": {
+                      "outcome": "completed_late"
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "k0i5c1lTl4Uw9uun_SQI_P_aeXxPsNZzQFX7rKKdLFR7kkzono1p4tdl3LlYMeRnFr93CWCxc9--KGEJPEDoDw"
+          }
+        ],
+        "window": true,
+        "expect": {
+          "reading": "completed_late",
+          "failed": false,
+          "may_retry": true
+        },
+        "http": {
+          "request": {
+            "method": "GET",
+            "path": "tasks/task-b11",
+            "headers": {
+              "A2A-Version": "1.0"
+            },
+            "query": {}
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "id": "task-b11",
+              "contextId": "ctx-b11",
+              "status": {
+                "state": "TASK_STATE_COMPLETED",
+                "message": {
+                  "messageId": "st-b11",
+                  "role": "ROLE_AGENT",
+                  "parts": [
+                    {
+                      "text": "Done, a day after the deadline."
+                    }
+                  ]
+                },
+                "timestamp": "2026-11-08T19:00:00.000Z"
+              },
+              "artifacts": [
+                {
+                  "artifactId": "art-b11",
+                  "name": "summary",
+                  "parts": [
+                    {
+                      "text": "Five of five jurisdictions summarized."
+                    }
+                  ]
+                }
+              ],
+              "metadata": {
+                "https://agentmessaging.ai/extensions/budget/v1": {
+                  "outcome": "completed_late"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
         "name": "a plain cancel",
         "task": {
           "id": "task-b7",
@@ -5915,10 +6601,79 @@
           "may_retry": true
         }
       }
-    ]
+    ],
+    "overdue": {
+      "comment": "Binding §12.2: the overdue mark is {overdue: true} under the budget extension's URI on the status update event that reports the deadline passed; the state does not change and it is not a failure.",
+      "events": [
+        {
+          "name": "overdue while working",
+          "event": {
+            "statusUpdate": {
+              "taskId": "task-b12",
+              "contextId": "ctx-b12",
+              "status": {
+                "state": "TASK_STATE_WORKING",
+                "timestamp": "2026-11-07T20:01:40.000Z"
+              },
+              "metadata": {
+                "https://agentmessaging.ai/extensions/budget/v1": {
+                  "overdue": true
+                }
+              }
+            }
+          },
+          "expect": {
+            "overdue": true,
+            "state": "TASK_STATE_WORKING",
+            "failed": false
+          }
+        },
+        {
+          "name": "an ordinary update",
+          "event": {
+            "statusUpdate": {
+              "taskId": "task-b12",
+              "contextId": "ctx-b12",
+              "status": {
+                "state": "TASK_STATE_WORKING",
+                "timestamp": "2026-11-07T20:03:20.000Z"
+              }
+            }
+          },
+          "expect": {
+            "overdue": false,
+            "state": "TASK_STATE_WORKING",
+            "failed": false
+          }
+        },
+        {
+          "name": "overdue must be true, not a string",
+          "event": {
+            "statusUpdate": {
+              "taskId": "task-b12",
+              "contextId": "ctx-b12",
+              "status": {
+                "state": "TASK_STATE_WORKING",
+                "timestamp": "2026-11-07T20:05:00.000Z"
+              },
+              "metadata": {
+                "https://agentmessaging.ai/extensions/budget/v1": {
+                  "overdue": "yes"
+                }
+              }
+            }
+          },
+          "expect": {
+            "overdue": false,
+            "state": "TASK_STATE_WORKING",
+            "failed": false
+          }
+        }
+      ]
+    }
   },
   "cancel_reasons": {
-    "comment": "Binding §12.6 (0.2.0-draft). A CancelTask request carries its reason under the cancel extension's URI in its metadata: reason from the closed list of SPEC.md §10.8, an optional note, unmet_need (kind:value) required with needs_not_furnished and allowed with no other reason, and dependency only with dependency_failed. The canceled Task carries the same object under the same URI. A CancelTask with no reason from a client that does not declare the extension (it does not activate it in A2A-Extensions) is recorded as user_requested. Through the bridge the reason passes unchanged and the bridge adds none.",
+    "comment": "Binding §12.6 (0.2.0-draft). A CancelTask request carries its reason under the cancel extension's URI in its metadata: reason from the closed list of SPEC.md §10.8, an optional note, unmet_need (kind:value) required with needs_not_furnished and allowed with no other reason, and dependency only with dependency_failed. The canceled Task carries the same object under the same URI. A CancelTask with no reason from a client that does not declare the extension (it does not activate it in A2A-Extensions) is recorded as user_requested. A client that declares the extension and sends no reason, or a reason outside the list, gets InvalidParamsError with the reasons in the error's data (0.3.0-draft). Through the bridge the reason passes unchanged and the bridge adds none.",
     "uri": "https://agentmessaging.ai/extensions/cancel/v1",
     "reasons": [
       "user_requested",
@@ -5936,9 +6691,9 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000069",
+            "id": "0199b000-0000-7000-8000-000000000082",
             "type": "request",
-            "ts": "2026-11-07T18:00:02.000Z",
+            "ts": "2026-11-07T18:00:02.400Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
             "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "trace": {
@@ -5965,16 +6720,16 @@
                 "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
               }
             },
-            "sig": "5mhweMnGcxmIDRNegr9BFznITPDIc0-Vzbr4FztoW2Yc3MFCvEVPiPf8LilpzsTD30EgxMw0iTn6OMrIzongBA"
+            "sig": "eHCxs4s5eC0Dan_HdbGTNl55wHrz5gTC3GMiLmyRHZ1_FGfiIc9rICenFj2DSf2dALE4z_RznyNiGSoDzGmaCw"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000070",
+            "id": "0199b000-0000-7000-8000-000000000083",
             "type": "respond",
-            "ts": "2026-11-07T18:00:02.200Z",
+            "ts": "2026-11-07T18:00:02.600Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000069",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000082",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -5986,7 +6741,7 @@
                   "contextId": "ctx-c1",
                   "status": {
                     "state": "TASK_STATE_CANCELED",
-                    "timestamp": "2026-11-07T18:00:02.100Z"
+                    "timestamp": "2026-11-07T18:00:02.500Z"
                   },
                   "metadata": {
                     "https://agentmessaging.ai/extensions/cancel/v1": {
@@ -5997,7 +6752,7 @@
                 }
               }
             },
-            "sig": "CS-Up34ESdfL46v0zemyYM9c8k3l3Lks0Ukee3fUom0G5ToIMm9dAX7arP3Y1z347TtiYzS1jEiiHYHF1moSBw"
+            "sig": "anHPXDJw3PBTuIOINoRjrJvDMFM5lYCbjNO0eSnXldABqOpTxt4x5eZgIUp3rscbChflAzimiSZ4qPVgi_2xBg"
           }
         ],
         "http": {
@@ -6025,7 +6780,7 @@
               "contextId": "ctx-c1",
               "status": {
                 "state": "TASK_STATE_CANCELED",
-                "timestamp": "2026-11-07T18:00:02.100Z"
+                "timestamp": "2026-11-07T18:00:02.500Z"
               },
               "metadata": {
                 "https://agentmessaging.ai/extensions/cancel/v1": {
@@ -6046,9 +6801,9 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000071",
+            "id": "0199b000-0000-7000-8000-000000000084",
             "type": "request",
-            "ts": "2026-11-07T18:00:02.400Z",
+            "ts": "2026-11-07T18:00:02.800Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
             "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "trace": {
@@ -6068,16 +6823,16 @@
                 "A2A-Version": "1.0"
               }
             },
-            "sig": "fNmDTVgz18NbVt_x_AXR98fVEUi9O67qp9Wr9nRRuUkWYLx_IVh3emWRF6Ity64AQovFID_-Px2q21ns94RQCw"
+            "sig": "7D2YeKHDly4nFYG8M-tuLC2i5aRYumKpbXpGi9u89edREaIca9fDhuQ6OAU3exJO7G0m8y20qoLulAO5OxUMCg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000072",
+            "id": "0199b000-0000-7000-8000-000000000085",
             "type": "respond",
-            "ts": "2026-11-07T18:00:02.600Z",
+            "ts": "2026-11-07T18:00:03.000Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000071",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000084",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6089,7 +6844,7 @@
                   "contextId": "ctx-c2",
                   "status": {
                     "state": "TASK_STATE_CANCELED",
-                    "timestamp": "2026-11-07T18:00:02.500Z"
+                    "timestamp": "2026-11-07T18:00:02.900Z"
                   },
                   "metadata": {
                     "https://agentmessaging.ai/extensions/cancel/v1": {
@@ -6099,7 +6854,7 @@
                 }
               }
             },
-            "sig": "RhDvaPzsDQw4HmKMm4EcMPlwnNNfDNA-q1LZwPvu0-XP8vHPcwkQDmv7_bNysCqJmnKaVqr7GcIw1B1UaNSDDw"
+            "sig": "r9H0KhJig8Y_pYugXMcPgpZ3eDs_4KpV1eRrEkWdpO6FB3v_v1lCq0jUizIpeAE-8TfKrdhs2iXSPCQz4zNtCw"
           }
         ],
         "http": {
@@ -6118,7 +6873,7 @@
               "contextId": "ctx-c2",
               "status": {
                 "state": "TASK_STATE_CANCELED",
-                "timestamp": "2026-11-07T18:00:02.500Z"
+                "timestamp": "2026-11-07T18:00:02.900Z"
               },
               "metadata": {
                 "https://agentmessaging.ai/extensions/cancel/v1": {
@@ -6133,13 +6888,257 @@
         }
       },
       {
+        "name": "a declaring client that sends no reason",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000088",
+            "type": "request",
+            "ts": "2026-11-07T18:00:03.600Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "CancelTask",
+                "params": {
+                  "id": "task-c3"
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0",
+                "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+              }
+            },
+            "sig": "gSZbKaK8Nn4SrHKrf3TjTCikFoK8plC5vYl2skaW4lL7JiTle3QrC1a56OGr6lypBuDjr819b9_IX39EthiqCw"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000090",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:04.000Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000088",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {}
+            },
+            "error": {
+              "code": "InvalidParamsError",
+              "message": "A cancel reason is required.",
+              "details": {
+                "a2a": {
+                  "code": -32602,
+                  "data": {
+                    "reasons": [
+                      "user_requested",
+                      "superseded",
+                      "deadline_exceeded",
+                      "budget_exhausted",
+                      "upstream_cancelled",
+                      "policy",
+                      "needs_not_furnished",
+                      "dependency_failed"
+                    ]
+                  }
+                }
+              },
+              "retryable": false
+            },
+            "sig": "E5Or2GHwx1ObhUxuYTUruY-EtpLmfQHTSLj_jBXbeT-DdB2_9YQ0fb9ttB9-RHNaJYijLaC9WPkfaviB7gNFCg"
+          }
+        ],
+        "error": true,
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "tasks/task-c3:cancel",
+            "headers": {
+              "A2A-Version": "1.0",
+              "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+            }
+          },
+          "response": {
+            "status": 400,
+            "contentType": "application/a2a+json",
+            "body": {
+              "error": {
+                "code": 400,
+                "status": "INVALID_ARGUMENT",
+                "message": "A cancel reason is required.",
+                "details": [
+                  {
+                    "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                    "reason": "INVALID_PARAMS",
+                    "domain": "a2a-protocol.org",
+                    "metadata": {}
+                  },
+                  {
+                    "@type": "type.googleapis.com/google.protobuf.Struct",
+                    "value": {
+                      "reasons": [
+                        "user_requested",
+                        "superseded",
+                        "deadline_exceeded",
+                        "budget_exhausted",
+                        "upstream_cancelled",
+                        "policy",
+                        "needs_not_furnished",
+                        "dependency_failed"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "a declaring client that sends a reason outside the list",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000089",
+            "type": "request",
+            "ts": "2026-11-07T18:00:03.800Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "CancelTask",
+                "params": {
+                  "id": "task-c4",
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/cancel/v1": {
+                      "reason": "bored"
+                    }
+                  }
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0",
+                "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+              }
+            },
+            "sig": "8BDkknmPf7FsxJ9Nu4bS8pLVqJ-YhOYKnDRm3aU0aZozqb4cIWenwsCrToo3Pt-c_1f6dmiJnlJ1n2VZBY-5AQ"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000091",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:04.200Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000089",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {}
+            },
+            "error": {
+              "code": "InvalidParamsError",
+              "message": "Unknown cancel reason 'bored'.",
+              "details": {
+                "a2a": {
+                  "code": -32602,
+                  "data": {
+                    "reasons": [
+                      "user_requested",
+                      "superseded",
+                      "deadline_exceeded",
+                      "budget_exhausted",
+                      "upstream_cancelled",
+                      "policy",
+                      "needs_not_furnished",
+                      "dependency_failed"
+                    ]
+                  }
+                }
+              },
+              "retryable": false
+            },
+            "sig": "hNlHpv6jJAlcNElqrdtGOlyD55GmW8Eqt5ynOT445OTvWcvUzzy0Qfcsj3xAb1AnoUHGq86l4qQ8_KTNcC6DAw"
+          }
+        ],
+        "error": true,
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "tasks/task-c4:cancel",
+            "headers": {
+              "A2A-Version": "1.0",
+              "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+            },
+            "body": {
+              "metadata": {
+                "https://agentmessaging.ai/extensions/cancel/v1": {
+                  "reason": "bored"
+                }
+              }
+            }
+          },
+          "response": {
+            "status": 400,
+            "contentType": "application/a2a+json",
+            "body": {
+              "error": {
+                "code": 400,
+                "status": "INVALID_ARGUMENT",
+                "message": "Unknown cancel reason 'bored'.",
+                "details": [
+                  {
+                    "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+                    "reason": "INVALID_PARAMS",
+                    "domain": "a2a-protocol.org",
+                    "metadata": {}
+                  },
+                  {
+                    "@type": "type.googleapis.com/google.protobuf.Struct",
+                    "value": {
+                      "reasons": [
+                        "user_requested",
+                        "superseded",
+                        "deadline_exceeded",
+                        "budget_exhausted",
+                        "upstream_cancelled",
+                        "policy",
+                        "needs_not_furnished",
+                        "dependency_failed"
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      },
+      {
         "name": "canceling a Task paused at its ceiling",
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000073",
+            "id": "0199b000-0000-7000-8000-000000000086",
             "type": "request",
-            "ts": "2026-11-07T18:00:02.800Z",
+            "ts": "2026-11-07T18:00:03.200Z",
             "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
             "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "trace": {
@@ -6166,16 +7165,16 @@
                 "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
               }
             },
-            "sig": "vbfmGEz68uuGE-l3jcxarZkrtOOxiyBuDQbOusK7M5xE_oB2B710BXJ-mfOzbuFAMuW0o1vT7ptDiJUPXSUVAQ"
+            "sig": "MU112IR1g_A_MCv7qAziCT0hJlXtiEccfMnjOCLg8dWEak-NterDRwOku_-2ACJ6c5schG7nWqpR53Bls2cVBw"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000074",
+            "id": "0199b000-0000-7000-8000-000000000087",
             "type": "respond",
-            "ts": "2026-11-07T18:00:03.000Z",
+            "ts": "2026-11-07T18:00:03.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000073",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000086",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6187,7 +7186,7 @@
                   "contextId": "ctx-b9",
                   "status": {
                     "state": "TASK_STATE_CANCELED",
-                    "timestamp": "2026-11-07T18:00:02.900Z"
+                    "timestamp": "2026-11-07T18:00:03.300Z"
                   },
                   "artifacts": [
                     {
@@ -6220,7 +7219,7 @@
                 }
               }
             },
-            "sig": "gG5haszTedFahp5sflvL2BTK3j9c2kHbA7i_kcnKfqwjYJLcEbJFRU8kfZ5AdVmf0NNv9qXn9AkWtqmShonuBQ"
+            "sig": "93wiqdeL7IWnlWsiKNpNCyC_XNgJZpGVoyMTD9QpJQlzkFdN-SaDKzMsCo_SbDhTaOgEeSX2wpGj0i2QRt9xDQ"
           }
         ],
         "http": {
@@ -6248,7 +7247,7 @@
               "contextId": "ctx-b9",
               "status": {
                 "state": "TASK_STATE_CANCELED",
-                "timestamp": "2026-11-07T18:00:02.900Z"
+                "timestamp": "2026-11-07T18:00:03.300Z"
               },
               "artifacts": [
                 {
@@ -6395,11 +7394,229 @@
       }
     ]
   },
+  "failure_reasons": {
+    "comment": "Binding §12.7 (0.3.0-draft). A Task in TASK_STATE_FAILED may carry {reason} under the failure extension's URI, with the reason from SPEC.md §10.8's closed list and the field that reason requires: unmetNeed (kind:value) for needs_not_furnished, dependency for dependency_failed, and neither for another reason. A failure with no stated reason carries no object. The attribution of SPEC.md §10.8a is computed by the platform and never read from this object.",
+    "uri": "https://agentmessaging.ai/extensions/failure/v1",
+    "exchange": {
+      "frames": [
+        {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000092",
+          "type": "request",
+          "ts": "2026-11-07T18:00:04.400Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "GetTask",
+              "params": {
+                "id": "task-f1"
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "sig": "hALaeGg0HMxOeOYptvTcW9vSPoZBwh5KEQyHLnT-R2oHv2fMGfNNPSaKXRp-QQZv_D0HT3ljHfelLeXh_w07BA"
+        },
+        {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000093",
+          "type": "respond",
+          "ts": "2026-11-07T18:00:04.600Z",
+          "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "in_reply_to": "0199b000-0000-7000-8000-000000000092",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "result": {
+                "id": "task-f1",
+                "contextId": "ctx-f1",
+                "status": {
+                  "state": "TASK_STATE_FAILED",
+                  "message": {
+                    "messageId": "st-f1",
+                    "role": "ROLE_AGENT",
+                    "parts": [
+                      {
+                        "text": "The DMV search form moved and the lookup cannot read it."
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-11-07T18:10:00.000Z"
+                },
+                "metadata": {
+                  "https://agentmessaging.ai/extensions/failure/v1": {
+                    "reason": "dependency_failed",
+                    "dependency": "Colorado DMV"
+                  }
+                }
+              }
+            }
+          },
+          "sig": "_49W2eto86d02k7hhI4V-LJOpU-pJQpIjExsSlgfUy09YBs9NCLhHR_ocHANCtexFCV9lh4PFIxupq-zYeMZAw"
+        }
+      ],
+      "http": {
+        "request": {
+          "method": "GET",
+          "path": "tasks/task-f1",
+          "headers": {
+            "A2A-Version": "1.0"
+          },
+          "query": {}
+        },
+        "response": {
+          "status": 200,
+          "contentType": "application/a2a+json",
+          "body": {
+            "id": "task-f1",
+            "contextId": "ctx-f1",
+            "status": {
+              "state": "TASK_STATE_FAILED",
+              "message": {
+                "messageId": "st-f1",
+                "role": "ROLE_AGENT",
+                "parts": [
+                  {
+                    "text": "The DMV search form moved and the lookup cannot read it."
+                  }
+                ]
+              },
+              "timestamp": "2026-11-07T18:10:00.000Z"
+            },
+            "metadata": {
+              "https://agentmessaging.ai/extensions/failure/v1": {
+                "reason": "dependency_failed",
+                "dependency": "Colorado DMV"
+              }
+            }
+          }
+        }
+      }
+    },
+    "tasks": [
+      {
+        "name": "a dependency that broke",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "dependency_failed",
+          "dependency": "Colorado DMV"
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a need the client did not furnish",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "needs_not_furnished",
+          "unmetNeed": "credential:Salesforce"
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a reason that needs no extra field",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "policy"
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a failure with no stated reason carries nothing",
+        "state": "TASK_STATE_FAILED",
+        "value": null,
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "needs_not_furnished without unmetNeed",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "needs_not_furnished"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "the cancel extension's snake case is not this extension's",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "needs_not_furnished",
+          "unmet_need": "credential:Salesforce"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "dependency on another reason",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "policy",
+          "dependency": "Colorado DMV"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "a reason outside the list",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "gremlins"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "an attribution in the object is not an input",
+        "state": "TASK_STATE_FAILED",
+        "value": {
+          "reason": "dependency_failed",
+          "dependency": "Colorado DMV",
+          "attribution": "client"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "the extension on a Task that did not fail",
+        "state": "TASK_STATE_COMPLETED",
+        "value": {
+          "reason": "policy"
+        },
+        "expect": {
+          "ok": false
+        }
+      }
+    ]
+  },
   "carrier_without_subjects": {
     "comment": "Binding §8 (0.2.0-draft), carriers without subjects, such as email. Each later change to a Task is a respond frame to the client whose result is the whole Task as it then stands, numbered by payload.a2a.seq. The client reads them in seq order, whatever order they arrive in, and the Task it holds is the one with the highest seq it has read without a gap. Such a carrier answers SendStreamingMessage and SubscribeToTask with UnsupportedOperationError.",
     "request": {
       "v": "0.4.0",
-      "id": "0199b000-0000-7000-8000-000000000075",
+      "id": "0199b000-0000-7000-8000-000000000094",
       "type": "request",
       "ts": "2026-11-07T18:00:00.200Z",
       "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -6434,7 +7651,7 @@
           "A2A-Version": "1.0"
         }
       },
-      "sig": "LLFyFuwLUZPH_IifVXDKo1TVfjXACTrmdF_BLhdiFfZjS948dYNKVlMSNJ8Sd1u3XnVS-Oe9yawxMu6r-bEKCg"
+      "sig": "JIXzgf_A4SGZCsu5NSTqMHy0Zg3pfcrN9Fj2ws0W4OvJCmGbyeW2wgLvNU_WeStH4-Ys3af-m0lWV80s74-iCQ"
     },
     "cases": [
       {
@@ -6442,12 +7659,12 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000076",
+            "id": "0199b000-0000-7000-8000-000000000095",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6467,16 +7684,16 @@
                 "seq": 0
               }
             },
-            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+            "sig": "PEvylhuJE6t_ljDfgtW3GQqrx9Qdy_9Z3kp8Sgm0TZLi4_U93GPUf_IdfF5ppxfxozehSjEUemmt_fSwG0rUDg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000077",
+            "id": "0199b000-0000-7000-8000-000000000096",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.600Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6503,16 +7720,16 @@
                 "seq": 1
               }
             },
-            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+            "sig": "GAqsGY-xE2kuDwE-9_p-LdRiKpd2Tk7KT3HCxYj4PPqoKLh3icksxdOzdH6rNCnScyVcegWM0erWPUm58_-HCg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000078",
+            "id": "0199b000-0000-7000-8000-000000000097",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.800Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6546,7 +7763,7 @@
                 "seq": 2
               }
             },
-            "sig": "eJ0EXIPMX_MamOzEqqyogzC8aGE_L63hulacvVh24erb94H2UB0IY0_bipHo_8bxSl4VgqsVcDh5PRkVpJBwCQ"
+            "sig": "lsmjAWS53SLTWqM7JPoioRzS7-PH8z1kPGwmjL8yoGVlS3S1D2PjYC2gX2MHFR2bO3YwWEkyGhkwMMgai5MvDQ"
           }
         ],
         "expect": {
@@ -6559,12 +7776,12 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000078",
+            "id": "0199b000-0000-7000-8000-000000000097",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.800Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6598,16 +7815,16 @@
                 "seq": 2
               }
             },
-            "sig": "eJ0EXIPMX_MamOzEqqyogzC8aGE_L63hulacvVh24erb94H2UB0IY0_bipHo_8bxSl4VgqsVcDh5PRkVpJBwCQ"
+            "sig": "lsmjAWS53SLTWqM7JPoioRzS7-PH8z1kPGwmjL8yoGVlS3S1D2PjYC2gX2MHFR2bO3YwWEkyGhkwMMgai5MvDQ"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000076",
+            "id": "0199b000-0000-7000-8000-000000000095",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6627,16 +7844,16 @@
                 "seq": 0
               }
             },
-            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+            "sig": "PEvylhuJE6t_ljDfgtW3GQqrx9Qdy_9Z3kp8Sgm0TZLi4_U93GPUf_IdfF5ppxfxozehSjEUemmt_fSwG0rUDg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000077",
+            "id": "0199b000-0000-7000-8000-000000000096",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.600Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6663,7 +7880,7 @@
                 "seq": 1
               }
             },
-            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+            "sig": "GAqsGY-xE2kuDwE-9_p-LdRiKpd2Tk7KT3HCxYj4PPqoKLh3icksxdOzdH6rNCnScyVcegWM0erWPUm58_-HCg"
           }
         ],
         "expect": {
@@ -6676,12 +7893,12 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000076",
+            "id": "0199b000-0000-7000-8000-000000000095",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6701,16 +7918,16 @@
                 "seq": 0
               }
             },
-            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+            "sig": "PEvylhuJE6t_ljDfgtW3GQqrx9Qdy_9Z3kp8Sgm0TZLi4_U93GPUf_IdfF5ppxfxozehSjEUemmt_fSwG0rUDg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000077",
+            "id": "0199b000-0000-7000-8000-000000000096",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.600Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6737,16 +7954,16 @@
                 "seq": 1
               }
             },
-            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+            "sig": "GAqsGY-xE2kuDwE-9_p-LdRiKpd2Tk7KT3HCxYj4PPqoKLh3icksxdOzdH6rNCnScyVcegWM0erWPUm58_-HCg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000077",
+            "id": "0199b000-0000-7000-8000-000000000096",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.600Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6773,7 +7990,7 @@
                 "seq": 1
               }
             },
-            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+            "sig": "GAqsGY-xE2kuDwE-9_p-LdRiKpd2Tk7KT3HCxYj4PPqoKLh3icksxdOzdH6rNCnScyVcegWM0erWPUm58_-HCg"
           }
         ],
         "expect": {
@@ -6786,12 +8003,12 @@
         "frames": [
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000076",
+            "id": "0199b000-0000-7000-8000-000000000095",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.400Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6811,16 +8028,16 @@
                 "seq": 0
               }
             },
-            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+            "sig": "PEvylhuJE6t_ljDfgtW3GQqrx9Qdy_9Z3kp8Sgm0TZLi4_U93GPUf_IdfF5ppxfxozehSjEUemmt_fSwG0rUDg"
           },
           {
             "v": "0.4.0",
-            "id": "0199b000-0000-7000-8000-000000000078",
+            "id": "0199b000-0000-7000-8000-000000000097",
             "type": "respond",
             "ts": "2026-11-07T18:00:00.800Z",
             "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
             "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000094",
             "trace": {
               "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
               "span_id": "00f067aa0ba902b7"
@@ -6854,7 +8071,7 @@
                 "seq": 2
               }
             },
-            "sig": "eJ0EXIPMX_MamOzEqqyogzC8aGE_L63hulacvVh24erb94H2UB0IY0_bipHo_8bxSl4VgqsVcDh5PRkVpJBwCQ"
+            "sig": "lsmjAWS53SLTWqM7JPoioRzS7-PH8z1kPGwmjL8yoGVlS3S1D2PjYC2gX2MHFR2bO3YwWEkyGhkwMMgai5MvDQ"
           }
         ],
         "expect": {
@@ -6868,7 +8085,7 @@
       "frames": [
         {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000079",
+          "id": "0199b000-0000-7000-8000-000000000098",
           "type": "request",
           "ts": "2026-11-07T18:00:01.000Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -6903,16 +8120,16 @@
               "A2A-Version": "1.0"
             }
           },
-          "sig": "h-hga-BVp9DOIDPpEaZhfPoy1P1LuX8BofiGYG4Jb43CnI8fDs84FV_K452WfGYOXFQJi_RlH-IYXmjQIUxfCg"
+          "sig": "RTRXmWWg25IcrKyCR0qbpzEUJbHtF5GxD_oZ_bXpfm0KiPY2c7uNkMOryzUdqk8DYeAQJx8YpMoLt9IXH-GZDw"
         },
         {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000080",
+          "id": "0199b000-0000-7000-8000-000000000099",
           "type": "respond",
           "ts": "2026-11-07T18:00:01.200Z",
           "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-          "in_reply_to": "0199b000-0000-7000-8000-000000000079",
+          "in_reply_to": "0199b000-0000-7000-8000-000000000098",
           "trace": {
             "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
             "span_id": "00f067aa0ba902b7"
@@ -6931,7 +8148,7 @@
             },
             "retryable": false
           },
-          "sig": "vKwin2isrlKCXM8aVE8H-y8hW_f8sa1HEtZhIOXXdO8P9Y7aFvzb5SljLWsKw4g-h7MkETywhiiIh1VuIUYOBg"
+          "sig": "mBSDPNP6HspkrbNBASeneNBzSICkOwKm-LkNeXVcz6prAVSeu7O7HQ1kSX6h0JxJJ-E_8mD01BIP47zrQOidAg"
         }
       ]
     }
@@ -7108,7 +8325,7 @@
       },
       "frame": {
         "v": "0.4.0",
-        "id": "0199b000-0000-7000-8000-000000000081",
+        "id": "0199b000-0000-7000-8000-000000000100",
         "type": "request",
         "ts": "2026-11-07T18:00:01.400Z",
         "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -7145,18 +8362,18 @@
             "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1"
           }
         },
-        "sig": "u53BIegUGHZ5pw8kp3wkRjFKwOatbGTHWLww7pqPU6dSY34AO01HkJX_uu0E2tRqSqMxqbENF72v3JpqaAZVAg"
+        "sig": "EPPmyZokGs5sDissgoxmR7oOIKU0y6abAQoqRSLxTdrfgqYUDTlwqiKF5O-_Ve4elYhryBMrOhG353mSv8q2CA"
       }
     }
   },
   "legacy_fields": {
-    "comment": "Binding §4, §14. The Task id, the context id and the artifacts are A2A's and live in the A2A object. A receiver refuses a 0.4.0 frame that carries the envelope fields task_id, context_id or artifacts with INVALID_ENVELOPE. A 0.3.0 envelope, whose calls use the request payloads of Agent Messaging 0.9, still carries them and is accepted until the operator ends the transition window; after it, a 0.3.0 envelope is refused with INVALID_VERSION.",
+    "comment": "Binding §4, §14. The Task id, the context id, the budget and the artifacts are carried in the A2A object. A receiver refuses a 0.4.0 frame that carries the envelope fields task_id, context_id, budget or artifacts with INVALID_ENVELOPE. A 0.3.0 envelope, whose calls use the request payloads of Agent Messaging 0.9, still carries them and is accepted until the operator ends the transition window; after it, a 0.3.0 envelope is refused with INVALID_VERSION.",
     "cases": [
       {
         "name": "a clean 0.4.0 frame",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000082",
+          "id": "0199b000-0000-7000-8000-000000000101",
           "type": "request",
           "ts": "2026-11-07T18:00:01.600Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -7188,7 +8405,7 @@
               "A2A-Version": "1.0"
             }
           },
-          "sig": "Wp3JfLi39f6-xeQTd8CXGgxBKjcnHM4NtdVCMmmtd_BUr9YySxxq8eALttUk5PowaSIZVl-ewid1_Hrm1N8mAg"
+          "sig": "ZwCpiYWBYJvv-1zB3Rq-fy9SOz6uYowa1zBjEeWC8gheebp9CQleegkm78_qAoJFugMvJ-NeFUnIN5r66hLHBA"
         },
         "window": true,
         "expect": {
@@ -7199,7 +8416,7 @@
         "name": "a 0.4.0 frame carrying task_id",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000083",
+          "id": "0199b000-0000-7000-8000-000000000102",
           "type": "request",
           "ts": "2026-11-07T18:00:01.800Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -7232,7 +8449,7 @@
             }
           },
           "task_id": "task-9f2c",
-          "sig": "iXQPorzALO7eyFkHIBp12GdoZrrqepGVALOGWwMUoYTo1H-kuDIBdCBTHaOZlBOncN4n6vENGEokUGFUGzwEAQ"
+          "sig": "3kUmC1O_vRc-PjTpgdLxLenbHg7sExG5vtiHdHbxX6gP5-37-79TlD3CmLdoTMVzA1pPhWTR2BQ2J8kuCX-MDA"
         },
         "window": true,
         "expect": {
@@ -7244,7 +8461,7 @@
         "name": "a 0.4.0 frame carrying context_id",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000084",
+          "id": "0199b000-0000-7000-8000-000000000103",
           "type": "request",
           "ts": "2026-11-07T18:00:02.000Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -7277,7 +8494,58 @@
             }
           },
           "context_id": "ctx-51a0",
-          "sig": "H-13ImABKT7jj31aoKZnwjn1q5phNdgjubVMKoxcFI9z8zVRkpxt03IxIUM8bHJCAB715YYqAQ_EWoPuUGmmBQ"
+          "sig": "1PSk3NOz6X9EKTMMjGF5jlpOM7sRFiyVeKD68myE-S0RQK9FP21dppv3jIVfzXmCqR6TRd_0tqDOZpVENm1hCQ"
+        },
+        "window": true,
+        "expect": {
+          "ok": false,
+          "code": "INVALID_ENVELOPE"
+        }
+      },
+      {
+        "name": "a 0.4.0 frame carrying budget",
+        "frame": {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000104",
+          "type": "request",
+          "ts": "2026-11-07T18:00:02.200Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "SendMessage",
+              "params": {
+                "message": {
+                  "messageId": "msg-x",
+                  "role": "ROLE_USER",
+                  "parts": [
+                    {
+                      "text": "Status?"
+                    }
+                  ],
+                  "taskId": "task-9f2c",
+                  "contextId": "ctx-51a0"
+                }
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "budget": {
+            "revision": 0,
+            "cost_ceiling": {
+              "amount_micro": 4000000,
+              "currency": "USD"
+            }
+          },
+          "sig": "gHOszg2nrGw9yhBIFCr4UDaPOkWaIgXjjNb11jLeyTadt6WtDyBSQCRe6K0Ww1XIUzLragLvBG04EdbghAFZDw"
         },
         "window": true,
         "expect": {
@@ -7289,9 +8557,9 @@
         "name": "a 0.4.0 frame carrying artifacts",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000085",
+          "id": "0199b000-0000-7000-8000-000000000105",
           "type": "request",
-          "ts": "2026-11-07T18:00:02.200Z",
+          "ts": "2026-11-07T18:00:02.400Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "trace": {
@@ -7329,7 +8597,7 @@
               "role": "input"
             }
           ],
-          "sig": "gIIktxBKOJIdjQ1gP8U_PLfSRrjd33zpCoCee8pYu-LgO59vPs-Cncac0IQRcPGQSgwl9oz41IL036pHHKtZAA"
+          "sig": "lI3UY1UFbVkvXEmqvt71ZaJBr-wCr4rpkgCdCATIMMRNp9S9qXhVKdXsOZbQDbkuJ4LDv2FLHM5xMYPhhmMzBw"
         },
         "window": true,
         "expect": {
@@ -7341,9 +8609,9 @@
         "name": "a 0.4.0 respond frame carrying task_id",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000086",
+          "id": "0199b000-0000-7000-8000-000000000106",
           "type": "respond",
-          "ts": "2026-11-07T18:00:02.400Z",
+          "ts": "2026-11-07T18:00:02.600Z",
           "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "in_reply_to": "0199b000-0000-7000-8000-000000000001",
@@ -7364,7 +8632,7 @@
               }
             }
           },
-          "sig": "5KOqvhltIa1V8AyQaSygBK1-jGvjyNPDEkGDjCKQOLAp42XZLs-tQL72qXt319oOkdlkum6okdJmdU0BoeXxCg"
+          "sig": "tDgiqRew59HWgWJTz5n7_YESEe3R8b5RlgyCjlygHib0YHKw0X0uM6EaVRg1Yix4V-r02qYe-jpidPXQJQ1dDw"
         },
         "window": true,
         "expect": {
@@ -7376,34 +8644,7 @@
         "name": "a 0.3.0 envelope carrying task_id, inside the window",
         "frame": {
           "v": "0.3.0",
-          "id": "0199b000-0000-7000-8000-000000000087",
-          "type": "request",
-          "ts": "2026-11-07T18:00:02.600Z",
-          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
-          "trace": {
-            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
-            "span_id": "00f067aa0ba902b7"
-          },
-          "payload": {
-            "offering": "quote",
-            "input": {
-              "text": "Status?"
-            }
-          },
-          "task_id": "task-9f2c",
-          "sig": "PSchKit6W51ptFIUN-rh4PEY_c9FWtOmGUnTvwn1-2dhmM_g7rM-wGLU7GgpsqVkZH2RvEJFUmRPv83fRwXcCg"
-        },
-        "window": true,
-        "expect": {
-          "ok": true
-        }
-      },
-      {
-        "name": "a 0.3.0 envelope after the window",
-        "frame": {
-          "v": "0.3.0",
-          "id": "0199b000-0000-7000-8000-000000000088",
+          "id": "0199b000-0000-7000-8000-000000000107",
           "type": "request",
           "ts": "2026-11-07T18:00:02.800Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -7419,7 +8660,34 @@
             }
           },
           "task_id": "task-9f2c",
-          "sig": "5uWT1aN220vej-RIUxXHxN9pQ-BgcR702jICypYRU_nqF6nrHNB3IQZyBL5MYPf0OQeF0d0OQAURsXhhO01dAw"
+          "sig": "evOqaAxbHeSzGyLoIyvoMamMJmnZhX4ViT3m8Nzr6gNBjHOfQRcgbdOTXS427Iy6SMa-mB1CQf2ynJDxPVoGAA"
+        },
+        "window": true,
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a 0.3.0 envelope after the window",
+        "frame": {
+          "v": "0.3.0",
+          "id": "0199b000-0000-7000-8000-000000000108",
+          "type": "request",
+          "ts": "2026-11-07T18:00:03.000Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "offering": "quote",
+            "input": {
+              "text": "Status?"
+            }
+          },
+          "task_id": "task-9f2c",
+          "sig": "_PJaa6F4NqWfF-cdrRy7W8RzpGTHh9eoDANBvZ1q19mXBfcuk8lej9OIw_eqR7bFGCbp0zG6bdu5chwXVWTaDA"
         },
         "window": false,
         "expect": {
@@ -7431,9 +8699,9 @@
         "name": "a 0.4.0 frame addressed to another agent still verifies; addressing is checked elsewhere",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000089",
+          "id": "0199b000-0000-7000-8000-000000000109",
           "type": "request",
-          "ts": "2026-11-07T18:00:03.000Z",
+          "ts": "2026-11-07T18:00:03.200Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "to": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
           "trace": {
@@ -7463,7 +8731,7 @@
               "A2A-Version": "1.0"
             }
           },
-          "sig": "3-8g9vTPsD--LPzg7KIv7Ro55tk3bQ2qMfzJKmXXj4eywqZM9VVz58iY7NnuJ-qcmV-rlsnHS6UO2jDdzFgDBw"
+          "sig": "sFQtG9lx14QHsx87TJNa0aKF7fzuJixrjou8iScMCQ2PF8xKtEKo-OnM8ijD33utQwmsbmBFcAyQ9VBV8JdvDw"
         },
         "window": true,
         "expect": {

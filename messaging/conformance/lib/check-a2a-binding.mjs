@@ -38,6 +38,8 @@ const A2A_ERRORS = {
   InvalidParamsError: [-32602, 400, "INVALID_ARGUMENT"],
   InternalError: [-32603, 500, "INTERNAL"],
 };
+// Binding §9 (0.3.0-draft): the JSON-RPC standard errors by A2A's JSON-RPC names.
+const JSONRPC_STANDARD = { JSONParseError: -32700, InvalidRequestError: -32600, MethodNotFoundError: -32601 };
 const REASON = (name) => name.replace(/Error$/, "").replace(/([a-z])([A-Z])/g, "$1_$2").toUpperCase();
 // The A2A Bridge §7.2, §13.3: channel errors.
 const CHANNEL_HTTP = { RATE_LIMITED: 429, AGENT_UNAVAILABLE: 502, AGENT_OVERLOADED: 502, TRANSPORT_NO_RESPONDERS: 502, TRANSPORT_TIMEOUT: 504, PAYLOAD_TOO_LARGE: 413, UNAUTHORIZED: 403, TRANSPORT_PERMISSION_DENIED: 403 };
@@ -46,15 +48,16 @@ const TERMINAL = new Set(["TASK_STATE_COMPLETED", "TASK_STATE_FAILED", "TASK_STA
 const STATES = new Set([...TERMINAL, "TASK_STATE_SUBMITTED", "TASK_STATE_WORKING", "TASK_STATE_INPUT_REQUIRED", "TASK_STATE_AUTH_REQUIRED"]);
 
 // Binding §4: a frame's shape, beside its signature.
-function frameProblem(f, request) {
+const OLD_FIELDS = ["task_id", "context_id", "budget", "artifacts"];
+function frameProblem(f, request, { anyMethod = false } = {}) {
   if (!verifyEnvelope(f)) return "does not verify";
   if (f.v !== "0.4.0") return `wire version ${f.v}`;
-  for (const k of ["task_id", "context_id", "artifacts"]) if (k in f) return `carries ${k}`;
+  for (const k of OLD_FIELDS) if (k in f) return `carries ${k}`;
   const a = f.payload?.a2a;
   if (!a || typeof a !== "object") return "no payload.a2a";
   if (f.type === "request") {
     if (f.from !== CLIENT || f.to !== SERVER) return "request not from the client to the server";
-    if (!OPS.includes(a.method)) return `method ${a.method}`;
+    if (!anyMethod && !OPS.includes(a.method)) return `method ${a.method}`;
     if (!a.params || typeof a.params !== "object" || Array.isArray(a.params)) return "params is not an object";
     return null;
   }
@@ -62,7 +65,8 @@ function frameProblem(f, request) {
   if (f.from !== SERVER || f.to !== CLIENT) return "answer not from the server to the client";
   if (request && f.in_reply_to !== request.id) return "in_reply_to does not name the request";
   if (("result" in a) === Boolean(f.error)) return "needs exactly one of payload.a2a.result and error";
-  if (f.error && !(f.error.code in A2A_ERRORS) && f.error.details?.a2a) return "a channel error carries an A2A code";
+  if (f.error && !(f.error.code in A2A_ERRORS) && !(f.error.code in JSONRPC_STANDARD) && f.error.details?.a2a) return "a channel error carries an A2A code";
+  if (a.seq !== undefined && request && a.streamId !== undefined && a.streamId !== request.id) return "streamId does not name the request";
   return null;
 }
 
@@ -142,23 +146,27 @@ function partOk(p) {
 }
 
 // Binding §8: reading a stream from its deliveries.
-function assemble(deliveries) {
+const ENDS = (r) => Boolean(r.message) || TERMINAL.has((r.task ?? r.statusUpdate)?.status?.state);
+function assemble(deliveries, streamId) {
   const events = [];
-  let next = 0, taskId = null, done = false, ignored = 0;
+  let next = 0, taskId = null, done = false, ignored = 0, skipped = 0;
   for (const d of deliveries) {
     if (d.drop) continue;
     const f = d.frame, a = f.payload.a2a;
+    if (a.streamId !== streamId) { skipped++; continue; }
     if (done) { ignored++; continue; }
     if (a.seq < next) continue; // a redelivery
     if (a.seq > next) return { events, complete: false, gap_at: next, next: "SubscribeToTask" };
     const where = next === 0 ? "inbox" : `mesh.task.${taskId}.stream`;
     if (d.subject !== where) return { events, complete: false, gap_at: next, next: "SubscribeToTask" };
     if (next === 0) taskId = a.result.task?.id ?? a.result.statusUpdate?.taskId ?? a.result.artifactUpdate?.taskId ?? null;
+    if (a.final === true && !ENDS(a.result)) return { events, complete: false, broken: "final on an event that does not end the stream" };
     events.push(a.result);
     next++;
     if (a.final === true) done = true;
   }
-  return done ? { events, complete: true, ...(ignored ? { ignored } : {}) } : { events, complete: false, gap_at: next, next: "SubscribeToTask" };
+  const extra = { ...(ignored ? { ignored } : {}), ...(skipped ? { skipped } : {}) };
+  return done ? { events, complete: true, ...extra } : { events, complete: false, gap_at: next, next: "SubscribeToTask" };
 }
 
 // Binding §12.2: the budget block and what a client reads from a Task.
@@ -176,8 +184,24 @@ function blockOk(b) {
   }
   return true;
 }
-const OUTCOME_STATE = { insufficient: "TASK_STATE_REJECTED", deadline_unmeetable: "TASK_STATE_REJECTED", ceiling_reached: "TASK_STATE_INPUT_REQUIRED", exhausted: "TASK_STATE_CANCELED" };
-const OUTCOME_FIELDS = { insufficient: ["estimate"], deadline_unmeetable: ["earliestCompletion"], ceiling_reached: ["spent", "estimateToFinish"], exhausted: [] };
+const OUTCOME_STATE = { insufficient: "TASK_STATE_REJECTED", deadline_unmeetable: "TASK_STATE_REJECTED", ceiling_reached: "TASK_STATE_INPUT_REQUIRED", exhausted: "TASK_STATE_CANCELED", completed_late: "TASK_STATE_COMPLETED" };
+const OUTCOME_FIELDS = { insufficient: ["estimate"], deadline_unmeetable: ["earliestCompletion"], ceiling_reached: ["spent", "estimateToFinish"], exhausted: [], completed_late: [] };
+function overdueReading(event) {
+  const u = event.statusUpdate;
+  return { overdue: u.metadata?.[EXT.budget]?.overdue === true, state: u.status.state, failed: false };
+}
+
+// Binding §12.7: the failure extension's object.
+const FAILURE_REASONS = new Set(["user_requested", "superseded", "deadline_exceeded", "budget_exhausted", "upstream_cancelled", "policy", "needs_not_furnished", "dependency_failed"]);
+function failureOk(state, o) {
+  if (o === null || o === undefined) return true;
+  if (state !== "TASK_STATE_FAILED" || typeof o !== "object" || !FAILURE_REASONS.has(o.reason)) return false;
+  const allowed = new Set(["reason", ...(o.reason === "needs_not_furnished" ? ["unmetNeed"] : []), ...(o.reason === "dependency_failed" ? ["dependency"] : [])]);
+  if (Object.keys(o).some((k) => !allowed.has(k))) return false;
+  if (o.reason === "needs_not_furnished" && !(typeof o.unmetNeed === "string" && /^(resource|file|credential|text):.+$/.test(o.unmetNeed))) return false;
+  if (o.reason === "dependency_failed" && o.dependency !== undefined && typeof o.dependency !== "string") return false;
+  return true;
+}
 function budgetReading(task, window) {
   const state = task.status.state;
   const b = task.metadata?.[EXT.budget];
@@ -232,7 +256,7 @@ function acceptFields(f, window) {
   if (!verifyEnvelope(f)) return { ok: false, code: "IDENTITY_MISMATCH" };
   if (f.v === "0.3.0") return window ? { ok: true } : { ok: false, code: "INVALID_VERSION" };
   if (f.v !== "0.4.0") return { ok: false, code: "INVALID_VERSION" };
-  if (["task_id", "context_id", "artifacts"].some((k) => k in f)) return { ok: false, code: "INVALID_ENVELOPE" };
+  if (OLD_FIELDS.some((k) => k in f)) return { ok: false, code: "INVALID_ENVELOPE" };
   return { ok: true };
 }
 
@@ -264,7 +288,7 @@ section("operations", fx.operations.cases, (c) => {
   if (rp) return rp;
   if (c.deliveries) {
     for (const d of c.deliveries) { const fp = frameProblem(d.frame, r); if (fp) return `stream frame: ${fp}`; }
-    const got = assemble(c.deliveries);
+    const got = assemble(c.deliveries, r.id);
     if (!got.complete) return "the stream does not end";
     return same(got.events, c.http.response.events) ? true : "the Server-Sent Events differ from the frames' results";
   }
@@ -279,6 +303,14 @@ section("every operation is covered", [{ name: "all eleven" }], () => {
 
 const errSeen = new Set();
 section("errors", fx.errors.cases, (c) => {
+  if (c.error in JSONRPC_STANDARD) {
+    const p = frameProblem(c.frames[0], undefined, { anyMethod: true }) ?? frameProblem(c.frames[1], c.frames[0]);
+    if (p) return p;
+    const e = c.frames[1].error;
+    if (OPS.includes(c.frames[0].payload.a2a.method)) return "the method is one A2A defines";
+    if (e.code !== c.error || e.details.a2a.code !== JSONRPC_STANDARD[c.error] || c.jsonrpc.error.code !== JSONRPC_STANDARD[c.error]) return "the name and the integer disagree";
+    return c.http === null ? true : "an unknown operation has no HTTP+JSON route";
+  }
   const p = pair(c.frames);
   if (p) return p;
   errSeen.add(c.error);
@@ -307,10 +339,17 @@ section("Parts", pr.parts, (c) => (partOk(c.part) === c.expect.ok ? true : `read
 
 const sres = fx.stream_resume;
 section("stream resume", sres.cases, (c) => {
-  const rp = frameProblem(sres.request);
+  const request = c.request ?? sres.request;
+  const rp = frameProblem(request);
   if (rp) return rp;
-  for (const d of c.deliveries) if (!d.drop) { const fp = frameProblem(d.frame, sres.request); if (fp) return fp; }
-  const got = assemble(c.deliveries);
+  for (const d of c.deliveries) {
+    if (d.drop) continue;
+    if (d.frame.payload.a2a.streamId === undefined) return "a stream frame without streamId";
+    const own = d.frame.payload.a2a.streamId === request.id;
+    const fp = frameProblem(d.frame, own ? request : undefined);
+    if (fp) return fp;
+  }
+  const got = assemble(c.deliveries, request.id);
   return same(got, c.expect) ? true : `got ${JSON.stringify({ ...got, events: got.events.length })}`;
 });
 section("stream resume through the bridge", [{ name: "the SSE events" }], () =>
@@ -362,7 +401,8 @@ section("budget on the request", [{ name: "the budget extension, activated" }], 
   return (f.meta.a2a["A2A-Extensions"] ?? "").split(/,\s*/).includes(EXT.budget) ? true : "the extension is not activated";
 });
 
-section("every budget outcome", [{ name: "four outcomes" }], () => {
+section("the overdue mark", bg.overdue.events, (c) => (same(overdueReading(c.event), c.expect) ? true : `got ${JSON.stringify(overdueReading(c.event))}`));
+section("every budget outcome", [{ name: "four outcomes and completed_late" }], () => {
   const got = new Set(bg.tasks.map((c) => c.expect.reading));
   const missing = Object.keys(OUTCOME_STATE).filter((o) => !got.has(o));
   return missing.length ? `missing ${missing.join(", ")}` : true;
@@ -374,6 +414,11 @@ section("cancel reasons on the wire", cr.exchanges, (c) => {
   if (p) return p;
   const [r, a] = c.frames;
   if (r.payload.a2a.method !== "CancelTask") return "not a CancelTask";
+  if (c.error) {
+    if (recordedCancel(r) !== null) return "a cancel the agent must refuse would be recorded";
+    if (!same(a.error?.details?.a2a?.data?.reasons, [...CANCEL_REASONS])) return "the refusal does not list the reasons";
+    return requestProblem(c.http.request, r) ?? errorProblem({ error: "InvalidParamsError", jsonrpc: { error: { code: -32602, message: a.error.message, data: a.error.details.a2a.data } }, http: c.http }, a) ?? true;
+  }
   const rp = requestProblem(c.http.request, r);
   if (rp) return rp;
   if (!same(c.http.response.body, a.payload.a2a.result)) return "HTTP+JSON body differs";
@@ -384,6 +429,18 @@ section("cancel reasons on the wire", cr.exchanges, (c) => {
 });
 section("cancel reason objects", cr.objects, (c) => (cancelObjectOk(c.value) === c.expect.ok ? true : `read as ${!c.expect.ok}`));
 section("the cancel reason list", [{ name: "SPEC.md §10.8's eight" }], () => (same([...cr.reasons].sort(), [...CANCEL_REASONS].sort()) ? true : "the list differs"));
+
+const fr = fx.failure_reasons;
+section("failure reasons on the wire", [{ name: "a failed Task with its reason" }], () => {
+  const p = pair(fr.exchange.frames);
+  if (p) return p;
+  const t = fr.exchange.frames[1].payload.a2a.result;
+  const rp = requestProblem(fr.exchange.http.request, fr.exchange.frames[0]);
+  if (rp) return rp;
+  if (!same(fr.exchange.http.response.body, t)) return "HTTP+JSON body differs";
+  return failureOk(t.status.state, t.metadata?.[fr.uri]) ? true : "the failure object is not valid";
+});
+section("failure reason objects", fr.tasks, (c) => (failureOk(c.state, c.value) === c.expect.ok ? true : `read as ${!c.expect.ok}`));
 
 const cw = fx.carrier_without_subjects;
 section("carriers without subjects", cw.cases, (c) => {
