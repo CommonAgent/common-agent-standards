@@ -4597,7 +4597,7 @@ This realizes the abstract trust roles of §4.1 on NATS:
 | Stream Name | Subjects | Retention | Max Age | Replicas | Purpose |
 |-------------|----------|-----------|---------|----------|---------|
 | `MESH_REGISTRY` | `mesh.registry.>` | Limits | 24h | 3 | Registration events |
-| `MESH_TASKS` | `mesh.task.>` | Limits | 7d | 3 | Task update delivery + redelivery buffer |
+| `MESH_TASKS` | `mesh.task.*.update`, `mesh.task.*.stream` | Limits | 7d | 3 | Task update delivery, stream events and the redelivery buffer. It does not take the request subjects under `mesh.task.` (such as `mesh.task.get.*`), whose stream acknowledgements would race the services' replies |
 | `MESH_EVENTS` | `mesh.event.>` | Interest | 24h | 3 | Domain events |
 | `MESH_HEARTBEAT` | `mesh.heartbeat.>` | Limits | 5m | 1 | Node heartbeats (presence) |
 | `MESH_INBOX_{agent_id}` | `mesh.agent.{agent_id}.inbox` | Limits | 7d / 25 MB, discard old | 1 | Per-agent offline redelivery buffer (§16.4). Created by the registry at registration (non-sandbox only), deleted at deregistration/reaping. Capture works even when core NATS reports no-responders, and never delays live delivery on the same subject. |
