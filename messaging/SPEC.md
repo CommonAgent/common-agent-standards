@@ -2,7 +2,7 @@
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.10.0-draft
+**Version:** 0.10.1-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -7337,3 +7337,10 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > frames, including the accept signal `{"accepted": {}}`, carry no
 > `payload.a2a` (§6.4). §1.6 and the site's home page now name 0.10, and
 > references to `BRIDGE-A2A.md` now name `bindings/a2a-bridge.md`.
+
+> **0.10.1-draft (2026-11-07).** On a mesh a receipt is never written into the
+> Task, because only the server agent's frames change a Task: it travels as its
+> own message after the answer (EXT-15 §8.1, the A2A binding 0.4.1-draft
+> §12.10), and rides in a Task's metadata only over the A2A Bridge. The binding
+> also carries trial work, replies sent as a new call and receipt requests
+> (§12.8 to §12.10). No section number changes; the wire version stays 0.4.0.

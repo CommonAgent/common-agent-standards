@@ -2,7 +2,7 @@
 
 An A2A custom protocol binding that carries A2A's operations and data model over an Agent Messaging mesh
 
-**Version:** 0.4.0-draft
+**Version:** 0.4.1-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -463,9 +463,16 @@ answer as part of the first Task.
 A client asks for a receipt (EXT-15) on the Message that starts the work, with
 `{"receipt": "summary"}` or `{"receipt": "full"}` in its `metadata` under
 `mesh://extensions/receipts/v1`, and lists that URI in `A2A-Extensions` (§7).
-This takes the place of the 0.3.0 `payload.config.receipt`. The receipt rides
-in the Task's `metadata` under the same URI, as EXT-15 §8.2 says for A2A, and
-a `GetTask` returns the newest one.
+This takes the place of the 0.3.0 `payload.config.receipt`.
+
+On a mesh the receipt is never written into the Task, because only the server
+agent's own frames change a Task and the receipt is signed by its issuer, not
+by the agent. It travels as EXT-15 §8.1 says: its own signed message to the
+client after the answer, on the reserved `call-receipt` request, which is a
+channel frame (§4) and carries no `a2a` member. Its `payload.request_id` names
+the request frame that started the work. Only over the A2A Bridge, where the
+bridge holds the Task it serves to an HTTP client, does the receipt ride in that
+Task's `metadata`, as EXT-15 §8.2 says.
 
 ## 13. The A2A Bridge
 
