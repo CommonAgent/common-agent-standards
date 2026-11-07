@@ -122,6 +122,30 @@ The pieces of the suite below cover it.
 | a13 | sender side | the adapter sends a message marked for a person to a target that does not declare the URI | refused locally with `AUDIENCE_NOT_SUPPORTED`, nothing published; with the explicit send-anyway choice it is published with the mark (`sender.preflight`) |
 | a14 | either | a marked emit and a marked Task update reach the adapter | neither is given to a handler; each raises a local signal |
 
+## A2A over Agent Messaging (wire version 0.4.0)
+
+The binding "A2A over Agent Messaging" (`../bindings/a2a.md`) carries A2A 1.0's operations and data model on the wire.
+Calls are A2A operations in `payload.a2a`, Tasks and their states are A2A's, and a 0.4.0 frame never carries `task_id`,
+`context_id` or `artifacts`. These fixture sets cover it, each with a checker that runs with node alone in CI:
+
+- `a2a-binding.json` is the binding's set (binding §15). Each A2A operation appears as signed frames and as the same
+  call through the A2A Bridge's HTTP+JSON interface, and the A2A objects must agree. It also covers every A2A error and
+  the channel errors, Parts by reference, a stream resumed after a drop, a Task longer than the reply window, the four
+  budget outcomes, cancel reasons, carriers without subjects, offering routing with the older keys, and the refusal of
+  0.4.0 frames that carry the old fields. `lib/make-a2a-binding-fixture.mjs` writes it and
+  `lib/check-a2a-binding.mjs` checks it.
+- `a2a-bridge.json` is the A2A Bridge's and EXT-14's set: carried 0.4.0 frames, the agent's signed answers, A2A's
+  states, answers on a Task, the knock, the budget's older form and readable text, with the 0.3.0 cases the transition
+  window keeps. `lib/make-a2a-bridge-fixture.mjs` writes it and `lib/check-a2a-bridge-fixture.mjs` checks it.
+- `unseen-states.json` holds the 0.4.0 reading (a terminal Task does not move, and no gap is filled) beside the 0.3.0
+  one; `lib/check-unseen-states.mjs` checks both.
+- `budget.json`, `cancel.json` and `task-origin.json` each gain a `wire_0_4_0` section that gives the 0.4.0 form of what
+  they pin. Their other sections are the 0.3.0 forms, kept for the transition window.
+
+The frames are signed with published test seeds only: `audience.json`'s sender seed and the responder seed of
+`../../emailing/conformance/cases.json`. The live tests in `core/` and `peering/` and the recorded runs in
+`cross-transport/` are on wire version 0.3.0 and move with the servers that implement 0.4.0.
+
 ## The discipline
 
 A red test is either a code defect or a spec defect, decided explicitly and in writing. Editing a test to make it pass
