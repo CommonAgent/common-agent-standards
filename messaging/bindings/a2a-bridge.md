@@ -326,6 +326,21 @@ spelled as A2A 1.0 spells them:
 | `rejected` | `TASK_STATE_REJECTED` |
 | `exhausted` | `TASK_STATE_CANCELED`, with `{"outcome": "exhausted"}` under the budget extension's URI and `"agentmesh.state": "exhausted"` in the Task's `metadata` |
 
+A 0.3.0 request carries an `input` object, not Parts, so for such an agent
+the bridge also maps the Parts as 0.8.0-draft did:
+
+| A2A Message Parts | 0.3.0 `input` |
+|---|---|
+| Exactly one `data` Part | that Part's value, as it is |
+| One or more `text` Parts and no `data` Part | `{"text": "<the texts joined by a line feed>"}` |
+| `text` and `data` Parts mixed | the first `data` Part's value, with `{"text": ...}` added if it has no `text` member |
+| Any `raw` or `url` Part | refused with `ContentTypeNotSupportedError` (`-32005`) |
+
+| 0.3.0 `output` | A2A Parts |
+|---|---|
+| `{"text": "<string>"}` and no other member | one `text` Part |
+| any other JSON value | one `data` Part carrying the value |
+
 The key `agentmesh.state` is what 0.8.0-draft put on such a Task. A client
 reading Tasks during the window MUST treat a `TASK_STATE_CANCELED` Task that
 carries either mark as one that stopped at its cap. When the window ends, a
