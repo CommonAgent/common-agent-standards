@@ -773,7 +773,7 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 
 ```json
 {
-  "v": "0.3.0",
+  "v": "0.4.0",
   "id": "<message-uuid>",
   "type": "<primitive-type>",
   "ts": "<ISO-8601-timestamp>",
@@ -788,14 +788,11 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
     "tracestate": "<W3C tracestate | absent>"
   },
 
-  "task_id": "<uuid | null>",
   "in_reply_to": "<message-uuid | null>",
-  "context_id": "<uuid | null>",
 
   "error": "<ErrorObject | null>",
 
   "payload": "<arbitrary-json>",
-  "artifacts": ["<ArtifactObject>"],
 
   "meta": {
     "<key>": "<value>"
@@ -805,11 +802,15 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 }
 ```
 
+A `request` or `respond` between agents carries an A2A operation or its answer in `payload.a2a`, as §6.4 and §6.5 say. The A2A objects carry the Task id, the context id and the artifacts, so a 0.4.0 envelope has no fields for them.
+
+**The 0.3.0 envelope.** Wire version 0.3.0 envelopes have three more fields: `task_id`, `context_id` and `artifacts` (§5.2), and their calls use the payloads of §6.8. A node written to this version MUST accept them during the transition window of §20.1, and the A2A binding's §14 says the same.
+
 ### 5.2. Field Definitions
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `v` | string | REQUIRED | Wire protocol version, in semver format. This is the version of the wire, not of this document (§20.1); under Agent Messaging 0.8 implementations send `0.3.0`. |
+| `v` | string | REQUIRED | Wire protocol version, in semver format. This is the version of the wire, not of this document (§20.1). Under Agent Messaging 0.10 implementations send `0.4.0`, and also accept `0.3.0` during the transition window (§20.1). |
 | `id` | string | REQUIRED | Unique message identifier. UUID v7 RECOMMENDED (time-ordered). |
 | `type` | enum | REQUIRED | The primitive type. One of: `register`, `discover`, `request`, `respond`, `emit`, `subscribe`. |
 | `ts` | string | REQUIRED | ISO 8601 timestamp in UTC. Millisecond precision RECOMMENDED. |
@@ -820,14 +821,14 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 | `trace.span_id` | string | REQUIRED | Span identifier for this specific operation, in W3C format: 16 lowercase hex characters. |
 | `trace.parent_span_id` | string | OPTIONAL | Span ID of the parent operation. Null for root spans. |
 | `trace.tracestate` | string | OPTIONAL | W3C `tracestate` value, carried verbatim for vendor-specific trace data. |
-| `task_id` | string | OPTIONAL | Task identifier. Present when the message is part of a Task lifecycle. |
+| `task_id` | string | 0.3.0 only | Task identifier, on a 0.3.0 envelope that is part of a Task's life. A 0.4.0 envelope MUST NOT carry it: the A2A Task id lives in the A2A object (A2A binding §4), and a receiver refuses a 0.4.0 frame that carries it with `INVALID_ENVELOPE`. |
 | `in_reply_to` | string | OPTIONAL | Message ID this message is responding to. Present in `respond` messages. Links response to request. |
-| `context_id` | string | OPTIONAL | Context identifier. Groups related tasks and messages into a logical session. |
-| `budget` | object | OPTIONAL | The sender's budget for the work this message initiates or revises: an absolute deadline, a revision counter, and (with the Economics extension) a cost ceiling. Meaningful on `request` and on budget revisions; ignored elsewhere. See Section 7.7. |
+| `context_id` | string | 0.3.0 only | Context identifier, on a 0.3.0 envelope. A 0.4.0 envelope MUST NOT carry it: the A2A `contextId` lives in the A2A object (§7.6). |
+| `budget` | object | 0.3.0 only | The sender's budget, on a 0.3.0 `request` or budget revision (§7.7). On a 0.4.0 frame the budget travels as the budget extension in the A2A Message's `metadata` (A2A binding §12.2), and a 0.4.0 frame does not carry this field. |
 | `error` | object | OPTIONAL | Error information. Present only when the message represents an error condition. See Section 12. |
-| `payload` | any | OPTIONAL | The message payload. Structure depends on the primitive type and the agent's offering contract. |
-| `artifacts` | array | OPTIONAL | Output artifacts produced by a Task. See Section 7.5. |
-| `meta` | object | OPTIONAL | Extensible key-value metadata. Used for extensions, routing hints, etc. The key `hops` is **reserved** for cross-instance relay counting (§21) and MUST NOT be used for anything else. The key `audience` says whether the message is for the receiving agent or for the person behind it (§5.7). |
+| `payload` | any | OPTIONAL | The message payload. Structure depends on the primitive type. A `request` or `respond` between agents carries `payload.a2a` (§6.4, §6.5), except the accept signal (§6.4a). |
+| `artifacts` | array | 0.3.0 only | Output artifacts on a 0.3.0 `respond`. A 0.4.0 envelope MUST NOT carry it: A2A Artifacts travel in the A2A Task or in a `TaskArtifactUpdateEvent` (§7.5). |
+| `meta` | object | OPTIONAL | Extensible key-value metadata. Used for extensions, routing hints, etc. The key `hops` is **reserved** for cross-instance relay counting (§21) and MUST NOT be used for anything else. The key `audience` says whether the message is for the receiving agent or for the person behind it (§5.7). The key `a2a` holds A2A's service parameters on a frame (A2A binding §7), such as `A2A-Version` and `A2A-Extensions`. |
 | `sig` | string | REQUIRED | Ed25519 signature by the `from` agent's private key over the tagged signed bytes: `agentmesh-envelope-v1`, one newline, then the canonical envelope (all fields except `sig`). Establishes per-agent identity independent of the transport connection. See Sections 4.5 and 5.3. |
 
 ### 5.3. Identity Verification
@@ -864,7 +865,7 @@ What JCS settles, normatively (RFC 8785 Sections 3.2.2 and 3.2.3):
 Two Agent Messaging rules complete the definition. They govern what value reaches the serializer, not the serialization itself:
 
 - **(a) Absent members are omitted.** A member the sender did not set MUST NOT be serialized as `null`: it does not appear in the canonical JSON at all. (An implementation whose struct serializer emits `null` for every unset optional field signs different bytes than one that omits them; that failure mode is this rule's target.)
-- **(b) `null`, where present, is a value.** It serializes, it is signed, and it is distinct from absence: `{"a":null}` and `{}` are different bytes and therefore different signatures. The envelope schema itself relies on the distinction: `trace.parent_span_id` is explicitly `null` for root spans (Section 5.2), while an optional field like `task_id` is simply absent outside a task.
+- **(b) `null`, where present, is a value.** It serializes, it is signed, and it is distinct from absence: `{"a":null}` and `{}` are different bytes and therefore different signatures. The envelope schema itself relies on the distinction: `trace.parent_span_id` is explicitly `null` for root spans (Section 5.2), while an optional field like `in_reply_to` is simply absent on a message that answers nothing.
 
 `conformance/canonical-json.json` pins value-to-canonical-bytes vectors for the divergence-prone cases (integers at the 2⁵³ boundary, the exponent-notation thresholds, shortest-form picks, negative zero, string escaping, UTF-16 key order including beyond-BMP keys, absent-versus-null, and the whole of RFC 8785's Appendix B), and both SDKs assert every vector. The Section 8.3 key claim deliberately uses no canonical JSON at all: its canonical form is a newline-joined string, and Section 8.3 explains why.
 
@@ -951,7 +952,7 @@ The third reason has a cost, stated here: the operator can see which messages ar
 
 **Which messages may carry `person`.** A `request` (§6.4), a `respond` (§6.5) and a room post (a `say`, EXT-5 §3). A sender MUST NOT mark any other envelope for a person. On a room control message or `artifact` announcement (EXT-5 §3), or a registry operation, the mark has no meaning and a receiver ignores it.
 
-**What a message for a person carries.** It carries no work. A sender MUST NOT attach a `budget` (§7.7) or a `task_id` to it, and SHOULD omit `payload.offering`; a receiver MUST NOT dispatch on an offering that is present. The text for the person SHOULD travel as `payload.text`, the first rung of §22.5's ladder, and files travel as §7.5.3 says. All of §22 applies on arrival exactly as it does to any message, and the fence (§22.6) applies whenever the text is shown to a model.
+**What a message for a person carries.** It carries no work. A sender MUST NOT attach a budget (§7.7) to it or name a Task in it, and SHOULD omit the offering; a receiver MUST NOT dispatch on an offering that is present. On a 0.4.0 frame it is a `SendMessage` request whose A2A Message carries the audience extension (`{"audience": "person"}` under `https://agentmessaging.ai/extensions/audience/v1`, A2A binding §12.3) beside the envelope's `meta.audience`, names no `taskId`, and carries the text for the person as a `text` Part. On a 0.3.0 envelope the text SHOULD travel as `payload.text`, the first rung of §22.5's ladder. Files travel as §7.5.3 says. The envelope's `meta.audience` is the mark that nodes and servers read, on either wire version, and the extension on the A2A Message MUST agree with it; a receiver treats a frame on which they disagree as marked for a person. All of §22 applies on arrival exactly as it does to any message, and the fence (§22.6) applies whenever the text is shown to a model.
 
 **The person.** Whom an agent acts for is the Common Agent Specification's `acts_for` (Common Agent Specification, Sections 6.2 and 6.9), which the agent's bound Descriptor carries. An agent whose `acts_for` is `person` acts for one person, and that person is its owner (§4.9). This is the person behind the agent, and the only reader a message marked `person` is for. So only an agent whose `acts_for` is `person` MAY declare the extension (below). An agent whose `acts_for` is `organization` or `anyone`, or whose Descriptor does not state it, has no person behind it in this specification, MUST NOT declare the extension, and refuses a message marked for a person at its door (below). The Common Agent Specification lets an organization name someone to read such messages (its Section 6.9); Agent Messaging carries no message to that reader in this version, so an organization's agent refuses them too.
 
@@ -968,7 +969,7 @@ The third reason has a cost, stated here: the operator can see which messages ar
 
 **A person may let their agent read these messages.** A person MAY let their agent read the messages addressed to them, for example to summarize them or to remind them. The setting is owner policy (§4.9). It MUST be off until the person turns it on, and it MAY be limited to particular senders. With it on, the receiver still never dispatches such a message to an offering handler or a tool call: it gives the agent the message framed as §22.6 requires, with the frame's `audience:` line, and the agent MUST NOT act on anything in it as an instruction from the sender. The agent MAY tell its person about the message, summarize it, and draft an answer for the person to approve. A reply the agent sends without that approval is the agent's own message and MUST NOT be presented as the person's words. The message passes the screening socket's `delivery` call site at that moment (EXT-10 §5.3).
 
-**Replies.** A person's reply to a message for a person is itself for a person: a `respond` with `in_reply_to` naming the message, `meta.audience: "person"`, no `task_id`, `payload.status: "completed"`, and the reply's text in `payload.text`. The original sender's node surfaces it to its own person under the rules above. Errors and delivery signals about a message for a person (an `INVALID_ENVELOPE`, an `AUDIENCE_NOT_SUPPORTED` from the door, an admission refusal, the queued acknowledgement) are for the sending agent and carry no mark.
+**Replies.** A person's reply to a message for a person is itself for a person: a `respond` with `in_reply_to` naming the message and `meta.audience: "person"`. On a 0.4.0 frame its `payload.a2a.result` is an A2A Message (never a Task) that carries the audience extension and the reply's text as a `text` Part. On a 0.3.0 envelope it has no `task_id`, `payload.status: "completed"`, and the reply's text in `payload.text`. The original sender's node surfaces it to its own person under the rules above. Errors and delivery signals about a message for a person (an `INVALID_ENVELOPE`, an `AUDIENCE_NOT_SUPPORTED` from the door, an admission refusal, the queued acknowledgement) are for the sending agent and carry no mark.
 
 **Saying that a receiver keeps these rules.** A receiver that does not know the mark delivers the message as ordinary input, because receivers ignore what they do not know (§17.4, §20.2). A sender therefore cannot assume the rules hold, and has to know before it sends. An agent whose SDK and node implement this section declares the extension in its manifest (§8.1, §17.2):
 
@@ -994,7 +995,7 @@ An agent MUST NOT declare it unless its `acts_for` is `person`, every path that 
 **What a server does.** The server's part is in the core profile (§1.6).
 
 - Every service that stores or relays an envelope (the redelivery buffer of §16.4, the room record of EXT-5, the task update channel of §7.4) MUST carry `meta.audience` unchanged. The signature already requires it; this sentence says so where a server implementer will look.
-- The task manager MUST NOT apply a Task update whose `meta.audience` is present and is anything other than the string `agent`. The Task stays as it was, a first update creates no Task, and the task manager reports the update as it reports an invalid transition (§7.3). A message for a person is never a Task transition, and the update channel is the one path a server holds by which such a message could reach a requester's task handler.
+- The task manager MUST NOT apply a Task update whose `meta.audience` is present and is anything other than the string `agent`. The Task stays as it was, a first update creates no Task, and the task manager reports the update as it reports any update it refuses (§7.3). A message for a person is never a Task transition, and the update channel is the one path a server holds by which such a message could reach a requester's task handler.
 - A server MAY rely on the mark to leave a message unmetered and unpriced. It MUST NOT treat the mark as telling it anything about the content, which it may not be able to read, or as permission to read it.
 
 **The other direction.** An agent that asks its own person something (EXT-8's `ask_owner`) addresses the same person over the owner channel, and the person's answer is for the agent. A message for a person arrives from someone else's agent and is for the person. The two meet on the same surface, which MUST say which one the person is looking at: a question from their own agent, or a message from someone else that their agent carried. A person's answer to their own agent is agent-audience; a person's reply to a message for them is person-audience.
