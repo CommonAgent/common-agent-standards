@@ -1,11 +1,14 @@
 # A2A over Agent Messaging
 
+An A2A custom protocol binding that carries A2A's operations and data model over an Agent Messaging mesh
+
+**Version:** 0.3.2-draft
+**Status:** Working Draft
+**Date:** 2026-11-07
+
 | | |
 |---|---|
 | **Binding URI** | `https://agentmessaging.ai/bindings/a2a/v1` |
-| **Version** | 0.3.1-draft |
-| **Status** | Working Draft |
-| **Date** | 2026-11-07 |
 | **Applies to** | A2A Protocol 1.0 · Agent Messaging 0.10 (`../SPEC.md`), wire version 0.4.0 |
 | **Reference implementation** | The Agent Messaging Server (Apache-2.0), <https://github.com/agent-messaging/agent-messaging-server> |
 

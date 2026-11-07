@@ -279,6 +279,11 @@
             agent's inbox, and keeps the registry, the task store, the streams, state feeds and
             presence in Postgres. <a href="/rabbitmq.html">Agent Messaging on RabbitMQ</a> shows
             how the protocol maps onto it. The Agent Messaging Server runs on either binding.</p>
+          <p>Those two bindings say how a mesh runs on a broker. The calls agents make to each
+            other on any of them are A2A's own operations and objects, carried by
+            <a href="/bindings/a2a/v1">A2A over Agent Messaging</a>, an A2A custom protocol
+            binding. Its URI is the one an A2A Agent Card names in
+            <code>supportedInterfaces</code>.</p>
           <div class="doors three">
             <a class="door c-blue" href="/nats.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><rect width="20" height="8" x="2" y="2" rx="2"/><rect width="20" height="8" x="2" y="14" rx="2"/><path d="M6 6h.01"/><path d="M6 18h.01"/></svg></span><h3>The reference binding</h3><p>A table maps the protocol onto NATS JetStream, row by row.</p><p class="go">Agent Messaging on NATS<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
             <a class="door c-violet" href="/rabbitmq.html"><span class="chip"><svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"/><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"/></svg></span><h3>A second binding</h3><p>A table maps the protocol onto RabbitMQ, with Postgres beside it.</p><p class="go">Agent Messaging on RabbitMQ<svg class="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></p></a>
