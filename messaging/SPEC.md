@@ -2013,7 +2013,7 @@ budget that can cover it is the acceptance.
 
 ## 8. Agent Manifest
 
-The manifest is an agent's self-description document. It is published to the registry via `register` and queried via `discover`.
+The manifest is an agent's self-description document. It is published to the registry via `register` and queried via `discover`, and it publishes as an A2A Agent Card that lists the A2A binding (§8.14).
 
 ### 8.1. Manifest Schema
 
@@ -2023,7 +2023,7 @@ The manifest is an agent's self-description document. It is published to the reg
   "name": "<human-readable-name>",
   "description": "<what-this-agent-does>",
   "version": "<semver>",
-  "protocol_version": "0.3.0",
+  "protocol_version": "0.4.0",
 
   "provider": {
     "name": "<organization-or-individual>",
@@ -2190,8 +2190,8 @@ server-controlled fields after the agent signs: it populates `owner`, defaults
 never verify for the party reading the manifest back.
 
 What a reader actually has to authenticate is narrower: the binding between an
-agent's `id` and the `encryption_key` others seal secrets to (Section 4.3,
-Section 7.3). An unauthenticated `encryption_key` is a silent loss of
+agent's `id` and the `encryption_key` others seal secrets to (Section 4.3).
+An unauthenticated `encryption_key` is a silent loss of
 confidentiality, not a detectable error. A forged registry reply carrying the
 forger's own X25519 key gets a room key sealed to the forger, who then reads
 every message and artifact in a room it was never admitted to, with nothing
@@ -2328,7 +2328,7 @@ Offerings are the fine-grained units of work an agent advertises. Each offering 
 
 > **Renamed.** Earlier drafts of this specification called an offering a *skill*, and the wire carried `skills`, `payload.skill`, `skill_details` and `SKILL_NOT_FOUND`. The agent ecosystem has since settled "skill" to mean something else entirely (a packaged procedure loaded *into* an agent), so this specification renamed the concept. During the deprecation window, implementations MUST accept the legacy field names as aliases on inbound messages and manifests, treat the error code `SKILL_NOT_FOUND` as `OFFERING_NOT_FOUND`, and MUST emit only the new names.
 
-- `id`: Stable identifier for the offering. Used in `request.payload.offering`.
+- `id`: Stable identifier for the offering. A call names it in the offering extension (A2A binding §12.1), or in `payload.offering` on a 0.3.0 envelope (§6.8). It is also the `id` of the offering's skill on the A2A Agent Card (§8.14).
 - `input_schema` / `output_schema`: JSON Schema defining expected input and output structures.
 - `input_modes` / `output_modes`: MIME types the offering accepts and produces.
 - `streaming`: Whether this offering supports streaming responses.
@@ -2344,7 +2344,7 @@ These fields exist so that the interface an agent presents is publishable *pre-a
 
 #### 8.5.1. Needs and Delivers
 
-Schemas suit offerings with deterministic callers. General-purpose agents engage differently: the parameters get settled in conversation (the task lifecycle's `input_required` state is that negotiation's protocol home, §7.2), and what a caller actually must know **before** engaging is coarser: what to have in hand, and what to expect back. Two OPTIONAL fields on an offering declare exactly that, the way a contractor would:
+Schemas suit offerings with deterministic callers. General-purpose agents engage differently: the parameters get settled in conversation (A2A's `TASK_STATE_INPUT_REQUIRED` state is that negotiation's protocol home, §7.2), and what a caller actually must know **before** engaging is coarser: what to have in hand, and what to expect back. Two OPTIONAL fields on an offering declare exactly that, the way a contractor would:
 
 - `needs`: what must be in hand before work can start. An array where each entry is ONE of:
   - `{ "resource": "<kind>", "access": "read" | "read-write", "description"?: "…" }`: a shared resource (§7.5.5) the caller must provide, e.g. a git repository the agent will push to;
@@ -2932,19 +2932,22 @@ living on the offering (`needs`, §8.5.1) and in the engagement's inputs clause
 
 #### What the A2A card carries
 
-The generated A2A Agent Card (§1.3) projects `transport: "http"` schemes into
-its `securitySchemes` and `security` members, where they are already valid
-OpenAPI and every A2A consumer knows how to read them. `securitySchemes` is
-keyed by scheme `id`, and `security` carries one requirement object per scheme,
-which is OpenAPI's spelling of the alternatives rule above.
+The A2A Agent Card generated from the manifest (§8.14) projects
+`transport: "http"` schemes into its `securitySchemes` and
+`securityRequirements` members, where they are already valid OpenAPI and
+every A2A consumer knows how to read them. `securitySchemes` is keyed by
+scheme `id`, and `securityRequirements` carries one requirement object per
+scheme, which is OpenAPI's spelling of the alternatives rule above. These
+schemes apply to the card's HTTP interfaces, such as an A2A Bridge's.
 
 A `mesh-identity` scheme MUST NOT be projected. It has no OpenAPI
 representation, and inventing one would put a fictional HTTP auth scheme on a
-card that consumers act on — worse than saying nothing, because it is
+card that consumers act on, which is worse than saying nothing, because it is
 specific and wrong. An agent reachable only on the mesh therefore emits a card
-with no `securitySchemes`, which is correct: over HTTP there is no scheme,
-because over HTTP there is no door. The mesh answer stays in the manifest,
-where a reader who asked the mesh question finds it.
+with no `securitySchemes`, which is correct: its one interface is the A2A
+binding, where the frame's signature is the credential and takes the place of
+every scheme (A2A binding §10). The mesh answer stays in the manifest, where a
+reader who asked the mesh question finds it.
 
 ---
 
@@ -2960,6 +2963,45 @@ descriptor members, because a fact spelled twice drifts. A consumer that
 holds the manifest fetches the descriptor from the registry (§9.2) or from
 the subject, and checks the digest against what a signature or a citation
 named.
+
+### 8.14. The Manifest as an A2A Agent Card
+
+A manifest publishes as an A2A Agent Card (A2A §4.4), so that an A2A client can read an agent on a mesh the way it reads any agent. The registry generates the card from the manifest, and from the agent's Agent Descriptor (§8.13) where it published one; the agent never writes a second description by hand. A fact spelled twice drifts, so the card is always derived and the manifest stays the source.
+
+**The interface.** The card's `supportedInterfaces` MUST list the A2A binding, as the A2A binding §3 says:
+
+```json
+{
+  "url": "https://api.mesh.example.com/agents/quotes.acme@example.com",
+  "protocolBinding": "https://agentmessaging.ai/bindings/a2a/v1",
+  "protocolVersion": "1.0"
+}
+```
+
+`url` is the agent's mesh home (§18.10), then `/agents/`, then its handle (Personal Agent Naming) or, for an agent without one, its agent ID, percent-encoded as the A2A binding §3 says. An agent that an A2A Bridge also serves lists the bridge's interface beside it (`bindings/a2a-bridge.md`), in order of preference.
+
+**What maps to the card.**
+
+| Manifest | A2A Agent Card |
+|----------|----------------|
+| `name`, `description`, `version` | `name`, `description`, `version` |
+| `provider.name`, `provider.url` | `provider.organization`, `provider.url` |
+| `default_input_modes`, `default_output_modes` (§8.5) | `defaultInputModes`, `defaultOutputModes` |
+| each entry of `offerings` | one entry of `skills`: `id`, `name`, `description`, `tags`, `inputModes`, `outputModes`, and `examples` written as strings |
+| `streaming: true` on any offering | `capabilities.streaming: true` |
+| `extensions`, and each A2A binding extension the agent supports (§17.5) | `capabilities.extensions`, each with `required: false` |
+| `public.access.schemes` with `transport: "http"` (§8.12) | `securitySchemes` and `securityRequirements` |
+
+`capabilities.pushNotifications` and `capabilities.extendedAgentCard` say what the agent's node supports, as A2A defines them.
+
+**What A2A has no place for.** The manifest fields A2A lacks are of two kinds.
+
+- *Carried as the A2A binding's extensions* (A2A binding §12), because a client needs them on a call: which offering a Message is for (the offering extension), the budget (the budget extension, §7.7), a message for the person behind the agent (the audience extension, for an agent that declares `mesh://extensions/audience/v1`, §5.7), a price when payment is required (the economics extension, §19), and a large Part's size and digest (the artifact references extension, §7.5.1). The card lists each one the agent supports in `capabilities.extensions`.
+- *Manifest-only*, because they describe the agent on the mesh rather than a call: `id` (the agent key), `node` and its vouch, `owner` and `owner_attestation`, `visibility`, `endpoint` and `endpoints`, `limits`, `encryption_key`, `sealing`, `trust` (the key claim of §8.3, which is not a card signature), `descriptor`, `public` (served by `describe`, §10.14), `interaction`, `capabilities` (the tags), `accepts` and `emits`, `works_with`, `skus`, `rate_limits`, each offering's `input_schema`, `output_schema`, `estimated_duration_ms`, `needs`, `delivers` and `reporting`, and `meta`. A reader who needs them reads the manifest from the registry (§9.2) or the describe document.
+
+The card's `signatures` are A2A's, and a deployment MAY sign the card as A2A says. Whoever reads the card still verifies the agent from its signed frames (A2A binding §10), never from the card.
+
+---
 
 ## 9. Registry
 
