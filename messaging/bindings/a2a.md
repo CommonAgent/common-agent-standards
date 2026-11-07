@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Binding URI** | `https://agentmessaging.ai/bindings/a2a/v1` |
-| **Version** | 0.3.0-draft |
+| **Version** | 0.3.1-draft |
 | **Status** | Working Draft |
 | **Date** | 2026-11-07 |
 | **Applies to** | A2A Protocol 1.0 · Agent Messaging 0.10 (`../SPEC.md`), wire version 0.4.0 |
@@ -406,8 +406,10 @@ request's `metadata` (A2A's CancelTaskRequest carries one):
 `{"reason": "<reason>", "note": "<optional text>"}`, where `reason` is one of
 the closed list of SPEC.md §10.8 (`user_requested`, `superseded`,
 `deadline_exceeded`, `budget_exhausted`, `upstream_cancelled`, `policy`,
-`needs_not_furnished`, `dependency_failed`), with the extra fields that section
-requires for a reason. The canceled Task's `metadata` carries the same object
+`needs_not_furnished`, `dependency_failed`), with the extra field that section
+requires for a reason, spelled in camelCase as every field of these extensions
+is: `unmetNeed` with `needs_not_furnished`, `dependency` with
+`dependency_failed`. The canceled Task's `metadata` carries the same object
 under this URI, so the reason stays on the record. A client written to this
 version MUST send a reason. A server agent MUST accept a `CancelTask` without
 one from a client that does not declare the extension, and records the reason

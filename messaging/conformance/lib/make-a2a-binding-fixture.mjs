@@ -410,7 +410,7 @@ const CANCEL_LIST = ["user_requested", "superseded", "deadline_exceeded", "budge
 const cNoReason = req("CancelTask", { id: "task-c3" }, ACTIVATE(CANCEL));
 const cBadReason = req("CancelTask", { id: "task-c4", metadata: { [CANCEL]: { reason: "bored" } } }, ACTIVATE(CANCEL));
 const cancelReasons = {
-  comment: "Binding §12.6 (0.2.0-draft). A CancelTask request carries its reason under the cancel extension's URI in its metadata: reason from the closed list of SPEC.md §10.8, an optional note, unmet_need (kind:value) required with needs_not_furnished and allowed with no other reason, and dependency only with dependency_failed. The canceled Task carries the same object under the same URI. A CancelTask with no reason from a client that does not declare the extension (it does not activate it in A2A-Extensions) is recorded as user_requested. A client that declares the extension and sends no reason, or a reason outside the list, gets InvalidParamsError with the reasons in the error's data (0.3.0-draft). Through the bridge the reason passes unchanged and the bridge adds none.",
+  comment: "Binding §12.6 (0.2.0-draft). A CancelTask request carries its reason under the cancel extension's URI in its metadata: reason from the closed list of SPEC.md §10.8, an optional note, unmetNeed (kind:value; SPEC.md §10.8 spells it unmet_need on a 0.3.0 envelope) required with needs_not_furnished and allowed with no other reason, and dependency only with dependency_failed. The canceled Task carries the same object under the same URI. A CancelTask with no reason from a client that does not declare the extension (it does not activate it in A2A-Extensions) is recorded as user_requested. A client that declares the extension and sends no reason, or a reason outside the list, gets InvalidParamsError with the reasons in the error's data (0.3.0-draft). Through the bridge the reason passes unchanged and the bridge adds none.",
   uri: CANCEL,
   reasons: ["user_requested", "superseded", "deadline_exceeded", "budget_exhausted", "upstream_cancelled", "policy", "needs_not_furnished", "dependency_failed"],
   exchanges: [
@@ -422,15 +422,15 @@ const cancelReasons = {
   ],
   objects: [
     { name: "a reason alone", value: { reason: "policy" }, expect: { ok: true } },
-    { name: "needs_not_furnished with what was not furnished", value: { reason: "needs_not_furnished", unmet_need: "credential:Salesforce" }, expect: { ok: true } },
+    { name: "needs_not_furnished with what was not furnished", value: { reason: "needs_not_furnished", unmetNeed: "credential:Salesforce" }, expect: { ok: true } },
     { name: "dependency_failed naming the dependency", value: { reason: "dependency_failed", dependency: "Colorado DMV" }, expect: { ok: true } },
     { name: "a reason not on the list", value: { reason: "bored" }, expect: { ok: false } },
     { name: "no reason in the object", value: { note: "stop" }, expect: { ok: false } },
     { name: "a reason in other capitals", value: { reason: "User_Requested" }, expect: { ok: false } },
     { name: "a note that is not text", value: { reason: "policy", note: 42 }, expect: { ok: false } },
-    { name: "needs_not_furnished without unmet_need", value: { reason: "needs_not_furnished" }, expect: { ok: false } },
-    { name: "unmet_need of the wrong shape", value: { reason: "needs_not_furnished", unmet_need: "the licence" }, expect: { ok: false } },
-    { name: "unmet_need on another reason", value: { reason: "user_requested", unmet_need: "credential:Salesforce" }, expect: { ok: false } },
+    { name: "needs_not_furnished without unmetNeed", value: { reason: "needs_not_furnished" }, expect: { ok: false } },
+    { name: "unmetNeed of the wrong shape", value: { reason: "needs_not_furnished", unmetNeed: "the licence" }, expect: { ok: false } },
+    { name: "unmetNeed on another reason", value: { reason: "user_requested", unmetNeed: "credential:Salesforce" }, expect: { ok: false } },
     { name: "dependency on another reason", value: { reason: "policy", dependency: "Colorado DMV" }, expect: { ok: false } },
   ],
 };
@@ -450,7 +450,7 @@ const failureReasons = {
     { name: "a reason that needs no extra field", state: "TASK_STATE_FAILED", value: { reason: "policy" }, expect: { ok: true } },
     { name: "a failure with no stated reason carries nothing", state: "TASK_STATE_FAILED", value: null, expect: { ok: true } },
     { name: "needs_not_furnished without unmetNeed", state: "TASK_STATE_FAILED", value: { reason: "needs_not_furnished" }, expect: { ok: false } },
-    { name: "the cancel extension's snake case is not this extension's", state: "TASK_STATE_FAILED", value: { reason: "needs_not_furnished", unmet_need: "credential:Salesforce" }, expect: { ok: false } },
+    { name: "the 0.3.0 snake case is not a 0.4.0 spelling", state: "TASK_STATE_FAILED", value: { reason: "needs_not_furnished", unmet_need: "credential:Salesforce" }, expect: { ok: false } },
     { name: "dependency on another reason", state: "TASK_STATE_FAILED", value: { reason: "policy", dependency: "Colorado DMV" }, expect: { ok: false } },
     { name: "a reason outside the list", state: "TASK_STATE_FAILED", value: { reason: "gremlins" }, expect: { ok: false } },
     { name: "an attribution in the object is not an input", state: "TASK_STATE_FAILED", value: { reason: "dependency_failed", dependency: "Colorado DMV", attribution: "client" }, expect: { ok: false } },

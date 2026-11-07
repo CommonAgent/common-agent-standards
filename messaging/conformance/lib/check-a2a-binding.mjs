@@ -218,7 +218,7 @@ const NEED = /^(resource|file|credential|text):.+$/;
 function cancelObjectOk(o) {
   if (!o || typeof o !== "object" || !CANCEL_REASONS.has(o.reason)) return false;
   if (o.note !== undefined && typeof o.note !== "string") return false;
-  if (o.reason === "needs_not_furnished" ? !(typeof o.unmet_need === "string" && NEED.test(o.unmet_need)) : o.unmet_need !== undefined) return false;
+  if (o.reason === "needs_not_furnished" ? !(typeof o.unmetNeed === "string" && NEED.test(o.unmetNeed)) : o.unmetNeed !== undefined) return false;
   if (o.reason !== "dependency_failed" && o.dependency !== undefined) return false;
   return true;
 }
