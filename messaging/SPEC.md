@@ -6046,35 +6046,100 @@ example envelopes with the canonical bytes their signatures cover (under the
 ## Appendix A: Example, Complete Request-Respond Flow
 
 ```
-Agent A (requester)                     Agent B (responder)
+Agent A (client)                        Agent B (server agent)
        |                                        |
        |  1. discover("web-scrape")             |
        |------> mesh.registry.discover          |
        |<------ [manifest of Agent B]           |
        |                                        |
-       |  2. request(offering: "web-scrape")       |
+       |  2. request: SendMessage               |
+       |     (offering extension: web-scrape)   |
        |------> mesh.agent.{B}.inbox            |
        |        reply: _INBOX.abc123            |
        |        (liveness signal only, §18.7)   |
        |                                        |
-       |  3. respond(status: accepted)          |
+       |  3. respond: {"accepted": {}}          |
        |<------ mesh.agent.{A}.inbox   (§6.4a)  |
        |                                        |
-       |  4. respond(status: submitted)         |
+       |  4. respond: result.task               |
+       |     id task-789, TASK_STATE_SUBMITTED  |
        |<------ mesh.agent.{A}.inbox            |
-       |        task_id: task-789               |
        |                                        |
-       |  5. [subscribe to task updates]        |
-       |------> consumer on mesh.task.task-789  |
+       |  5. request: GetTask {id: task-789}    |
+       |------> mesh.agent.{B}.inbox            |
+       |<------ mesh.agent.{A}.inbox            |
+       |     Task, TASK_STATE_WORKING           |
        |                                        |
-       |  6. respond(status: working)           |
-       |<------ mesh.task.task-789.update       |
+       |  6. request: GetTask {id: task-789}    |
+       |------> mesh.agent.{B}.inbox            |
+       |<------ mesh.agent.{A}.inbox            |
+       |     Task, TASK_STATE_COMPLETED,        |
+       |     artifacts: [...]                   |
        |                                        |
-       |  7. respond(status: completed,         |
-       |             artifacts: [...])          |
-       |<------ mesh.task.task-789.update       |
-       |                                        |
+       |  (the task store recorded each change  |
+       |   B published on                       |
+       |   mesh.task.task-789.update, §7.4)     |
 ```
+
+The request frame of step 2:
+
+```json
+{
+  "v": "0.4.0",
+  "id": "0192f3a4-6f1e-7c3a-9d2b-1a2b3c4d5e6f",
+  "type": "request",
+  "ts": "2026-11-07T18:04:05.123Z",
+  "from": "<agent A key>",
+  "to": "<agent B key>",
+  "trace": { "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "00f067aa0ba902b7" },
+  "payload": {
+    "a2a": {
+      "method": "SendMessage",
+      "params": {
+        "message": {
+          "messageId": "msg-1",
+          "role": "ROLE_USER",
+          "parts": [ { "data": { "url": "https://example.com/team", "fields": ["name", "title"] } } ],
+          "metadata": {
+            "https://agentmessaging.ai/extensions/offering/v1": { "offering": "web-scrape" }
+          }
+        }
+      }
+    }
+  },
+  "meta": { "a2a": { "A2A-Version": "1.0", "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1" } },
+  "sig": "<signature>"
+}
+```
+
+The respond frame of step 4:
+
+```json
+{
+  "v": "0.4.0",
+  "id": "0192f3a4-7a10-7c3a-9d2b-1a2b3c4d5e70",
+  "type": "respond",
+  "ts": "2026-11-07T18:04:05.410Z",
+  "from": "<agent B key>",
+  "to": "<agent A key>",
+  "in_reply_to": "0192f3a4-6f1e-7c3a-9d2b-1a2b3c4d5e6f",
+  "trace": { "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "a3ce929d0e0e4736", "parent_span_id": "00f067aa0ba902b7" },
+  "payload": {
+    "a2a": {
+      "result": {
+        "task": {
+          "id": "task-789",
+          "contextId": "ctx-51a0",
+          "status": { "state": "TASK_STATE_SUBMITTED", "timestamp": "2026-11-07T18:04:05.400Z" }
+        }
+      }
+    }
+  },
+  "sig": "<signature>"
+}
+```
+
+Instead of polling with `GetTask` (steps 5 and 6), Agent A MAY call `SubscribeToTask` and receive the changes as stream events (Section 11).
 
 ## Appendix B: Example, Event-Driven Collaboration
 
@@ -6101,31 +6166,63 @@ Agent A (scraper)       Bus                Agent B (analyzer)    Agent C (report
 ## Appendix C: Example, Streaming LLM Output
 
 ```
-Agent A (requester)                     Agent B (LLM agent)
+Agent A (client)                        Agent B (LLM agent)
        |                                        |
-       |  request(stream: true)                 |
+       |  request: SendStreamingMessage         |
        |------> mesh.agent.{B}.inbox            |
        |                                        |
-       |  respond(status: accepted)    (§6.4a)  |
+       |  respond: {"accepted": {}}    (§6.4a)  |
        |<------ mesh.agent.{A}.inbox            |
        |                                        |
-       |  respond(status: working, task_id)     |
+       |  seq 0: task, TASK_STATE_WORKING       |
        |<------ mesh.agent.{A}.inbox            |
        |                                        |
-       |  [subscribe: mesh.task.{id}.stream]    |
+       |  [durable subscription:                |
+       |   mesh.task.{id}.stream, §11.3]        |
        |                                        |
-       |  chunk 0: "The "                       |
+       |  seq 1: artifactUpdate "The "          |
        |<------ mesh.task.{id}.stream           |
-       |  chunk 1: "quick "                     |
+       |  seq 2: artifactUpdate "quick "        |
        |<------ mesh.task.{id}.stream           |
-       |  chunk 2: "brown fox"                  |
+       |  seq 3: artifactUpdate "brown fox"     |
        |<------ mesh.task.{id}.stream           |
-       |  chunk 3 (final: true)                 |
+       |  seq 4: statusUpdate                   |
+       |         TASK_STATE_COMPLETED           |
+       |         (final: true)                  |
        |<------ mesh.task.{id}.stream           |
        |                                        |
-       |  task update: completed                |
-       |<------ mesh.task.{id}.update           |
+       |  (the task store holds the completed   |
+       |   Task; GetTask returns it, §11.3)     |
 ```
+
+The frame of `seq` 3:
+
+```json
+{
+  "v": "0.4.0",
+  "type": "respond",
+  "from": "<agent B key>",
+  "to": "<agent A key>",
+  "in_reply_to": "<id of the SendStreamingMessage request>",
+  "payload": {
+    "a2a": {
+      "seq": 3,
+      "result": {
+        "artifactUpdate": {
+          "taskId": "<task-id>",
+          "contextId": "<context-id>",
+          "artifact": { "artifactId": "answer", "parts": [ { "text": "brown fox" } ] },
+          "append": true,
+          "lastChunk": false
+        }
+      }
+    }
+  },
+  "sig": "<signature>"
+}
+```
+
+Every event is signed (§11.6). On a 0.3.0 envelope the same stream is a sequence of chunks (§11.7).
 
 ## Appendix D: Implementation Checklist
 
@@ -6153,15 +6250,15 @@ section wins, and the disagreement is a defect in this appendix.
 | 4 | Refuse misaddressed envelopes (present `to` ≠ own id, byte-for-byte), silently | §22.4 | `inbound-protections.json` |
 | 5 | Cap inbound sender text (default 65,536 UTF-16 code units); answer `CONTEXT_TOO_LARGE` | §22.5 | `inbound-protections.json` |
 | 6 | Fence sender text with the pinned markers: once, on by default, provenance from the verified envelope only | §22.6 | `inbound-protections.json` |
-| 7 | Admit against the budget before working: refuse `BUDGET_INSUFFICIENT` / `DEADLINE_UNMEETABLE` with an estimate, never accept-then-fail | §7.7 | `budget.json` |
-| 8 | On admission by a live handler, emit `"accepted"` immediately, before the handler runs; refusals of admission happen instead, never after | §6.4a | `accept-signal.json` |
-| 9 | Create a Task only when deferring, streaming, or pausing; drive only the legal state transitions | §7.0 to §7.3 | *(none)* |
-| 10 | Stop at the cost ceiling: pause to `input_required` with `BUDGET_EXHAUSTED`, reporting spend and estimate-to-finish | §7.7 | `budget.json` |
-| 11 | Honor cancel: closed reason enum, stop work, forward `upstream_cancelled` to every still-live delegate | §10.8 | `cancel.json` |
+| 7 | Admit against the budget before working: refuse with the budget outcome `insufficient` or `deadline_unmeetable` (a Task in `TASK_STATE_REJECTED`; `BUDGET_INSUFFICIENT` / `DEADLINE_UNMEETABLE` on 0.3.0) with an estimate, never accept-then-fail | §7.7 | `budget.json` |
+| 8 | On admission by a live handler, emit the accept signal (`payload.accepted`) immediately, before the handler runs; refusals of admission happen instead, never after | §6.4a | `accept-signal.json` |
+| 9 | Carry every call as an A2A operation in `payload.a2a` (0.4.0) and accept 0.3.0 envelopes during the transition window; create a Task only when deferring, streaming, or pausing; change it only as A2A's states allow | §6.4, §6.5, §7.0 to §7.3, §20.1 | *(none)* |
+| 10 | Stop at the cost ceiling: pause in `TASK_STATE_INPUT_REQUIRED` with the budget outcome `ceiling_reached` (`BUDGET_EXHAUSTED` on 0.3.0), reporting spend and estimate-to-finish | §7.7 | `budget.json` |
+| 11 | Honor `CancelTask`: closed reason enum in the cancel extension, stop work, forward `upstream_cancelled` to every still-live delegate | §10.8 | `cancel.json` |
 | 11a | When a failure has a reason, state it from the same enum, and back a `needs_not_furnished` with an `unmet_need` naming a need the offering actually declares | §10.8, §10.8a | `cancel.json` |
 | 12 | Enforce agreements at admission where a paid SKU covers the offering: no unexpired agreement at the current digest → `AGREEMENT_REQUIRED` with `sku`, `sku_digest`, `approval_url` | §19.5 | `commerce.json` |
-| 13 | Report declared usage in `payload.usage` of the terminal respond, or of a reply-`request` carrying `in_reply_to`: cumulative, superseding, covered by the envelope signature; the provider is the respond's recipient but the reply-request's SENDER | §13.5 | `metering.json` |
-| 14 | Publish every direct `respond` (accept, bare answer, Task-creating first reply) to the requester's inbox, correlated by `in_reply_to`; never response data on a transport reply subject | §6.5, §18.7 | *(none)* |
+| 13 | Report declared usage in `payload.usage` (beside `payload.a2a` on 0.4.0) of the terminal respond, or of a reply-`request` carrying `in_reply_to`: cumulative, superseding, covered by the envelope signature; the provider is the respond's recipient but the reply-request's SENDER | §13.5 | `metering.json` |
+| 14 | Publish every direct `respond` (accept, the answer to the A2A operation, the first stream event) to the requester's inbox, correlated by `in_reply_to`; never response data on a transport reply subject | §6.5, §18.7 | *(none)* |
 | 15 | If you declare `mesh://extensions/audience/v1`, an optional extension in this version: give a message marked `person` to no handler, tool or model; surface it to your person; refuse a mark that is not a string; read an unknown string as `person`; let the agent read it only under the person's setting, framed with the `audience:` line; declare `mesh://extensions/audience/v1` only when your `acts_for` is `person`, every path to you keeps these rules and your node can reach your person | §5.7, §22.6 | `audience.json` |
 | 16 | If you do not declare `mesh://extensions/audience/v1`: refuse a `request`, a `respond` or a room post marked `person` at your door with `AUDIENCE_NOT_SUPPORTED`, `details.reason` `no_person` or `not_declared` and `details.acts_for`, after admission and before any handler or inbox; never answer it with the queued ack | §5.7, §12.2 | `audience.json` |
 
@@ -6175,10 +6272,10 @@ section wins, and the disagreement is a defect in this appendix.
 | 4 | Subscribe to presence transitions before reading the presence snapshot | §9.6 | *(none)* |
 | 5 | State budgets as an absolute deadline / ceiling; revise absolutely with a monotonic counter, parties only | §7.7 | `budget.json` |
 | 6 | Treat an accept as delivery + admission: reset the response timeout, keep waiting for the substantive respond; the deadline does not move | §6.4a | `accept-signal.json` |
-| 7 | Cancel with a reason from the closed eight-value enum; cancellation is effective when sent | §10.8 | `cancel.json` |
+| 7 | Cancel with `CancelTask` and a reason from the closed eight-value enum; cancellation is effective when sent | §10.8 | `cancel.json` |
 | 8 | Deduplicate inbound traffic and replies on `(from, id)`, never on `id` alone | §5.5, §22.2 | `inbound-protections.json` |
 | 9 | Treat silence from a registered agent as possibly queued, not failed; every reply, live or late, arrives at your own inbox, correlated by `in_reply_to`, and response data on a transport reply subject is ignored | §6.4, §6.5 | *(none)* |
-| 10 | Before sending a message marked for a person, check each receiver's declaration (a receiver whose Descriptor states an `acts_for` other than `person` does not declare it) and refuse locally with `AUDIENCE_NOT_SUPPORTED` unless your person chose to send anyway; attach no `budget` and no `task_id` | §5.7 | `audience.json` |
+| 10 | Before sending a message marked for a person, check each receiver's declaration (a receiver whose Descriptor states an `acts_for` other than `person` does not declare it) and refuse locally with `AUDIENCE_NOT_SUPPORTED` unless your person chose to send anyway; attach no budget and name no Task | §5.7 | `audience.json` |
 
 ### D.3. A node (a host of agents)
 
@@ -6186,7 +6283,7 @@ section wins, and the disagreement is a defect in this appendix.
 |---|-----------|------|---------|
 | 1 | Vouch for every hosted agent: a signed, expiring attestation, re-issued while hosting continues | §4.4 | `signature-tags.json` |
 | 2 | Register agents on the connection-bound subject where the deployment enforces §4.4 (b) | §4.4, §14.1, §14.3 | *(none)* |
-| 3 | Ack only durably accepted mail; answer an attended inbox's requests with the queued ack (`queued: true`, `inbox_id`), never with `"accepted"` | §16.4, §6.4a | `accept-signal.json` |
+| 3 | Ack only durably accepted mail; answer an attended inbox's requests with the queued ack (`queued: true`, `inbox_id`), never with the accept signal | §16.4, §6.4a | `accept-signal.json` |
 | 4 | Bound every mailbox drain to the bind-time backlog; re-run on every reconnect and periodically (default 60 s); never overlap passes | §16.4 | *(none)* |
 | 5 | Heartbeat per node on `mesh.heartbeat.{node_id}`; the subject token, not the payload, names the node | §10.10 | *(none)* |
 | 6 | For an agent that declares `mesh://extensions/audience/v1`, an optional extension in this version: keep the mark on an inbox entry marked for a person, keep its text out of every listing a harness reads, answer it with the queued ack, and declare `mesh://extensions/audience/v1` only for an agent whose `acts_for` is `person` and only when you can reach that person. For an agent that does not declare it: refuse a message marked for a person before it enters the inbox, as D.1 line 16 says | §5.7, §16.4 | `audience.json` |
