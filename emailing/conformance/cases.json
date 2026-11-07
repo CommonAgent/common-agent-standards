@@ -1,5 +1,5 @@
 {
-  "comment": "Agent Emailing 0.4.0 conformance cases (SPEC.md §12). Every envelope is a frame of Agent Messaging wire version 0.4.0, carrying A2A objects as A2A over Agent Messaging says, except the 0.3.0 envelope of case e20, which a receiver still accepts in the window of SPEC.md §3.2. Each case names a fixture, the receiving role, the identity it receives as, the time to judge freshness by, and the expected outcome. Cases are independent: each starts with an empty duplicate memory, and a case with `after` first replays the case it names. `person_view` is what software that shows the human part to a person must conclude (SPEC.md §3.3). THE FIXTURES ARE THE AUTHORITY: when an implementation disagrees with them, the implementation changes.",
+  "comment": "Agent Emailing 0.4.0 conformance cases (SPEC.md §12). Every envelope is a frame of Agent Messaging wire version 0.4.0, carrying A2A objects as A2A over Agent Messaging says, except the 0.3.0 envelope of case e33, which a receiver still accepts in the window of SPEC.md §3.2. A knock and its answer are channel requests and carry no payload.a2a (A2A over Agent Messaging §11). Each case names a fixture, the receiving role, the identity it receives as, the time to judge freshness by, and the expected outcome. Cases are independent: each starts with an empty duplicate memory, and a case with `after` first replays the case it names. Inputs a case may give: `carrier_auth`, the receiving carrier's SPF, DKIM and DMARC results; `admission`, the stance the receiver's door takes toward the sender (`allow` when absent); `standing`, how the sender's standing came out (a vouch and a verified name card when absent); `memory_bound`, the duplicate memory's bound; and `sent`, the sending agent's own records of the emails it sent. Cases e20 to e32 came with Agent Emailing 0.3.0, and e33 and e34 with 0.4.0. `person_view` is what software that shows the human part to a person must conclude (SPEC.md §3.3). THE FIXTURES ARE THE AUTHORITY: when an implementation disagrees with them, the implementation changes.",
   "version": 4,
   "spec": "Agent Emailing 0.4.0, SPEC.md §12",
   "identities": {
@@ -98,7 +98,7 @@
       }
     },
     "respond_input": {
-      "canonical": "{\"from\":\"UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF\",\"id\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e02\",\"in_reply_to\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01\",\"meta\":{\"a2a\":{\"A2A-Version\":\"1.0\"},\"agent_emailing\":{\"human_text\":\"sha256:4879e96ae6181879ba4fc5ab3298d4881c6873467c2959897859b17f46cbec03\",\"offering_name\":\"Book a meeting\",\"subject\":\"Re: Book a meeting — needs your input\",\"v\":\"0.4.0\"}},\"payload\":{\"a2a\":{\"result\":{\"task\":{\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"id\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\",\"status\":{\"message\":{\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"messageId\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e12\",\"parts\":[{\"text\":\"Two times are free next week: Tuesday 3 November at 10:00, or Thursday 5 November at 13:30, Mountain time.\"},{\"data\":{\"problems\":[{\"description\":\"Choose one of the two times.\",\"expected\":\"2026-11-03T17:00:00Z or 2026-11-05T20:30:00Z\",\"input\":\"slot\",\"problem\":\"missing\"}]}}],\"role\":\"ROLE_AGENT\",\"taskId\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\"},\"state\":\"TASK_STATE_INPUT_REQUIRED\",\"timestamp\":\"2026-10-29T16:16:40.000Z\"}}}}},\"to\":\"UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP\",\"trace\":{\"parent_span_id\":\"a1b2c3d4e5f60718\",\"span_id\":\"b7c8d9e0f1a2b3c4\",\"trace_id\":\"7d3e1f0a9b2c4d5e8f6a1b2c3d4e5f60\"},\"ts\":\"2026-10-29T16:16:40.000Z\",\"type\":\"respond\",\"v\":\"0.4.0\"}",
+      "canonical": "{\"from\":\"UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF\",\"id\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e02\",\"in_reply_to\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01\",\"meta\":{\"a2a\":{\"A2A-Version\":\"1.0\"},\"agent_emailing\":{\"human_text\":\"sha256:4879e96ae6181879ba4fc5ab3298d4881c6873467c2959897859b17f46cbec03\",\"offering_name\":\"Book a meeting\",\"subject\":\"Re: Book a meeting — needs your input\",\"v\":\"0.4.0\"}},\"payload\":{\"a2a\":{\"result\":{\"task\":{\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"id\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\",\"status\":{\"message\":{\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"messageId\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e12\",\"parts\":[{\"text\":\"Two times are free next week: Tuesday 3 November at 10:00, or Thursday 5 November at 13:30, Mountain time.\"},{\"data\":{\"problems\":[{\"description\":\"Choose one of the two times.\",\"expected\":\"2026-11-03T17:00:00Z or 2026-11-05T20:30:00Z\",\"input\":\"slot\",\"problem\":\"missing\"}]}}],\"role\":\"ROLE_AGENT\",\"taskId\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\"},\"state\":\"TASK_STATE_INPUT_REQUIRED\",\"timestamp\":\"2026-10-29T16:16:40.000Z\"}}},\"seq\":0}},\"to\":\"UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP\",\"trace\":{\"parent_span_id\":\"a1b2c3d4e5f60718\",\"span_id\":\"b7c8d9e0f1a2b3c4\",\"trace_id\":\"7d3e1f0a9b2c4d5e8f6a1b2c3d4e5f60\"},\"ts\":\"2026-10-29T16:16:40.000Z\",\"type\":\"respond\",\"v\":\"0.4.0\"}",
       "envelope": {
         "v": "0.4.0",
         "id": "019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e02",
@@ -114,6 +114,7 @@
         },
         "payload": {
           "a2a": {
+            "seq": 0,
             "result": {
               "task": {
                 "id": "019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01",
@@ -160,7 +161,7 @@
             "human_text": "sha256:4879e96ae6181879ba4fc5ab3298d4881c6873467c2959897859b17f46cbec03"
           }
         },
-        "sig": "szl8Pi9kSMSXwq2XtJxkECH5e4jbNzWFiJRmHLRnjEs7e3alkxVDq7wJuOXM4yLst7t64-QoFEBLICl7XencBw"
+        "sig": "C218u7ebFqLxLMoTzuWA_TgEWCS_YdHk3FEPyDTKS4Er_EMpNqIf4cG853LdyKcoQdQa8mO3lFr4gGQME52-AQ"
       }
     },
     "request_answer": {
@@ -221,7 +222,7 @@
       }
     },
     "respond_done": {
-      "canonical": "{\"from\":\"UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF\",\"id\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c04\",\"in_reply_to\":\"019a3f20-91b4-7f22-a0c1-2d3e4f5a6b03\",\"meta\":{\"a2a\":{\"A2A-Extensions\":\"https://agentmessaging.ai/extensions/artifact-refs/v1\",\"A2A-Version\":\"1.0\"},\"agent_emailing\":{\"human_text\":\"sha256:006a67a1ddc8f5a6b07328363d98e97e8f8a850a58a7075238590ffd2b6eb4b7\",\"offering_name\":\"Book a meeting\",\"subject\":\"Re: Book a meeting — done\",\"v\":\"0.4.0\"}},\"payload\":{\"a2a\":{\"result\":{\"task\":{\"artifacts\":[{\"artifactId\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c0b\",\"name\":\"Booking\",\"parts\":[{\"data\":{\"confirmation\":\"BK-4471\",\"end\":\"2026-11-03T17:30:00Z\",\"start\":\"2026-11-03T17:00:00Z\"}}]},{\"artifactId\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c0a\",\"name\":\"Meeting invitation\",\"parts\":[{\"filename\":\"invite.ics\",\"mediaType\":\"text/calendar\",\"metadata\":{\"https://agentmessaging.ai/extensions/artifact-refs/v1\":{\"digest\":\"sha256:f0b3f20abfd5cbcea61703f36b9e0b5140fad7d9de8f9f8f5134b49d882fa8ac\",\"size\":376}},\"url\":\"cid:invite.019a3f22@mail.example.com\"}]}],\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"id\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\",\"status\":{\"message\":{\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"messageId\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c14\",\"parts\":[{\"text\":\"Booked: Tuesday 3 November, 10:00 to 10:30 Mountain time. The invitation is attached.\"}],\"role\":\"ROLE_AGENT\",\"taskId\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\"},\"state\":\"TASK_STATE_COMPLETED\",\"timestamp\":\"2026-10-29T16:23:12.000Z\"}}}}},\"to\":\"UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP\",\"trace\":{\"parent_span_id\":\"c9d0e1f2a3b4c5d6\",\"span_id\":\"d1e2f3a4b5c6d7e8\",\"trace_id\":\"7d3e1f0a9b2c4d5e8f6a1b2c3d4e5f60\"},\"ts\":\"2026-10-29T16:23:12.000Z\",\"type\":\"respond\",\"v\":\"0.4.0\"}",
+      "canonical": "{\"from\":\"UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF\",\"id\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c04\",\"in_reply_to\":\"019a3f20-91b4-7f22-a0c1-2d3e4f5a6b03\",\"meta\":{\"a2a\":{\"A2A-Extensions\":\"https://agentmessaging.ai/extensions/artifact-refs/v1\",\"A2A-Version\":\"1.0\"},\"agent_emailing\":{\"human_text\":\"sha256:40d7d81250bd58e6100ad50fd80b959e544c62dd03c9c51f312c451206dcb73d\",\"offering_name\":\"Book a meeting\",\"subject\":\"Re: Book a meeting — done\",\"v\":\"0.4.0\"}},\"payload\":{\"a2a\":{\"result\":{\"task\":{\"artifacts\":[{\"artifactId\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c0b\",\"name\":\"Booking\",\"parts\":[{\"data\":{\"confirmation\":\"BK-4471\",\"end\":\"2026-11-03T17:30:00Z\",\"start\":\"2026-11-03T17:00:00Z\"}}]},{\"artifactId\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c0a\",\"name\":\"Meeting invitation\",\"parts\":[{\"filename\":\"invite.ics\",\"mediaType\":\"text/calendar\",\"metadata\":{\"https://agentmessaging.ai/extensions/artifact-refs/v1\":{\"digest\":\"sha256:f0b3f20abfd5cbcea61703f36b9e0b5140fad7d9de8f9f8f5134b49d882fa8ac\",\"size\":376}},\"url\":\"cid:invite.019a3f22@mail.example.com\"}]}],\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"id\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\",\"status\":{\"message\":{\"contextId\":\"019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00\",\"messageId\":\"019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c14\",\"parts\":[{\"text\":\"Booked: Tuesday 3 November, 10:00 to 10:30 Mountain time. The invitation is attached.\"}],\"role\":\"ROLE_AGENT\",\"taskId\":\"019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01\"},\"state\":\"TASK_STATE_COMPLETED\",\"timestamp\":\"2026-10-29T16:23:12.000Z\"}}},\"seq\":1},\"price\":{\"amount_micro\":1500000,\"currency\":\"USD\"}},\"to\":\"UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP\",\"trace\":{\"parent_span_id\":\"c9d0e1f2a3b4c5d6\",\"span_id\":\"d1e2f3a4b5c6d7e8\",\"trace_id\":\"7d3e1f0a9b2c4d5e8f6a1b2c3d4e5f60\"},\"ts\":\"2026-10-29T16:23:12.000Z\",\"type\":\"respond\",\"v\":\"0.4.0\"}",
       "envelope": {
         "v": "0.4.0",
         "id": "019a3f22-0d6e-7a35-b4d2-6e7f8a9b0c04",
@@ -237,6 +238,7 @@
         },
         "payload": {
           "a2a": {
+            "seq": 1,
             "result": {
               "task": {
                 "id": "019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01",
@@ -290,6 +292,10 @@
                 ]
               }
             }
+          },
+          "price": {
+            "amount_micro": 1500000,
+            "currency": "USD"
           }
         },
         "meta": {
@@ -301,10 +307,10 @@
             "v": "0.4.0",
             "offering_name": "Book a meeting",
             "subject": "Re: Book a meeting — done",
-            "human_text": "sha256:006a67a1ddc8f5a6b07328363d98e97e8f8a850a58a7075238590ffd2b6eb4b7"
+            "human_text": "sha256:40d7d81250bd58e6100ad50fd80b959e544c62dd03c9c51f312c451206dcb73d"
           }
         },
-        "sig": "bNKhYn4EmLn19ArT9yIMUE7eHUye7QCUepWXXSUjsAnLIQOIdWaaUxvMaRu0UedYtrG0jjzyK40BvddwpEA_Cg"
+        "sig": "fGC44NaSy6vxtsZU8zAO3tZ0ek5rkoHU4SYu1TOLIEEqwYHmwuGjLum1Nlt0zIPhCgOVSRU-4wjxyltIcrAcDQ"
       }
     }
   },
@@ -349,6 +355,7 @@
         "mode": "native",
         "correlates_to": "019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01",
         "task": "019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01",
+        "seq": 0,
         "state": "needs your input",
         "reply": "none",
         "person_view": "matches"
@@ -382,14 +389,16 @@
         "mode": "native",
         "correlates_to": "019a3f20-91b4-7f22-a0c1-2d3e4f5a6b03",
         "task": "019a3f1e-5c3a-7d10-8e2f-4a5b6c7d8e01",
+        "seq": 1,
         "state": "done",
         "files": {
           "invite.ics": "verified"
         },
         "reply": "none",
-        "person_view": "matches"
+        "person_view": "matches",
+        "price_stated": "1.50 USD"
       },
-      "spec": "§3.6, §10"
+      "spec": "§3.3, §3.6, §10"
     },
     {
       "id": "e05",
@@ -545,12 +554,19 @@
       "role": "sending agent",
       "receive_as": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
       "now": "2026-10-29T16:25:00.000Z",
+      "sent": [
+        {
+          "request": "019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01",
+          "message_id": "<a7f3c9e1.20261029161403@agents.example.org>"
+        }
+      ],
       "expect": {
         "deliver": false,
         "outcome_for_request": {
           "request": "019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01",
           "outcome": "undeliverable",
-          "status": "5.1.1"
+          "status": "5.1.1",
+          "matched_by": "Message-ID"
         },
         "reply": "none"
       },
@@ -639,7 +655,272 @@
     },
     {
       "id": "e20",
-      "fixture": "18-legacy-request.eml",
+      "fixture": "18-subject-rewritten.eml",
+      "role": "receiving agent and mail program",
+      "receive_as": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+      "now": "2026-10-29T16:25:00.000Z",
+      "comment": "The respond that needs input, sent with a reply shortcut that kept the request's subject. The agent acts on the envelope; software that shows it to a person warns, because the subject is not the one the sender signed.",
+      "expect": {
+        "deliver": true,
+        "mode": "native",
+        "correlates_to": "019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01",
+        "state": "needs your input",
+        "reply": "none",
+        "person_view": "warn: the text does not match the signed message"
+      },
+      "spec": "§3.3"
+    },
+    {
+      "id": "e21",
+      "fixture": "19-bridged-attachment.eml",
+      "role": "bridge",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-30T15:15:00.000Z",
+      "carrier_auth": {
+        "spf": "pass",
+        "dkim": [
+          {
+            "domain": "example.org",
+            "result": "pass",
+            "aligned": true
+          }
+        ],
+        "dmarc": "pass"
+      },
+      "comment": "The facts the bridge signs into its SendMessage (SPEC.md §4.2): the envelope id, the offering, the text, the subject, and each attachment as a file Part with its name, media type, size and digest.",
+      "expect": {
+        "deliver": "as a bridged request",
+        "mode": "bridged",
+        "admission_tier": "bridged",
+        "bridged_request": {
+          "id": "f88bc064-ba06-8d35-b8ef-cb3e52321adb",
+          "offering": "message",
+          "text": "My notes for Thursday are attached.\n\nAna",
+          "subject": "Notes for the planning meeting",
+          "files": [
+            {
+              "name": "notes.txt",
+              "media_type": "text/plain",
+              "size": 39,
+              "digest": "sha256:991969bee518c2bdd617bf215a400a8117b340c782b772c58eeee2a202eef654"
+            }
+          ]
+        }
+      },
+      "spec": "§4.2"
+    },
+    {
+      "id": "e22",
+      "fixture": "19-bridged-attachment.eml",
+      "role": "bridge",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-30T15:15:00.000Z",
+      "after": "e21",
+      "carrier_auth": {
+        "spf": "pass",
+        "dkim": [
+          {
+            "domain": "example.org",
+            "result": "pass",
+            "aligned": true
+          }
+        ],
+        "dmarc": "pass"
+      },
+      "comment": "The same plain email delivered again. Its envelope id is derived from its Message-ID, so the duplicate memory refuses it.",
+      "expect": {
+        "deliver": false,
+        "refusal": "duplicate",
+        "reply": "none"
+      },
+      "spec": "§4.2, §7.1"
+    },
+    {
+      "id": "e23",
+      "fixture": "20-bounce-new-message-id.eml",
+      "role": "sending agent",
+      "receive_as": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+      "now": "2026-10-29T16:25:00.000Z",
+      "sent": [
+        {
+          "request": "019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01",
+          "message_id": "<a7f3c9e1.20261029161403@agents.example.org>"
+        }
+      ],
+      "comment": "The carrier replaced the request's Message-ID, so the returned headers name one the sender never recorded. The Agent-Messaging-Id header still names the request.",
+      "expect": {
+        "deliver": false,
+        "outcome_for_request": {
+          "request": "019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01",
+          "outcome": "undeliverable",
+          "status": "5.1.1",
+          "matched_by": "envelope id"
+        },
+        "reply": "none"
+      },
+      "spec": "§3.5, §8"
+    },
+    {
+      "id": "e24",
+      "fixture": "03-request-answer.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:25:00.000Z",
+      "after": "e01",
+      "memory_bound": 1,
+      "comment": "The duplicate memory holds one entry, e01's, still inside the window. A new agent email is held rather than an entry forgotten.",
+      "expect": {
+        "deliver": false,
+        "outcome": "held",
+        "refusal": "duplicate memory at its bound",
+        "reply": "none",
+        "local_signal": true
+      },
+      "spec": "§7.1"
+    },
+    {
+      "id": "e25",
+      "fixture": "01-request.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:25:00.000Z",
+      "standing": {
+        "vouched": false,
+        "reverse_lookup": "refused"
+      },
+      "comment": "No vouch, and the registrar refused the reverse lookup. The email is treated as a knock, not blocked.",
+      "expect": {
+        "deliver": false,
+        "outcome": "knock",
+        "reaches_model": false,
+        "held_attempt_report": "recorded",
+        "reply": "none"
+      },
+      "spec": "§6.2, §7.4"
+    },
+    {
+      "id": "e26",
+      "fixture": "01-request.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:25:00.000Z",
+      "standing": {
+        "vouched": false,
+        "reverse_lookup": "no card"
+      },
+      "comment": "No vouch, and the registrar answered that the key has no card. The sender is anonymous, and the default stance blocks it.",
+      "expect": {
+        "deliver": false,
+        "admission_tier": "anonymous",
+        "reaches_model": false,
+        "reply": "none"
+      },
+      "spec": "§6.2"
+    },
+    {
+      "id": "e27",
+      "fixture": "21-oversized.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:35:00.000Z",
+      "admission": "hold",
+      "comment": "The envelope's payload is larger than the inbound size cap, and the door holds this sender. No answer is sent.",
+      "expect": {
+        "deliver": false,
+        "refusal": "too large",
+        "reply": "none",
+        "local_signal": true
+      },
+      "spec": "§7.2; Agent Messaging §22.5"
+    },
+    {
+      "id": "e28",
+      "fixture": "21-oversized.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:35:00.000Z",
+      "admission": "allow",
+      "comment": "The same email from a sender the door lets in. It is answered with CONTEXT_TOO_LARGE.",
+      "expect": {
+        "deliver": false,
+        "refusal": "too large",
+        "reply": "CONTEXT_TOO_LARGE",
+        "local_signal": true
+      },
+      "spec": "§7.2; Agent Messaging §22.5, §22.7"
+    },
+    {
+      "id": "e29",
+      "fixture": "22-knock.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:35:00.000Z",
+      "expect": {
+        "deliver": "as a knock",
+        "reaches_model": false,
+        "held_attempt_report": "recorded",
+        "reply": "a signed respond in the same thread"
+      },
+      "spec": "§7.4; EXT-6 §9.3"
+    },
+    {
+      "id": "e30",
+      "fixture": "23-knock-answer.eml",
+      "role": "receiving agent and mail program",
+      "receive_as": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+      "now": "2026-10-29T16:35:00.000Z",
+      "expect": {
+        "deliver": true,
+        "mode": "native",
+        "correlates_to": "019a3f30-1a2b-7c3d-8e4f-5a6b7c8d9e01",
+        "output": {
+          "knock": "received"
+        },
+        "reply": "none",
+        "person_view": "matches"
+      },
+      "spec": "§7.4"
+    },
+    {
+      "id": "e31",
+      "fixture": "24-attached-email.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:25:00.000Z",
+      "comment": "A valid agent email with another agent email attached inside it. Only the outer email's parts count, so it has one envelope part, not two.",
+      "expect": {
+        "deliver": true,
+        "mode": "native",
+        "files": {
+          "agenda.txt": "verified"
+        },
+        "reply": "the agent's own answer"
+      },
+      "spec": "§3.1"
+    },
+    {
+      "id": "e32",
+      "fixture": "25-plain-with-agent-email.eml",
+      "role": "receiving agent",
+      "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "now": "2026-10-29T16:25:00.000Z",
+      "carrier_auth": {
+        "spf": "none",
+        "dkim": [],
+        "dmarc": "none"
+      },
+      "comment": "A plain email from a stranger with an agent email attached inside it. The attached envelope does not count, so the outer email has none.",
+      "expect": {
+        "deliver": false,
+        "refusal": "no envelope and no admitted bridged sender",
+        "reaches_model": false,
+        "reply": "none"
+      },
+      "spec": "§3.1, §4.3"
+    },
+    {
+      "id": "e33",
+      "fixture": "26-legacy-request.eml",
       "role": "receiving agent and mail program",
       "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
       "now": "2026-10-29T16:25:00.000Z",
@@ -658,8 +939,8 @@
       "spec": "§3.2, §3.3; A2A over Agent Messaging §14"
     },
     {
-      "id": "e21",
-      "fixture": "19-envelope-task-field.eml",
+      "id": "e34",
+      "fixture": "27-envelope-task-field.eml",
       "role": "receiving agent",
       "receive_as": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
       "now": "2026-10-29T16:25:00.000Z",
@@ -673,6 +954,6 @@
     }
   ],
   "carrier_test": {
-    "comment": "A carrier passes when it carries 01-request.eml from one of its addresses to another and the receiving side can recover, from what the carrier delivers, an envelope whose canonical form equals envelopes.request.canonical, an agenda.txt whose SHA-256 equals files['agenda.txt'].sha256, and a text part whose digest equals the envelope's meta.agent_emailing.human_text (SPEC.md §11.2, §12.3)."
+    "comment": "A carrier passes when it carries 01-request.eml from one of its addresses to another and the receiving side can recover, from what the carrier delivers, an envelope whose canonical form equals envelopes.request.canonical, an agenda.txt whose SHA-256 equals files['agenda.txt'].sha256, and a text part whose digest equals the envelope's meta.agent_emailing.human_text, taken from the raw message or, where the carrier gives none, from the adapter's text (SPEC.md §11.2, §11.4, §12.3)."
   }
 }

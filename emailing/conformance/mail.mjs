@@ -78,6 +78,8 @@ export const EXT = {
   offering: "https://agentmessaging.ai/extensions/offering/v1",
   budget: "https://agentmessaging.ai/extensions/budget/v1",
   refs: "https://agentmessaging.ai/extensions/artifact-refs/v1",
+  cancel: "https://agentmessaging.ai/extensions/cancel/v1",
+  failure: "https://agentmessaging.ai/extensions/failure/v1",
 };
 const LEGACY_STATE = {
   submitted: "TASK_STATE_SUBMITTED", working: "TASK_STATE_WORKING", completed: "TASK_STATE_COMPLETED",
@@ -97,7 +99,8 @@ const problemsOf = (parts) => (parts ?? []).flatMap((x) => (Array.isArray(x.data
 export function view(env) {
   const p = env.payload ?? {};
   const base = { wire: env.v, type: env.type, sealed: isSealed(env), error: env.error ?? null };
-  if (base.sealed) return { ...base, text: null, files: [], returned: [], problems: [], taskId: null, contextId: null };
+  if (base.sealed) return { ...base, text: null, files: [], returned: [], problems: [], taskId: null, contextId: null,
+    state: typeof env.meta?.a2a_state === "string" ? env.meta.a2a_state : null, exhausted: false, reason: null };
   if (!p.a2a) {
     const c = env.budget?.cost_ceiling;
     return { ...base, offering: p.offering, cancel: p.offering === "task.cancel",
@@ -125,7 +128,8 @@ export function view(env) {
     messageAnswer: Boolean(r.message) && !task, text: textOf(answer?.parts), files: [],
     returned: [...(task?.artifacts ?? []).flatMap((x) => urlParts(x.parts)), ...urlParts(answer?.parts)],
     state: task?.status?.state ?? null, exhausted: task?.metadata?.[EXT.budget]?.outcome === "exhausted",
-    problems: problemsOf(answer?.parts), ceiling: null, deadline: null, price: null };
+    reason: task?.metadata?.[EXT.failure]?.reason ?? task?.metadata?.[EXT.cancel]?.reason ?? null,
+    problems: problemsOf(answer?.parts), ceiling: null, deadline: null, price: p.price ?? null };
 }
 
 // ── states, the subject and the human part ──────────────────────────────────
@@ -204,6 +208,7 @@ export function renderHuman(env, ctx) {
     if (sealed) L.push("Result: sealed. Only the receiving agent can read it.");
     else if (v.text !== null) L.push(`Result: ${v.text}`);
     else if (v.error?.message) L.push(`Result: ${v.error.message}`);
+    if (!sealed && v.reason) L.push(`Reason: ${v.reason}`);
     if (!sealed && v.problems.length) L.push(`Needed from you: ${v.problems.map((x) => x.description).join(" ")}`);
     const files = sealed ? [] : v.returned;
     L.push(`Files returned: ${files.length ? files.map(fileLine).join("; ") : "none"}`);
@@ -246,6 +251,8 @@ export function checkHuman(mail, env, senderHandle) {
   }
   if (env.type === "respond") need(`Outcome: ${cap(stateOf(env))}`, "the outcome");
   if (v.ceiling) need(money(v.ceiling), "the price");
+  if (!v.sealed && v.price) need(money(v.price), "the price");
+  if (!v.sealed && v.reason) need(`Reason: ${v.reason}`, "the reason");
   const digest_ok = Boolean(textPart) && ae.human_text === textDigest(text);
   const subject_ok = Boolean(ae.subject) && ae.subject === subject;
   return { digest_ok, subject_ok, facts_ok: !missing.length, missing, matches: digest_ok && subject_ok && !missing.length, text, subject };
