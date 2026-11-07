@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Checks ../a2a-bridge.json against reference readings of the A2A Bridge
-// (0.9.0-draft) and EXT-14 (Agent Messaging over A2A, 0.4.0-draft), with node
+// (0.9.1-draft) and EXT-14 (Agent Messaging over A2A, 0.4.1-draft), with node
 // alone.
 //
 //   node messaging/conformance/lib/check-a2a-bridge-fixture.mjs
@@ -31,7 +31,7 @@ function checkCarried(env, { agent, declared, now, call }) {
   if (!env || typeof env !== "object" || typeof env.v !== "string" || typeof env.id !== "string" || typeof env.from !== "string" || typeof env.sig !== "string") return { ok: false, reason: "malformed" };
   const a2a = env.payload?.a2a;
   if (env.v === "0.4.0") {
-    if (["task_id", "context_id", "artifacts"].some((k) => k in env)) return { ok: false, reason: "malformed" };
+    if (["task_id", "context_id", "budget", "artifacts"].some((k) => k in env)) return { ok: false, reason: "malformed" };
     if (!a2a || typeof a2a !== "object") return { ok: false, reason: "malformed" };
   } else if (env.v !== "0.3.0") return { ok: false, reason: "malformed" };
   if (!verifyEnvelope(env)) return { ok: false, reason: "signature" };
@@ -102,8 +102,15 @@ function fromWire030(mesh) {
 // The A2A Bridge §5.2, §7.3: a 0.3.0 agent's budget answers and cancels.
 const money = (m) => ({ amountMicro: m.amount_micro, currency: m.currency });
 const CODE_030 = { TASK_NOT_FOUND: -32001, TASK_EXPIRED: -32001, TASK_NOT_CANCELABLE: -32002, TASK_INVALID_TRANSITION: -32004, CONTENT_TYPE_NOT_SUPPORTED: -32005, OFFERING_NOT_FOUND: -32602, SKILL_NOT_FOUND: -32602, INPUT_INVALID: -32602, INVALID_QUERY: -32602 };
+const FAILURE = "https://agentmessaging.ai/extensions/failure/v1";
 function budget030(answer) {
-  const e = answer.error ?? {}, d = e.details ?? {};
+  const e = answer.error ?? {}, d = e.details ?? {}, p = answer.payload ?? {};
+  if (p.status === "failed" && !answer.error) {
+    if (typeof p.reason !== "string") return { state: "TASK_STATE_FAILED" };
+    const o = { reason: p.reason, ...(p.unmet_need !== undefined ? { unmetNeed: p.unmet_need } : {}), ...(p.dependency !== undefined ? { dependency: p.dependency } : {}) };
+    return { state: "TASK_STATE_FAILED", metadata: { [FAILURE]: o } };
+  }
+  if (p.status === "completed" && answer.marker === "DEADLINE_EXCEEDED") return { state: "TASK_STATE_COMPLETED", metadata: { [BUDGET]: { outcome: "completed_late" } } };
   if (e.code === "BUDGET_INSUFFICIENT") return { state: "TASK_STATE_REJECTED", metadata: { [BUDGET]: { outcome: "insufficient", estimate: money(d.estimate) }, [MARKER]: { held: true } } };
   if (e.code === "DEADLINE_UNMEETABLE") return { state: "TASK_STATE_REJECTED", metadata: { [BUDGET]: { outcome: "deadline_unmeetable", earliestCompletion: d.earliest_completion }, [MARKER]: { held: true } } };
   if (e.code === "BUDGET_EXHAUSTED" && answer.payload?.status === "input_required") return { state: "TASK_STATE_INPUT_REQUIRED", metadata: { [BUDGET]: { outcome: "ceiling_reached", spent: money(d.spent), estimateToFinish: money(d.estimate_to_finish) } } };
