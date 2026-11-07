@@ -317,5 +317,122 @@
       "Party authorization on revisions (UNAUTHORIZED) is the task manager's check - it holds the Task's parties. SDKs enforce monotonicity and signatures only.",
       "Settlement, payment and billing are out of scope for the specification and for this fixture."
     ]
+  },
+  "wire_0_4_0": {
+    "comment": "Under wire version 0.4.0 (bindings/a2a.md §12.2) the budget is not an envelope member. It is the budget extension, under its URI in the metadata of the A2A Message that starts or revises the work, and its members are camelCase: costCeiling and amountMicro. Every rule above for the block, revisions, absolute semantics and the deadline skew holds unchanged in that spelling. The refusals and the pause under 'refusals' are the 0.3.0 forms, kept for the binding's transition window: under 0.4.0 each is a Task state with the outcome in the Task's metadata under the extension's URI, and the envelope above is a 0.2 envelope. conformance/a2a-binding.json carries signed 0.4.0 frames for every outcome.",
+    "uri": "https://agentmessaging.ai/extensions/budget/v1",
+    "valid": [
+      {
+        "deadline": "2026-07-27T16:00:00Z",
+        "revision": 0,
+        "costCeiling": {
+          "amountMicro": 2000000,
+          "currency": "USD"
+        }
+      },
+      {
+        "deadline": "2026-07-27T16:00:00.000Z",
+        "revision": 3
+      },
+      {
+        "revision": 0,
+        "costCeiling": {
+          "amountMicro": 0,
+          "currency": "EUR"
+        }
+      },
+      {
+        "deadline": "2026-07-27T11:00:00-05:00",
+        "revision": 1
+      }
+    ],
+    "invalid": [
+      {
+        "case": "snake_case",
+        "block": {
+          "revision": 0,
+          "cost_ceiling": {
+            "amount_micro": 2000000,
+            "currency": "USD"
+          }
+        },
+        "why": "0.4.0 spells the members in camelCase, as A2A's JSON form does"
+      },
+      {
+        "case": "float_money",
+        "block": {
+          "revision": 0,
+          "costCeiling": {
+            "amountMicro": 2000000.5,
+            "currency": "USD"
+          }
+        },
+        "why": "amountMicro must be an integer"
+      },
+      {
+        "case": "no_axes",
+        "block": {
+          "revision": 0
+        },
+        "why": "neither deadline nor costCeiling"
+      }
+    ],
+    "outcomes": [
+      {
+        "outcome": "insufficient",
+        "state": "TASK_STATE_REJECTED",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/budget/v1": {
+            "outcome": "insufficient",
+            "estimate": {
+              "amountMicro": 5000000,
+              "currency": "USD"
+            }
+          }
+        },
+        "from_0_3_0": "BUDGET_INSUFFICIENT with details.estimate"
+      },
+      {
+        "outcome": "deadline_unmeetable",
+        "state": "TASK_STATE_REJECTED",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/budget/v1": {
+            "outcome": "deadline_unmeetable",
+            "earliestCompletion": "2026-07-27T17:30:00Z"
+          }
+        },
+        "from_0_3_0": "DEADLINE_UNMEETABLE with details.earliest_completion"
+      },
+      {
+        "outcome": "ceiling_reached",
+        "state": "TASK_STATE_INPUT_REQUIRED",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/budget/v1": {
+            "outcome": "ceiling_reached",
+            "spent": {
+              "amountMicro": 900000,
+              "currency": "USD"
+            },
+            "estimateToFinish": {
+              "amountMicro": 2500000,
+              "currency": "USD"
+            }
+          }
+        },
+        "from_0_3_0": "the pause: status input_required with BUDGET_EXHAUSTED, details.spent and details.estimate_to_finish"
+      },
+      {
+        "outcome": "exhausted",
+        "state": "TASK_STATE_CANCELED",
+        "metadata": {
+          "https://agentmessaging.ai/extensions/budget/v1": {
+            "outcome": "exhausted"
+          }
+        },
+        "from_0_3_0": "the terminal state exhausted (Agent SoW 5.5.5); never recorded as failed and never retried"
+      }
+    ],
+    "resume": "A Task paused with ceiling_reached resumes on a Message whose budget has a higher revision, or ends when the client cancels it with the cancel extension's reason budget_exhausted (bindings/a2a.md §12.6).",
+    "not_covered": "DEADLINE_EXCEEDED, the marker on a late completion, has no 0.4.0 form in the binding yet."
   }
 }
