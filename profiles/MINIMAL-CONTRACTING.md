@@ -1,15 +1,15 @@
 # The minimal contracting profile
 
-**Version:** 0.6.5-draft
+**Version:** 0.7.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-29
-**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.35.0-draft · Agent Messaging 0.9.21-draft
+**Date:** 2026-11-07
+**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.36.0-draft · Agent Messaging 0.9.21-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
 This profile names the smallest part of those standards that lets one organization's agent contract another organization's agent for services work, within a budget the organization delegated in writing, and leaves a receipt that both sides can check. It is a starting point. Everything it leaves out can be added later without changing anything it requires, and Section 7 says how each part is added.
 
-An implementation that meets this profile can say that it implements "the minimal contracting profile 0.6.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
+An implementation that meets this profile can say that it implements "the minimal contracting profile 0.7.0-draft". The machine-readable half of the profile is [minimal-contracting.json](minimal-contracting.json), which names the version of each standard, its sections and its conformance vectors (Section 8). Where this document and one of the standards it names disagree, the standard governs.
 
 ## 1. Conformance language and terms
 
@@ -67,7 +67,7 @@ Sections 1, 10, 11 and 12 are informative.
 
 `mandate-proxy.json` is left out with §7.1, and `mandate-treasury.json` with §8.
 
-## 4. Agent SoW 0.35.0-draft
+## 4. Agent SoW 0.36.0-draft
 
 Agent SoW is the contract: who the parties are, what work is in scope, what it costs, and how it ends. Both owners sign the same document, and the runtimes enforce what it says.
 
@@ -173,6 +173,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.7.0-draft** (2026-11-07). The profile applies to Agent SoW 0.36.0-draft, whose tasks carry A2A's states. A task the not-to-exceed cap ends now shows on the wire as `TASK_STATE_CANCELED` with the outcome `exhausted` in Agent Messaging's budget extension, and the `task_state` group of `sow-pricing.json`, which this profile requires whole, pins it that way. The engagement state `exhausted` of step 5 is unchanged. The minor version moves because an implementation of 0.6.5-draft that records a ninth task state does not meet this version.
 
 **0.6.5-draft** (2026-11-01). The profile applies to Agent Messaging 0.9.21-draft, which adds EXT-15, receipts, outside the sections this profile names. The patch version moves because an implementation of 0.6.4-draft meets this version unchanged.
 
