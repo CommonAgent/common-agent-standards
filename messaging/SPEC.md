@@ -3589,18 +3589,93 @@ The pre-admission read: the one substantive request any agent may make of any ot
 
 ## 11. Streaming
 
-Streaming is the delivery of incremental results for a single Task as an ordered sequence of messages.
+Streaming is the delivery of incremental results for a single Task as an ordered sequence of messages. On this mesh a stream is A2A's: `SendStreamingMessage` and `SubscribeToTask` answer with A2A stream events, carried as the A2A binding §8 says. This section binds those events to the mesh's subjects.
 
 ### 11.1. Streaming Model
 
 Agent Messaging streaming uses task subjects with ordered, durable delivery (§18.1; in the reference binding, the `MESH_TASKS` stream, §18.3):
 
-- **Stream Subject:** `mesh.task.{task_id}.stream`
-- **Control Subject:** `mesh.task.{task_id}.update`
+- **Stream Subject:** `mesh.task.{taskId}.stream`, where `taskId` is the A2A Task id.
+- **Update Subject:** `mesh.task.{taskId}.update`, on which the task store's changes travel (§7.4).
 
-All chunks for a single Task are published to the same stream subject, guaranteeing ordering.
+Every event of a stream after the first is published to the same stream subject, guaranteeing its order.
 
-### 11.2. Stream Chunk Envelope
+### 11.2. Stream Event Frame
+
+Each event is an A2A StreamResponse (a Task, a Message, a `TaskStatusUpdateEvent` or a `TaskArtifactUpdateEvent`), in a `respond` frame of its own:
+
+```json
+{
+  "v": "0.4.0",
+  "type": "respond",
+  "from": "<server-agent-key>",
+  "to": "<client-key>",
+  "in_reply_to": "<id of the SendStreamingMessage or SubscribeToTask request>",
+  "payload": {
+    "a2a": {
+      "seq": 3,
+      "final": false,
+      "result": {
+        "artifactUpdate": {
+          "taskId": "<task-id>",
+          "contextId": "<context-id>",
+          "artifact": { "artifactId": "<artifact-id>", "parts": [ { "text": "brown fox" } ] },
+          "append": true,
+          "lastChunk": false
+        }
+      }
+    }
+  },
+  "sig": "<signature>"
+}
+```
+
+- `payload.a2a.result` is the stream event, in A2A's JSON form.
+- `payload.a2a.seq` counts from 0 for the first event of the stream, so a client detects a gap.
+- `payload.a2a.final` is `true` on the last event of the stream, and is otherwise `false` or absent.
+
+### 11.3. Stream Lifecycle
+
+1. The client sends a `request` frame carrying `SendStreamingMessage` (or `SubscribeToTask` for an existing Task, which starts from the Task's current state).
+2. The server agent sends the first event (`seq` 0) in a `respond` frame to the client's inbox (§6.5), so the client learns the A2A Task id.
+3. The client creates a durable subscription on `mesh.task.{taskId}.stream` (a durable consumer in the reference binding, §18.6), starting at the beginning of that subject, so that events the server agent published before the subscription existed are still delivered.
+4. The server agent publishes every later event, in the order it generated them, as a `respond` frame on `mesh.task.{taskId}.stream`.
+5. The stream ends with the event that puts the Task in a terminal or interrupted state (A2A §4.1.3), or with the Message that answers a `SendStreamingMessage` without a Task. That frame carries `payload.a2a.final: true`, and no frame follows it on that stream.
+6. Each change the stream reports is also recorded in the task store (§7.4), so a client that lost the stream (a disconnect, a restart) recovers the Task, its final state and its Artifacts with `GetTask` instead of losing them with the stream.
+
+### 11.4. Backpressure
+
+- Durable subscriptions support flow control via explicit acknowledgment.
+- The subscriber SHOULD use acknowledgment timeouts (`ack_wait` in the reference binding) to detect slow consumers.
+- The server agent SHOULD use `max_pending` on the stream to limit unacknowledged events.
+- If the consumer falls too far behind, the server agent MAY pause emission until acknowledgments catch up.
+
+### 11.5. Reconnection
+
+If the consumer disconnects and reconnects:
+
+- A durable consumer resumes after the last event it acknowledged, and no event is lost.
+- A client that lost the subscription itself calls `SubscribeToTask`, which starts from the Task's current state (A2A binding §8).
+- The client MAY also call `GetTask` to read the current Task.
+
+### 11.6. Event Signing
+
+Every event is a signed frame of its own (§4.5, §5.3), so a stream on a 0.4.0 frame needs no stream-level authentication and no chunk count: the client verifies each event's signature, and `seq` shows a missing event. A client MUST refuse an event whose signature does not verify, and treats the stream as broken at that point.
+
+On a 0.3.0 envelope, where chunks MAY go unsigned, streams are authenticated at the **stream level**, not per chunk:
+
+- The **opening** `respond` that establishes the `task_id` and the stream (§11.7) MUST be signed per §4.5 and MUST be verified. It authenticates the responder agent for the entire stream.
+- **Chunk** envelopes on `mesh.task.{task_id}.stream` carry a monotonic `payload.chunk_index` and MAY omit `sig`. Their authenticity rests on three things: (a) the signed opening; (b) transport authorization, since only the responder's node may publish to that task's stream subject, enforced by the node JWT's publish permissions and account isolation (§4.6, §15); and (c) ordered, dedup-by-`id` delivery (§5.5, §11.1).
+- The **final** chunk (`payload.final: true`) MUST be signed and MUST include `payload.chunk_count`. This brackets the stream so the requester can detect truncation or any missing or injected chunk.
+- A requester MAY require per-chunk `sig` for a given stream (for example across a low-trust boundary) via `config.sign_chunks: true`; the responder SHOULD honor it.
+
+### 11.7. The 0.3.0 Chunk Form (Transition)
+
+A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
+
+1. The responder sends the initial `respond` to the requester's inbox with `status: "working"` and a `task_id`.
+2. The requester creates a durable subscription on `mesh.task.{task_id}.stream`.
+3. The responder publishes chunks to `mesh.task.{task_id}.stream`, each a `respond` of this shape:
 
 ```json
 {
@@ -3619,38 +3694,8 @@ All chunks for a single Task are published to the same stream subject, guarantee
 }
 ```
 
-### 11.3. Stream Lifecycle
-
-1. Requester sends `request` with `config.stream: true`.
-2. Responder sends the initial `respond` to the requester's inbox (§6.5) with `status: "working"` and `task_id`.
-3. Requester creates a durable subscription on `mesh.task.{task_id}.stream` (a durable consumer in the reference binding, §18.6).
-4. Responder publishes chunks to `mesh.task.{task_id}.stream`.
-5. Final chunk has `payload.final: true` and `payload.status: "completed"`.
-6. Responder publishes a final task update to `mesh.task.{task_id}.update` with `status: "completed"`. This update SHOULD carry the final result in `payload.output` (§6.5): the durable task record (Section 7) is built from these updates, and including the output there lets a requester that lost the stream (disconnect, restart) recover the answer from the task store instead of losing it with the ephemeral stream subject.
-
-### 11.4. Backpressure
-
-- Durable subscriptions support flow control via explicit acknowledgment.
-- The subscriber SHOULD use acknowledgment timeouts (`ack_wait` in the reference binding) to detect slow consumers.
-- The responder SHOULD use `max_pending` on the stream to limit unacknowledged chunks.
-- If the consumer falls too far behind, the responder MAY pause emission until acknowledgments catch up.
-
-### 11.5. Reconnection
-
-If the consumer disconnects and reconnects:
-
-- Durable consumers resume from the last acknowledged position.
-- No chunks are lost.
-- The requester MAY also call `get_task` on the KV store to get the current Task state.
-
-### 11.6. Chunk Signing
-
-Signing every chunk of a stream (one Ed25519 signature per token of LLM output) is the one place always-sign (§4.5) would be too costly. Streams are therefore authenticated at the **stream level**, not per chunk:
-
-- The **opening** `respond` that establishes the `task_id` and the stream (§11.3, step 2) MUST be signed per §4.5 and MUST be verified. It authenticates the responder agent for the entire stream.
-- **Chunk** envelopes on `mesh.task.{task_id}.stream` carry a monotonic `payload.chunk_index` and MAY omit `sig`. Their authenticity rests on three things: (a) the signed opening; (b) transport authorization, since only the responder's node may publish to that task's stream subject, enforced by the node JWT's publish permissions and account isolation (§4.6, §15); and (c) ordered, dedup-by-`id` delivery (§5.5, §11.1).
-- The **final** chunk (`payload.final: true`) MUST be signed and MUST include `payload.chunk_count`. This brackets the stream so the requester can detect truncation or any missing or injected chunk.
-- A requester MAY require per-chunk `sig` for a given stream (for example across a low-trust boundary) via `config.sign_chunks: true`; the responder SHOULD honor it. This keeps a strict, fully-signed mode available without making it the default.
+4. The final chunk has `payload.final: true`, `payload.status: "completed"` and `payload.chunk_count`, and is signed (§11.6).
+5. The responder publishes a final task update to `mesh.task.{task_id}.update` with `status: "completed"`, which SHOULD carry the final result in `payload.output`, so that a requester that lost the stream recovers the answer from the task store.
 
 ---
 
