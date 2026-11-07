@@ -1711,6 +1711,7 @@ Tasks MUST be durably persisted in a store keyed by the A2A Task id, which is th
 - **Streams.** The events of a stream travel on `mesh.task.{taskId}.stream` (Section 11).
 - **Reads.** `GetTask`, `ListTasks` and the push notification operations are answered from the store, and `SubscribeToTask` starts from the stored Task (A2A binding §5, §8). The server agent's node answers them on its agent's behalf, and only to the parties §7.1 names. A client never addresses the task store directly.
 - **Lookups.** The store, not the update subject, is canonical: a client that missed updates reads the Task with `GetTask`.
+- **Task ids.** A Task id becomes a subject token, so a server agent on a mesh MUST mint Task ids that are valid single tokens: no `.`, `*`, `>` or whitespace (§14.2). A UUID is RECOMMENDED. A2A leaves the form of a Task id to the server, so this constrains nothing A2A requires.
 
 The concrete store and channels (a NATS KV bucket, the `mesh.task.{taskId}.update` and `.stream` subjects, and the `MESH_TASKS` stream) are defined in the reference binding (§18.4). On a 0.3.0 envelope the updates are the 0.3.0 `respond` payloads of §6.8 on `mesh.task.{task_id}.update`.
 
@@ -3936,9 +3937,9 @@ the content:
 |---|---|---|
 | `agentmesh.primitive` | envelope `type` | `request`, `respond`, `emit`, `subscribe`. |
 | `agentmesh.peer` | envelope `to` / `from` | The counterparty's handle or key. |
-| `agentmesh.offering` | request payload | The offering named, not its input. |
-| `agentmesh.task_id` | envelope `task_id` | Absent outside a task. |
-| `agentmesh.context_id` | envelope `context_id` | Absent when the envelope has none. |
+| `agentmesh.offering` | request payload | The offering named (the offering extension on a 0.4.0 frame), not its input. |
+| `agentmesh.task_id` | the A2A Task id in the frame's A2A object (the envelope `task_id` on 0.3.0) | Absent outside a task. |
+| `agentmesh.context_id` | the A2A `contextId` in the frame's A2A object (the envelope `context_id` on 0.3.0) | Absent when there is none. |
 | `agentmesh.outcome` | terminal state | `ok`, `error`, `refused`, `timeout`, `canceled`. |
 | `agentmesh.error_code` | error object | The closed-enum code **only**. |
 
@@ -4078,7 +4079,7 @@ The atom of usage:
   "provider": "<key of the serving agent>",
   "consumer": "<key of the requesting agent>",
   "offering": "caselaw-summary",
-  "task_id": "<uuid, when a Task exists>",
+  "task_id": "<A2A Task id, when a Task exists>",
   "envelope_id": "<id of the envelope this event derives from>",
   "request_id": "<id of the request envelope answered, on events derived from an answer>",
   "ts": "<RFC-3339 UTC>"
@@ -4101,7 +4102,7 @@ The atom of usage:
   an answer: the `responses` and `bytes_out` events of a `respond`, the
   declared events lifted from a usage receipt (below), and the refusal event
   (below). Its value is the answer's `in_reply_to`, or, for an answer that
-  carries only a `task_id`, the id of the request the deployment matched the
+  carries only a Task id, the id of the request the deployment matched the
   answer to. A reader folding the stream joins a request's events to the
   events of its answer on this value, without keeping correlation state of
   its own. The events of a delivered request carry no `request_id`, because
@@ -4177,7 +4178,8 @@ the security event and the quarantine act.
 
 **Trace ids.** On this binding, a security event's `trace_id` is the
 `trace.trace_id` of the envelope the job arrived in (§13.1), and its
-`task_id` is the envelope's `task_id`. An event about an envelope that failed
+`task_id` is the A2A Task id the frame names (the envelope's `task_id` on a
+0.3.0 envelope). An event about an envelope that failed
 to verify carries the `trace_id` as received, which is only the sender's word.
 
 **Quarantine notices.** A quarantine act travels as an advisory (§4.12), on
@@ -4226,8 +4228,8 @@ All Agent Messaging subjects follow a hierarchical naming convention under the `
 | `mesh.registry.eval.digest.{sha256}` | Evaluation record by digest (request-reply) | Live |
 | `mesh.presence.get` | Presence lookup (request-reply) | Live |
 | `mesh.agent.{agent_id}.inbox` | Direct requests to an agent, and the responds addressed to it (§6.5) | Live, with a per-agent redelivery buffer while the agent is offline (§16.4) |
-| `mesh.task.{task_id}.update` | Task state transitions | Durable |
-| `mesh.task.{task_id}.stream` | Task streaming data | Durable |
+| `mesh.task.{taskId}.update` | Changes to a stored A2A Task (§7.4) | Durable |
+| `mesh.task.{taskId}.stream` | A2A stream events after the first (§11) | Durable |
 | `mesh.event.{domain}.{event_type}` | Domain events | Durable |
 | `mesh.feed.{agent_id}.{topic}` | Owner-rooted feeds (§6.6a); publishable only by the owning agent's node | Durable (state feeds keep their latest value), *optional* |
 | `mesh.heartbeat.{node_id}` | Node heartbeat signals (presence) | Durable (short retention) |
@@ -4298,11 +4300,13 @@ constructors; the registry and the platform services, which are built on
 them, sit inside that line.
 
 Task subjects need the rule stated separately, because no manifest can carry
-them: `mesh.task.{task_id}.update` and `mesh.task.{task_id}.stream` are
-parameterized by a `task_id` that exists only at runtime. There, the
+them: `mesh.task.{taskId}.update` and `mesh.task.{taskId}.stream` are
+parameterized by an A2A Task id that exists only at runtime. There, the
 **pattern** is protocol-defined and the **id** comes from resolution: the
-`task_id` a caller fills in MUST come from the responder's `respond` (§6.4,
-§7.0), never from anything the caller derived itself. Agent-specific subjects
+Task id a caller fills in MUST come from the server agent's `respond` (§6.4,
+§7.0), never from anything the caller derived itself. Because the id becomes
+a subject token, a server agent on a mesh MUST mint Task ids that are valid
+single tokens (§7.4). Agent-specific subjects
 come from resolution; task subjects come from a protocol-defined pattern
 filled with a resolved id; nothing is ever assembled from an agent's name or
 key by convention.
@@ -4398,7 +4402,7 @@ To prevent unbounded memory and storage growth, the platform enforces hard caps 
 
 #### Task History
 
-Each task stores an envelope history for debugging and audit. The platform MUST cap task history at a configurable maximum (default: **50 entries**). When the cap is reached, the oldest entries are discarded. This applies to both server-side (KV-persisted) and client-side (in-memory) task tracking.
+Each stored Task keeps A2A's `history` of Messages inside the Task, and beside it the signed frames that changed it, for debugging and audit (§7.1). The platform MUST cap each at a configurable maximum (default: **50 entries**). When the cap is reached, the oldest entries are discarded. This applies to both server-side (KV-persisted) and client-side (in-memory) task tracking. A client's `historyLength` (A2A §3) only shortens what a read returns.
 
 | Parameter | Default |
 |-----------|---------|
@@ -4426,7 +4430,7 @@ Durable delivery is the responsibility of the **hosting node**, not a server-sid
 
 #### Client-Side Task Pruning
 
-SDK clients SHOULD automatically prune completed and failed tasks from their in-memory task tracker. Tasks in terminal states (`completed`, `failed`, `canceled`) SHOULD be evicted after a configurable TTL (default: **5 minutes**). The prune cycle SHOULD run periodically (default: every **60 seconds**).
+SDK clients SHOULD automatically prune completed and failed tasks from their in-memory task tracker. Tasks in terminal states (A2A's `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED` and `TASK_STATE_REJECTED`) SHOULD be evicted after a configurable TTL (default: **5 minutes**). The prune cycle SHOULD run periodically (default: every **60 seconds**).
 
 ---
 
