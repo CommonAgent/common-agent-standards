@@ -828,7 +828,7 @@ A `request` or `respond` between agents carries an A2A operation or its answer i
 | `error` | object | OPTIONAL | Error information. Present only when the message represents an error condition. See Section 12. |
 | `payload` | any | OPTIONAL | The message payload. Structure depends on the primitive type. A `request` or `respond` between agents carries `payload.a2a` (§6.4, §6.5), except the accept signal (§6.4a). |
 | `artifacts` | array | 0.3.0 only | Output artifacts on a 0.3.0 `respond`. A 0.4.0 envelope MUST NOT carry it: A2A Artifacts travel in the A2A Task or in a `TaskArtifactUpdateEvent` (§7.5). |
-| `meta` | object | OPTIONAL | Extensible key-value metadata. Used for extensions, routing hints, etc. The key `hops` is **reserved** for cross-instance relay counting (§21) and MUST NOT be used for anything else. The key `audience` says whether the message is for the receiving agent or for the person behind it (§5.7). The key `a2a` holds A2A's service parameters on a frame (A2A binding §7), such as `A2A-Version` and `A2A-Extensions`. |
+| `meta` | object | OPTIONAL | Extensible key-value metadata. Used for extensions, routing hints, etc. The key `hops` is **reserved** for cross-instance relay counting (§21) and MUST NOT be used for anything else. The key `audience` says whether the message is for the receiving agent or for the person behind it (§5.7). The key `a2a` holds A2A's service parameters on a frame (A2A binding §7), such as `A2A-Version` and `A2A-Extensions`. The key `a2a_state` MAY carry, in clear, the current state of the Task a sealed frame (EXT-7) reports, as A2A's enum name, for a carrier that shows a person the state; it discloses the state to every carrier on the path, and a receiver reads the state from the sealed payload and ignores `a2a_state` where the two differ (A2A binding §8a). |
 | `sig` | string | REQUIRED | Ed25519 signature by the `from` agent's private key over the tagged signed bytes: `agentmesh-envelope-v1`, one newline, then the canonical envelope (all fields except `sig`). Establishes per-agent identity independent of the transport connection. See Sections 4.5 and 5.3. |
 
 ### 5.3. Identity Verification
@@ -1677,7 +1677,7 @@ A request first seen after its Task existed binds nothing, because a request tha
 A Task's states are A2A's (A2A §4.1.3): `TASK_STATE_SUBMITTED`, `TASK_STATE_WORKING`, `TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`, `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED` and `TASK_STATE_REJECTED`. A2A says what each means, which are terminal and which are interrupted. Agent Messaging adds no state. Three of its own outcomes are not states:
 
 - **Acceptance** is a delivery signal (§6.4a). It never appears in a Task.
-- **Exhaustion**: when an engagement's not-to-exceed cap ends the work, the Task ends in `TASK_STATE_CANCELED` with `{"outcome": "exhausted"}` in its `metadata` under the budget extension's URI (§7.7). It is not a failure: a runtime MUST NOT record such a Task as failed, and a client that knows the extension MUST NOT retry it.
+- **Budget outcomes** each put the Task in an A2A state and say which outcome it was in the Task's `metadata` under the budget extension's URI (§7.7, A2A binding §12.2): a refusal at admission (`insufficient`, `deadline_unmeetable`) is `TASK_STATE_REJECTED`, a pause at the cost ceiling (`ceiling_reached`) is `TASK_STATE_INPUT_REQUIRED`, and an end at the engagement's not-to-exceed cap (`exhausted`) is `TASK_STATE_CANCELED`. Exhaustion is not a failure: a runtime MUST NOT record such a Task as failed, and a client that knows the extension MUST NOT retry it.
 - **Overdue** and **completed late** are marks the task manager records beside the Task (§7.7). They change no state.
 
 A 0.3.0 envelope spells the states in lower case and has a ninth, `exhausted`; §6.8 gives the table between the two.
@@ -1740,7 +1740,7 @@ Artifacts are the outputs of a Task, the deliverables. They are distinct from co
 }
 ```
 
-**Parts.** A Part is A2A's, and holds exactly one of `text`, `raw`, `url` or `data`, as A2A says. A Part too large to travel inline in a frame (§18.9) is sent **by reference**: a `url` Part whose value is an Agent Messaging artifact reference (§7.5.1), with the artifact references extension (A2A binding §12.5) giving its size and digest. A `url` Part whose value is any other URL is A2A's ordinary `url` Part and is not a reference.
+**Parts.** A Part is A2A's, and holds exactly one of `text`, `raw`, `url` or `data`, as A2A says. A Part too large to travel inline in a frame (§18.9) is sent **by reference**: a `url` Part whose value is an Agent Messaging artifact reference (§7.5.1), with the artifact references extension (A2A binding §12.5) giving its size and digest. The artifact references extension may sit on a `url` Part whose URI any carrier defines (A2A binding §12.5): an artifact reference on a mesh, a `cid:` reference to an attachment by email (Agent Emailing), or an `https:` URL. Whatever the URI, a reader resolves it as its carrier says and checks the digest before it uses the bytes. A `url` Part without the extension is A2A's ordinary `url` Part.
 
 An artifact MAY contain multiple parts (e.g., a text summary + a data table + a PDF reference).
 
@@ -1925,12 +1925,14 @@ conversation continues on the Task.
 **Admission.** A responder that does not believe it can complete the work
 within the budget MUST refuse at admission (before doing the work) rather
 than accept and fail mid-flight. On a 0.4.0 frame it answers with a Task in
-`TASK_STATE_REJECTED` whose `metadata` carries `{"outcome": "insufficient",
-"estimate": {...}}` under the budget extension's URI (A2A binding §12.2). On
-a 0.3.0 envelope it answers `BUDGET_INSUFFICIENT` when the ceiling is the
-problem and `DEADLINE_UNMEETABLE` when the deadline is (Section 12.2). The
-refusal SHOULD carry the responder's estimate (its price, or its earliest
-realistic completion). Refuse-with-estimate is the negotiation mechanism:
+`TASK_STATE_REJECTED` whose `metadata`, under the budget extension's URI,
+says which limit is the problem (A2A binding §12.2):
+`{"outcome": "insufficient", "estimate": {"amountMicro": ..., "currency": "..."}}`
+when the ceiling is, and
+`{"outcome": "deadline_unmeetable", "earliestCompletion": "<RFC 3339>"}`
+when the deadline is. On a 0.3.0 envelope it answers `BUDGET_INSUFFICIENT`
+and `DEADLINE_UNMEETABLE` (Section 12.2). The refusal SHOULD carry the
+responder's estimate (its price, or its earliest realistic completion). Refuse-with-estimate is the negotiation mechanism:
 resubmitting with better terms is the counter-offer. Accepting work the budget
 never covered and then failing is the one outcome this section treats as the
 responder's fault, because it spends the requester's time, which is part of
@@ -1956,11 +1958,14 @@ the work.
 
 **Hitting the ceiling.** A responder that reaches the cost ceiling on work
 that turned out larger than either party thought MUST stop before crossing it
-and move the Task to `TASK_STATE_INPUT_REQUIRED`, with a status message that
-says the cost ceiling was reached (`BUDGET_EXHAUSTED`) and reports spend so
-far and an estimate to finish. The input required is money: the requester
-either raises the budget by revision and work resumes, or cancels and keeps
-the partial artifacts.
+and pause the Task in `TASK_STATE_INPUT_REQUIRED`. On a 0.4.0 frame its
+`metadata` carries
+`{"outcome": "ceiling_reached", "spent": {...}, "estimateToFinish": {...}}`
+under the budget extension's URI, with a status message saying so in words
+(A2A binding §12.2); on a 0.3.0 envelope the reason is `BUDGET_EXHAUSTED`.
+The input required is money: the requester either raises the budget with a
+revision whose `revision` is higher, and work resumes, or cancels the Task
+with the reason `budget_exhausted` (§10.8) and keeps the partial artifacts.
 
 **When the engagement's cap ends the work.** A time-and-materials engagement
 has a not-to-exceed cap ([Agent SoW](https://agentsow.com) §5.5.5). When the
@@ -1972,8 +1977,10 @@ past the cap is billable. This can happen in any state that is not terminal,
 including while the Task waits on the requester. It is not a failure, since no
 error occurred, and it is not a cancellation some party asked for: a runtime
 MUST NOT record such a Task as failed, and a client that knows the extension
-MUST NOT retry it. A2A's state list is fixed, and canceled is the state whose
-meaning is closest. On a 0.3.0 envelope this outcome is the state `exhausted`
+MUST NOT retry it, because a retry would spend past a cap the engagement set.
+For every other canceled Task, whether to send the work again is the client's
+choice, as A2A leaves it. A2A's state list is fixed, and canceled is the
+state whose meaning is closest. On a 0.3.0 envelope this outcome is the state `exhausted`
 (§6.8).
 
 **Revisions.** Either party to a Task MAY revise its budget. The client
@@ -3296,13 +3303,16 @@ Requests cancellation of an in-progress Task, with a stated reason. Cancellation
 **Flow:**
 1. The canceling party sends a `request` frame whose `payload.a2a.method` is
    `CancelTask` and whose `params` are
-   `{ "id": "<A2A Task id>", "metadata": { "https://agentmessaging.ai/bindings/a2a/v1": { "reason": "<CancelReason>", "note": "<optional>" } } }`.
-   The reason travels in the request's `metadata`, under the A2A binding's URI.
+   `{ "id": "<A2A Task id>", "metadata": { "https://agentmessaging.ai/extensions/cancel/v1": { "reason": "<CancelReason>", "note": "<optional>" } } }`.
+   The reason travels in the request's `metadata` as the cancel extension
+   (A2A binding §12.6). This section's list of reasons is the authority for
+   that extension.
 2. The server agent stops work when the cancel reaches it, the Task enters
    `TASK_STATE_CANCELED`, and the server agent's node answers with the
    updated Task, as A2A says. It publishes the change on
    `mesh.task.{taskId}.update` (§7.4), and the canceled Task's `metadata`
-   carries the same reason under the same key. This is what the task manager
+   carries the same object under the cancel extension's URI, so the reason
+   stays on the record. This is what the task manager
    records.
 3. Cancellation is best-effort on the work: the Task may have already
    completed, and a terminal state that arrived first stands
@@ -3324,7 +3334,7 @@ Task changes (§7.3).
 | `user_requested` | A human, or the requesting agent's own logic, decided the work is no longer wanted. |
 | `superseded` | A newer request replaces this one; the answer would be discarded even if delivered. |
 | `deadline_exceeded` | The budget's deadline (§7.7) passed, typically after the central overdue mark, and the requester chose to stop rather than keep listening. |
-| `budget_exhausted` | The cost ceiling was reached (§7.7's `BUDGET_EXHAUSTED` pause) and the requester chose to cancel rather than raise the budget. |
+| `budget_exhausted` | The cost ceiling was reached (§7.7's `ceiling_reached` pause, `BUDGET_EXHAUSTED` on 0.3.0) and the requester chose to cancel rather than raise the budget. |
 | `upstream_cancelled` | The canceling agent's own Task was canceled and it is forwarding the cancellation to a delegate (propagation, below). |
 | `policy` | An operator or policy layer terminated the work on content, permission, or tenancy grounds. |
 | `needs_not_furnished` | The caller did not furnish something the offering declared under `needs` (§8.5.1): the resource was never granted, the file never attached, the sign-in never given or no longer valid. REQUIRES `unmet_need`. |
@@ -3335,9 +3345,11 @@ vocabulary, so a cancel that follows an overdue mark or a budget pause reads
 consistently with the budget lifecycle (§7.7). The enum is closed: a receiver
 MUST reject a cancel whose `reason` is not one of the eight, with
 `InvalidParamsError` (`INVALID_ENVELOPE` on a 0.3.0 envelope). On a 0.4.0
-frame a `CancelTask` that carries no reason, as one from an A2A client that
-does not know this key does, is read as `user_requested`. On a 0.3.0 envelope
-a missing `reason` is refused as `INVALID_ENVELOPE`. An OPTIONAL free-text `note` MAY accompany the reason; the
+frame a client written to this version MUST send a reason. A server agent
+MUST accept a `CancelTask` without one from a client that does not declare
+the cancel extension, as an A2A client reaching it through a bridge may not,
+and records the reason as `user_requested` (A2A binding §12.6). On a 0.3.0
+envelope a missing `reason` is refused as `INVALID_ENVELOPE`. An OPTIONAL free-text `note` MAY accompany the reason; the
 enum, not the note, is what the record carries as meaning: the task record
 and the metering receipt (§19.2) store the `reason`, and the note is context
 for humans, never interpreted. The note is sender text and falls under the
@@ -3354,13 +3366,13 @@ reason, each meaningful with exactly one of the last two reasons above:
   `needs_not_furnished` whose `unmet_need` is missing, is not a string, or
   does not have that shape, with `InvalidParamsError` (`INVALID_ENVELOPE` on a
   0.3.0 envelope). On a 0.4.0 frame the field is spelled `unmetNeed`, beside
-  `reason` under the A2A binding's URI.
+  `reason` in the cancel extension's object.
 - `dependency` is OPTIONAL with `dependency_failed`, naming the outside
   service the way §8.8 does, and MUST NOT appear with any other reason.
 
 **The same vocabulary ends a failed Task.** A Task that enters
 `TASK_STATE_FAILED` MAY carry `reason`, `note`, `unmetNeed` and `dependency`
-in its `metadata`, under the A2A binding's URI, under exactly the rules above
+in its `metadata`, in the same object under the cancel extension's URI, under exactly the rules above
 (on a 0.3.0 envelope, a `respond` on `mesh.task.{task_id}.update` with
 `payload.status: "failed"` carries `reason`, `note`, `unmet_need` and
 `dependency`). `reason` stays OPTIONAL on a failure (a Task that simply did
@@ -3599,6 +3611,8 @@ Agent Messaging streaming uses task subjects with ordered, durable delivery (§1
 - **Update Subject:** `mesh.task.{taskId}.update`, on which the task store's changes travel (§7.4).
 
 Every event of a stream after the first is published to the same stream subject, guaranteeing its order.
+
+**Carriers without subjects.** A carrier of frames that has no stream subjects, such as email (Agent Emailing), cannot hold a subscription. It delivers each later change to a Task as a `respond` frame to the client whose result is the whole Task as it then stands, numbered by `payload.a2a.seq`, and it answers `SendStreamingMessage` and `SubscribeToTask` with `UnsupportedOperationError` (A2A binding §8). The client reads the frames in `seq` order, and the view rules of §7.3.1 apply.
 
 ### 11.2. Stream Event Frame
 
