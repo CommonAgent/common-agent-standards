@@ -1,8 +1,8 @@
 # Agent SoW Specification
 
-**Version:** 0.35.0-draft
+**Version:** 0.36.0-draft
 **Status:** Working Draft
-**Date:** 2026-10-25
+**Date:** 2026-11-07
 
 A **statement of work** (SoW) is the legal agreement businesses sign when
 they contract a service firm: it lists the work, what each side provides, the
@@ -20,9 +20,9 @@ tamper-evident record exists), or *recorded* (a promise whose breach is
 punished by reputation, not code). A document that claims more enforcement
 than its runtime delivers is not conformant.
 
-This specification is transport-neutral. It was developed alongside Agent Messaging
-and borrows its task lifecycle from the A2A Task model, but
-nothing here requires a particular network, message bus, or vendor.
+This specification is transport-neutral. It was developed alongside Agent Messaging,
+and its tasks are A2A Tasks with A2A's lifecycle and states (A2A Protocol
+1.0), but nothing here requires a particular network, message bus, or vendor.
 
 ---
 
@@ -77,10 +77,12 @@ interpreted as described in RFC 2119.
   a tool is invoked, an agent is engaged.
 - **Node**: the runtime that hosts an agent and enforces the engagement's
   enforceable clauses on that agent's behalf.
-- **Task**: one unit of work under an engagement, with a lifecycle of at least
-  `submitted`, `working`, `input_required`, `completed`, `failed`, `canceled`.
-  Under a time and materials arrangement a task may also end `exhausted`
-  (§5.5.5).
+- **Task**: one unit of work under an engagement. A task is an A2A Task, and
+  its states are A2A's: `TASK_STATE_SUBMITTED`, `TASK_STATE_WORKING`,
+  `TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`,
+  `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED` and
+  `TASK_STATE_REJECTED`. Under a time and materials arrangement, a task the
+  cap ends is `TASK_STATE_CANCELED` with the outcome `exhausted` (§5.5.5).
 - **Pricing arrangement**: the basis on which an engagement prices work:
   `fixed_fee`, `time_and_materials`, or `no_charge` (§5.5). Every engagement
   declares one.
@@ -405,8 +407,8 @@ What the client furnishes, in what form, and when (`per_task` or `standing`).
 none is written. Its grade is fixed here.
 
 Grade: `enforced`. A task arriving without a required `per_task` input MUST
-NOT fail and MUST NOT be silently attempted; it moves to `input_required`
-carrying a problem report (§14) that names what is missing. Standing shared
+NOT fail and MUST NOT be silently attempted; it moves to
+`TASK_STATE_INPUT_REQUIRED` carrying a problem report (§14) that names what is missing. Standing shared
 resources are pointers governed by the engagement's confidentiality clause; a
 provider MUST NOT copy, crawl, or retain them beyond task execution.
 
@@ -940,13 +942,23 @@ deployment has actually earned.
 Reaching the cap concludes the work. The engagement moves to `exhausted`: no
 further requests are admitted, and the provider's runtime refuses them with a
 typed refusal naming the cap. A task in flight when the cap is reached also
-ends `exhausted`, with whatever artifacts exist attached, billed no further
-than the cap.
+ends there, with whatever artifacts exist attached, billed no further than
+the cap.
+
+A task's states are A2A's, and A2A's list has no state for this outcome. On
+the wire, a task the cap ended is in `TASK_STATE_CANCELED`, and its `metadata`
+carries `{"outcome": "exhausted"}` under the URI of Agent Messaging's budget
+extension, `https://agentmessaging.ai/extensions/budget/v1` (A2A over Agent
+Messaging §12.2), with a status message saying the cap was reached. The cap
+can end a task in any state that is not terminal. This document calls such a
+task exhausted, as it calls the engagement.
 
 `exhausted` sits beside `lapsed` and `terminated` in §7.1 as a way an
 engagement ends, and it is not a failure. `lapsed` means the term ran out;
 `exhausted` means the cap ran out. A runtime MUST NOT record an exhausted
-engagement or task as failed.
+engagement or task as failed. For a task that means it MUST NOT put the task
+in `TASK_STATE_FAILED`, record it as failed, or retry it, although its state
+is `TASK_STATE_CANCELED`.
 
 Time and materials buys best effort, not guaranteed deliverables. There is
 therefore no acceptance or rejection of a deliverable under this arrangement,
@@ -1148,7 +1160,8 @@ bill the client, over the engagement, a sum of provider lines and operator
 fees greater than the cap. The provider's rated work therefore runs to the
 cap less the fee taken on it, not to the cap. Reaching that limit is reaching
 the cap: the engagement concludes `exhausted` under §5.5.5, a task in flight
-ends `exhausted` with whatever artifacts exist attached, and metered units
+ends `TASK_STATE_CANCELED` with the outcome `exhausted` and whatever
+artifacts exist attached, and metered units
 the provider incurs past that point are the provider's to bear. No new state,
 field, or refusal is introduced. The reservation of §5.5.4 is for the cap
 amount, so it covers the client's whole exposure, and the number an Agent
@@ -3019,8 +3032,9 @@ word on safety cannot be signed away.
 
 ## 11. Relationship to other work
 
-The task lifecycle and artifact model align with the A2A protocol's Task and
-AgentCard: `input_required` is A2A's mid-task discovery of missing inputs,
+The task lifecycle and artifact model are the A2A protocol's Task and
+Artifact, and the declarations align with its AgentCard:
+`TASK_STATE_INPUT_REQUIRED` is A2A's mid-task discovery of missing inputs,
 turned into an up-front declared clause; declared media types per skill
 become declared media types per deliverable; skill examples become scope
 examples. Agent Messaging provides a reference enforcement
@@ -3424,6 +3438,20 @@ takes it as an attestation signed by the same owner (Agent Reputations
 §6.1).
 
 ## Changelog
+
+**0.36.0-draft** (2026-11-07). Tasks carry A2A's states. Agent Messaging now carries A2A's own
+operations and data model and has no task model of its own, so a task here
+is an A2A Task with A2A's states, spelled as A2A spells them (§2,
+`TASK_STATE_INPUT_REQUIRED` in §5.3 and §11). The engagement state `exhausted`
+of §7.1 is unchanged, and so is what it means: the not-to-exceed cap ended
+the work, artifacts produced before the cap remain, and nothing past the cap
+is billable. What changes is how a task the cap ends shows on the wire. A2A
+has no state for it, so the task ends in `TASK_STATE_CANCELED` with
+`{"outcome": "exhausted"}` in its metadata under the URI of Agent Messaging's
+budget extension, `https://agentmessaging.ai/extensions/budget/v1` (§5.5.5,
+§5.5.8). A runtime still MUST NOT record such a task as failed, and MUST NOT
+retry it. The `task_state` block of `conformance/sow-pricing.json` pins the
+state, the metadata and the states it is reached from in A2A's spelling.
 
 **0.35.0-draft** (2026-10-25). The acceptance act. §5.10.2 said a dispute
 cites the acceptance act and §6.3 let a dispute's `cites` name one, but no
