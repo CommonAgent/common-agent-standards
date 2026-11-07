@@ -1,14 +1,14 @@
-# Agent Emailing 0.2
+# Agent Emailing 0.4
 
 Signed agent messages carried by ordinary email
 
-**Version:** 0.2.6
+**Version:** 0.4.0
 **Status:** Published
-**Date:** 2026-10-29
+**Date:** 2026-11-07
 
-Agent Emailing says how a signed Agent Messaging envelope travels inside an ordinary email, so that two agents can exchange requests and answers through any email provider. It covers only the email parts. The envelope, its signature, the task model and the receiver protections are defined by Agent Messaging, and this document refers to them by section number. It never restates or changes them.
+Agent Emailing says how a signed Agent Messaging envelope travels inside an ordinary email, so that two agents can exchange requests and answers through any email provider. It covers only the email parts. The envelope, its signature and the receiver protections are defined by Agent Messaging. What the envelope carries between agents is A2A's: its operations, and its Tasks, Messages, Parts and Artifacts with their states, carried as the binding A2A over Agent Messaging says. This document refers to all of them by section number. It never restates or changes them.
 
-Every section number in this document that is written "Agent Messaging §n" refers to the Agent Messaging specification, version 0.9.17. "EXT-6" and "EXT-7" are the Agent Messaging extensions of those numbers. "Personal Agent Naming §n" refers to the Personal Agent Naming specification, version 0.10.3. A bare "§n" refers to this document.
+Every section number in this document that is written "Agent Messaging §n" refers to the Agent Messaging specification, version 0.10. "The A2A binding §n" refers to A2A over Agent Messaging (binding URI `https://agentmessaging.ai/bindings/a2a/v1`), version 0.1.0-draft, which is Agent Messaging wire version 0.4.0. "A2A §n" refers to the A2A Protocol, version 1.0 (https://a2a-protocol.org/latest/specification/). "EXT-6" and "EXT-7" are the Agent Messaging extensions of those numbers. "Personal Agent Naming §n" refers to the Personal Agent Naming specification, version 0.10.3. A bare "§n" refers to this document.
 
 ---
 
@@ -16,7 +16,7 @@ Every section number in this document that is written "Agent Messaging §n" refe
 
 ### 1.1. What this standard is
 
-Agent Messaging defines a signed envelope that one agent sends to another (Agent Messaging §5), and the `request` and `respond` messages that carry work between them (Agent Messaging §6.4, §6.5). A binding carries those envelopes over a message broker (Agent Messaging §18).
+Agent Messaging defines a signed envelope that one agent sends to another (Agent Messaging §5), and the `request` and `respond` messages that carry work between them (Agent Messaging §6.4, §6.5). Each call between agents is an A2A operation in a `request` frame, and each answer is a `respond` frame, as the A2A binding §4 and §5 say. A binding carries those envelopes over a message broker (Agent Messaging §18).
 
 Agent Emailing carries the same envelopes over email instead. The envelope travels as an attachment. The receiving agent verifies its signature exactly as it would on a broker, because the signature never depended on the wire (Agent Messaging §1.5, invariant 5). The email provider is only the pipe.
 
@@ -35,9 +35,10 @@ It is also for email providers. Many providers now offer inboxes for agents, eac
 | The envelope and its fields | Agent Messaging §5.1, §5.2 | Where the envelope sits in an email (§3.2) |
 | Signing and verification, canonical JSON | Agent Messaging §4.5, §5.3 | Nothing. Verification is unchanged (§6.1) |
 | `request` and `respond` | Agent Messaging §6.4, §6.5 | How each is sent as an email (§3) |
-| Tasks and their states | Agent Messaging §7 | Ordering of task updates that arrive out of order (§10) |
-| Artifacts and attached files | Agent Messaging §7.5 | The `cid:` reference, for files carried in the same email (§3.4) |
-| Errors | Agent Messaging §12 | Nothing. Errors travel as `respond` envelopes |
+| A2A operations in frames | The A2A binding §4, §5 | Which operations travel by email (§2) |
+| Tasks, Messages, Parts and Artifacts, and the states of a Task | A2A §4, carried as the A2A binding §6 says | How task updates travel by email, and their order when they arrive out of order (§10) |
+| Files by reference | Agent Messaging §7.5, the A2A binding §6 and §12.5 | The `cid:` reference, for files carried in the same email (§3.4) |
+| Errors | Agent Messaging §12, the A2A binding §9 | Nothing. Errors travel as `respond` envelopes |
 | Receiver protections | Agent Messaging §22 | Which window applies, and that the duplicate memory persists (§7) |
 | Admission | EXT-6 | Where email senders sort (§4.2, §6.2) |
 | Sealing | EXT-7 | Files in a sealed email, and what the provider sees (§9) |
@@ -72,8 +73,9 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "S
 
 These Agent Messaging messages MAY travel as agent email:
 
-- `request` (Agent Messaging §6.4), including a knock, which is a request on the `knock` offering (EXT-6 §9.3), and a cancellation, which is a request on the `task.cancel` offering (Agent Messaging §10.8);
-- `respond` (Agent Messaging §6.5), including task updates and errors (Agent Messaging §12.3);
+- `request` (Agent Messaging §6.4) carrying an A2A operation of the A2A binding §5, such as `SendMessage`, `GetTask` or `CancelTask`, except the streaming operations of §2.2;
+- a knock, which is a request on the `knock` offering (EXT-6 §9.3) and is not an A2A operation (the A2A binding §11);
+- `respond` (Agent Messaging §6.5) carrying an answer to an A2A operation, including task updates (§10) and errors (the A2A binding §9);
 - a request or respond marked for the person behind the receiving agent (Agent Messaging §5.7).
 
 ### 2.2. What does not
@@ -83,7 +85,7 @@ These parts of Agent Messaging MUST NOT be carried as agent email, and an implem
 - `register` and `discover` (Agent Messaging §6.2, §6.3). The registry is reached over a broker or over HTTPS.
 - `emit`, `subscribe` and feeds (Agent Messaging §6.6, §6.6a, §6.7). Email has no subjects, no wildcards and no replay.
 - Presence and heartbeats (Agent Messaging §9.6, §10.10). An email arriving says nothing about whether an agent is online now.
-- Streaming (Agent Messaging §11). A receiving agent that gets a request with `payload.config.stream` set to `true` MUST NOT stream. It answers in task mode with ordinary task updates (§10).
+- Streaming: the operations `SendStreamingMessage` and `SubscribeToTask`, whose events are published on a task's stream subject (the A2A binding §8). Email has no subjects. A requester sends `SendMessage` instead and gets its updates as §10 says. A receiving agent that gets a streaming operation by email answers it with A2A's `UnsupportedOperationError`. In a 0.3.0 envelope (§3.2), a request with `payload.config.stream` set to `true` is not streamed: the receiving agent answers in task mode with ordinary task updates (§10).
 - Rooms (EXT-5).
 - The accept signal (Agent Messaging §6.4a). §8 explains why.
 
@@ -135,6 +137,8 @@ The envelope part holds one signed Agent Messaging envelope (Agent Messaging §5
 - A sender MUST encode it with `Content-Transfer-Encoding: base64`. A receiver MUST also accept quoted-printable, 7bit and 8bit, because a carrier may re-encode a part in transit.
 - The envelope's `v` is the Agent Messaging wire version (Agent Messaging §5.2).
 
+**Wire versions.** A sender MUST send wire version `0.4.0`, whose `request` and `respond` frames carry A2A objects as the A2A binding §4 says. Such a frame never carries the envelope fields `task_id`, `context_id` or `artifacts`, and a receiver MUST refuse a 0.4.0 envelope that carries any of them with `INVALID_ENVELOPE` (the A2A binding §4). A receiver MUST also accept envelopes of wire version `0.3.0`, which Agent Emailing 0.2 senders send and whose calls use the `request` payloads and the task fields of Agent Messaging 0.9, until its operator ends that window, as the A2A binding §14 says. It SHOULD answer each request in the wire version the request arrived in. Where this document names a field of a 0.3.0 envelope, it says so.
+
 A receiver MUST parse the JSON and verify the signature over the canonical form of the parsed values (Agent Messaging §5.3). It MUST NOT compare the received bytes with any other bytes. A carrier that re-encodes the part, re-wraps its lines, or changes the JSON whitespace therefore does not break the signature. A carrier that changes any value does.
 
 The envelope travels as an attachment, and not in a header or in the body text, because every carrier can send and receive an attachment with a chosen media type, while many carriers restrict custom headers (§11).
@@ -157,13 +161,13 @@ This section applies Agent Messaging §5.8, readable text generated from a signe
 In plain words, the human part MUST state:
 
 1. **Who sent it, and for whom:** the sender's handle and the person or organization it acts for, and the receiver's handle.
-2. **What was asked:** the offering, by the name the receiving agent's manifest gives it (Agent Messaging §8.1), or by its `id` when no name is known.
+2. **What was asked:** the offering the Message names in the offering extension (the A2A binding §12.1), by the name the receiving agent's manifest gives it (Agent Messaging §8.1), or by its `id` when no name is known.
 3. **What was handed over:** each attached file, by its name. When nothing is attached, it says so.
 4. **For a respond:** the outcome in words (done, needs your input, declined, failed, and the others in the table below), the result in a sentence, what is needed when more input is needed, and each file returned, by name.
-5. **The price, where there is one:** a request's cost ceiling (Agent Messaging §7.7), or an amount a respond reports.
+5. **The price, where there is one:** a request's cost ceiling, from the budget extension (the A2A binding §12.2), or an amount a respond reports.
 6. **What happens next,** or what the person must do.
 
-The message's own text (`payload.text`), where there is one, MUST appear in the human part word for word. Times SHOULD be shown in the time zone of the person who will read them, where the sender knows it, and otherwise in UTC.
+The message's own text MUST appear in the human part word for word. In a 0.4.0 envelope that is the text Parts of the A2A Message the frame carries: the Message a request sends, or, in a respond, the Message that answers or the status message of the Task. In a 0.3.0 envelope it is `payload.text`. Times SHOULD be shown in the time zone of the person who will read them, where the sender knows it, and otherwise in UTC.
 
 When the envelope is sealed (§9), the human part MUST NOT contain the sealed content, the sealed files' names, or anything else from the sealed payload. It still states who sent it, the offering and the outcome, which Agent Messaging §8.9 leaves readable, and says that the content is sealed for the receiving agent.
 
@@ -171,18 +175,22 @@ When the envelope is sealed (§9), the human part MUST NOT contain the sealed co
 
 The subject MUST be the offering in words, followed by a dash and the state, so that the inbox alone tells the story:
 
+The state in the subject follows the A2A state of the Task the frame carries (A2A §4.1.3):
+
 | Envelope | State in the subject | Example |
 |---|---|---|
-| A new `request` | `request` | `Book a meeting — request` |
-| A `request` that continues a task with more input | `answer` | `Re: Book a meeting — answer` |
-| A `request` on the `task.cancel` offering | `cancel` | `Re: Book a meeting — cancel` |
-| A `respond` whose status is `completed` | `done` | `Re: Book a meeting — done` |
-| `input_required` or `auth_required` | `needs your input` | `Re: Book a meeting — needs your input` |
-| `rejected` | `declined` | `Re: Book a meeting — declined` |
-| `failed` | `failed` | `Re: Book a meeting — failed` |
-| `canceled` | `canceled` | `Re: Book a meeting — canceled` |
-| `exhausted` | `stopped at its limit` | `Re: Book a meeting — stopped at its limit` |
-| `submitted` or `working` | `in progress` | `Re: Book a meeting — in progress` |
+| A new `request`: `SendMessage` whose Message names no Task | `request` | `Book a meeting — request` |
+| A `request` that continues a task with more input: `SendMessage` whose Message names the Task's `taskId` | `answer` | `Re: Book a meeting — answer` |
+| A `request` carrying `CancelTask` | `cancel` | `Re: Book a meeting — cancel` |
+| A `respond` whose Task is `TASK_STATE_COMPLETED`, or whose answer is a Message with no Task | `done` | `Re: Book a meeting — done` |
+| `TASK_STATE_INPUT_REQUIRED` or `TASK_STATE_AUTH_REQUIRED` | `needs your input` | `Re: Book a meeting — needs your input` |
+| `TASK_STATE_REJECTED` | `declined` | `Re: Book a meeting — declined` |
+| `TASK_STATE_FAILED` | `failed` | `Re: Book a meeting — failed` |
+| `TASK_STATE_CANCELED` | `canceled` | `Re: Book a meeting — canceled` |
+| `TASK_STATE_CANCELED` with the outcome `exhausted` in the budget extension (the A2A binding §12.2) | `stopped at its limit` | `Re: Book a meeting — stopped at its limit` |
+| `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING` | `in progress` | `Re: Book a meeting — in progress` |
+
+A 0.3.0 envelope (§3.2) names its state in `payload.status` with the lowercase names of Agent Messaging 0.9, and they map the same way: `completed` is `done`, `input_required` and `auth_required` are `needs your input`, `rejected` is `declined`, `failed` and `canceled` keep their names, `exhausted` is `stopped at its limit`, and `submitted` and `working` are `in progress`. A 0.3.0 `request` that carries a `task_id` is an `answer`, and one on the `task.cancel` offering is a `cancel`.
 
 Every email in a thread except the first begins with `Re: `. A subject with characters outside ASCII, such as the dash, is encoded as [RFC 2047](https://www.rfc-editor.org/rfc/rfc2047) says.
 
@@ -193,7 +201,7 @@ So that anyone can tell whether the text and the subject are the ones the sender
 ```json
 "meta": {
   "agent_emailing": {
-    "v": "0.2.0",
+    "v": "0.4.0",
     "offering_name": "Book a meeting",
     "subject": "Book a meeting — request",
     "human_text": "sha256:<64 lowercase hex>"
@@ -201,7 +209,9 @@ So that anyone can tell whether the text and the subject are the ones the sender
 }
 ```
 
-- `v` is the version of this standard.
+The object sits in `meta` beside `meta.a2a`, the A2A service parameters (the A2A binding §7), and is not one of them.
+
+- `v` is the version of this standard. A sender of this version writes `0.4.0`. A 0.3.0 envelope from an Agent Emailing 0.2 sender carries `0.2.0`, and a receiver reads both the same way.
 - `offering_name` is the name the human part and the subject use for the offering.
 - `subject` is the exact subject, before RFC 2047 encoding.
 - `human_text` is the SHA-256 of the `text/plain` part after it is normalized: decoded to Unicode, line endings made LF, spaces and tabs at the end of each line removed, empty lines at the end removed, and encoded as UTF-8.
@@ -217,7 +227,7 @@ Software that shows the human part to a person, such as a mail program or a prov
 
 1. the envelope's signature verifies (§6.1);
 2. the normalized text's digest equals `human_text`, and the decoded subject equals `subject`; and
-3. the text states the sender's handle, `offering_name`, every file name in the envelope, the outcome of a respond, the price where there is one, and `payload.text` word for word.
+3. the text states the sender's handle, `offering_name`, every file name in the envelope, the outcome of a respond, the price where there is one, and the message's own text word for word (§3.3, What it states).
 
 When any part of the check fails, the software SHOULD warn the person that the text differs from the signed message, and SHOULD show what the envelope says. It MUST NOT show any sign that the message was checked unless every part of the check passed.
 
@@ -225,9 +235,9 @@ When any part of the check fails, the software SHOULD warn the person that the t
 
 A file the envelope refers to MAY travel in the same email as a file part.
 
-- A request's files are entries of `payload.files` (Agent Messaging §7.5.3). A respond's files are `ref` parts of its artifacts (Agent Messaging §7.5).
-- The entry's `ref` is a `cid:` URI ([RFC 2392](https://www.rfc-editor.org/rfc/rfc2392)) that names the file part's `Content-ID`.
-- An entry with a `cid:` reference MUST carry `media_type`, `size` and `digest` (Agent Messaging §7.5.1). This is stricter than Agent Messaging, where `digest` is optional, because the signature then covers the file: the envelope is signed, the file part is not, and the digest is what binds one to the other.
+- In a 0.4.0 envelope, a file is an A2A Part whose `url` is the reference (the A2A binding §6): a Part of the Message a request sends, or a Part of an Artifact or of a Message in a respond. Its `filename` is the file's name. In a 0.3.0 envelope, a request's files are entries of `payload.files` and a respond's files are `ref` parts of its artifacts (Agent Messaging §7.5, §7.5.3).
+- The reference is a `cid:` URI ([RFC 2392](https://www.rfc-editor.org/rfc/rfc2392)) that names the file part's `Content-ID`.
+- A file with a `cid:` reference MUST carry its media type, its size and its digest. In a 0.4.0 envelope the media type is the Part's `mediaType`, and the size and digest are the Part's artifact references extension (the A2A binding §12.5). In a 0.3.0 envelope they are the entry's `media_type`, `size` and `digest` (Agent Messaging §7.5.1). This is stricter than Agent Messaging, where the digest is optional, because the signature then covers the file: the envelope is signed, the file part is not, and the digest is what binds one to the other.
 - A file part SHOULD use `Content-Disposition: attachment`, and MUST be encoded with base64.
 
 A receiver resolves a `cid:` reference only within the email it arrived in. It decodes the part's bytes, then checks their length against `size` and their SHA-256 against `digest`. A mismatch MUST be treated as a failed fetch (Agent Messaging §7.5.1). A reference with no matching part is unresolvable. Either outcome affects that file only, and the rest of the message is still delivered.
@@ -246,16 +256,16 @@ A sender MAY add these hint headers when its carrier allows it:
 
 | Hint header | Copies |
 |---|---|
-| `Agent-Emailing-Version` | The version of this standard, `0.2.0` |
+| `Agent-Emailing-Version` | The version of this standard, `0.4.0` |
 | `Agent-Messaging-Type` | The envelope's `type` |
-| `Agent-Messaging-Task` | The envelope's `task_id` |
-| `Agent-Messaging-Context` | The envelope's `context_id` |
+| `Agent-Messaging-Task` | The A2A Task id the frame's A2A object names, where it names one; in a 0.3.0 envelope, its `task_id` |
+| `Agent-Messaging-Context` | The A2A context id the frame's A2A object names, where it names one; in a 0.3.0 envelope, its `context_id` |
 
 Hint headers exist so that mail filters and people can sort agent email without opening attachments. A receiver MUST take every value from the envelope and never from a hint header. When a hint header disagrees with the envelope, the receiver MUST process the envelope as if the header were absent, and SHOULD raise a local signal. A sender that DKIM-signs its mail SHOULD include the hint headers in the signature.
 
 ### 3.6. Correlation and threading
 
-Correlation is the envelope's business. A respond names its request in `in_reply_to`, and work is grouped by `task_id` and `context_id` (Agent Messaging §5.2, §6.5). A receiver MUST correlate by those fields alone.
+Correlation is the envelope's business. A respond names its request in `in_reply_to` (the A2A binding §4), and work is grouped by the Task id and the context id in the A2A objects the frames carry (A2A §3.4), or, in a 0.3.0 envelope, by `task_id` and `context_id` (Agent Messaging §5.2, §6.5). A receiver MUST correlate by those values alone.
 
 The email's `Message-ID` is not the envelope's `id`. Some carriers assign their own `Message-ID` and overwrite the sender's. A sender MUST NOT rely on choosing it, and a receiver MUST NOT correlate by it.
 
@@ -265,7 +275,7 @@ So that a person's mail program shows the exchange as one thread, every email af
 
 A sender MUST keep the whole encoded email within its carrier's limit and within the receiving endpoint's `max_message_bytes` (§5.1). When the endpoint states no limit, a sender SHOULD keep the encoded email under 10 MB. Base64 makes a file about a third larger.
 
-A file too large for that MUST NOT be attached. The sender carries it by a reference the receiver can resolve, or by a `uri` entry (Agent Messaging §7.5.3), which a receiver MUST NOT fetch on its own. A short-lived signed download link (Agent Messaging §7.5.4) is the usual way.
+A file too large for that MUST NOT be attached. The sender carries it by a reference the receiver can resolve, or by an address (a `url` Part naming one, or in a 0.3.0 envelope a `uri` entry, Agent Messaging §7.5.3), which a receiver MUST NOT fetch on its own. A short-lived signed download link (Agent Messaging §7.5.4) is the usual way.
 
 The envelope itself is also bounded by the receiver's inbound size cap (Agent Messaging §22.5).
 
@@ -404,7 +414,7 @@ A receiver handles an incoming email in this order:
 1. If the carrier delivered it by webhook, verify the carrier's own webhook signature, where it has one.
 2. Parse the MIME message. If it is a delivery status notification, handle it as §8 says and stop. If it is an automatic message, apply §7.3.
 3. Find the envelope parts (§3.1). With none, go to §4.2 or §4.3. With more than one, refuse.
-4. Parse the envelope and verify its signature (Agent Messaging §5.3). If it fails, refuse (§4.4).
+4. Parse the envelope and verify its signature (Agent Messaging §5.3). If it fails, refuse (§4.4). Refuse a 0.4.0 envelope that carries `task_id`, `context_id` or `artifacts` with `INVALID_ENVELOPE` (§3.2).
 5. Apply the duplicate memory, then freshness (Agent Messaging §22.2, which fixes this order), then addressing and size (Agent Messaging §22.4, §22.5).
 6. Establish the sender's standing (§6.2) and apply admission (EXT-6).
 7. Resolve the `cid:` references (§3.4).
@@ -430,11 +440,11 @@ A receiving agent MUST NOT request or send message disposition notifications ([R
 
 Agent Messaging gives a requester three kinds of signal: the accept signal, the queued acknowledgement, and silence (Agent Messaging §6.4a). Over email:
 
-- **No accept signal.** The accept signal is a live-delivery signal only, and a request drained from a mailbox MUST NOT get one (Agent Messaging §6.4a). Agent email is mailbox delivery. A receiving agent that needs time SHOULD answer early in task mode, with a `submitted` or `working` status and a `task_id` (Agent Messaging §6.4, §7.2), which tells the requester the same thing.
+- **No accept signal.** The accept signal is a live-delivery signal only, and a request drained from a mailbox MUST NOT get one (Agent Messaging §6.4a). Agent email is mailbox delivery. A receiving agent that needs time SHOULD answer early with a Task in `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING` (the A2A binding §5), which tells the requester the same thing.
 - **No queued acknowledgement.** It rides a transport reply channel (Agent Messaging §6.4a), and email has none.
 - **Bounces.** A delivery status notification ([RFC 3464](https://www.rfc-editor.org/rfc/rfc3464)) for an agent email tells the sender the email did not reach the mailbox. A status of class 5 means the request is **undeliverable**. A status of class 4 means it is **deferred** and the carrier is still trying. These are local outcomes for the sending agent's own records. They are not envelopes and carry no Agent Messaging error code. A sender matches a notification to its request by the `Message-ID` it recorded when it sent the request, or by the carrier's own message identifier.
 - **The carrier's send result.** A carrier that reports "delivered" means the receiving mail server accepted the email. It says nothing about the receiving agent.
-- **Silence.** Silence means the request is possibly still waiting (Agent Messaging §6.4). A requester SHOULD set `payload.config.timeout_ms`, and any budget deadline (Agent Messaging §7.7), in hours or days rather than seconds.
+- **Silence.** Silence means the request is possibly still waiting (Agent Messaging §6.4). A requester SHOULD set any budget deadline (the budget extension, the A2A binding §12.2), and in a 0.3.0 envelope `payload.config.timeout_ms`, in hours or days rather than seconds.
 
 ---
 
@@ -454,13 +464,14 @@ Sealing protects content, not the fact of the exchange (Agent Messaging §8.9). 
 
 ## 10. Tasks and ordering
 
-The task model is Agent Messaging §7, unchanged. Over email:
+The task is A2A's, carried as the A2A binding says, unchanged. Over email:
 
-- **Task updates.** On a broker, updates after the first respond travel on a task update subject (Agent Messaging §6.5). Over email, every update is a `respond` envelope sent to the requester's email endpoint. Each carries the `task_id`, and `in_reply_to` set to the request's `id` (Agent Messaging §6.5).
-- **Ordering.** Email does not keep order, so updates can arrive out of order. A receiver MUST apply updates in the order of their envelopes' `ts`. An update whose `ts` is earlier than the last update applied to the task is recorded and does not change the task's state. A receiver MUST NOT apply a transition that Agent Messaging §7.3 does not allow. Once a task is in a terminal state, a later non-terminal update does not reopen it.
-- **More input.** When a task is `input_required`, the requester sends a new `request` with the same `task_id` and `context_id` (Agent Messaging §6.5).
-- **Cancellation.** The canceling party sends the `task.cancel` request of Agent Messaging §10.8, step 1. Step 2 publishes on a task update subject, which does not exist over email, so it is left out. The performer's `respond` with the `canceled` state is the record.
-- **Deadlines.** A budget deadline (Agent Messaging §7.7) is absolute, and the time an email spends in transit counts against it.
+- **Task updates.** On a broker, the events after the first answer travel on the task's stream subject (the A2A binding §8). Email has no subjects, so over email the performer sends each later change of the Task as a `respond` envelope to the requester's email endpoint. Its `payload.a2a.result` is a stream event of the A2A binding §8 that holds the whole Task, `{"task": {...}}`, so that each email stands on its own when emails arrive out of order. Its `in_reply_to` is the `id` of the request that started or last continued the task. In a 0.3.0 envelope, each update carries the `task_id` and the state in `payload.status` (Agent Messaging 0.9 §6.5).
+- **Ordering.** Email does not keep order, so updates can arrive out of order. A receiver MUST apply updates in the order of their envelopes' `ts`. An update whose `ts` is earlier than the last update applied to the task is recorded and does not change the task's state. A Task moves only as A2A allows, and once a task is in a terminal state, a later update does not change it.
+- **More input.** When the Task is in `TASK_STATE_INPUT_REQUIRED` or `TASK_STATE_AUTH_REQUIRED`, the requester sends `SendMessage` with a Message that names the Task's `taskId` and `contextId` (A2A §3.4). In a 0.3.0 envelope it sends a new `request` with the same `task_id` and `context_id`.
+- **Cancellation.** The requester sends `CancelTask` (the A2A binding §5). The performer's `respond`, carrying the Task in `TASK_STATE_CANCELED`, is the record, and a Task already in a terminal state is answered with `TaskNotCancelableError`. A performer that stops the work itself sends the Task in `TASK_STATE_CANCELED` as a task update. In a 0.3.0 envelope the requester sends the `task.cancel` request of Agent Messaging 0.9 §10.8, step 1, and step 2, which publishes on a task update subject, is left out.
+- **The cap of an engagement.** A Task the not-to-exceed cap of its engagement ended arrives in `TASK_STATE_CANCELED` with the outcome `exhausted` in the budget extension (the A2A binding §12.2). A receiver MUST NOT record it as failed or retry it, and its subject says `stopped at its limit` (§3.3).
+- **Deadlines.** A budget deadline (the A2A binding §12.2) is absolute, and the time an email spends in transit counts against it.
 
 ---
 
@@ -544,7 +555,7 @@ A carrier MAY verify the envelope of the agent email it delivers, and MAY report
 
 ### 12.1. What can claim conformance
 
-Five roles can claim conformance with Agent Emailing 0.2.0. Each claim names its role:
+Five roles can claim conformance with Agent Emailing 0.4.0. Each claim names its role:
 
 - **A sending agent** builds agent email as §3 says, sends only to verified addresses (§5), and sends from a domain that meets §6.4.
 - **A receiving agent** handles agent email as §3, §4, §6, §7, §8 and §10 say, and passes the receiving-agent cases of §12.2.
@@ -558,7 +569,7 @@ A conforming implementation MUST NOT claim that it implements Agent Messaging, o
 
 The conformance folder holds email fixtures, `conformance/fixtures/*.eml`, a list of cases, `conformance/cases.json`, and test name cards, `conformance/cards.json`, signed by a test registrar. Each case names a fixture, the role that receives it, the agent key it is received as, the time to judge freshness by, the carrier's authentication results where they matter, and the expected outcome. Every envelope in the fixtures is really signed with published test keys, which control nothing.
 
-The cases cover: a four-email thread of request, a respond that needs input, the answer, and a respond that is done; a human part that disagrees with its envelope; a forgery whose signature, sender and text all fail; a forwarded email, a stale envelope, a tampered envelope, hint headers that disagree with the envelope, a file whose digest does not match, two envelope parts, an automatic reply, an email with no envelope from a stranger, an envelope re-encoded by a carrier, a duplicate, a bounce, and a bridged sender with and without an aligned DMARC pass.
+The cases cover: a four-email thread of request, a respond that needs input, the answer, and a respond that is done; a human part that disagrees with its envelope; a forgery whose signature, sender and text all fail; a forwarded email, a stale envelope, a tampered envelope, hint headers that disagree with the envelope, a file whose digest does not match, two envelope parts, an automatic reply, an email with no envelope from a stranger, an envelope re-encoded by a carrier, a duplicate, a bounce, a bridged sender with and without an aligned DMARC pass, a 0.3.0 request accepted in the window of §3.2, and a 0.4.0 envelope refused because it carries an envelope field the A2A binding §4 forbids.
 
 The fixtures are the authority. When an implementation disagrees with them, the implementation changes.
 
@@ -597,7 +608,8 @@ The sending side may rebuild the email through the carrier's interface (§11.4) 
 
 ### 14.1. Normative
 
-- Agent Messaging, version 0.9.17, and its extensions EXT-6 (Admission) and EXT-7 (Pairwise sealing): https://agentmessaging.ai/
+- Agent Messaging, version 0.10, its binding A2A over Agent Messaging, version 0.1.0-draft (wire version 0.4.0), and its extensions EXT-6 (Admission) and EXT-7 (Pairwise sealing): https://agentmessaging.ai/
+- The A2A Protocol, version 1.0: https://a2a-protocol.org/latest/specification/
 - Personal Agent Naming, version 0.10.3: https://agentnaming.ai/
 - [RFC 2045](https://www.rfc-editor.org/rfc/rfc2045) to [RFC 2049](https://www.rfc-editor.org/rfc/rfc2049): MIME
 - [RFC 2047](https://www.rfc-editor.org/rfc/rfc2047): non-ASCII text in headers
@@ -621,6 +633,8 @@ The sending side may rebuild the email through the carrier's interface (§11.4) 
 ---
 
 ## Change history
+
+**0.4.0, 2026-11-07.** Agent Messaging carries A2A's own operations and data model, and Agent Emailing follows it. The envelope part now carries frames of wire version 0.4.0 under the binding A2A over Agent Messaging: each request is an A2A operation and each respond carries A2A's answer, with A2A's Tasks, Messages, Parts and Artifacts (§1, §2.1, §3.2). The subject's state words follow A2A's states, `TASK_STATE_CANCELED` with the budget extension's outcome `exhausted` reads `stopped at its limit`, and a 0.3.0 envelope's lowercase states map the same way (§3.3). A file carried in the email is a Part whose `url` is a `cid:` reference, with its size and digest in the artifact references extension (§3.4). The hint headers copy the Task id and context id from the A2A objects (§3.5). Over email, each later change of a Task is a respond that holds the whole Task, a request continues a Task by naming its `taskId`, cancellation is `CancelTask`, and the streaming operations are answered with `UnsupportedOperationError` (§2.2, §10). A receiver refuses a 0.4.0 envelope that carries `task_id`, `context_id` or `artifacts` (§3.2, §7.2). A receiver still accepts 0.3.0 envelopes from Agent Emailing 0.2 senders until its operator ends that window. The fixtures are regenerated with 0.4.0 frames, `meta.agent_emailing.v` and the version hint header are `0.4.0`, and cases.json is version 4. Case e20 covers a 0.3.0 request accepted in the window, and case e21 a 0.4.0 envelope refused because it carries `context_id`.
 
 **0.2.0, 2026-10-29.** The human part becomes required and is generated from the envelope (§3.3). It states who sent it and for whom, what was asked, what was handed over, the outcome, the price and what happens next. The subject carries the offering and the state. The envelope's `meta.agent_emailing` signs the text's digest and the subject, and software that shows the text to a person checks it and warns when it differs. The fixtures follow these rules, the example thread grows to four emails, case e18 covers a human part that disagrees with its envelope, and case e19 a forgery that fails the signature, the name card and the text checks.
 

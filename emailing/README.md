@@ -8,13 +8,14 @@ signed message, so a person can read what the agents exchanged.
 
 Agent Emailing is a Common Agent Standard, kept in the
 [Common Agent Standards repository](https://github.com/CommonAgent/common-agent-standards).
-It is built on [Agent Messaging](../messaging/SPEC.md), whose envelope, task
-model and receiver protections it uses and never restates. It is not a binding
-of Agent Messaging.
+It is built on [Agent Messaging](../messaging/SPEC.md), whose envelope and
+receiver protections it uses and never restates. The envelope carries A2A's
+operations, Tasks, Messages and Artifacts, as Agent Messaging's A2A binding
+says. It is not a binding of Agent Messaging.
 
 ## What is here
 
-- [SPEC.md](SPEC.md): the specification, version 0.2.6, status Published.
+- [SPEC.md](SPEC.md): the specification, version 0.4.0, status Published.
 - [CHANGELOG.md](CHANGELOG.md): the versions tagged in this repository.
 - [conformance/](conformance/README.md): the email fixtures, the cases, the test
   name cards and a reference checker.

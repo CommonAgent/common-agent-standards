@@ -4,6 +4,10 @@ Versions of Agent Emailing tagged in this repository, newest first. A version is
 tagged as `emailing-v` followed by the version, and the text in this folder at
 that tag is the text of that version.
 
+## 0.4.0 (2026-11-07)
+
+Agent Messaging carries A2A's own operations and data model, and Agent Emailing follows it. The envelope part now carries frames of wire version 0.4.0 under the binding A2A over Agent Messaging: each request is an A2A operation and each respond carries A2A's answer, with A2A's Tasks, Messages, Parts and Artifacts (§1, §2.1, §3.2). The subject's state words follow A2A's states, `TASK_STATE_CANCELED` with the budget extension's outcome `exhausted` reads `stopped at its limit`, and a 0.3.0 envelope's lowercase states map the same way (§3.3). A file carried in the email is a Part whose `url` is a `cid:` reference, with its size and digest in the artifact references extension (§3.4). The hint headers copy the Task id and context id from the A2A objects (§3.5). Over email, each later change of a Task is a respond that holds the whole Task, a request continues a Task by naming its `taskId`, cancellation is `CancelTask`, and the streaming operations are answered with `UnsupportedOperationError` (§2.2, §10). A receiver refuses a 0.4.0 envelope that carries `task_id`, `context_id` or `artifacts` (§3.2, §7.2). A receiver still accepts 0.3.0 envelopes from Agent Emailing 0.2 senders until its operator ends that window. The fixtures are regenerated with 0.4.0 frames, `meta.agent_emailing.v` and the version hint header are `0.4.0`, and cases.json is version 4. Case e20 covers a 0.3.0 request accepted in the window, and case e21 a 0.4.0 envelope refused because it carries `context_id`.
+
 ## 0.2.6 (2026-10-29)
 
 Editorial, with no normative change. Section 3.3 says that it applies Agent Messaging §5.8, the rule for readable text generated from a signed message that Agent Messaging 0.9.17-draft adds, and that `human_text` is that section's digest under this standard's own name. The A2A Bridge applies the same rule to A2A. Agent Messaging references move to version 0.9.17. No requirement, member, attribute or section number changes.
