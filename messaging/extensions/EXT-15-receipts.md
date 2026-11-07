@@ -4,7 +4,7 @@
 |---|---|
 | **URI** | `mesh://extensions/receipts/v1` |
 | **Status** | Draft. |
-| **Version** | 0.2.0-draft (§8.3: receipts on the A2A binding) |
+| **Version** | 0.2.1-draft (§8.3: receipts on the A2A binding travel as §8.1 says) |
 | **Requires** | Agent Messaging §5.1 to §5.3 (the envelope and its signature), §7.7 (the budget, and money in micro-units), §13.5 (the usage receipt), §13.6 (the reserved-offering wire form); Common Agent §5.7 (jobs) and §8.1 (the record convention); Agent SoW §5.5.2 (the shape of a meter line) |
 
 A caller that pays for a call has its own record of what it asked and what
@@ -236,8 +236,9 @@ On a mesh at wire version 0.4.0, where calls are A2A operations (the binding
 same way as over the A2A Bridge: `{ "receipt": "summary" }` or
 `{ "receipt": "full" }` in the starting Message's `metadata` under this
 extension's URI, with the URI listed in `A2A-Extensions`. It takes the place
-of `payload.config.receipt`, which remains the 0.3.0 form. The receipt rides in
-the Task's `metadata` under the URI, as §8.2 says.
+of `payload.config.receipt`, which remains the 0.3.0 form. The receipt itself
+travels as §8.1 says, as its own message after the answer, never in the Task:
+only the agent's frames change a Task on a mesh.
 
 ### 8.4 Agent Emailing
 
