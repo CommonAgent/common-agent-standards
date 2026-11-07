@@ -1193,7 +1193,7 @@ A shape input's `limit` names one or more of `max_chars`, `max_bytes`, `max_page
 
 The money a publisher will spend on trials is deliberately not here. It is the owner's private policy, held in the allowance (Section 7.5, below), and a counterparty needs only the counts.
 
-**The marker.** A request MAY carry `trial: true`. A trial request carries no budget, because a requester who owes nothing has nothing to offer; a request carrying both is refused at admission, before the checks below, with `reason: budget`. A requester that wants the full offering sends an ordinary request.
+**The marker.** A request MAY carry `trial: true`. A trial request carries no budget, because a requester who owes nothing has nothing to offer; a request carrying both is refused at admission, before the checks below, with `reason: budget`. A requester that wants the full offering sends an ordinary request. On Agent Messaging the marker travels as the trial extension on the Message that starts the work, and a trial refusal on the rejected Task (the A2A binding §12.8).
 
 **Admission.** The responder's node, never its model, checks a trial request before any work, in this order, and answers the first failure with the refusal `TRIAL_REFUSED` (Section 4.7). Its fixed fields are `reason`, one of `budget`, `not_offered`, `not_eligible`, `input`, `requester_day`, `day`, `requester_ever` and `funds`; `limit`, the declared number that was reached, where there is one; `resets_at`, an absolute UTC time, where waiting will help; and `quote`, what the same work costs as an ordinary request, so a requester refused a trial is told how to have the work anyway. Like every refusal it carries a passage for a person.
 

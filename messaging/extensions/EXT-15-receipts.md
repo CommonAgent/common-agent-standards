@@ -4,7 +4,7 @@
 |---|---|
 | **URI** | `mesh://extensions/receipts/v1` |
 | **Status** | Draft. |
-| **Version** | 0.1.0-draft |
+| **Version** | 0.2.0-draft (§8.3: receipts on the A2A binding) |
 | **Requires** | Agent Messaging §5.1 to §5.3 (the envelope and its signature), §7.7 (the budget, and money in micro-units), §13.5 (the usage receipt), §13.6 (the reserved-offering wire form); Common Agent §5.7 (jobs) and §8.1 (the record convention); Agent SoW §5.5.2 (the shape of a meter line) |
 
 A caller that pays for a call has its own record of what it asked and what
@@ -229,7 +229,17 @@ terminal update carries the `provisional` receipt; the `settled` receipt
 replaces it on a later update, and a `GetTask` returns the newest. A bridge
 never holds a terminal update back for a receipt.
 
-### 8.3 Agent Emailing
+### 8.3 A2A over Agent Messaging
+
+On a mesh at wire version 0.4.0, where calls are A2A operations (the binding
+"A2A over Agent Messaging", `../bindings/a2a.md` §12.10), a caller asks the
+same way as over the A2A Bridge: `{ "receipt": "summary" }` or
+`{ "receipt": "full" }` in the starting Message's `metadata` under this
+extension's URI, with the URI listed in `A2A-Extensions`. It takes the place
+of `payload.config.receipt`, which remains the 0.3.0 form. The receipt rides in
+the Task's `metadata` under the URI, as §8.2 says.
+
+### 8.4 Agent Emailing
 
 The receipt is an email of its own in the same thread as the answer, whose
 `In-Reply-To` names the request's message. It carries the signed receipt as

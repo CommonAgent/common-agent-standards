@@ -2,7 +2,7 @@
 
 An A2A custom protocol binding that carries A2A's operations and data model over an Agent Messaging mesh
 
-**Version:** 0.3.2-draft
+**Version:** 0.4.0-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -333,6 +333,10 @@ the meaning once.
 | `https://agentmessaging.ai/extensions/artifact-refs/v1` | A large Part's size and digest | SPEC.md §7.5.1 |
 | `https://agentmessaging.ai/extensions/cancel/v1` | Why a Task was canceled | SPEC.md §10.8 |
 | `https://agentmessaging.ai/extensions/failure/v1` | Why a Task failed | SPEC.md §10.8, §10.8a |
+| `https://agentmessaging.ai/extensions/trial/v1` | A request for trial work, and a trial refusal | Common Agent Specification §7.7 |
+| `https://agentmessaging.ai/extensions/reply/v1` | Which message a new call answers | SPEC.md §17.5 |
+
+The receipts extension, EXT-15 (`mesh://extensions/receipts/v1`), is already an A2A extension and keeps its URI; §12.10 says how a call asks for a receipt on this binding.
 
 Each extension's data sits in the `metadata` of the object it describes, under
 the extension's URI as the key.
@@ -430,6 +434,38 @@ reason requires: `unmetNeed` for `needs_not_furnished`, `dependency` for
 `dependency_failed`. A failure with no stated reason carries no object. The
 responder states the reason; the attribution of SPEC.md §10.8a is computed by
 the platform and never read from this object.
+
+### 12.8. Trial work
+
+On the Message that starts the work: `{"trial": true}`. It is the request
+marker of the Common Agent Specification §7.7, with every rule there: a trial
+carries no budget, so a Message carrying both this object and the budget
+extension is refused at admission. The responder's node checks a trial before
+any work, and a trial it refuses ends the Task in `TASK_STATE_REJECTED` with
+the refusal's fixed fields under this URI: `{"refusal": "TRIAL_REFUSED",
+"reason": "<reason>", "limit": <number, where there is one>, ...}`, the
+reasons and fields being those §7.7 lists. A trial the node admits runs as an
+ordinary Task, and its receipt is a trial receipt (EXT-15).
+
+### 12.9. Replies
+
+A2A continues a conversation with a new `SendMessage` in the same
+`contextId`, and continues a Task with a Message that names its `taskId`.
+An agent may also answer a message it received with a new call of its own, as
+a host does when the answer comes later or comes from a person. That call is a `SendMessage` whose
+Message carries the received Message's `contextId` and, under this URI,
+`{"inReplyTo": "<the messageId of the Message it answers>"}`. A receiver
+matches the answer to the message it sent by `inReplyTo`; it never reads the
+answer as part of the first Task.
+
+### 12.10. Receipts
+
+A client asks for a receipt (EXT-15) on the Message that starts the work, with
+`{"receipt": "summary"}` or `{"receipt": "full"}` in its `metadata` under
+`mesh://extensions/receipts/v1`, and lists that URI in `A2A-Extensions` (§7).
+This takes the place of the 0.3.0 `payload.config.receipt`. The receipt rides
+in the Task's `metadata` under the same URI, as EXT-15 §8.2 says for A2A, and
+a `GetTask` returns the newest one.
 
 ## 13. The A2A Bridge
 

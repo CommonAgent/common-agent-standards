@@ -202,6 +202,19 @@ function failureOk(state, o) {
   if (o.reason === "dependency_failed" && o.dependency !== undefined && typeof o.dependency !== "string") return false;
   return true;
 }
+// Binding §12.8 to §12.10: trial, reply and receipt objects on a Message, and a trial refusal on a Task.
+const TRIAL_REASONS = new Set(["budget", "not_offered", "not_eligible", "input", "requester_day", "day", "requester_ever", "funds"]);
+function trialReplyReceiptOk(m, u) {
+  const md = m.metadata ?? {};
+  const t = md[u.trial], r = md[u.reply], rc = md[u.receipts];
+  if (t !== undefined && (t?.trial !== true || md["https://agentmessaging.ai/extensions/budget/v1"] !== undefined)) return false;
+  if (r !== undefined && (typeof r?.inReplyTo !== "string" || typeof m.contextId !== "string" || Object.keys(r).some((k) => k !== "inReplyTo"))) return false;
+  if (rc !== undefined && !["summary", "full"].includes(rc?.receipt)) return false;
+  return true;
+}
+function trialRefusalOk(state, o) {
+  return state === "TASK_STATE_REJECTED" && o?.refusal === "TRIAL_REFUSED" && TRIAL_REASONS.has(o.reason);
+}
 function budgetReading(task, window) {
   const state = task.status.state;
   const b = task.metadata?.[EXT.budget];
@@ -441,6 +454,9 @@ section("failure reasons on the wire", [{ name: "a failed Task with its reason" 
   return failureOk(t.status.state, t.metadata?.[fr.uri]) ? true : "the failure object is not valid";
 });
 section("failure reason objects", fr.tasks, (c) => (failureOk(c.state, c.value) === c.expect.ok ? true : `read as ${!c.expect.ok}`));
+const trr = fx.trial_reply_receipt;
+section("trial, reply and receipt on a Message", trr.messages, (c) => (trialReplyReceiptOk(c, trr.uris) === c.expect.ok ? true : `read as ${!c.expect.ok}`));
+section("trial refusals on a Task", trr.tasks, (c) => (trialRefusalOk(c.state, c.value) === c.expect.ok ? true : `read as ${!c.expect.ok}`));
 
 const cw = fx.carrier_without_subjects;
 section("carriers without subjects", cw.cases, (c) => {
