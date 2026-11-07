@@ -4,7 +4,7 @@
 |---|---|
 | **URI** | `mesh://extensions/agent-messaging-over-a2a/v1` |
 | **Status** | Draft. Implemented by the Agent Messaging Server's A2A gateway from release 0.4.6. |
-| **Version** | 0.4.0-draft (the carried envelope is a frame of the binding "A2A over Agent Messaging", wire version 0.4.0; 0.3.0 envelopes are still accepted during the transition window, §14). 0.3.1-draft: §13 names the fixture set. 0.3.0-draft: the card from the Descriptor, §10, and the budget, §11. 0.2.0-draft: the conversation, §8, and the knock, §9. 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
+| **Version** | 0.4.1-draft (follows the binding's 0.3.0-draft: a carried frame never carries `budget`, a cancel without a reason is refused, and the failure extension and the deadline marks reach the caller). 0.4.0-draft (the carried envelope is a frame of the binding "A2A over Agent Messaging", wire version 0.4.0; 0.3.0 envelopes are still accepted during the transition window, §14). 0.3.1-draft: §13 names the fixture set. 0.3.0-draft: the card from the Descriptor, §10, and the budget, §11. 0.2.0-draft: the conversation, §8, and the knock, §9. 0.1.0-draft: signed requests, answers and readable text, §2 to §7. |
 | **Requires** | Agent Messaging §5.1 to §5.3 (the envelope and its signature), §5.7 (messages for the person), §5.8 (readable text), §22 (inbound protections); A2A over Agent Messaging (`../bindings/a2a.md`); the A2A Bridge (`../bindings/a2a-bridge.md`); A2A 1.0 extensions (A2A §4.6) |
 
 The A2A Bridge lets a stock A2A client call an agent on a mesh. Without this
@@ -144,8 +144,8 @@ Before it relays anything, the bridge MUST check that:
 
 1. the carried value is an envelope with `v`, `id`, `from` and `sig`; a 0.4.0
    frame has a `payload.a2a` with a `method` and a `params` object, and
-   carries none of the envelope fields `task_id`, `context_id` or `artifacts`
-   (binding §4);
+   carries none of the envelope fields `task_id`, `context_id`, `budget` or
+   `artifacts` (binding §4);
 2. its signature verifies against its `from` (Agent Messaging §5.3);
 3. its `type` is `request`;
 4. its `to` is the agent whose interface URL the call came to;
@@ -266,7 +266,10 @@ cancel for it. `CancelTask` on such a Task carries the caller's own signed
 URI, signed by the same key that made the original request. The frame's
 `CancelTask` request carries its reason under the cancel extension's URI,
 `https://agentmessaging.ai/extensions/cancel/v1`, as binding §12.6 requires of
-a client written to it. The bridge checks the frame as §4 says and relays it.
+a client written to it. A signed caller declares that extension, so a frame
+with no reason, or with a reason outside SPEC.md §10.8's list, is answered by
+the agent with `InvalidParamsError` listing the reasons, and the bridge returns
+that answer with the agent's frame beside it. The bridge checks the frame as §4 says and relays it.
 A frame signed by another key is answered by the
 agent with `TaskNotFoundError` (binding §10), and one naming another Task is
 refused by the bridge with `reason: "mismatch"`.
@@ -335,6 +338,10 @@ stopped at its cap from work somebody canceled. During the transition window
 such a Task may instead, or also, carry the older mark
 `"agentmesh.state": "exhausted"` (the A2A Bridge §5.2), and a caller reads
 either as the same thing.
+
+**Work that failed.** A Task in `TASK_STATE_FAILED` may say why under the
+failure extension's URI, `https://agentmessaging.ai/extensions/failure/v1`
+(binding §12.7), as the agent states it. The bridge passes it unchanged.
 
 ## 9. The knock
 
@@ -504,7 +511,10 @@ under the budget extension's URI (binding §12.2): `insufficient` and
 `TASK_STATE_INPUT_REQUIRED`, and `exhausted` in `TASK_STATE_CANCELED`. Each
 reaches the caller as the agent's Task, unchanged, so the caller can decide
 whether to try again with more, revise the budget of a paused Task with a
-higher `revision`, or cancel it with the reason `budget_exhausted` (§7). An
+higher `revision`, or cancel it with the reason `budget_exhausted` (§7).
+Two marks are not outcomes and not failures: `{"overdue": true}` on a status
+update event when the deadline passes while the work goes on, and
+`{"outcome": "completed_late"}` on a Task that completed after its deadline. An
 agent that answers only 0.3.0 refuses or pauses in the older form, and the
 bridge presents it as the same outcomes (the A2A Bridge §5.2, §7.3).
 

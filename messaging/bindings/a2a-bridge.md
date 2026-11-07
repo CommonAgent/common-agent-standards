@@ -1,9 +1,9 @@
 # The A2A Bridge: A2A's HTTP bindings in front of an Agent Messaging mesh
 
-**Version:** 0.9.0-draft
+**Version:** 0.9.1-draft
 **Status:** Working Draft
 **Date:** 2026-07-14
-**Revised:** 2026-11-07. In 0.9.0-draft both sides of the bridge carry the same A2A objects, under the binding "A2A over Agent Messaging" (`a2a.md`, §13). Version 0.8.0-draft and earlier mapped between A2A's task model and an Agent Messaging task model of its own, which no longer exists.
+**Revised:** 2026-11-07. 0.9.1-draft follows the binding's 0.3.0-draft: streams are read by `streamId` and end as A2A says, every operation on a Task is answered only to its readers, and the failure extension, the overdue and completed-late marks and the cancel-reason errors pass through. In 0.9.0-draft both sides of the bridge carry the same A2A objects, under the binding "A2A over Agent Messaging" (`a2a.md`, §13). Version 0.8.0-draft and earlier mapped between A2A's task model and an Agent Messaging task model of its own, which no longer exists.
 **Applies to:** Agent2Agent (A2A) Protocol 1.0, JSON-RPC and HTTP+JSON bindings · A2A over Agent Messaging (`a2a.md`), wire version 0.4.0 · Agent Messaging 0.10 (SPEC.md) · PACT 1.0 (§14)
 
 > This document specifies how a bridge serves agents on an Agent Messaging
@@ -37,7 +37,7 @@ statements true at once:
 Both sides carry the same A2A objects: the operations, Tasks, Messages, Parts,
 Artifacts and errors of A2A 1.0, in A2A's JSON form. So the bridge moves A2A
 objects between an HTTP request and a signed frame (binding §4), and maps
-identity at the edge (§2, §9). It does not translate between two task models.
+identity at the edge (§2, §9). It translates no A2A object.
 What it adds is the channel's part: which mesh identity signs, how a caller
 with no key is admitted, and how the channel's own answers (the accept signal
 and the queued acknowledgement) reach an HTTP caller.
@@ -155,8 +155,10 @@ agent with no extended card.
 Particulars:
 
 - **Reading Tasks.** `GetTask`, `ListTasks` and `SubscribeToTask` are answered
-  by the agent's node from its task store, and only for Tasks the requesting
-  identity may read (binding §10). Because a credentialed caller keeps one
+  by the agent's node from its task store. They, `CancelTask` and the push
+  configuration operations are answered only for Tasks the requesting identity
+  may read (binding §10); for any other Task the agent answers
+  `TaskNotFoundError`. Because a credentialed caller keeps one
   hosted identity for its whole life (§9.0), it reads the Tasks it created
   with that credential and no others. An anonymous caller's identity lasts one
   session, and so does what it can read.
@@ -189,8 +191,9 @@ bridge forwards both such Messages and both answers unchanged.
 Two answers come from the channel, not from A2A, and an A2A client cannot
 read them as they are. The bridge reads them for the caller.
 
-- **The accept signal** (SPEC.md §6.4a; binding §11) says the request reached
-  a live handler. It resets the bridge's wait for the A2A answer and is never
+- **The accept signal** (SPEC.md §6.4a; binding §4, §11), a channel frame
+  whose payload is `{"accepted": {}}`, says the request reached a live
+  handler. The bridge ignores members of `accepted` it does not know. It resets the bridge's wait for the A2A answer and is never
   returned to the caller.
 - **The queued acknowledgement** (SPEC.md §6.4a) says the request is waiting
   in an inbox and no A2A answer has come yet. The bridge answers the caller
@@ -221,20 +224,29 @@ Only an answer from the agent the request went to, naming the request in
 `SendStreamingMessage` and `SubscribeToTask` answer with A2A stream events
 (binding §8). The bridge reads the first event from the caller's inbox and the
 later ones from a durable subscription to `mesh.task.{taskId}.stream` that it
-holds for the caller's hosted identity. It writes each frame's
+holds for the caller's hosted identity, starting from the first event of the
+stream (binding §8). Several streams of one Task share that subject, so the
+bridge reads only the frames whose `payload.a2a.streamId` is the `id` of the
+request frame it sent, and skips the rest. It writes each frame's
 `payload.a2a.result`, which is one A2A `StreamResponse`, as one Server-Sent
 Event: on JSON-RPC as the `result` of a JSON-RPC response with the request's
 `id`, and on HTTP+JSON bare.
 
-- **Order.** The bridge writes events in `payload.a2a.seq` order and never
-  writes an event past a gap. It drops a frame whose `seq` it has already
+- **Order.** The bridge writes its stream's events in `payload.a2a.seq` order
+  and never writes an event past a gap. It drops a frame whose `seq` it has already
   written.
 - **A dropped mesh connection.** The bridge resumes its durable subscription
   after the last event it acknowledged, and the HTTP stream continues without
   a gap. If it cannot resume the subscription, it calls `SubscribeToTask` for
   the caller and writes the Task's current state as the next event.
-- **The end.** The bridge closes the HTTP stream after it writes the event
-  whose frame says `payload.a2a.final: true`.
+- **The end.** The stream ends when A2A says it ends: at a terminal state, or
+  with the Message that answers a `SendStreamingMessage` without a Task. The
+  bridge closes the HTTP stream after it writes the event whose frame says
+  `payload.a2a.final: true`. In an interrupted state
+  (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`) the stream stays
+  open, as A2A §3.1.2, §3.1.6 and §7.6.1 say, and so does the bridge's HTTP
+  stream. A frame that says `final: true` on any other event is a broken
+  stream (below).
 - **A broken stream.** A frame that fails verification, that does not come
   from the agent, or that leaves a gap the bridge cannot close MUST surface
   as `InvalidAgentResponseError` (`-32006`), and the bridge closes the stream.
@@ -308,7 +320,12 @@ and the Task's `metadata` names the outcome under the budget extension's URI,
 | `ceiling_reached`, paused for more money, with `spent` and `estimateToFinish` | `TASK_STATE_INPUT_REQUIRED` |
 | `exhausted`, ended by an engagement's not-to-exceed cap (Agent SoW §5.5.5) | `TASK_STATE_CANCELED` |
 
-The bridge passes all four unchanged. A client that knows the extension MUST
+Two marks travel the same way, and neither is a failure: `{"overdue": true}`
+on the status update event that reports a deadline passed while the work goes
+on, with the state unchanged, and `{"outcome": "completed_late"}` on a Task
+in `TASK_STATE_COMPLETED` that finished after its deadline.
+
+The bridge passes all six unchanged. A client that knows the extension MUST
 NOT record an exhausted Task as failed and MUST NOT retry it. Whether to send
 any other canceled or refused work again is the client's choice.
 
@@ -317,7 +334,15 @@ cancel extension's URI, `https://agentmessaging.ai/extensions/cancel/v1`
 (binding §12.6), and the canceled Task carries the same object. The bridge
 passes both unchanged. A stock A2A client that sends no reason is a client
 that does not declare the extension, and the agent records its cancel as
-`user_requested`. The bridge MUST NOT add a reason on the caller's behalf.
+`user_requested`. A client that declares the extension and sends no reason, or
+a reason outside the list, gets `InvalidParamsError` from the agent, with the
+reasons in the error's data, and the bridge passes that on. The bridge MUST
+NOT add a reason on the caller's behalf.
+
+**Failure reasons.** A Task in `TASK_STATE_FAILED` may carry
+`{"reason": ..., "unmetNeed": ..., "dependency": ...}` under the failure
+extension's URI, `https://agentmessaging.ai/extensions/failure/v1` (binding
+§12.7). The bridge passes it unchanged and never adds one.
 
 ### 5.2. Agents That Answer in 0.3.0 Envelopes
 
@@ -339,6 +364,12 @@ spelled as A2A 1.0 spells them:
 | `rejected` | `TASK_STATE_REJECTED` |
 | `exhausted` | `TASK_STATE_CANCELED`, with `{"outcome": "exhausted"}` under the budget extension's URI and `"agentmesh.state": "exhausted"` in the Task's `metadata` |
 | `input_required` with the error `BUDGET_EXHAUSTED` (the 0.3.0 budget pause) | `TASK_STATE_INPUT_REQUIRED`, with `{"outcome": "ceiling_reached", "spent": ..., "estimateToFinish": ...}` under the budget extension's URI, from the error's `details.spent` and `details.estimate_to_finish` |
+
+A failed update from such an agent that carries a `reason` (with its
+`unmet_need` or `dependency`) gives the failed Task the failure extension's
+object, `{"reason": ..., "unmetNeed": ..., "dependency": ...}`. A completion
+marked `DEADLINE_EXCEEDED` gives the completed Task
+`{"outcome": "completed_late"}` under the budget extension's URI.
 
 A `CancelTask` for such an agent becomes its `task.cancel` request (Agent
 Messaging 0.9 §10.8), with the reason, note and extra fields of the cancel
@@ -423,6 +454,12 @@ respond frame's `error`, with the A2A name, the integer and the data kept.
 | `VersionNotSupportedError` | `-32009` | `VERSION_NOT_SUPPORTED` | 400 |
 | `InvalidParamsError` | `-32602` | `INVALID_PARAMS` | 400 |
 | `InternalError` | `-32603` | `INTERNAL` | 500 |
+| `MethodNotFoundError` | `-32601` | (none: an unknown route is §13.1's `404`) | |
+
+The JSON-RPC standard errors keep the names A2A's JSON-RPC binding gives them
+(binding §9). `JSONParseError` (`-32700`) and `InvalidRequestError`
+(`-32600`) describe a malformed JSON-RPC request, which the bridge's JSON-RPC
+interface answers itself before anything reaches the mesh.
 
 A bridge MUST NOT give an agent's A2A error a different name, code or status.
 
@@ -827,8 +864,14 @@ already holds.
    frame's `meta.a2a` service parameters become HTTP headers. The remote's
    result or error comes back unchanged in a respond frame signed by the
    hosted identity (§7.1). A streaming answer's events become respond frames
-   on `mesh.task.{taskId}.stream`, numbered by `seq` and ended with
-   `final: true`, as binding §8 says. The offering extension's key passes
+   on `mesh.task.{taskId}.stream`, each with the request frame's `id` as
+   `streamId`, numbered by `seq`, and ended with `final: true` when the
+   remote's stream ends at a terminal state or with a Message, as binding §8
+   says. As the hosted agent's node, the bridge also publishes each status and
+   artifact update event on `mesh.task.{taskId}.update`, so the task store
+   sees it (binding §5). A remote Task id that is not a single subject token
+   cannot name those subjects, so the bridge refuses that answer with
+   `InvalidAgentResponseError`. The offering extension's key passes
    unchanged; while the transition window is open the bridge also sets
    `message.metadata["agentmesh.offering"]` to the same offering, so that a
    chain through an older bridge still routes.
