@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Binding URI** | `https://agentmessaging.ai/bindings/a2a/v1` |
-| **Version** | 0.1.0-draft |
+| **Version** | 0.2.0-draft |
 | **Status** | Working Draft |
 | **Date** | 2026-11-07 |
 | **Applies to** | A2A Protocol 1.0 · Agent Messaging 0.10 (`../SPEC.md`), wire version 0.4.0 |
@@ -198,6 +198,23 @@ TaskArtifactUpdateEvent).
 - Every event is a signed frame of its own, so a stream needs no separate chunk
   signature.
 
+**Carriers without subjects.** A carrier of these frames that has no stream
+subjects, such as email (Agent Emailing), cannot hold a subscription. It
+delivers each later change to a Task as a respond frame to the client whose
+result is the whole Task as it then stands, numbered by `payload.a2a.seq`, and
+it answers `SendStreamingMessage` and `SubscribeToTask` with
+`UnsupportedOperationError`. The client reads the frames in `seq` order.
+
+## 8a. Sealed frames
+
+A frame sealed for its receiver (EXT-7) hides its payload, the A2A object
+included. Its sender MAY put the Task's current state in clear in
+`meta.a2a_state`, as A2A's enum name, for a carrier that shows a person the
+state, such as an email subject line (Agent Emailing). That discloses the state
+to every carrier on the path, so a sender that does not want it disclosed
+leaves it out. A receiver reads the state from the sealed payload and ignores
+`meta.a2a_state` where the two differ.
+
 ## 9. Errors (A2A §12.4)
 
 An A2A error travels as the respond frame's `error` (SPEC.md §12.1):
@@ -272,6 +289,7 @@ the meaning once.
 | `https://agentmessaging.ai/extensions/audience/v1` | A message meant for the person behind the agent | SPEC.md §5.7, `mesh://extensions/audience/v1` |
 | `https://agentmessaging.ai/extensions/economics/v1` | Payment required, with the price and how to pay | SPEC.md §19 |
 | `https://agentmessaging.ai/extensions/artifact-refs/v1` | A large Part's size and digest | SPEC.md §7.5.1 |
+| `https://agentmessaging.ai/extensions/cancel/v1` | Why a Task was canceled | SPEC.md §10.8 |
 
 Each extension's data sits in the `metadata` of the object it describes, under
 the extension's URI as the key.
@@ -293,15 +311,27 @@ On the Message that starts or revises the work:
   "costCeiling": { "amountMicro": 4000000, "currency": "USD" } }
 ```
 
-The fields mean what SPEC.md §7.7 says. When an engagement's not-to-exceed cap
-ends the work (Agent SoW §5.5.5), the Task ends in `TASK_STATE_CANCELED` and
-its `metadata` carries `{"outcome": "exhausted"}` under this URI, with a status
-message saying so. Artifacts produced before the cap stay attached. A2A's state
-list is fixed, and canceled is the state whose meaning is closest: the work
-stopped before it finished, and nothing went wrong. A client that knows this
-extension MUST NOT record such a Task as failed or retry it. A refusal because
-the work does not fit the budget ends the Task in `TASK_STATE_REJECTED` with
-`{"outcome": "insufficient", "estimate": {...}}` under this URI.
+The fields mean what SPEC.md §7.7 says. Each budget outcome puts the Task in an
+A2A state, and the Task's `metadata` says which outcome it was under this URI,
+with a status message saying so in words:
+
+| Outcome | A2A state | Metadata under this URI |
+|---|---|---|
+| The work does not fit the cost ceiling, refused at admission | `TASK_STATE_REJECTED` | `{"outcome": "insufficient", "estimate": {"amountMicro": ..., "currency": "..."}}` |
+| The deadline cannot be met, refused at admission | `TASK_STATE_REJECTED` | `{"outcome": "deadline_unmeetable", "earliestCompletion": "<RFC 3339>"}` |
+| The work reached its cost ceiling and paused for more money | `TASK_STATE_INPUT_REQUIRED` | `{"outcome": "ceiling_reached", "spent": {...}, "estimateToFinish": {...}}` |
+| An engagement's not-to-exceed cap ended the work (Agent SoW §5.5.5) | `TASK_STATE_CANCELED` | `{"outcome": "exhausted"}` |
+
+A paused Task resumes when the client revises the budget with a new Message
+whose `revision` is higher, or ends when the client cancels it with the reason
+`budget_exhausted` (§12.6).
+
+An exhausted Task keeps the artifacts produced before the cap. A2A's state list
+is fixed, and canceled is the state whose meaning is closest: the work stopped
+before it finished, and nothing went wrong. A client that knows this extension
+MUST NOT record an exhausted Task as failed and MUST NOT retry it, because a
+retry would spend past a cap the engagement set. For every other canceled Task,
+whether to send the work again is the client's choice, as A2A leaves it.
 
 ### 12.3. Audience
 
@@ -317,10 +347,27 @@ methods.
 
 ### 12.5. Artifact references
 
-On a `url` Part whose value is an Agent Messaging artifact reference:
-`{"size": 12345, "digest": "sha256:<64 lowercase hex>"}`. The Part's
-`mediaType` and `filename` are A2A's own fields. A reader resolves the
-reference through its SDK and checks the digest, as SPEC.md §7.5.1 says.
+On a `url` Part whose bytes are held outside the message:
+`{"size": 12345, "digest": "sha256:<64 lowercase hex>"}`. The reference may be
+any URI its carrier defines: an Agent Messaging artifact reference on a mesh
+(SPEC.md §7.5.1), a `cid:` reference to an attachment by email (Agent
+Emailing), or an `https:` URL. The Part's `mediaType` and `filename` are A2A's
+own fields. A reader resolves the reference as its carrier says and checks the
+digest before it uses the bytes.
+
+### 12.6. Cancel reasons
+
+URI `https://agentmessaging.ai/extensions/cancel/v1`. On a `CancelTask`
+request's `metadata` (A2A's CancelTaskRequest carries one):
+`{"reason": "<reason>", "note": "<optional text>"}`, where `reason` is one of
+the closed list of SPEC.md §10.8 (`user_requested`, `superseded`,
+`deadline_exceeded`, `budget_exhausted`, `upstream_cancelled`, `policy`,
+`needs_not_furnished`, `dependency_failed`), with the extra fields that section
+requires for a reason. The canceled Task's `metadata` carries the same object
+under this URI, so the reason stays on the record. A client written to this
+version MUST send a reason; a server agent MUST accept a `CancelTask` without
+one from a client that does not declare the extension, and records the reason
+as `user_requested`.
 
 ## 13. The A2A Bridge
 
