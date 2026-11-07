@@ -315,5 +315,40 @@
       "There is deliberately NO bounded acknowledgement to pin: for the requester, cancellation is effective when sent, and delivery to the performer is on mailbox time (10.8).",
       "The canceled metering receipt (19.2: mesh.event.metering.task_canceled, cancel_reason) is the task manager's emission, tested in services/, not an SDK wire shape."
     ]
+  },
+  "wire_0_4_0": {
+    "comment": "Under wire version 0.4.0 (bindings/a2a.md §12.6) a cancel is A2A's CancelTask, and its reason travels in the cancel extension's object in the request's metadata. The canceled Task carries the same object under the same URI, so the reason stays on the record. The reasons, unmet_need, dependency, attribution and propagation rules above hold unchanged, and the note format of a propagated cancel is the same. A CancelTask with no reason, from a client that does not declare the extension (it does not activate it in A2A-Extensions), is recorded as user_requested. The 'shapes' above, the task.cancel request and the canceled update, and the signed 0.2 envelope, are the 0.3.0 forms kept for the binding's transition window. conformance/a2a-binding.json carries signed 0.4.0 frames for the cases below.",
+    "uri": "https://agentmessaging.ai/extensions/cancel/v1",
+    "cancel_task_params": {
+      "id": "0198c001-0000-7000-8000-00000000cafe",
+      "metadata": { "https://agentmessaging.ai/extensions/cancel/v1": { "reason": "user_requested", "note": "operator clicked stop" } }
+    },
+    "cancel_task_params_unmet_need": {
+      "id": "0198c001-0000-7000-8000-00000000cafe",
+      "metadata": { "https://agentmessaging.ai/extensions/cancel/v1": { "reason": "needs_not_furnished", "unmet_need": "credential:Salesforce", "note": "the sign-in stopped working on 2026-08-01" } }
+    },
+    "cancel_task_params_stock_client": {
+      "params": { "id": "0198c001-0000-7000-8000-00000000cafe" },
+      "recorded": { "reason": "user_requested" }
+    },
+    "canceled_task": {
+      "id": "0198c001-0000-7000-8000-00000000cafe",
+      "contextId": "ctx-cafe",
+      "status": { "state": "TASK_STATE_CANCELED", "timestamp": "2026-07-27T15:00:01.000Z" },
+      "metadata": { "https://agentmessaging.ai/extensions/cancel/v1": { "reason": "user_requested", "note": "operator clicked stop" } }
+    },
+    "propagated_params": {
+      "id": "0198c001-0000-7000-8000-00000000d00d",
+      "metadata": { "https://agentmessaging.ai/extensions/cancel/v1": { "reason": "upstream_cancelled", "note": "deadline_exceeded: overdue since 16:00Z" } }
+    },
+    "transitions": {
+      "comment": "A2A's states. The budget pause is TASK_STATE_INPUT_REQUIRED with the budget extension's outcome ceiling_reached, and it can be canceled, with the reason budget_exhausted. A Task in a terminal state answers CancelTask with TaskNotCancelableError (-32002). An exhausted Task is TASK_STATE_CANCELED with the budget extension's outcome exhausted, so it is among the terminal states.",
+      "cancelable_from": ["TASK_STATE_SUBMITTED", "TASK_STATE_WORKING", "TASK_STATE_INPUT_REQUIRED", "TASK_STATE_AUTH_REQUIRED"],
+      "not_cancelable_from": ["TASK_STATE_COMPLETED", "TASK_STATE_FAILED", "TASK_STATE_CANCELED", "TASK_STATE_REJECTED"],
+      "error": { "code": "TaskNotCancelableError", "jsonrpc": -32002 }
+    },
+    "not_covered": [
+      "A failed Task's reason and dependency (failed_update_payload above) have no 0.4.0 carrier in the binding yet: the cancel extension is defined for CancelTask and canceled Tasks only."
+    ]
   }
 }

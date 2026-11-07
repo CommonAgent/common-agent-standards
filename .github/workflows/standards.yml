@@ -102,6 +102,9 @@ jobs:
       - name: The A2A Bridge's fixture set, against the reference readings
         run: node messaging/conformance/lib/check-a2a-bridge-fixture.mjs
 
+      - name: The A2A binding's fixture set (A2A over Agent Messaging §15), against the reference readings
+        run: node messaging/conformance/lib/check-a2a-binding.mjs
+
       - name: The AgentDoc cases (Common Agent §9.10), against the static checks
         run: node common-agent/conformance/lib/check-agentdoc.mjs
 

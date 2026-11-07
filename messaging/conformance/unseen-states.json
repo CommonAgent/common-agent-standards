@@ -1,7 +1,27 @@
 {
   "fixture": "unseen-states",
-  "spec": "Agent Messaging §7.3.1, Updates a Transport Does Not Carry",
-  "comment": "A view of a Task that a transport does not show every update of (a requester over email, a caller over A2A) fills a gap only through submitted and working. Each case gives the last state the view saw (null for none) and the state of the update it receives. 'applies' says whether the view takes the update; 'passed_through' lists, in order, the states it takes as passed through but not seen. A refused update is TASK_INVALID_TRANSITION. lib/check-unseen-states.mjs runs every case against a reference reading of the rule.",
+  "spec": "Agent Messaging §7.3.1, Updates a Transport Does Not Carry; A2A over Agent Messaging (bindings/a2a.md) §5, §8",
+  "comment": "A view of a Task that a transport does not show every update of (a requester over email, a caller over A2A) must decide whether to take an update it receives. Under wire version 0.4.0 the states are A2A's own and A2A gives no transition table: a Task moves only through A2A's states, and a Task in a terminal state does not move again (binding §5). So a view takes any update in an A2A state unless the last state it saw is terminal, and it fills no gap, because A2A names no path to fill it with. A carrier without subjects numbers whole Tasks by seq (binding §8), so order comes from seq, not from the states. Those are the wire_0_4_0 cases. The cases under 'cases' are the reading of Agent Messaging 0.9's own transition table (§7.3) for 0.3.0 envelopes, kept for the binding's transition window: 'applies' says whether the view takes the update, 'passed_through' lists, in order, the states it takes as passed through but not seen, and a refused update is TASK_INVALID_TRANSITION. lib/check-unseen-states.mjs runs every case against a reference reading of each rule.",
+  "wire_0_4_0": {
+    "cases": [
+      { "name": "first update in submitted", "last": null, "update": "TASK_STATE_SUBMITTED", "applies": true },
+      { "name": "first update asks for input", "last": null, "update": "TASK_STATE_INPUT_REQUIRED", "applies": true },
+      { "name": "first update completed (email, done at once)", "last": null, "update": "TASK_STATE_COMPLETED", "applies": true },
+      { "name": "first update declined", "last": null, "update": "TASK_STATE_REJECTED", "applies": true },
+      { "name": "answer given, done, no working seen", "last": "TASK_STATE_INPUT_REQUIRED", "update": "TASK_STATE_COMPLETED", "applies": true },
+      { "name": "answer given, asks again", "last": "TASK_STATE_INPUT_REQUIRED", "update": "TASK_STATE_INPUT_REQUIRED", "applies": true },
+      { "name": "credentials given, done", "last": "TASK_STATE_AUTH_REQUIRED", "update": "TASK_STATE_COMPLETED", "applies": true },
+      { "name": "paused at the ceiling, then stopped at the cap", "last": "TASK_STATE_INPUT_REQUIRED", "update": "TASK_STATE_CANCELED", "applies": true },
+      { "name": "A2A names no path, so a view does not refuse working to submitted", "last": "TASK_STATE_WORKING", "update": "TASK_STATE_SUBMITTED", "applies": true },
+      { "name": "nothing leaves a terminal state", "last": "TASK_STATE_COMPLETED", "update": "TASK_STATE_WORKING", "applies": false },
+      { "name": "a second terminal state is refused", "last": "TASK_STATE_FAILED", "update": "TASK_STATE_COMPLETED", "applies": false },
+      { "name": "canceled stays canceled", "last": "TASK_STATE_CANCELED", "update": "TASK_STATE_INPUT_REQUIRED", "applies": false },
+      { "name": "rejected stays rejected", "last": "TASK_STATE_REJECTED", "update": "TASK_STATE_REJECTED", "applies": false },
+      { "name": "TASK_STATE_UNSPECIFIED is no state to take", "last": "TASK_STATE_WORKING", "update": "TASK_STATE_UNSPECIFIED", "applies": false },
+      { "name": "an A2A 0.3 spelling is no 0.4.0 state", "last": "TASK_STATE_WORKING", "update": "input-required", "applies": false },
+      { "name": "exhausted is a budget outcome, not a state", "last": "TASK_STATE_WORKING", "update": "exhausted", "applies": false }
+    ]
+  },
   "cases": [
     { "name": "first update in submitted", "last": null, "update": "submitted", "applies": true, "passed_through": [] },
     { "name": "first update in working", "last": null, "update": "working", "applies": true, "passed_through": ["submitted"] },
