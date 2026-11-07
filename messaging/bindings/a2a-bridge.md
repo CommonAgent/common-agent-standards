@@ -948,7 +948,18 @@ the whole data object as a further `details` entry,
 `{"@type": "type.googleapis.com/google.protobuf.Struct", "value": {...}}`, so
 nothing in it is lost. A channel error (§7.2)
 is the reason `INTERNAL` with the HTTP status §7.2 names and the Agent
-Messaging code in `details[0].metadata.agentmesh_code`.
+Messaging code in `details[0].metadata.agentmesh_code`, and its `status` is
+the one for that HTTP status:
+
+| HTTP | `status` |
+|---|---|
+| 401 | `UNAUTHENTICATED` |
+| 403 | `PERMISSION_DENIED` |
+| 413 | `INVALID_ARGUMENT` |
+| 429 | `RESOURCE_EXHAUSTED` |
+| 500 | `INTERNAL` |
+| 502 | `UNAVAILABLE` |
+| 504 | `DEADLINE_EXCEEDED` |
 
 The gateway's own refusals (§9.1) are not A2A errors. They use the same
 envelope with `domain: "agentmesh.ai"` and the gateway code as the reason:
