@@ -3727,12 +3727,46 @@ A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
 }
 ```
 
+An error from A2A travels in this object as the A2A binding §9 says: `code` is the A2A error's name, `details.a2a.code` is the integer A2A's JSON-RPC binding assigns to it, so a client or bridge that speaks JSON-RPC uses it unchanged, and `details.a2a.data` carries the error's data:
+
+```json
+{
+  "code": "TaskNotFoundError",
+  "message": "No task with that id.",
+  "details": { "a2a": { "code": -32001, "data": {} } },
+  "retryable": false
+}
+```
+
+An error that comes from the channel rather than from A2A (a refused signature, a sender not admitted, a transport timeout, a protection of §22) keeps its Agent Messaging code (§12.2) and is never given an A2A name.
+
 ### 12.2. Error Codes
 
 > **The budget's refusal behavior is the floor's.** Refuse-with-estimate
 > and the semantics behind `BUDGET_INSUFFICIENT` are Common Agent
 > Specification §5.4. The codes and retryability below are the mesh
 > binding.
+
+#### A2A Errors
+
+On a 0.4.0 frame, the answer to an A2A operation that fails for a reason A2A names carries A2A's error (A2A §3.3.2 and its JSON-RPC binding). The ones a mesh agent most often sends:
+
+| Code | `details.a2a.code` | When | Retryable |
+|------|--------------------|------|-----------|
+| `TaskNotFoundError` | -32001 | No such Task, or the asker may not read it (§7.1). A Task purged after its retention also answers this, with `details.reason: "expired"` beside `details.a2a`. | No |
+| `TaskNotCancelableError` | -32002 | `CancelTask` on a Task in a terminal state. | No |
+| `PushNotificationNotSupportedError` | -32003 | A push notification operation on an agent whose card says `pushNotifications: false`. | No |
+| `UnsupportedOperationError` | -32004 | An operation the agent does not support, a Message to a Task in a terminal state, or a streaming operation over a carrier without subjects (§11.1). | No |
+| `ContentTypeNotSupportedError` | -32005 | The offering produces none of the client's `acceptedOutputModes`, or does not accept a Part's media type. | No |
+| `InvalidAgentResponseError` | -32006 | A server agent's reply does not conform to A2A; a bridge or SDK that relays it reports this to its own client. | No |
+| `ExtendedAgentCardNotConfiguredError` | -32007 | `GetExtendedAgentCard` on an agent that has none. | No |
+| `ExtensionSupportRequiredError` | -32008 | The agent requires an extension the client did not activate (§17.4). | No |
+| `VersionNotSupportedError` | -32009 | The A2A version in `meta.a2a` (`A2A-Version`) is one the agent does not speak. | No |
+| `InvalidParamsError` | -32602 | The request names no offering the agent serves, its input does not conform to the offering, a cancel reason is outside §10.8's list, or a budget revision is retroactive. | No |
+| `MethodNotFoundError` | -32601 | `payload.a2a.method` is not an A2A operation name. | No |
+| `InternalError` | -32603 | An unexpected internal error in the agent. | Yes |
+
+The codes of the tables below that A2A covers are used only on 0.3.0 envelopes; each says which A2A error or outcome replaces it. Every other code in them is the channel's and applies on both wire versions.
 
 #### Transport Errors
 
@@ -3754,12 +3788,14 @@ A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
 
 #### Task Errors
 
+Every code in this table is used only on 0.3.0 envelopes (§6.8).
+
 | Code | Description | Retryable |
 |------|-------------|-----------|
-| `TASK_NOT_FOUND` | The specified task ID does not exist. | No |
-| `TASK_INVALID_TRANSITION` | The requested state transition is not valid. | No |
-| `TASK_NOT_CANCELABLE` | The task is in a terminal state and cannot be canceled. | No |
-| `TASK_EXPIRED` | The task has exceeded its TTL and been purged. | No |
+| `TASK_NOT_FOUND` | The specified task ID does not exist. On 0.4.0: `TaskNotFoundError`. | No |
+| `TASK_INVALID_TRANSITION` | The requested state transition is not valid. On 0.4.0 A2A's state rules apply (§7.3): a Message to a Task in a terminal state is `UnsupportedOperationError`, and an update A2A does not allow is not applied. | No |
+| `TASK_NOT_CANCELABLE` | The task is in a terminal state and cannot be canceled. On 0.4.0: `TaskNotCancelableError`. | No |
+| `TASK_EXPIRED` | The task has exceeded its TTL and been purged. On 0.4.0: `TaskNotFoundError` with `details.reason: "expired"`. | No |
 
 #### Agent Errors
 
@@ -3767,24 +3803,24 @@ A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
 |------|-------------|-----------|
 | `AGENT_UNAVAILABLE` | The agent is not accepting requests. | Yes |
 | `AGENT_OVERLOADED` | The agent has exceeded its concurrency limit. | Yes |
-| `OFFERING_NOT_FOUND` | The requested offering is not offered by this agent. | No |
-| `INPUT_INVALID` | The input payload does not match the offering's schema. | No |
-| `INPUT_NOT_UNDERSTOOD` | The message does not carry the input the offering declares, does not read as a request for it, or does not say which offering it is for: the standard reply to input an agent cannot use (Common Agent Specification §4.7.1). `message` is a passage a person can act on: what went wrong, what the agent accepts, and an example that works. `details` carries `reason` (`missing_input`, `not_a_request`, `offering_unclear`), `offering`, `offerings`, `missing`, `expected` (the offering's declared inputs), `example`, and where known `read_as` and `how_to_use`. On this binding it travels as the `error` of the answer, beside `text` holding the same passage, whether the answer is the terminal respond or, for an attended inbox, the reply message the node sends at once. A help question on `chat` is never refused this way: it is answered from the declared facts. | No |
-| `CONTENT_TYPE_NOT_SUPPORTED` | The requested output mode is not supported. | No |
+| `OFFERING_NOT_FOUND` | The requested offering is not offered by this agent. 0.3.0 only; on 0.4.0: `InvalidParamsError`, listing the agent's offerings in its data. | No |
+| `INPUT_INVALID` | The input payload does not match the offering's schema. 0.3.0 only; on 0.4.0: `InvalidParamsError`. | No |
+| `INPUT_NOT_UNDERSTOOD` | The message does not carry the input the offering declares, does not read as a request for it, or does not say which offering it is for: the standard reply to input an agent cannot use (Common Agent Specification §4.7.1). `message` is a passage a person can act on: what went wrong, what the agent accepts, and an example that works. `details` carries `reason` (`missing_input`, `not_a_request`, `offering_unclear`), `offering`, `offerings`, `missing`, `expected` (the offering's declared inputs), `example`, and where known `read_as` and `how_to_use`. On a 0.3.0 envelope it travels as the `error` of the answer, beside `text` holding the same passage, whether the answer is the terminal respond or, for an attended inbox, the reply message the node sends at once. On a 0.4.0 frame the answer is `InvalidParamsError`, with the same `message` and the same `details` members beside `details.a2a`; a reader tells it from other invalid parameters by `details.reason`. A help question on `chat` is never refused this way: it is answered from the declared facts. | No |
+| `CONTENT_TYPE_NOT_SUPPORTED` | The requested output mode is not supported. 0.3.0 only; on 0.4.0: `ContentTypeNotSupportedError`. | No |
 | `UNAUTHORIZED` | The requesting agent lacks permission for this operation. | No |
 | `SEALING_REQUIRED` | The agent declares `sealing: "required"` (Section 8.9) and this request arrived in the clear, so its content was not read. Not retryable as sent: the sender resolves the agent's manifest, seals to its verified `encryption_key`, and sends again. Also raised locally by a sender that is about to send to a `required` agent it cannot seal to. | No |
-| `BUDGET_INSUFFICIENT` | Refused at admission: the work cannot be done within the offered cost ceiling. SHOULD carry the responder's estimate. (Section 7.7; ceiling field from the Economics extension, Section 19.3.) | No |
-| `DEADLINE_UNMEETABLE` | Refused at admission: the work cannot be completed by the offered deadline. SHOULD carry the responder's earliest realistic completion. (Section 7.7.) | No |
-| `AGREEMENT_REQUIRED` | Refused at admission: the requested work is covered by a paid SKU and the consumer's account holds no agreement for the SKU's current digest. `details` names the `sku`, the `sku_digest`, and the `approval_url`. The Section 1.3 "payment required" refusal, typed. (Economics extension, Sections 19.1, 19.5.) | No |
-| `BUDGET_EXHAUSTED` | The cost ceiling was reached mid-work; the Task is paused in `input_required` with spend so far and an estimate to finish. Resolved by a budget revision or cancellation, not by retry. (Section 7.7.) | No |
-| `DEADLINE_EXCEEDED` | Recorded on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
+| `BUDGET_INSUFFICIENT` | 0.3.0 only; on 0.4.0 the Task is `TASK_STATE_REJECTED` with the budget outcome `insufficient` (§7.7). Refused at admission: the work cannot be done within the offered cost ceiling. SHOULD carry the responder's estimate. (Section 7.7; ceiling field from the Economics extension, Section 19.3.) | No |
+| `DEADLINE_UNMEETABLE` | 0.3.0 only; on 0.4.0 the Task is `TASK_STATE_REJECTED` with the budget outcome `deadline_unmeetable` (§7.7). Refused at admission: the work cannot be completed by the offered deadline. SHOULD carry the responder's earliest realistic completion. (Section 7.7.) | No |
+| `AGREEMENT_REQUIRED` | On 0.4.0 the Task is `TASK_STATE_REJECTED` and carries the economics extension's `paymentRequired` (A2A binding §12.4), with `sku`, `sku_digest` and `approval_url` beside the price. Refused at admission: the requested work is covered by a paid SKU and the consumer's account holds no agreement for the SKU's current digest. `details` names the `sku`, the `sku_digest`, and the `approval_url`. The Section 1.3 "payment required" refusal, typed. (Economics extension, Sections 19.1, 19.5.) | No |
+| `BUDGET_EXHAUSTED` | 0.3.0 only; on 0.4.0 the Task pauses in `TASK_STATE_INPUT_REQUIRED` with the budget outcome `ceiling_reached` (§7.7). The cost ceiling was reached mid-work; the Task is paused with spend so far and an estimate to finish. Resolved by a budget revision or cancellation, not by retry. (Section 7.7.) | No |
+| `DEADLINE_EXCEEDED` | Recorded beside the Task (§7.1) on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
 | `AUDIENCE_NOT_SUPPORTED` | The message is marked for the person behind the receiving agent (§5.7), and the receiver does not declare `mesh://extensions/audience/v1`, so nothing says the message will reach the person. Raised locally by a sending SDK before it publishes, unless the caller chose to send anyway, and by a bridge whose far side cannot keep §5.7's rules (`BRIDGE-A2A.md` §8.4). `details.receivers` names the receivers that do not declare it. Also the answer of a receiver written to this version that does not declare the extension, at its door (§5.7), with `details.reason` (`no_person` when its `acts_for` is not `person`, `not_declared` otherwise) and `details.acts_for`. | No |
 
 #### Processing Errors
 
 | Code | Description | Retryable |
 |------|-------------|-----------|
-| `INTERNAL_ERROR` | An unexpected internal error occurred in the agent. | Yes |
+| `INTERNAL_ERROR` | An unexpected internal error occurred in the agent. On a 0.4.0 frame answering an A2A operation: `InternalError`. | Yes |
 | `DEPENDENCY_FAILED` | A downstream dependency (tool, API, delegated agent) failed. | Yes |
 | `CONTEXT_TOO_LARGE` | The accumulated context exceeds the agent's capacity. | No |
 | `RATE_LIMITED` | The sender has exceeded the platform rate limit (see Section 16). | Yes |
@@ -3800,25 +3836,30 @@ A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
 
 ### 12.3. Error Delivery
 
-Errors are delivered as standard `respond` envelopes with the `error` field populated and `payload.status` set to `failed`:
+Errors are delivered as standard `respond` frames with the `error` field populated. On a 0.4.0 frame the respond carries no `payload.a2a.result`:
 
 ```json
 {
+  "v": "0.4.0",
   "type": "respond",
   "in_reply_to": "<request-id>",
-  "task_id": "<task-id>",
-  "payload": { "status": "failed" },
   "error": {
-    "code": "OFFERING_NOT_FOUND",
+    "code": "InvalidParamsError",
     "message": "Offering 'web-scrape-v2' is not supported. Available offerings: web-scrape, search.",
     "details": {
-      "requested_offering": "web-scrape-v2",
-      "available_offerings": ["web-scrape", "search"]
+      "a2a": {
+        "code": -32602,
+        "data": { "requested_offering": "web-scrape-v2", "available_offerings": ["web-scrape", "search"] }
+      }
     },
     "retryable": false
   }
 }
 ```
+
+A failure of the work after a Task exists is not an error frame: the Task enters `TASK_STATE_FAILED`, as A2A says, and its reason, when it has one, travels as §10.8 says.
+
+On a 0.3.0 envelope the respond also sets `payload.status: "failed"`, carries the envelope `task_id` when a Task exists, and uses the 0.3.0 code (`OFFERING_NOT_FOUND` in the example above, with the same `details` members directly in `details`).
 
 ### 12.4. Retry Semantics
 
