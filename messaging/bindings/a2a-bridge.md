@@ -1,9 +1,9 @@
 # The A2A Bridge: A2A's HTTP bindings in front of an Agent Messaging mesh
 
-**Version:** 0.9.1-draft
+**Version:** 0.9.2-draft
 **Status:** Working Draft
 **Date:** 2026-07-14
-**Revised:** 2026-11-07. 0.9.1-draft follows the binding's 0.3.0-draft: streams are read by `streamId` and end as A2A says, every operation on a Task is answered only to its readers, and the failure extension, the overdue and completed-late marks and the cancel-reason errors pass through. In 0.9.0-draft both sides of the bridge carry the same A2A objects, under the binding "A2A over Agent Messaging" (`a2a.md`, §13). Version 0.8.0-draft and earlier mapped between A2A's task model and an Agent Messaging task model of its own, which no longer exists.
+**Revised:** 2026-11-07. 0.9.2-draft says what an A2A error and an early cancel do to a held Task (§4.3), as the reference gateway does. 0.9.1-draft follows the binding's 0.3.0-draft: streams are read by `streamId` and end as A2A says, every operation on a Task is answered only to its readers, and the failure extension, the overdue and completed-late marks and the cancel-reason errors pass through. In 0.9.0-draft both sides of the bridge carry the same A2A objects, under the binding "A2A over Agent Messaging" (`a2a.md`, §13). Version 0.8.0-draft and earlier mapped between A2A's task model and an Agent Messaging task model of its own, which no longer exists.
 **Applies to:** Agent2Agent (A2A) Protocol 1.0, JSON-RPC and HTTP+JSON bindings · A2A over Agent Messaging (`a2a.md`), wire version 0.4.0 · Agent Messaging 0.10 (SPEC.md) · PACT 1.0 (§14)
 
 > This document specifies how a bridge serves agents on an Agent Messaging
@@ -215,6 +215,12 @@ the agent's first A2A answer to the request arrives:
   the held id's `metadata` names the agent's Task id under the marker's URI as
   `{"held": true, "taskId": "<the agent's Task id>"}`. A client SHOULD continue
   with the agent's Task id.
+- an A2A error moves the held Task to `TASK_STATE_FAILED`, with the error's
+  name and message in its status message.
+
+A caller may cancel a held Task before any answer arrives. That cancels the
+bridge's record only: the queued request is still delivered, and the agent's
+later answer to it is then not applied.
 
 Only an answer from the agent the request went to, naming the request in
 `in_reply_to`, settles a held Task.
