@@ -263,8 +263,11 @@ Task.
 **Canceling.** The bridge holds no identity for a signed caller, so it cannot
 cancel for it. `CancelTask` on such a Task carries the caller's own signed
 `CancelTask` frame for that Task in `params.metadata` under the extension's
-URI, signed by the same key that made the original request. The bridge checks
-it as §4 says and relays it. A frame signed by another key is answered by the
+URI, signed by the same key that made the original request. The frame's
+`CancelTask` request carries its reason under the cancel extension's URI,
+`https://agentmessaging.ai/extensions/cancel/v1`, as binding §12.6 requires of
+a client written to it. The bridge checks the frame as §4 says and relays it.
+A frame signed by another key is answered by the
 agent with `TaskNotFoundError` (binding §10), and one naming another Task is
 refused by the bridge with `reason: "mismatch"`.
 
@@ -495,15 +498,15 @@ sending nothing. Otherwise it puts the same budget on the message under the
 budget extension's URI, with the members spelled `costCeiling` and
 `amountMicro`, before it signs.
 
-**Refusals and the cap.** An agent that refuses because the work does not fit
-the budget ends the Task in `TASK_STATE_REJECTED` with
-`{"outcome": "insufficient", "estimate": {...}}` under the budget extension's
-URI, and an engagement's cap ends a Task in `TASK_STATE_CANCELED` with
-`{"outcome": "exhausted"}` (binding §12.2). Both reach the caller as the
-agent's Task, unchanged, so the caller can decide whether to try again with
-more. An agent that answers only 0.3.0 refuses with an error instead, and the
-bridge returns it as the A2A Bridge §7.3 says, with the refusal's `details`,
-such as the estimate, in the error's `data.details`.
+**Outcomes.** Every budget outcome is a Task state with the outcome named
+under the budget extension's URI (binding §12.2): `insufficient` and
+`deadline_unmeetable` in `TASK_STATE_REJECTED`, `ceiling_reached` in
+`TASK_STATE_INPUT_REQUIRED`, and `exhausted` in `TASK_STATE_CANCELED`. Each
+reaches the caller as the agent's Task, unchanged, so the caller can decide
+whether to try again with more, revise the budget of a paused Task with a
+higher `revision`, or cancel it with the reason `budget_exhausted` (§7). An
+agent that answers only 0.3.0 refuses or pauses in the older form, and the
+bridge presents it as the same outcomes (the A2A Bridge §5.2, §7.3).
 
 The bridge's own fee is a separate matter, disclosed as the A2A Bridge §9.2
 says. A budget bounds what the agent's work may cost; it is not a payment.

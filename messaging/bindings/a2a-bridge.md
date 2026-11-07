@@ -297,14 +297,27 @@ state. The JSON-RPC and HTTP+JSON bindings of A2A 1.0 spell states the same
 way. The lowercase spellings such as `"input-required"` and `"canceled"` were
 A2A 0.3's, and a bridge MUST NOT send them on either binding.
 
-**Work that stopped at its cap.** When an engagement's not-to-exceed cap ends
-the work (Agent SoW §5.5.5), the agent ends the Task in `TASK_STATE_CANCELED`
-and puts `{"outcome": "exhausted"}` in the Task's `metadata` under the budget
-extension's URI, `https://agentmessaging.ai/extensions/budget/v1` (binding
-§12.2). The bridge passes it unchanged. A client that knows the extension
-MUST NOT record such a Task as failed or retry it. A refusal because the work
-does not fit the budget is a Task in `TASK_STATE_REJECTED` with
-`{"outcome": "insufficient", "estimate": {...}}` under the same URI.
+**Budget outcomes.** Each outcome of a budget puts the Task in an A2A state,
+and the Task's `metadata` names the outcome under the budget extension's URI,
+`https://agentmessaging.ai/extensions/budget/v1` (binding §12.2):
+
+| Outcome | A2A state |
+|---|---|
+| `insufficient`, refused at admission, with the `estimate` | `TASK_STATE_REJECTED` |
+| `deadline_unmeetable`, refused at admission, with `earliestCompletion` | `TASK_STATE_REJECTED` |
+| `ceiling_reached`, paused for more money, with `spent` and `estimateToFinish` | `TASK_STATE_INPUT_REQUIRED` |
+| `exhausted`, ended by an engagement's not-to-exceed cap (Agent SoW §5.5.5) | `TASK_STATE_CANCELED` |
+
+The bridge passes all four unchanged. A client that knows the extension MUST
+NOT record an exhausted Task as failed and MUST NOT retry it. Whether to send
+any other canceled or refused work again is the client's choice.
+
+**Cancel reasons.** A `CancelTask` request may carry its reason under the
+cancel extension's URI, `https://agentmessaging.ai/extensions/cancel/v1`
+(binding §12.6), and the canceled Task carries the same object. The bridge
+passes both unchanged. A stock A2A client that sends no reason is a client
+that does not declare the extension, and the agent records its cancel as
+`user_requested`. The bridge MUST NOT add a reason on the caller's behalf.
 
 ### 5.2. Agents That Answer in 0.3.0 Envelopes
 
@@ -325,6 +338,12 @@ spelled as A2A 1.0 spells them:
 | `canceled` | `TASK_STATE_CANCELED` |
 | `rejected` | `TASK_STATE_REJECTED` |
 | `exhausted` | `TASK_STATE_CANCELED`, with `{"outcome": "exhausted"}` under the budget extension's URI and `"agentmesh.state": "exhausted"` in the Task's `metadata` |
+| `input_required` with the error `BUDGET_EXHAUSTED` (the 0.3.0 budget pause) | `TASK_STATE_INPUT_REQUIRED`, with `{"outcome": "ceiling_reached", "spent": ..., "estimateToFinish": ...}` under the budget extension's URI, from the error's `details.spent` and `details.estimate_to_finish` |
+
+A `CancelTask` for such an agent becomes its `task.cancel` request (Agent
+Messaging 0.9 §10.8), with the reason, note and extra fields of the cancel
+extension's object when the request carries one, and `user_requested` when it
+does not.
 
 A 0.3.0 request carries an `input` object, not Parts, so for such an agent
 the bridge also maps the Parts as 0.8.0-draft did:
@@ -357,7 +376,9 @@ and its refusal of file parts, are withdrawn.
 Part whose value is an Agent Messaging artifact reference (SPEC.md §7.5.1),
 with the artifact references extension,
 `https://agentmessaging.ai/extensions/artifact-refs/v1`, giving its `size`
-and `digest` in the Part's `metadata` (binding §6, §12.5).
+and `digest` in the Part's `metadata` (binding §6, §12.5). The extension may
+sit on a reference of any carrier, an `https:` URL included, and a reader
+checks the digest before it uses the bytes.
 
 - **Inbound, a large Part from a caller with no key.** When a `raw` Part
   would make the frame larger than the mesh's message size limit (SPEC.md
@@ -442,9 +463,16 @@ that have an A2A meaning that meaning, and the rest are channel errors (§7.2):
 | `TASK_INVALID_TRANSITION` | `UnsupportedOperationError` |
 | `CONTENT_TYPE_NOT_SUPPORTED` | `ContentTypeNotSupportedError` |
 | `OFFERING_NOT_FOUND` (legacy `SKILL_NOT_FOUND`), `INPUT_INVALID`, `INVALID_QUERY` | `InvalidParamsError` |
-| `BUDGET_INSUFFICIENT`, `DEADLINE_UNMEETABLE`, `BUDGET_EXHAUSTED` | `InvalidParamsError`, with the refusal's `details`, such as the estimate, in `data.details` |
-
 In every case the original code stays in `data.agentmesh_code`.
+
+The two budget refusals at admission are not errors under the binding but
+outcomes (§5.1), so for them the bridge answers with a Task it holds (§4.3)
+in `TASK_STATE_REJECTED`, carrying the outcome under the budget extension's
+URI: `BUDGET_INSUFFICIENT` with `details.estimate` becomes
+`{"outcome": "insufficient", "estimate": {"amountMicro": ..., "currency": ...}}`,
+and `DEADLINE_UNMEETABLE` with `details.earliest_completion` becomes
+`{"outcome": "deadline_unmeetable", "earliestCompletion": ...}`. The 0.3.0
+budget pause is §5.2's.
 
 ## 8. Agent Cards
 
@@ -857,13 +885,14 @@ Two fixture sets apply, and an implementation reads both in its own tests:
   operation appears twice, as frames over the binding and as the same call
   through a bridge's HTTP+JSON interface, and the A2A objects must agree. It
   also covers every error of §7.1, a Part by reference, a stream resumed
-  after a drop, a long Task, the budget's `exhausted` outcome, offering
-  routing with the older keys, and the refusal of a 0.4.0 frame that carries
-  `task_id`. `conformance/lib/check-a2a-binding.mjs` checks it.
+  after a drop, a long Task, the four budget outcomes, cancel reasons,
+  offering routing with the older keys, and the refusal of a 0.4.0 frame that
+  carries `task_id`. `conformance/lib/check-a2a-binding.mjs` checks it.
 - `conformance/a2a-bridge.json` is this mapping's and EXT-14's set: signed
-  and unsigned callers, a forged frame, the states in A2A's spelling with the
-  `exhausted` outcome and its older mark, an answer on an existing Task, the
-  knock and the reading of a queued acknowledgement, and readable text.
+  and unsigned callers, a forged frame, the states in A2A's spelling, the
+  states of 0.3.0 agents with `exhausted` and the budget pause, an answer on
+  an existing Task, the knock and the reading of a queued acknowledgement, the
+  budget's older form, and readable text.
   `conformance/lib/check-a2a-bridge-fixture.mjs` checks it.
 
 `conformance/cross-transport/` holds runs of one quote over a broker, email
