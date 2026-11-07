@@ -1601,6 +1601,177 @@
       }
     ]
   },
+  "wire_0_3_0_budget_and_cancel": {
+    "comment": "The A2A Bridge §5.2, §7.3, for an agent that answers only 0.3.0 during the transition window. Its budget refusals become a Task the bridge holds in TASK_STATE_REJECTED with the binding's outcome; its budget pause becomes TASK_STATE_INPUT_REQUIRED with ceiling_reached; snake case becomes camelCase. A CancelTask becomes its task.cancel request with the cancel extension's object, or user_requested when there is none.",
+    "budget": [
+      {
+        "name": "BUDGET_INSUFFICIENT",
+        "answer": {
+          "payload": {
+            "status": "failed"
+          },
+          "error": {
+            "code": "BUDGET_INSUFFICIENT",
+            "details": {
+              "estimate": {
+                "amount_micro": 5000000,
+                "currency": "USD"
+              }
+            }
+          }
+        },
+        "expect": {
+          "state": "TASK_STATE_REJECTED",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/budget/v1": {
+              "outcome": "insufficient",
+              "estimate": {
+                "amountMicro": 5000000,
+                "currency": "USD"
+              }
+            },
+            "mesh://extensions/a2a-bridge/v1": {
+              "held": true
+            }
+          }
+        }
+      },
+      {
+        "name": "DEADLINE_UNMEETABLE",
+        "answer": {
+          "payload": {
+            "status": "failed"
+          },
+          "error": {
+            "code": "DEADLINE_UNMEETABLE",
+            "details": {
+              "earliest_completion": "2026-11-24T17:00:00Z"
+            }
+          }
+        },
+        "expect": {
+          "state": "TASK_STATE_REJECTED",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/budget/v1": {
+              "outcome": "deadline_unmeetable",
+              "earliestCompletion": "2026-11-24T17:00:00Z"
+            },
+            "mesh://extensions/a2a-bridge/v1": {
+              "held": true
+            }
+          }
+        }
+      },
+      {
+        "name": "the budget pause",
+        "answer": {
+          "task_id": "task-1",
+          "payload": {
+            "status": "input_required"
+          },
+          "error": {
+            "code": "BUDGET_EXHAUSTED",
+            "details": {
+              "spent": {
+                "amount_micro": 900000,
+                "currency": "USD"
+              },
+              "estimate_to_finish": {
+                "amount_micro": 2500000,
+                "currency": "USD"
+              }
+            }
+          }
+        },
+        "expect": {
+          "state": "TASK_STATE_INPUT_REQUIRED",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/budget/v1": {
+              "outcome": "ceiling_reached",
+              "spent": {
+                "amountMicro": 900000,
+                "currency": "USD"
+              },
+              "estimateToFinish": {
+                "amountMicro": 2500000,
+                "currency": "USD"
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "an error that is no budget outcome stays an error",
+        "answer": {
+          "payload": {
+            "status": "failed"
+          },
+          "error": {
+            "code": "TASK_NOT_FOUND"
+          }
+        },
+        "expect": {
+          "error": -32001,
+          "agentmesh_code": "TASK_NOT_FOUND"
+        }
+      }
+    ],
+    "cancel": [
+      {
+        "name": "a reason and a note",
+        "params": {
+          "id": "task-1",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/cancel/v1": {
+              "reason": "superseded",
+              "note": "replaced"
+            }
+          }
+        },
+        "expect": {
+          "offering": "task.cancel",
+          "input": {
+            "task_id": "task-1",
+            "reason": "superseded",
+            "note": "replaced"
+          }
+        }
+      },
+      {
+        "name": "needs_not_furnished keeps unmet_need",
+        "params": {
+          "id": "task-1",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/cancel/v1": {
+              "reason": "needs_not_furnished",
+              "unmet_need": "credential:Salesforce"
+            }
+          }
+        },
+        "expect": {
+          "offering": "task.cancel",
+          "input": {
+            "task_id": "task-1",
+            "reason": "needs_not_furnished",
+            "unmet_need": "credential:Salesforce"
+          }
+        }
+      },
+      {
+        "name": "a stock client with no reason",
+        "params": {
+          "id": "task-1"
+        },
+        "expect": {
+          "offering": "task.cancel",
+          "input": {
+            "task_id": "task-1",
+            "reason": "user_requested"
+          }
+        }
+      }
+    ]
+  },
   "answers_on_a_task": {
     "comment": "EXT-14 §8. Under wire version 0.4.0 an A2A caller's answer on an existing Task is a Message with the Task's taskId and contextId, carried to the agent as it is; the agent answers as A2A and binding §10 say. task is the agent's stored Task (its state, the identity that created it, its context); caller is the identity the answer comes from. During the window, for an agent that answers only 0.3.0, the bridge builds the follow-up request itself (wire 0.3.0 cases).",
     "cases": [

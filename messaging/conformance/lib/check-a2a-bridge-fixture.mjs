@@ -99,6 +99,21 @@ function fromWire030(mesh) {
   return isState(s) ? { a2a: s } : null;
 }
 
+// The A2A Bridge §5.2, §7.3: a 0.3.0 agent's budget answers and cancels.
+const money = (m) => ({ amountMicro: m.amount_micro, currency: m.currency });
+const CODE_030 = { TASK_NOT_FOUND: -32001, TASK_EXPIRED: -32001, TASK_NOT_CANCELABLE: -32002, TASK_INVALID_TRANSITION: -32004, CONTENT_TYPE_NOT_SUPPORTED: -32005, OFFERING_NOT_FOUND: -32602, SKILL_NOT_FOUND: -32602, INPUT_INVALID: -32602, INVALID_QUERY: -32602 };
+function budget030(answer) {
+  const e = answer.error ?? {}, d = e.details ?? {};
+  if (e.code === "BUDGET_INSUFFICIENT") return { state: "TASK_STATE_REJECTED", metadata: { [BUDGET]: { outcome: "insufficient", estimate: money(d.estimate) }, [MARKER]: { held: true } } };
+  if (e.code === "DEADLINE_UNMEETABLE") return { state: "TASK_STATE_REJECTED", metadata: { [BUDGET]: { outcome: "deadline_unmeetable", earliestCompletion: d.earliest_completion }, [MARKER]: { held: true } } };
+  if (e.code === "BUDGET_EXHAUSTED" && answer.payload?.status === "input_required") return { state: "TASK_STATE_INPUT_REQUIRED", metadata: { [BUDGET]: { outcome: "ceiling_reached", spent: money(d.spent), estimateToFinish: money(d.estimate_to_finish) } } };
+  return { error: CODE_030[e.code] ?? -32603, agentmesh_code: e.code };
+}
+function cancel030(params) {
+  const o = params.metadata?.["https://agentmessaging.ai/extensions/cancel/v1"] ?? { reason: "user_requested" };
+  return { offering: "task.cancel", input: { task_id: params.id, ...o } };
+}
+
 // EXT-14 §8, binding §10, A2A §3.1.1.
 function answerOnTask(task, caller, message, wire) {
   if (!task || task.creator !== caller || task.id !== message.taskId) return { error: -32001 };
@@ -194,7 +209,9 @@ section("states from 0.3.0 agents", fx.states.wire_0_3_0, (c) => {
   const got = fromWire030(c.mesh);
   return same(got, { a2a: c.a2a, ...(c.metadata ? { metadata: c.metadata } : {}) }) ? true : `got ${JSON.stringify(got)}`;
 });
-section("answers on a Task", fx.answers_on_a_task.cases, (c) => {
+section("0.3.0 budget answers", fx.wire_0_3_0_budget_and_cancel.budget, (c) => (same(budget030(c.answer), c.expect) ? true : `got ${JSON.stringify(budget030(c.answer))}`));
+section("0.3.0 cancels", fx.wire_0_3_0_budget_and_cancel.cancel, (c) => (same(cancel030(c.params), c.expect) ? true : `got ${JSON.stringify(cancel030(c.params))}`));
+section("answers on a Task",fx.answers_on_a_task.cases, (c) => {
   const got = answerOnTask(c.task, c.caller, c.message, c.wire);
   return same(got, c.expect) ? true : `got ${JSON.stringify(got)}`;
 });
