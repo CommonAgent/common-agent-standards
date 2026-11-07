@@ -1186,6 +1186,7 @@ Sends an A2A operation to a specific agent, expecting a `respond`. A call betwee
 
 **Behavior:**
 - `payload.a2a.method` MUST be one of A2A's operation names, spelled as A2A spells it, and `payload.a2a.params` MUST be A2A's request object for that operation, in A2A's JSON form (A2A binding §4 to §6). What each operation means is A2A's. The A2A binding §5 lists the operations and the frames each one takes.
+- **The channel's own requests** carry no `payload.a2a`. They are not A2A operations, and the A2A binding leaves them unchanged (A2A binding §11): `describe` (§10.14), `knock` (EXT-6), the registry liveness probe (§18.7), advisories (§13.6), and the other reserved offerings that a node or the platform answers itself, such as `call-receipt` (EXT-15). Each keeps its `payload.offering` and `payload.input` on either wire version, and its answer is a `respond` whose payload the defining section gives. None of them creates a Task.
 - A call for work is `SendMessage`, or `SendStreamingMessage` when the client wants results as they are produced (Section 11). Its answer is either an A2A Message, when the server agent finishes in one round, or an A2A Task, when the work continues (§7.0). The server agent chooses, and the client learns which from the first **substantive** reply. The accept signal (§6.4a), when present, precedes that reply and chooses neither.
 - The server agent MUST create a Task **only when** it defers, streams, or needs another round (`TASK_STATE_INPUT_REQUIRED` or `TASK_STATE_AUTH_REQUIRED`). It MUST NOT create a Task solely to answer a request it can complete immediately.
 - A Message that continues an existing Task (the answer to `TASK_STATE_INPUT_REQUIRED`, for example) names the Task's `taskId` and `contextId`, as A2A says.
@@ -3161,19 +3162,21 @@ Profile attributes are subject to tenancy visibility (§15): an operator MAY wit
 
 Composed operations are higher-level interaction patterns built from primitives. They are standardized for interoperability but are not fundamental: any agent can implement them using the underlying primitives. Because they add no capability (only naming conventions), 0.2 keeps a small core set and **parks** the rest: parked operations remain implementable by any two agents today and will be re-specified when two independent implementations need to interoperate on them.
 
+Where A2A defines an operation, Agent Messaging uses it and defines no composed operation of its own: streaming is `SendStreamingMessage` and `SubscribeToTask` (§10.5), cancellation is `CancelTask` (§10.8), and reading a Task is `GetTask` and `ListTasks` (§7.4). Those sections add only what Agent Messaging records or carries beside the A2A operation.
+
 **0.2 disposition:**
 
 | Operation | Status | Notes |
 |-----------|--------|-------|
-| `stream` | **Core** | Incremental results (§11) |
-| `cancel` | **Core** | Task cancellation: closed reason enum + upstream propagation (§10.8) |
+| `stream` | **Core** | A2A's `SendStreamingMessage` and `SubscribeToTask` (§10.5, §11) |
+| `cancel` | **Core** | A2A's `CancelTask`, with a closed reason enum and upstream propagation (§10.8) |
 | `heartbeat` | **Core** | Node-level liveness (§9.6) |
 | `status` | **Core** | Operational status query |
 | `delegate` | **Core** (guidance) | Request forwarding |
 | `broadcast` | **Core** (guidance) | discover + emit |
 | `describe` | **Core** | The pre-admission read (§10.14) |
 | `negotiate` | **Retired** | Subsumed by budget admission, refuse-with-estimate (§7.7, §10.4) |
-| `connect` / `disconnect` | **Parked** | `context_id` already gives multi-turn continuity without dedicated session infrastructure |
+| `connect` / `disconnect` | **Parked** | A2A's `contextId` already gives multi-turn continuity without dedicated session infrastructure |
 | `authorize` | **Parked** | Authorization is a node/policy concern, not a mesh query |
 | `transfer` | **Parked** | `delegate` covers the real cases |
 | `propose` | **Parked** *(likely to return)* | Cross-mesh human-in-the-loop approval |
@@ -3213,7 +3216,7 @@ Forwards a request to another agent when the receiving agent cannot or should no
 **Flow:**
 1. Agent A receives a request from Agent B.
 2. Agent A discovers Agent C with the required capability.
-3. Agent A sends a new `request` to Agent C, preserving the original `trace_id` and `context_id`.
+3. Agent A sends a new `request` to Agent C, preserving the original `trace_id`. It MAY name the original `contextId` in its A2A Message.
 4. Agent A MAY remain in the chain (proxy pattern) or MAY redirect Agent B to Agent C directly (redirect pattern).
 5. If proxying, Agent A forwards Agent C's response to Agent B. The `meta.delegated_from` field SHOULD record the delegation chain.
 
@@ -3230,21 +3233,19 @@ merits.
 
 ### 10.5. `stream`
 
-Delivers incremental results for a single request as a sequence of ordered messages.
+Delivers incremental results for a single call as an ordered sequence of messages. Streaming is A2A's `SendStreamingMessage` and `SubscribeToTask` (A2A §3), answered with A2A stream events as Section 11 and the A2A binding §8 say.
 
 **Composed from:** `request` + `respond` (sequential, ordered)
 
 **Flow:**
-1. Requester sends `request` with `config.stream: true`.
-2. Responder sends an initial `respond` with `status: "working"` and `task_id`.
-3. Responder publishes incremental results as `respond` messages on `mesh.task.{task_id}.stream`, each with:
-   - `in_reply_to`: the original request ID.
-   - `task_id`: the task ID.
-   - `payload.chunk_index`: monotonically increasing integer.
-   - `payload.final`: boolean indicating whether this is the last chunk.
-4. The final chunk has `payload.final: true` and `payload.status: "completed"`.
+1. The client sends a `request` frame carrying `SendStreamingMessage`, or `SubscribeToTask` for a Task that already exists.
+2. The server agent sends the first stream event in a `respond` frame to the client's inbox, so the client learns the A2A Task id.
+3. The server agent publishes every later event as a `respond` frame on `mesh.task.{taskId}.stream`, each carrying `payload.a2a.seq`.
+4. The event that puts the Task in a terminal or interrupted state carries `payload.a2a.final: true`, and nothing follows it on that stream.
 
-**Ordering Guarantee:** All stream chunks are published to the same subject (`mesh.task.{task_id}.stream`), which guarantees their order, because every binding delivers in order per subject (§18.1).
+**Ordering Guarantee:** All later events are published to the same subject (`mesh.task.{taskId}.stream`), which guarantees their order, because every binding delivers in order per subject (§18.1).
+
+On a 0.3.0 envelope a stream is a sequence of chunks (§11.7).
 
 ### 10.6. `broadcast`
 
@@ -3264,13 +3265,15 @@ agents can hold a plain exchange without prior agreement on an offering name.
 **Composed from:** `request` + `respond`
 
 - An agent that can converse in natural language SHOULD register an offering
-  with `id: "chat"`, taking `{ "text": string }` and returning
-  `{ "text": string }`.
+  with `id: "chat"`, taking a Message with a `text` Part and answering with
+  a Message with a `text` Part (on a 0.3.0 envelope, `{ "text": string }` in
+  and out).
 - A sender that wants to talk (rather than invoke a specific capability)
-  SHOULD `request` the `chat` offering. If the target has no `chat` handler,
-  it responds with `OFFERING_NOT_FOUND` (§12): the sender learns the agent
-  is reachable but not conversational, and MAY inspect its manifest for
-  the offerings it does expose.
+  SHOULD send a `SendMessage` naming the `chat` offering. If the target has
+  no `chat` handler, it responds with `InvalidParamsError` listing its
+  offerings (`OFFERING_NOT_FOUND` on a 0.3.0 envelope, §12): the sender
+  learns the agent is reachable but not conversational, and MAY inspect its
+  manifest for the offerings it does expose.
 
 This is a naming convention, not a new capability: `chat` is to
 conversation what a phone number is to a call. Tool-only agents (those
@@ -3286,21 +3289,33 @@ is the pairwise case.
 > governs. This section and §10.8a bind it to the mesh: the reason enum,
 > the attribution values, and their byte-level encodings.
 
-Requests cancellation of an in-progress Task, with a stated reason.
+Requests cancellation of an in-progress Task, with a stated reason. Cancellation is A2A's `CancelTask` operation (A2A §3), carried as the A2A binding §5 says. This section adds the reason, the attribution and the propagation that Agent Messaging records beside the Task.
 
-**Composed from:** `request` (to the responder's inbox) + `respond` (on the task update subject)
+**Composed from:** A2A's `CancelTask`, a `request` frame to the server agent's inbox, answered by a `respond` frame carrying the updated Task.
 
 **Flow:**
-1. The canceling party sends `request` with `payload.offering: "task.cancel"` and
-   `payload.input: { "task_id": "<uuid>", "reason": "<CancelReason>", "note": "<optional>" }`.
-2. It also publishes the cancellation as a `respond` on `mesh.task.{task_id}.update`
-   with `payload: { "status": "canceled", "reason": "<CancelReason>", "note": "<optional>" }`.
-   This is what the task manager records, and it carries the same `reason`.
-3. The performer stops work when the cancel reaches it and responds with the
-   updated Task state.
-4. Cancellation is best-effort on the work: the Task may have already
+1. The canceling party sends a `request` frame whose `payload.a2a.method` is
+   `CancelTask` and whose `params` are
+   `{ "id": "<A2A Task id>", "metadata": { "https://agentmessaging.ai/bindings/a2a/v1": { "reason": "<CancelReason>", "note": "<optional>" } } }`.
+   The reason travels in the request's `metadata`, under the A2A binding's URI.
+2. The server agent stops work when the cancel reaches it, the Task enters
+   `TASK_STATE_CANCELED`, and the server agent's node answers with the
+   updated Task, as A2A says. It publishes the change on
+   `mesh.task.{taskId}.update` (§7.4), and the canceled Task's `metadata`
+   carries the same reason under the same key. This is what the task manager
+   records.
+3. Cancellation is best-effort on the work: the Task may have already
    completed, and a terminal state that arrived first stands
-   (`TASK_NOT_CANCELABLE`).
+   (`TaskNotCancelableError`).
+
+In the rest of this section a **cancel request** is a `CancelTask` request.
+On a 0.3.0 envelope it is a `request` with `payload.offering: "task.cancel"`
+and `payload.input: { "task_id", "reason", "note" }`, and the canceling party
+also publishes the cancellation itself as a `respond` on
+`mesh.task.{task_id}.update` with
+`payload: { "status": "canceled", "reason", "note" }`. That requester-signed
+update exists only on 0.3.0; on a 0.4.0 frame only the server agent publishes
+Task changes (§7.3).
 
 **Reasons.** `reason` is REQUIRED, from a closed enum:
 
@@ -3318,8 +3333,11 @@ Requests cancellation of an in-progress Task, with a stated reason.
 `deadline_exceeded` and `budget_exhausted` deliberately reuse the §12.2
 vocabulary, so a cancel that follows an overdue mark or a budget pause reads
 consistently with the budget lifecycle (§7.7). The enum is closed: a receiver
-MUST reject a cancel whose `reason` is missing or not one of the eight as
-`INVALID_ENVELOPE`. An OPTIONAL free-text `note` MAY accompany the reason; the
+MUST reject a cancel whose `reason` is not one of the eight, with
+`InvalidParamsError` (`INVALID_ENVELOPE` on a 0.3.0 envelope). On a 0.4.0
+frame a `CancelTask` that carries no reason, as one from an A2A client that
+does not know this key does, is read as `user_requested`. On a 0.3.0 envelope
+a missing `reason` is refused as `INVALID_ENVELOPE`. An OPTIONAL free-text `note` MAY accompany the reason; the
 enum, not the note, is what the record carries as meaning: the task record
 and the metering receipt (§19.2) store the `reason`, and the note is context
 for humans, never interpreted. The note is sender text and falls under the
@@ -3334,25 +3352,30 @@ reason, each meaningful with exactly one of the last two reasons above:
   `<value>` is that entry's own value: `"credential:Salesforce"`,
   `"resource:git-repo"`, `"file:application/pdf"`. A receiver MUST reject a
   `needs_not_furnished` whose `unmet_need` is missing, is not a string, or
-  does not have that shape, as `INVALID_ENVELOPE`.
+  does not have that shape, with `InvalidParamsError` (`INVALID_ENVELOPE` on a
+  0.3.0 envelope). On a 0.4.0 frame the field is spelled `unmetNeed`, beside
+  `reason` under the A2A binding's URI.
 - `dependency` is OPTIONAL with `dependency_failed`, naming the outside
   service the way §8.8 does, and MUST NOT appear with any other reason.
 
-**The same vocabulary ends a `failed` Task.** A `respond` on
-`mesh.task.{task_id}.update` with `payload.status: "failed"` MAY carry
-`reason`, `note`, `unmet_need` and `dependency` under exactly the rules above.
-`reason` stays OPTIONAL on a failure — a Task that simply did not work out is
-a complete statement, and a responder MUST NOT be forced to invent an excuse —
-but when it IS present it is validated identically, and a `failed` update
-whose reason is outside the enum, or whose `unmet_need` is malformed or
-missing, is rejected as `INVALID_ENVELOPE` at the door. The task record stores
+**The same vocabulary ends a failed Task.** A Task that enters
+`TASK_STATE_FAILED` MAY carry `reason`, `note`, `unmetNeed` and `dependency`
+in its `metadata`, under the A2A binding's URI, under exactly the rules above
+(on a 0.3.0 envelope, a `respond` on `mesh.task.{task_id}.update` with
+`payload.status: "failed"` carries `reason`, `note`, `unmet_need` and
+`dependency`). `reason` stays OPTIONAL on a failure (a Task that simply did
+not work out is a complete statement, and a responder MUST NOT be forced to
+invent an excuse), but when it IS present it is validated identically: the
+task store does not apply a failed update whose reason is outside the enum,
+or whose `unmetNeed` is malformed or missing, and on a 0.3.0 envelope it
+rejects it as `INVALID_ENVELOPE` at the door. The task record stores
 it as `failure_reason`, kept distinct from `cancel_reason` so a reader never
 has to guess which ending a stored reason belonged to.
 
-**Who canceled, as the server observed it.** On `canceled` the server records `canceled_by` beside `cancel_reason`, and `reason` remains the signer's own claim. `canceled_by` has one of two shapes. A verified attribution is `{ party, requester_request, at }`, with an OPTIONAL `resolved_at`, and its `requester_request` is the server's finding. An unverified attribution is `{ party, at, unverified: true, unverified_reason }`, with no `requester_request` at all, and it means that the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first, and it reads any value of `unverified` other than absent or `false` as unverified, whatever else the object holds.
+**Who canceled, as the server observed it.** When a Task enters `TASK_STATE_CANCELED` the server records `canceled_by` beside `cancel_reason`, and `reason` remains the signer's own claim. `canceled_by` has one of two shapes. A verified attribution is `{ party, requester_request, at }`, with an OPTIONAL `resolved_at`, and its `requester_request` is the server's finding. An unverified attribution is `{ party, at, unverified: true, unverified_reason }`, with no `requester_request` at all, and it means that the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first, and it reads any value of `unverified` other than absent or `false` as unverified, whatever else the object holds.
 
 - `party` is `requester` or `responder`. It is `responder` whenever the responder signed the canceled update, whatever reason it signed.
-- `requester_request` is an object with `request_id`, `observed_at` and `via`, or null. `via` is `update` when it is the original requester's own canceled update, and `cancel_request` when it is a `task.cancel` request that the original requester sent the responder and that counts (below). For a `task.cancel` request, `observed_at` is when the server received it. The original requester is the Task's `origin.requester` (§7.1). A `task.cancel` request from any other agent does not count.
+- `requester_request` is an object with `request_id`, `observed_at` and `via`, or null. `via` is `update` when it is the original requester's own canceled update (which exists only on a 0.3.0 envelope), and `cancel_request` when it is a cancel request that the original requester sent the responder and that counts (below). For a cancel request, `observed_at` is when the server received it. The original requester is the record's `origin.requester` (§7.1). A cancel request from any other agent does not count.
 - A missing `requester_request` means unknown, never that the requester did not ask. Only an explicit null says that the requester did not ask. A server MUST NOT write null at the transition, and writes it only from a settle (below), so a null `requester_request` always comes with `resolved_at`.
 - `at` is when the server recorded the transition.
 - `resolved_at` is when a settle wrote the attribution, by the server's clock. It is absent on an attribution written at the transition, and on an unverified attribution it appears only with `expired`.
@@ -3361,13 +3384,13 @@ has to guess which ending a stored reason belonged to.
   - `read_failed`: the ledger store refused the read.
   - `read_timed_out`: the read did not answer in time. The reference server waits 5 seconds.
   - `ledger_unavailable`: the server had no ledger to read.
-  - `window_incomplete`: the reads worked, but a `task.cancel` request the server received for the Task is not written, because its write failed or is still in flight, so the server cannot know that none counts. More cancel requests than the server keeps (below) read the same way.
+  - `window_incomplete`: the reads worked, but a cancel request the server received for the Task is not written, because its write failed or is still in flight, so the server cannot know that none counts. More cancel requests than the server keeps (below) read the same way.
   - `expired`: the attribution was still unverified 24 hours after `at`. It is final and is left for an operator, and the server never settles it again.
   - `no_origin`: the Task has no origin, so there is no original requester to vouch for. It is settled only if an origin is attached later.
 
 **At the transition.** A Task without an origin is written unverified with `no_origin`. Otherwise, a canceled update the requester signed is the requester asking, so the server writes `requester_request` with `via: "update"`, naming that update, and needs no read to do so. A responder-signed cancel is verified at once, with `via: "cancel_request"`, when the server has already seen a counting cancel request from the original requester. A responder-signed cancel without one is written unverified, with `settling`, or with the reason a failed read gives.
 
-**When a cancel request counts.** A `task.cancel` request from the original requester counts when the server received it at or before `at`. It also counts when the server received it within the grace period G after `at` and the requester's own signed `ts` is at or before `at`, which covers a server whose subscription buffer was behind and stamped the request's arrival late. The requester's `ts` can only cost the requester. A request received more than G after `at` does not count, whatever its `ts`. The server keeps every cancel request it receives, up to 8 per Task, sender and addressee, ordered by when each was received, and uses the earliest received request that counts, so a later-received request that counts is never hidden by an earlier one that does not. Past 8 requests the server cannot know that none counts, and the attribution reads `window_incomplete`.
+**When a cancel request counts.** A cancel request from the original requester counts when the server received it at or before `at`. It also counts when the server received it within the grace period G after `at` and the requester's own signed `ts` is at or before `at`, which covers a server whose subscription buffer was behind and stamped the request's arrival late. The requester's `ts` can only cost the requester. A request received more than G after `at` does not count, whatever its `ts`. The server keeps every cancel request it receives, up to 8 per Task, sender and addressee, ordered by when each was received, and uses the earliest received request that counts, so a later-received request that counts is never hidden by an earlier one that does not. Past 8 requests the server cannot know that none counts, and the attribution reads `window_incomplete`.
 
 **Settling.** The server settles an unverified attribution later, and writes the result to the Task record by compare-and-set, adding `resolved_at`. A settle writes `requester_request` as soon as a counting cancel request from the original requester is seen, before or after G. When the requester signed the canceled update, a settle writes `requester_request` with `via: "update"`, naming that update, and never null, whatever the cancel requests say. That also covers a Task that had no origin at the cancel and has one attached later. A settle writes `requester_request: null` only when all of these hold:
 
@@ -3375,7 +3398,7 @@ has to guess which ending a stored reason belonged to.
 - the reads worked;
 - no cancel request for the Task is marked received and unwritten, in the store or in the settling process's memory.
 
-A settle that runs past `at` plus 24 hours writes unverified `expired`, with `resolved_at`. Whenever a server has received a `task.cancel` request for a Task and not yet written it, it marks that Task's cancel window incomplete, and it writes the mark to the store at once, so that a settle on any instance sees it. The reference server retries an unverified attribution in the background, sweeps every 5 minutes for records still unverified at least G after `at`, which also covers a restart, and also settles on `task.get` and on the privileged read.
+A settle that runs past `at` plus 24 hours writes unverified `expired`, with `resolved_at`. Whenever a server has received a cancel request for a Task and not yet written it, it marks that Task's cancel window incomplete, and it writes the mark to the store at once, so that a settle on any instance sees it. The reference server retries an unverified attribution in the background, sweeps every 5 minutes for records still unverified at least G after `at`, which also covers a restart, and also settles on a read of the Task (`GetTask`) and on the privileged read.
 
 Every task-manager instance MUST use the same G. The reference server's G is 60 seconds by default and is set with `TASK_CANCEL_SETTLE_GRACE_MS`. Each instance compares its G with the one last written to the ledger store, at start and on every sweep, and logs a warning when they differ. Every task-manager instance MUST also run a release with these rules, because an older one writes `requester_request: null` at the transition, so a deployment upgrades its task-manager instances together.
 
@@ -3437,7 +3460,7 @@ original note when one was present. Enforcement is stated honestly, in the
 pattern §7.7 established: the MUST is honor-system inside the performer
 (nothing on the mesh can see its delegation decisions), and its teeth are
 central visibility. The task manager can observe a canceled Task whose
-delegated children (non-terminal Tasks sharing its `context_id` whose
+delegated children (non-terminal Tasks sharing its `contextId` whose
 requester is the canceled Task's responder) remain live. That condition is
 **stranded delegates**: the task manager flags the child records
 (`stranded: true`) and announces each on `mesh.event.task.stranded`, so a
@@ -3456,13 +3479,13 @@ delivery is on its own account, in the same sense as §7.7's work past the
 deadline.
 
 **Errors:**
-- `INVALID_ENVELOPE`: `reason` missing or not in the enum.
-- `TASK_NOT_FOUND`: the named Task is unknown.
-- `TASK_NOT_CANCELABLE`: the Task is already in a terminal state.
+- `InvalidParamsError`: `reason` not in the enum, or `unmetNeed` malformed or missing (`INVALID_ENVELOPE` on a 0.3.0 envelope, where a missing `reason` is refused too).
+- `TaskNotFoundError`: the named Task is unknown, or the canceling party may not read it (§7.1) (`TASK_NOT_FOUND` on a 0.3.0 envelope).
+- `TaskNotCancelableError`: the Task is already in a terminal state (`TASK_NOT_CANCELABLE` on a 0.3.0 envelope).
 
-Wire shapes, the eight reason strings, the `unmet_need` rules, the failed-update
-shape, the propagated-cancel note format, and the reject cases are pinned in
-`conformance/cancel.json`.
+The 0.3.0 wire shapes, the eight reason strings, the `unmet_need` rules, the
+failed-update shape, the propagated-cancel note format, and the reject cases
+are pinned in `conformance/cancel.json`.
 
 ### 10.9. `transfer` *(Parked, 0.2; not core)*
 
@@ -3516,7 +3539,7 @@ Queries an agent's current operational status.
 **Composed from:** `request` (well-known schema)
 
 **Flow:**
-1. Requester sends `request` with `payload.offering: "agent.status"`.
+1. Requester sends a `SendMessage` that names the well-known offering `agent.status` in the offering extension (on a 0.3.0 envelope, `payload.offering: "agent.status"`).
 2. Agent responds with current state, active tasks, availability, and any relevant diagnostics.
 
 ### 10.12. `authorize` *(Parked, 0.2; not core)*
@@ -3549,7 +3572,7 @@ Human-in-the-loop checkpoint. Submits a proposed action for approval before exec
 
 The pre-admission read: the one substantive request any agent may make of any other **before** admission, the mesh equivalent of an unauthenticated HTTP GET. It exists so that first contact between strangers can be informed rather than blind; without it, every introduction is a cold knock on a closed door, and no third party can ever build a map of what exists.
 
-**Composed from:** `request` with the reserved offering `describe`.
+**Composed from:** `request` with the reserved offering `describe`. It is one of the channel's own requests (§6.4): it carries `payload.offering: "describe"` and no `payload.a2a`, on either wire version.
 
 **Rules (all normative):**
 
