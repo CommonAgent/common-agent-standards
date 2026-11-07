@@ -69,8 +69,8 @@ Agent Messaging is designed to compose with the emerging agent ecosystem, not re
 
 **Payments and commerce** cut across the economic layer the way identity cuts across discovery. Four specifications divide that space cleanly: UCP answers *what can I buy*, ACP answers *how do I check out safely*, AP2 answers *what is this agent allowed to spend*, and x402 answers *how does value move, machine to machine*. Agent Messaging answers none of those questions, on purpose. Its economic surface is deliberately thin: cost expression as an extension field (Section 17), budget and allowance registration (EXT-8), and one typed refusal, *payment required*, whose data names the price and the **accepted settlement methods** as an extensible array. Everything below that line is settlement, and settlement is ceded. What Agent Messaging contributes is the layer none of the four define: **metering and netting**. Agent-to-agent obligations are high-frequency and sub-cent, a regime where per-transaction settlement on any external rail (card or chain) pays overhead that dwarfs the amounts; an instance therefore clears them on an internal ledger and settles at the edges, in lumps. The ledger is an operator service, not protocol surface: the protocol defines the shape of the demand, never the movement of the money. No card data, wallet key, or mandate ever crosses the mesh surface.
 
-- **x402**: machine-to-machine payment demands over HTTP 402, settled in stablecoins. *Leverage:* the interaction shape, a typed payment-required refusal that carries how-to-pay, machine-readably. The A2A Bridge's gateway refusal (BRIDGE-A2A.md §9.1) is deliberately the same shape, and its `accepted` array is designed so an x402 method entry (chain, asset, address) drops in beside the platform-ledger entry without changing any consumer. *Cede:* on-chain settlement, wallet custody, transaction construction and verification. x402 is the authority for value movement machine-to-machine. *Boundary:* netting; x402 is a top-up and payout rail at the ledger's edge, never the per-call mechanism.
-- **AP2 (Agent Payments Protocol)**: cryptographically scoped, revocable spending mandates over established fiat rails. *Leverage:* the mandate model as the reference for portable spending authority; EXT-8 allowances are the mesh-native, platform-registered analogue (visibility, not enforcement). *Cede:* fiat settlement, its regulatory envelope, and mandate issuance, verification, and revocation. AP2 is the authority for authorized spending on banking rails. *Boundary:* identity-bound refusal and in-envelope budget expression; honoring a verified AP2 mandate as an EXT-8 allowance is edge-mapping work in the BRIDGE-A2A pattern, not core surface.
+- **x402**: machine-to-machine payment demands over HTTP 402, settled in stablecoins. *Leverage:* the interaction shape, a typed payment-required refusal that carries how-to-pay, machine-readably. The A2A Bridge's gateway refusal (`bindings/a2a-bridge.md` §9.1) is deliberately the same shape, and its `accepted` array is designed so an x402 method entry (chain, asset, address) drops in beside the platform-ledger entry without changing any consumer. *Cede:* on-chain settlement, wallet custody, transaction construction and verification. x402 is the authority for value movement machine-to-machine. *Boundary:* netting; x402 is a top-up and payout rail at the ledger's edge, never the per-call mechanism.
+- **AP2 (Agent Payments Protocol)**: cryptographically scoped, revocable spending mandates over established fiat rails. *Leverage:* the mandate model as the reference for portable spending authority; EXT-8 allowances are the mesh-native, platform-registered analogue (visibility, not enforcement). *Cede:* fiat settlement, its regulatory envelope, and mandate issuance, verification, and revocation. AP2 is the authority for authorized spending on banking rails. *Boundary:* identity-bound refusal and in-envelope budget expression; honoring a verified AP2 mandate as an EXT-8 allowance is edge-mapping work in the A2A Bridge pattern (`bindings/a2a-bridge.md`), not core surface.
 - **UCP (Universal Commerce Protocol)**, discovery-to-cart for goods commerce, is an explicit **non-overlap**, like MCP: the mesh registry catalogs *capabilities*, not SKUs, and carts, variants, and inventory never enter this protocol. UCP traffic rides opaquely in payloads. What Agent Messaging offers a UCP-speaking merchant agent is reach, identity, and presence. It offers nothing about shopping.
 - **ACP (Agentic Commerce Protocol)**, checkout execution via scoped shared payment tokens, is likewise a **non-overlap** in core. It intersects only at an instance's funding edge: where an operator sells ledger credit for money, an ACP-style checkout is a natural funding method behind the ledger's `purchase` postings. Its tokens are between buyer, merchant, and processor; the mesh never sees one.
 
@@ -106,7 +106,7 @@ Two kinds of party implement this specification. Agents, nodes and SDKs carry th
 
 There are two profiles:
 
-- **The core profile** is what every Agent Messaging server MUST implement. A server that implements it MAY say that it implements "Agent Messaging 0.8, core profile".
+- **The core profile** is what every Agent Messaging server MUST implement. A server that implements it MAY say that it implements "Agent Messaging 0.10, core profile".
 - **The full specification** is the core profile together with every deployment-defined part below, each implemented as this document describes it. The Agent Messaging Server, the reference implementation, implements the core profile.
 
 A part is **deployment-defined** when the core profile does not require it, either because it depends on things a server need not have (human accounts, organizations, a naming service, a billing provider) or because the way it is met is the deployment's choice. Three rules apply:
@@ -147,7 +147,7 @@ The agents and nodes a server runs for itself (its registry agent, its admission
 | Names | §6.2 (the verified-name rule), §4.10 (moving an agent to a new key), `SPEC-NAMING.md` | Requiring a verified name at registration, and rebinding a name when an agent moves to a new key, need a naming service. A server without one registers agents by their keys and MUST NOT present an agent as named. |
 | The sandbox | §4.1, §9.7, §16.4 | A server MAY offer one. If it does, the sandbox is confined as §4.1 requires. |
 | Native enrollment by an outside proof | §4.14, §4.8 | An OAuth token, a JWT-SVID or an X.509-SVID in place of the one-time enrollment key, checked against an account's trust records, with renewal on a fresh proof. A core server MAY leave it out. One that offers it passes the `identity` profile's tests i01 to i10 for the proofs it accepts. |
-| Identity bridges | §4.15, `BRIDGE-A2A.md` | A node that hosts mesh identities for callers that hold no mesh key, over HTTPS, MCP or A2A. A core server MAY run none. One that runs a bridge follows §4.15 and passes test i11. |
+| Identity bridges | §4.15, `bindings/a2a-bridge.md` | A node that hosts mesh identities for callers that hold no mesh key, over HTTPS, MCP or A2A. A core server MAY run none. One that runs a bridge follows §4.15 and passes test i11. |
 | Where an identity came from | §9.7 (`identity_source`), §9.3, §10.14 | The attested record of how each agent got its identity. A server that offers §4.14 or §4.15 records it, serves the discovery filter and returns it from `describe`. |
 | Admission by where an identity came from | EXT-6 §4 (the `bridged` tier, `source` entries) | Part of EXT-6 0.5.0. A server that enforces admission and runs a bridge sorts bridged senders and source entries as EXT-6 says, and passes test i12. |
 | Acting for a person | §4.16 | The `on_behalf_of` evidence and the receiver's three results. An SDK or server that offers it passes test i13. |
@@ -377,7 +377,7 @@ Every agent MUST possess an Ed25519 keypair generated on (or provisioned to) its
 
 **Encryption key (OPTIONAL).** An agent MAY additionally hold an X25519 keypair, distinct from its Ed25519 signing keypair, used only for receiving sealed content (never for signing). Its purpose is end-to-end confidentiality where the transport or its operator is not trusted to read payloads: a sender seals a symmetric key or a message to the agent's X25519 **public** key, and only the agent can open it. An agent that declares an encryption key publishes the public half in its manifest (§8) as `encryption_key` and, outside the mesh, on its PAN card. The signing key remains the agent's identity and address; the encryption key is a capability attached to it, and its absence simply means the agent participates only in cleartext. This field is the sole prerequisite for the `sealed` privacy grade of the Rooms extension (§17.5); it is declared here in core because identity fields cannot be retrofitted once agents are minted. Holding the key says only that the agent *can* be sealed to; whether callers *should* seal, and what happens to a request that arrives in the clear, is a separate declaration (`sealing`, §8.9).
 
-**Where sealing ends.** Sealing terminates at the agent's node, because that is where the encryption seed lives — and "provisioned to its host" above includes a host the owner does not operate. An agent hosted on another party's infrastructure (a hosting platform; a bridge node vouching for an external party, `BRIDGE-A2A.md`) has that operator inside the sealed boundary: the operator opens payloads *as the agent*, which is not a violation of this section but the plain meaning of hosting. In particular, when the host is the same party that operates the transport, sealing still keeps payloads confidential in transit and in every mesh-side buffer, but it buys the sender nothing against that party. A manifest's `encryption_key` (§8.1) is a statement about a key, not about who operates the node behind it; a sender whose threat model includes the recipient's host must establish where the recipient's node runs by means outside this specification.
+**Where sealing ends.** Sealing terminates at the agent's node, because that is where the encryption seed lives — and "provisioned to its host" above includes a host the owner does not operate. An agent hosted on another party's infrastructure (a hosting platform; a bridge node vouching for an external party, `bindings/a2a-bridge.md`) has that operator inside the sealed boundary: the operator opens payloads *as the agent*, which is not a violation of this section but the plain meaning of hosting. In particular, when the host is the same party that operates the transport, sealing still keeps payloads confidential in transit and in every mesh-side buffer, but it buys the sender nothing against that party. A manifest's `encryption_key` (§8.1) is a statement about a key, not about who operates the node behind it; a sender whose threat model includes the recipient's host must establish where the recipient's node runs by means outside this specification.
 
 ### 4.4. Vouching (Node → Agent Attestation)
 
@@ -694,9 +694,9 @@ The agent's own key is made where the agent runs and never leaves it (§4.3). Th
 
 ### 4.15. Identity Bridges
 
-> **Deployment-defined (§1.6).** A server MAY run a bridge. A bridge that does passes test i11 of the `identity` profile, and an A2A bridge is also bound by `BRIDGE-A2A.md`.
+> **Deployment-defined (§1.6).** A server MAY run a bridge. A bridge that does passes test i11 of the `identity` profile, and an A2A bridge is also bound by `bindings/a2a-bridge.md`.
 
-A **bridge** is a node (§4) that hosts mesh identities for callers that hold no mesh key, and signs for them. A caller reaches it over HTTPS, over MCP or over A2A, and presents a credential on every call. The A2A bridge (`BRIDGE-A2A.md`) is one bridge; this section states the rules every bridge follows, and that document adds what is particular to A2A.
+A **bridge** is a node (§4) that hosts mesh identities for callers that hold no mesh key, and signs for them. A caller reaches it over HTTPS, over MCP or over A2A, and presents a credential on every call. The A2A bridge (`bindings/a2a-bridge.md`) is one bridge; this section states the rules every bridge follows, and that document adds what is particular to A2A.
 
 **The rules (normative).**
 
@@ -709,7 +709,7 @@ A **bridge** is a node (§4) that hosts mesh identities for callers that hold no
    "identity_bridge": { "bridge": "<the bridge's node key>", "caller_kind": "oauth", "caller_ref": "<opaque>", "front": "mcp" }
    ```
 
-   `front` is the protocol the caller used: `https`, `mcp` or `a2a`. The marker MUST NOT carry the caller's account: a bridged caller is no more identifiable to strangers than a native agent. Resolving `caller_ref` to a party is the bridge operator's lookup, not a fact on the wire. An A2A bridge also carries `meta.a2a_bridge` (`BRIDGE-A2A.md` §8.3) for receivers written before this section.
+   `front` is the protocol the caller used: `https`, `mcp` or `a2a`. The marker MUST NOT carry the caller's account: a bridged caller is no more identifiable to strangers than a native agent. Resolving `caller_ref` to a party is the bridge operator's lookup, not a fact on the wire. An A2A bridge also carries `meta.a2a_bridge` (`bindings/a2a-bridge.md` §8.3) for receivers written before this section.
 5. **The credential is checked on every call, at the bridge.** An OAuth token or JWT-SVID passes §4.14's checks against the trust records of the account it is mapped to, DPoP included, with two differences: its `aud` may name the URL of the front it is presented to instead of the record's `audience` (an MCP client asks for a token for the MCP server's URL, RFC 8707), and a DPoP proof's `htu` is that front's URL. A credential no trust record admits is refused. Receivers check nothing but the envelope (§4.13, rule 4).
 6. **Credentials stay out of models.** The credential travels in the HTTP request: the `Authorization` header, the `DPoP` header, or the TLS connection. A bridge's MCP front takes it there and never as a tool argument, and a bridge MUST NOT copy it into an envelope, a manifest or anything an agent receives.
 7. **Stopping a bridged identity works like any other.** A stop (§4.12) on a hosted identity makes the bridge refuse its caller's calls and cuts the identity as level 2 requires. A caller whose credential its issuer has disabled is refused at its next call, and a stop signal (§4.12) stops its identity at once.
@@ -722,10 +722,10 @@ A **bridge** is a node (§4) that hosts mesh identities for callers that hold no
 | `oauth` | an OAuth token from a trusted issuer (§4.14) | lowercase hex SHA-256 of the issuer, a newline (0x0A) and the workload identifier | the account whose trust record names the issuer |
 | `spiffe` | a JWT-SVID or X.509-SVID from a trusted trust domain | the SPIFFE ID | the account whose trust record names the trust domain |
 | `sandbox` | a sandbox key (§4.1) | the bridge's opaque reference for the key | the sandbox account; the node is attested `trust_tier: sandbox` |
-| `account` | an A2A bridge key minted against an account (`BRIDGE-A2A.md` §9) | the bridge's opaque reference | that account |
+| `account` | an A2A bridge key minted against an account (`bindings/a2a-bridge.md` §9) | the bridge's opaque reference | that account |
 | `operator` | an A2A bridge key the operator configured | the bridge's opaque reference | the operator's account |
-| `pact` | a PACT personal-agent JWT (`BRIDGE-A2A.md` §14.6) | as `BRIDGE-A2A.md` §14.6 defines it | the operator's account, for the personal agent's platform |
-| `anonymous` | nothing, where an A2A bridge allows it (`BRIDGE-A2A.md` §9) | the bridge's opaque reference for the session | the sandbox account |
+| `pact` | a PACT personal-agent JWT (`bindings/a2a-bridge.md` §14.6) | as `bindings/a2a-bridge.md` §14.6 defines it | the operator's account, for the personal agent's platform |
+| `anonymous` | nothing, where an A2A bridge allows it (`bindings/a2a-bridge.md` §9) | the bridge's opaque reference for the session | the sandbox account |
 
 A receiver that meets a `caller_kind` it does not know treats the sender as bridged with no further standing. The registry records a hosted identity's `identity_source` as `kind: "bridged"` (§9.7), with the bridge's node key and, for `oauth` and `spiffe`, the caller's issuer or trust domain and workload identifier.
 
@@ -747,7 +747,7 @@ An agent that acts for a person can carry the evidence with the message: a token
 - `id-jag`: a token obtained with the Identity Assertion JWT Authorization Grant (Cross App Access);
 - `transaction-token`: an OAuth transaction token;
 - `ciba`: a token issued after the person approved a request through Client-Initiated Backchannel Authentication;
-- `pact`: a PACT delegation token (`BRIDGE-A2A.md` §14.8).
+- `pact`: a PACT delegation token (`bindings/a2a-bridge.md` §14.8).
 
 The name `on_behalf_of` keeps it apart from the delegation envelopes of §4.11, which are a different thing: one agent acting from many places.
 
@@ -982,7 +982,7 @@ The third reason has a cost, stated here: the operator can see which messages ar
 }]
 ```
 
-An agent MUST NOT declare it unless its `acts_for` is `person`, every path that delivers to it keeps rules 1 to 6, and its node can reach its person. The declaration travels wherever the manifest does, so a sender reads it from the registry (§9.2) like any other manifest field. The registry does not give every sender every manifest: a private agent's manifest is read by its owner. So the receiver's knock door (EXT-6 §9.3) is a second place to read the declaration, after the registry. The door's answer to a sender it lets in carries `extensions`, the extension URIs the agent declares, and a knock whose input is `{ "ask": ["extensions"] }` is that read only. A sender the door does not let in gets the answer any knock gets, the same answer as for an agent that does not exist, so the read tells a stranger nothing about a private agent. A bridge carries it in a generated A2A card as a `capabilities.extensions[]` entry with the same URI (`BRIDGE-A2A.md` §8.4).
+An agent MUST NOT declare it unless its `acts_for` is `person`, every path that delivers to it keeps rules 1 to 6, and its node can reach its person. The declaration travels wherever the manifest does, so a sender reads it from the registry (§9.2) like any other manifest field. The registry does not give every sender every manifest: a private agent's manifest is read by its owner. So the receiver's knock door (EXT-6 §9.3) is a second place to read the declaration, after the registry. The door's answer to a sender it lets in carries `extensions`, the extension URIs the agent declares, and a knock whose input is `{ "ask": ["extensions"] }` is that read only. A sender the door does not let in gets the answer any knock gets, the same answer as for an agent that does not exist, so the read tells a stranger nothing about a private agent. A bridge carries it in a generated A2A card as a `capabilities.extensions[]` entry with the same URI (`bindings/a2a-bridge.md` §8.4).
 
 **What a sender does.** Before it publishes a message for a person, a sending SDK MUST read the receiver's declaration, from the registry or, when the registry does not give it the manifest, at the receiver's knock door (above), as it reads the receiver's declared limits in pre-flight (§6.4b). For a room post it checks every current member. Where the sender can read a receiver's Descriptor and it states an `acts_for` other than `person`, the sender treats that receiver as one that does not declare the extension, whatever its manifest says. Where the Descriptor does not state `acts_for`, the sender relies on the declaration, as the Common Agent Specification's Section 6.9 says. When a receiver does not declare the extension, or its declaration can be read from neither place, the SDK MUST refuse locally with `AUDIENCE_NOT_SUPPORTED`, naming those receivers in `details.receivers`, unless the caller passes an explicit choice to send anyway. The sending agent SHOULD put that choice to its own person in plain words, such as "their agent may read this as a request", and send only at the person's word. A message sent anyway keeps its mark. A receiver written to this version that does not declare the extension refuses it at its door, so the sender gets `AUDIENCE_NOT_SUPPORTED` back and is not left waiting, and a receiver written before this version may read it as ordinary input.
 
@@ -1186,7 +1186,8 @@ Sends an A2A operation to a specific agent, expecting a `respond`. A call betwee
 
 **Behavior:**
 - `payload.a2a.method` MUST be one of A2A's operation names, spelled as A2A spells it, and `payload.a2a.params` MUST be A2A's request object for that operation, in A2A's JSON form (A2A binding §4 to §6). What each operation means is A2A's. The A2A binding §5 lists the operations and the frames each one takes.
-- **The channel's own requests** carry no `payload.a2a`. They are not A2A operations, and the A2A binding leaves them unchanged (A2A binding §11): `describe` (§10.14), `knock` (EXT-6), the registry liveness probe (§18.7), advisories (§13.6), and the other reserved offerings that a node or the platform answers itself, such as `call-receipt` (EXT-15). Each keeps its `payload.offering` and `payload.input` on either wire version, and its answer is a `respond` whose payload the defining section gives. None of them creates a Task.
+- **Channel frames** carry no `payload.a2a` (A2A binding §4). They are the channel's own requests and answers, not A2A operations: `describe` (§10.14), `knock` (EXT-6), the registry liveness probe (§18.7), advisories (§13.6), the receipt request (`call-receipt`, EXT-15), the accept signal (§6.4a) and the queued acknowledgement (§6.4a, §16.4). Each keeps the payload its defining section gives (a request keeps its `payload.offering` and `payload.input`) and travels at wire version 0.4.0 unchanged. None of them creates a Task.
+- Beside `payload.a2a`, a frame's payload MAY carry `usage` (§13.5) and `cost` (§19.3). A receiver ignores any other member beside `a2a`.
 - A call for work is `SendMessage`, or `SendStreamingMessage` when the client wants results as they are produced (Section 11). Its answer is either an A2A Message, when the server agent finishes in one round, or an A2A Task, when the work continues (§7.0). The server agent chooses, and the client learns which from the first **substantive** reply. The accept signal (§6.4a), when present, precedes that reply and chooses neither.
 - The server agent MUST create a Task **only when** it defers, streams, or needs another round (`TASK_STATE_INPUT_REQUIRED` or `TASK_STATE_AUTH_REQUIRED`). It MUST NOT create a Task solely to answer a request it can complete immediately.
 - A Message that continues an existing Task (the answer to `TASK_STATE_INPUT_REQUIRED`, for example) names the Task's `taskId` and `contextId`, as A2A says.
@@ -1591,7 +1592,7 @@ A client needs no advance knowledge of which applies. The first **substantive** 
 
 ### 7.1. Who May Read a Task, and What Is Recorded Beside It
 
-**Who may read a Task.** `GetTask`, `ListTasks`, `SubscribeToTask` and `CancelTask` answer only the server agent and the agent that created the Task with its first message, including a place acting as that agent under its delegation (§4.11), as the A2A binding §10 says. Anyone else gets `TaskNotFoundError`, so a Task's existence is not disclosed. The client is known from the frame's verified signature (§5.3); no other credential is involved. `ListTasks` lists only the Tasks the asking client may read.
+**Who may read a Task.** `GetTask`, `ListTasks`, `SubscribeToTask`, `CancelTask` and the push notification operations answer only the server agent and the agent that created the Task with its first message, including a place acting as that agent under its delegation (§4.11), as the A2A binding §10 says. Anyone else gets `TaskNotFoundError`, so a Task's existence is not disclosed. The client is known from the frame's verified signature (§5.3); no other credential is involved. `ListTasks` lists only the Tasks the asking client may read.
 
 **The stored record.** The task store (§7.4) keeps each A2A Task exactly as A2A gives it, keyed by its A2A Task id. Beside it, never inside it, the server keeps a record of facts A2A has no place for (A2A binding §11). A party never writes the record. The shape in which a binding stores it is the binding's (§18.4); its contents are these:
 
@@ -1678,7 +1679,7 @@ A Task's states are A2A's (A2A §4.1.3): `TASK_STATE_SUBMITTED`, `TASK_STATE_WOR
 
 - **Acceptance** is a delivery signal (§6.4a). It never appears in a Task.
 - **Budget outcomes** each put the Task in an A2A state and say which outcome it was in the Task's `metadata` under the budget extension's URI (§7.7, A2A binding §12.2): a refusal at admission (`insufficient`, `deadline_unmeetable`) is `TASK_STATE_REJECTED`, a pause at the cost ceiling (`ceiling_reached`) is `TASK_STATE_INPUT_REQUIRED`, and an end at the engagement's not-to-exceed cap (`exhausted`) is `TASK_STATE_CANCELED`. Exhaustion is not a failure: a runtime MUST NOT record such a Task as failed, and a client that knows the extension MUST NOT retry it.
-- **Overdue** and **completed late** are marks the task manager records beside the Task (§7.7). They change no state.
+- **Overdue** is a mark, not a state: `{"overdue": true}` under the budget extension's URI on the status update event that reports it, with the Task's state unchanged. **Completed late** is `TASK_STATE_COMPLETED` with `{"outcome": "completed_late"}` under the same URI, a marker and not a failure (§7.7, A2A binding §12.2).
 
 A 0.3.0 envelope spells the states in lower case and has a ninth, `exhausted`; §6.8 gives the table between the two.
 
@@ -1707,7 +1708,7 @@ A carrier that shows the view to a person MAY say that the passed-through states
 
 Tasks MUST be durably persisted in a store keyed by the A2A Task id, which is the authoritative source of truth for each Task's state and is updated on every change. The store holds the A2A Task and the record beside it (§7.1).
 
-- **Updates.** The server agent's node publishes each change to a Task as an A2A stream event (a `TaskStatusUpdateEvent` or a `TaskArtifactUpdateEvent`, A2A binding §8) in a signed `respond` frame on `mesh.task.{taskId}.update`, where `taskId` is the A2A Task id. The task manager applies each one to the store under the rules of §7.3.
+- **Updates.** The server agent's node publishes each status and artifact update event of a Task (a `TaskStatusUpdateEvent` or a `TaskArtifactUpdateEvent`) in a signed `respond` frame on `mesh.task.{taskId}.update`, where `taskId` is the A2A Task id. Where the deployment runs a task manager, the task manager applies each one to the store under the rules of §7.3; otherwise the node keeps the store itself, under the same rules (A2A binding §5).
 - **Streams.** The events of a stream travel on `mesh.task.{taskId}.stream` (Section 11).
 - **Reads.** `GetTask`, `ListTasks` and the push notification operations are answered from the store, and `SubscribeToTask` starts from the stored Task (A2A binding §5, §8). The server agent's node answers them on its agent's behalf, and only to the parties §7.1 names. A client never addresses the task store directly.
 - **Lookups.** The store, not the update subject, is canonical: a client that missed updates reads the Task with `GetTask`.
@@ -1945,12 +1946,17 @@ not a kill switch (no one can reach into the responder's process) and it is
 not retroactive: artifacts delivered before the deadline were delivered inside
 the budget and belong to the requester. When a Task exists, the task manager
 (which holds the clock centrally and needs no cooperation from the responder)
-records the Task as **overdue** at the deadline, beside the Task (§7.1), and
-notifies the requester, who then holds every partial artifact received so far
-and a choice: cancel, or keep listening. The overdue mark is not a state, and
-the Task's state does not change. A completion arriving after the deadline is
-accepted and recorded beside the Task as **completed late**
-(`DEADLINE_EXCEEDED`); what a late answer is worth is the requester's
+marks the Task **overdue** at the deadline and notifies the requester: on a
+0.4.0 frame, a status update event whose `metadata` carries
+`{"overdue": true}` under the budget extension's URI (A2A binding §12.2),
+published on `mesh.task.{taskId}.update` and to any open stream. The
+requester then holds every partial artifact received so far and a choice:
+cancel, or keep listening. The overdue mark is not a state, and the Task's
+state does not change. A completion arriving after the deadline is accepted
+as **completed late**: the Task is `TASK_STATE_COMPLETED` and its `metadata`
+carries `{"outcome": "completed_late"}` under the budget extension's URI
+(`DEADLINE_EXCEEDED` on a 0.3.0 envelope). The task manager also records both
+marks beside the Task (§7.1). What a late answer is worth is the requester's
 decision. Work past
 the deadline is at the responder's own risk and on its own account. Deadlines
 are compared under the clock-skew tolerance of Section 22.3, and SHOULD NOT be
@@ -3005,7 +3011,7 @@ A manifest publishes as an A2A Agent Card (A2A §4.4), so that an A2A client can
 
 **What A2A has no place for.** The manifest fields A2A lacks are of two kinds.
 
-- *Carried as the A2A binding's extensions* (A2A binding §12), because a client needs them on a call: which offering a Message is for (the offering extension), the budget (the budget extension, §7.7), a message for the person behind the agent (the audience extension, for an agent that declares `mesh://extensions/audience/v1`, §5.7), a price when payment is required (the economics extension, §19), and a large Part's size and digest (the artifact references extension, §7.5.1). The card lists each one the agent supports in `capabilities.extensions`.
+- *Carried as the A2A binding's extensions* (A2A binding §12), because a client needs them on a call: which offering a Message is for (the offering extension), the budget (the budget extension, §7.7), a message for the person behind the agent (the audience extension, for an agent that declares `mesh://extensions/audience/v1`, §5.7), a price when payment is required (the economics extension, §19), a large Part's size and digest (the artifact references extension, §7.5.1), why a Task was canceled (the cancel extension, §10.8), and why a Task failed (the failure extension, §10.8). The card lists each one the agent supports in `capabilities.extensions`.
 - *Manifest-only*, because they describe the agent on the mesh rather than a call: `id` (the agent key), `node` and its vouch, `owner` and `owner_attestation`, `visibility`, `endpoint` and `endpoints`, `limits`, `encryption_key`, `sealing`, `trust` (the key claim of §8.3, which is not a card signature), `descriptor`, `public` (served by `describe`, §10.14), `interaction`, `capabilities` (the tags), `accepts` and `emits`, `works_with`, `skus`, `rate_limits`, each offering's `input_schema`, `output_schema`, `estimated_duration_ms`, `needs`, `delivers` and `reporting`, and `meta`. A reader who needs them reads the manifest from the registry (§9.2) or the describe document.
 
 The card's `signatures` are A2A's, and a deployment MAY sign the card as A2A says. Whoever reads the card still verifies the agent from its signed frames (A2A binding §10), never from the card.
@@ -3248,8 +3254,8 @@ Delivers incremental results for a single call as an ordered sequence of message
 **Flow:**
 1. The client sends a `request` frame carrying `SendStreamingMessage`, or `SubscribeToTask` for a Task that already exists.
 2. The server agent sends the first stream event in a `respond` frame to the client's inbox, so the client learns the A2A Task id.
-3. The server agent publishes every later event as a `respond` frame on `mesh.task.{taskId}.stream`, each carrying `payload.a2a.seq`.
-4. The event that puts the Task in a terminal or interrupted state carries `payload.a2a.final: true`, and nothing follows it on that stream.
+3. The server agent publishes every later event as a `respond` frame on `mesh.task.{taskId}.stream`, each carrying `payload.a2a.streamId` and `payload.a2a.seq`.
+4. The last event, at a terminal state or the Message that answers without a Task, carries `payload.a2a.final: true`, and nothing of that `streamId` follows it. An interrupted state keeps the stream open, as A2A says.
 
 **Ordering Guarantee:** All later events are published to the same subject (`mesh.task.{taskId}.stream`), which guarantees their order, because every binding delivers in order per subject (§18.1).
 
@@ -3372,8 +3378,11 @@ reason, each meaningful with exactly one of the last two reasons above:
   service the way §8.8 does, and MUST NOT appear with any other reason.
 
 **The same vocabulary ends a failed Task.** A Task that enters
-`TASK_STATE_FAILED` MAY carry `reason`, `note`, `unmetNeed` and `dependency`
-in its `metadata`, in the same object under the cancel extension's URI, under exactly the rules above
+`TASK_STATE_FAILED` MAY carry `{"reason": "<reason>"}` in its `metadata`
+under the failure extension's URI, `https://agentmessaging.ai/extensions/failure/v1`
+(A2A binding §12.7), with the extra field the reason requires: `unmetNeed`
+for `needs_not_furnished`, `dependency` for `dependency_failed`, under
+exactly the rules above. A failure with no stated reason carries no object
 (on a 0.3.0 envelope, a `respond` on `mesh.task.{task_id}.update` with
 `payload.status: "failed"` carries `reason`, `note`, `unmet_need` and
 `dependency`). `reason` stays OPTIONAL on a failure (a Task that simply did
@@ -3445,7 +3454,7 @@ reason is worth by checking it against a declaration the responder published
 before the work started, where the caller could read it. A reputation bureau,
 or anything else that scores outcomes, MUST take `attribution` from the
 platform's own signed terminal event and MUST NOT read it from a party's
-envelope. An `attribution` field appearing in a party's payload is not an input
+envelope. An `attribution` field appearing in a party's payload, or in the failure extension's object on a Task, is not an input
 and MUST be ignored.
 
 **An unbacked claim is a plain failure, not a neutral one.** A responder that
@@ -3611,7 +3620,9 @@ Agent Messaging streaming uses task subjects with ordered, durable delivery (§1
 - **Stream Subject:** `mesh.task.{taskId}.stream`, where `taskId` is the A2A Task id.
 - **Update Subject:** `mesh.task.{taskId}.update`, on which the task store's changes travel (§7.4).
 
-Every event of a stream after the first is published to the same stream subject, guaranteeing its order.
+Every event of a stream after the first is published to the Task's stream subject, guaranteeing its order. Several streams of one Task share that subject (a `SendStreamingMessage` and a later `SubscribeToTask`, for example), so each event names the stream it belongs to in `payload.a2a.streamId` (§11.2).
+
+**Who may listen.** The mesh grants subscribe permission on `mesh.task.{taskId}.stream` only to nodes hosting an agent that may read the Task (§7.1), and a server agent MAY seal each event to its client (EXT-7). A subscription is never a way around §7.1 (A2A binding §8).
 
 **Carriers without subjects.** A carrier of frames that has no stream subjects, such as email (Agent Emailing), cannot hold a subscription. It delivers each later change to a Task as a `respond` frame to the client whose result is the whole Task as it then stands, numbered by `payload.a2a.seq`, and it answers `SendStreamingMessage` and `SubscribeToTask` with `UnsupportedOperationError` (A2A binding §8). The client reads the frames in `seq` order, and the view rules of §7.3.1 apply.
 
@@ -3628,6 +3639,7 @@ Each event is an A2A StreamResponse (a Task, a Message, a `TaskStatusUpdateEvent
   "in_reply_to": "<id of the SendStreamingMessage or SubscribeToTask request>",
   "payload": {
     "a2a": {
+      "streamId": "<id of the request frame that opened the stream>",
       "seq": 3,
       "final": false,
       "result": {
@@ -3646,16 +3658,17 @@ Each event is an A2A StreamResponse (a Task, a Message, a `TaskStatusUpdateEvent
 ```
 
 - `payload.a2a.result` is the stream event, in A2A's JSON form.
-- `payload.a2a.seq` counts from 0 for the first event of the stream, so a client detects a gap.
-- `payload.a2a.final` is `true` on the last event of the stream, and is otherwise `false` or absent.
+- `payload.a2a.streamId` is the `id` of the request frame that opened the stream. A client reads the frames of its own stream and ignores the others on the subject.
+- `payload.a2a.seq` counts from 0 within that stream, so a client detects a gap.
+- `payload.a2a.final` is `true` on the last event of the stream, and is otherwise `false` or absent. No frame of that `streamId` follows it.
 
 ### 11.3. Stream Lifecycle
 
 1. The client sends a `request` frame carrying `SendStreamingMessage` (or `SubscribeToTask` for an existing Task, which starts from the Task's current state).
 2. The server agent sends the first event (`seq` 0) in a `respond` frame to the client's inbox (§6.5), so the client learns the A2A Task id.
-3. The client creates a durable subscription on `mesh.task.{taskId}.stream` (a durable consumer in the reference binding, §18.6), starting at the beginning of that subject, so that events the server agent published before the subscription existed are still delivered.
-4. The server agent publishes every later event, in the order it generated them, as a `respond` frame on `mesh.task.{taskId}.stream`.
-5. The stream ends with the event that puts the Task in a terminal or interrupted state (A2A §4.1.3), or with the Message that answers a `SendStreamingMessage` without a Task. That frame carries `payload.a2a.final: true`, and no frame follows it on that stream.
+3. The client creates a durable subscription on `mesh.task.{taskId}.stream` (a durable consumer in the reference binding, §18.6), starting from the first event of its `streamId`. The durable stream (§18.3) keeps the events the server agent published before the subscription existed, so none is lost.
+4. The server agent publishes every later event, in the order it generated them, as a `respond` frame on `mesh.task.{taskId}.stream`, numbered by `seq` within its `streamId`.
+5. The stream ends when A2A says it ends: at a terminal state, or with the Message that answers a `SendStreamingMessage` without a Task. In an interrupted state (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`) the server agent keeps the stream open, as A2A says. The last frame carries `payload.a2a.final: true`, and no frame of that `streamId` follows it.
 6. Each change the stream reports is also recorded in the task store (§7.4), so a client that lost the stream (a disconnect, a restart) recovers the Task, its final state and its Artifacts with `GetTask` instead of losing them with the stream.
 
 ### 11.4. Backpressure
@@ -3670,7 +3683,7 @@ Each event is an A2A StreamResponse (a Task, a Message, a `TaskStatusUpdateEvent
 If the consumer disconnects and reconnects:
 
 - A durable consumer resumes after the last event it acknowledged, and no event is lost.
-- A client that lost the subscription itself calls `SubscribeToTask`, which starts from the Task's current state (A2A binding §8).
+- A client that lost the subscription itself calls `SubscribeToTask`, which opens a new stream, with a new `streamId`, from the Task's current state (A2A binding §8).
 - The client MAY also call `GetTask` to read the current Task.
 
 ### 11.6. Event Signing
@@ -3728,7 +3741,7 @@ A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
 }
 ```
 
-An error from A2A travels in this object as the A2A binding §9 says: `code` is the A2A error's name, `details.a2a.code` is the integer A2A's JSON-RPC binding assigns to it, so a client or bridge that speaks JSON-RPC uses it unchanged, and `details.a2a.data` carries the error's data:
+An error from A2A travels in this object as the A2A binding §9 says: `code` is the A2A error's name (one of A2A §3.3.2's errors, or one of the JSON-RPC standard errors as A2A's JSON-RPC binding names them: `JSONParseError`, `InvalidRequestError`, `MethodNotFoundError`, `InvalidParamsError`, `InternalError`), `details.a2a.code` is the integer A2A's JSON-RPC binding assigns to it, so a client or bridge that speaks JSON-RPC uses it unchanged, and `details.a2a.data` carries the error's data:
 
 ```json
 {
@@ -3764,6 +3777,8 @@ On a 0.4.0 frame, the answer to an A2A operation that fails for a reason A2A nam
 | `ExtensionSupportRequiredError` | -32008 | The agent requires an extension the client did not activate (§17.4). | No |
 | `VersionNotSupportedError` | -32009 | The A2A version in `meta.a2a` (`A2A-Version`) is one the agent does not speak. | No |
 | `InvalidParamsError` | -32602 | The request names no offering the agent serves, its input does not conform to the offering, a cancel reason is outside §10.8's list, or a budget revision is retroactive. | No |
+| `JSONParseError` | -32700 | A frame's A2A object is not valid JSON in A2A's form. | No |
+| `InvalidRequestError` | -32600 | `payload.a2a` is not a valid A2A request (no `method`, or `params` of the wrong shape). | No |
 | `MethodNotFoundError` | -32601 | `payload.a2a.method` is not an A2A operation name. | No |
 | `InternalError` | -32603 | An unexpected internal error in the agent. | Yes |
 
@@ -3814,8 +3829,8 @@ Every code in this table is used only on 0.3.0 envelopes (§6.8).
 | `DEADLINE_UNMEETABLE` | 0.3.0 only; on 0.4.0 the Task is `TASK_STATE_REJECTED` with the budget outcome `deadline_unmeetable` (§7.7). Refused at admission: the work cannot be completed by the offered deadline. SHOULD carry the responder's earliest realistic completion. (Section 7.7.) | No |
 | `AGREEMENT_REQUIRED` | On 0.4.0 the Task is `TASK_STATE_REJECTED` and carries the economics extension's `paymentRequired` (A2A binding §12.4), with `sku`, `sku_digest` and `approval_url` beside the price. Refused at admission: the requested work is covered by a paid SKU and the consumer's account holds no agreement for the SKU's current digest. `details` names the `sku`, the `sku_digest`, and the `approval_url`. The Section 1.3 "payment required" refusal, typed. (Economics extension, Sections 19.1, 19.5.) | No |
 | `BUDGET_EXHAUSTED` | 0.3.0 only; on 0.4.0 the Task pauses in `TASK_STATE_INPUT_REQUIRED` with the budget outcome `ceiling_reached` (§7.7). The cost ceiling was reached mid-work; the Task is paused with spend so far and an estimate to finish. Resolved by a budget revision or cancellation, not by retry. (Section 7.7.) | No |
-| `DEADLINE_EXCEEDED` | Recorded beside the Task (§7.1) on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
-| `AUDIENCE_NOT_SUPPORTED` | The message is marked for the person behind the receiving agent (§5.7), and the receiver does not declare `mesh://extensions/audience/v1`, so nothing says the message will reach the person. Raised locally by a sending SDK before it publishes, unless the caller chose to send anyway, and by a bridge whose far side cannot keep §5.7's rules (`BRIDGE-A2A.md` §8.4). `details.receivers` names the receivers that do not declare it. Also the answer of a receiver written to this version that does not declare the extension, at its door (§5.7), with `details.reason` (`no_person` when its `acts_for` is not `person`, `not_declared` otherwise) and `details.acts_for`. | No |
+| `DEADLINE_EXCEEDED` | 0.3.0 marker; on 0.4.0 the Task is `TASK_STATE_COMPLETED` with the budget outcome `completed_late` (§7.7). Recorded beside the Task (§7.1) on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
+| `AUDIENCE_NOT_SUPPORTED` | The message is marked for the person behind the receiving agent (§5.7), and the receiver does not declare `mesh://extensions/audience/v1`, so nothing says the message will reach the person. Raised locally by a sending SDK before it publishes, unless the caller chose to send anyway, and by a bridge whose far side cannot keep §5.7's rules (`bindings/a2a-bridge.md` §8.4). `details.receivers` names the receivers that do not declare it. Also the answer of a receiver written to this version that does not declare the extension, at its door (§5.7), with `details.reason` (`no_person` when its `acts_for` is not `person`, `not_declared` otherwise) and `details.acts_for`. | No |
 
 #### Processing Errors
 
@@ -4289,6 +4304,8 @@ A **node's** credential MUST define explicit publish and subscribe permissions c
 
 Both registration subjects are granted above because a registry MAY accept either form (§14.1). A deployment that **enforces** clause (b) of §4.4 grants only `mesh.registry.register.NODE_NKEY_HERE` and omits the untokenized `mesh.registry.register`: a credential holding both can always fall back to the subject that carries no identity, which leaves clause (b) unmet for exactly the party it was meant to constrain.
 
+The task grants above are written with wildcards for brevity. Subscribe permission on `mesh.task.{taskId}.stream` and `mesh.task.{taskId}.update` MUST reach only nodes hosting an agent that may read the Task (§7.1, A2A binding §8): a deployment narrows the grant to the Task when the Task is created, or serves the stream through a consumer that the platform creates only after it checks §7.1. Publish permission on a Task's subjects belongs to the node of its server agent, and to the task manager where one runs.
+
 ### 14.4. Resolve, Never Construct
 
 The table in §14.1 is written for implementers of the SDKs and the platform
@@ -4499,13 +4516,14 @@ suite, `docs/implementation-status.md`, not here.
 | Extension URI | Status | Scope |
 |---------------|--------|-------|
 | `mesh://extensions/economics/v1` | **Defined** (0.2) | The money axis of the protocol, cut around the core metering substrate (§13.5): **SKUs and prices** (§19.1: `free`/`flat`/`per_unit`/`package`/`tiered` against named meters, terms pinned by a tagged SHA-256 digest, advertised in the §8.7 storefront), the **billing provider** (§19.4), the signed account-level **agreement** and its `AGREEMENT_REQUIRED` admission enforcement (§19.5), **rating** (§19.6: deterministic fold of meter events × agreed price, ceiling-bounded), discovery `max_cost`, the `cost_ceiling` of the core budget (§7.7/§19.3), `BUDGET_INSUFFICIENT`/`BUDGET_EXHAUSTED`, spend reports and task receipts (§19.2). The manifest `cost` block is retired in 0.2 in favour of `skus`; `negotiate` and `COST_LIMIT_EXCEEDED` retired earlier, subsumed by budget admission (§7.7). Settlement out of scope (§1.3). |
-| `mesh://extensions/a2a-bridge/v1` | **Defined** (see `BRIDGE-A2A.md`) | Interop with the A2A protocol's HTTP bindings. A bridge node vouches for external A2A parties as hosted agents, both directions (A2A client -> mesh agent; mesh agent -> external A2A server). Since this version both sides carry the same A2A objects, so the bridge moves them between HTTP and frames and maps identity at the edge (A2A binding §13). Its trust-boundary rules live in `BRIDGE-A2A.md`. |
+| `mesh://extensions/a2a-bridge/v1` | **Defined** (see `bindings/a2a-bridge.md`) | Interop with the A2A protocol's HTTP bindings. A bridge node vouches for external A2A parties as hosted agents, both directions (A2A client -> mesh agent; mesh agent -> external A2A server). Since this version both sides carry the same A2A objects, so the bridge moves them between HTTP and frames and maps identity at the edge (A2A binding §13). Its trust-boundary rules live in `bindings/a2a-bridge.md`. |
 | `https://agentmessaging.ai/extensions/offering/v1` | **Draft** (A2A binding §12.1) | A2A extension. Which declared offering (§8.5) an A2A Message calls. |
-| `https://agentmessaging.ai/extensions/budget/v1` | **Draft** (A2A binding §12.2) | A2A extension. The budget of §7.7 on the Message that starts or revises the work, and each budget outcome (`insufficient`, `deadline_unmeetable`, `ceiling_reached`, `exhausted`) in the Task's metadata. |
+| `https://agentmessaging.ai/extensions/budget/v1` | **Draft** (A2A binding §12.2) | A2A extension. The budget of §7.7 on the Message that starts or revises the work, and each budget outcome (`insufficient`, `deadline_unmeetable`, `ceiling_reached`, `exhausted`, `completed_late`) and the overdue mark in the Task's or the status update's metadata. |
 | `https://agentmessaging.ai/extensions/audience/v1` | **Draft** (A2A binding §12.3) | A2A extension. A Message meant for the person behind the receiving agent, with every rule of §5.7. It is the A2A form of `mesh://extensions/audience/v1`. |
 | `https://agentmessaging.ai/extensions/economics/v1` | **Draft** (A2A binding §12.4) | A2A extension. Payment required before the work: the price and the accepted settlement methods of §19, on a rejected Task. |
 | `https://agentmessaging.ai/extensions/artifact-refs/v1` | **Draft** (A2A binding §12.5) | A2A extension. A Part's size and digest when its bytes are held outside the message (§7.5.1). |
 | `https://agentmessaging.ai/extensions/cancel/v1` | **Draft** (A2A binding §12.6) | A2A extension. Why a Task was canceled, from the closed list of §10.8, on `CancelTask` and on the canceled Task. |
+| `https://agentmessaging.ai/extensions/failure/v1` | **Draft** (A2A binding §12.7) | A2A extension. Why a Task failed, from the closed list of §10.8, on a Task in `TASK_STATE_FAILED`. The responder states the reason; the attribution of §10.8a is computed by the platform and never read from it. |
 | `mesh://extensions/rooms/v1` | **Implemented** (see `extensions/EXT-5-rooms.md`) | Shared conversations for N agents, plus a durable record and artifact drive. Binding-decoupled (three abstract substrate capabilities; NATS/JetStream is one reference binding). All three privacy grades are live: capability (courtesy), sealed (end-to-end via the OPTIONAL agent `encryption_key`, §4.3/§8.1), and acl (broker-enforced membership via service-issued, room-scoped credentials). Thin by design: services are members, governance is [Agent Collab](https://agentcollab.dev) playbooks, commerce is the economics extension. v1.1 names **agent-presence** (EXT-5 §8): the live roster as the fold of join/leave, invited ≠ joined, queryable and observable. v1.2 adds **expel** (EXT-5 §8.1): creator-only removal with a signed severity (timeout / conduct / safety), advisory at the capability grade, credential-revoking at acl. 1.8 adds **notes on a file** (EXT-5 §8.4): a member attaches a short attributed statement to a file already on the drive, keyed by its digest so it names those exact bytes permanently. Additive only — it edits nothing, and writing one publishes nothing into the room's traffic, because at the acl and capability grades that namespace is the record. Any member may write one and every note carries the author the service read off the verified envelope; there is no screener role to confer, because conferring it would be the invisible setting the design avoids. |
 | `mesh://extensions/admission/v1` | **Implemented** (see `extensions/EXT-6-admission.md`) | Unilateral, owner-controlled admission policy for direct inbound messages: a signed, portable admission roster (allow / hold / block per sender), held-sender review, and `knock`, the content-free admission request that is one of the two pre-admission verbs (§1.5 invariant 4; the other, `describe` §10.14, is exempt from admission filtering by definition). Live across the reference adapter, the fleet, and the operator console's Waiting list. |
 | `mesh://extensions/e2e-encryption/v1` | **Implemented** (see `extensions/EXT-7-pairwise-sealing.md`) | End-to-end payload confidentiality. The core still secures only the transport, not payloads; the key substrate is the OPTIONAL agent X25519 `encryption_key` (§4.3). Two consumers exist: the Rooms `sealed` grade (rooms/v1, above) for multi-party conversations, and the **pairwise profile** (EXT-7) for direct messages: a request payload is boxed to the recipient's declared key (`sealedpayload.v1`, ephemeral-sender crypto_box), replies seal back to the sender's `reply_key`, and the mesh routes and buffers only ciphertext. Senders SHOULD seal whenever the recipient's card or manifest declares a key. A sealed frame hides its A2A object too; its sender MAY show the Task's state in clear in `meta.a2a_state` (§5.2, A2A binding §8a). |
@@ -6206,6 +6224,7 @@ The frame of `seq` 3:
   "in_reply_to": "<id of the SendStreamingMessage request>",
   "payload": {
     "a2a": {
+      "streamId": "<id of the SendStreamingMessage request>",
       "seq": 3,
       "result": {
         "artifactUpdate": {
@@ -7296,9 +7315,9 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > `TASK_STATE_CANCELED` with the outcome `exhausted` (§7.2, §7.7). The manifest
 > publishes as an A2A Agent Card that lists the binding (§8.14). Streaming,
 > cancellation and Task reads point at A2A's operations (§10.5, §10.8, §11),
-> and errors from A2A carry A2A's names (§12). §17.5 lists the six A2A
+> and errors from A2A carry A2A's names (§12). §17.5 lists the seven A2A
 > extensions the binding defines (offering, budget, audience, economics,
-> artifact references, cancel). What A2A has no place for (presence, events,
+> artifact references, cancel, failure). What A2A has no place for (presence, events,
 > admission, the accept signal, signed identity, receipts) stays Agent
 > Messaging's own and is unchanged. The wire version moves to `0.4.0`, whose
 > envelope has no `task_id`, `context_id`, `budget` or `artifacts`. A node
@@ -7306,4 +7325,12 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > ends the transition window (§20.1), and §6.8, §11.7 and the 0.3.0 rows of
 > §12.2 describe the 0.3.0 form so that nothing deployed is left undescribed.
 > Section numbers that other documents cite (§7.2, §7.3, §7.3.1, §10.5,
-> §10.8, §11.2, §11.6) are kept; §6.8, §8.14 and §11.7 are new.
+> §10.8, §11.2, §11.6) are kept; §6.8, §8.14 and §11.7 are new. The text
+> follows the A2A binding 0.3.0-draft: each stream event carries
+> `payload.a2a.streamId` and a `seq` counted within its stream, and only nodes
+> hosting a reader may subscribe to a Task's stream (§11, §14.3); a failed
+> Task's reason is the failure extension (§10.8); the overdue mark and a late
+> completion have wire forms under the budget extension (§7.7); and channel
+> frames, including the accept signal `{"accepted": {}}`, carry no
+> `payload.a2a` (§6.4). §1.6 and the site's home page now name 0.10, and
+> references to `BRIDGE-A2A.md` now name `bindings/a2a-bridge.md`.
