@@ -3,7 +3,7 @@
 **Version:** 0.7.0-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
-**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.36.0-draft · Agent Messaging 0.9.21-draft
+**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.36.0-draft · Agent Messaging 0.10.0-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
@@ -135,7 +135,7 @@ Sections 1, 10 and 11 are informative.
 
 The fixtures for amendments, the formation messages, the review window of a proposal, the Agent NDA reference, provider contact, reporting, subcontracting, liability and service floors are left out with their sections.
 
-## 5. Agent Messaging 0.9.21-draft
+## 5. Agent Messaging 0.10.0-draft
 
 The two agents exchange tasks over Agent Messaging, and this profile assumes its core profile (Agent Messaging §1.6) without repeating it. On top of the core, a profile implementation implements two sections.
 
@@ -174,7 +174,7 @@ A test runner that implements this profile runs the groups the file names and sk
 
 ## Changelog
 
-**0.7.0-draft** (2026-11-07). The profile applies to Agent SoW 0.36.0-draft, whose tasks carry A2A's states. A task the not-to-exceed cap ends now shows on the wire as `TASK_STATE_CANCELED` with the outcome `exhausted` in Agent Messaging's budget extension, and the `task_state` group of `sow-pricing.json`, which this profile requires whole, pins it that way. The engagement state `exhausted` of step 5 is unchanged. The minor version moves because an implementation of 0.6.5-draft that records a ninth task state does not meet this version.
+**0.7.0-draft** (2026-11-07). The profile applies to Agent SoW 0.36.0-draft, whose tasks carry A2A's states. A task the not-to-exceed cap ends now shows on the wire as `TASK_STATE_CANCELED` with the outcome `exhausted` in Agent Messaging's budget extension, and the `task_state` group of `sow-pricing.json`, which this profile requires whole, pins it that way. The engagement state `exhausted` of step 5 is unchanged. It also applies to Agent Messaging 0.10.0-draft, which carries A2A's operations and Task model over the mesh; the two sections this profile requires, §13.5 and §19.2, keep their numbers and their meaning, with the usage report beside `payload.a2a` on the terminal response. The minor version moves because an implementation of 0.6.5-draft that records a ninth task state does not meet this version.
 
 **0.6.5-draft** (2026-11-01). The profile applies to Agent Messaging 0.9.21-draft, which adds EXT-15, receipts, outside the sections this profile names. The patch version moves because an implementation of 0.6.4-draft meets this version unchanged.
 

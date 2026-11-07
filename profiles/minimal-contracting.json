@@ -456,7 +456,7 @@
     },
     {
       "id": "messaging",
-      "version": "0.9.21-draft",
+      "version": "0.10.0-draft",
       "required_sections": [
         "13.5",
         "19.2"

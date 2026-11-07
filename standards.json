@@ -19,14 +19,14 @@
       "spec": "common-agent/SPEC.md",
       "domain": "commonagent.net",
       "site": "https://commonagent.net/spec.html",
-      "version": "0.40.3",
+      "version": "0.41.0",
       "status": "Published",
-      "tag": "common-agent-v0.40.3",
+      "tag": "common-agent-v0.41.0",
       "builder": "common-agent/site/tools/build-spec.mjs",
       "summary": "The Common Agent Specification defines what an agent is, in terms anyone can check. An agent holds a key that signs, answers five questions for anyone who asks, declares its standing facts in one signed document, refuses what it does not do with a typed answer, and collects signed records of what others have checked about it.",
       "parts": [
         { "name": "The catalog profile", "path": "common-agent/CATALOG-PROFILE.md", "version": "0.2.0-draft" },
-        { "name": "The Descriptor to user interface binding", "path": "common-agent/DESCRIPTOR-UI.md", "version": "0.1.0" }
+        { "name": "The Descriptor to user interface binding", "path": "common-agent/DESCRIPTOR-UI.md", "version": "0.2.0" }
       ]
     },
     {
@@ -38,9 +38,9 @@
       "spec": "messaging/SPEC.md",
       "domain": "agentmessaging.ai",
       "site": "https://agentmessaging.ai/",
-      "version": "0.9.21-draft",
+      "version": "0.10.0-draft",
       "status": "Working Draft",
-      "tag": "messaging-v0.9.21-draft",
+      "tag": "messaging-v0.10.0-draft",
       "builder": "messaging/site/tools/build-spec.mjs",
       "summary": "Agent Messaging describes how agents reach each other over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence. It is a network binding of the agent the Common Agent Specification defines.",
       "parts": [
@@ -57,9 +57,10 @@
         { "name": "EXT-11 Site agents", "path": "messaging/extensions/EXT-11-site-agents.md", "version": "0.1.0" },
         { "name": "EXT-12 Systems health", "path": "messaging/extensions/EXT-12-systems-health.md", "version": "0.1.0-draft" },
         { "name": "EXT-13 Guest standing", "path": "messaging/extensions/EXT-13-guest-standing.md", "version": "0.1.0-draft" },
-        { "name": "EXT-14 Agent Messaging over A2A", "path": "messaging/extensions/EXT-14-agent-messaging-over-a2a.md", "version": "0.3.1-draft" },
+        { "name": "EXT-14 Agent Messaging over A2A", "path": "messaging/extensions/EXT-14-agent-messaging-over-a2a.md", "version": "0.4.0-draft" },
         { "name": "EXT-15 Receipts", "path": "messaging/extensions/EXT-15-receipts.md", "version": "0.1.0-draft" },
-        { "name": "The A2A Bridge", "path": "messaging/bindings/a2a-bridge.md", "version": "0.8.0-draft" },
+        { "name": "A2A over Agent Messaging", "path": "messaging/bindings/a2a.md", "version": "0.3.0-draft" },
+        { "name": "The A2A Bridge", "path": "messaging/bindings/a2a-bridge.md", "version": "0.9.0-draft" },
         { "name": "The RabbitMQ binding", "path": "messaging/bindings/rabbitmq.md", "version": "0.1" }
       ]
     },
@@ -72,9 +73,9 @@
       "spec": "emailing/SPEC.md",
       "domain": "agentemailing.ai",
       "site": "https://agentemailing.ai/",
-      "version": "0.2.6",
+      "version": "0.4.0",
       "status": "Published",
-      "tag": "emailing-v0.2.6",
+      "tag": "emailing-v0.4.0",
       "builder": "emailing/site/tools/build-spec.mjs",
       "summary": "Agent Emailing carries signed Agent Messaging envelopes in ordinary email, so agents with no broker connection can send each other requests and answers through any email provider. Each email opens with plain words generated from the signed message, so a person can read what the agents exchanged."
     },
@@ -132,9 +133,9 @@
       "spec": "sow/SPEC.md",
       "domain": "agentsow.com",
       "site": "https://agentsow.com/",
-      "version": "0.35.0-draft",
+      "version": "0.36.0-draft",
       "status": "Working Draft",
-      "tag": "sow-v0.35.0-draft",
+      "tag": "sow-v0.36.0-draft",
       "builder": "sow/site/tools/build-spec.mjs",
       "summary": "An Agent SoW is a statement of work between two parties whose agents do recurring work together, written so that software can grade its clauses. It records what was agreed, what arrived, what it cost and what happens when the work is contested.",
       "parts": [
@@ -166,9 +167,9 @@
       "spec": "reputations/SPEC.md",
       "domain": "agentreputations.com",
       "site": "https://agentreputations.com/",
-      "version": "0.12.0-draft",
+      "version": "0.13.0-draft",
       "status": "Draft",
-      "tag": "reputations-v0.12.0-draft",
+      "tag": "reputations-v0.13.0-draft",
       "builder": "reputations/site/tools/build-spec.mjs",
       "summary": "Agent Reputations holds evidence about how agent interactions went, in a bureau's ledger that cannot be quietly edited afterwards. What one engagement records is what the next one reads first.",
       "parts": [
