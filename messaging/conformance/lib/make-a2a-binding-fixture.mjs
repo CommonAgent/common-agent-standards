@@ -458,6 +458,32 @@ const failureReasons = {
   ],
 };
 
+// ------------------------------------------------------- trial, reply and receipt
+const TRIAL = "https://agentmessaging.ai/extensions/trial/v1";
+const REPLY = "https://agentmessaging.ai/extensions/reply/v1";
+const RECEIPTS = "mesh://extensions/receipts/v1";
+const BUDGET_URI = "https://agentmessaging.ai/extensions/budget/v1";
+const trialReplyReceipt = {
+  comment: "Binding §12.8 to §12.10 (0.4.0-draft). A trial is {trial: true} under the trial extension's URI on the Message that starts the work, and never with a budget; a refused trial is a TASK_STATE_REJECTED Task with {refusal: TRIAL_REFUSED, reason} under the same URI, the reason from the Common Agent Specification §7.7. A reply sent as a new call carries the received Message's contextId and {inReplyTo: messageId} under the reply extension's URI. A receipt is asked for with {receipt: summary or full} under EXT-15's URI on the starting Message.",
+  uris: { trial: TRIAL, reply: REPLY, receipts: RECEIPTS },
+  messages: [
+    { name: "a trial request", metadata: { [TRIAL]: { trial: true } }, expect: { ok: true } },
+    { name: "a trial with a budget is refused", metadata: { [TRIAL]: { trial: true }, [BUDGET_URI]: { deadline: "2026-11-20T17:00:00Z", revision: 0 } }, expect: { ok: false } },
+    { name: "trial must be true", metadata: { [TRIAL]: { trial: "yes" } }, expect: { ok: false } },
+    { name: "a reply naming the message it answers", contextId: "ctx-r1", metadata: { [REPLY]: { inReplyTo: "msg-r0" } }, expect: { ok: true } },
+    { name: "a reply with no contextId", metadata: { [REPLY]: { inReplyTo: "msg-r0" } }, expect: { ok: false } },
+    { name: "the 0.3.0 snake case in a reply", contextId: "ctx-r1", metadata: { [REPLY]: { in_reply_to: "msg-r0" } }, expect: { ok: false } },
+    { name: "a summary receipt asked for", metadata: { [RECEIPTS]: { receipt: "summary" } }, expect: { ok: true } },
+    { name: "a full receipt asked for", metadata: { [RECEIPTS]: { receipt: "full" } }, expect: { ok: true } },
+    { name: "a receipt level outside the list", metadata: { [RECEIPTS]: { receipt: "everything" } }, expect: { ok: false } },
+  ],
+  tasks: [
+    { name: "a refused trial", state: "TASK_STATE_REJECTED", value: { refusal: "TRIAL_REFUSED", reason: "requester_day", limit: 3 }, expect: { ok: true } },
+    { name: "a trial refusal with a reason outside the list", state: "TASK_STATE_REJECTED", value: { refusal: "TRIAL_REFUSED", reason: "bored" }, expect: { ok: false } },
+    { name: "a trial refusal on a Task that was not rejected", state: "TASK_STATE_FAILED", value: { refusal: "TRIAL_REFUSED", reason: "day" }, expect: { ok: false } },
+  ],
+};
+
 // ------------------------------------------------------- carriers without subjects
 clock = 0;
 const eReq = req("SendMessage", { message: userMsg("msg-m1", [text("Quote 20 units of part 7741.")], { metadata: offering("quote") }) });
@@ -538,6 +564,7 @@ const fixture = {
   budget,
   cancel_reasons: cancelReasons,
   failure_reasons: failureReasons,
+  trial_reply_receipt: trialReplyReceipt,
   carrier_without_subjects: carrierWithoutSubjects,
   offering: offeringRouting,
   legacy_fields: legacyFields,
