@@ -4854,8 +4854,8 @@ where an instance offers a sandbox, §4.1) MUST include a `mesh` object:
 - `name`: the instance's identity, normally its control-plane domain.
 - `protocol`: the wire protocol version the instance speaks (major must match,
   §20.2). It is the wire version, not the version of this document (§20.1).
-  Under Agent Messaging 0.8 the reference deployment sends `"0.3"`, as the
-  example shows.
+  A deployment that speaks wire version 0.4.0 sends `"0.4"`; one that
+  speaks only 0.3.0 sends `"0.3"`, as the example shows.
 - `endpoints`: the mesh's transport addresses, as URLs in preference order. It
   MUST list at least one address. The scheme of each URL names the binding and
   the transport: `nats://` for NATS over TCP and `ws://` or `wss://` for NATS
@@ -5201,27 +5201,42 @@ The protocol version follows [Semantic Versioning](https://semver.org/):
 - **Patch:** Clarifications, typo fixes, non-normative changes.
 
 **The document version and the wire version are separate numbers.** The
-version in this document's title (Agent Messaging 0.8, Version 0.8.0) numbers
-the text. The **wire version** is what implementations put on the wire: the
-envelope `v` (§5.2), the manifest `protocol_version` (§8.2), and the bootstrap
-`mesh.protocol` (§18.10). The wire version changes only when the wire changes
-in a way §20.2's checks must see. The last such change was 0.3 (§20.4), and
-nothing since has required another: Agent Messaging 0.4, 0.5, 0.6 and 0.7 added fields,
-refusal reasons and sections without moving the wire version.
+version in this document's title (Agent Messaging 0.10, Version 0.10.0-draft)
+numbers the text. The **wire version** is what implementations put on the
+wire: the envelope `v` (§5.2), the manifest `protocol_version` (§8.2), and the
+bootstrap `mesh.protocol` (§18.10). The wire version changes only when the
+wire changes in a way §20.2's checks must see. Before this version the last
+such change was 0.3 (§20.4); Agent Messaging 0.4 to 0.9 added fields, refusal
+reasons and sections without moving it.
 
-Under Agent Messaging 0.8, implementations send `0.3.0` in the envelope `v` and
-the manifest `protocol_version`, and the reference deployment sends `0.3` in
-the bootstrap `mesh.protocol`. Receivers check only the major version (§20.2),
-so these values remain correct under 0.7. An implementation MUST NOT put the
-document version in any of these fields. Where this document says "protocol
-0.2" or "protocol 0.3" (for example in the signature migration rules of §4.4
-and §5.3), it means the wire version.
+**Wire version 0.4.0.** Agent Messaging 0.10 moves the wire to `0.4.0`: a
+call between agents carries an A2A operation in `payload.a2a` (§6.4, §6.5,
+the A2A binding), and the envelope fields `task_id`, `context_id`,
+`artifacts` and `budget` are gone from it. Under Agent Messaging 0.10,
+implementations send `0.4.0` in the envelope `v` and the manifest
+`protocol_version`, and a deployment that speaks it sends `0.4` in the
+bootstrap `mesh.protocol`. An implementation MUST NOT put the document version
+in any of these fields. Where this document says "protocol 0.2" or "protocol
+0.3" (for example in the signature migration rules of §4.4 and §5.3), it
+means the wire version.
+
+**The transition window.** A node written to Agent Messaging 0.10 MUST also
+accept 0.3.0 envelopes, whose calls use the payloads of §6.8, until its
+operator ends that window, and SHOULD answer each request in the wire version
+it arrived in (A2A binding §14). A sender SHOULD send a 0.4.0 frame only to an
+agent whose manifest `protocol_version` is `0.4.0` or later, or whose A2A
+Agent Card lists the A2A binding (§8.14), and SHOULD send the 0.3.0 form to
+any other agent. A task store that holds a Task begun on 0.3.0 stores it as an
+A2A Task, using the table of §6.8. An operator SHOULD announce the end of its
+window ahead of time; after it, the node refuses 0.3.0 envelopes with
+`INVALID_VERSION`.
 
 ### 20.2. Version Negotiation
 
 - Every envelope includes a `v` field with the protocol version.
 - Receivers MUST check the `v` field and reject messages with unsupported major versions using `INVALID_VERSION`.
 - Receivers SHOULD accept messages with the same major version and a higher minor version, ignoring unknown fields.
+- While the major version is 0, a minor version can break the wire, as 0.4.0 does. That is why a sender reads the receiver's `protocol_version` or card before it sends a 0.4.0 frame (§20.1), and why a receiver that implements both 0.3.0 and 0.4.0 dispatches on `v`.
 - The manifest includes `protocol_version` so that discovery can filter by protocol compatibility.
 
 ### 20.3. Offering Versioning
@@ -5620,7 +5635,7 @@ trip, and all of them are checkable offline.
   is worse than absent, because the gap only opens for the traffic nobody was
   watching: messages that arrived while the agent was offline.
 - A field of the **request** MUST NOT be able to select a path where the checks
-  do not run. In particular `payload.config.stream` (§6.4) selects a different
+  do not run. In particular the operation a frame carries (`SendStreamingMessage` rather than `SendMessage`, §6.4) or a 0.3.0 `payload.config.stream` selects a different
   handler, never a different set of protections.
 - These checks run **after** envelope signature verification (§5.3) and **do not
   replace it**. §22.2's memory is keyed on `from`, so an implementation that
