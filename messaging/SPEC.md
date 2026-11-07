@@ -1,10 +1,10 @@
-# Agent Messaging 0.9
+# Agent Messaging 0.10
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.9.21-draft
+**Version:** 0.10.0-draft
 **Status:** Working Draft
-**Date:** 2026-11-01
+**Date:** 2026-11-07
 
 > The Agent Messaging Server is the reference implementation, and it implements the core profile (§1.6).
 
@@ -46,11 +46,11 @@ Agent Messaging is a **platform protocol**, not an application protocol. It defi
 
 Agent Messaging is designed to compose with the emerging agent ecosystem, not replace it. Two specifications overlap its surface directly. For each, this section states explicitly what Agent Messaging **leverages** (reuses rather than reinvents), what it **cedes** (defers to that spec as the authority), and the **boundary** (what Agent Messaging contributes that the other does not). A third spec, MCP, is listed as an explicit non-overlap. Two families cut *across* that surface rather than overlapping it directly: identity and trust, and payments and commerce. Each is bounded below with the same discipline.
 
-**A2A (Agent2Agent Protocol)** is a named protocol for direct agent-to-agent calls: a request/response and task method surface (`message/send`, `message/stream`, `tasks/*`), an Agent Card, and a Task lifecycle.
+**A2A (Agent2Agent Protocol)** defines what agents say to each other in a direct call: its operations (`SendMessage`, `SendStreamingMessage`, `GetTask`, `ListTasks`, `CancelTask`, `SubscribeToTask`, the push notification operations and `GetExtendedAgentCard`), its data model of Tasks, Messages, Parts and Artifacts, and its Agent Card.
 
-- *Leverage:* the Agent Messaging Task model (Section 7) mirrors A2A's states and object, and the Agent Manifest (Section 8) maps to the A2A Agent Card. Where both name an operation, the Agent Messaging wire form is intended to map one-to-one onto A2A's, so a gateway between them is a renaming, not a translation.
-- *Cede:* Agent Messaging does not seek to redefine A2A's request/response and task **method surface**; A2A is the authority for the direct-call method layer. *(Open decision: whether Agent Messaging adopts A2A's method names verbatim on the wire, or keeps its own 1:1-mappable verbs. Not yet resolved.)*
-- *Boundary:* Agent Messaging contributes what sits *beneath* that method layer, a signed, always-on **mesh** that reaches agents behind firewalls, plus **presence** and an **emit/subscribe event bus**, none of which A2A defines.
+- *Leverage:* Agent Messaging uses A2A's operations and data model for every call between agents. It carries them over the mesh as an A2A custom protocol binding, A2A over Agent Messaging (`bindings/a2a.md`) (`https://agentmessaging.ai/bindings/a2a/v1`), with A2A's operation names and objects verbatim (§6.4, §6.5). An agent's manifest publishes as an A2A Agent Card that lists that binding among its interfaces (§8.14).
+- *Cede:* A2A is the authority for the operations, the Task and its states, Messages, Parts, Artifacts and the Agent Card. Agent Messaging has no task model of its own: Section 7 says only how A2A Tasks are stored and delivered on a mesh. Where Agent Messaging needs something A2A has no place for (an offering, a budget, a message for a person, a price, a large file's digest), it carries it as an A2A extension, through A2A's own extension mechanism (§17.5).
+- *Boundary:* Agent Messaging contributes the channel beneath those operations: a signed, always-on **mesh** that reaches agents behind firewalls with no public URL, admission of strangers, **presence**, and an **emit/subscribe event bus**, none of which A2A defines.
 
 **ARD (Agentic Resource Discovery)** is a federated discovery and search layer: an artifact-agnostic catalog envelope, `/.well-known/ai-catalog.json` manifests, and a registry search API that indexes heterogeneous agents (A2A and MCP artifacts among them).
 
@@ -65,7 +65,7 @@ Agent Messaging is designed to compose with the emerging agent ecosystem, not re
 - *Own (boundary):* the cryptographic root of trust, which is per-agent Ed25519 keys, the operator/node/agent attestation chain, DNS-anchored operator identity, and always-signed envelopes. This is what neither ARD nor A2A provides on its own. Agent Messaging's *on-mesh* trust stays signature-chain based; it does **not** adopt X.509/CA machinery internally.
 - *Cede:* the **auth-advertisement format** to A2A's Agent Card, and cross-ecosystem *catalog* naming to ARD's `urn:air:<publisher>:<namespace>:<agent>` scheme (with the operator's DNS domain as the `publisher`).
 - *Own (naming):* human-handleable **naming** is no longer ceded outward. Agent Messaging has its own naming standard, **Personal Agent Naming** (PAN), specified normatively in the companion **`SPEC-NAMING.md`**: a handle anchored to a verified email, bound to the agent's Ed25519 key, resolving to a registrar-signed card that consumers verify and pin.
-- *Leverage / express:* the same Ed25519 identity is intended to be expressed as a `did:key` and carried in ARD's TrustManifest (the attestation chain as its `attestations`); a signed Agent Messaging manifest is, by construction, a signed A2A Agent Card. For *cross-organizational* trust, an agent MAY additionally carry a domain-anchored **ANS** identity: Agent Messaging's operator DNS anchor (§4.1) aligns with ANS's domain anchoring, `did:key` bridges the two (ANS accepts a DID as a principal binding), and ANS's domain-anchored model plus its SCITT transparency log are directly relevant to Federation (§21). *(Open decisions: whether to adopt `did:key`, `urn:air:`, and/or an ANS identity as external expressions. SPIFFE is a different model, workload identity via a trust domain, and is not currently planned.)*
+- *Leverage / express:* the same Ed25519 identity is intended to be expressed as a `did:key` and carried in ARD's TrustManifest (the attestation chain as its `attestations`); an Agent Messaging manifest publishes as an A2A Agent Card (§8.14). For *cross-organizational* trust, an agent MAY additionally carry a domain-anchored **ANS** identity: Agent Messaging's operator DNS anchor (§4.1) aligns with ANS's domain anchoring, `did:key` bridges the two (ANS accepts a DID as a principal binding), and ANS's domain-anchored model plus its SCITT transparency log are directly relevant to Federation (§21). *(Open decisions: whether to adopt `did:key`, `urn:air:`, and/or an ANS identity as external expressions. SPIFFE is a different model, workload identity via a trust domain, and is not currently planned.)*
 
 **Payments and commerce** cut across the economic layer the way identity cuts across discovery. Four specifications divide that space cleanly: UCP answers *what can I buy*, ACP answers *how do I check out safely*, AP2 answers *what is this agent allowed to spend*, and x402 answers *how does value move, machine to machine*. Agent Messaging answers none of those questions, on purpose. Its economic surface is deliberately thin: cost expression as an extension field (Section 17), budget and allowance registration (EXT-8), and one typed refusal, *payment required*, whose data names the price and the **accepted settlement methods** as an extensible array. Everything below that line is settlement, and settlement is ceded. What Agent Messaging contributes is the layer none of the four define: **metering and netting**. Agent-to-agent obligations are high-frequency and sub-cent, a regime where per-transaction settlement on any external rail (card or chain) pays overhead that dwarfs the amounts; an instance therefore clears them on an internal ledger and settles at the edges, in lumps. The ledger is an operator service, not protocol surface: the protocol defines the shape of the demand, never the movement of the money. No card data, wallet key, or mandate ever crosses the mesh surface.
 
@@ -127,7 +127,7 @@ The agents and nodes a server runs for itself (its registry agent, its admission
 | Agent key revocation | §4.10 | The registry's record of revoked keys, refusal to register a revoked key, the `agent_key_revoked` answer, and revocation by the key's holder, by the owner and by the operator. |
 | Stopping agents | §4.12, §4.8, §5.3, §9.2 | Pause and terminate for one agent, for everything one account holds, and for the entire mesh except the operator's own agents. The cut of level 2 (every connection carrying a covered agent revoked, every issuing door refusing it, the registry reporting its status, receivers refusing what it signs), and level 3 wherever the server brokers outside access. A terminate that nothing starts again. A stop lifted only by the authority that placed it or a higher one. Every press and every lift recorded. |
 | Registry, discovery and presence | §6.2, §6.3, §8 (the rules the registry applies), §9, §10.10, §10.14 | Registration with vouch verification and manifest validation, the registry-populated fields, ownership and visibility tiers, discovery with the filters of §9.3, registry status, the stored-document operations of §9.2, presence taken only from signed heartbeats as §10.10 requires, and `describe` served from the manifest's `public` block without invoking the agent. |
-| Request, respond and tasks | §5.7, §6.4, §6.5, §7, §10.5, §10.8, §11, §12, §18.7 | The single reply path, the durable task store and its update subjects, legal state transitions only, the task manager's handling of budget deadlines and revisions (§7.7), a task manager that applies no Task update marked for a person (§5.7), cancellation, streaming and the error model. The rule on marked updates is core because it costs a server one check and closes the only path a server holds by which a message for a person could reach a requester's task handler. |
+| Request, respond and tasks | §5.7, §6.4, §6.5, §7, §10.5, §10.8, §11, §12, §18.7 | The single reply path, the A2A operations carried as the A2A binding says (`bindings/a2a.md`), the durable task store of A2A Tasks and its update subjects, A2A's state rules only, the task manager's handling of budget deadlines and revisions (§7.7), a task manager that applies no Task update marked for a person (§5.7), cancellation, streaming and the error model. The rule on marked updates is core because it costs a server one check and closes the only path a server holds by which a message for a person could reach a requester's task handler. |
 | Events and feeds | §6.6, §6.6a, §6.7, §18.3, §18.6 | Durable domain events, feed publishing granted only to the node that vouches for the owning agent, and durable subscriptions. |
 | Files | §7.5.1 to §7.5.4, §18.5, §18.9 | The artifact store: writes only from attributable registered agents, a per-owner quota, a default lifetime with reclamation that answers "gone" rather than "not found", unguessable references, digest checks, and signed links for files larger than a message. |
 | Rooms | EXT-5, §18.5 | The server side of the rooms extension (`extensions/EXT-5-rooms.md`), the room drive included. |
@@ -166,7 +166,7 @@ The identity parts above (§4.12's stop signals, §4.14 to §4.16, `identity_sou
 
 ## 2. Terminology
 
-- **Agent Messaging:** The open protocol defined by this specification: a signed, mesh-native protocol for agent-to-agent communication that provides identity, discovery, request/response, events, presence, and a task model over a messaging transport. "Agent Messaging" names the *protocol*; a **Mesh** (below) is a running network that speaks it, and an **instance** is one operator's deployment of that network. The Agent Messaging Server is its reference implementation. Some wire identifiers keep the names they were drafted under (the `agentmesh-` signature tags and the `mesh.` subjects among them).
+- **Agent Messaging:** The open protocol defined by this specification: a signed, mesh-native protocol for agent-to-agent communication that provides identity, discovery, request/response, events and presence over a messaging transport, and carries A2A's operations and Tasks between agents (§1.3). "Agent Messaging" names the *protocol*; a **Mesh** (below) is a running network that speaks it, and an **instance** is one operator's deployment of that network. The Agent Messaging Server is its reference implementation. Some wire identifiers keep the names they were drafted under (the `agentmesh-` signature tags and the `mesh.` subjects among them).
 - **Agent:** An autonomous software entity that communicates via Agent Messaging. Agents are opaque: the protocol does not require knowledge of their internal implementation. An agent has its own cryptographic keypair; its public key is its **agent ID**. An agent is always **hosted by a Node**. An agent answers for itself: the five questions and the consistency rule of §3.3.1 are what distinguish an agent from a tool.
 - **Node:** A host that maintains a transport connection to the mesh and serves one or more agents over it. The Node holds the transport credential and **vouches** for the agents it hosts (see Section 4). A Node has its own keypair (the **node ID**). One always-on host (e.g. a personal gateway or a machine running an agent fleet) is one Node hosting N agents.
 - **Mesh Server:** The infrastructure role a node's connection terminates at. A mesh server routes messages, verifies node credentials at connection time, enforces subject-level authorization and tenant isolation on every operation, and provides durable delivery, the task store, and the presence substrate. It is run by the instance's operator, hosts no agents, and vouches for nothing. A mesh server is the opposite of a node in almost every respect. In the reference binding a mesh server is a NATS server (Section 18.2); its client↔server wire protocol is defined by the binding, not by this document (§18.1).
@@ -181,10 +181,12 @@ The identity parts above (§4.12's stop signals, §4.14 to §4.16, `identity_sou
 - **Event:** A message published to a subject for every matching subscriber, with no reply expected (§6.6). A **feed** is an event channel owned by one agent (§6.6a).
 - **Composed Operation:** A higher-level interaction pattern built from multiple primitives. Standardized for interoperability but not fundamental.
 - **Manifest:** A durable self-description document published by an agent, declaring its identity, hosting node, capabilities, and offerings. (Liveness is *not* in the manifest; see Presence. Cost is an extension field; see Section 17.)
-- **Task:** A stateful unit of work with a defined lifecycle, created when an agent processes a request.
-- **Message:** A structured communication between agents, carrying metadata, identity, and payload.
-- **Artifact:** A discrete output produced by an agent as the result of a Task, distinct from conversational messages.
+- **Task:** An A2A Task (A2A §4.1): the stateful unit of work A2A defines, with A2A's states. An agent creates one when it does not finish a call in one round. Section 7 says how a mesh stores and delivers it.
+- **Message:** A structured communication between agents, carrying metadata, identity, and payload. An A2A Message (A2A §4.1) is the content of a call; on a mesh it travels inside an envelope.
+- **Artifact:** An A2A Artifact (A2A §4.1): a discrete output an agent produces for a Task, distinct from conversational messages.
 - **Envelope:** The standard wire format wrapping all protocol messages.
+- **Frame:** An envelope that carries an A2A operation or one of its answers, as the A2A binding says (`bindings/a2a.md` §4).
+- **A2A binding:** The A2A custom protocol binding A2A over Agent Messaging (`bindings/a2a.md`), which carries A2A's operations and data model over a mesh. It is not a binding in the sense below: it sits above the envelope and travels on every transport binding.
 - **Subject:** A routing address for messages: hierarchical, dot-delimited, and supporting multi-level wildcards. Realized as a NATS subject in the reference binding (Section 18).
 - **Binding:** A concrete realization of the abstract protocol on specific infrastructure: transport, identity/credentials, and persistence. NATS JetStream is the reference binding (Section 18); terms such as **NKey** and **User JWT** are binding-level names, not protocol concepts.
 - **Tenant:** An isolation boundary within the mesh. In the model of Section 15 a tenant is a transport account (a NATS account in the reference binding); how a deployment realizes tenants is deployment-defined (Section 1.6).
@@ -771,7 +773,7 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 
 ```json
 {
-  "v": "0.3.0",
+  "v": "0.4.0",
   "id": "<message-uuid>",
   "type": "<primitive-type>",
   "ts": "<ISO-8601-timestamp>",
@@ -786,14 +788,11 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
     "tracestate": "<W3C tracestate | absent>"
   },
 
-  "task_id": "<uuid | null>",
   "in_reply_to": "<message-uuid | null>",
-  "context_id": "<uuid | null>",
 
   "error": "<ErrorObject | null>",
 
   "payload": "<arbitrary-json>",
-  "artifacts": ["<ArtifactObject>"],
 
   "meta": {
     "<key>": "<value>"
@@ -803,11 +802,15 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 }
 ```
 
+A `request` or `respond` between agents carries an A2A operation or its answer in `payload.a2a`, as §6.4 and §6.5 say. The A2A objects carry the Task id, the context id and the artifacts, so a 0.4.0 envelope has no fields for them.
+
+**The 0.3.0 envelope.** Wire version 0.3.0 envelopes have four more fields: `task_id`, `context_id`, `budget` and `artifacts` (§5.2), and their calls use the payloads of §6.8. A node written to this version MUST accept them during the transition window of §20.1, and the A2A binding's §14 says the same.
+
 ### 5.2. Field Definitions
 
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
-| `v` | string | REQUIRED | Wire protocol version, in semver format. This is the version of the wire, not of this document (§20.1); under Agent Messaging 0.8 implementations send `0.3.0`. |
+| `v` | string | REQUIRED | Wire protocol version, in semver format. This is the version of the wire, not of this document (§20.1). Under Agent Messaging 0.10 implementations send `0.4.0`, and also accept `0.3.0` during the transition window (§20.1). |
 | `id` | string | REQUIRED | Unique message identifier. UUID v7 RECOMMENDED (time-ordered). |
 | `type` | enum | REQUIRED | The primitive type. One of: `register`, `discover`, `request`, `respond`, `emit`, `subscribe`. |
 | `ts` | string | REQUIRED | ISO 8601 timestamp in UTC. Millisecond precision RECOMMENDED. |
@@ -818,14 +821,14 @@ All Agent Messaging messages use a standard envelope format. The envelope is the
 | `trace.span_id` | string | REQUIRED | Span identifier for this specific operation, in W3C format: 16 lowercase hex characters. |
 | `trace.parent_span_id` | string | OPTIONAL | Span ID of the parent operation. Null for root spans. |
 | `trace.tracestate` | string | OPTIONAL | W3C `tracestate` value, carried verbatim for vendor-specific trace data. |
-| `task_id` | string | OPTIONAL | Task identifier. Present when the message is part of a Task lifecycle. |
+| `task_id` | string | 0.3.0 only | Task identifier, on a 0.3.0 envelope that is part of a Task's life. A 0.4.0 envelope MUST NOT carry it: the A2A Task id lives in the A2A object (A2A binding §4), and a receiver refuses a 0.4.0 frame that carries it with `INVALID_ENVELOPE`. |
 | `in_reply_to` | string | OPTIONAL | Message ID this message is responding to. Present in `respond` messages. Links response to request. |
-| `context_id` | string | OPTIONAL | Context identifier. Groups related tasks and messages into a logical session. |
-| `budget` | object | OPTIONAL | The sender's budget for the work this message initiates or revises: an absolute deadline, a revision counter, and (with the Economics extension) a cost ceiling. Meaningful on `request` and on budget revisions; ignored elsewhere. See Section 7.7. |
+| `context_id` | string | 0.3.0 only | Context identifier, on a 0.3.0 envelope. A 0.4.0 envelope MUST NOT carry it: the A2A `contextId` lives in the A2A object (§7.6). |
+| `budget` | object | 0.3.0 only | The sender's budget, on a 0.3.0 `request` or budget revision (§7.7). On a 0.4.0 frame the budget travels as the budget extension in the A2A Message's `metadata` (A2A binding §12.2), and a 0.4.0 frame does not carry this field. |
 | `error` | object | OPTIONAL | Error information. Present only when the message represents an error condition. See Section 12. |
-| `payload` | any | OPTIONAL | The message payload. Structure depends on the primitive type and the agent's offering contract. |
-| `artifacts` | array | OPTIONAL | Output artifacts produced by a Task. See Section 7.5. |
-| `meta` | object | OPTIONAL | Extensible key-value metadata. Used for extensions, routing hints, etc. The key `hops` is **reserved** for cross-instance relay counting (§21) and MUST NOT be used for anything else. The key `audience` says whether the message is for the receiving agent or for the person behind it (§5.7). |
+| `payload` | any | OPTIONAL | The message payload. Structure depends on the primitive type. A `request` or `respond` between agents carries `payload.a2a` (§6.4, §6.5), except the accept signal (§6.4a). |
+| `artifacts` | array | 0.3.0 only | Output artifacts on a 0.3.0 `respond`. A 0.4.0 envelope MUST NOT carry it: A2A Artifacts travel in the A2A Task or in a `TaskArtifactUpdateEvent` (§7.5). |
+| `meta` | object | OPTIONAL | Extensible key-value metadata. Used for extensions, routing hints, etc. The key `hops` is **reserved** for cross-instance relay counting (§21) and MUST NOT be used for anything else. The key `audience` says whether the message is for the receiving agent or for the person behind it (§5.7). The key `a2a` holds A2A's service parameters on a frame (A2A binding §7), such as `A2A-Version` and `A2A-Extensions`. The key `a2a_state` MAY carry, in clear, the current state of the Task a sealed frame (EXT-7) reports, as A2A's enum name, for a carrier that shows a person the state; it discloses the state to every carrier on the path, and a receiver reads the state from the sealed payload and ignores `a2a_state` where the two differ (A2A binding §8a). |
 | `sig` | string | REQUIRED | Ed25519 signature by the `from` agent's private key over the tagged signed bytes: `agentmesh-envelope-v1`, one newline, then the canonical envelope (all fields except `sig`). Establishes per-agent identity independent of the transport connection. See Sections 4.5 and 5.3. |
 
 ### 5.3. Identity Verification
@@ -862,7 +865,7 @@ What JCS settles, normatively (RFC 8785 Sections 3.2.2 and 3.2.3):
 Two Agent Messaging rules complete the definition. They govern what value reaches the serializer, not the serialization itself:
 
 - **(a) Absent members are omitted.** A member the sender did not set MUST NOT be serialized as `null`: it does not appear in the canonical JSON at all. (An implementation whose struct serializer emits `null` for every unset optional field signs different bytes than one that omits them; that failure mode is this rule's target.)
-- **(b) `null`, where present, is a value.** It serializes, it is signed, and it is distinct from absence: `{"a":null}` and `{}` are different bytes and therefore different signatures. The envelope schema itself relies on the distinction: `trace.parent_span_id` is explicitly `null` for root spans (Section 5.2), while an optional field like `task_id` is simply absent outside a task.
+- **(b) `null`, where present, is a value.** It serializes, it is signed, and it is distinct from absence: `{"a":null}` and `{}` are different bytes and therefore different signatures. The envelope schema itself relies on the distinction: `trace.parent_span_id` is explicitly `null` for root spans (Section 5.2), while an optional field like `in_reply_to` is simply absent on a message that answers nothing.
 
 `conformance/canonical-json.json` pins value-to-canonical-bytes vectors for the divergence-prone cases (integers at the 2⁵³ boundary, the exponent-notation thresholds, shortest-form picks, negative zero, string escaping, UTF-16 key order including beyond-BMP keys, absent-versus-null, and the whole of RFC 8785's Appendix B), and both SDKs assert every vector. The Section 8.3 key claim deliberately uses no canonical JSON at all: its canonical form is a newline-joined string, and Section 8.3 explains why.
 
@@ -949,7 +952,7 @@ The third reason has a cost, stated here: the operator can see which messages ar
 
 **Which messages may carry `person`.** A `request` (§6.4), a `respond` (§6.5) and a room post (a `say`, EXT-5 §3). A sender MUST NOT mark any other envelope for a person. On a room control message or `artifact` announcement (EXT-5 §3), or a registry operation, the mark has no meaning and a receiver ignores it.
 
-**What a message for a person carries.** It carries no work. A sender MUST NOT attach a `budget` (§7.7) or a `task_id` to it, and SHOULD omit `payload.offering`; a receiver MUST NOT dispatch on an offering that is present. The text for the person SHOULD travel as `payload.text`, the first rung of §22.5's ladder, and files travel as §7.5.3 says. All of §22 applies on arrival exactly as it does to any message, and the fence (§22.6) applies whenever the text is shown to a model.
+**What a message for a person carries.** It carries no work. A sender MUST NOT attach a budget (§7.7) to it or name a Task in it, and SHOULD omit the offering; a receiver MUST NOT dispatch on an offering that is present. On a 0.4.0 frame it is a `SendMessage` request whose A2A Message carries the audience extension (`{"audience": "person"}` under `https://agentmessaging.ai/extensions/audience/v1`, A2A binding §12.3) beside the envelope's `meta.audience`, names no `taskId`, and carries the text for the person as a `text` Part. On a 0.3.0 envelope the text SHOULD travel as `payload.text`, the first rung of §22.5's ladder. Files travel as §7.5.3 says. The envelope's `meta.audience` is the mark that nodes and servers read, on either wire version, and the extension on the A2A Message MUST agree with it; a receiver treats a frame on which they disagree as marked for a person. All of §22 applies on arrival exactly as it does to any message, and the fence (§22.6) applies whenever the text is shown to a model.
 
 **The person.** Whom an agent acts for is the Common Agent Specification's `acts_for` (Common Agent Specification, Sections 6.2 and 6.9), which the agent's bound Descriptor carries. An agent whose `acts_for` is `person` acts for one person, and that person is its owner (§4.9). This is the person behind the agent, and the only reader a message marked `person` is for. So only an agent whose `acts_for` is `person` MAY declare the extension (below). An agent whose `acts_for` is `organization` or `anyone`, or whose Descriptor does not state it, has no person behind it in this specification, MUST NOT declare the extension, and refuses a message marked for a person at its door (below). The Common Agent Specification lets an organization name someone to read such messages (its Section 6.9); Agent Messaging carries no message to that reader in this version, so an organization's agent refuses them too.
 
@@ -966,7 +969,7 @@ The third reason has a cost, stated here: the operator can see which messages ar
 
 **A person may let their agent read these messages.** A person MAY let their agent read the messages addressed to them, for example to summarize them or to remind them. The setting is owner policy (§4.9). It MUST be off until the person turns it on, and it MAY be limited to particular senders. With it on, the receiver still never dispatches such a message to an offering handler or a tool call: it gives the agent the message framed as §22.6 requires, with the frame's `audience:` line, and the agent MUST NOT act on anything in it as an instruction from the sender. The agent MAY tell its person about the message, summarize it, and draft an answer for the person to approve. A reply the agent sends without that approval is the agent's own message and MUST NOT be presented as the person's words. The message passes the screening socket's `delivery` call site at that moment (EXT-10 §5.3).
 
-**Replies.** A person's reply to a message for a person is itself for a person: a `respond` with `in_reply_to` naming the message, `meta.audience: "person"`, no `task_id`, `payload.status: "completed"`, and the reply's text in `payload.text`. The original sender's node surfaces it to its own person under the rules above. Errors and delivery signals about a message for a person (an `INVALID_ENVELOPE`, an `AUDIENCE_NOT_SUPPORTED` from the door, an admission refusal, the queued acknowledgement) are for the sending agent and carry no mark.
+**Replies.** A person's reply to a message for a person is itself for a person: a `respond` with `in_reply_to` naming the message and `meta.audience: "person"`. On a 0.4.0 frame its `payload.a2a.result` is an A2A Message (never a Task) that carries the audience extension and the reply's text as a `text` Part. On a 0.3.0 envelope it has no `task_id`, `payload.status: "completed"`, and the reply's text in `payload.text`. The original sender's node surfaces it to its own person under the rules above. Errors and delivery signals about a message for a person (an `INVALID_ENVELOPE`, an `AUDIENCE_NOT_SUPPORTED` from the door, an admission refusal, the queued acknowledgement) are for the sending agent and carry no mark.
 
 **Saying that a receiver keeps these rules.** A receiver that does not know the mark delivers the message as ordinary input, because receivers ignore what they do not know (§17.4, §20.2). A sender therefore cannot assume the rules hold, and has to know before it sends. An agent whose SDK and node implement this section declares the extension in its manifest (§8.1, §17.2):
 
@@ -992,7 +995,7 @@ An agent MUST NOT declare it unless its `acts_for` is `person`, every path that 
 **What a server does.** The server's part is in the core profile (§1.6).
 
 - Every service that stores or relays an envelope (the redelivery buffer of §16.4, the room record of EXT-5, the task update channel of §7.4) MUST carry `meta.audience` unchanged. The signature already requires it; this sentence says so where a server implementer will look.
-- The task manager MUST NOT apply a Task update whose `meta.audience` is present and is anything other than the string `agent`. The Task stays as it was, a first update creates no Task, and the task manager reports the update as it reports an invalid transition (§7.3). A message for a person is never a Task transition, and the update channel is the one path a server holds by which such a message could reach a requester's task handler.
+- The task manager MUST NOT apply a Task update whose `meta.audience` is present and is anything other than the string `agent`. The Task stays as it was, a first update creates no Task, and the task manager reports the update as it reports any update it refuses (§7.3). A message for a person is never a Task transition, and the update channel is the one path a server holds by which such a message could reach a requester's task handler.
 - A server MAY rely on the mark to leave a message unmetered and unpriced. It MUST NOT treat the mark as telling it anything about the content, which it may not be able to read, or as permission to read it.
 
 **The other direction.** An agent that asks its own person something (EXT-8's `ask_owner`) addresses the same person over the owner channel, and the person's answer is for the agent. A message for a person arrives from someone else's agent and is for the person. The two meet on the same surface, which MUST say which one the person is looking at: a question from their own agent, or a message from someone else that their agent carried. A person's answer to their own agent is agent-audience; a person's reply to a message for them is person-audience.
@@ -1056,8 +1059,8 @@ The six primitives are the message types of Agent Messaging: they are the values
 |-----------|----------------|-----------|----------------|-------------|
 | `register` | Registry and presence | Agent → Registry | `mesh.registry.register` | Publish the agent's manifest to the registry. |
 | `discover` | Registry and presence | Agent → Registry | `mesh.registry.discover` | Query the registry for agents matching criteria. |
-| `request` | Inbox messaging | Agent → Agent | `mesh.agent.{agent_id}.inbox` | Send a request to a specific agent. Expects a `respond`. |
-| `respond` | Inbox messaging | Agent → Requester | `mesh.agent.{requester_id}.inbox` | Return a response to a prior request, at the requester's inbox (§6.5). Completes or progresses a Task. |
+| `request` | Inbox messaging | Agent → Agent | `mesh.agent.{agent_id}.inbox` | Send an A2A operation to a specific agent (§6.4). Expects a `respond`. |
+| `respond` | Inbox messaging | Agent → Requester | `mesh.agent.{requester_id}.inbox` | Return the answer to a prior request, at the requester's inbox (§6.5): an A2A Message, an A2A Task, or an error. |
 | `emit` | Publish and subscribe | Agent → Bus | `mesh.event.{domain}.{event_type}` | Publish a fire-and-forget event. No reply expected. |
 | `subscribe` | Publish and subscribe | Agent → Bus | `mesh.event.{domain}.{event_type}` | Declare interest in events matching a subject pattern. |
 
@@ -1136,34 +1139,45 @@ Queries the registry for agents matching specified criteria.
 
 ### 6.4. `request`
 
-> **The responder's behavior is the floor's.** Whether a bare answer or a
-> task comes back, and the mechanical refusal of anything outside the
-> declared offerings, are Common Agent Specification §5.1 and §4.6, which
-> govern. This section binds the exchange to the mesh: the subject, the
-> envelope, and the response shapes.
+> **The responder's behavior is the floor's.** Whether a Message or a Task
+> comes back, and the mechanical refusal of anything outside the declared
+> offerings, are Common Agent Specification §5.1 and §4.6, which govern.
+> This section binds the exchange to the mesh: the subject, the frame, and
+> the A2A operation it carries.
 
-Sends a request to a specific agent, expecting a `respond`.
+Sends an A2A operation to a specific agent, expecting a `respond`. A call between agents is an A2A operation (A2A §3), carried in a frame as the A2A binding §4 says. The calling agent is A2A's client, and the agent it calls is A2A's server.
 
 **Subject:** `mesh.agent.{agent_id}.inbox`
 
-**Envelope:**
+**Frame:**
 ```json
 {
+  "v": "0.4.0",
   "type": "request",
-  "from": "<requester-key>",
-  "to": "<responder-key>",
+  "from": "<client-key>",
+  "to": "<server-agent-key>",
   "trace": { "trace_id": "...", "span_id": "...", "parent_span_id": "..." },
-  "context_id": "<optional-session-context>",
   "payload": {
-    "offering": "<offering-id>",
-    "input": { "<offering-specific-input>" },
-    "config": {
-      "timeout_ms": 30000,
-      "stream": false,
-      "accepted_output": ["text/plain", "application/json"]
+    "a2a": {
+      "method": "SendMessage",
+      "params": {
+        "message": {
+          "messageId": "<message-id>",
+          "role": "ROLE_USER",
+          "parts": [ { "text": "<what the client asks for>" } ],
+          "metadata": {
+            "https://agentmessaging.ai/extensions/offering/v1": { "offering": "<offering-id>" }
+          }
+        },
+        "configuration": { "acceptedOutputModes": ["text/plain", "application/json"] }
+      }
     }
   },
   "meta": {
+    "a2a": {
+      "A2A-Version": "1.0",
+      "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1"
+    },
     "idempotency_key": "<optional-dedup-key>",
     "priority": "normal"
   }
@@ -1171,18 +1185,20 @@ Sends a request to a specific agent, expecting a `respond`.
 ```
 
 **Behavior:**
-- A request has two possible response shapes, chosen by the responder and discovered by the requester from the first **substantive** reply (see Section 7.0). The accept signal (§6.4a), when present, precedes that reply and chooses neither:
-  - **Bare response**: the responder answers within the reply window with a single terminal `respond` (`task_id: null`). No Task object is created. This is the expected path for quick, synchronous work (status checks, lookups, one-shot answers).
-  - **Task response**: the responder cannot finish now (long-running work), is streaming, or needs further input; it MUST create a Task (see Section 7) and reply with a non-terminal status and a `task_id`, then deliver progress via task update subjects.
-- The agent MUST create a Task **only when** it defers, streams, or enters `input_required`/`auth_required`. It MUST NOT create a Task solely to answer a request it can complete immediately.
-- If the agent cannot handle the request, it MUST respond with an appropriate error (see Section 12). Error responses need not create a Task.
-- When a live handler admits the request, the responder's SDK emits the accept signal before the handler runs (§6.4a).
-- Every `respond` to the request, the accept signal included, is delivered to the requester's own **inbox** subject and correlated by `in_reply_to` (§6.5); nothing of the answer travels on a transport reply subject. The requester MAY still set a transport reply subject, reserved as a liveness signal (§18.7): a requester MUST ignore response data arriving on it.
-- If `config.stream` is `true`, the agent SHOULD use the Task response shape and deliver incremental results as a sequence of `respond` messages on a task-specific subject (see Section 11).
-- If `config.stream` is `true`, the agent SHOULD deliver incremental results as a sequence of `respond` messages on a task-specific subject (see Section 11).
-- If `config.timeout_ms` is specified, the requester SHOULD cancel the request if no response is received within the timeout.
-- If `payload.offering` is specified, the agent SHOULD dispatch to the named offering. If the offering is not found, the agent MUST respond with an `OFFERING_NOT_FOUND` error.
+- `payload.a2a.method` MUST be one of A2A's operation names, spelled as A2A spells it, and `payload.a2a.params` MUST be A2A's request object for that operation, in A2A's JSON form (A2A binding §4 to §6). What each operation means is A2A's. The A2A binding §5 lists the operations and the frames each one takes.
+- **The channel's own requests** carry no `payload.a2a`. They are not A2A operations, and the A2A binding leaves them unchanged (A2A binding §11): `describe` (§10.14), `knock` (EXT-6), the registry liveness probe (§18.7), advisories (§13.6), and the other reserved offerings that a node or the platform answers itself, such as `call-receipt` (EXT-15). Each keeps its `payload.offering` and `payload.input` on either wire version, and its answer is a `respond` whose payload the defining section gives. None of them creates a Task.
+- A call for work is `SendMessage`, or `SendStreamingMessage` when the client wants results as they are produced (Section 11). Its answer is either an A2A Message, when the server agent finishes in one round, or an A2A Task, when the work continues (§7.0). The server agent chooses, and the client learns which from the first **substantive** reply. The accept signal (§6.4a), when present, precedes that reply and chooses neither.
+- The server agent MUST create a Task **only when** it defers, streams, or needs another round (`TASK_STATE_INPUT_REQUIRED` or `TASK_STATE_AUTH_REQUIRED`). It MUST NOT create a Task solely to answer a request it can complete immediately.
+- A Message that continues an existing Task (the answer to `TASK_STATE_INPUT_REQUIRED`, for example) names the Task's `taskId` and `contextId`, as A2A says.
+- The offering a call is for is named by the offering extension on the A2A Message (A2A binding §12.1). An agent that declares exactly one offering serves it when the Message names none. An agent that declares several, and receives a Message that names none or names one it does not declare, answers with `InvalidParamsError` and lists its offerings in the error's data.
+- `GetTask`, `ListTasks`, `CancelTask` and `SubscribeToTask` are answered from the durable task store (§7.4), and only to a client that may read the Task (§7.1).
+- If the agent cannot handle the request, it MUST respond with an appropriate error (see Section 12). An error needs no Task.
+- When a live handler admits the request, the server agent's SDK emits the accept signal before the handler runs (§6.4a).
+- Every `respond` to the request, the accept signal included, is delivered to the client's own **inbox** subject and correlated by `in_reply_to` (§6.5); nothing of the answer travels on a transport reply subject. The client MAY still set a transport reply subject, reserved as a liveness signal (§18.7): a client MUST ignore response data arriving on it. The one exception is a stream: its events after the first travel on the Task's stream subject (§11).
+- `acceptedOutputModes` in the request's `configuration` says which media types the client accepts. A2A's other configuration fields, such as `historyLength` and `returnImmediately`, mean what A2A says.
+- A client SHOULD stop waiting when no substantive reply arrives within its own timeout (default 30 seconds, §18.7), and MAY then cancel the Task with `CancelTask` if one was created. Silence is not failure (below).
 - A request marked for the person behind the agent (`meta.audience: "person"`, §5.7) carries no work. A receiver that implements §5.7 never dispatches it to an offering, sends no accept signal, and surfaces it to its person.
+- A `request` on a 0.3.0 envelope carries the payload of §6.8 instead, and is answered in kind.
 
 **Offline targets (the queued outcome).** A request to an agent that is not
 currently connected is not necessarily lost: if the target has a redelivery
@@ -1192,16 +1208,18 @@ respond is delivered, to the **sender's own inbox**, correlated by
 `in_reply_to`, and buffered in turn if the sender has meanwhile gone offline. Senders SHOULD therefore treat silence from
 a registered agent as *possibly queued* rather than failed, and surface it
 that way. `AGENT_UNAVAILABLE` means the request was undeliverable **and
-unbuffered** (e.g., sandbox agents, which have no buffer). A responder MAY
+unbuffered** (e.g., sandbox agents, which have no buffer). A server agent MAY
 still create a Task (Section 7) for buffered work; nothing requires it, since
 `in_reply_to` correlation suffices.
 
-**Errors:**
-- `AGENT_UNAVAILABLE`: The agent is not accepting requests and has no redelivery buffer (offline sandbox agent, unregistered id, or at capacity).
-- `OFFERING_NOT_FOUND`: The requested offering is not supported by the agent.
-- `INPUT_INVALID`: The input payload does not conform to the offering's expected schema.
-- `UNAUTHORIZED`: The requesting agent does not have permission to invoke this offering.
-- `CONTENT_TYPE_NOT_SUPPORTED`: The requested output modes are not supported.
+**Errors.** A2A's errors travel as §12 says. The ones a request most often meets:
+- `AGENT_UNAVAILABLE` (channel): the agent is not accepting requests and has no redelivery buffer (offline sandbox agent, unregistered id, or at capacity).
+- `UNAUTHORIZED` (channel): the client has not been admitted (EXT-6), or lacks permission for this offering.
+- `InvalidParamsError`: the request names no offering the agent serves, or its input does not conform to the offering's declared input.
+- `ContentTypeNotSupportedError`: the offering produces none of the client's `acceptedOutputModes`, or a Part the client sent has a media type the offering does not accept.
+- `UnsupportedOperationError`: the agent does not support the operation, as A2A says.
+
+On a 0.3.0 envelope the same refusals are `OFFERING_NOT_FOUND`, `INPUT_INVALID` and `CONTENT_TYPE_NOT_SUPPORTED` (§12.2).
 
 ### 6.4a. The Accept Signal
 
@@ -1214,26 +1232,27 @@ A caller that has just sent a `request` learns which response shape it got
 from the first substantive reply (§6.4, §7.0), but a live agent whose
 handler is a cold process can take many seconds to produce that first word,
 and for all of that time the caller is waiting blind against its own
-`config.timeout_ms`, unable to distinguish "delivered and being worked" from
+timeout, unable to distinguish "delivered and being worked" from
 "lost". The accept signal closes that gap at the moment it opens: admission.
 
 **The rule.** When a live handler **admits** a `request` (the §22 inbound
 checks have passed and §7.7 budget admission has passed), the responder's SDK
 MUST immediately emit a non-terminal `respond` with:
 
-- `payload.status: "accepted"`,
+- `payload.accepted`, an object, and no `payload.a2a`. This version defines
+  no members for it, so it is `{}`; a receiver ignores members it does not
+  know,
 - `in_reply_to` set to the request's `id`,
-- `task_id: null`. No Task exists yet, and the accept never creates one. On
-  the wire the member is absent, per §5.3's absent-members rule; SDKs surface
-  it as `null`, the same normalization every bare respond gets,
 
-**before invoking the handler.** Refusals of admission happen *instead of* an
+**before invoking the handler.** The accept signal is a mesh frame, not an
+A2A answer (A2A binding §11): it names no Task, and it never creates one. On
+a 0.3.0 envelope it is the form of §6.8: `payload.status: "accepted"` with no
+`task_id`. Refusals of admission happen *instead of* an
 accept, never after one: a §22 protection refusal (§22.7) and a budget
-refusal (`BUDGET_INSUFFICIENT` / `DEADLINE_UNMEETABLE`, §7.7) are each
-themselves the first reply, and emitting an accept asserts that admission
+refusal (§7.7) are each themselves the first reply, and emitting an accept asserts that admission
 already happened. What MAY follow an accept is the work's own outcome,
-including a terminal error such as `OFFERING_NOT_FOUND` or `INPUT_INVALID`
-discovered at dispatch, or a plain failure. A failure of the *work* may
+including a terminal error such as `InvalidParamsError` discovered at
+dispatch, or a plain failure. A failure of the *work* may
 follow an accept; a refusal of *admission* may not. The accept travels the
 path every `respond` travels: the requester's inbox subject, correlated by
 `in_reply_to` (§6.5), never a transport reply subject.
@@ -1242,16 +1261,15 @@ path every `respond` travels: the requester's inbox subject, correlated by
 one signal: the request passed the recipient's inbound checks and its budget
 admission, and a handler is about to run in a live process: the **agent** is
 live, not merely its mailbox. On receiving it the caller SHOULD reset its
-response timeout (`config.timeout_ms`, §6.4): the wait is no longer blind. A
-requester's SDK MUST NOT treat an accept as the substantive reply: the
-request stays outstanding until the first `respond` whose `payload.status` is
-not `"accepted"`. Two things the accept deliberately does not do:
+response timeout (§6.4): the wait is no longer blind. A requester's SDK MUST
+NOT treat an accept as the substantive reply: the request stays outstanding
+until the first `respond` that is not an accept signal. Two things the accept deliberately does not do:
 
 - **It does not choose the response mode.** It is a delivery signal, not a
-  mode signal: bare versus Task is told by the first substantive `respond`
-  (§7.0), and `"accepted"` is not a Task state (§7.2): it never appears in a
-  Task record, and a respond carrying it is not the Task-creating
-  non-terminal respond of §6.4.
+  mode signal: Message versus Task is told by the first substantive
+  `respond` (§7.0), and acceptance is not a Task state (§7.2): it never
+  appears in a Task record, and a respond carrying it is not the respond that
+  returns a Task (§6.4).
 - **It does not move the budget.** A §7.7 deadline is absolute and is
   unaffected by an accept: resetting the local timeout is the caller's
   patience, not the responder's authorization, which still ends at the
@@ -1259,7 +1277,7 @@ not `"accepted"`. Two things the accept deliberately does not do:
 
 **The buffered path answers differently.** A node holding an inbox for an
 attended session (§8.3a `interactive`, §16.4) runs no handler at delivery
-time, so it MUST NOT send `"accepted"`: nothing is about to run. The
+time, so it MUST NOT send the accept signal: nothing is about to run. The
 node-level convention, which the reference adapter already implements, is a
 **queued acknowledgement**: a node SHOULD answer such a request synchronously
 with a reply payload carrying `queued: true` and an `inbox_id`, telling the
@@ -1268,7 +1286,7 @@ reply will arrive later at the sender's own inbox (§6.4's offline-targets
 correlation). The queued ack rides the transport reply channel, the one
 channel §18.7 reserves for delivery-status signals: it is the node speaking
 about delivery, not the agent answering, and it carries nothing of the
-answer. The two signals are disjoint by construction: **`"accepted"`
+answer. The two signals are disjoint by construction: **`accepted`
 means a handler will run now; `queued` means a mailbox holds the message.**
 They also differ in what they certify: an accept asserts admission, while a
 queued ack deliberately does not: the reference adapter answers the
@@ -1290,11 +1308,12 @@ silence means possibly buffered, or lost (§6.4).
 between agents. Service operations answered immediately in request-reply
 (`register` §6.2, `discover` §6.3) do not carry it, and `describe` (§10.14)
 never does: it is served from operator-declared content without invoking the
-agent, and a document needs no admission signal. Receivers of the accept need
-no new machinery: it deduplicates on `(from, id)` like any envelope (§22.2).
+agent, and a document needs no admission signal. An operation answered from
+the durable task store without running a handler (`GetTask`, `ListTasks`)
+does not carry it either. Receivers of the accept need no new machinery: it deduplicates on `(from, id)` like any envelope (§22.2).
 
-The wire shape (a really-signed vector) and the queued-ack shape are pinned
-in `conformance/accept-signal.json`. The fixture is the authority, on §22.8's
+The 0.3.0 wire shape (a really-signed vector) and the queued-ack shape are
+pinned in `conformance/accept-signal.json`. The fixture is the authority, on §22.8's
 terms.
 
 ### 6.4b. Sender Pre-Flight (Sender Obligations)
@@ -1322,17 +1341,19 @@ Specifically:
   `retryable: false`, the code §22.5 answers with.
 - **Envelope size**, against the transport's advertised maximum payload
   (§18.9): a serialized envelope that exceeds it MUST NOT be published.
-  §18.9's remedy, an Object Store `ref` part, is the correct path for the
-  content. Refusal code: `CONTEXT_TOO_LARGE`, `retryable: false`, with
+  §18.9's remedy, a Part sent by reference (§7.5.1), is the correct path for
+  the content. Refusal code: `CONTEXT_TOO_LARGE`, `retryable: false`, with
   `error.details` naming the limit that fired. This is the one check with no
   remote mirror (an oversized publish never reaches the recipient at all;
   the transport refuses it), so the pre-flight turns a raw transport error
   into a deterministic, protocol-legible local refusal under the same code a
   caller already handles for "too large".
-- **Content type**, against the manifest: a `config.accepted_output` that no
-  output mode of the target offering can satisfy, or input in a type the
-  offering's `input_modes` exclude, refuses with `CONTENT_TYPE_NOT_SUPPORTED`,
-  the code §6.4 answers with.
+- **Content type**, against the manifest: `acceptedOutputModes` that no
+  output mode of the target offering can satisfy, or a Part in a media type
+  the offering's `input_modes` exclude, refuses with
+  `ContentTypeNotSupportedError`, the error §6.4 answers with
+  (`CONTENT_TYPE_NOT_SUPPORTED` on a 0.3.0 envelope, where the accepted
+  types are `config.accepted_output`).
 
 The recipient's published `rate_limits` (§8.1) carry the same logic as a
 SHOULD: a sender SHOULD throttle itself against them rather than draw
@@ -1357,50 +1378,60 @@ fixture is the authority, on §22.8's terms.
 
 ### 6.5. `respond`
 
-Returns a response to a prior `request`. Completes or progresses a Task.
+Returns an answer to a prior `request`: the A2A response to the operation it carried, an A2A error, or the accept signal (§6.4a).
 
-**Subject:** the requester's inbox subject (for direct responds: the accept signal, the bare answer, the Task-creating first reply) or `mesh.task.{task_id}.update` (for subsequent Task updates)
+**Subject:** the requester's inbox subject (the accept signal, the answer to every operation, and the first event of a stream), or `mesh.task.{taskId}.stream` for the later events of a stream (Section 11). The changes the task store records travel on `mesh.task.{taskId}.update` (§7.4).
 
-**Envelope:**
+**Frame:**
 ```json
 {
+  "v": "0.4.0",
   "type": "respond",
-  "from": "<responder-key>",
-  "to": "<requester-key>",
+  "from": "<server-agent-key>",
+  "to": "<client-key>",
   "in_reply_to": "<request-message-id>",
-  "task_id": "<task-uuid>",
   "trace": { "trace_id": "...", "span_id": "...", "parent_span_id": "..." },
   "payload": {
-    "status": "<TaskState>",
-    "message": "<optional-human-readable-status>",
-    "output": { "<offering-specific-output>" }
-  },
-  "artifacts": [
-    {
-      "id": "<artifact-uuid>",
-      "name": "report.pdf",
-      "media_type": "application/pdf",
-      "parts": [
-        { "text": "..." },
-        { "data": { "<structured-data>" } },
-        { "ref": "nats://objectstore/bucket/key", "media_type": "application/pdf", "size": 1048576 }
-      ]
+    "a2a": {
+      "result": {
+        "task": {
+          "id": "<task-id>",
+          "contextId": "<context-id>",
+          "status": { "state": "TASK_STATE_COMPLETED", "timestamp": "<RFC-3339 UTC>" },
+          "artifacts": [
+            {
+              "artifactId": "<artifact-id>",
+              "name": "report",
+              "parts": [
+                { "text": "Three suppliers can deliver by Dec 1." },
+                { "data": { "suppliers": 3 } },
+                {
+                  "url": "mesh:artifacts:<opaque>",
+                  "mediaType": "application/pdf",
+                  "filename": "report.pdf",
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/artifact-refs/v1": { "size": 1048576, "digest": "sha256:<64 lowercase hex>" }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
     }
-  ],
-  "error": null
+  }
 }
 ```
 
 **Behavior:**
 - A `respond` MUST reference the original request via `in_reply_to`.
 - A direct `respond` MUST be published to the requester's **inbox** subject, resolved from the request envelope's `from` (§14.4); the pair (`in_reply_to`, sender) is the whole correlation. A responder MUST NOT publish response data to a transport reply subject. A requester MUST accept responds only via its own inbox delivery paths, the live subscription or the mailbox drain (§16.4), where the §22 protections apply on every arrival, and MUST ignore response data arriving on a transport reply subject. The reply subject, where set, is reserved for delivery-status signaling (§18.7): the transport's no-responders error and the node's queued acknowledgement (§6.4a). It never carries response data, with exactly two plumbing exceptions, closed by construction: the registry liveness probe's answer and the answer to a live delivery on an admission-guarded inbox, both specified in §18.7.
-- A `respond` carries a `task_id` **only** when the interaction is in Task mode. A **bare** response (§6.4) sets `task_id: null` and MUST use a terminal `payload.status` (`completed` or `failed`). The one non-terminal `respond` legal without a `task_id` is the accept signal (§6.4a): `payload.status: "accepted"`, a delivery signal that precedes the substantive reply and is neither the bare answer nor a Task update.
-- The `payload.status` field indicates the outcome (bare) or the Task state transition (Task mode; see Section 7).
-- A `respond` with `status: "completed"` is a terminal response. In Task mode, no further responses for this Task are expected unless the Task is reopened.
-- A `respond` with `status: "input_required"` indicates the agent needs additional input to proceed. The requester SHOULD send a new `request` with the same `task_id` and `context_id`.
-- A `respond` with `status: "input_required"` SHOULD carry `payload.problems`: an array of structured problem reports, each `{ input, problem, description, expected? }`, where `problem` is one of the closed set `missing`, `unreadable`, `wrong_format`, `no_permission`, `other`, and `description` is REQUIRED free text written to be acted on by the counterparty's agent. `other` is a first-class code: agents recover from problems no closed set anticipates, provided the description carries the substance. The same shape MAY appear on a mid-task `respond` or on a later task whose standing input has stopped working. A problem report is not an admission-time feature. A runtime delivering a problem report to its agent MUST pass it through as received, not summarize or act on it in the agent's place.
-- Artifacts are deliverables. Messages are communication. Do not use `payload.output` for large results; use `artifacts`.
-- A person's reply to a message marked for them is a bare `respond` marked for a person in turn (§5.7). Errors and delivery signals about such a message carry no mark.
+- `payload.a2a.result` MUST be A2A's response object for the operation the request carried, in A2A's JSON form (A2A binding §4). A `SendMessage` is answered with a Message or a Task, as A2A says. A respond that reports a failure carries no `payload.a2a.result` and carries an `error` (Section 12).
+- A Task's state is one of A2A's (§7.2). A Task in a terminal state does not move again. A Task in `TASK_STATE_INPUT_REQUIRED` waits for the client, which answers with a `SendMessage` whose Message names the Task's `taskId` and `contextId`.
+- A Task in `TASK_STATE_INPUT_REQUIRED` SHOULD carry structured problem reports in its status message, as a `data` Part whose value is `{"problems": [ ... ]}`. Each report is `{ input, problem, description, expected? }`, where `problem` is one of the closed set `missing`, `unreadable`, `wrong_format`, `no_permission`, `other`, and `description` is REQUIRED free text written to be acted on by the counterparty's agent. `other` is a first-class code: agents recover from problems no closed set anticipates, provided the description carries the substance. The same shape MAY appear in a status message while the Task is working, or on a later Task whose standing input has stopped working. A problem report is not an admission-time feature. A runtime delivering a problem report to its agent MUST pass it through as received, not summarize or act on it in the agent's place.
+- Artifacts are deliverables. Messages are communication. Large or structured results travel as A2A Artifacts (§7.5), not as the text of a status message.
+- A person's reply to a message marked for them is a `respond` marked for a person in turn (§5.7). Errors and delivery signals about such a message carry no mark.
+- A `respond` to a 0.3.0 request carries the payload of §6.8 instead.
 
 ### 6.6. `emit`
 
@@ -1414,10 +1445,10 @@ Publishes a fire-and-forget event to the bus. No reply expected.
   "type": "emit",
   "from": "<emitter-key>",
   "trace": { "trace_id": "...", "span_id": "...", "parent_span_id": "..." },
-  "task_id": "<optional-originating-task>",
   "payload": {
     "domain": "scraping",
     "event_type": "profile_found",
+    "task_id": "<optional A2A Task id of the originating Task>",
     "data": { "<event-specific-data>" }
   }
 }
@@ -1426,7 +1457,7 @@ Publishes a fire-and-forget event to the bus. No reply expected.
 **Behavior:**
 - Events are published to a subject derived from the domain and event type.
 - Events MUST be persisted durably for replay (§18.3).
-- Events MAY reference a Task via `task_id` for traceability but are not required to.
+- Events MAY reference a Task for traceability but are not required to. On a 0.4.0 envelope the event names the A2A Task id in `payload.task_id`; a 0.3.0 envelope uses the envelope field `task_id` (§5.2).
 - Emitters MUST NOT expect or wait for a response. Events are fire-and-forget from the publisher's perspective.
 - The platform SHOULD enforce rate limiting on event emission per agent per subject.
 - Events are **open broadcast**. Pairwise sealing (§4.3, EXT-7) cannot apply to a message whose readers are not known at publish time: an event's payload is readable by every permitted subscriber and by the transit infrastructure. Content that requires sealing MUST travel in a `request`, never in an event.
@@ -1482,46 +1513,98 @@ Declares interest in events matching a subject pattern.
 - The agent's `onEvent` handler is invoked for each matching event.
 - Subscription permissions are enforced by the transport based on the hosting **node's** credential, which must permit the subjects of every agent the node hosts (§18.2).
 
+### 6.8. The 0.3.0 Call Payloads (Transition)
+
+Agent Messaging 0.9 and earlier carried calls between agents in payloads of their own, on wire version 0.3.0. A node written to this version MUST still accept them until its operator ends the transition window (§20.1), and SHOULD answer each request in the wire version it arrived in (A2A binding §14). New implementations send 0.4.0 frames. This section describes the 0.3.0 form so that nothing deployed is left undescribed; it adds no new behavior.
+
+**Request.** A 0.3.0 `request` carries:
+
+```json
+"payload": {
+  "offering": "<offering-id>",
+  "input": { "<offering-specific-input>" },
+  "config": {
+    "timeout_ms": 30000,
+    "stream": false,
+    "accepted_output": ["text/plain", "application/json"]
+  }
+}
+```
+
+with an optional envelope `context_id`, and an optional envelope `budget` (§7.7). `payload.offering` names the offering, and an offering the agent does not serve is refused with `OFFERING_NOT_FOUND`. `config.timeout_ms` is the requester's timeout, `config.stream: true` asks for a streamed answer (§11.7), and `config.accepted_output` lists the media types the requester accepts. A request that resumes a Task names it in the envelope `task_id`.
+
+**Respond.** A 0.3.0 `respond` carries:
+
+```json
+"payload": {
+  "status": "<state>",
+  "message": "<optional-human-readable-status>",
+  "output": { "<offering-specific-output>" },
+  "problems": [ { "input": "...", "problem": "missing", "description": "..." } ]
+}
+```
+
+with the envelope `task_id` in Task mode and the envelope `artifacts` for deliverables. A **bare** response, the 0.3.0 equivalent of answering with an A2A Message, has no `task_id` and a terminal `payload.status` (`completed` or `failed`). A **Task** response carries a `task_id` and a non-terminal status, and later updates travel on `mesh.task.{task_id}.update`. An error is a `respond` with `payload.status: "failed"` and the `error` field (§12.3). The accept signal is `payload.status: "accepted"` with no `task_id`.
+
+**Artifacts.** A 0.3.0 artifact is `{ id, name, media_type, parts, created_at, meta }`, and its parts are `{ "text": ... }`, `{ "data": ... }` or a reference part `{ "ref", "media_type", "size", "digest"?, "name"? }`. A reference part is the 0.3.0 form of an A2A `url` Part with the artifact references extension (§7.5).
+
+**State spellings.** A 0.3.0 `payload.status` spells A2A's states in lower case, and adds one of its own:
+
+| 0.3.0 | A2A (§7.2) |
+|-------|------------|
+| `submitted` | `TASK_STATE_SUBMITTED` |
+| `working` | `TASK_STATE_WORKING` |
+| `input_required` | `TASK_STATE_INPUT_REQUIRED` |
+| `auth_required` | `TASK_STATE_AUTH_REQUIRED` |
+| `completed` | `TASK_STATE_COMPLETED` |
+| `failed` | `TASK_STATE_FAILED` |
+| `canceled` | `TASK_STATE_CANCELED` |
+| `rejected` | `TASK_STATE_REJECTED` |
+| `exhausted` | `TASK_STATE_CANCELED`, with `{"outcome": "exhausted"}` under the budget extension's URI (§7.7) |
+
+A node that answers a 0.3.0 requester about a Task it stores as an A2A Task uses this table, and a node that receives a 0.3.0 update for a Task it stores as an A2A Task uses it in the other direction. Neither direction adds a state to an A2A Task. A 0.3.0 update whose state change A2A would not allow (a change after a terminal state, for example) is refused with `TASK_INVALID_TRANSITION` (§12.2).
+
+**Other 0.3.0 forms.** Cancellation is the `task.cancel` offering (§10.8). A stream is a sequence of chunks (§11.7). A budget is the envelope field `budget` (§7.7). An event's Task is the envelope field `task_id` (§6.6).
+
 ---
 
-## 7. Task Model
+## 7. Tasks on a Mesh
 
-A Task is a stateful unit of work. Tasks provide the structure for tracking, resuming, and completing **deferred** work. They are not required for every request.
+A Task is an A2A Task (A2A §4.1). A2A defines the Task, its states and how they change, and the Messages, Artifacts and Parts that travel with it, and Agent Messaging adds nothing to them. This chapter says how a mesh stores and delivers A2A Tasks: when one exists (§7.0), who may read it and what the server records beside it (§7.1), the states and their changes (§7.2, §7.3), the durable task store and the subjects a Task's changes travel on (§7.4), and how Artifacts, contexts and budgets are carried (§7.5 to §7.7).
 
 > **The task behavior is the floor's.** Task creation, states and
 > transitions, deliverables, the budget, usage reporting, and context are
 > Common Agent Specification §5.1 through §5.6, which govern the agent's
-> obligations. This chapter binds them to the mesh: the task object's
-> wire shape, the KV and stream bindings, the artifact store rules
-> (§7.5.2), the chunk encoding (§11), and the currency encodings and
-> conformance vectors.
+> obligations. This chapter binds them to the mesh: the stored record, the
+> KV and stream bindings, the artifact store rules (§7.5.2), the stream
+> encoding (§11), and the currency encodings and conformance vectors.
 
 ### 7.0. When a Task Exists
 
-A responder creates a Task **only** when a request cannot be answered with a single terminal reply, i.e. when the work is long-running, streamed, or needs another round (`input_required` / `auth_required`). See Section 6.4.
+A server agent creates a Task **only** when it cannot answer a call with a single reply, that is, when the work is long-running, streamed, or needs another round (`TASK_STATE_INPUT_REQUIRED` or `TASK_STATE_AUTH_REQUIRED`). See Section 6.4.
 
-- **No Task** (bare mode): the responder returns a terminal `respond` (`task_id: null`). Nothing is persisted; the interaction is a single request/response round. This is the common case.
-- **Task** (deferred mode): the responder returns a non-terminal `respond` with a `task_id`, then drives the Task through its lifecycle (below). The Task is the durable, resumable record of that work.
+- **No Task**: the server agent answers `SendMessage` with an A2A Message. Nothing is stored, and the interaction is a single round. This is the common case.
+- **Task**: the server agent answers with an A2A Task in a state that is not terminal, then moves it through A2A's states (§7.2). The Task is the durable, resumable record of that work, kept in the task store (§7.4).
 - **A message for a person** (§5.7) is neither. It carries no work, so no Task exists for it and no Task update may carry its mark.
 
-Requesters need no advance knowledge of which mode applies. The first **substantive** `respond` tells them: a terminal status with `task_id: null` means done; a `task_id` with a non-terminal status means subscribe for updates. The accept signal (§6.4a), when present, precedes that respond and tells them nothing about mode, deliberately: it is a delivery signal (delivered, admitted, handler running), not a mode signal.
+A client needs no advance knowledge of which applies. The first **substantive** `respond` tells it: a Message means the call is answered; a Task that is not in a terminal state means the work continues, and the client reads it with `GetTask` or follows it with `SubscribeToTask`. The accept signal (§6.4a), when present, precedes that respond and tells the client nothing about which, deliberately: it is a delivery signal (delivered, admitted, handler running), not a mode signal.
 
-> **A2A alignment.** This Task model mirrors the A2A Protocol (Section 1.3): the state set below, the Task object, and Artifacts/Parts correspond to A2A's, and the Agent Manifest (Section 8) maps to the A2A Agent Card. This keeps Agent Messaging Tasks interoperable with A2A at the task layer.
+### 7.1. Who May Read a Task, and What Is Recorded Beside It
 
-### 7.1. Task Object
+**Who may read a Task.** `GetTask`, `ListTasks`, `SubscribeToTask` and `CancelTask` answer only the server agent and the agent that created the Task with its first message, including a place acting as that agent under its delegation (§4.11), as the A2A binding §10 says. Anyone else gets `TaskNotFoundError`, so a Task's existence is not disclosed. The client is known from the frame's verified signature (§5.3); no other credential is involved. `ListTasks` lists only the Tasks the asking client may read.
+
+**The stored record.** The task store (§7.4) keeps each A2A Task exactly as A2A gives it, keyed by its A2A Task id. Beside it, never inside it, the server keeps a record of facts A2A has no place for (A2A binding §11). A party never writes the record. The shape in which a binding stores it is the binding's (§18.4); its contents are these:
 
 ```json
 {
-  "id": "<uuid>",
-  "context_id": "<uuid>",
-  "requester": "<agent-key>",
-  "responder": "<agent-key>",
-  "offering": "<offering-id>",
-  "state": "<TaskState>",
+  "task_id": "<A2A Task id>",
+  "requester": "<agent key of the client that created the Task>",
+  "responder": "<agent key of the server agent>",
+  "offering": "<offering id, or \"\" when the call named none>",
+  "engagement": "<id of the engagement the work runs under, OPTIONAL>",
   "created_at": "<ISO-8601>",
   "updated_at": "<ISO-8601>",
-  "history": [ "<EnvelopeObject>" ],
-  "artifacts": [ "<ArtifactObject>" ],
+  "frames": [ "<EnvelopeObject>" ],
   "origin": {
     "request_id": "<id of the request envelope that created the Task>",
     "requester": "<agent-key>",
@@ -1549,9 +1632,15 @@ Requesters need no advance knowledge of which mode applies. The first **substant
     "at": "<ISO-8601>",
     "resolved_at": "<ISO-8601>"
   },
-  "meta": {}
+  "cancel_reason": "<CancelReason, §10.8>",
+  "failure_reason": "<CancelReason, §10.8>"
 }
 ```
+
+- `requester` and `responder` are the verified agent keys of the client that created the Task and of the server agent that answers it.
+- `engagement` is the engagement (Agent SoW) the work runs under, when one does. The not-to-exceed cap of §7.7 is the engagement's.
+- `frames` holds the signed frames that changed the Task, for audit, capped as §16.4 says. A2A's own `history` of Messages stays inside the Task.
+- `cancel_reason` and `failure_reason` are the reasons §10.8 defines.
 
 **`origin`** (OPTIONAL, platform-written): the request that created the Task, as the server observed it routing that request: `request_id`, `requester`, `responder`, `offering`, `observed_at`, `bound_by` (`request` | `answer`).
 
@@ -1559,163 +1648,122 @@ Requesters need no advance knowledge of which mode applies. The first **substant
 - `requester` is the request's verified `from`, and `responder` is its `to`.
 - `offering` is the offering the request named, or the empty string when it named none.
 - `observed_at` is when the server observed the request, by the server's own clock.
-- `bound_by` says how the request came to name the Task id. In both cases the responder's answer to the request carried the Task id, because nothing else ties a request to a Task. It is `request` when the request itself named the Task id and the answer carried it, as a stream request and its opening `respond` do. It is `answer` when the request named no Task id and its first answer, delivered to the requester's inbox, carried one. A consumer that needs a link anchored in the requester's own message can require `request`.
+- `bound_by` says how the request came to name the Task id. In both cases the responder's answer to the request carried the Task id, because nothing else ties a request to a Task. It is `request` when the request itself named the Task id (in its A2A Message's `taskId`, or on a 0.3.0 envelope its `task_id`) and the answer carried it, as a 0.3.0 stream request and its opening `respond` do. It is `answer` when the request named no Task id and its first answer, delivered to the requester's inbox, carried one. A consumer that needs a link anchored in the requester's own message can require `request`.
 - `contested_by` (OPTIONAL) lists the ids of the Task requester's own other requests that did not name this Task id and that the responder answered with it, in the order the server observed them, at most 256. It is append-only. `contested_overflow` (OPTIONAL) counts the contesting requests past those 256, and `contested_overflow_since` (OPTIONAL) records when the server saw the first one that did not fit. Only the server writes these three fields.
 - `multiple_requests` (OPTIONAL) lists the ids of the requester's requests that named the Task id of a Task created by a stream request and were answered under it, the origin's own request first, at most 256. The first stays the origin, and none of them is evidence against the responder. Only the server writes it.
 
-A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `history` and is not trimmed with it. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one.
+A party's update MUST NOT set, change or remove it. The server never takes it from an update, whatever the update carries. It is not part of `frames` or of the Task's `history`, and is not trimmed with them. Absent means unknown, not "no request": a server that did not observe the creating request leaves `origin` out and does not guess one.
 
-The server observes only what reaches the addressee's inbox. A request counts when it is delivered to its responder's inbox, and an answer counts when it is delivered to its requester's inbox. A responder's outbox mirror is not observed, because only the responder writes it. Requests that never create a Task are never recorded: registry probes, `describe` (§10.14) and `knock` (EXT-6). A `task.cancel` request is recorded as a cancel (§10.8), not as a request.
+The server observes only what reaches the addressee's inbox. A request counts when it is delivered to its responder's inbox, and an answer counts when it is delivered to its requester's inbox. A responder's outbox mirror is not observed, because only the responder writes it. Requests that never create a Task are never recorded: registry probes, `describe` (§10.14) and `knock` (EXT-6). A cancel (`CancelTask`, or a `task.cancel` request on a 0.3.0 envelope) is recorded as a cancel (§10.8), not as a request.
 
-A request is tied to a Task only when the responder's answer to it carried that Task id. A request that merely names a Task id ties nothing: it is neither bound to the Task nor listed on it. An origin attaches only when its parties are the Task's parties. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept or a delivery signal may bind it. Delivery signals are the accept and the queued acknowledgement (`queued: true` with an `inbox_id`), both defined in §6.4a, and they neither open nor close a request. If that first answer carries no Task id, as a bare answer or a refusal does, the request is closed and binds nothing later. The first binding of a Task id stands, and it is never removed or replaced. No other field of an origin ever changes, except that the server appends to its contest fields.
+A request is tied to a Task only when the responder's answer to it carried that Task id. A request that merely names a Task id ties nothing: it is neither bound to the Task nor listed on it. An origin attaches only when its parties are the Task's parties. A Task id binds to one request and a request to one Task id, and the first observation wins. Only the first answer to a request that is not an accept or a delivery signal may bind it. Delivery signals are the accept and the queued acknowledgement (`queued: true` with an `inbox_id`), both defined in §6.4a, and they neither open nor close a request. If that first answer carries no Task id, as an answer that is a Message or a refusal does, the request is closed and binds nothing later. The first binding of a Task id stands, and it is never removed or replaced. No other field of an origin ever changes, except that the server appends to its contest fields.
 
 A request whose own envelope named a Task id and was answered under it is the requester's choice, not evidence about the responder. On the requester's own Task it is part of that Task: it may become the origin if none is bound (`bound_by: "request"`), and otherwise it lists nothing. On another party's Task nothing is recorded at all. Evidence comes only from a request that did not name the Task but was answered under it.
 
 Every such request of the Task's requester, other than the binding request, is listed in `contested_by`. That includes a second request whose first answer names an already-bound Task id, a request answered with the Task id after its first answer said something else or carried no Task id, and a request whose first answer the server saw more than the allowed interval below after the Task existed. None of them binds the Task id. When `contested_by` holds 256 ids, the server counts the rest in `contested_overflow`, each request once however often it is seen, and records `contested_overflow_since`. A consumer then treats every exchange between the two parties since the Task was created as contested. A terminal Task's origin takes only append-only additions to these three fields.
 
-`origin.contested_by` and the Task-level `contested_by` hold only the Task requester's own requests. On a Task with no `origin`, the server writes `contested_by`, `contested_overflow` and `contested_overflow_since` on the Task itself, with the same meaning and limits, and moves them into `origin` if one attaches later. Requests from other askers that the responder answered under the Task go in the OPTIONAL Task-level `contested_by_asker`. That happens when the Task's recorded requester is not the agent the server saw ask. It is keyed by the asker's agent key, and each entry carries its own `contested_by`, `contested_overflow` and `contested_overflow_since`, never mixed into another asker's list. It lists at most 64 askers per Task. Past that, the OPTIONAL `askers_overflow` counts the further askers, each once, and `askers_overflow_since` records when the first one did not fit. The OPTIONAL `origin_mismatch` (`{ requester }`) marks a Task whose recorded requester differs from the observed one, and names the first such asker. A consumer treats a mismatch as the responder's fault. A consumer that acts on the origin, such as one refunding it, treats every request in `contested_by` the same way. On a Task with no origin, it treats the requests the Task itself lists the same way, and it treats each asker's requests in `contested_by_asker` as that asker's. A reader drops a malformed contest field on its own, never the origin or the rest of the Task. Only the server writes any of these fields, and a party's update MUST NOT set, change or remove them.
+`origin.contested_by` and the record-level `contested_by` hold only the Task requester's own requests. On a Task with no `origin`, the server writes `contested_by`, `contested_overflow` and `contested_overflow_since` on the record itself, with the same meaning and limits, and moves them into `origin` if one attaches later. Requests from other askers that the responder answered under the Task go in the OPTIONAL record-level `contested_by_asker`. That happens when the Task's recorded requester is not the agent the server saw ask. It is keyed by the asker's agent key, and each entry carries its own `contested_by`, `contested_overflow` and `contested_overflow_since`, never mixed into another asker's list. It lists at most 64 askers per Task. Past that, the OPTIONAL `askers_overflow` counts the further askers, each once, and `askers_overflow_since` records when the first one did not fit. The OPTIONAL `origin_mismatch` (`{ requester }`) marks a Task whose recorded requester differs from the observed one, and names the first such asker. A consumer treats a mismatch as the responder's fault. A consumer that acts on the origin, such as one refunding it, treats every request in `contested_by` the same way. On a Task with no origin, it treats the requests the record itself lists the same way, and it treats each asker's requests in `contested_by_asker` as that asker's. A reader drops a malformed contest field on its own, never the origin or the rest of the Task. Only the server writes any of these fields, and a party's update MUST NOT set, change or remove them.
 
-One Task id runs one piece of work. A responder resolves the requests naming one Task id one at a time, in the order they arrive, and puts each through the ordinary ownership checks. Contention therefore never decides who resumes a Task: a stranger naming somebody else's Task is refused (`UNAUTHORIZED`) and only delays the requester's resume. A responder MUST refuse the same requester's second request naming a Task id while that requester's stream still runs under it. The reference SDK answers `TASK_INVALID_TRANSITION`, which is not retryable. The reference SDK lets at most 8 requests wait for one Task id and 256 for one agent, and answers past that with `AGENT_UNAVAILABLE`, which is retryable. When a responder answers more than one request naming the Task id under the Task anyway, the server lists them in `origin.multiple_requests`, and on a Task with no origin on the Task itself, as it does the contest fields.
+One Task id runs one piece of work. A responder resolves the requests naming one Task id one at a time, in the order they arrive, and puts each through the ordinary ownership checks. Contention therefore never decides who resumes a Task: a stranger naming somebody else's Task is refused (`TaskNotFoundError`, or `UNAUTHORIZED` on a 0.3.0 envelope) and only delays the requester's resume. A responder MUST refuse the same requester's second request naming a Task id while that requester's stream still runs under it, with `UnsupportedOperationError` (`TASK_INVALID_TRANSITION` on a 0.3.0 envelope), which is not retryable. The reference SDK lets at most 8 requests wait for one Task id and 256 for one agent, and answers past that with `AGENT_UNAVAILABLE`, which is retryable. When a responder answers more than one request naming the Task id under the Task anyway, the server lists them in `origin.multiple_requests`, and on a Task with no origin on the record itself, as it does the contest fields.
 
-The responder, and the platform's privileged read, see all of these fields. A requester's read of the Task shows only its own origin, its own contests and the cancel attribution, never `contested_by_asker`, `origin_mismatch`, `askers_overflow` or `askers_overflow_since`. Both reads show the server's record of origins and contests as of the read, so evidence the server observed shows even when its copy on the Task record was lost. A Task's lifecycle events (`mesh.event.task.<state>`) carry `origin` without `contested_by`, `contested_overflow`, `contested_overflow_since` or `multiple_requests`. Those appear only on the Task record and the privileged read.
+These fields are read through the platform's own reads of the record, never through A2A's `GetTask`, which returns the A2A Task alone. The responder, and the platform's privileged read, see all of these fields. A requester's read of the record shows only its own origin, its own contests and the cancel attribution, never `contested_by_asker`, `origin_mismatch`, `askers_overflow` or `askers_overflow_since`. Both reads show the server's record of origins and contests as of the read, so evidence the server observed shows even when its copy on the record was lost. A Task's lifecycle events (`mesh.event.task.<state>`, where `<state>` is the 0.3.0 spelling of the state, §6.8) carry `origin` without `contested_by`, `contested_overflow`, `contested_overflow_since` or `multiple_requests`. Those appear only on the record and the privileged read.
 
 A request first seen after its Task existed binds nothing, because a request that names an existing Task, such as a resume, did not create it. A server MAY allow a short interval for the order in which it records a request and the update that creates its Task. The reference server allows 60 seconds.
 
-**`canceled_by`** (OPTIONAL, platform-written): who signed the cancellation of a canceled Task, and whether the original requester asked for it, as the server observed them. It is written on the `canceled` transition and may be settled later by the server, and §10.8 defines it. It is either verified, as shown above, where `requester_request` is the server's finding and is null only when a settle wrote it, or unverified, `{ "party", "at", "unverified": true, "unverified_reason" }` with no `requester_request`, when the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first. Like `origin`, a party's update MUST NOT set, change or remove it, and it is not part of `history`.
+**`canceled_by`** (OPTIONAL, platform-written): who signed the cancellation of a canceled Task, and whether the original requester asked for it, as the server observed them. It is written when the Task enters `TASK_STATE_CANCELED` and may be settled later by the server, and §10.8 defines it. It is either verified, as shown above, where `requester_request` is the server's finding and is null only when a settle wrote it, or unverified, `{ "party", "at", "unverified": true, "unverified_reason" }` with no `requester_request`, when the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first. Like `origin`, a party's update MUST NOT set, change or remove it, and it is not part of `frames`.
 
 ### 7.2. Task States
 
-```
-             ┌──────────┐
-             │ submitted │
-             └─────┬─────┘
-                   │
-             ┌─────▼─────┐
-        ┌────│  working   │────┐
-        │    └─────┬─────┘    │
-        │          │          │
-  ┌─────▼──────┐   │    ┌────▼─────┐
-  │   input    │   │    │   auth   │
-  │  required  │   │    │ required │
-  └─────┬──────┘   │    └────┬─────┘
-        │          │          │
-        └────┬─────┘──────────┘
-             │
-      ┌──────┼──────────┐
-      │      │          │
-┌─────▼──┐ ┌─▼────┐ ┌──▼──────┐
-│completed│ │failed│ │canceled │
-└────────┘ └──────┘ └─────────┘
-```
+A Task's states are A2A's (A2A §4.1.3): `TASK_STATE_SUBMITTED`, `TASK_STATE_WORKING`, `TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`, `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED` and `TASK_STATE_REJECTED`. A2A says what each means, which are terminal and which are interrupted. Agent Messaging adds no state. Three of its own outcomes are not states:
 
-| State | Terminal | Description |
-|-------|----------|-------------|
-| `submitted` | No | Request received, Task created, processing has not yet begun. |
-| `working` | No | Agent is actively processing the request. |
-| `input_required` | No | Agent needs additional input from the requester to continue. |
-| `auth_required` | No | Agent needs additional credentials or authorization to continue. |
-| `completed` | Yes | Task finished successfully. Artifacts are available. |
-| `failed` | Yes | Task terminated due to an error. Error details in the envelope. |
-| `canceled` | Yes | Task was canceled by the requester or the responder. |
-| `rejected` | Yes | Responder declined the Task (cannot or will not perform the offering). Distinct from `failed`, which is an error *during* execution. Matches A2A's `rejected`. |
-| `exhausted` | Yes | The governing time-and-materials engagement reached its not-to-exceed cap and the work concluded there ([Agent SoW](https://agentsow.com) §5.5.5). Artifacts produced before the cap remain attached, and nothing past the cap is billable. Distinct from `failed`, which reports an error (none occurred here), and from `canceled`, which some party asked for. |
+- **Acceptance** is a delivery signal (§6.4a). It never appears in a Task.
+- **Budget outcomes** each put the Task in an A2A state and say which outcome it was in the Task's `metadata` under the budget extension's URI (§7.7, A2A binding §12.2): a refusal at admission (`insufficient`, `deadline_unmeetable`) is `TASK_STATE_REJECTED`, a pause at the cost ceiling (`ceiling_reached`) is `TASK_STATE_INPUT_REQUIRED`, and an end at the engagement's not-to-exceed cap (`exhausted`) is `TASK_STATE_CANCELED`. Exhaustion is not a failure: a runtime MUST NOT record such a Task as failed, and a client that knows the extension MUST NOT retry it.
+- **Overdue** and **completed late** are marks the task manager records beside the Task (§7.7). They change no state.
 
-> The diagram above shows the execution lifecycle. `rejected` is an additional terminal state entered directly from `submitted` when the responder declines the Task, and is omitted from the diagram for clarity. `exhausted` is omitted for the same reason and a second one: it is reachable from *every* non-terminal state (§7.3), so drawing it would cross the whole figure. It is not an error outcome: a runtime MUST NOT record an exhausted Task as `failed`.
+A 0.3.0 envelope spells the states in lower case and has a ninth, `exhausted`; §6.8 gives the table between the two.
 
-### 7.3. Task State Transitions
+### 7.3. Task State Changes
 
-| From | To | Trigger |
-|------|----|---------|
-| *(none)* | `submitted` | Agent receives a `request` and creates a Task. |
-| `submitted` | `working` | Agent begins processing. |
-| `working` | `completed` | Agent finishes successfully. |
-| `working` | `failed` | Agent encounters an unrecoverable error. |
-| `working` | `input_required` | Agent needs more information from the requester. |
-| `working` | `auth_required` | Agent needs additional credentials. |
-| `working` | `canceled` | Requester or responder cancels the Task. |
-| `working` | `exhausted` | The engagement's not-to-exceed cap is reached mid-execution; the agent stops where it stands and attaches what it has produced. |
-| `input_required` | `working` | Requester provides the requested input via a follow-up `request`. |
-| `auth_required` | `working` | Requester provides the required credentials. |
-| `input_required` | `canceled` | Either party cancels a paused Task. This is the outcome §7.7's `BUDGET_EXHAUSTED` pause explicitly offers ("cancels and keeps the partial artifacts"). |
-| `input_required` | `exhausted` | The cap runs out while the Task waits on the requester. The wait ends with the money rather than with an answer. |
-| `auth_required` | `canceled` | Either party cancels rather than continuing the authorization round. |
-| `auth_required` | `exhausted` | The authorization round is still open when the cap is reached, leaving nothing to fund the work it was holding open. |
-| `submitted` | `canceled` | Requester cancels before processing begins. |
-| `submitted` | `exhausted` | Other work under the same engagement consumes the cap first, so this Task never starts. |
-| `submitted` | `rejected` | Responder declines the Task before processing begins. |
+A Task changes state only as A2A allows, and a Task in a terminal state does not change again (A2A binding §5). The server agent's own record and the task store (§7.4) pass through every state the Task takes, in an order A2A allows.
 
-Transitions not listed in this table are invalid. Implementations MUST reject invalid state transitions with a `TASK_INVALID_TRANSITION` error.
+The task store MUST NOT apply an update that A2A's rules do not allow, an update from anyone but the Task's server agent (a budget revision from the client aside, §7.7), or an update marked for a person (§5.7). The Task stays as it was, and a party learns of a refused change from the Task itself. On a 0.3.0 envelope the refusal is answered with `TASK_INVALID_TRANSITION` (§6.8). A client that sends a Message to a Task in a terminal state gets `UnsupportedOperationError`, as A2A says.
 
 #### 7.3.1. Updates a Transport Does Not Carry
 
-The table above governs the Task's record: the responder's own record and the task manager's (§7.4) pass through every state it names, in a legal order. Not every transport shows every one of those states to the requester. Over email a performer often sends no `working` update (Agent Emailing §10). Over A2A a caller reads the Task only when it asks (the A2A Bridge §4.1). In both cases the requester's view can go from nothing to `input_required`, or from `input_required` to `completed`, though the record went through `submitted` and `working` on the way.
+The task store passes through every state a Task takes, in an order A2A allows. Not every transport shows every one of those states to the client. Over email a performer often sends no working update (Agent Emailing §10). A client that polls with `GetTask`, or that starts `SubscribeToTask` late, sees the Task only when it asks, because `SubscribeToTask` starts from the Task's current state (A2A binding §8). In each case the client's view can go from nothing to `TASK_STATE_INPUT_REQUIRED`, or from `TASK_STATE_INPUT_REQUIRED` to `TASK_STATE_COMPLETED`, though the record went through `TASK_STATE_SUBMITTED` and `TASK_STATE_WORKING` on the way.
 
 This is the one rule for such a view, on every transport:
 
-1. **The record stays legal.** A responder records every transition it makes, in a legal order, whether or not its transport carries the update. A transport that does not carry an update never makes a skipped state legal on the record.
-2. **A view fills gaps only through `submitted` and `working`.** A party that keeps a view of a Task it does not record (a requester, or a carrier's copy for a requester) and receives an update whose state is not a legal next state of the last state it saw applies it when a legal path leads there through `submitted` or `working` or both, and no other state. It takes the states on that path as passed through, not as seen. Its first update for a Task may be any state that a path from `submitted` reaches in this way.
-3. **Every other gap is refused.** An update that only a path through another state would reach (`input_required`, `auth_required`, or a terminal state) is refused with `TASK_INVALID_TRANSITION`, as the table requires. So is any update after a terminal state, because no path leaves one.
-4. **Order comes from the record, not from arrival.** A view applies updates in the order their envelopes' `ts` gives (Agent Emailing §10 does so for email), and an update older than the last one applied changes nothing.
+1. **The record stays legal.** A server agent records every change it makes, in an order A2A allows, whether or not its transport carries the update. A transport that does not carry an update never makes a skipped state legal on the record.
+2. **A view fills gaps only through `TASK_STATE_SUBMITTED` and `TASK_STATE_WORKING`.** A party that keeps a view of a Task it does not record (a client, or a carrier's copy for a client) and receives an update whose state is not a legal next state of the last state it saw applies it when a legal path leads there through `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING` or both, and no other state. It takes the states on that path as passed through, not as seen. Its first update for a Task may be any state that a path from `TASK_STATE_SUBMITTED` reaches in this way.
+3. **Every other gap is refused.** The view does not apply an update that only a path through another state would reach (`TASK_STATE_INPUT_REQUIRED`, `TASK_STATE_AUTH_REQUIRED`, or a terminal state), and does not apply any update after a terminal state, because no path leaves one. A view that answers such an update on a 0.3.0 envelope answers `TASK_INVALID_TRANSITION`.
+4. **Order comes from the record, not from arrival.** A view applies updates in the order their status timestamps give, or their envelopes' `ts` where the transport carries no status timestamp (Agent Emailing §10 does so for email), and an update older than the last one applied changes nothing.
 
-A carrier that shows the view to a person MAY say that the passed-through states were not reported, and MUST NOT present them as reported. The states this rule fills, `submitted` and `working`, carry nothing the requester has to act on, which is why filling them changes no outcome; the states it never fills are the ones that ask the requester for something or end the Task.
+A carrier that shows the view to a person MAY say that the passed-through states were not reported, and MUST NOT present them as reported. The states this rule fills, `TASK_STATE_SUBMITTED` and `TASK_STATE_WORKING`, carry nothing the client has to act on, which is why filling them changes no outcome; the states it never fills are the ones that ask the client for something or end the Task.
 
-`conformance/unseen-states.json` pins the cases: each gives the last state a view saw and the update's state, and says whether the view applies it and which states it takes as passed through.
+`conformance/unseen-states.json` pins the cases, in the 0.3.0 spellings of §6.8: each gives the last state a view saw and the update's state, and says whether the view applies it and which states it takes as passed through.
 
 ### 7.4. Task Persistence
 
-Tasks MUST be durably persisted, keyed by `task_id`, in a store that is the authoritative source of truth for task state and is updated on every state transition. Task status updates and artifact deliveries are published to the task's update channel for delivery to the requester, with the durable store remaining canonical for lookups.
+Tasks MUST be durably persisted in a store keyed by the A2A Task id, which is the authoritative source of truth for each Task's state and is updated on every change. The store holds the A2A Task and the record beside it (§7.1).
 
-The concrete store and channels (a NATS KV bucket plus the `mesh.task.{task_id}.update` subjects and `MESH_TASKS` stream) are defined in the reference binding (§18.4).
+- **Updates.** The server agent's node publishes each change to a Task as an A2A stream event (a `TaskStatusUpdateEvent` or a `TaskArtifactUpdateEvent`, A2A binding §8) in a signed `respond` frame on `mesh.task.{taskId}.update`, where `taskId` is the A2A Task id. The task manager applies each one to the store under the rules of §7.3.
+- **Streams.** The events of a stream travel on `mesh.task.{taskId}.stream` (Section 11).
+- **Reads.** `GetTask`, `ListTasks` and the push notification operations are answered from the store, and `SubscribeToTask` starts from the stored Task (A2A binding §5, §8). The server agent's node answers them on its agent's behalf, and only to the parties §7.1 names. A client never addresses the task store directly.
+- **Lookups.** The store, not the update subject, is canonical: a client that missed updates reads the Task with `GetTask`.
+- **Task ids.** A Task id becomes a subject token, so a server agent on a mesh MUST mint Task ids that are valid single tokens: no `.`, `*`, `>` or whitespace (§14.2). A UUID is RECOMMENDED. A2A leaves the form of a Task id to the server, so this constrains nothing A2A requires.
+
+The concrete store and channels (a NATS KV bucket, the `mesh.task.{taskId}.update` and `.stream` subjects, and the `MESH_TASKS` stream) are defined in the reference binding (§18.4). On a 0.3.0 envelope the updates are the 0.3.0 `respond` payloads of §6.8 on `mesh.task.{task_id}.update`.
 
 ### 7.5. Artifacts
 
-Artifacts are the outputs of a Task, the deliverables. They are distinct from conversational messages.
+Artifacts are the outputs of a Task, the deliverables. They are distinct from conversational messages. An artifact is an A2A Artifact, and its contents are A2A Parts (A2A §4.1): it travels in the A2A Task's `artifacts` or in a `TaskArtifactUpdateEvent`, never in the envelope.
 
 ```json
 {
-  "id": "<artifact-uuid>",
+  "artifactId": "<artifact-id>",
   "name": "<human-readable-name>",
-  "media_type": "<MIME-type>",
   "parts": [
     { "text": "<text-content>" },
     { "data": { "<structured-json>" } },
     {
-      "ref": "<artifact-ref-uri>",
-      "media_type": "<MIME>",
-      "size": 12345,
-      "digest": "sha256:<64 lowercase hex>",
-      "name": "report.pdf"
+      "url": "<artifact reference, §7.5.1>",
+      "mediaType": "<MIME>",
+      "filename": "report.pdf",
+      "metadata": {
+        "https://agentmessaging.ai/extensions/artifact-refs/v1": {
+          "size": 12345,
+          "digest": "sha256:<64 lowercase hex>"
+        }
+      }
     }
-  ],
-  "created_at": "<ISO-8601>",
-  "meta": {}
+  ]
 }
 ```
 
-**Part Types:**
-- `text`: Inline text content.
-- `data`: Inline structured JSON data.
-- `ref`: A pointer to bytes held outside the message. Used for files, images, and payloads too large to travel inline.
+**Parts.** A Part is A2A's, and holds exactly one of `text`, `raw`, `url` or `data`, as A2A says. A Part too large to travel inline in a frame (§18.9) is sent **by reference**: a `url` Part whose value is an Agent Messaging artifact reference (§7.5.1), with the artifact references extension (A2A binding §12.5) giving its size and digest. The artifact references extension may sit on a `url` Part whose URI any carrier defines (A2A binding §12.5): an artifact reference on a mesh, a `cid:` reference to an attachment by email (Agent Emailing), or an `https:` URL. Whatever the URI, a reader resolves it as its carrier says and checks the digest before it uses the bytes. A `url` Part without the extension is A2A's ordinary `url` Part.
 
 An artifact MAY contain multiple parts (e.g., a text summary + a data table + a PDF reference).
 
 #### 7.5.1. References
 
-A `ref` is an **opaque URI**. Readers MUST resolve it through their SDK and MUST NOT parse it to locate the bytes themselves: the scheme names which store answers for it, and the store's addressing is the operator's business, not the protocol's. Two schemes are defined by this specification's reference binding (§18): `mesh:artifacts:…` for the mesh-wide artifact store, and `mesh:rooms:…` for a room's drive. An implementation that meets a ref whose scheme it does not know MUST surface it as an unresolvable reference rather than guessing.
+An artifact reference is an **opaque URI**, the value of a `url` Part. Readers MUST resolve it through their SDK and MUST NOT parse it to locate the bytes themselves: the scheme names which store answers for it, and the store's addressing is the operator's business, not the protocol's. Two schemes are defined by this specification's reference binding (§18): `mesh:artifacts:…` for the mesh-wide artifact store, and `mesh:rooms:…` for a room's drive. An implementation that meets a reference whose scheme it does not know MUST surface it as an unresolvable reference rather than guessing.
 
-Ref fields:
+A Part sent by reference has these fields:
 
-- `ref`: REQUIRED. The opaque URI.
-- `media_type`: REQUIRED. The MIME type of the referenced bytes.
-- `size`: REQUIRED. Length in bytes, so a reader can decide whether to fetch before it does.
-- `digest`: OPTIONAL, `sha256:<64 lowercase hex>` over the referenced bytes. A reader that fetches a ref carrying a digest MUST verify it and MUST treat a mismatch as a failed fetch. Its absence means unverifiable, never verified.
-- `name`: OPTIONAL. A filename, when the bytes are a file. Distinct from the artifact's `name`: one artifact may carry several files, and this is how each keeps its own.
+- `url`: REQUIRED. The opaque URI.
+- `mediaType`: REQUIRED. The MIME type of the referenced bytes. A2A makes it optional on a Part; a reference MUST carry it.
+- `size`, in the artifact references extension: REQUIRED. Length in bytes, so a reader can decide whether to fetch before it does.
+- `digest`, in the artifact references extension: OPTIONAL, `sha256:<64 lowercase hex>` over the referenced bytes. A reader that fetches a reference carrying a digest MUST verify it and MUST treat a mismatch as a failed fetch. Its absence means unverifiable, never verified.
+- `filename`: OPTIONAL. A filename, when the bytes are a file. Distinct from the artifact's `name`: one artifact may carry several files, and this is how each keeps its own.
 
-`digest` is what makes a reference safe to hand to a stranger. Without it the holder of the store decides what a reference means after the fact, and a reader has no way to notice a substitution; with it, the sender's claim about the content travels with the pointer and anyone can check it. It is OPTIONAL only because artifacts predate it on the wire. New implementations SHOULD always emit it, and a party that requires the guarantee should refuse refs that lack one rather than assume.
+On a 0.3.0 envelope the same reference is a `ref` part, `{ "ref", "media_type", "size", "digest"?, "name"? }`, with the same meanings (§6.8).
 
-Because a ref carries its own digest and length, it is safe to cache and to deduplicate, and it survives being re-fetched from a mirror without the reader having to trust that mirror.
+`digest` is what makes a reference safe to hand to a stranger. Without it the holder of the store decides what a reference means after the fact, and a reader has no way to notice a substitution; with it, the sender's claim about the content travels with the pointer and anyone can check it. It is OPTIONAL only because artifacts predate it on the wire. New implementations SHOULD always emit it, and a party that requires the guarantee should refuse references that lack one rather than assume.
 
-A `digest` pins the bytes a reference points AT. It says nothing about the bytes a deliverable was computed FROM, which is the other half of the same problem: an artifact keeps verifying after the inputs behind it have moved. An artifact SHOULD declare those inputs in `rests_on` (§5.6), where the digests it names are covered by the same signature that covers the artifact.
+Because a reference carries its own digest and length, it is safe to cache and to deduplicate, and it survives being re-fetched from a mirror without the reader having to trust that mirror.
+
+A `digest` pins the bytes a reference points AT. It says nothing about the bytes a deliverable was computed FROM, which is the other half of the same problem: an artifact keeps verifying after the inputs behind it have moved. An artifact SHOULD declare those inputs in `rests_on` (§5.6), carried in the A2A Artifact's `metadata`, where the digests it names are covered by the same signature that covers the frame.
 
 #### 7.5.2. Who May Store, and For How Long
 
@@ -1731,7 +1779,27 @@ Reclaiming an object MUST NOT rewrite history. The artifact reference in a task 
 
 #### 7.5.3. Attaching Files to a Message
 
-§7.5's artifacts are the outputs of a Task. A file travelling the other way (one a REQUESTER attaches to the work it is asking for) has no artifact to live in, because no task has produced anything yet. Implementations converged on carrying it in the request payload, and this section writes that convention down rather than leaving four components to each guess at it:
+§7.5's artifacts are the outputs of a Task. A file travelling the other way (one a REQUESTER attaches to the work it is asking for) is a Part of the requester's A2A Message, as A2A says: a `url` Part whose value is an artifact reference with the artifact references extension (bytes in a store this mesh can resolve, §7.5.1), a `url` Part whose value is any other URL (bytes somewhere else), or, when it fits in a frame, a `raw` Part. `mediaType` and `filename` are A2A's own fields.
+
+```json
+"message": {
+  "messageId": "<message-id>",
+  "role": "ROLE_USER",
+  "parts": [
+    { "text": "summarise the attached report" },
+    { "url": "mesh:artifacts:…", "mediaType": "application/pdf", "filename": "report.pdf",
+      "metadata": { "https://agentmessaging.ai/extensions/artifact-refs/v1": { "size": 482913 } } },
+    { "url": "https://example.com/chart.png", "mediaType": "image/png", "filename": "chart.png" }
+  ]
+}
+```
+
+Two rules matter more than the shape:
+
+- **A receiver MUST NOT fetch an outside URL implicitly.** An artifact reference resolves through a store the receiver already authenticates to; any other URL is an address the SENDER chose, and dereferencing it automatically turns every agent into a fetch-on-demand proxy for whoever can address it, and that proxy is reachable, by construction, from inside the receiver's own network. Surface it to whatever can reason about whether to fetch it.
+- **A receiver SHOULD NOT fetch anything before it has decided to accept the message.** A reference costs nothing to receive; the bytes do not. Fetching during admission lets an unadmitted sender spend the receiver's bandwidth, disk and storage quota merely by addressing it, which is a denial-of-service primitive handed out for free.
+
+**On a 0.3.0 envelope** attached files travel in the request payload as `files`, a convention implementations converged on before this version:
 
 ```json
 "payload": {
@@ -1743,18 +1811,11 @@ Reclaiming an object MUST NOT rewrite history. The artifact reference in a task 
 }
 ```
 
-Each entry carries exactly one of `ref` (bytes in a store this mesh can resolve, §7.5.1) or `uri` (bytes somewhere else). `name`, `media_type` and `size` are OPTIONAL and advisory.
-
-Two rules matter more than the shape:
-
-- **A receiver MUST NOT fetch a `uri` implicitly.** A `ref` resolves through a store the receiver already authenticates to; a `uri` is an address the SENDER chose, and dereferencing it automatically turns every agent into a fetch-on-demand proxy for whoever can address it, and that proxy is reachable, by construction, from inside the receiver's own network. Surface it to whatever can reason about whether to fetch it.
-- **A receiver SHOULD NOT fetch anything before it has decided to accept the message.** A reference costs nothing to receive; the bytes do not. Fetching during admission lets an unadmitted sender spend the receiver's bandwidth, disk and storage quota merely by addressing it, which is a denial-of-service primitive handed out for free.
-
-`files` is a payload convention, not an envelope field: the envelope's `artifacts` (§7.5) remain the way OUTPUTS are returned, and a responder that produces files answers with artifacts carrying `ref` parts rather than with this block.
+Each entry carries exactly one of `ref` (an artifact reference) or `uri` (an outside URL), and the two rules above apply to them unchanged. `name`, `media_type` and `size` are OPTIONAL and advisory. `files` is a payload convention, not an envelope field: on 0.3.0 the envelope's `artifacts` remain the way outputs are returned.
 
 #### 7.5.4. Reading a Reference
 
-On the mesh, possession of a `ref` is the read capability: an authenticated mesh identity that holds a reference may fetch it (`mesh.artifacts.fetch`). A store MUST therefore mint refs that are unguessable (an unpredictable object identifier, not a counter and not a name derived from the content or the task), because a guessable ref is a public store with extra steps.
+On the mesh, possession of an artifact reference is the read capability: an authenticated mesh identity that holds a reference may fetch it (`mesh.artifacts.fetch`). A store MUST therefore mint references that are unguessable (an unpredictable object identifier, not a counter and not a name derived from the content or the task), because a guessable reference is a public store with extra steps.
 
 This is a deliberately modest guarantee, and implementations should not oversell it: a reference can be forwarded, so any mesh identity the holder shares it with can read the bytes. That is the right property for a deliverable that is meant to be handed onward between agents. Content that must not travel that way should be sealed before it is stored (§4.3), so the store holds ciphertext and the reference alone is not enough.
 
@@ -1768,15 +1829,15 @@ This is a deliberately modest guarantee, and implementations should not oversell
 
 #### 7.5.5. Shared Resources
 
-Everything above this section hands the receiver its own copy of the work. Inline `text` and `data` are copies outright; a `ref` is a pointer, but to bytes that can never change (§7.5.1), so holding one is just an efficient way of holding a copy. Whichever way the bytes travel, one party's work cannot alter what the other is looking at.
+Everything above this section hands the receiver its own copy of the work. Inline `text`, `data` and `raw` Parts are copies outright; an artifact reference is a pointer, but to bytes that can never change (§7.5.1), so holding one is just an efficient way of holding a copy. Whichever way the bytes travel, one party's work cannot alter what the other is looking at.
 
-A **resource** is the other thing: one live object that both parties knowingly operate on, for example a git repository two agents are coding in together, where a push by one is a fact for the other. Files, inline or by ref, give the receiver its own copy; a resource points both parties at the same live thing, and each should expect the other's changes to appear in it. The word *knowingly* is why this is an explicit block rather than a URL-shaped string in the text: shared-object semantics change how both sides must behave, and neither should have to infer that from a substring.
+A **resource** is the other thing: one live object that both parties knowingly operate on, for example a git repository two agents are coding in together, where a push by one is a fact for the other. Files, inline or by reference, give the receiver its own copy; a resource points both parties at the same live thing, and each should expect the other's changes to appear in it. The word *knowingly* is why this is an explicit block rather than a URL-shaped string in the text: shared-object semantics change how both sides must behave, and neither should have to infer that from a substring.
 
-Resources travel in the request payload beside `files` (§7.5.3):
+Resources travel in the request as a `resources` block. On a 0.4.0 frame the block is a `data` Part of the A2A Message whose value is `{"resources": [ ... ]}`. On a 0.3.0 envelope it sits in the request payload beside `files` (§7.5.3), as shown:
 
 ```json
 "payload": {
-  "text": "let's split the work on the parser bug — take the lexer, I'll take the tests",
+  "text": "let's split the work on the parser bug: take the lexer, I'll take the tests",
   "resources": [
     {
       "uri": "https://github.com/example/parser",
@@ -1794,22 +1855,23 @@ Resources travel in the request payload beside `files` (§7.5.3):
 - `access`: REQUIRED. `read` or `read-write` states what the sender intends the receiver to do with the resource. A receiver granted `read` that intends to write has left the agreement, whatever the resource's own permissions happen to allow.
 - `name`, `description`: OPTIONAL, advisory. The description is the right place for working conventions ("branch, then PR"), which are part of the agreement and not expressible in any field.
 
-A resource entry deliberately carries **none** of a ref's fields: no `digest`, no `size`, no `media_type`, no expiry. Those are snapshot-shaped claims, and no snapshot-shaped claim can honestly be made about a place: a `ref` promises the bytes will not change, while a resource makes no promise about the bytes at all. For the same reason the mesh asserts nothing about a resource: not that the URI resolves, not that the sender may grant access to it, not that it will still exist tomorrow. Verifying any of that is the receiver's business, in the resource's own world. And because the mesh holds nothing, the retention rules of §7.5.2 do not apply: there is nothing here for a store to reclaim.
+A resource entry deliberately carries **none** of a reference's fields: no `digest`, no `size`, no media type, no expiry. Those are snapshot-shaped claims, and no snapshot-shaped claim can honestly be made about a place: a reference promises the bytes will not change, while a resource makes no promise about the bytes at all. For the same reason the mesh asserts nothing about a resource: not that the URI resolves, not that the sender may grant access to it, not that it will still exist tomorrow. Verifying any of that is the receiver's business, in the resource's own world. And because the mesh holds nothing, the retention rules of §7.5.2 do not apply: there is nothing here for a store to reclaim.
 
 **Access is arranged in the resource's own auth domain.** The normal way to share a private repository is to grant access where the repository lives (an invitation, a deploy key), with the mesh conveying only the pointer and the intent. A resource entry MUST NOT carry a credential in cleartext: a secret that must travel travels in a sealed payload (§4.3), to a verified key (§8.3), or not at all.
 
 The rules of §7.5.3 apply unchanged: a receiver MUST NOT fetch, clone, or probe a resource implicitly, and SHOULD NOT touch it before deciding to accept the work.
 
-**Deliverables may land in the resource.** When a responder holds `read-write` access, the natural output is often a change to the resource itself (a pushed branch, an opened pull request) rather than bytes returned through the mesh. That is a legitimate deliverable: the completing `respond` then carries a pointer to what changed and a summary of it, not a copy of the bytes. Task records stay truthful because the response says where the work went; they do not need to contain it.
+**Deliverables may land in the resource.** When a responder holds `read-write` access, the natural output is often a change to the resource itself (a pushed branch, an opened pull request) rather than bytes returned through the mesh. That is a legitimate deliverable: the completed Task then carries, as an Artifact, a pointer to what changed and a summary of it, not a copy of the bytes. Task records stay truthful because the response says where the work went; they do not need to contain it.
 
 ### 7.6. Context
 
-A `context_id` groups related Tasks into a logical session. The behavior
-is Common Agent Specification §5.6, which governs: generation when a
-request carries none, verification that a named task belongs to its
-named context, and documented retention. `context_id` is that section's
-spelling on this mesh, and the manifest is where retention is
-documented.
+A context groups related Tasks and Messages into a logical session. On
+this mesh the context is A2A's `contextId`, carried in the A2A Message and
+Task as A2A says, never in the envelope. The behavior is Common Agent
+Specification §5.6, which governs: generation when a request carries none,
+verification that a named task belongs to its named context, and documented
+retention. `contextId` is that section's spelling on this mesh (`context_id`
+on a 0.3.0 envelope), and the manifest is where retention is documented.
 
 ### 7.7. Budget
 
@@ -1818,19 +1880,28 @@ the latest it may finish. It is an **offer, and acceptance means something**: a
 responder reads the budget before doing any work, and accepting the request is
 a statement that it believes the work fits inside it.
 
+On a 0.4.0 frame the budget is the budget extension (A2A binding §12.2): it
+sits in the `metadata` of the A2A Message that starts or revises the work,
+under the extension's URI.
+
 ```json
-"budget": {
-  "deadline": "<RFC-3339 UTC>",
-  "revision": 0,
-  "cost_ceiling": { "amount_micro": 4000000, "currency": "USD" }
+"metadata": {
+  "https://agentmessaging.ai/extensions/budget/v1": {
+    "deadline": "<RFC-3339 UTC>",
+    "revision": 0,
+    "costCeiling": { "amountMicro": 4000000, "currency": "USD" }
+  }
 }
 ```
 
+On a 0.3.0 envelope the same budget is the envelope field `budget`, spelled
+`{ "deadline", "revision", "cost_ceiling": { "amount_micro", "currency" } }`.
+
 - `deadline`: absolute timestamp, core. OPTIONAL.
-- `cost_ceiling`: defined by the Economics extension (Section 19.3); core
-  treats it as opaque. OPTIONAL.
+- `costCeiling` (`cost_ceiling` on 0.3.0): defined by the Economics
+  extension (Section 19.3); core treats it as opaque. OPTIONAL.
 - `revision`: REQUIRED, `0` on the initiating request, incremented by one on
-  each revision. At least one of `deadline` / `cost_ceiling` MUST be present.
+  each revision. At least one of `deadline` / `costCeiling` MUST be present.
 
 Only money and time appear, deliberately. Tokens are not fungible across
 agents (a token of a small model, a large model, and a reasoning pass differ
@@ -1839,24 +1910,30 @@ a token budget would be a constraint written in the responder's private units.
 The responder owns the conversion. A requester that cares about quality rather
 than spend should choose a different agent via discovery, not meter this one.
 
-**Scope.** The budget attaches to the `request` envelope, not to a Task,
-because under Section 7.0 the requester cannot know whether a Task will exist.
+**Scope.** The budget attaches to the Message that starts the work, not to a
+Task, because under Section 7.0 the requester cannot know whether a Task will
+exist.
 A request marked for a person (§5.7) carries no budget, because it asks for
 no work.
-If the responder answers in bare mode, the budget is a static offer governing
-that single round. If the responder goes deferred, the Task inherits the
-budget and it becomes live: revisable, and enforced against the Task
-lifecycle. A responder that accepted a bare request and discovers mid-work
-that it cannot finish inside the budget escalates by the normal Section 7.0
-promotion (a non-terminal `respond` with a `task_id` and `input_required`),
-and the budget conversation continues on the Task.
+If the responder answers with a Message, the budget is a static offer
+governing that single round. If the responder answers with a Task, the Task
+inherits the budget and it becomes live: revisable, and enforced against the
+Task's life. A responder that meant to answer in one round and discovers
+mid-work that it cannot finish inside the budget answers with a Task in
+`TASK_STATE_INPUT_REQUIRED` instead (Section 7.0), and the budget
+conversation continues on the Task.
 
 **Admission.** A responder that does not believe it can complete the work
 within the budget MUST refuse at admission (before doing the work) rather
-than accept and fail mid-flight: `BUDGET_INSUFFICIENT` when the ceiling is the
-problem, `DEADLINE_UNMEETABLE` when the deadline is (Section 12.2). The
-refusal SHOULD carry the responder's estimate (its price, or its earliest
-realistic completion). Refuse-with-estimate is the negotiation mechanism:
+than accept and fail mid-flight. On a 0.4.0 frame it answers with a Task in
+`TASK_STATE_REJECTED` whose `metadata`, under the budget extension's URI,
+says which limit is the problem (A2A binding §12.2):
+`{"outcome": "insufficient", "estimate": {"amountMicro": ..., "currency": "..."}}`
+when the ceiling is, and
+`{"outcome": "deadline_unmeetable", "earliestCompletion": "<RFC 3339>"}`
+when the deadline is. On a 0.3.0 envelope it answers `BUDGET_INSUFFICIENT`
+and `DEADLINE_UNMEETABLE` (Section 12.2). The refusal SHOULD carry the
+responder's estimate (its price, or its earliest realistic completion). Refuse-with-estimate is the negotiation mechanism:
 resubmitting with better terms is the counter-offer. Accepting work the budget
 never covered and then failing is the one outcome this section treats as the
 responder's fault, because it spends the requester's time, which is part of
@@ -1868,11 +1945,13 @@ not a kill switch (no one can reach into the responder's process) and it is
 not retroactive: artifacts delivered before the deadline were delivered inside
 the budget and belong to the requester. When a Task exists, the task manager
 (which holds the clock centrally and needs no cooperation from the responder)
-marks the Task **overdue** at the deadline and notifies the requester, who
-then holds every partial artifact received so far and a choice: cancel, or
-keep listening. A completion arriving after the deadline is accepted and
-recorded as **completed late** (`DEADLINE_EXCEEDED` in the completion's
-`meta`); what a late answer is worth is the requester's decision. Work past
+records the Task as **overdue** at the deadline, beside the Task (§7.1), and
+notifies the requester, who then holds every partial artifact received so far
+and a choice: cancel, or keep listening. The overdue mark is not a state, and
+the Task's state does not change. A completion arriving after the deadline is
+accepted and recorded beside the Task as **completed late**
+(`DEADLINE_EXCEEDED`); what a late answer is worth is the requester's
+decision. Work past
 the deadline is at the responder's own risk and on its own account. Deadlines
 are compared under the clock-skew tolerance of Section 22.3, and SHOULD NOT be
 finer than one second. Below that, a deadline measures network jitter, not
@@ -1880,22 +1959,47 @@ the work.
 
 **Hitting the ceiling.** A responder that reaches the cost ceiling on work
 that turned out larger than either party thought MUST stop before crossing it
-and move the Task to `input_required` with `BUDGET_EXHAUSTED` as the reason,
-reporting spend so far and an estimate to finish. The input required is money:
-the requester either raises the budget by revision and work resumes, or
-cancels and keeps the partial artifacts.
+and pause the Task in `TASK_STATE_INPUT_REQUIRED`. On a 0.4.0 frame its
+`metadata` carries
+`{"outcome": "ceiling_reached", "spent": {...}, "estimateToFinish": {...}}`
+under the budget extension's URI, with a status message saying so in words
+(A2A binding §12.2); on a 0.3.0 envelope the reason is `BUDGET_EXHAUSTED`.
+The input required is money: the requester either raises the budget with a
+revision whose `revision` is higher, and work resumes, or cancels the Task
+with the reason `budget_exhausted` (§10.8) and keeps the partial artifacts.
 
-**Revisions.** Either party to a Task MAY send a budget revision as a task
-update carrying only the `budget` block. Revisions are **absolute, never
+**When the engagement's cap ends the work.** A time-and-materials engagement
+has a not-to-exceed cap ([Agent SoW](https://agentsow.com) §5.5.5). When the
+cap is reached, the work concludes there: the Task ends in
+`TASK_STATE_CANCELED`, and its `metadata` carries `{"outcome": "exhausted"}`
+under the budget extension's URI, with a status message saying so (A2A
+binding §12.2). Artifacts produced before the cap stay attached, and nothing
+past the cap is billable. This can happen in any state that is not terminal,
+including while the Task waits on the requester. It is not a failure, since no
+error occurred, and it is not a cancellation some party asked for: a runtime
+MUST NOT record such a Task as failed, and a client that knows the extension
+MUST NOT retry it, because a retry would spend past a cap the engagement set.
+For every other canceled Task, whether to send the work again is the client's
+choice, as A2A leaves it. A2A's state list is fixed, and canceled is the
+state whose meaning is closest. On a 0.3.0 envelope this outcome is the state `exhausted`
+(§6.8).
+
+**Revisions.** Either party to a Task MAY revise its budget. The client
+revises with a `SendMessage` whose Message names the Task and carries the
+budget extension with the next `revision`. The server agent revises with a
+status update whose message carries it. On a 0.3.0 envelope a revision is a
+task update carrying only the `budget` block. Revisions are **absolute, never
 deltas**: each revision states the entire budget, so a lost or reordered
 revision cannot corrupt anyone's arithmetic: the highest `revision` is simply
 the whole truth. The task manager, where present, records the latest revision,
 rejects revisions from anyone but the Task's requester or responder
-(`UNAUTHORIZED`), and rejects revisions to Tasks in a terminal state
-(`TASK_INVALID_TRANSITION`). A revision cannot render the present moment
-retroactively over budget: a deadline already passed, or a ceiling already
-exceeded, when the revision arrives is refused (`TASK_INVALID_TRANSITION`); a
-revision constrains only the future.
+(`TaskNotFoundError`, §7.1), and rejects revisions to Tasks in a terminal
+state (`UnsupportedOperationError`, as A2A answers any Message to such a
+Task). A revision cannot render the present moment retroactively over budget:
+a deadline already passed, or a ceiling already exceeded, when the revision
+arrives is refused (`InvalidParamsError`); a revision constrains only the
+future. On a 0.3.0 envelope these refusals are `UNAUTHORIZED`,
+`TASK_INVALID_TRANSITION` and `TASK_INVALID_TRANSITION`.
 
 **Enforcement, honestly.** The spend half of this section is an honor-system
 MUST: nothing on the mesh can see inside the responder. What the mesh CAN
@@ -1918,7 +2022,7 @@ budget that can cover it is the acceptance.
 
 ## 8. Agent Manifest
 
-The manifest is an agent's self-description document. It is published to the registry via `register` and queried via `discover`.
+The manifest is an agent's self-description document. It is published to the registry via `register` and queried via `discover`, and it publishes as an A2A Agent Card that lists the A2A binding (§8.14).
 
 ### 8.1. Manifest Schema
 
@@ -1928,7 +2032,7 @@ The manifest is an agent's self-description document. It is published to the reg
   "name": "<human-readable-name>",
   "description": "<what-this-agent-does>",
   "version": "<semver>",
-  "protocol_version": "0.3.0",
+  "protocol_version": "0.4.0",
 
   "provider": {
     "name": "<organization-or-individual>",
@@ -2095,8 +2199,8 @@ server-controlled fields after the agent signs: it populates `owner`, defaults
 never verify for the party reading the manifest back.
 
 What a reader actually has to authenticate is narrower: the binding between an
-agent's `id` and the `encryption_key` others seal secrets to (Section 4.3,
-Section 7.3). An unauthenticated `encryption_key` is a silent loss of
+agent's `id` and the `encryption_key` others seal secrets to (Section 4.3).
+An unauthenticated `encryption_key` is a silent loss of
 confidentiality, not a detectable error. A forged registry reply carrying the
 forger's own X25519 key gets a room key sealed to the forger, who then reads
 every message and artifact in a room it was never admitted to, with nothing
@@ -2233,7 +2337,7 @@ Offerings are the fine-grained units of work an agent advertises. Each offering 
 
 > **Renamed.** Earlier drafts of this specification called an offering a *skill*, and the wire carried `skills`, `payload.skill`, `skill_details` and `SKILL_NOT_FOUND`. The agent ecosystem has since settled "skill" to mean something else entirely (a packaged procedure loaded *into* an agent), so this specification renamed the concept. During the deprecation window, implementations MUST accept the legacy field names as aliases on inbound messages and manifests, treat the error code `SKILL_NOT_FOUND` as `OFFERING_NOT_FOUND`, and MUST emit only the new names.
 
-- `id`: Stable identifier for the offering. Used in `request.payload.offering`.
+- `id`: Stable identifier for the offering. A call names it in the offering extension (A2A binding §12.1), or in `payload.offering` on a 0.3.0 envelope (§6.8). It is also the `id` of the offering's skill on the A2A Agent Card (§8.14).
 - `input_schema` / `output_schema`: JSON Schema defining expected input and output structures.
 - `input_modes` / `output_modes`: MIME types the offering accepts and produces.
 - `streaming`: Whether this offering supports streaming responses.
@@ -2249,7 +2353,7 @@ These fields exist so that the interface an agent presents is publishable *pre-a
 
 #### 8.5.1. Needs and Delivers
 
-Schemas suit offerings with deterministic callers. General-purpose agents engage differently: the parameters get settled in conversation (the task lifecycle's `input_required` state is that negotiation's protocol home, §7.2), and what a caller actually must know **before** engaging is coarser: what to have in hand, and what to expect back. Two OPTIONAL fields on an offering declare exactly that, the way a contractor would:
+Schemas suit offerings with deterministic callers. General-purpose agents engage differently: the parameters get settled in conversation (A2A's `TASK_STATE_INPUT_REQUIRED` state is that negotiation's protocol home, §7.2), and what a caller actually must know **before** engaging is coarser: what to have in hand, and what to expect back. Two OPTIONAL fields on an offering declare exactly that, the way a contractor would:
 
 - `needs`: what must be in hand before work can start. An array where each entry is ONE of:
   - `{ "resource": "<kind>", "access": "read" | "read-write", "description"?: "…" }`: a shared resource (§7.5.5) the caller must provide, e.g. a git repository the agent will push to;
@@ -2837,19 +2941,22 @@ living on the offering (`needs`, §8.5.1) and in the engagement's inputs clause
 
 #### What the A2A card carries
 
-The generated A2A Agent Card (§1.3) projects `transport: "http"` schemes into
-its `securitySchemes` and `security` members, where they are already valid
-OpenAPI and every A2A consumer knows how to read them. `securitySchemes` is
-keyed by scheme `id`, and `security` carries one requirement object per scheme,
-which is OpenAPI's spelling of the alternatives rule above.
+The A2A Agent Card generated from the manifest (§8.14) projects
+`transport: "http"` schemes into its `securitySchemes` and
+`securityRequirements` members, where they are already valid OpenAPI and
+every A2A consumer knows how to read them. `securitySchemes` is keyed by
+scheme `id`, and `securityRequirements` carries one requirement object per
+scheme, which is OpenAPI's spelling of the alternatives rule above. These
+schemes apply to the card's HTTP interfaces, such as an A2A Bridge's.
 
 A `mesh-identity` scheme MUST NOT be projected. It has no OpenAPI
 representation, and inventing one would put a fictional HTTP auth scheme on a
-card that consumers act on — worse than saying nothing, because it is
+card that consumers act on, which is worse than saying nothing, because it is
 specific and wrong. An agent reachable only on the mesh therefore emits a card
-with no `securitySchemes`, which is correct: over HTTP there is no scheme,
-because over HTTP there is no door. The mesh answer stays in the manifest,
-where a reader who asked the mesh question finds it.
+with no `securitySchemes`, which is correct: its one interface is the A2A
+binding, where the frame's signature is the credential and takes the place of
+every scheme (A2A binding §10). The mesh answer stays in the manifest, where a
+reader who asked the mesh question finds it.
 
 ---
 
@@ -2865,6 +2972,45 @@ descriptor members, because a fact spelled twice drifts. A consumer that
 holds the manifest fetches the descriptor from the registry (§9.2) or from
 the subject, and checks the digest against what a signature or a citation
 named.
+
+### 8.14. The Manifest as an A2A Agent Card
+
+A manifest publishes as an A2A Agent Card (A2A §4.4), so that an A2A client can read an agent on a mesh the way it reads any agent. The registry generates the card from the manifest, and from the agent's Agent Descriptor (§8.13) where it published one; the agent never writes a second description by hand. A fact spelled twice drifts, so the card is always derived and the manifest stays the source.
+
+**The interface.** The card's `supportedInterfaces` MUST list the A2A binding, as the A2A binding §3 says:
+
+```json
+{
+  "url": "https://api.mesh.example.com/agents/quotes.acme@example.com",
+  "protocolBinding": "https://agentmessaging.ai/bindings/a2a/v1",
+  "protocolVersion": "1.0"
+}
+```
+
+`url` is the agent's mesh home (§18.10), then `/agents/`, then its handle (Personal Agent Naming) or, for an agent without one, its agent ID, percent-encoded as the A2A binding §3 says. An agent that an A2A Bridge also serves lists the bridge's interface beside it (`bindings/a2a-bridge.md`), in order of preference.
+
+**What maps to the card.**
+
+| Manifest | A2A Agent Card |
+|----------|----------------|
+| `name`, `description`, `version` | `name`, `description`, `version` |
+| `provider.name`, `provider.url` | `provider.organization`, `provider.url` |
+| `default_input_modes`, `default_output_modes` (§8.5) | `defaultInputModes`, `defaultOutputModes` |
+| each entry of `offerings` | one entry of `skills`: `id`, `name`, `description`, `tags`, `inputModes`, `outputModes`, and `examples` written as strings |
+| `streaming: true` on any offering | `capabilities.streaming: true` |
+| `extensions`, and each A2A binding extension the agent supports (§17.5) | `capabilities.extensions`, each with `required: false` |
+| `public.access.schemes` with `transport: "http"` (§8.12) | `securitySchemes` and `securityRequirements` |
+
+`capabilities.pushNotifications` and `capabilities.extendedAgentCard` say what the agent's node supports, as A2A defines them.
+
+**What A2A has no place for.** The manifest fields A2A lacks are of two kinds.
+
+- *Carried as the A2A binding's extensions* (A2A binding §12), because a client needs them on a call: which offering a Message is for (the offering extension), the budget (the budget extension, §7.7), a message for the person behind the agent (the audience extension, for an agent that declares `mesh://extensions/audience/v1`, §5.7), a price when payment is required (the economics extension, §19), and a large Part's size and digest (the artifact references extension, §7.5.1). The card lists each one the agent supports in `capabilities.extensions`.
+- *Manifest-only*, because they describe the agent on the mesh rather than a call: `id` (the agent key), `node` and its vouch, `owner` and `owner_attestation`, `visibility`, `endpoint` and `endpoints`, `limits`, `encryption_key`, `sealing`, `trust` (the key claim of §8.3, which is not a card signature), `descriptor`, `public` (served by `describe`, §10.14), `interaction`, `capabilities` (the tags), `accepts` and `emits`, `works_with`, `skus`, `rate_limits`, each offering's `input_schema`, `output_schema`, `estimated_duration_ms`, `needs`, `delivers` and `reporting`, and `meta`. A reader who needs them reads the manifest from the registry (§9.2) or the describe document.
+
+The card's `signatures` are A2A's, and a deployment MAY sign the card as A2A says. Whoever reads the card still verifies the agent from its signed frames (A2A binding §10), never from the card.
+
+---
 
 ## 9. Registry
 
@@ -3024,19 +3170,21 @@ Profile attributes are subject to tenancy visibility (§15): an operator MAY wit
 
 Composed operations are higher-level interaction patterns built from primitives. They are standardized for interoperability but are not fundamental: any agent can implement them using the underlying primitives. Because they add no capability (only naming conventions), 0.2 keeps a small core set and **parks** the rest: parked operations remain implementable by any two agents today and will be re-specified when two independent implementations need to interoperate on them.
 
+Where A2A defines an operation, Agent Messaging uses it and defines no composed operation of its own: streaming is `SendStreamingMessage` and `SubscribeToTask` (§10.5), cancellation is `CancelTask` (§10.8), and reading a Task is `GetTask` and `ListTasks` (§7.4). Those sections add only what Agent Messaging records or carries beside the A2A operation.
+
 **0.2 disposition:**
 
 | Operation | Status | Notes |
 |-----------|--------|-------|
-| `stream` | **Core** | Incremental results (§11) |
-| `cancel` | **Core** | Task cancellation: closed reason enum + upstream propagation (§10.8) |
+| `stream` | **Core** | A2A's `SendStreamingMessage` and `SubscribeToTask` (§10.5, §11) |
+| `cancel` | **Core** | A2A's `CancelTask`, with a closed reason enum and upstream propagation (§10.8) |
 | `heartbeat` | **Core** | Node-level liveness (§9.6) |
 | `status` | **Core** | Operational status query |
 | `delegate` | **Core** (guidance) | Request forwarding |
 | `broadcast` | **Core** (guidance) | discover + emit |
 | `describe` | **Core** | The pre-admission read (§10.14) |
 | `negotiate` | **Retired** | Subsumed by budget admission, refuse-with-estimate (§7.7, §10.4) |
-| `connect` / `disconnect` | **Parked** | `context_id` already gives multi-turn continuity without dedicated session infrastructure |
+| `connect` / `disconnect` | **Parked** | A2A's `contextId` already gives multi-turn continuity without dedicated session infrastructure |
 | `authorize` | **Parked** | Authorization is a node/policy concern, not a mesh query |
 | `transfer` | **Parked** | `delegate` covers the real cases |
 | `propose` | **Parked** *(likely to return)* | Cross-mesh human-in-the-loop approval |
@@ -3076,7 +3224,7 @@ Forwards a request to another agent when the receiving agent cannot or should no
 **Flow:**
 1. Agent A receives a request from Agent B.
 2. Agent A discovers Agent C with the required capability.
-3. Agent A sends a new `request` to Agent C, preserving the original `trace_id` and `context_id`.
+3. Agent A sends a new `request` to Agent C, preserving the original `trace_id`. It MAY name the original `contextId` in its A2A Message.
 4. Agent A MAY remain in the chain (proxy pattern) or MAY redirect Agent B to Agent C directly (redirect pattern).
 5. If proxying, Agent A forwards Agent C's response to Agent B. The `meta.delegated_from` field SHOULD record the delegation chain.
 
@@ -3093,21 +3241,19 @@ merits.
 
 ### 10.5. `stream`
 
-Delivers incremental results for a single request as a sequence of ordered messages.
+Delivers incremental results for a single call as an ordered sequence of messages. Streaming is A2A's `SendStreamingMessage` and `SubscribeToTask` (A2A §3), answered with A2A stream events as Section 11 and the A2A binding §8 say.
 
 **Composed from:** `request` + `respond` (sequential, ordered)
 
 **Flow:**
-1. Requester sends `request` with `config.stream: true`.
-2. Responder sends an initial `respond` with `status: "working"` and `task_id`.
-3. Responder publishes incremental results as `respond` messages on `mesh.task.{task_id}.stream`, each with:
-   - `in_reply_to`: the original request ID.
-   - `task_id`: the task ID.
-   - `payload.chunk_index`: monotonically increasing integer.
-   - `payload.final`: boolean indicating whether this is the last chunk.
-4. The final chunk has `payload.final: true` and `payload.status: "completed"`.
+1. The client sends a `request` frame carrying `SendStreamingMessage`, or `SubscribeToTask` for a Task that already exists.
+2. The server agent sends the first stream event in a `respond` frame to the client's inbox, so the client learns the A2A Task id.
+3. The server agent publishes every later event as a `respond` frame on `mesh.task.{taskId}.stream`, each carrying `payload.a2a.seq`.
+4. The event that puts the Task in a terminal or interrupted state carries `payload.a2a.final: true`, and nothing follows it on that stream.
 
-**Ordering Guarantee:** All stream chunks are published to the same subject (`mesh.task.{task_id}.stream`), which guarantees their order, because every binding delivers in order per subject (§18.1).
+**Ordering Guarantee:** All later events are published to the same subject (`mesh.task.{taskId}.stream`), which guarantees their order, because every binding delivers in order per subject (§18.1).
+
+On a 0.3.0 envelope a stream is a sequence of chunks (§11.7).
 
 ### 10.6. `broadcast`
 
@@ -3127,13 +3273,15 @@ agents can hold a plain exchange without prior agreement on an offering name.
 **Composed from:** `request` + `respond`
 
 - An agent that can converse in natural language SHOULD register an offering
-  with `id: "chat"`, taking `{ "text": string }` and returning
-  `{ "text": string }`.
+  with `id: "chat"`, taking a Message with a `text` Part and answering with
+  a Message with a `text` Part (on a 0.3.0 envelope, `{ "text": string }` in
+  and out).
 - A sender that wants to talk (rather than invoke a specific capability)
-  SHOULD `request` the `chat` offering. If the target has no `chat` handler,
-  it responds with `OFFERING_NOT_FOUND` (§12): the sender learns the agent
-  is reachable but not conversational, and MAY inspect its manifest for
-  the offerings it does expose.
+  SHOULD send a `SendMessage` naming the `chat` offering. If the target has
+  no `chat` handler, it responds with `InvalidParamsError` listing its
+  offerings (`OFFERING_NOT_FOUND` on a 0.3.0 envelope, §12): the sender
+  learns the agent is reachable but not conversational, and MAY inspect its
+  manifest for the offerings it does expose.
 
 This is a naming convention, not a new capability: `chat` is to
 conversation what a phone number is to a call. Tool-only agents (those
@@ -3149,21 +3297,36 @@ is the pairwise case.
 > governs. This section and §10.8a bind it to the mesh: the reason enum,
 > the attribution values, and their byte-level encodings.
 
-Requests cancellation of an in-progress Task, with a stated reason.
+Requests cancellation of an in-progress Task, with a stated reason. Cancellation is A2A's `CancelTask` operation (A2A §3), carried as the A2A binding §5 says. This section adds the reason, the attribution and the propagation that Agent Messaging records beside the Task.
 
-**Composed from:** `request` (to the responder's inbox) + `respond` (on the task update subject)
+**Composed from:** A2A's `CancelTask`, a `request` frame to the server agent's inbox, answered by a `respond` frame carrying the updated Task.
 
 **Flow:**
-1. The canceling party sends `request` with `payload.offering: "task.cancel"` and
-   `payload.input: { "task_id": "<uuid>", "reason": "<CancelReason>", "note": "<optional>" }`.
-2. It also publishes the cancellation as a `respond` on `mesh.task.{task_id}.update`
-   with `payload: { "status": "canceled", "reason": "<CancelReason>", "note": "<optional>" }`.
-   This is what the task manager records, and it carries the same `reason`.
-3. The performer stops work when the cancel reaches it and responds with the
-   updated Task state.
-4. Cancellation is best-effort on the work: the Task may have already
+1. The canceling party sends a `request` frame whose `payload.a2a.method` is
+   `CancelTask` and whose `params` are
+   `{ "id": "<A2A Task id>", "metadata": { "https://agentmessaging.ai/extensions/cancel/v1": { "reason": "<CancelReason>", "note": "<optional>" } } }`.
+   The reason travels in the request's `metadata` as the cancel extension
+   (A2A binding §12.6). This section's list of reasons is the authority for
+   that extension.
+2. The server agent stops work when the cancel reaches it, the Task enters
+   `TASK_STATE_CANCELED`, and the server agent's node answers with the
+   updated Task, as A2A says. It publishes the change on
+   `mesh.task.{taskId}.update` (§7.4), and the canceled Task's `metadata`
+   carries the same object under the cancel extension's URI, so the reason
+   stays on the record. This is what the task manager
+   records.
+3. Cancellation is best-effort on the work: the Task may have already
    completed, and a terminal state that arrived first stands
-   (`TASK_NOT_CANCELABLE`).
+   (`TaskNotCancelableError`).
+
+In the rest of this section a **cancel request** is a `CancelTask` request.
+On a 0.3.0 envelope it is a `request` with `payload.offering: "task.cancel"`
+and `payload.input: { "task_id", "reason", "note" }`, and the canceling party
+also publishes the cancellation itself as a `respond` on
+`mesh.task.{task_id}.update` with
+`payload: { "status": "canceled", "reason", "note" }`. That requester-signed
+update exists only on 0.3.0; on a 0.4.0 frame only the server agent publishes
+Task changes (§7.3).
 
 **Reasons.** `reason` is REQUIRED, from a closed enum:
 
@@ -3172,7 +3335,7 @@ Requests cancellation of an in-progress Task, with a stated reason.
 | `user_requested` | A human, or the requesting agent's own logic, decided the work is no longer wanted. |
 | `superseded` | A newer request replaces this one; the answer would be discarded even if delivered. |
 | `deadline_exceeded` | The budget's deadline (§7.7) passed, typically after the central overdue mark, and the requester chose to stop rather than keep listening. |
-| `budget_exhausted` | The cost ceiling was reached (§7.7's `BUDGET_EXHAUSTED` pause) and the requester chose to cancel rather than raise the budget. |
+| `budget_exhausted` | The cost ceiling was reached (§7.7's `ceiling_reached` pause, `BUDGET_EXHAUSTED` on 0.3.0) and the requester chose to cancel rather than raise the budget. |
 | `upstream_cancelled` | The canceling agent's own Task was canceled and it is forwarding the cancellation to a delegate (propagation, below). |
 | `policy` | An operator or policy layer terminated the work on content, permission, or tenancy grounds. |
 | `needs_not_furnished` | The caller did not furnish something the offering declared under `needs` (§8.5.1): the resource was never granted, the file never attached, the sign-in never given or no longer valid. REQUIRES `unmet_need`. |
@@ -3181,8 +3344,13 @@ Requests cancellation of an in-progress Task, with a stated reason.
 `deadline_exceeded` and `budget_exhausted` deliberately reuse the §12.2
 vocabulary, so a cancel that follows an overdue mark or a budget pause reads
 consistently with the budget lifecycle (§7.7). The enum is closed: a receiver
-MUST reject a cancel whose `reason` is missing or not one of the eight as
-`INVALID_ENVELOPE`. An OPTIONAL free-text `note` MAY accompany the reason; the
+MUST reject a cancel whose `reason` is not one of the eight, with
+`InvalidParamsError` (`INVALID_ENVELOPE` on a 0.3.0 envelope). On a 0.4.0
+frame a client written to this version MUST send a reason. A server agent
+MUST accept a `CancelTask` without one from a client that does not declare
+the cancel extension, as an A2A client reaching it through a bridge may not,
+and records the reason as `user_requested` (A2A binding §12.6). On a 0.3.0
+envelope a missing `reason` is refused as `INVALID_ENVELOPE`. An OPTIONAL free-text `note` MAY accompany the reason; the
 enum, not the note, is what the record carries as meaning: the task record
 and the metering receipt (§19.2) store the `reason`, and the note is context
 for humans, never interpreted. The note is sender text and falls under the
@@ -3197,25 +3365,30 @@ reason, each meaningful with exactly one of the last two reasons above:
   `<value>` is that entry's own value: `"credential:Salesforce"`,
   `"resource:git-repo"`, `"file:application/pdf"`. A receiver MUST reject a
   `needs_not_furnished` whose `unmet_need` is missing, is not a string, or
-  does not have that shape, as `INVALID_ENVELOPE`.
+  does not have that shape, with `InvalidParamsError` (`INVALID_ENVELOPE` on a
+  0.3.0 envelope). On a 0.4.0 frame the field is spelled `unmetNeed`, beside
+  `reason` in the cancel extension's object.
 - `dependency` is OPTIONAL with `dependency_failed`, naming the outside
   service the way §8.8 does, and MUST NOT appear with any other reason.
 
-**The same vocabulary ends a `failed` Task.** A `respond` on
-`mesh.task.{task_id}.update` with `payload.status: "failed"` MAY carry
-`reason`, `note`, `unmet_need` and `dependency` under exactly the rules above.
-`reason` stays OPTIONAL on a failure — a Task that simply did not work out is
-a complete statement, and a responder MUST NOT be forced to invent an excuse —
-but when it IS present it is validated identically, and a `failed` update
-whose reason is outside the enum, or whose `unmet_need` is malformed or
-missing, is rejected as `INVALID_ENVELOPE` at the door. The task record stores
+**The same vocabulary ends a failed Task.** A Task that enters
+`TASK_STATE_FAILED` MAY carry `reason`, `note`, `unmetNeed` and `dependency`
+in its `metadata`, in the same object under the cancel extension's URI, under exactly the rules above
+(on a 0.3.0 envelope, a `respond` on `mesh.task.{task_id}.update` with
+`payload.status: "failed"` carries `reason`, `note`, `unmet_need` and
+`dependency`). `reason` stays OPTIONAL on a failure (a Task that simply did
+not work out is a complete statement, and a responder MUST NOT be forced to
+invent an excuse), but when it IS present it is validated identically: the
+task store does not apply a failed update whose reason is outside the enum,
+or whose `unmetNeed` is malformed or missing, and on a 0.3.0 envelope it
+rejects it as `INVALID_ENVELOPE` at the door. The task record stores
 it as `failure_reason`, kept distinct from `cancel_reason` so a reader never
 has to guess which ending a stored reason belonged to.
 
-**Who canceled, as the server observed it.** On `canceled` the server records `canceled_by` beside `cancel_reason`, and `reason` remains the signer's own claim. `canceled_by` has one of two shapes. A verified attribution is `{ party, requester_request, at }`, with an OPTIONAL `resolved_at`, and its `requester_request` is the server's finding. An unverified attribution is `{ party, at, unverified: true, unverified_reason }`, with no `requester_request` at all, and it means that the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first, and it reads any value of `unverified` other than absent or `false` as unverified, whatever else the object holds.
+**Who canceled, as the server observed it.** When a Task enters `TASK_STATE_CANCELED` the server records `canceled_by` beside `cancel_reason`, and `reason` remains the signer's own claim. `canceled_by` has one of two shapes. A verified attribution is `{ party, requester_request, at }`, with an OPTIONAL `resolved_at`, and its `requester_request` is the server's finding. An unverified attribution is `{ party, at, unverified: true, unverified_reason }`, with no `requester_request` at all, and it means that the server does not know, or does not know yet, whether the original requester asked. A reader tests `unverified` first, and it reads any value of `unverified` other than absent or `false` as unverified, whatever else the object holds.
 
 - `party` is `requester` or `responder`. It is `responder` whenever the responder signed the canceled update, whatever reason it signed.
-- `requester_request` is an object with `request_id`, `observed_at` and `via`, or null. `via` is `update` when it is the original requester's own canceled update, and `cancel_request` when it is a `task.cancel` request that the original requester sent the responder and that counts (below). For a `task.cancel` request, `observed_at` is when the server received it. The original requester is the Task's `origin.requester` (§7.1). A `task.cancel` request from any other agent does not count.
+- `requester_request` is an object with `request_id`, `observed_at` and `via`, or null. `via` is `update` when it is the original requester's own canceled update (which exists only on a 0.3.0 envelope), and `cancel_request` when it is a cancel request that the original requester sent the responder and that counts (below). For a cancel request, `observed_at` is when the server received it. The original requester is the record's `origin.requester` (§7.1). A cancel request from any other agent does not count.
 - A missing `requester_request` means unknown, never that the requester did not ask. Only an explicit null says that the requester did not ask. A server MUST NOT write null at the transition, and writes it only from a settle (below), so a null `requester_request` always comes with `resolved_at`.
 - `at` is when the server recorded the transition.
 - `resolved_at` is when a settle wrote the attribution, by the server's clock. It is absent on an attribution written at the transition, and on an unverified attribution it appears only with `expired`.
@@ -3224,13 +3397,13 @@ has to guess which ending a stored reason belonged to.
   - `read_failed`: the ledger store refused the read.
   - `read_timed_out`: the read did not answer in time. The reference server waits 5 seconds.
   - `ledger_unavailable`: the server had no ledger to read.
-  - `window_incomplete`: the reads worked, but a `task.cancel` request the server received for the Task is not written, because its write failed or is still in flight, so the server cannot know that none counts. More cancel requests than the server keeps (below) read the same way.
+  - `window_incomplete`: the reads worked, but a cancel request the server received for the Task is not written, because its write failed or is still in flight, so the server cannot know that none counts. More cancel requests than the server keeps (below) read the same way.
   - `expired`: the attribution was still unverified 24 hours after `at`. It is final and is left for an operator, and the server never settles it again.
   - `no_origin`: the Task has no origin, so there is no original requester to vouch for. It is settled only if an origin is attached later.
 
 **At the transition.** A Task without an origin is written unverified with `no_origin`. Otherwise, a canceled update the requester signed is the requester asking, so the server writes `requester_request` with `via: "update"`, naming that update, and needs no read to do so. A responder-signed cancel is verified at once, with `via: "cancel_request"`, when the server has already seen a counting cancel request from the original requester. A responder-signed cancel without one is written unverified, with `settling`, or with the reason a failed read gives.
 
-**When a cancel request counts.** A `task.cancel` request from the original requester counts when the server received it at or before `at`. It also counts when the server received it within the grace period G after `at` and the requester's own signed `ts` is at or before `at`, which covers a server whose subscription buffer was behind and stamped the request's arrival late. The requester's `ts` can only cost the requester. A request received more than G after `at` does not count, whatever its `ts`. The server keeps every cancel request it receives, up to 8 per Task, sender and addressee, ordered by when each was received, and uses the earliest received request that counts, so a later-received request that counts is never hidden by an earlier one that does not. Past 8 requests the server cannot know that none counts, and the attribution reads `window_incomplete`.
+**When a cancel request counts.** A cancel request from the original requester counts when the server received it at or before `at`. It also counts when the server received it within the grace period G after `at` and the requester's own signed `ts` is at or before `at`, which covers a server whose subscription buffer was behind and stamped the request's arrival late. The requester's `ts` can only cost the requester. A request received more than G after `at` does not count, whatever its `ts`. The server keeps every cancel request it receives, up to 8 per Task, sender and addressee, ordered by when each was received, and uses the earliest received request that counts, so a later-received request that counts is never hidden by an earlier one that does not. Past 8 requests the server cannot know that none counts, and the attribution reads `window_incomplete`.
 
 **Settling.** The server settles an unverified attribution later, and writes the result to the Task record by compare-and-set, adding `resolved_at`. A settle writes `requester_request` as soon as a counting cancel request from the original requester is seen, before or after G. When the requester signed the canceled update, a settle writes `requester_request` with `via: "update"`, naming that update, and never null, whatever the cancel requests say. That also covers a Task that had no origin at the cancel and has one attached later. A settle writes `requester_request: null` only when all of these hold:
 
@@ -3238,7 +3411,7 @@ has to guess which ending a stored reason belonged to.
 - the reads worked;
 - no cancel request for the Task is marked received and unwritten, in the store or in the settling process's memory.
 
-A settle that runs past `at` plus 24 hours writes unverified `expired`, with `resolved_at`. Whenever a server has received a `task.cancel` request for a Task and not yet written it, it marks that Task's cancel window incomplete, and it writes the mark to the store at once, so that a settle on any instance sees it. The reference server retries an unverified attribution in the background, sweeps every 5 minutes for records still unverified at least G after `at`, which also covers a restart, and also settles on `task.get` and on the privileged read.
+A settle that runs past `at` plus 24 hours writes unverified `expired`, with `resolved_at`. Whenever a server has received a cancel request for a Task and not yet written it, it marks that Task's cancel window incomplete, and it writes the mark to the store at once, so that a settle on any instance sees it. The reference server retries an unverified attribution in the background, sweeps every 5 minutes for records still unverified at least G after `at`, which also covers a restart, and also settles on a read of the Task (`GetTask`) and on the privileged read.
 
 Every task-manager instance MUST use the same G. The reference server's G is 60 seconds by default and is set with `TASK_CANCEL_SETTLE_GRACE_MS`. Each instance compares its G with the one last written to the ledger store, at start and on every sweep, and logs a warning when they differ. Every task-manager instance MUST also run a release with these rules, because an older one writes `requester_request: null` at the transition, so a deployment upgrades its task-manager instances together.
 
@@ -3300,7 +3473,7 @@ original note when one was present. Enforcement is stated honestly, in the
 pattern §7.7 established: the MUST is honor-system inside the performer
 (nothing on the mesh can see its delegation decisions), and its teeth are
 central visibility. The task manager can observe a canceled Task whose
-delegated children (non-terminal Tasks sharing its `context_id` whose
+delegated children (non-terminal Tasks sharing its `contextId` whose
 requester is the canceled Task's responder) remain live. That condition is
 **stranded delegates**: the task manager flags the child records
 (`stranded: true`) and announces each on `mesh.event.task.stranded`, so a
@@ -3319,13 +3492,13 @@ delivery is on its own account, in the same sense as §7.7's work past the
 deadline.
 
 **Errors:**
-- `INVALID_ENVELOPE`: `reason` missing or not in the enum.
-- `TASK_NOT_FOUND`: the named Task is unknown.
-- `TASK_NOT_CANCELABLE`: the Task is already in a terminal state.
+- `InvalidParamsError`: `reason` not in the enum, or `unmetNeed` malformed or missing (`INVALID_ENVELOPE` on a 0.3.0 envelope, where a missing `reason` is refused too).
+- `TaskNotFoundError`: the named Task is unknown, or the canceling party may not read it (§7.1) (`TASK_NOT_FOUND` on a 0.3.0 envelope).
+- `TaskNotCancelableError`: the Task is already in a terminal state (`TASK_NOT_CANCELABLE` on a 0.3.0 envelope).
 
-Wire shapes, the eight reason strings, the `unmet_need` rules, the failed-update
-shape, the propagated-cancel note format, and the reject cases are pinned in
-`conformance/cancel.json`.
+The 0.3.0 wire shapes, the eight reason strings, the `unmet_need` rules, the
+failed-update shape, the propagated-cancel note format, and the reject cases
+are pinned in `conformance/cancel.json`.
 
 ### 10.9. `transfer` *(Parked, 0.2; not core)*
 
@@ -3379,7 +3552,7 @@ Queries an agent's current operational status.
 **Composed from:** `request` (well-known schema)
 
 **Flow:**
-1. Requester sends `request` with `payload.offering: "agent.status"`.
+1. Requester sends a `SendMessage` that names the well-known offering `agent.status` in the offering extension (on a 0.3.0 envelope, `payload.offering: "agent.status"`).
 2. Agent responds with current state, active tasks, availability, and any relevant diagnostics.
 
 ### 10.12. `authorize` *(Parked, 0.2; not core)*
@@ -3412,7 +3585,7 @@ Human-in-the-loop checkpoint. Submits a proposed action for approval before exec
 
 The pre-admission read: the one substantive request any agent may make of any other **before** admission, the mesh equivalent of an unauthenticated HTTP GET. It exists so that first contact between strangers can be informed rather than blind; without it, every introduction is a cold knock on a closed door, and no third party can ever build a map of what exists.
 
-**Composed from:** `request` with the reserved offering `describe`.
+**Composed from:** `request` with the reserved offering `describe`. It is one of the channel's own requests (§6.4): it carries `payload.offering: "describe"` and no `payload.a2a`, on either wire version.
 
 **Rules (all normative):**
 
@@ -3429,18 +3602,95 @@ The pre-admission read: the one substantive request any agent may make of any ot
 
 ## 11. Streaming
 
-Streaming is the delivery of incremental results for a single Task as an ordered sequence of messages.
+Streaming is the delivery of incremental results for a single Task as an ordered sequence of messages. On this mesh a stream is A2A's: `SendStreamingMessage` and `SubscribeToTask` answer with A2A stream events, carried as the A2A binding §8 says. This section binds those events to the mesh's subjects.
 
 ### 11.1. Streaming Model
 
 Agent Messaging streaming uses task subjects with ordered, durable delivery (§18.1; in the reference binding, the `MESH_TASKS` stream, §18.3):
 
-- **Stream Subject:** `mesh.task.{task_id}.stream`
-- **Control Subject:** `mesh.task.{task_id}.update`
+- **Stream Subject:** `mesh.task.{taskId}.stream`, where `taskId` is the A2A Task id.
+- **Update Subject:** `mesh.task.{taskId}.update`, on which the task store's changes travel (§7.4).
 
-All chunks for a single Task are published to the same stream subject, guaranteeing ordering.
+Every event of a stream after the first is published to the same stream subject, guaranteeing its order.
 
-### 11.2. Stream Chunk Envelope
+**Carriers without subjects.** A carrier of frames that has no stream subjects, such as email (Agent Emailing), cannot hold a subscription. It delivers each later change to a Task as a `respond` frame to the client whose result is the whole Task as it then stands, numbered by `payload.a2a.seq`, and it answers `SendStreamingMessage` and `SubscribeToTask` with `UnsupportedOperationError` (A2A binding §8). The client reads the frames in `seq` order, and the view rules of §7.3.1 apply.
+
+### 11.2. Stream Event Frame
+
+Each event is an A2A StreamResponse (a Task, a Message, a `TaskStatusUpdateEvent` or a `TaskArtifactUpdateEvent`), in a `respond` frame of its own:
+
+```json
+{
+  "v": "0.4.0",
+  "type": "respond",
+  "from": "<server-agent-key>",
+  "to": "<client-key>",
+  "in_reply_to": "<id of the SendStreamingMessage or SubscribeToTask request>",
+  "payload": {
+    "a2a": {
+      "seq": 3,
+      "final": false,
+      "result": {
+        "artifactUpdate": {
+          "taskId": "<task-id>",
+          "contextId": "<context-id>",
+          "artifact": { "artifactId": "<artifact-id>", "parts": [ { "text": "brown fox" } ] },
+          "append": true,
+          "lastChunk": false
+        }
+      }
+    }
+  },
+  "sig": "<signature>"
+}
+```
+
+- `payload.a2a.result` is the stream event, in A2A's JSON form.
+- `payload.a2a.seq` counts from 0 for the first event of the stream, so a client detects a gap.
+- `payload.a2a.final` is `true` on the last event of the stream, and is otherwise `false` or absent.
+
+### 11.3. Stream Lifecycle
+
+1. The client sends a `request` frame carrying `SendStreamingMessage` (or `SubscribeToTask` for an existing Task, which starts from the Task's current state).
+2. The server agent sends the first event (`seq` 0) in a `respond` frame to the client's inbox (§6.5), so the client learns the A2A Task id.
+3. The client creates a durable subscription on `mesh.task.{taskId}.stream` (a durable consumer in the reference binding, §18.6), starting at the beginning of that subject, so that events the server agent published before the subscription existed are still delivered.
+4. The server agent publishes every later event, in the order it generated them, as a `respond` frame on `mesh.task.{taskId}.stream`.
+5. The stream ends with the event that puts the Task in a terminal or interrupted state (A2A §4.1.3), or with the Message that answers a `SendStreamingMessage` without a Task. That frame carries `payload.a2a.final: true`, and no frame follows it on that stream.
+6. Each change the stream reports is also recorded in the task store (§7.4), so a client that lost the stream (a disconnect, a restart) recovers the Task, its final state and its Artifacts with `GetTask` instead of losing them with the stream.
+
+### 11.4. Backpressure
+
+- Durable subscriptions support flow control via explicit acknowledgment.
+- The subscriber SHOULD use acknowledgment timeouts (`ack_wait` in the reference binding) to detect slow consumers.
+- The server agent SHOULD use `max_pending` on the stream to limit unacknowledged events.
+- If the consumer falls too far behind, the server agent MAY pause emission until acknowledgments catch up.
+
+### 11.5. Reconnection
+
+If the consumer disconnects and reconnects:
+
+- A durable consumer resumes after the last event it acknowledged, and no event is lost.
+- A client that lost the subscription itself calls `SubscribeToTask`, which starts from the Task's current state (A2A binding §8).
+- The client MAY also call `GetTask` to read the current Task.
+
+### 11.6. Event Signing
+
+Every event is a signed frame of its own (§4.5, §5.3), so a stream on a 0.4.0 frame needs no stream-level authentication and no chunk count: the client verifies each event's signature, and `seq` shows a missing event. A client MUST refuse an event whose signature does not verify, and treats the stream as broken at that point.
+
+On a 0.3.0 envelope, where chunks MAY go unsigned, streams are authenticated at the **stream level**, not per chunk:
+
+- The **opening** `respond` that establishes the `task_id` and the stream (§11.7) MUST be signed per §4.5 and MUST be verified. It authenticates the responder agent for the entire stream.
+- **Chunk** envelopes on `mesh.task.{task_id}.stream` carry a monotonic `payload.chunk_index` and MAY omit `sig`. Their authenticity rests on three things: (a) the signed opening; (b) transport authorization, since only the responder's node may publish to that task's stream subject, enforced by the node JWT's publish permissions and account isolation (§4.6, §15); and (c) ordered, dedup-by-`id` delivery (§5.5, §11.1).
+- The **final** chunk (`payload.final: true`) MUST be signed and MUST include `payload.chunk_count`. This brackets the stream so the requester can detect truncation or any missing or injected chunk.
+- A requester MAY require per-chunk `sig` for a given stream (for example across a low-trust boundary) via `config.sign_chunks: true`; the responder SHOULD honor it.
+
+### 11.7. The 0.3.0 Chunk Form (Transition)
+
+A 0.3.0 stream (§6.8) answers a `request` with `config.stream: true`:
+
+1. The responder sends the initial `respond` to the requester's inbox with `status: "working"` and a `task_id`.
+2. The requester creates a durable subscription on `mesh.task.{task_id}.stream`.
+3. The responder publishes chunks to `mesh.task.{task_id}.stream`, each a `respond` of this shape:
 
 ```json
 {
@@ -3459,38 +3709,8 @@ All chunks for a single Task are published to the same stream subject, guarantee
 }
 ```
 
-### 11.3. Stream Lifecycle
-
-1. Requester sends `request` with `config.stream: true`.
-2. Responder sends the initial `respond` to the requester's inbox (§6.5) with `status: "working"` and `task_id`.
-3. Requester creates a durable subscription on `mesh.task.{task_id}.stream` (a durable consumer in the reference binding, §18.6).
-4. Responder publishes chunks to `mesh.task.{task_id}.stream`.
-5. Final chunk has `payload.final: true` and `payload.status: "completed"`.
-6. Responder publishes a final task update to `mesh.task.{task_id}.update` with `status: "completed"`. This update SHOULD carry the final result in `payload.output` (§6.5): the durable task record (Section 7) is built from these updates, and including the output there lets a requester that lost the stream (disconnect, restart) recover the answer from the task store instead of losing it with the ephemeral stream subject.
-
-### 11.4. Backpressure
-
-- Durable subscriptions support flow control via explicit acknowledgment.
-- The subscriber SHOULD use acknowledgment timeouts (`ack_wait` in the reference binding) to detect slow consumers.
-- The responder SHOULD use `max_pending` on the stream to limit unacknowledged chunks.
-- If the consumer falls too far behind, the responder MAY pause emission until acknowledgments catch up.
-
-### 11.5. Reconnection
-
-If the consumer disconnects and reconnects:
-
-- Durable consumers resume from the last acknowledged position.
-- No chunks are lost.
-- The requester MAY also call `get_task` on the KV store to get the current Task state.
-
-### 11.6. Chunk Signing
-
-Signing every chunk of a stream (one Ed25519 signature per token of LLM output) is the one place always-sign (§4.5) would be too costly. Streams are therefore authenticated at the **stream level**, not per chunk:
-
-- The **opening** `respond` that establishes the `task_id` and the stream (§11.3, step 2) MUST be signed per §4.5 and MUST be verified. It authenticates the responder agent for the entire stream.
-- **Chunk** envelopes on `mesh.task.{task_id}.stream` carry a monotonic `payload.chunk_index` and MAY omit `sig`. Their authenticity rests on three things: (a) the signed opening; (b) transport authorization, since only the responder's node may publish to that task's stream subject, enforced by the node JWT's publish permissions and account isolation (§4.6, §15); and (c) ordered, dedup-by-`id` delivery (§5.5, §11.1).
-- The **final** chunk (`payload.final: true`) MUST be signed and MUST include `payload.chunk_count`. This brackets the stream so the requester can detect truncation or any missing or injected chunk.
-- A requester MAY require per-chunk `sig` for a given stream (for example across a low-trust boundary) via `config.sign_chunks: true`; the responder SHOULD honor it. This keeps a strict, fully-signed mode available without making it the default.
+4. The final chunk has `payload.final: true`, `payload.status: "completed"` and `payload.chunk_count`, and is signed (§11.6).
+5. The responder publishes a final task update to `mesh.task.{task_id}.update` with `status: "completed"`, which SHOULD carry the final result in `payload.output`, so that a requester that lost the stream recovers the answer from the task store.
 
 ---
 
@@ -3508,12 +3728,46 @@ Signing every chunk of a stream (one Ed25519 signature per token of LLM output) 
 }
 ```
 
+An error from A2A travels in this object as the A2A binding §9 says: `code` is the A2A error's name, `details.a2a.code` is the integer A2A's JSON-RPC binding assigns to it, so a client or bridge that speaks JSON-RPC uses it unchanged, and `details.a2a.data` carries the error's data:
+
+```json
+{
+  "code": "TaskNotFoundError",
+  "message": "No task with that id.",
+  "details": { "a2a": { "code": -32001, "data": {} } },
+  "retryable": false
+}
+```
+
+An error that comes from the channel rather than from A2A (a refused signature, a sender not admitted, a transport timeout, a protection of §22) keeps its Agent Messaging code (§12.2) and is never given an A2A name.
+
 ### 12.2. Error Codes
 
 > **The budget's refusal behavior is the floor's.** Refuse-with-estimate
 > and the semantics behind `BUDGET_INSUFFICIENT` are Common Agent
 > Specification §5.4. The codes and retryability below are the mesh
 > binding.
+
+#### A2A Errors
+
+On a 0.4.0 frame, the answer to an A2A operation that fails for a reason A2A names carries A2A's error (A2A §3.3.2 and its JSON-RPC binding). The ones a mesh agent most often sends:
+
+| Code | `details.a2a.code` | When | Retryable |
+|------|--------------------|------|-----------|
+| `TaskNotFoundError` | -32001 | No such Task, or the asker may not read it (§7.1). A Task purged after its retention also answers this, with `details.reason: "expired"` beside `details.a2a`. | No |
+| `TaskNotCancelableError` | -32002 | `CancelTask` on a Task in a terminal state. | No |
+| `PushNotificationNotSupportedError` | -32003 | A push notification operation on an agent whose card says `pushNotifications: false`. | No |
+| `UnsupportedOperationError` | -32004 | An operation the agent does not support, a Message to a Task in a terminal state, or a streaming operation over a carrier without subjects (§11.1). | No |
+| `ContentTypeNotSupportedError` | -32005 | The offering produces none of the client's `acceptedOutputModes`, or does not accept a Part's media type. | No |
+| `InvalidAgentResponseError` | -32006 | A server agent's reply does not conform to A2A; a bridge or SDK that relays it reports this to its own client. | No |
+| `ExtendedAgentCardNotConfiguredError` | -32007 | `GetExtendedAgentCard` on an agent that has none. | No |
+| `ExtensionSupportRequiredError` | -32008 | The agent requires an extension the client did not activate (§17.4). | No |
+| `VersionNotSupportedError` | -32009 | The A2A version in `meta.a2a` (`A2A-Version`) is one the agent does not speak. | No |
+| `InvalidParamsError` | -32602 | The request names no offering the agent serves, its input does not conform to the offering, a cancel reason is outside §10.8's list, or a budget revision is retroactive. | No |
+| `MethodNotFoundError` | -32601 | `payload.a2a.method` is not an A2A operation name. | No |
+| `InternalError` | -32603 | An unexpected internal error in the agent. | Yes |
+
+The codes of the tables below that A2A covers are used only on 0.3.0 envelopes; each says which A2A error or outcome replaces it. Every other code in them is the channel's and applies on both wire versions.
 
 #### Transport Errors
 
@@ -3535,12 +3789,14 @@ Signing every chunk of a stream (one Ed25519 signature per token of LLM output) 
 
 #### Task Errors
 
+Every code in this table is used only on 0.3.0 envelopes (§6.8).
+
 | Code | Description | Retryable |
 |------|-------------|-----------|
-| `TASK_NOT_FOUND` | The specified task ID does not exist. | No |
-| `TASK_INVALID_TRANSITION` | The requested state transition is not valid. | No |
-| `TASK_NOT_CANCELABLE` | The task is in a terminal state and cannot be canceled. | No |
-| `TASK_EXPIRED` | The task has exceeded its TTL and been purged. | No |
+| `TASK_NOT_FOUND` | The specified task ID does not exist. On 0.4.0: `TaskNotFoundError`. | No |
+| `TASK_INVALID_TRANSITION` | The requested state transition is not valid. On 0.4.0 A2A's state rules apply (§7.3): a Message to a Task in a terminal state is `UnsupportedOperationError`, and an update A2A does not allow is not applied. | No |
+| `TASK_NOT_CANCELABLE` | The task is in a terminal state and cannot be canceled. On 0.4.0: `TaskNotCancelableError`. | No |
+| `TASK_EXPIRED` | The task has exceeded its TTL and been purged. On 0.4.0: `TaskNotFoundError` with `details.reason: "expired"`. | No |
 
 #### Agent Errors
 
@@ -3548,24 +3804,24 @@ Signing every chunk of a stream (one Ed25519 signature per token of LLM output) 
 |------|-------------|-----------|
 | `AGENT_UNAVAILABLE` | The agent is not accepting requests. | Yes |
 | `AGENT_OVERLOADED` | The agent has exceeded its concurrency limit. | Yes |
-| `OFFERING_NOT_FOUND` | The requested offering is not offered by this agent. | No |
-| `INPUT_INVALID` | The input payload does not match the offering's schema. | No |
-| `INPUT_NOT_UNDERSTOOD` | The message does not carry the input the offering declares, does not read as a request for it, or does not say which offering it is for: the standard reply to input an agent cannot use (Common Agent Specification §4.7.1). `message` is a passage a person can act on: what went wrong, what the agent accepts, and an example that works. `details` carries `reason` (`missing_input`, `not_a_request`, `offering_unclear`), `offering`, `offerings`, `missing`, `expected` (the offering's declared inputs), `example`, and where known `read_as` and `how_to_use`. On this binding it travels as the `error` of the answer, beside `text` holding the same passage, whether the answer is the terminal respond or, for an attended inbox, the reply message the node sends at once. A help question on `chat` is never refused this way: it is answered from the declared facts. | No |
-| `CONTENT_TYPE_NOT_SUPPORTED` | The requested output mode is not supported. | No |
+| `OFFERING_NOT_FOUND` | The requested offering is not offered by this agent. 0.3.0 only; on 0.4.0: `InvalidParamsError`, listing the agent's offerings in its data. | No |
+| `INPUT_INVALID` | The input payload does not match the offering's schema. 0.3.0 only; on 0.4.0: `InvalidParamsError`. | No |
+| `INPUT_NOT_UNDERSTOOD` | The message does not carry the input the offering declares, does not read as a request for it, or does not say which offering it is for: the standard reply to input an agent cannot use (Common Agent Specification §4.7.1). `message` is a passage a person can act on: what went wrong, what the agent accepts, and an example that works. `details` carries `reason` (`missing_input`, `not_a_request`, `offering_unclear`), `offering`, `offerings`, `missing`, `expected` (the offering's declared inputs), `example`, and where known `read_as` and `how_to_use`. On a 0.3.0 envelope it travels as the `error` of the answer, beside `text` holding the same passage, whether the answer is the terminal respond or, for an attended inbox, the reply message the node sends at once. On a 0.4.0 frame the answer is `InvalidParamsError`, with the same `message` and the same `details` members beside `details.a2a`; a reader tells it from other invalid parameters by `details.reason`. A help question on `chat` is never refused this way: it is answered from the declared facts. | No |
+| `CONTENT_TYPE_NOT_SUPPORTED` | The requested output mode is not supported. 0.3.0 only; on 0.4.0: `ContentTypeNotSupportedError`. | No |
 | `UNAUTHORIZED` | The requesting agent lacks permission for this operation. | No |
 | `SEALING_REQUIRED` | The agent declares `sealing: "required"` (Section 8.9) and this request arrived in the clear, so its content was not read. Not retryable as sent: the sender resolves the agent's manifest, seals to its verified `encryption_key`, and sends again. Also raised locally by a sender that is about to send to a `required` agent it cannot seal to. | No |
-| `BUDGET_INSUFFICIENT` | Refused at admission: the work cannot be done within the offered cost ceiling. SHOULD carry the responder's estimate. (Section 7.7; ceiling field from the Economics extension, Section 19.3.) | No |
-| `DEADLINE_UNMEETABLE` | Refused at admission: the work cannot be completed by the offered deadline. SHOULD carry the responder's earliest realistic completion. (Section 7.7.) | No |
-| `AGREEMENT_REQUIRED` | Refused at admission: the requested work is covered by a paid SKU and the consumer's account holds no agreement for the SKU's current digest. `details` names the `sku`, the `sku_digest`, and the `approval_url`. The Section 1.3 "payment required" refusal, typed. (Economics extension, Sections 19.1, 19.5.) | No |
-| `BUDGET_EXHAUSTED` | The cost ceiling was reached mid-work; the Task is paused in `input_required` with spend so far and an estimate to finish. Resolved by a budget revision or cancellation, not by retry. (Section 7.7.) | No |
-| `DEADLINE_EXCEEDED` | Recorded on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
+| `BUDGET_INSUFFICIENT` | 0.3.0 only; on 0.4.0 the Task is `TASK_STATE_REJECTED` with the budget outcome `insufficient` (§7.7). Refused at admission: the work cannot be done within the offered cost ceiling. SHOULD carry the responder's estimate. (Section 7.7; ceiling field from the Economics extension, Section 19.3.) | No |
+| `DEADLINE_UNMEETABLE` | 0.3.0 only; on 0.4.0 the Task is `TASK_STATE_REJECTED` with the budget outcome `deadline_unmeetable` (§7.7). Refused at admission: the work cannot be completed by the offered deadline. SHOULD carry the responder's earliest realistic completion. (Section 7.7.) | No |
+| `AGREEMENT_REQUIRED` | On 0.4.0 the Task is `TASK_STATE_REJECTED` and carries the economics extension's `paymentRequired` (A2A binding §12.4), with `sku`, `sku_digest` and `approval_url` beside the price. Refused at admission: the requested work is covered by a paid SKU and the consumer's account holds no agreement for the SKU's current digest. `details` names the `sku`, the `sku_digest`, and the `approval_url`. The Section 1.3 "payment required" refusal, typed. (Economics extension, Sections 19.1, 19.5.) | No |
+| `BUDGET_EXHAUSTED` | 0.3.0 only; on 0.4.0 the Task pauses in `TASK_STATE_INPUT_REQUIRED` with the budget outcome `ceiling_reached` (§7.7). The cost ceiling was reached mid-work; the Task is paused with spend so far and an estimate to finish. Resolved by a budget revision or cancellation, not by retry. (Section 7.7.) | No |
+| `DEADLINE_EXCEEDED` | Recorded beside the Task (§7.1) on a completion that arrived after the deadline (completed late). A marker, not a failure: the requester decides what a late answer is worth. (Section 7.7.) | No |
 | `AUDIENCE_NOT_SUPPORTED` | The message is marked for the person behind the receiving agent (§5.7), and the receiver does not declare `mesh://extensions/audience/v1`, so nothing says the message will reach the person. Raised locally by a sending SDK before it publishes, unless the caller chose to send anyway, and by a bridge whose far side cannot keep §5.7's rules (`BRIDGE-A2A.md` §8.4). `details.receivers` names the receivers that do not declare it. Also the answer of a receiver written to this version that does not declare the extension, at its door (§5.7), with `details.reason` (`no_person` when its `acts_for` is not `person`, `not_declared` otherwise) and `details.acts_for`. | No |
 
 #### Processing Errors
 
 | Code | Description | Retryable |
 |------|-------------|-----------|
-| `INTERNAL_ERROR` | An unexpected internal error occurred in the agent. | Yes |
+| `INTERNAL_ERROR` | An unexpected internal error occurred in the agent. On a 0.4.0 frame answering an A2A operation: `InternalError`. | Yes |
 | `DEPENDENCY_FAILED` | A downstream dependency (tool, API, delegated agent) failed. | Yes |
 | `CONTEXT_TOO_LARGE` | The accumulated context exceeds the agent's capacity. | No |
 | `RATE_LIMITED` | The sender has exceeded the platform rate limit (see Section 16). | Yes |
@@ -3581,25 +3837,30 @@ Signing every chunk of a stream (one Ed25519 signature per token of LLM output) 
 
 ### 12.3. Error Delivery
 
-Errors are delivered as standard `respond` envelopes with the `error` field populated and `payload.status` set to `failed`:
+Errors are delivered as standard `respond` frames with the `error` field populated. On a 0.4.0 frame the respond carries no `payload.a2a.result`:
 
 ```json
 {
+  "v": "0.4.0",
   "type": "respond",
   "in_reply_to": "<request-id>",
-  "task_id": "<task-id>",
-  "payload": { "status": "failed" },
   "error": {
-    "code": "OFFERING_NOT_FOUND",
+    "code": "InvalidParamsError",
     "message": "Offering 'web-scrape-v2' is not supported. Available offerings: web-scrape, search.",
     "details": {
-      "requested_offering": "web-scrape-v2",
-      "available_offerings": ["web-scrape", "search"]
+      "a2a": {
+        "code": -32602,
+        "data": { "requested_offering": "web-scrape-v2", "available_offerings": ["web-scrape", "search"] }
+      }
     },
     "retryable": false
   }
 }
 ```
+
+A failure of the work after a Task exists is not an error frame: the Task enters `TASK_STATE_FAILED`, as A2A says, and its reason, when it has one, travels as §10.8 says.
+
+On a 0.3.0 envelope the respond also sets `payload.status: "failed"`, carries the envelope `task_id` when a Task exists, and uses the 0.3.0 code (`OFFERING_NOT_FOUND` in the example above, with the same `details` members directly in `details`).
 
 ### 12.4. Retry Semantics
 
@@ -3615,7 +3876,7 @@ When `error.retryable` is `true`:
 
 > **Core vs. optional.** Trace **propagation** (the `trace` object in every envelope) is core and always on; it costs nothing and is the part with real debugging value. Trace/metric/log **storage** (the `MESH_TRACE`/`MESH_METRICS`/`MESH_LOG` streams and the publishing of span/metric/log events) is **optional** and created only if a deployment wants it (§18.3). A minimal deployment carries trace context in-band and stores nothing.
 
-**What the transport can capture.** With the single reply path (§6.5, §18.7), every bare-mode exchange between agents travels entirely on inbox subjects: the request arrives at the responder's inbox, and every `respond`, the accept signal included, arrives at the requester's. Nothing of a completed exchange rides a private transport reply subject (§18.7's two plumbing exceptions aside), which is what makes **both halves** of an exchange capturable by the transport for mailbox-holding agents (the §16.4 redelivery buffer, the `MESH_INBOX_*` streams of §18.3), not just the half that happened to be addressed to a buffered party. Task-mode traffic was already durable on `mesh.task.>`; the reply path closes the same gap for bare mode. Capture remains conditional on a buffer existing: sandbox agents have none (§16.4), and their traffic stays live-only.
+**What the transport can capture.** With the single reply path (§6.5, §18.7), every exchange between agents answered without a Task travels entirely on inbox subjects: the request arrives at the responder's inbox, and every `respond`, the accept signal included, arrives at the requester's. Nothing of a completed exchange rides a private transport reply subject (§18.7's two plumbing exceptions aside), which is what makes **both halves** of an exchange capturable by the transport for mailbox-holding agents (the §16.4 redelivery buffer, the `MESH_INBOX_*` streams of §18.3), not just the half that happened to be addressed to a buffered party. Task traffic was already durable on `mesh.task.>`; the reply path closes the same gap for answers that create no Task. Capture remains conditional on a buffer existing: sandbox agents have none (§16.4), and their traffic stays live-only.
 
 ### 13.1. Distributed Tracing
 
@@ -3676,9 +3937,9 @@ the content:
 |---|---|---|
 | `agentmesh.primitive` | envelope `type` | `request`, `respond`, `emit`, `subscribe`. |
 | `agentmesh.peer` | envelope `to` / `from` | The counterparty's handle or key. |
-| `agentmesh.offering` | request payload | The offering named, not its input. |
-| `agentmesh.task_id` | envelope `task_id` | Absent outside a task. |
-| `agentmesh.context_id` | envelope `context_id` | Absent when the envelope has none. |
+| `agentmesh.offering` | request payload | The offering named (the offering extension on a 0.4.0 frame), not its input. |
+| `agentmesh.task_id` | the A2A Task id in the frame's A2A object (the envelope `task_id` on 0.3.0) | Absent outside a task. |
+| `agentmesh.context_id` | the A2A `contextId` in the frame's A2A object (the envelope `context_id` on 0.3.0) | Absent when there is none. |
 | `agentmesh.outcome` | terminal state | `ok`, `error`, `refused`, `timeout`, `canceled`. |
 | `agentmesh.error_code` | error object | The closed-enum code **only**. |
 
@@ -3818,7 +4079,7 @@ The atom of usage:
   "provider": "<key of the serving agent>",
   "consumer": "<key of the requesting agent>",
   "offering": "caselaw-summary",
-  "task_id": "<uuid, when a Task exists>",
+  "task_id": "<A2A Task id, when a Task exists>",
   "envelope_id": "<id of the envelope this event derives from>",
   "request_id": "<id of the request envelope answered, on events derived from an answer>",
   "ts": "<RFC-3339 UTC>"
@@ -3841,7 +4102,7 @@ The atom of usage:
   an answer: the `responses` and `bytes_out` events of a `respond`, the
   declared events lifted from a usage receipt (below), and the refusal event
   (below). Its value is the answer's `in_reply_to`, or, for an answer that
-  carries only a `task_id`, the id of the request the deployment matched the
+  carries only a Task id, the id of the request the deployment matched the
   answer to. A reader folding the stream joins a request's events to the
   events of its answer on this value, without keeping correlation state of
   its own. The events of a delivered request carry no `request_id`, because
@@ -3875,6 +4136,9 @@ on the terminal respond. A non-terminal respond MAY carry cumulative usage
 so far; a later report **supersedes** an earlier one, never adds to it. This
 extends the spend-report pattern of §19.3 (`payload.cost`) and shares its
 rule: the payload, not the envelope; §5.2's field set does not grow here.
+On a 0.4.0 frame `payload.usage` sits beside `payload.a2a`, on the frame
+that answers the call or reports the Task's final state, and never inside
+the A2A object.
 
 An agent that answers by sending a **new `request` carrying `in_reply_to`**,
 rather than by responding, reports the same way: `payload.usage` on that
@@ -3917,7 +4181,8 @@ the security event and the quarantine act.
 
 **Trace ids.** On this binding, a security event's `trace_id` is the
 `trace.trace_id` of the envelope the job arrived in (§13.1), and its
-`task_id` is the envelope's `task_id`. An event about an envelope that failed
+`task_id` is the A2A Task id the frame names (the envelope's `task_id` on a
+0.3.0 envelope). An event about an envelope that failed
 to verify carries the `trace_id` as received, which is only the sender's word.
 
 **Quarantine notices.** A quarantine act travels as an advisory (§4.12), on
@@ -3966,8 +4231,8 @@ All Agent Messaging subjects follow a hierarchical naming convention under the `
 | `mesh.registry.eval.digest.{sha256}` | Evaluation record by digest (request-reply) | Live |
 | `mesh.presence.get` | Presence lookup (request-reply) | Live |
 | `mesh.agent.{agent_id}.inbox` | Direct requests to an agent, and the responds addressed to it (§6.5) | Live, with a per-agent redelivery buffer while the agent is offline (§16.4) |
-| `mesh.task.{task_id}.update` | Task state transitions | Durable |
-| `mesh.task.{task_id}.stream` | Task streaming data | Durable |
+| `mesh.task.{taskId}.update` | Changes to a stored A2A Task (§7.4) | Durable |
+| `mesh.task.{taskId}.stream` | A2A stream events after the first (§11) | Durable |
 | `mesh.event.{domain}.{event_type}` | Domain events | Durable |
 | `mesh.feed.{agent_id}.{topic}` | Owner-rooted feeds (§6.6a); publishable only by the owning agent's node | Durable (state feeds keep their latest value), *optional* |
 | `mesh.heartbeat.{node_id}` | Node heartbeat signals (presence) | Durable (short retention) |
@@ -4038,11 +4303,13 @@ constructors; the registry and the platform services, which are built on
 them, sit inside that line.
 
 Task subjects need the rule stated separately, because no manifest can carry
-them: `mesh.task.{task_id}.update` and `mesh.task.{task_id}.stream` are
-parameterized by a `task_id` that exists only at runtime. There, the
+them: `mesh.task.{taskId}.update` and `mesh.task.{taskId}.stream` are
+parameterized by an A2A Task id that exists only at runtime. There, the
 **pattern** is protocol-defined and the **id** comes from resolution: the
-`task_id` a caller fills in MUST come from the responder's `respond` (§6.4,
-§7.0), never from anything the caller derived itself. Agent-specific subjects
+Task id a caller fills in MUST come from the server agent's `respond` (§6.4,
+§7.0), never from anything the caller derived itself. Because the id becomes
+a subject token, a server agent on a mesh MUST mint Task ids that are valid
+single tokens (§7.4). Agent-specific subjects
 come from resolution; task subjects come from a protocol-defined pattern
 filled with a resolved id; nothing is ever assembled from an agent's name or
 key by convention.
@@ -4138,7 +4405,7 @@ To prevent unbounded memory and storage growth, the platform enforces hard caps 
 
 #### Task History
 
-Each task stores an envelope history for debugging and audit. The platform MUST cap task history at a configurable maximum (default: **50 entries**). When the cap is reached, the oldest entries are discarded. This applies to both server-side (KV-persisted) and client-side (in-memory) task tracking.
+Each stored Task keeps A2A's `history` of Messages inside the Task, and beside it the signed frames that changed it, for debugging and audit (§7.1). The platform MUST cap each at a configurable maximum (default: **50 entries**). When the cap is reached, the oldest entries are discarded. This applies to both server-side (KV-persisted) and client-side (in-memory) task tracking. A client's `historyLength` (A2A §3) only shortens what a read returns.
 
 | Parameter | Default |
 |-----------|---------|
@@ -4166,7 +4433,7 @@ Durable delivery is the responsibility of the **hosting node**, not a server-sid
 
 #### Client-Side Task Pruning
 
-SDK clients SHOULD automatically prune completed and failed tasks from their in-memory task tracker. Tasks in terminal states (`completed`, `failed`, `canceled`) SHOULD be evicted after a configurable TTL (default: **5 minutes**). The prune cycle SHOULD run periodically (default: every **60 seconds**).
+SDK clients SHOULD automatically prune completed and failed tasks from their in-memory task tracker. Tasks in terminal states (A2A's `TASK_STATE_COMPLETED`, `TASK_STATE_FAILED`, `TASK_STATE_CANCELED` and `TASK_STATE_REJECTED`) SHOULD be evicted after a configurable TTL (default: **5 minutes**). The prune cycle SHOULD run periodically (default: every **60 seconds**).
 
 ---
 
@@ -4195,7 +4462,9 @@ Agents declare supported extensions in their manifest:
 
 ### 17.3. Extension Activation
 
-Extensions are activated per-request via the `meta` field in the message envelope:
+The A2A extensions of §17.5 are A2A's (A2A §4.6): a client activates one on a frame in the `A2A-Extensions` service parameter (`meta.a2a`, A2A binding §7), and its data sits in the `metadata` of the A2A object it describes, under the extension's URI.
+
+Other extensions are activated per-request via the `meta` field in the message envelope:
 
 ```json
 {
@@ -4230,10 +4499,16 @@ suite, `docs/implementation-status.md`, not here.
 | Extension URI | Status | Scope |
 |---------------|--------|-------|
 | `mesh://extensions/economics/v1` | **Defined** (0.2) | The money axis of the protocol, cut around the core metering substrate (§13.5): **SKUs and prices** (§19.1: `free`/`flat`/`per_unit`/`package`/`tiered` against named meters, terms pinned by a tagged SHA-256 digest, advertised in the §8.7 storefront), the **billing provider** (§19.4), the signed account-level **agreement** and its `AGREEMENT_REQUIRED` admission enforcement (§19.5), **rating** (§19.6: deterministic fold of meter events × agreed price, ceiling-bounded), discovery `max_cost`, the `cost_ceiling` of the core budget (§7.7/§19.3), `BUDGET_INSUFFICIENT`/`BUDGET_EXHAUSTED`, spend reports and task receipts (§19.2). The manifest `cost` block is retired in 0.2 in favour of `skus`; `negotiate` and `COST_LIMIT_EXCEEDED` retired earlier, subsumed by budget admission (§7.7). Settlement out of scope (§1.3). |
-| `mesh://extensions/a2a-bridge/v1` | **Defined** (see `BRIDGE-A2A.md`) | Interop with the A2A protocol. A bridge node vouches for external A2A parties as hosted agents, both directions (A2A client -> mesh agent; mesh agent -> external A2A server). The normative method/state/card mappings and trust-boundary rules live in `BRIDGE-A2A.md`. |
+| `mesh://extensions/a2a-bridge/v1` | **Defined** (see `BRIDGE-A2A.md`) | Interop with the A2A protocol's HTTP bindings. A bridge node vouches for external A2A parties as hosted agents, both directions (A2A client -> mesh agent; mesh agent -> external A2A server). Since this version both sides carry the same A2A objects, so the bridge moves them between HTTP and frames and maps identity at the edge (A2A binding §13). Its trust-boundary rules live in `BRIDGE-A2A.md`. |
+| `https://agentmessaging.ai/extensions/offering/v1` | **Draft** (A2A binding §12.1) | A2A extension. Which declared offering (§8.5) an A2A Message calls. |
+| `https://agentmessaging.ai/extensions/budget/v1` | **Draft** (A2A binding §12.2) | A2A extension. The budget of §7.7 on the Message that starts or revises the work, and each budget outcome (`insufficient`, `deadline_unmeetable`, `ceiling_reached`, `exhausted`) in the Task's metadata. |
+| `https://agentmessaging.ai/extensions/audience/v1` | **Draft** (A2A binding §12.3) | A2A extension. A Message meant for the person behind the receiving agent, with every rule of §5.7. It is the A2A form of `mesh://extensions/audience/v1`. |
+| `https://agentmessaging.ai/extensions/economics/v1` | **Draft** (A2A binding §12.4) | A2A extension. Payment required before the work: the price and the accepted settlement methods of §19, on a rejected Task. |
+| `https://agentmessaging.ai/extensions/artifact-refs/v1` | **Draft** (A2A binding §12.5) | A2A extension. A Part's size and digest when its bytes are held outside the message (§7.5.1). |
+| `https://agentmessaging.ai/extensions/cancel/v1` | **Draft** (A2A binding §12.6) | A2A extension. Why a Task was canceled, from the closed list of §10.8, on `CancelTask` and on the canceled Task. |
 | `mesh://extensions/rooms/v1` | **Implemented** (see `extensions/EXT-5-rooms.md`) | Shared conversations for N agents, plus a durable record and artifact drive. Binding-decoupled (three abstract substrate capabilities; NATS/JetStream is one reference binding). All three privacy grades are live: capability (courtesy), sealed (end-to-end via the OPTIONAL agent `encryption_key`, §4.3/§8.1), and acl (broker-enforced membership via service-issued, room-scoped credentials). Thin by design: services are members, governance is [Agent Collab](https://agentcollab.dev) playbooks, commerce is the economics extension. v1.1 names **agent-presence** (EXT-5 §8): the live roster as the fold of join/leave, invited ≠ joined, queryable and observable. v1.2 adds **expel** (EXT-5 §8.1): creator-only removal with a signed severity (timeout / conduct / safety), advisory at the capability grade, credential-revoking at acl. 1.8 adds **notes on a file** (EXT-5 §8.4): a member attaches a short attributed statement to a file already on the drive, keyed by its digest so it names those exact bytes permanently. Additive only — it edits nothing, and writing one publishes nothing into the room's traffic, because at the acl and capability grades that namespace is the record. Any member may write one and every note carries the author the service read off the verified envelope; there is no screener role to confer, because conferring it would be the invisible setting the design avoids. |
 | `mesh://extensions/admission/v1` | **Implemented** (see `extensions/EXT-6-admission.md`) | Unilateral, owner-controlled admission policy for direct inbound messages: a signed, portable admission roster (allow / hold / block per sender), held-sender review, and `knock`, the content-free admission request that is one of the two pre-admission verbs (§1.5 invariant 4; the other, `describe` §10.14, is exempt from admission filtering by definition). Live across the reference adapter, the fleet, and the operator console's Waiting list. |
-| `mesh://extensions/e2e-encryption/v1` | **Implemented** (see `extensions/EXT-7-pairwise-sealing.md`) | End-to-end payload confidentiality. The core still secures only the transport, not payloads; the key substrate is the OPTIONAL agent X25519 `encryption_key` (§4.3). Two consumers exist: the Rooms `sealed` grade (rooms/v1, above) for multi-party conversations, and the **pairwise profile** (EXT-7) for direct messages: a request payload is boxed to the recipient's declared key (`sealedpayload.v1`, ephemeral-sender crypto_box), replies seal back to the sender's `reply_key`, and the mesh routes and buffers only ciphertext. Senders SHOULD seal whenever the recipient's card or manifest declares a key. |
+| `mesh://extensions/e2e-encryption/v1` | **Implemented** (see `extensions/EXT-7-pairwise-sealing.md`) | End-to-end payload confidentiality. The core still secures only the transport, not payloads; the key substrate is the OPTIONAL agent X25519 `encryption_key` (§4.3). Two consumers exist: the Rooms `sealed` grade (rooms/v1, above) for multi-party conversations, and the **pairwise profile** (EXT-7) for direct messages: a request payload is boxed to the recipient's declared key (`sealedpayload.v1`, ephemeral-sender crypto_box), replies seal back to the sender's `reply_key`, and the mesh routes and buffers only ciphertext. Senders SHOULD seal whenever the recipient's card or manifest declares a key. A sealed frame hides its A2A object too; its sender MAY show the Task's state in clear in `meta.a2a_state` (§5.2, A2A binding §8a). |
 | `mesh://extensions/device-profile/v1` | **Draft** (see `extensions/EXT-1-device-profile.md`) | Standardized node device self-description (`platform`, `os_version`, `client`, `device_class`) as declared profile keys (§9.7). |
 | `mesh://extensions/usage/v1` | **Draft** (see `extensions/EXT-2-usage.md`) | Durable, identity-resolved usage & engagement store over the activity/heartbeat taps; operator read subjects `mesh.usage.*`. Operational layer, not core. |
 | `mesh://extensions/systems-health/v1` | **Draft** (see `extensions/EXT-12-systems-health.md`) | How an agent's tool failures become knowledge at the right speed: a typed fault vocabulary (grant faults name the grantor's move; `rate_limited` and `unreachable` name nobody's), circuit state at the node (grant-class faults trip immediately and refuse grant-needing work fast with `DEPENDENCY_FAULT`; transient faults degrade and annotate), and a private per-agent health record the owner's surfaces and sibling instances read. Deliberately not a public broadcast by default; a public `systems` state feed is an operator's explicit choice. Nothing here carries a credential, a vendor name, an endpoint, or an upstream error body. |
@@ -4257,6 +4532,8 @@ carriage only in existing extensible slots, independent versioning.
 
 Agent Messaging separates its **abstract protocol** (Sections 4 to 17) from the concrete **platform binding** that realizes it. The abstract protocol names concepts (a signed operator → account → node credential chain, subject addressing, a durable task store), and a binding defines how those concepts are provided on specific infrastructure. Alternative bindings MAY be defined but MUST satisfy the requirements in §18.1. The **reference binding** is NATS JetStream, and §18.2 to §18.10 define it: everything in this document that names NATS, JetStream, NKeys, JWTs, streams, consumers or KV buckets belongs to it. The `mesh` object of §18.10 is the one exception: every binding sends it (§18.1), and only its `nats_endpoints` field belongs to the reference binding.
 
+Every binding carries the A2A binding's frames (`bindings/a2a.md`). The A2A binding sits above the envelope: a frame is an envelope like any other, so it travels on the reference binding, on the RabbitMQ binding or on any other binding unchanged, and the A2A operations, Tasks and stream events of Sections 6, 7 and 11 are the same on all of them.
+
 ### 18.1. Binding Requirements
 
 Any transport-and-platform binding MUST provide:
@@ -4265,8 +4542,8 @@ Any transport-and-platform binding MUST provide:
 - **Delivery:** ordered, at-least-once delivery per subject, with deduplication keyed on `(from, id)` (§5.5, §22.2).
 - **Durable publish and subscribe:** events stored for replay, and durable subscriptions with at-least-once delivery and explicit acknowledgment, as §6.6, §6.6a and §6.7 already require.
 - **Request-reply:** correlated request-reply with a per-request reply address and a configurable timeout, used by platform service operations and as the liveness signal (§18.7). Agent `respond` delivery does not use it: responds ride the addressing and delivery guarantees above, published to the requester's inbox (§6.5).
-- **Durable task store:** a durable, keyed store holding authoritative Task state, updated on every transition (Section 7).
-- **Large-payload storage:** an object store (or equivalent) for payloads exceeding the message size limit, referenced by artifact `ref` parts (Section 7.5).
+- **Durable task store:** a durable store of A2A Tasks, keyed by the A2A Task id, holding each Task's authoritative state and the record beside it, updated on every change (§7.1, §7.4).
+- **Large-payload storage:** an object store (or equivalent) for payloads exceeding the message size limit, referenced by `url` Parts that carry artifact references (Section 7.5).
 - **Identity & credentials:** a signed operator → account → node credential chain (Section 4), node-key connection authentication, subject-scoped publish/subscribe authorization, and tenant import/export enforcement.
 - **Presence:** periodic node liveness with TTL expiry (Section 9).
 - **Finding the mesh:** every credential-issuing response carries the `mesh` object of §18.10, and its `endpoints` lists the binding's transport addresses as URLs. A binding names the URL schemes it uses, and each scheme names one binding.
@@ -4351,12 +4628,12 @@ for the same reason it applies to presence.
 | `mesh_registry` | `{agent_id}` | None | 3 | Agent manifest storage (§9.1) |
 | `mesh_descriptors`, `mesh_descriptor_archive` | `{agent_id}`; `{sha256}` | None | 3 | Agent Descriptors, current per subject and every version by digest (§9.1, §9.2) |
 | `mesh_eval_records`, `mesh_eval_record_archive` | `{agent_id}`; `{sha256}` | None | 3 | Evaluation records, latest per subject and every record by digest (§9.1, §9.2) |
-| `mesh_tasks` | `{task_id}` | 7d | 3 | Task state (authoritative store) |
+| `mesh_tasks` | `{taskId}` (the A2A Task id) | 7d | 3 | A2A Tasks and the record beside each (authoritative store, §7.1, §7.4) |
 | `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `a.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}`; `w.{sha256(task_id, sender, addressee)}`; `g.settle_grace_ms` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). A `w.` key marks the cancel requests received for a Task and not yet written, and `g.settle_grace_ms` holds the grace period G the task-manager instances last said they use (§10.8). History 1. It holds no content: ids, agent keys, offering names, times and the grace period only. |
 | `mesh_sessions` | `{context_id}` | 1h | 1 | Session metadata |
 | `mesh_board_items` | `{room_id}.{item_id}` | None | 3 | Work-board items (EXT-5 §10): claim is a revision-checked compare-and-set; items die with their room |
 
-Tasks (Section 7) are persisted in the `mesh_tasks` KV bucket keyed by `task_id`; this KV entry is the authoritative source of truth for task state and is updated on every state transition. Task status and artifact updates are published to `mesh.task.{task_id}.update` subjects, which the Task Manager consumes; the `MESH_TASKS` stream captures these for delivery guarantees, while the KV bucket remains canonical for lookups.
+A2A Tasks (Section 7) are persisted in the `mesh_tasks` KV bucket keyed by the A2A Task id; this KV entry holds the A2A Task and the record beside it (§7.1), is the authoritative source of truth for the Task's state, and is updated on every change. Task status and artifact update events are published to `mesh.task.{taskId}.update` subjects, which the Task Manager consumes; the `MESH_TASKS` stream captures these and the `mesh.task.{taskId}.stream` events for delivery guarantees, while the KV bucket remains canonical for lookups.
 
 ### 18.5. Required Object Store Buckets
 
@@ -4383,13 +4660,25 @@ Both stores MAY be backed by something other than the JetStream Object Store (a 
 **Task Update Consumer (per requester):**
 ```
 Stream: MESH_TASKS
-Filter: mesh.task.{task_id}.update
+Filter: mesh.task.{taskId}.update
 Deliver Policy: All
 Ack Policy: Explicit
 Ack Wait: 30s
 Max Deliver: 3
-Durable: mesh_task_{task_id}_{requester_id}
+Durable: mesh_task_{taskId}_{requester_id}
 ```
+
+**Task Stream Consumer (per client, §11.3):**
+```
+Stream: MESH_TASKS
+Filter: mesh.task.{taskId}.stream
+Deliver Policy: All
+Ack Policy: Explicit
+Ack Wait: 30s
+Durable: mesh_stream_{taskId}_{client_id}
+```
+
+`Deliver Policy: All` is what lets a client that subscribes after the first event (§11.3) still receive every event published before its consumer existed.
 
 **Inbox Buffer Consumer (per agent, §16.4):**
 ```
@@ -4458,14 +4747,14 @@ NATS core request-reply supplies only a liveness signal:
 
 1. Requester publishes to `mesh.agent.{agent_id}.inbox`, and MAY set a NATS
    reply subject (`_INBOX.{uuid}`).
-2. Responder publishes every `respond` (the accept signal, the bare answer,
-   or the Task-creating first reply) to the **requester's inbox**, resolved
+2. Responder publishes every `respond` (the accept signal, the answer to
+   the A2A operation, or the first event of a stream) to the **requester's inbox**, resolved
    from the request's `from` (§14.4) and correlated by `in_reply_to` (§6.5).
    Responders MUST NOT publish response data to the reply subject.
 3. The requester takes responds on its own inbox delivery paths, live
    subscription or mailbox drain, where the §22 protections apply; response
    data arriving on the reply subject MUST be ignored.
-4. Default timeout: 30 seconds (configurable per request via `config.timeout_ms`).
+4. Default timeout: 30 seconds, the requester's own setting (§6.4; `config.timeout_ms` on a 0.3.0 envelope).
 
 The reply subject, where set, is reserved for **delivery-status signals**: the
 server's immediate no-responders error when the target inbox has no
@@ -4484,9 +4773,10 @@ travels a subject the transport can capture (§13, §18.3), and the requester's
 protections run on every path an answer can arrive by, because every answer
 arrives by an inbox path.
 
-For long-running requests, the responder publishes an immediate response (Task
-in `submitted` state) to the requester's inbox, then delivers subsequent
-updates via JetStream on `mesh.task.{task_id}.update`.
+For long-running requests, the responder publishes an immediate response (an
+A2A Task in `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING`) to the
+requester's inbox, then publishes each change via JetStream on
+`mesh.task.{taskId}.update`, where the task store records it (§7.4).
 
 With inbox buffers (§16.4) in place, a no-responders or timeout outcome on an
 agent inbox no longer implies the request was lost, only that the agent was
@@ -4528,7 +4818,7 @@ For critical operations (task state transitions, artifact delivery):
 ### 18.9. Message Size
 
 - NATS default max message size: 1 MB.
-- For payloads exceeding the message size limit, agents MUST store the bytes (§7.5) and include a `ref` part in the artifact. The bytes of such a file travel by signed link rather than in any message (§7.5.4, §18.7): the message carries the pointer.
+- For payloads exceeding the message size limit, agents MUST store the bytes (§7.5) and send the Part by reference: a `url` Part carrying the artifact reference, with the artifact references extension (§7.5.1). The bytes of such a file travel by signed link rather than in any message (§7.5.4, §18.7): the message carries the pointer.
 - The platform SHOULD configure max message size based on deployment requirements.
 - Senders MUST pre-flight the serialized envelope against the transport's advertised maximum payload before publishing (§6.4b): an envelope that exceeds it is refused locally, never published.
 
@@ -4564,8 +4854,8 @@ where an instance offers a sandbox, §4.1) MUST include a `mesh` object:
 - `name`: the instance's identity, normally its control-plane domain.
 - `protocol`: the wire protocol version the instance speaks (major must match,
   §20.2). It is the wire version, not the version of this document (§20.1).
-  Under Agent Messaging 0.8 the reference deployment sends `"0.3"`, as the
-  example shows.
+  A deployment that speaks wire version 0.4.0 sends `"0.4"`; one that
+  speaks only 0.3.0 sends `"0.3"`, as the example shows.
 - `endpoints`: the mesh's transport addresses, as URLs in preference order. It
   MUST list at least one address. The scheme of each URL names the binding and
   the transport: `nats://` for NATS over TCP and `ws://` or `wss://` for NATS
@@ -4715,7 +5005,7 @@ The platform SHOULD emit one for every completed task:
 
 ```json
 {
-  "task_id": "<uuid>",
+  "task_id": "<A2A Task id>",
   "requester": "<agent-key>",
   "responder": "<agent-key>",
   "offering": "<offering-id>",
@@ -4774,7 +5064,8 @@ This extension defines the money axis, the `cost_ceiling` field:
 
 Semantics, all inherited from §7.7: the ceiling is the most the requester can
 be asked to pay for the work. A responder that cannot work within it refuses
-at admission with `BUDGET_INSUFFICIENT`, carrying its estimate. This
+at admission with the budget outcome `insufficient` (`BUDGET_INSUFFICIENT`
+on a 0.3.0 envelope), carrying its estimate. This
 refuse-with-estimate loop is the price-discovery mechanism, replacing the
 retired `negotiate` operation (§10.4). `BUDGET_INSUFFICIENT` is equally legal
 against a request that offered no ceiling at all: the refusal's estimate is
@@ -4783,13 +5074,15 @@ exchange reads identically on the wire. That is deliberate, so a refusal driven 
 the responder's own spending policy (an owner allowance,
 `extensions/EXT-8-allowance.md`) is indistinguishable from one driven by a
 too-low offer. A responder that reaches the ceiling
-mid-work stops before crossing it and pauses the Task with `BUDGET_EXHAUSTED`
-(§7.7). Spend past the ceiling, like work past the deadline, is on the
+mid-work stops before crossing it and pauses the Task with the budget
+outcome `ceiling_reached` (`BUDGET_EXHAUSTED` on a 0.3.0 envelope, §7.7). Spend past the ceiling, like work past the deadline, is on the
 responder's own account.
 
 On completion, the responder SHOULD report its actual spend, the `cost`
 field **of the terminal `respond`'s payload** (`payload.cost`, a
 `{ amount_micro, currency }` object), echoed into the metering event above.
+On a 0.4.0 frame `payload.cost` sits beside `payload.a2a`, as
+`payload.usage` does (§13.5).
 The payload, not the envelope: the envelope's field set is §5.2's and does
 not grow here, and the platform reads spend from the payload. The report
 is informative rather than normative, deliberately: you can oblige an agent to
@@ -4855,7 +5148,9 @@ SKU at a specific digest:
 `request` whose offering is covered by a SKU whose price is not `free`, from a
 consumer whose owner holds no unexpired agreement matching that SKU's
 current digest, MUST be refused before any work with `AGREEMENT_REQUIRED`
-(§12.2), `details` carrying `sku`, `sku_digest`, and `approval_url`: the
+(§12.2; on a 0.4.0 frame, a Task in `TASK_STATE_REJECTED` carrying the
+economics extension's `paymentRequired`, A2A binding §12.4), `details`
+carrying `sku`, `sku_digest`, and `approval_url`: the
 provider's `checkout_url`, or the deployment's own approval surface for
 `internal`. This is §1.3's "payment required" refusal, typed. The consumer's
 owner is resolved the way EXT-2 §7.1 resolves it, the registry-populated
@@ -4906,27 +5201,42 @@ The protocol version follows [Semantic Versioning](https://semver.org/):
 - **Patch:** Clarifications, typo fixes, non-normative changes.
 
 **The document version and the wire version are separate numbers.** The
-version in this document's title (Agent Messaging 0.8, Version 0.8.0) numbers
-the text. The **wire version** is what implementations put on the wire: the
-envelope `v` (§5.2), the manifest `protocol_version` (§8.2), and the bootstrap
-`mesh.protocol` (§18.10). The wire version changes only when the wire changes
-in a way §20.2's checks must see. The last such change was 0.3 (§20.4), and
-nothing since has required another: Agent Messaging 0.4, 0.5, 0.6 and 0.7 added fields,
-refusal reasons and sections without moving the wire version.
+version in this document's title (Agent Messaging 0.10, Version 0.10.0-draft)
+numbers the text. The **wire version** is what implementations put on the
+wire: the envelope `v` (§5.2), the manifest `protocol_version` (§8.2), and the
+bootstrap `mesh.protocol` (§18.10). The wire version changes only when the
+wire changes in a way §20.2's checks must see. Before this version the last
+such change was 0.3 (§20.4); Agent Messaging 0.4 to 0.9 added fields, refusal
+reasons and sections without moving it.
 
-Under Agent Messaging 0.8, implementations send `0.3.0` in the envelope `v` and
-the manifest `protocol_version`, and the reference deployment sends `0.3` in
-the bootstrap `mesh.protocol`. Receivers check only the major version (§20.2),
-so these values remain correct under 0.7. An implementation MUST NOT put the
-document version in any of these fields. Where this document says "protocol
-0.2" or "protocol 0.3" (for example in the signature migration rules of §4.4
-and §5.3), it means the wire version.
+**Wire version 0.4.0.** Agent Messaging 0.10 moves the wire to `0.4.0`: a
+call between agents carries an A2A operation in `payload.a2a` (§6.4, §6.5,
+the A2A binding), and the envelope fields `task_id`, `context_id`,
+`artifacts` and `budget` are gone from it. Under Agent Messaging 0.10,
+implementations send `0.4.0` in the envelope `v` and the manifest
+`protocol_version`, and a deployment that speaks it sends `0.4` in the
+bootstrap `mesh.protocol`. An implementation MUST NOT put the document version
+in any of these fields. Where this document says "protocol 0.2" or "protocol
+0.3" (for example in the signature migration rules of §4.4 and §5.3), it
+means the wire version.
+
+**The transition window.** A node written to Agent Messaging 0.10 MUST also
+accept 0.3.0 envelopes, whose calls use the payloads of §6.8, until its
+operator ends that window, and SHOULD answer each request in the wire version
+it arrived in (A2A binding §14). A sender SHOULD send a 0.4.0 frame only to an
+agent whose manifest `protocol_version` is `0.4.0` or later, or whose A2A
+Agent Card lists the A2A binding (§8.14), and SHOULD send the 0.3.0 form to
+any other agent. A task store that holds a Task begun on 0.3.0 stores it as an
+A2A Task, using the table of §6.8. An operator SHOULD announce the end of its
+window ahead of time; after it, the node refuses 0.3.0 envelopes with
+`INVALID_VERSION`.
 
 ### 20.2. Version Negotiation
 
 - Every envelope includes a `v` field with the protocol version.
 - Receivers MUST check the `v` field and reject messages with unsupported major versions using `INVALID_VERSION`.
 - Receivers SHOULD accept messages with the same major version and a higher minor version, ignoring unknown fields.
+- While the major version is 0, a minor version can break the wire, as 0.4.0 does. That is why a sender reads the receiver's `protocol_version` or card before it sends a 0.4.0 frame (§20.1), and why a receiver that implements both 0.3.0 and 0.4.0 dispatches on `v`.
 - The manifest includes `protocol_version` so that discovery can filter by protocol compatibility.
 
 ### 20.3. Offering Versioning
@@ -5325,7 +5635,7 @@ trip, and all of them are checkable offline.
   is worse than absent, because the gap only opens for the traffic nobody was
   watching: messages that arrived while the agent was offline.
 - A field of the **request** MUST NOT be able to select a path where the checks
-  do not run. In particular `payload.config.stream` (§6.4) selects a different
+  do not run. In particular the operation a frame carries (`SendStreamingMessage` rather than `SendMessage`, §6.4) or a 0.3.0 `payload.config.stream` selects a different
   handler, never a different set of protections.
 - These checks run **after** envelope signature verification (§5.3) and **do not
   replace it**. §22.2's memory is keyed on `from`, so an implementation that
@@ -5736,35 +6046,100 @@ example envelopes with the canonical bytes their signatures cover (under the
 ## Appendix A: Example, Complete Request-Respond Flow
 
 ```
-Agent A (requester)                     Agent B (responder)
+Agent A (client)                        Agent B (server agent)
        |                                        |
        |  1. discover("web-scrape")             |
        |------> mesh.registry.discover          |
        |<------ [manifest of Agent B]           |
        |                                        |
-       |  2. request(offering: "web-scrape")       |
+       |  2. request: SendMessage               |
+       |     (offering extension: web-scrape)   |
        |------> mesh.agent.{B}.inbox            |
        |        reply: _INBOX.abc123            |
        |        (liveness signal only, §18.7)   |
        |                                        |
-       |  3. respond(status: accepted)          |
+       |  3. respond: {"accepted": {}}          |
        |<------ mesh.agent.{A}.inbox   (§6.4a)  |
        |                                        |
-       |  4. respond(status: submitted)         |
+       |  4. respond: result.task               |
+       |     id task-789, TASK_STATE_SUBMITTED  |
        |<------ mesh.agent.{A}.inbox            |
-       |        task_id: task-789               |
        |                                        |
-       |  5. [subscribe to task updates]        |
-       |------> consumer on mesh.task.task-789  |
+       |  5. request: GetTask {id: task-789}    |
+       |------> mesh.agent.{B}.inbox            |
+       |<------ mesh.agent.{A}.inbox            |
+       |     Task, TASK_STATE_WORKING           |
        |                                        |
-       |  6. respond(status: working)           |
-       |<------ mesh.task.task-789.update       |
+       |  6. request: GetTask {id: task-789}    |
+       |------> mesh.agent.{B}.inbox            |
+       |<------ mesh.agent.{A}.inbox            |
+       |     Task, TASK_STATE_COMPLETED,        |
+       |     artifacts: [...]                   |
        |                                        |
-       |  7. respond(status: completed,         |
-       |             artifacts: [...])          |
-       |<------ mesh.task.task-789.update       |
-       |                                        |
+       |  (the task store recorded each change  |
+       |   B published on                       |
+       |   mesh.task.task-789.update, §7.4)     |
 ```
+
+The request frame of step 2:
+
+```json
+{
+  "v": "0.4.0",
+  "id": "0192f3a4-6f1e-7c3a-9d2b-1a2b3c4d5e6f",
+  "type": "request",
+  "ts": "2026-11-07T18:04:05.123Z",
+  "from": "<agent A key>",
+  "to": "<agent B key>",
+  "trace": { "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "00f067aa0ba902b7" },
+  "payload": {
+    "a2a": {
+      "method": "SendMessage",
+      "params": {
+        "message": {
+          "messageId": "msg-1",
+          "role": "ROLE_USER",
+          "parts": [ { "data": { "url": "https://example.com/team", "fields": ["name", "title"] } } ],
+          "metadata": {
+            "https://agentmessaging.ai/extensions/offering/v1": { "offering": "web-scrape" }
+          }
+        }
+      }
+    }
+  },
+  "meta": { "a2a": { "A2A-Version": "1.0", "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1" } },
+  "sig": "<signature>"
+}
+```
+
+The respond frame of step 4:
+
+```json
+{
+  "v": "0.4.0",
+  "id": "0192f3a4-7a10-7c3a-9d2b-1a2b3c4d5e70",
+  "type": "respond",
+  "ts": "2026-11-07T18:04:05.410Z",
+  "from": "<agent B key>",
+  "to": "<agent A key>",
+  "in_reply_to": "0192f3a4-6f1e-7c3a-9d2b-1a2b3c4d5e6f",
+  "trace": { "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736", "span_id": "a3ce929d0e0e4736", "parent_span_id": "00f067aa0ba902b7" },
+  "payload": {
+    "a2a": {
+      "result": {
+        "task": {
+          "id": "task-789",
+          "contextId": "ctx-51a0",
+          "status": { "state": "TASK_STATE_SUBMITTED", "timestamp": "2026-11-07T18:04:05.400Z" }
+        }
+      }
+    }
+  },
+  "sig": "<signature>"
+}
+```
+
+Instead of polling with `GetTask` (steps 5 and 6), Agent A MAY call `SubscribeToTask` and receive the changes as stream events (Section 11).
 
 ## Appendix B: Example, Event-Driven Collaboration
 
@@ -5791,31 +6166,63 @@ Agent A (scraper)       Bus                Agent B (analyzer)    Agent C (report
 ## Appendix C: Example, Streaming LLM Output
 
 ```
-Agent A (requester)                     Agent B (LLM agent)
+Agent A (client)                        Agent B (LLM agent)
        |                                        |
-       |  request(stream: true)                 |
+       |  request: SendStreamingMessage         |
        |------> mesh.agent.{B}.inbox            |
        |                                        |
-       |  respond(status: accepted)    (§6.4a)  |
+       |  respond: {"accepted": {}}    (§6.4a)  |
        |<------ mesh.agent.{A}.inbox            |
        |                                        |
-       |  respond(status: working, task_id)     |
+       |  seq 0: task, TASK_STATE_WORKING       |
        |<------ mesh.agent.{A}.inbox            |
        |                                        |
-       |  [subscribe: mesh.task.{id}.stream]    |
+       |  [durable subscription:                |
+       |   mesh.task.{id}.stream, §11.3]        |
        |                                        |
-       |  chunk 0: "The "                       |
+       |  seq 1: artifactUpdate "The "          |
        |<------ mesh.task.{id}.stream           |
-       |  chunk 1: "quick "                     |
+       |  seq 2: artifactUpdate "quick "        |
        |<------ mesh.task.{id}.stream           |
-       |  chunk 2: "brown fox"                  |
+       |  seq 3: artifactUpdate "brown fox"     |
        |<------ mesh.task.{id}.stream           |
-       |  chunk 3 (final: true)                 |
+       |  seq 4: statusUpdate                   |
+       |         TASK_STATE_COMPLETED           |
+       |         (final: true)                  |
        |<------ mesh.task.{id}.stream           |
        |                                        |
-       |  task update: completed                |
-       |<------ mesh.task.{id}.update           |
+       |  (the task store holds the completed   |
+       |   Task; GetTask returns it, §11.3)     |
 ```
+
+The frame of `seq` 3:
+
+```json
+{
+  "v": "0.4.0",
+  "type": "respond",
+  "from": "<agent B key>",
+  "to": "<agent A key>",
+  "in_reply_to": "<id of the SendStreamingMessage request>",
+  "payload": {
+    "a2a": {
+      "seq": 3,
+      "result": {
+        "artifactUpdate": {
+          "taskId": "<task-id>",
+          "contextId": "<context-id>",
+          "artifact": { "artifactId": "answer", "parts": [ { "text": "brown fox" } ] },
+          "append": true,
+          "lastChunk": false
+        }
+      }
+    }
+  },
+  "sig": "<signature>"
+}
+```
+
+Every event is signed (§11.6). On a 0.3.0 envelope the same stream is a sequence of chunks (§11.7).
 
 ## Appendix D: Implementation Checklist
 
@@ -5843,15 +6250,15 @@ section wins, and the disagreement is a defect in this appendix.
 | 4 | Refuse misaddressed envelopes (present `to` ≠ own id, byte-for-byte), silently | §22.4 | `inbound-protections.json` |
 | 5 | Cap inbound sender text (default 65,536 UTF-16 code units); answer `CONTEXT_TOO_LARGE` | §22.5 | `inbound-protections.json` |
 | 6 | Fence sender text with the pinned markers: once, on by default, provenance from the verified envelope only | §22.6 | `inbound-protections.json` |
-| 7 | Admit against the budget before working: refuse `BUDGET_INSUFFICIENT` / `DEADLINE_UNMEETABLE` with an estimate, never accept-then-fail | §7.7 | `budget.json` |
-| 8 | On admission by a live handler, emit `"accepted"` immediately, before the handler runs; refusals of admission happen instead, never after | §6.4a | `accept-signal.json` |
-| 9 | Create a Task only when deferring, streaming, or pausing; drive only the legal state transitions | §7.0 to §7.3 | *(none)* |
-| 10 | Stop at the cost ceiling: pause to `input_required` with `BUDGET_EXHAUSTED`, reporting spend and estimate-to-finish | §7.7 | `budget.json` |
-| 11 | Honor cancel: closed reason enum, stop work, forward `upstream_cancelled` to every still-live delegate | §10.8 | `cancel.json` |
+| 7 | Admit against the budget before working: refuse with the budget outcome `insufficient` or `deadline_unmeetable` (a Task in `TASK_STATE_REJECTED`; `BUDGET_INSUFFICIENT` / `DEADLINE_UNMEETABLE` on 0.3.0) with an estimate, never accept-then-fail | §7.7 | `budget.json` |
+| 8 | On admission by a live handler, emit the accept signal (`payload.accepted`) immediately, before the handler runs; refusals of admission happen instead, never after | §6.4a | `accept-signal.json` |
+| 9 | Carry every call as an A2A operation in `payload.a2a` (0.4.0) and accept 0.3.0 envelopes during the transition window; create a Task only when deferring, streaming, or pausing; change it only as A2A's states allow | §6.4, §6.5, §7.0 to §7.3, §20.1 | *(none)* |
+| 10 | Stop at the cost ceiling: pause in `TASK_STATE_INPUT_REQUIRED` with the budget outcome `ceiling_reached` (`BUDGET_EXHAUSTED` on 0.3.0), reporting spend and estimate-to-finish | §7.7 | `budget.json` |
+| 11 | Honor `CancelTask`: closed reason enum in the cancel extension, stop work, forward `upstream_cancelled` to every still-live delegate | §10.8 | `cancel.json` |
 | 11a | When a failure has a reason, state it from the same enum, and back a `needs_not_furnished` with an `unmet_need` naming a need the offering actually declares | §10.8, §10.8a | `cancel.json` |
 | 12 | Enforce agreements at admission where a paid SKU covers the offering: no unexpired agreement at the current digest → `AGREEMENT_REQUIRED` with `sku`, `sku_digest`, `approval_url` | §19.5 | `commerce.json` |
-| 13 | Report declared usage in `payload.usage` of the terminal respond, or of a reply-`request` carrying `in_reply_to`: cumulative, superseding, covered by the envelope signature; the provider is the respond's recipient but the reply-request's SENDER | §13.5 | `metering.json` |
-| 14 | Publish every direct `respond` (accept, bare answer, Task-creating first reply) to the requester's inbox, correlated by `in_reply_to`; never response data on a transport reply subject | §6.5, §18.7 | *(none)* |
+| 13 | Report declared usage in `payload.usage` (beside `payload.a2a` on 0.4.0) of the terminal respond, or of a reply-`request` carrying `in_reply_to`: cumulative, superseding, covered by the envelope signature; the provider is the respond's recipient but the reply-request's SENDER | §13.5 | `metering.json` |
+| 14 | Publish every direct `respond` (accept, the answer to the A2A operation, the first stream event) to the requester's inbox, correlated by `in_reply_to`; never response data on a transport reply subject | §6.5, §18.7 | *(none)* |
 | 15 | If you declare `mesh://extensions/audience/v1`, an optional extension in this version: give a message marked `person` to no handler, tool or model; surface it to your person; refuse a mark that is not a string; read an unknown string as `person`; let the agent read it only under the person's setting, framed with the `audience:` line; declare `mesh://extensions/audience/v1` only when your `acts_for` is `person`, every path to you keeps these rules and your node can reach your person | §5.7, §22.6 | `audience.json` |
 | 16 | If you do not declare `mesh://extensions/audience/v1`: refuse a `request`, a `respond` or a room post marked `person` at your door with `AUDIENCE_NOT_SUPPORTED`, `details.reason` `no_person` or `not_declared` and `details.acts_for`, after admission and before any handler or inbox; never answer it with the queued ack | §5.7, §12.2 | `audience.json` |
 
@@ -5865,10 +6272,10 @@ section wins, and the disagreement is a defect in this appendix.
 | 4 | Subscribe to presence transitions before reading the presence snapshot | §9.6 | *(none)* |
 | 5 | State budgets as an absolute deadline / ceiling; revise absolutely with a monotonic counter, parties only | §7.7 | `budget.json` |
 | 6 | Treat an accept as delivery + admission: reset the response timeout, keep waiting for the substantive respond; the deadline does not move | §6.4a | `accept-signal.json` |
-| 7 | Cancel with a reason from the closed eight-value enum; cancellation is effective when sent | §10.8 | `cancel.json` |
+| 7 | Cancel with `CancelTask` and a reason from the closed eight-value enum; cancellation is effective when sent | §10.8 | `cancel.json` |
 | 8 | Deduplicate inbound traffic and replies on `(from, id)`, never on `id` alone | §5.5, §22.2 | `inbound-protections.json` |
 | 9 | Treat silence from a registered agent as possibly queued, not failed; every reply, live or late, arrives at your own inbox, correlated by `in_reply_to`, and response data on a transport reply subject is ignored | §6.4, §6.5 | *(none)* |
-| 10 | Before sending a message marked for a person, check each receiver's declaration (a receiver whose Descriptor states an `acts_for` other than `person` does not declare it) and refuse locally with `AUDIENCE_NOT_SUPPORTED` unless your person chose to send anyway; attach no `budget` and no `task_id` | §5.7 | `audience.json` |
+| 10 | Before sending a message marked for a person, check each receiver's declaration (a receiver whose Descriptor states an `acts_for` other than `person` does not declare it) and refuse locally with `AUDIENCE_NOT_SUPPORTED` unless your person chose to send anyway; attach no budget and name no Task | §5.7 | `audience.json` |
 
 ### D.3. A node (a host of agents)
 
@@ -5876,7 +6283,7 @@ section wins, and the disagreement is a defect in this appendix.
 |---|-----------|------|---------|
 | 1 | Vouch for every hosted agent: a signed, expiring attestation, re-issued while hosting continues | §4.4 | `signature-tags.json` |
 | 2 | Register agents on the connection-bound subject where the deployment enforces §4.4 (b) | §4.4, §14.1, §14.3 | *(none)* |
-| 3 | Ack only durably accepted mail; answer an attended inbox's requests with the queued ack (`queued: true`, `inbox_id`), never with `"accepted"` | §16.4, §6.4a | `accept-signal.json` |
+| 3 | Ack only durably accepted mail; answer an attended inbox's requests with the queued ack (`queued: true`, `inbox_id`), never with the accept signal | §16.4, §6.4a | `accept-signal.json` |
 | 4 | Bound every mailbox drain to the bind-time backlog; re-run on every reconnect and periodically (default 60 s); never overlap passes | §16.4 | *(none)* |
 | 5 | Heartbeat per node on `mesh.heartbeat.{node_id}`; the subject token, not the payload, names the node | §10.10 | *(none)* |
 | 6 | For an agent that declares `mesh://extensions/audience/v1`, an optional extension in this version: keep the mark on an inbox entry marked for a person, keep its text out of every listing a harness reads, answer it with the queued ack, and declare `mesh://extensions/audience/v1` only for an agent whose `acts_for` is `person` and only when you can reach that person. For an agent that does not declare it: refuse a message marked for a person before it enters the inbox, as D.1 line 16 says | §5.7, §16.4 | `audience.json` |
@@ -6866,3 +7273,37 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > agent or the caller's balance. §17.5 lists it. No existing requirement,
 > field, wire identifier or section number changes. The wire version stays
 > `0.3.0` (§20.1).
+
+> **2026-11-07: Version 0.10.0-draft. A2A's model instead of a copy.** An A2A
+> contributor pointed out that Agent Messaging defined its own task model when
+> the transport should reuse the semantics of the protocol it carries. This
+> version does that. Every call between agents is now an A2A operation
+> (`SendMessage`, `GetTask`, `CancelTask` and the rest), carried over the mesh
+> by a new A2A custom protocol binding, `bindings/a2a.md`
+> (`https://agentmessaging.ai/bindings/a2a/v1`), with A2A's operation names
+> and objects verbatim. A `request` carries `payload.a2a.method` and
+> `payload.a2a.params`, and a `respond` carries `payload.a2a.result` (§6.4,
+> §6.5). §1.3 makes A2A the authority for operations, Tasks, Messages, Parts,
+> Artifacts and the Agent Card, and closes the open decision on method names.
+> §7 no longer defines a task object, states or transitions: it says how a
+> mesh stores and delivers A2A Tasks (the durable store keyed by the A2A Task
+> id, the update and stream subjects, who may read a Task, and the record kept
+> beside it), and §7.3.1 is restated in A2A's state names. Artifacts are A2A
+> Artifacts and Parts, and a large file is a `url` Part with the artifact
+> references extension (§7.5). The context is A2A's `contextId` (§7.6). The
+> budget is the budget extension, and each budget outcome has an A2A state:
+> `exhausted` is no longer a state of its own, and the Task ends
+> `TASK_STATE_CANCELED` with the outcome `exhausted` (§7.2, §7.7). The manifest
+> publishes as an A2A Agent Card that lists the binding (§8.14). Streaming,
+> cancellation and Task reads point at A2A's operations (§10.5, §10.8, §11),
+> and errors from A2A carry A2A's names (§12). §17.5 lists the six A2A
+> extensions the binding defines (offering, budget, audience, economics,
+> artifact references, cancel). What A2A has no place for (presence, events,
+> admission, the accept signal, signed identity, receipts) stays Agent
+> Messaging's own and is unchanged. The wire version moves to `0.4.0`, whose
+> envelope has no `task_id`, `context_id`, `budget` or `artifacts`. A node
+> written to this version still accepts 0.3.0 envelopes until its operator
+> ends the transition window (§20.1), and §6.8, §11.7 and the 0.3.0 rows of
+> §12.2 describe the 0.3.0 form so that nothing deployed is left undescribed.
+> Section numbers that other documents cite (§7.2, §7.3, §7.3.1, §10.5,
+> §10.8, §11.2, §11.6) are kept; §6.8, §8.14 and §11.7 are new.
