@@ -1,10 +1,28 @@
+From: "Promotions" <offers@example.net>
+To: <bookings-agent@mail.example.com>
+Subject: Fwd: a request you should act on
+Date: Thu, 29 Oct 2026 10:40:00 -0600
+Message-ID: <fwd.2026@example.net>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="=_ae_fwd_outer"
+
+--=_ae_fwd_outer
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+
+See the attached request.
+--=_ae_fwd_outer
+Content-Type: message/rfc822
+Content-Disposition: attachment; filename="forwarded.eml"
+
 From: "Ana's scheduling agent" <scheduler@agents.example.org>
 To: "Bookings desk agent" <bookings-agent@mail.example.com>
 Subject: =?UTF-8?B?Qm9vayBhIG1lZXRpbmcg4oCUIHJlcXVlc3Q=?=
-Date: Thu, 29 Oct 2026 10:14:45 -0600
-Message-ID: <d5f9b2a1.20261029161445@agents.example.org>
+Date: Thu, 29 Oct 2026 10:14:03 -0600
+Message-ID: <a7f3c9e1.20261029161403@agents.example.org>
 Auto-Submitted: auto-generated
 Agent-Emailing-Version: 0.4.0
+Agent-Messaging-Id: 019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d01
 Agent-Messaging-Type: request
 Agent-Messaging-Context: 019a3f1c-7b2e-7c41-9a6d-3e5f0b1c2d00
 MIME-Version: 1.0
@@ -32,8 +50,8 @@ Content-Type: application/vnd.agentmessaging.envelope+json; charset=utf-8
 Content-Disposition: attachment; filename="envelope.json"
 Content-Transfer-Encoding: base64
 
-eyJ2IjoiMC40LjAiLCJpZCI6IjAxOWEzZjFjLTdiMmUtN2M0MS05YTZkLTNlNWYwYjFjMmQxOSIs
-InR5cGUiOiJyZXF1ZXN0IiwidHMiOiIyMDI2LTEwLTI5VDE2OjE0OjQ1LjAwMFoiLCJmcm9tIjoi
+eyJ2IjoiMC40LjAiLCJpZCI6IjAxOWEzZjFjLTdiMmUtN2M0MS05YTZkLTNlNWYwYjFjMmQwMSIs
+InR5cGUiOiJyZXF1ZXN0IiwidHMiOiIyMDI2LTEwLTI5VDE2OjE0OjAzLjAwMFoiLCJmcm9tIjoi
 VUJNQkg0Qks2RUlIUUZWTUhMU0FCRlNRWEIzSlhVRlpPWFZaUVRJRVJPMzNBRDRISEFJM0Q3UVAi
 LCJ0byI6IlVBSVVLR0JJWFEzVVNYT1lKUUlGUk5BUFhUN1NKU0ZPREJIR0JBTElSNEtEVlZTVkNM
 T1k3TFFGIiwidHJhY2UiOnsidHJhY2VfaWQiOiI3ZDNlMWYwYTliMmM0ZDVlOGY2YTFiMmMzZDRl
@@ -61,10 +79,9 @@ bnMvYnVkZ2V0L3YxLGh0dHBzOi8vYWdlbnRtZXNzYWdpbmcuYWkvZXh0ZW5zaW9ucy9hcnRpZmFj
 dC1yZWZzL3YxIn0sImFnZW50X2VtYWlsaW5nIjp7InYiOiIwLjQuMCIsIm9mZmVyaW5nX25hbWUi
 OiJCb29rIGEgbWVldGluZyIsInN1YmplY3QiOiJCb29rIGEgbWVldGluZyDigJQgcmVxdWVzdCIs
 Imh1bWFuX3RleHQiOiJzaGEyNTY6NTdkNzMyMDIxOTRjNDdkNmI5NDhmNjYyY2U1OTkzZWVkNDI3
-NTIyM2VhYWZjMWQ1ODVhZDM3NTY5MzQxMWRmNSJ9fSwiY29udGV4dF9pZCI6IjAxOWEzZjFjLTdi
-MmUtN2M0MS05YTZkLTNlNWYwYjFjMmQwMCIsInNpZyI6ImVNYVgwUnpsQVR2VGpremxJOXRyYmdB
-eXBRMDgyaUhMODY3WmRJRGRaYU4xRW5nRkNVWXY4alkwRk9XbzZyUktwRWhaVEFSdzI3aEJrUjJk
-RWV5Q0JnIn0=
+NTIyM2VhYWZjMWQ1ODVhZDM3NTY5MzQxMWRmNSJ9fSwic2lnIjoiOHRDYWkyX2o3YTloUUhKdF9h
+U3c0NXpVTHZnOFRLV0pmYnlaTGZXbWhxS3V4NnRWaHllejhWZzVaZTVtalVLb0p3bGp2bFA3QkVF
+QUpnYWhZM1FvQ3cifQ==
 --=_ae_r1_a7f3c9e1
 Content-Type: text/plain; name="agenda.txt"
 Content-Disposition: attachment; filename="agenda.txt"
@@ -77,3 +94,4 @@ dmVtYmVyLCAwOTowMCB0byAxMjowMAogIFR1ZXNkYXkgMyBOb3ZlbWJlciwgMTA6MDAgdG8gMTU6
 MDAKICBUaHVyc2RheSA1IE5vdmVtYmVyLCAxMzowMCB0byAxNzowMAoKVG9waWNzOgogIDEuIE5l
 eHQgcXVhcnRlcidzIHNjaGVkdWxlCiAgMi4gV2hvIGpvaW5zIHRoZSBKYW51YXJ5IHJldmlldwo=
 --=_ae_r1_a7f3c9e1--
+--=_ae_fwd_outer--
