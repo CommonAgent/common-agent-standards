@@ -3876,7 +3876,7 @@ When `error.retryable` is `true`:
 
 > **Core vs. optional.** Trace **propagation** (the `trace` object in every envelope) is core and always on; it costs nothing and is the part with real debugging value. Trace/metric/log **storage** (the `MESH_TRACE`/`MESH_METRICS`/`MESH_LOG` streams and the publishing of span/metric/log events) is **optional** and created only if a deployment wants it (§18.3). A minimal deployment carries trace context in-band and stores nothing.
 
-**What the transport can capture.** With the single reply path (§6.5, §18.7), every bare-mode exchange between agents travels entirely on inbox subjects: the request arrives at the responder's inbox, and every `respond`, the accept signal included, arrives at the requester's. Nothing of a completed exchange rides a private transport reply subject (§18.7's two plumbing exceptions aside), which is what makes **both halves** of an exchange capturable by the transport for mailbox-holding agents (the §16.4 redelivery buffer, the `MESH_INBOX_*` streams of §18.3), not just the half that happened to be addressed to a buffered party. Task-mode traffic was already durable on `mesh.task.>`; the reply path closes the same gap for bare mode. Capture remains conditional on a buffer existing: sandbox agents have none (§16.4), and their traffic stays live-only.
+**What the transport can capture.** With the single reply path (§6.5, §18.7), every exchange between agents answered without a Task travels entirely on inbox subjects: the request arrives at the responder's inbox, and every `respond`, the accept signal included, arrives at the requester's. Nothing of a completed exchange rides a private transport reply subject (§18.7's two plumbing exceptions aside), which is what makes **both halves** of an exchange capturable by the transport for mailbox-holding agents (the §16.4 redelivery buffer, the `MESH_INBOX_*` streams of §18.3), not just the half that happened to be addressed to a buffered party. Task traffic was already durable on `mesh.task.>`; the reply path closes the same gap for answers that create no Task. Capture remains conditional on a buffer existing: sandbox agents have none (§16.4), and their traffic stays live-only.
 
 ### 13.1. Distributed Tracing
 
@@ -4136,6 +4136,9 @@ on the terminal respond. A non-terminal respond MAY carry cumulative usage
 so far; a later report **supersedes** an earlier one, never adds to it. This
 extends the spend-report pattern of §19.3 (`payload.cost`) and shares its
 rule: the payload, not the envelope; §5.2's field set does not grow here.
+On a 0.4.0 frame `payload.usage` sits beside `payload.a2a`, on the frame
+that answers the call or reports the Task's final state, and never inside
+the A2A object.
 
 An agent that answers by sending a **new `request` carrying `in_reply_to`**,
 rather than by responding, reports the same way: `payload.usage` on that
@@ -4459,7 +4462,9 @@ Agents declare supported extensions in their manifest:
 
 ### 17.3. Extension Activation
 
-Extensions are activated per-request via the `meta` field in the message envelope:
+The A2A extensions of §17.5 are A2A's (A2A §4.6): a client activates one on a frame in the `A2A-Extensions` service parameter (`meta.a2a`, A2A binding §7), and its data sits in the `metadata` of the A2A object it describes, under the extension's URI.
+
+Other extensions are activated per-request via the `meta` field in the message envelope:
 
 ```json
 {
@@ -4494,10 +4499,16 @@ suite, `docs/implementation-status.md`, not here.
 | Extension URI | Status | Scope |
 |---------------|--------|-------|
 | `mesh://extensions/economics/v1` | **Defined** (0.2) | The money axis of the protocol, cut around the core metering substrate (§13.5): **SKUs and prices** (§19.1: `free`/`flat`/`per_unit`/`package`/`tiered` against named meters, terms pinned by a tagged SHA-256 digest, advertised in the §8.7 storefront), the **billing provider** (§19.4), the signed account-level **agreement** and its `AGREEMENT_REQUIRED` admission enforcement (§19.5), **rating** (§19.6: deterministic fold of meter events × agreed price, ceiling-bounded), discovery `max_cost`, the `cost_ceiling` of the core budget (§7.7/§19.3), `BUDGET_INSUFFICIENT`/`BUDGET_EXHAUSTED`, spend reports and task receipts (§19.2). The manifest `cost` block is retired in 0.2 in favour of `skus`; `negotiate` and `COST_LIMIT_EXCEEDED` retired earlier, subsumed by budget admission (§7.7). Settlement out of scope (§1.3). |
-| `mesh://extensions/a2a-bridge/v1` | **Defined** (see `BRIDGE-A2A.md`) | Interop with the A2A protocol. A bridge node vouches for external A2A parties as hosted agents, both directions (A2A client -> mesh agent; mesh agent -> external A2A server). The normative method/state/card mappings and trust-boundary rules live in `BRIDGE-A2A.md`. |
+| `mesh://extensions/a2a-bridge/v1` | **Defined** (see `BRIDGE-A2A.md`) | Interop with the A2A protocol's HTTP bindings. A bridge node vouches for external A2A parties as hosted agents, both directions (A2A client -> mesh agent; mesh agent -> external A2A server). Since this version both sides carry the same A2A objects, so the bridge moves them between HTTP and frames and maps identity at the edge (A2A binding §13). Its trust-boundary rules live in `BRIDGE-A2A.md`. |
+| `https://agentmessaging.ai/extensions/offering/v1` | **Draft** (A2A binding §12.1) | A2A extension. Which declared offering (§8.5) an A2A Message calls. |
+| `https://agentmessaging.ai/extensions/budget/v1` | **Draft** (A2A binding §12.2) | A2A extension. The budget of §7.7 on the Message that starts or revises the work, and each budget outcome (`insufficient`, `deadline_unmeetable`, `ceiling_reached`, `exhausted`) in the Task's metadata. |
+| `https://agentmessaging.ai/extensions/audience/v1` | **Draft** (A2A binding §12.3) | A2A extension. A Message meant for the person behind the receiving agent, with every rule of §5.7. It is the A2A form of `mesh://extensions/audience/v1`. |
+| `https://agentmessaging.ai/extensions/economics/v1` | **Draft** (A2A binding §12.4) | A2A extension. Payment required before the work: the price and the accepted settlement methods of §19, on a rejected Task. |
+| `https://agentmessaging.ai/extensions/artifact-refs/v1` | **Draft** (A2A binding §12.5) | A2A extension. A Part's size and digest when its bytes are held outside the message (§7.5.1). |
+| `https://agentmessaging.ai/extensions/cancel/v1` | **Draft** (A2A binding §12.6) | A2A extension. Why a Task was canceled, from the closed list of §10.8, on `CancelTask` and on the canceled Task. |
 | `mesh://extensions/rooms/v1` | **Implemented** (see `extensions/EXT-5-rooms.md`) | Shared conversations for N agents, plus a durable record and artifact drive. Binding-decoupled (three abstract substrate capabilities; NATS/JetStream is one reference binding). All three privacy grades are live: capability (courtesy), sealed (end-to-end via the OPTIONAL agent `encryption_key`, §4.3/§8.1), and acl (broker-enforced membership via service-issued, room-scoped credentials). Thin by design: services are members, governance is [Agent Collab](https://agentcollab.dev) playbooks, commerce is the economics extension. v1.1 names **agent-presence** (EXT-5 §8): the live roster as the fold of join/leave, invited ≠ joined, queryable and observable. v1.2 adds **expel** (EXT-5 §8.1): creator-only removal with a signed severity (timeout / conduct / safety), advisory at the capability grade, credential-revoking at acl. 1.8 adds **notes on a file** (EXT-5 §8.4): a member attaches a short attributed statement to a file already on the drive, keyed by its digest so it names those exact bytes permanently. Additive only — it edits nothing, and writing one publishes nothing into the room's traffic, because at the acl and capability grades that namespace is the record. Any member may write one and every note carries the author the service read off the verified envelope; there is no screener role to confer, because conferring it would be the invisible setting the design avoids. |
 | `mesh://extensions/admission/v1` | **Implemented** (see `extensions/EXT-6-admission.md`) | Unilateral, owner-controlled admission policy for direct inbound messages: a signed, portable admission roster (allow / hold / block per sender), held-sender review, and `knock`, the content-free admission request that is one of the two pre-admission verbs (§1.5 invariant 4; the other, `describe` §10.14, is exempt from admission filtering by definition). Live across the reference adapter, the fleet, and the operator console's Waiting list. |
-| `mesh://extensions/e2e-encryption/v1` | **Implemented** (see `extensions/EXT-7-pairwise-sealing.md`) | End-to-end payload confidentiality. The core still secures only the transport, not payloads; the key substrate is the OPTIONAL agent X25519 `encryption_key` (§4.3). Two consumers exist: the Rooms `sealed` grade (rooms/v1, above) for multi-party conversations, and the **pairwise profile** (EXT-7) for direct messages: a request payload is boxed to the recipient's declared key (`sealedpayload.v1`, ephemeral-sender crypto_box), replies seal back to the sender's `reply_key`, and the mesh routes and buffers only ciphertext. Senders SHOULD seal whenever the recipient's card or manifest declares a key. |
+| `mesh://extensions/e2e-encryption/v1` | **Implemented** (see `extensions/EXT-7-pairwise-sealing.md`) | End-to-end payload confidentiality. The core still secures only the transport, not payloads; the key substrate is the OPTIONAL agent X25519 `encryption_key` (§4.3). Two consumers exist: the Rooms `sealed` grade (rooms/v1, above) for multi-party conversations, and the **pairwise profile** (EXT-7) for direct messages: a request payload is boxed to the recipient's declared key (`sealedpayload.v1`, ephemeral-sender crypto_box), replies seal back to the sender's `reply_key`, and the mesh routes and buffers only ciphertext. Senders SHOULD seal whenever the recipient's card or manifest declares a key. A sealed frame hides its A2A object too; its sender MAY show the Task's state in clear in `meta.a2a_state` (§5.2, A2A binding §8a). |
 | `mesh://extensions/device-profile/v1` | **Draft** (see `extensions/EXT-1-device-profile.md`) | Standardized node device self-description (`platform`, `os_version`, `client`, `device_class`) as declared profile keys (§9.7). |
 | `mesh://extensions/usage/v1` | **Draft** (see `extensions/EXT-2-usage.md`) | Durable, identity-resolved usage & engagement store over the activity/heartbeat taps; operator read subjects `mesh.usage.*`. Operational layer, not core. |
 | `mesh://extensions/systems-health/v1` | **Draft** (see `extensions/EXT-12-systems-health.md`) | How an agent's tool failures become knowledge at the right speed: a typed fault vocabulary (grant faults name the grantor's move; `rate_limited` and `unreachable` name nobody's), circuit state at the node (grant-class faults trip immediately and refuse grant-needing work fast with `DEPENDENCY_FAULT`; transient faults degrade and annotate), and a private per-agent health record the owner's surfaces and sibling instances read. Deliberately not a public broadcast by default; a public `systems` state feed is an operator's explicit choice. Nothing here carries a credential, a vendor name, an endpoint, or an upstream error body. |
@@ -4521,6 +4532,8 @@ carriage only in existing extensible slots, independent versioning.
 
 Agent Messaging separates its **abstract protocol** (Sections 4 to 17) from the concrete **platform binding** that realizes it. The abstract protocol names concepts (a signed operator → account → node credential chain, subject addressing, a durable task store), and a binding defines how those concepts are provided on specific infrastructure. Alternative bindings MAY be defined but MUST satisfy the requirements in §18.1. The **reference binding** is NATS JetStream, and §18.2 to §18.10 define it: everything in this document that names NATS, JetStream, NKeys, JWTs, streams, consumers or KV buckets belongs to it. The `mesh` object of §18.10 is the one exception: every binding sends it (§18.1), and only its `nats_endpoints` field belongs to the reference binding.
 
+Every binding carries the A2A binding's frames (`bindings/a2a.md`). The A2A binding sits above the envelope: a frame is an envelope like any other, so it travels on the reference binding, on the RabbitMQ binding or on any other binding unchanged, and the A2A operations, Tasks and stream events of Sections 6, 7 and 11 are the same on all of them.
+
 ### 18.1. Binding Requirements
 
 Any transport-and-platform binding MUST provide:
@@ -4529,8 +4542,8 @@ Any transport-and-platform binding MUST provide:
 - **Delivery:** ordered, at-least-once delivery per subject, with deduplication keyed on `(from, id)` (§5.5, §22.2).
 - **Durable publish and subscribe:** events stored for replay, and durable subscriptions with at-least-once delivery and explicit acknowledgment, as §6.6, §6.6a and §6.7 already require.
 - **Request-reply:** correlated request-reply with a per-request reply address and a configurable timeout, used by platform service operations and as the liveness signal (§18.7). Agent `respond` delivery does not use it: responds ride the addressing and delivery guarantees above, published to the requester's inbox (§6.5).
-- **Durable task store:** a durable, keyed store holding authoritative Task state, updated on every transition (Section 7).
-- **Large-payload storage:** an object store (or equivalent) for payloads exceeding the message size limit, referenced by artifact `ref` parts (Section 7.5).
+- **Durable task store:** a durable store of A2A Tasks, keyed by the A2A Task id, holding each Task's authoritative state and the record beside it, updated on every change (§7.1, §7.4).
+- **Large-payload storage:** an object store (or equivalent) for payloads exceeding the message size limit, referenced by `url` Parts that carry artifact references (Section 7.5).
 - **Identity & credentials:** a signed operator → account → node credential chain (Section 4), node-key connection authentication, subject-scoped publish/subscribe authorization, and tenant import/export enforcement.
 - **Presence:** periodic node liveness with TTL expiry (Section 9).
 - **Finding the mesh:** every credential-issuing response carries the `mesh` object of §18.10, and its `endpoints` lists the binding's transport addresses as URLs. A binding names the URL schemes it uses, and each scheme names one binding.
@@ -4615,12 +4628,12 @@ for the same reason it applies to presence.
 | `mesh_registry` | `{agent_id}` | None | 3 | Agent manifest storage (§9.1) |
 | `mesh_descriptors`, `mesh_descriptor_archive` | `{agent_id}`; `{sha256}` | None | 3 | Agent Descriptors, current per subject and every version by digest (§9.1, §9.2) |
 | `mesh_eval_records`, `mesh_eval_record_archive` | `{agent_id}`; `{sha256}` | None | 3 | Evaluation records, latest per subject and every record by digest (§9.1, §9.2) |
-| `mesh_tasks` | `{task_id}` | 7d | 3 | Task state (authoritative store) |
+| `mesh_tasks` | `{taskId}` (the A2A Task id) | 7d | 3 | A2A Tasks and the record beside each (authoritative store, §7.1, §7.4) |
 | `mesh_task_origins` | `r.{sha256(request_id)}`; `q.{sha256(request_id)}`; `a.{sha256(request_id)}`; `t.{sha256(requester, responder, task_id)}`; `c.{sha256(task_id, sender, addressee)}`; `w.{sha256(task_id, sender, addressee)}`; `g.settle_grace_ms` | 7d | 3 | The requests the server routed and which request each Task id is bound to, for a Task's `origin` and `canceled_by` (§7.1, §10.8). A `w.` key marks the cancel requests received for a Task and not yet written, and `g.settle_grace_ms` holds the grace period G the task-manager instances last said they use (§10.8). History 1. It holds no content: ids, agent keys, offering names, times and the grace period only. |
 | `mesh_sessions` | `{context_id}` | 1h | 1 | Session metadata |
 | `mesh_board_items` | `{room_id}.{item_id}` | None | 3 | Work-board items (EXT-5 §10): claim is a revision-checked compare-and-set; items die with their room |
 
-Tasks (Section 7) are persisted in the `mesh_tasks` KV bucket keyed by `task_id`; this KV entry is the authoritative source of truth for task state and is updated on every state transition. Task status and artifact updates are published to `mesh.task.{task_id}.update` subjects, which the Task Manager consumes; the `MESH_TASKS` stream captures these for delivery guarantees, while the KV bucket remains canonical for lookups.
+A2A Tasks (Section 7) are persisted in the `mesh_tasks` KV bucket keyed by the A2A Task id; this KV entry holds the A2A Task and the record beside it (§7.1), is the authoritative source of truth for the Task's state, and is updated on every change. Task status and artifact update events are published to `mesh.task.{taskId}.update` subjects, which the Task Manager consumes; the `MESH_TASKS` stream captures these and the `mesh.task.{taskId}.stream` events for delivery guarantees, while the KV bucket remains canonical for lookups.
 
 ### 18.5. Required Object Store Buckets
 
@@ -4647,13 +4660,25 @@ Both stores MAY be backed by something other than the JetStream Object Store (a 
 **Task Update Consumer (per requester):**
 ```
 Stream: MESH_TASKS
-Filter: mesh.task.{task_id}.update
+Filter: mesh.task.{taskId}.update
 Deliver Policy: All
 Ack Policy: Explicit
 Ack Wait: 30s
 Max Deliver: 3
-Durable: mesh_task_{task_id}_{requester_id}
+Durable: mesh_task_{taskId}_{requester_id}
 ```
+
+**Task Stream Consumer (per client, §11.3):**
+```
+Stream: MESH_TASKS
+Filter: mesh.task.{taskId}.stream
+Deliver Policy: All
+Ack Policy: Explicit
+Ack Wait: 30s
+Durable: mesh_stream_{taskId}_{client_id}
+```
+
+`Deliver Policy: All` is what lets a client that subscribes after the first event (§11.3) still receive every event published before its consumer existed.
 
 **Inbox Buffer Consumer (per agent, §16.4):**
 ```
@@ -4722,14 +4747,14 @@ NATS core request-reply supplies only a liveness signal:
 
 1. Requester publishes to `mesh.agent.{agent_id}.inbox`, and MAY set a NATS
    reply subject (`_INBOX.{uuid}`).
-2. Responder publishes every `respond` (the accept signal, the bare answer,
-   or the Task-creating first reply) to the **requester's inbox**, resolved
+2. Responder publishes every `respond` (the accept signal, the answer to
+   the A2A operation, or the first event of a stream) to the **requester's inbox**, resolved
    from the request's `from` (§14.4) and correlated by `in_reply_to` (§6.5).
    Responders MUST NOT publish response data to the reply subject.
 3. The requester takes responds on its own inbox delivery paths, live
    subscription or mailbox drain, where the §22 protections apply; response
    data arriving on the reply subject MUST be ignored.
-4. Default timeout: 30 seconds (configurable per request via `config.timeout_ms`).
+4. Default timeout: 30 seconds, the requester's own setting (§6.4; `config.timeout_ms` on a 0.3.0 envelope).
 
 The reply subject, where set, is reserved for **delivery-status signals**: the
 server's immediate no-responders error when the target inbox has no
@@ -4748,9 +4773,10 @@ travels a subject the transport can capture (§13, §18.3), and the requester's
 protections run on every path an answer can arrive by, because every answer
 arrives by an inbox path.
 
-For long-running requests, the responder publishes an immediate response (Task
-in `submitted` state) to the requester's inbox, then delivers subsequent
-updates via JetStream on `mesh.task.{task_id}.update`.
+For long-running requests, the responder publishes an immediate response (an
+A2A Task in `TASK_STATE_SUBMITTED` or `TASK_STATE_WORKING`) to the
+requester's inbox, then publishes each change via JetStream on
+`mesh.task.{taskId}.update`, where the task store records it (§7.4).
 
 With inbox buffers (§16.4) in place, a no-responders or timeout outcome on an
 agent inbox no longer implies the request was lost, only that the agent was
@@ -4792,7 +4818,7 @@ For critical operations (task state transitions, artifact delivery):
 ### 18.9. Message Size
 
 - NATS default max message size: 1 MB.
-- For payloads exceeding the message size limit, agents MUST store the bytes (§7.5) and include a `ref` part in the artifact. The bytes of such a file travel by signed link rather than in any message (§7.5.4, §18.7): the message carries the pointer.
+- For payloads exceeding the message size limit, agents MUST store the bytes (§7.5) and send the Part by reference: a `url` Part carrying the artifact reference, with the artifact references extension (§7.5.1). The bytes of such a file travel by signed link rather than in any message (§7.5.4, §18.7): the message carries the pointer.
 - The platform SHOULD configure max message size based on deployment requirements.
 - Senders MUST pre-flight the serialized envelope against the transport's advertised maximum payload before publishing (§6.4b): an envelope that exceeds it is refused locally, never published.
 
@@ -4979,7 +5005,7 @@ The platform SHOULD emit one for every completed task:
 
 ```json
 {
-  "task_id": "<uuid>",
+  "task_id": "<A2A Task id>",
   "requester": "<agent-key>",
   "responder": "<agent-key>",
   "offering": "<offering-id>",
@@ -5038,7 +5064,8 @@ This extension defines the money axis, the `cost_ceiling` field:
 
 Semantics, all inherited from §7.7: the ceiling is the most the requester can
 be asked to pay for the work. A responder that cannot work within it refuses
-at admission with `BUDGET_INSUFFICIENT`, carrying its estimate. This
+at admission with the budget outcome `insufficient` (`BUDGET_INSUFFICIENT`
+on a 0.3.0 envelope), carrying its estimate. This
 refuse-with-estimate loop is the price-discovery mechanism, replacing the
 retired `negotiate` operation (§10.4). `BUDGET_INSUFFICIENT` is equally legal
 against a request that offered no ceiling at all: the refusal's estimate is
@@ -5047,13 +5074,15 @@ exchange reads identically on the wire. That is deliberate, so a refusal driven 
 the responder's own spending policy (an owner allowance,
 `extensions/EXT-8-allowance.md`) is indistinguishable from one driven by a
 too-low offer. A responder that reaches the ceiling
-mid-work stops before crossing it and pauses the Task with `BUDGET_EXHAUSTED`
-(§7.7). Spend past the ceiling, like work past the deadline, is on the
+mid-work stops before crossing it and pauses the Task with the budget
+outcome `ceiling_reached` (`BUDGET_EXHAUSTED` on a 0.3.0 envelope, §7.7). Spend past the ceiling, like work past the deadline, is on the
 responder's own account.
 
 On completion, the responder SHOULD report its actual spend, the `cost`
 field **of the terminal `respond`'s payload** (`payload.cost`, a
 `{ amount_micro, currency }` object), echoed into the metering event above.
+On a 0.4.0 frame `payload.cost` sits beside `payload.a2a`, as
+`payload.usage` does (§13.5).
 The payload, not the envelope: the envelope's field set is §5.2's and does
 not grow here, and the platform reads spend from the payload. The report
 is informative rather than normative, deliberately: you can oblige an agent to
@@ -5119,7 +5148,9 @@ SKU at a specific digest:
 `request` whose offering is covered by a SKU whose price is not `free`, from a
 consumer whose owner holds no unexpired agreement matching that SKU's
 current digest, MUST be refused before any work with `AGREEMENT_REQUIRED`
-(§12.2), `details` carrying `sku`, `sku_digest`, and `approval_url`: the
+(§12.2; on a 0.4.0 frame, a Task in `TASK_STATE_REJECTED` carrying the
+economics extension's `paymentRequired`, A2A binding §12.4), `details`
+carrying `sku`, `sku_digest`, and `approval_url`: the
 provider's `checkout_url`, or the deployment's own approval surface for
 `internal`. This is §1.3's "payment required" refusal, typed. The consumer's
 owner is resolved the way EXT-2 §7.1 resolves it, the registry-populated
