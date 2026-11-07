@@ -232,7 +232,7 @@ TaskArtifactUpdateEvent).
 **Carriers without subjects.** A carrier of these frames that has no stream
 subjects, such as email (Agent Emailing), cannot hold a subscription. It
 delivers each later change to a Task as a respond frame to the client whose
-result is the whole Task as it then stands, numbered by `payload.a2a.seq`, and
+result is the whole Task as it then stands, numbered by `payload.a2a.seq` counting from 0 at the first respond frame that carries the Task, across the whole conversation, and
 it answers `SendStreamingMessage` and `SubscribeToTask` with
 `UnsupportedOperationError`. The client reads the frames in `seq` order.
 
