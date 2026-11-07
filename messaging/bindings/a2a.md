@@ -3,7 +3,7 @@
 | | |
 |---|---|
 | **Binding URI** | `https://agentmessaging.ai/bindings/a2a/v1` |
-| **Version** | 0.2.0-draft |
+| **Version** | 0.3.0-draft |
 | **Status** | Working Draft |
 | **Date** | 2026-11-07 |
 | **Applies to** | A2A Protocol 1.0 · Agent Messaging 0.10 (`../SPEC.md`), wire version 0.4.0 |
@@ -86,7 +86,8 @@ An agent reachable on a mesh lists this binding in its Agent Card's
   for clients that are not on a mesh. Order says preference (A2A §8.3).
 
 The Agent Card lists, in `capabilities.extensions`, each extension of §12 the
-agent supports.
+agent supports. The mesh home SHOULD serve each agent's card over HTTPS at the
+interface `url` followed by `/agent-card.json`.
 
 ## 4. Frames
 
@@ -123,10 +124,19 @@ or, when the operation fails, no `payload.a2a.result` and an `error` (§9).
 - `params` and `result` MUST be the A2A objects for that operation, in A2A's
   JSON form (§6).
 - A respond frame's `in_reply_to` MUST be the request frame's `id`.
-- A frame MUST NOT carry the envelope fields `task_id`, `context_id` or
-  `artifacts`. The Task id, the context id and the artifacts are A2A's and live
-  in the A2A object. A receiver MUST refuse a 0.4.0 frame that carries them with
-  `INVALID_ENVELOPE`.
+- A frame MUST NOT carry the envelope fields `task_id`, `context_id`, `budget`
+  or `artifacts`. The Task id, the context id, the budget and the artifacts are
+  carried in the A2A object. A receiver MUST refuse a 0.4.0 frame that carries
+  any of them with `INVALID_ENVELOPE`.
+- Beside `a2a`, a payload MAY carry `usage` and `cost` (SPEC.md §19). Any other
+  member beside `a2a` is ignored.
+
+**Channel frames.** The channel's own requests and answers carry no `a2a`
+member: `describe`, `knock`, the liveness probe, advisories, the receipt
+request, the accept signal and the queued acknowledgement. Each keeps the
+payload SPEC.md defines for it (§6.4, §6.4a, §10.14, §16.4, EXT-6, EXT-15) and
+travels at wire version 0.4.0 unchanged. The accept signal's payload is
+`{"accepted": {}}`; a receiver ignores members of `accepted` it does not know.
 
 ## 5. Operations (A2A §12.1)
 
@@ -147,6 +157,17 @@ about stored Tasks from its durable task store (SPEC.md §7.4, §18.1).
 Each operation behaves as A2A's abstract definition says. In particular a Task
 moves only through A2A's states, and a Task in a terminal state does not move
 again.
+
+**The task store.** The server agent's node publishes each status and artifact
+update event of a Task on `mesh.task.{taskId}.update`. Where the deployment
+runs a task manager (SPEC.md §7.4), the task manager applies those events to
+the durable store; otherwise the node keeps the store itself. Either way, reads
+(`GetTask`, `ListTasks`, the start of `SubscribeToTask`) are answered from the
+store.
+
+**Task ids.** A Task id appears in subject names, so a server agent MUST give
+each Task an id that is a single subject token: no `.`, `*`, `>` or whitespace.
+A UUID is RECOMMENDED.
 
 ## 6. Data model (A2A §12.2)
 
@@ -184,17 +205,27 @@ TaskArtifactUpdateEvent).
   so the client learns the Task id. Every later event is a respond frame
   published to `mesh.task.{taskId}.stream`, where `taskId` is the A2A Task id.
   The client holds a durable subscription to that subject (SPEC.md §18.6).
-- **Order.** Events are published in the order they were generated. Each frame
-  carries `payload.a2a.seq`, counting from 0 for the first event of the stream,
-  so a client detects a gap.
+- **Order.** Events are published in the order they were generated. Several
+  streams of one Task share its subject, so each frame carries
+  `payload.a2a.streamId`, the `id` of the request frame that opened the stream,
+  and `payload.a2a.seq`, counting from 0 within that stream. A client reads the
+  frames of its own stream and detects a gap from `seq`.
+- **No lost first events.** Events published before the client's subscription
+  exists are kept by the durable stream (SPEC.md §18.3). The client's
+  subscription starts from the first event of its `streamId`, so none is lost.
 - **Reconnection.** A client that loses its connection resumes its durable
   subscription after the last event it acknowledged. A client that lost the
-  subscription itself calls `SubscribeToTask`, which starts from the Task's
-  current state.
-- **Termination.** The stream ends with the event that puts the Task in a
-  terminal or interrupted state (A2A §4.1.3), or with the Message that answers a
-  `SendStreamingMessage` without a Task. That frame carries
-  `payload.a2a.final: true`. No frame follows it on that stream.
+  subscription itself calls `SubscribeToTask`, which opens a new stream from
+  the Task's current state.
+- **Termination.** The stream ends when A2A says it ends: at a terminal state,
+  or with the Message that answers a `SendStreamingMessage` without a Task. In
+  an interrupted state the agent keeps the stream open as A2A says (A2A §3.1.2,
+  §3.1.6, §7.6.1). The last frame carries `payload.a2a.final: true`, and no
+  frame of that `streamId` follows it.
+- **Who may listen.** The mesh grants subscribe permission on
+  `mesh.task.{taskId}.stream` only to nodes hosting an agent that may read the
+  Task (§10), and a server agent MAY seal each event to its client (EXT-7). A
+  subscription is never a way around §10.
 - Every event is a signed frame of its own, so a stream needs no separate chunk
   signature.
 
@@ -228,7 +259,10 @@ An A2A error travels as the respond frame's `error` (SPEC.md §12.1):
 }
 ```
 
-- `code` MUST be the A2A error's name as A2A §3.3.2 names it.
+- `code` MUST be the A2A error's name: one of A2A §3.3.2's errors, or one of
+  the JSON-RPC standard errors as A2A's JSON-RPC binding names them
+  (`JSONParseError`, `InvalidRequestError`, `MethodNotFoundError`,
+  `InvalidParamsError`, `InternalError`).
 - `details.a2a.code` MUST be the integer A2A's JSON-RPC binding assigns to that
   error, so a client or bridge that speaks JSON-RPC uses it unchanged, and
   `details.a2a.data` carries the error's data.
@@ -242,16 +276,20 @@ An A2A error travels as the respond frame's `error` (SPEC.md §12.1):
 - **Credentials.** Every frame is signed by the sending agent's own key, under
   its node's vouch (SPEC.md §4.4, §4.5). The signature is the credential: the
   server agent knows the client from the frame it receives, and so does the
-  client of every answer. The security schemes declared in an Agent Card apply
-  to its other interfaces; for this binding the signature takes their place.
+  client of every answer. This is a documented deviation from A2A §12.6, which
+  asks a binding to implement the security schemes the card declares: none of
+  A2A's scheme types describes a per-message signature, so the schemes declared
+  in an Agent Card apply to its other interfaces, and for this binding the
+  signature takes their place.
 - **Admission.** A sender the server agent has not admitted is refused before
   any operation runs, as SPEC.md §1.5 invariant 4 and EXT-6 say. It may knock.
 - **Challenges.** An agent that needs more authorization for a piece of work
   puts the Task in `TASK_STATE_AUTH_REQUIRED`, as A2A says.
-- **Who may read a Task.** `GetTask`, `ListTasks` and `SubscribeToTask` answer
-  only the agent that created the Task with its first message, and the agents
-  that agent delegated to (SPEC.md §4.11). Anyone else gets
-  `TaskNotFoundError`, so a Task's existence is not disclosed.
+- **Who may read a Task.** `GetTask`, `ListTasks`, `SubscribeToTask`,
+  `CancelTask` and the push-notification operations answer only the agent that
+  created the Task with its first message, and a place acting as that agent
+  (SPEC.md §4.11). Anyone else gets `TaskNotFoundError`, so a Task's existence
+  is not disclosed.
 - **Practice.** The transport's own security applies as SPEC.md §4 and the
   binding in use (SPEC.md §18) say.
 
@@ -266,7 +304,7 @@ unchanged by this binding.
 | Events and feeds: `emit`, `subscribe` | SPEC.md §6.6, §6.6a, §6.7 |
 | Registration and live discovery | SPEC.md §6.2, §6.3 |
 | Admission: `describe` and `knock` | SPEC.md §1.5, EXT-6 |
-| The accept signal: delivered, admitted, running | SPEC.md §6.4a. It is a respond frame whose payload is `{"accepted": {...}}` with no `a2a` member, and it precedes the first A2A answer |
+| The accept signal: delivered, admitted, running | SPEC.md §6.4a. It is a channel frame (§4) and precedes the first A2A answer |
 | Who sent a frame and for whom, delegation, acting for a person | SPEC.md §4.11, §4.16, read from the signed envelope |
 | Receipts | EXT-15 |
 
@@ -290,6 +328,7 @@ the meaning once.
 | `https://agentmessaging.ai/extensions/economics/v1` | Payment required, with the price and how to pay | SPEC.md §19 |
 | `https://agentmessaging.ai/extensions/artifact-refs/v1` | A large Part's size and digest | SPEC.md §7.5.1 |
 | `https://agentmessaging.ai/extensions/cancel/v1` | Why a Task was canceled | SPEC.md §10.8 |
+| `https://agentmessaging.ai/extensions/failure/v1` | Why a Task failed | SPEC.md §10.8, §10.8a |
 
 Each extension's data sits in the `metadata` of the object it describes, under
 the extension's URI as the key.
@@ -299,8 +338,7 @@ the extension's URI as the key.
 On a Message: `{"offering": "<offering id>"}`. An agent that declares exactly
 one offering serves it when a Message names none. An agent that declares
 several and receives a Message naming none, or naming one it does not declare,
-answers with A2A's invalid-parameters error and lists its offerings in the
-error's data.
+answers `InvalidParamsError` and lists its offerings in the error's data.
 
 ### 12.2. Budget
 
@@ -321,6 +359,8 @@ with a status message saying so in words:
 | The deadline cannot be met, refused at admission | `TASK_STATE_REJECTED` | `{"outcome": "deadline_unmeetable", "earliestCompletion": "<RFC 3339>"}` |
 | The work reached its cost ceiling and paused for more money | `TASK_STATE_INPUT_REQUIRED` | `{"outcome": "ceiling_reached", "spent": {...}, "estimateToFinish": {...}}` |
 | An engagement's not-to-exceed cap ended the work (Agent SoW §5.5.5) | `TASK_STATE_CANCELED` | `{"outcome": "exhausted"}` |
+| The deadline passed while the work goes on (the overdue mark) | Unchanged | `{"overdue": true}` on the status update event that reports it |
+| The work completed after the deadline (completed late) | `TASK_STATE_COMPLETED` | `{"outcome": "completed_late"}`, a marker and not a failure (SPEC.md §12.2 `DEADLINE_EXCEEDED`) |
 
 A paused Task resumes when the client revises the budget with a new Message
 whose `revision` is higher, or ends when the client cancels it with the reason
@@ -336,7 +376,11 @@ whether to send the work again is the client's choice, as A2A leaves it.
 ### 12.3. Audience
 
 On a Message: `{"audience": "person"}` marks it as meant for the person behind
-the receiving agent, with every rule of SPEC.md §5.7.
+the receiving agent, with every rule of SPEC.md §5.7. This URI is A2A's name
+for the extension SPEC.md calls `mesh://extensions/audience/v1`: declaring
+either declares both. On the mesh the envelope's `meta.audience` is what nodes
+read; the two marks MUST agree, and a frame where they disagree is treated as
+meant for the person.
 
 ### 12.4. Economics
 
@@ -365,16 +409,31 @@ the closed list of SPEC.md §10.8 (`user_requested`, `superseded`,
 `needs_not_furnished`, `dependency_failed`), with the extra fields that section
 requires for a reason. The canceled Task's `metadata` carries the same object
 under this URI, so the reason stays on the record. A client written to this
-version MUST send a reason; a server agent MUST accept a `CancelTask` without
+version MUST send a reason. A server agent MUST accept a `CancelTask` without
 one from a client that does not declare the extension, and records the reason
-as `user_requested`.
+as `user_requested`. It answers `InvalidParamsError` to a client that declares
+the extension and sends no reason, or sends a reason outside the list, and
+lists the reasons in the error's data.
+
+### 12.7. Failure reasons
+
+URI `https://agentmessaging.ai/extensions/failure/v1`. On a Task in
+`TASK_STATE_FAILED`, the Task's `metadata` carries `{"reason": "<reason>"}`,
+with the reason from the closed list of SPEC.md §10.8 and the extra field that
+reason requires: `unmetNeed` for `needs_not_furnished`, `dependency` for
+`dependency_failed`. A failure with no stated reason carries no object. The
+responder states the reason; the attribution of SPEC.md §10.8a is computed by
+the platform and never read from this object.
 
 ## 13. The A2A Bridge
 
 The A2A Bridge (`a2a-bridge.md`) serves mesh agents to clients that use A2A's
 HTTP bindings, and attaches HTTP A2A agents to a mesh. Both sides now carry the
 same A2A objects, so the bridge moves them between HTTP and frames and maps
-identity at the edge (SPEC.md §4.15). It translates nothing.
+identity at the edge (SPEC.md §4.15). It translates no A2A object. It does
+hold a Task of its own to give an HTTP client the channel's answers (the accept
+signal and the queued acknowledgement), and it serves 0.3.0 agents during the
+transition window, as the bridge document says.
 
 ## 14. Versions
 
