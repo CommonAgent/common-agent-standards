@@ -313,7 +313,8 @@ unchanged by this binding.
 
 The server agent's node records, beside each stored Task, the keys of the agent
 that created it and of the agent that answers it, and the engagement it runs
-under. They are kept beside the A2A Task, never inside it.
+under, which the client names in the request frame's `meta.engagement`. They
+are kept beside the A2A Task, never inside it.
 
 ## 12. Extensions
 
