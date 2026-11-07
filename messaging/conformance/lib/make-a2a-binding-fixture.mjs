@@ -234,12 +234,15 @@ const DIGEST = "sha256:9f2b8c1d4e5a6b7c8d9e0f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2
 const refPart = { url: REF, mediaType: "application/pdf", filename: "drawing-7741.pdf", metadata: { [EXT.artifactRefs]: { size: 48291337, digest: DIGEST } } };
 const refReq = req("SendMessage", { message: userMsg("msg-r1", [text("Quote to this drawing."), refPart], { metadata: offering("quote"), extensions: [EXT.artifactRefs] }) });
 const partByReference = {
-  comment: "Binding §6, §12.5; the A2A Bridge §6. A Part too large to travel inline is a url Part whose value is an Agent Messaging artifact reference, with the artifact references extension giving its size and digest. Inbound it passes unchanged; outbound to a caller with no key the bridge may replace only the url with an HTTPS link, keeping size and digest.",
+  comment: "Binding §6, §12.5; the A2A Bridge §6. A Part too large to travel inline is a url Part whose value is an Agent Messaging artifact reference, with the artifact references extension giving its size and digest. The extension may sit on a reference of any carrier (a cid: attachment by email, an https: URL), and wherever it sits it must be well formed. Inbound it passes unchanged; outbound to a caller with no key the bridge may replace only the url with an HTTPS link, keeping size and digest.",
   frames: [refReq],
   http: { request: route("SendMessage", refReq.payload.a2a.params) },
   outbound_to_keyless_caller: { mesh: refPart, http: { ...refPart, url: "https://bridge.example.com/agents/x/artifacts/01JC8Z2K9Q0DRAWING0000000001" } },
   parts: [
     { name: "a reference with its size and digest", part: refPart, expect: { ok: true } },
+    { name: "an HTTPS reference may carry the extension too (binding §12.5)", part: { url: "https://files.example.com/drawing-7741.pdf", mediaType: "application/pdf", metadata: { [EXT.artifactRefs]: { size: 48291337, digest: DIGEST } } }, expect: { ok: true } },
+    { name: "an email attachment by cid: with the extension", part: { url: "cid:drawing-7741@mail.example.com", mediaType: "application/pdf", metadata: { [EXT.artifactRefs]: { size: 48291337, digest: DIGEST } } }, expect: { ok: true } },
+    { name: "the extension malformed on an HTTPS reference", part: { url: "https://files.example.com/drawing-7741.pdf", metadata: { [EXT.artifactRefs]: { size: 48291337 } } }, expect: { ok: false } },
     { name: "an HTTPS url Part needs no extension", part: { url: "https://files.example.com/spec.pdf", mediaType: "application/pdf" }, expect: { ok: true } },
     { name: "a small file inline", part: { raw: "JVBERi0xLjcK", mediaType: "application/pdf", filename: "note.pdf" }, expect: { ok: true } },
     { name: "a reference without the extension", part: { url: REF, mediaType: "application/pdf" }, expect: { ok: false } },
@@ -303,8 +306,21 @@ const bExhausted = res(bGet, { result: {
 const bInsufficient = res(bReq, { result: { task: { id: "task-b2", contextId: "ctx-b2",
   status: status("TASK_STATE_REJECTED", 1, agentMsg("st-b2", [text("This work would cost about 5.00 USD, above the 4.00 USD ceiling.")])),
   metadata: { [EXT.budget]: { outcome: "insufficient", estimate: { amountMicro: 5000000, currency: "USD" } } } } } });
+const bDeadline = res(bReq, { result: { task: { id: "task-b8", contextId: "ctx-b8",
+  status: status("TASK_STATE_REJECTED", 1, agentMsg("st-b8", [text("This work cannot be finished by 20 November; the earliest is 24 November.")])),
+  metadata: { [EXT.budget]: { outcome: "deadline_unmeetable", earliestCompletion: "2026-11-24T17:00:00Z" } } } } });
+const bGetPaused = req("GetTask", { id: "task-b9" });
+const pausedMeta = { outcome: "ceiling_reached", spent: { amountMicro: 900000, currency: "USD" }, estimateToFinish: { amountMicro: 2500000, currency: "USD" } };
+const partial = [{ artifactId: "art-b9", name: "partial summary", parts: [text("Two of five jurisdictions summarized.")] }];
+const bPaused = res(bGetPaused, { result: { id: "task-b9", contextId: "ctx-b9",
+  status: status("TASK_STATE_INPUT_REQUIRED", 1800, agentMsg("st-b9", [text("Paused at the 4.00 USD ceiling after spending 0.90 USD. The work needs about 2.50 USD more. Raise the budget or cancel.")])),
+  artifacts: partial, metadata: { [EXT.budget]: pausedMeta } } });
+const bRevise = req("SendMessage", { message: userMsg("msg-b9", [text("Go ahead with the higher budget.")], { taskId: "task-b9", contextId: "ctx-b9",
+  metadata: { [EXT.budget]: { deadline: "2026-11-20T17:00:00Z", revision: 1, costCeiling: { amountMicro: 7000000, currency: "USD" } } }, extensions: [EXT.budget] }) },
+  { meta: { a2a: { "A2A-Version": "1.0", "A2A-Extensions": EXT.budget } } });
+const bResumed = res(bRevise, { result: { task: { id: "task-b9", contextId: "ctx-b9", status: status("TASK_STATE_WORKING", 1900) } } });
 const budget = {
-  comment: "Binding §12.2. The budget travels on the Message that starts or revises the work, under the budget extension's URI, in camelCase. When an engagement's cap ends the work the Task ends in TASK_STATE_CANCELED with outcome exhausted, its artifacts kept: a client that knows the extension does not record it as failed and does not retry it. A refusal for budget is TASK_STATE_REJECTED with outcome insufficient and the estimate. During the transition window the older mark agentmesh.state: exhausted (the A2A Bridge §5.2) reads the same.",
+  comment: "Binding §12.2 (0.2.0-draft). The budget travels on the Message that starts or revises the work, under the budget extension's URI, in camelCase. Each outcome is a Task state with the outcome named in the Task's metadata under that URI: insufficient (with estimate) and deadline_unmeetable (with earliestCompletion) in TASK_STATE_REJECTED, ceiling_reached (with spent and estimateToFinish) in TASK_STATE_INPUT_REQUIRED, and exhausted in TASK_STATE_CANCELED with its artifacts kept. A client that knows the extension never records an exhausted Task as failed and never retries it; sending any other canceled or refused work again is the client's choice (may_retry). A paused Task resumes on a Message with a higher revision. During the transition window the older mark agentmesh.state: exhausted (the A2A Bridge §5.2) reads as exhausted.",
   uri: EXT.budget,
   blocks: {
     valid: [
@@ -322,18 +338,77 @@ const budget = {
     ],
   },
   tasks: [
-    { name: "stopped at the cap", frames: [bGet, bExhausted], window: true, expect: { reading: "exhausted", failed: false, retry: false } },
-    { name: "refused as over budget", frames: [bReq, bInsufficient], window: true, expect: { reading: "insufficient", failed: false, retry: false } },
-    { name: "the older mark from a 0.3.0-wire agent, inside the window", task: { id: "task-b3", contextId: "ctx-b3", status: status("TASK_STATE_CANCELED", 60), metadata: { "agentmesh.state": "exhausted" } }, window: true, expect: { reading: "exhausted", failed: false, retry: false } },
-    { name: "both marks, as a bridge writes them for a 0.3.0-wire agent", task: { id: "task-b4", contextId: "ctx-b4", status: status("TASK_STATE_CANCELED", 60), metadata: { [EXT.budget]: { outcome: "exhausted" }, "agentmesh.state": "exhausted" } }, window: true, expect: { reading: "exhausted", failed: false, retry: false } },
-    { name: "the older mark alone, after the window", task: { id: "task-b5", contextId: "ctx-b5", status: status("TASK_STATE_CANCELED", 60), metadata: { "agentmesh.state": "exhausted" } }, window: false, expect: { reading: "canceled", failed: false, retry: false } },
-    { name: "the outcome on a Task that is not canceled is not the budget's", task: { id: "task-b6", contextId: "ctx-b6", status: status("TASK_STATE_FAILED", 60), metadata: { [EXT.budget]: { outcome: "exhausted" } } }, window: true, expect: { reading: "failed", failed: true, retry: false } },
-    { name: "a plain cancel", task: { id: "task-b7", contextId: "ctx-b7", status: status("TASK_STATE_CANCELED", 60) }, window: true, expect: { reading: "canceled", failed: false, retry: false } },
+    { name: "stopped at the cap", frames: [bGet, bExhausted], window: true, expect: { reading: "exhausted", failed: false, may_retry: false } },
+    { name: "refused as over budget", frames: [bReq, bInsufficient], window: true, expect: { reading: "insufficient", failed: false, may_retry: true } },
+    { name: "refused: the deadline cannot be met", frames: [bReq, bDeadline], window: true, expect: { reading: "deadline_unmeetable", failed: false, may_retry: true } },
+    { name: "paused at the cost ceiling", frames: [bGetPaused, bPaused], window: true, expect: { reading: "ceiling_reached", failed: false, may_retry: true } },
+    { name: "the paused Task resumes on a higher revision", frames: [bRevise, bResumed], window: true, expect: { reading: "working", failed: false, may_retry: true } },
+    { name: "ceiling_reached on a Task that is not paused is not the budget's", task: { id: "task-b10", contextId: "ctx-b10", status: status("TASK_STATE_WORKING", 60), metadata: { [EXT.budget]: { outcome: "ceiling_reached" } } }, window: true, expect: { reading: "working", failed: false, may_retry: true } },
+    { name: "the older mark from a 0.3.0-wire agent, inside the window", task: { id: "task-b3", contextId: "ctx-b3", status: status("TASK_STATE_CANCELED", 60), metadata: { "agentmesh.state": "exhausted" } }, window: true, expect: { reading: "exhausted", failed: false, may_retry: false } },
+    { name: "both marks, as a bridge writes them for a 0.3.0-wire agent", task: { id: "task-b4", contextId: "ctx-b4", status: status("TASK_STATE_CANCELED", 60), metadata: { [EXT.budget]: { outcome: "exhausted" }, "agentmesh.state": "exhausted" } }, window: true, expect: { reading: "exhausted", failed: false, may_retry: false } },
+    { name: "the older mark alone, after the window", task: { id: "task-b5", contextId: "ctx-b5", status: status("TASK_STATE_CANCELED", 60), metadata: { "agentmesh.state": "exhausted" } }, window: false, expect: { reading: "canceled", failed: false, may_retry: true } },
+    { name: "the outcome on a Task that is not canceled is not the budget's", task: { id: "task-b6", contextId: "ctx-b6", status: status("TASK_STATE_FAILED", 60), metadata: { [EXT.budget]: { outcome: "exhausted" } } }, window: true, expect: { reading: "failed", failed: true, may_retry: true } },
+    { name: "a plain cancel", task: { id: "task-b7", contextId: "ctx-b7", status: status("TASK_STATE_CANCELED", 60) }, window: true, expect: { reading: "canceled", failed: false, may_retry: true } },
   ],
 };
-budget.tasks[0].http = unary(bGet, bExhausted);
-budget.tasks[1].http = unary(bReq, bInsufficient);
-budget.tasks[1].http.request.headers = { ...bReq.meta.a2a };
+const withHeaders = (r, a) => { const h = unary(r, a); h.request.headers = { ...r.meta.a2a }; return h; };
+for (const t of budget.tasks) if (t.frames) t.http = withHeaders(t.frames[0], t.frames[1]);
+
+// --------------------------------------------------------------- cancel reasons
+const CANCEL = "https://agentmessaging.ai/extensions/cancel/v1";
+const ACTIVATE = (uri) => ({ meta: { a2a: { "A2A-Version": "1.0", "A2A-Extensions": uri } } });
+const cReq = req("CancelTask", { id: "task-c1", metadata: { [CANCEL]: { reason: "superseded", note: "a broader query replaces this one" } } }, ACTIVATE(CANCEL));
+const cRes = res(cReq, { result: { id: "task-c1", contextId: "ctx-c1", status: status("TASK_STATE_CANCELED", clock + 0.1), metadata: { [CANCEL]: { reason: "superseded", note: "a broader query replaces this one" } } } });
+const cStock = req("CancelTask", { id: "task-c2" });
+const cStockRes = res(cStock, { result: { id: "task-c2", contextId: "ctx-c2", status: status("TASK_STATE_CANCELED", clock + 0.1), metadata: { [CANCEL]: { reason: "user_requested" } } } });
+const cBudget = req("CancelTask", { id: "task-b9", metadata: { [CANCEL]: { reason: "budget_exhausted", note: "not worth raising the ceiling" } } }, ACTIVATE(CANCEL));
+const cBudgetRes = res(cBudget, { result: { id: "task-b9", contextId: "ctx-b9", status: status("TASK_STATE_CANCELED", clock + 0.1), artifacts: partial,
+  metadata: { [EXT.budget]: pausedMeta, [CANCEL]: { reason: "budget_exhausted", note: "not worth raising the ceiling" } } } });
+const cancelReasons = {
+  comment: "Binding §12.6 (0.2.0-draft). A CancelTask request carries its reason under the cancel extension's URI in its metadata: reason from the closed list of SPEC.md §10.8, an optional note, unmet_need (kind:value) required with needs_not_furnished and allowed with no other reason, and dependency only with dependency_failed. The canceled Task carries the same object under the same URI. A CancelTask with no reason from a client that does not declare the extension (it does not activate it in A2A-Extensions) is recorded as user_requested. Through the bridge the reason passes unchanged and the bridge adds none.",
+  uri: CANCEL,
+  reasons: ["user_requested", "superseded", "deadline_exceeded", "budget_exhausted", "upstream_cancelled", "policy", "needs_not_furnished", "dependency_failed"],
+  exchanges: [
+    { name: "a reason and a note", frames: [cReq, cRes], http: withHeaders(cReq, cRes), recorded: { reason: "superseded", note: "a broader query replaces this one" } },
+    { name: "a stock A2A client that sends no reason", frames: [cStock, cStockRes], http: withHeaders(cStock, cStockRes), recorded: { reason: "user_requested" } },
+    { name: "canceling a Task paused at its ceiling", frames: [cBudget, cBudgetRes], http: withHeaders(cBudget, cBudgetRes), recorded: { reason: "budget_exhausted", note: "not worth raising the ceiling" } },
+  ],
+  objects: [
+    { name: "a reason alone", value: { reason: "policy" }, expect: { ok: true } },
+    { name: "needs_not_furnished with what was not furnished", value: { reason: "needs_not_furnished", unmet_need: "credential:Salesforce" }, expect: { ok: true } },
+    { name: "dependency_failed naming the dependency", value: { reason: "dependency_failed", dependency: "Colorado DMV" }, expect: { ok: true } },
+    { name: "a reason not on the list", value: { reason: "bored" }, expect: { ok: false } },
+    { name: "no reason in the object", value: { note: "stop" }, expect: { ok: false } },
+    { name: "a reason in other capitals", value: { reason: "User_Requested" }, expect: { ok: false } },
+    { name: "a note that is not text", value: { reason: "policy", note: 42 }, expect: { ok: false } },
+    { name: "needs_not_furnished without unmet_need", value: { reason: "needs_not_furnished" }, expect: { ok: false } },
+    { name: "unmet_need of the wrong shape", value: { reason: "needs_not_furnished", unmet_need: "the licence" }, expect: { ok: false } },
+    { name: "unmet_need on another reason", value: { reason: "user_requested", unmet_need: "credential:Salesforce" }, expect: { ok: false } },
+    { name: "dependency on another reason", value: { reason: "policy", dependency: "Colorado DMV" }, expect: { ok: false } },
+  ],
+};
+
+// ------------------------------------------------------- carriers without subjects
+clock = 0;
+const eReq = req("SendMessage", { message: userMsg("msg-m1", [text("Quote 20 units of part 7741.")], { metadata: offering("quote") }) });
+const eTasks = [
+  { id: "task-m1", contextId: "ctx-m1", status: status("TASK_STATE_WORKING", 1) },
+  { id: "task-m1", contextId: "ctx-m1", status: status("TASK_STATE_INPUT_REQUIRED", 300, agentMsg("st-m1", [text("Do you accept a split delivery?")])) },
+  { id: "task-m1", contextId: "ctx-m1", status: status("TASK_STATE_COMPLETED", 900), artifacts: [quoteArtifact] },
+];
+const eFrames = eTasks.map((t, i) => res(eReq, { result: i === 0 ? { task: t } : t, seq: i }));
+const eStream = req("SendStreamingMessage", { message: userMsg("msg-m2", [text("Quote 20 units, streaming.")], { metadata: offering("quote") }) });
+const carrierWithoutSubjects = {
+  comment: "Binding §8 (0.2.0-draft), carriers without subjects, such as email. Each later change to a Task is a respond frame to the client whose result is the whole Task as it then stands, numbered by payload.a2a.seq. The client reads them in seq order, whatever order they arrive in, and the Task it holds is the one with the highest seq it has read without a gap. Such a carrier answers SendStreamingMessage and SubscribeToTask with UnsupportedOperationError.",
+  request: eReq,
+  cases: [
+    { name: "in order", frames: [eFrames[0], eFrames[1], eFrames[2]], expect: { seq: 2, state: "TASK_STATE_COMPLETED" } },
+    { name: "out of order, as mail may arrive", frames: [eFrames[2], eFrames[0], eFrames[1]], expect: { seq: 2, state: "TASK_STATE_COMPLETED" } },
+    { name: "the same frame twice", frames: [eFrames[0], eFrames[1], eFrames[1]], expect: { seq: 1, state: "TASK_STATE_INPUT_REQUIRED" } },
+    { name: "a gap: seq 1 has not arrived", frames: [eFrames[0], eFrames[2]], expect: { seq: 0, state: "TASK_STATE_WORKING", waiting_for: 1 } },
+  ],
+  streaming: { frames: [eStream, errRes(eStream, "UnsupportedOperationError", "This carrier cannot stream.")] },
+};
 
 // ------------------------------------------------------------------- offering
 const offeringRouting = {
@@ -390,6 +465,8 @@ const fixture = {
   stream_resume: streamResume,
   long_task: longTask,
   budget,
+  cancel_reasons: cancelReasons,
+  carrier_without_subjects: carrierWithoutSubjects,
   offering: offeringRouting,
   legacy_fields: legacyFields,
 };

@@ -3307,6 +3307,52 @@
         }
       },
       {
+        "name": "an HTTPS reference may carry the extension too (binding §12.5)",
+        "part": {
+          "url": "https://files.example.com/drawing-7741.pdf",
+          "mediaType": "application/pdf",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/artifact-refs/v1": {
+              "size": 48291337,
+              "digest": "sha256:9f2b8c1d4e5a6b7c8d9e0f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e"
+            }
+          }
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "an email attachment by cid: with the extension",
+        "part": {
+          "url": "cid:drawing-7741@mail.example.com",
+          "mediaType": "application/pdf",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/artifact-refs/v1": {
+              "size": 48291337,
+              "digest": "sha256:9f2b8c1d4e5a6b7c8d9e0f1a2b3c4d5e6f708192a3b4c5d6e7f8091a2b3c4d5e"
+            }
+          }
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "the extension malformed on an HTTPS reference",
+        "part": {
+          "url": "https://files.example.com/drawing-7741.pdf",
+          "metadata": {
+            "https://agentmessaging.ai/extensions/artifact-refs/v1": {
+              "size": 48291337
+            }
+          }
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
         "name": "an HTTPS url Part needs no extension",
         "part": {
           "url": "https://files.example.com/spec.pdf",
@@ -4894,7 +4940,7 @@
     ]
   },
   "budget": {
-    "comment": "Binding §12.2. The budget travels on the Message that starts or revises the work, under the budget extension's URI, in camelCase. When an engagement's cap ends the work the Task ends in TASK_STATE_CANCELED with outcome exhausted, its artifacts kept: a client that knows the extension does not record it as failed and does not retry it. A refusal for budget is TASK_STATE_REJECTED with outcome insufficient and the estimate. During the transition window the older mark agentmesh.state: exhausted (the A2A Bridge §5.2) reads the same.",
+    "comment": "Binding §12.2 (0.2.0-draft). The budget travels on the Message that starts or revises the work, under the budget extension's URI, in camelCase. Each outcome is a Task state with the outcome named in the Task's metadata under that URI: insufficient (with estimate) and deadline_unmeetable (with earliestCompletion) in TASK_STATE_REJECTED, ceiling_reached (with spent and estimateToFinish) in TASK_STATE_INPUT_REQUIRED, and exhausted in TASK_STATE_CANCELED with its artifacts kept. A client that knows the extension never records an exhausted Task as failed and never retries it; sending any other canceled or refused work again is the client's choice (may_retry). A paused Task resumes on a Message with a higher revision. During the transition window the older mark agentmesh.state: exhausted (the A2A Bridge §5.2) reads as exhausted.",
     "uri": "https://agentmessaging.ai/extensions/budget/v1",
     "blocks": {
       "valid": [
@@ -5057,7 +5103,7 @@
         "expect": {
           "reading": "exhausted",
           "failed": false,
-          "retry": false
+          "may_retry": false
         },
         "http": {
           "request": {
@@ -5212,7 +5258,7 @@
         "expect": {
           "reading": "insufficient",
           "failed": false,
-          "retry": false
+          "may_retry": true
         },
         "http": {
           "request": {
@@ -5285,6 +5331,489 @@
         }
       },
       {
+        "name": "refused: the deadline cannot be met",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000060",
+            "type": "request",
+            "ts": "2026-11-07T18:00:00.200Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "SendMessage",
+                "params": {
+                  "message": {
+                    "messageId": "msg-b1",
+                    "role": "ROLE_USER",
+                    "parts": [
+                      {
+                        "text": "Summarize controlling case law on anticipatory repudiation."
+                      }
+                    ],
+                    "metadata": {
+                      "https://agentmessaging.ai/extensions/offering/v1": {
+                        "offering": "caselaw-summary"
+                      },
+                      "https://agentmessaging.ai/extensions/budget/v1": {
+                        "deadline": "2026-11-20T17:00:00Z",
+                        "revision": 0,
+                        "costCeiling": {
+                          "amountMicro": 4000000,
+                          "currency": "USD"
+                        }
+                      }
+                    },
+                    "extensions": [
+                      "https://agentmessaging.ai/extensions/budget/v1"
+                    ]
+                  }
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0",
+                "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1, https://agentmessaging.ai/extensions/budget/v1"
+              }
+            },
+            "sig": "Ys3FKvS0dx7WvrtcT3ZVsXyu4nryjzKvcgsv_AH8pabqjEzFTfMU3vOzAQO2YO7dsBopPtPjRv9ONI80aC2tAg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000064",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:01.000Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000060",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "task": {
+                    "id": "task-b8",
+                    "contextId": "ctx-b8",
+                    "status": {
+                      "state": "TASK_STATE_REJECTED",
+                      "message": {
+                        "messageId": "st-b8",
+                        "role": "ROLE_AGENT",
+                        "parts": [
+                          {
+                            "text": "This work cannot be finished by 20 November; the earliest is 24 November."
+                          }
+                        ]
+                      },
+                      "timestamp": "2026-11-07T18:00:01.000Z"
+                    },
+                    "metadata": {
+                      "https://agentmessaging.ai/extensions/budget/v1": {
+                        "outcome": "deadline_unmeetable",
+                        "earliestCompletion": "2026-11-24T17:00:00Z"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "0tuIBQZSVsiaDp7ZgxPH8p9F4O-NJ5gloeJYoBfRy1d7nMJ1LmEjD1MbIciJQmNNZTtSGCl66r4FZCXCoAyGBw"
+          }
+        ],
+        "window": true,
+        "expect": {
+          "reading": "deadline_unmeetable",
+          "failed": false,
+          "may_retry": true
+        },
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "message:send",
+            "headers": {
+              "A2A-Version": "1.0",
+              "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1, https://agentmessaging.ai/extensions/budget/v1"
+            },
+            "body": {
+              "message": {
+                "messageId": "msg-b1",
+                "role": "ROLE_USER",
+                "parts": [
+                  {
+                    "text": "Summarize controlling case law on anticipatory repudiation."
+                  }
+                ],
+                "metadata": {
+                  "https://agentmessaging.ai/extensions/offering/v1": {
+                    "offering": "caselaw-summary"
+                  },
+                  "https://agentmessaging.ai/extensions/budget/v1": {
+                    "deadline": "2026-11-20T17:00:00Z",
+                    "revision": 0,
+                    "costCeiling": {
+                      "amountMicro": 4000000,
+                      "currency": "USD"
+                    }
+                  }
+                },
+                "extensions": [
+                  "https://agentmessaging.ai/extensions/budget/v1"
+                ]
+              }
+            }
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "task": {
+                "id": "task-b8",
+                "contextId": "ctx-b8",
+                "status": {
+                  "state": "TASK_STATE_REJECTED",
+                  "message": {
+                    "messageId": "st-b8",
+                    "role": "ROLE_AGENT",
+                    "parts": [
+                      {
+                        "text": "This work cannot be finished by 20 November; the earliest is 24 November."
+                      }
+                    ]
+                  },
+                  "timestamp": "2026-11-07T18:00:01.000Z"
+                },
+                "metadata": {
+                  "https://agentmessaging.ai/extensions/budget/v1": {
+                    "outcome": "deadline_unmeetable",
+                    "earliestCompletion": "2026-11-24T17:00:00Z"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "paused at the cost ceiling",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000065",
+            "type": "request",
+            "ts": "2026-11-07T18:00:01.200Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "GetTask",
+                "params": {
+                  "id": "task-b9"
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0"
+              }
+            },
+            "sig": "HDKm4LP_CTl3kGYbH-YAhBHoVA-KPMHLiAyJfHOB1oFydZgKihcBnT9Hds5AqEzl4dNcdY2kBx-5VHLia0odDQ"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000066",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:01.400Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000065",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-b9",
+                  "contextId": "ctx-b9",
+                  "status": {
+                    "state": "TASK_STATE_INPUT_REQUIRED",
+                    "message": {
+                      "messageId": "st-b9",
+                      "role": "ROLE_AGENT",
+                      "parts": [
+                        {
+                          "text": "Paused at the 4.00 USD ceiling after spending 0.90 USD. The work needs about 2.50 USD more. Raise the budget or cancel."
+                        }
+                      ]
+                    },
+                    "timestamp": "2026-11-07T18:30:00.000Z"
+                  },
+                  "artifacts": [
+                    {
+                      "artifactId": "art-b9",
+                      "name": "partial summary",
+                      "parts": [
+                        {
+                          "text": "Two of five jurisdictions summarized."
+                        }
+                      ]
+                    }
+                  ],
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/budget/v1": {
+                      "outcome": "ceiling_reached",
+                      "spent": {
+                        "amountMicro": 900000,
+                        "currency": "USD"
+                      },
+                      "estimateToFinish": {
+                        "amountMicro": 2500000,
+                        "currency": "USD"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "XzoY3kZoHhYZEHRUCvUOs3iV2Nms6Atv__IjzhgHgelvSkhiRJqv5jFn2cj0NzBm7DRBzKoQJIJ1LOSs237aDg"
+          }
+        ],
+        "window": true,
+        "expect": {
+          "reading": "ceiling_reached",
+          "failed": false,
+          "may_retry": true
+        },
+        "http": {
+          "request": {
+            "method": "GET",
+            "path": "tasks/task-b9",
+            "headers": {
+              "A2A-Version": "1.0"
+            },
+            "query": {}
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "id": "task-b9",
+              "contextId": "ctx-b9",
+              "status": {
+                "state": "TASK_STATE_INPUT_REQUIRED",
+                "message": {
+                  "messageId": "st-b9",
+                  "role": "ROLE_AGENT",
+                  "parts": [
+                    {
+                      "text": "Paused at the 4.00 USD ceiling after spending 0.90 USD. The work needs about 2.50 USD more. Raise the budget or cancel."
+                    }
+                  ]
+                },
+                "timestamp": "2026-11-07T18:30:00.000Z"
+              },
+              "artifacts": [
+                {
+                  "artifactId": "art-b9",
+                  "name": "partial summary",
+                  "parts": [
+                    {
+                      "text": "Two of five jurisdictions summarized."
+                    }
+                  ]
+                }
+              ],
+              "metadata": {
+                "https://agentmessaging.ai/extensions/budget/v1": {
+                  "outcome": "ceiling_reached",
+                  "spent": {
+                    "amountMicro": 900000,
+                    "currency": "USD"
+                  },
+                  "estimateToFinish": {
+                    "amountMicro": 2500000,
+                    "currency": "USD"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "the paused Task resumes on a higher revision",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000067",
+            "type": "request",
+            "ts": "2026-11-07T18:00:01.600Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "SendMessage",
+                "params": {
+                  "message": {
+                    "messageId": "msg-b9",
+                    "role": "ROLE_USER",
+                    "parts": [
+                      {
+                        "text": "Go ahead with the higher budget."
+                      }
+                    ],
+                    "taskId": "task-b9",
+                    "contextId": "ctx-b9",
+                    "metadata": {
+                      "https://agentmessaging.ai/extensions/budget/v1": {
+                        "deadline": "2026-11-20T17:00:00Z",
+                        "revision": 1,
+                        "costCeiling": {
+                          "amountMicro": 7000000,
+                          "currency": "USD"
+                        }
+                      }
+                    },
+                    "extensions": [
+                      "https://agentmessaging.ai/extensions/budget/v1"
+                    ]
+                  }
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0",
+                "A2A-Extensions": "https://agentmessaging.ai/extensions/budget/v1"
+              }
+            },
+            "sig": "qWsiMxV0VOcxbiFSxUtaM1VTnf1X4iPfVZV49S1NPPBAyBTCOg0c-hv5tJ2cCHRl9C8krS21GlQw_UftMQWDDA"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000068",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:01.800Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000067",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "task": {
+                    "id": "task-b9",
+                    "contextId": "ctx-b9",
+                    "status": {
+                      "state": "TASK_STATE_WORKING",
+                      "timestamp": "2026-11-07T18:31:40.000Z"
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "6qM16bLl_4FLgGFKUGNC7LbWRQZj4_7mU3w3y4jxPLk8nbmx2PVT-kWbSYYAMdRuOIV9MQ4mlBXWSGYLvofYAg"
+          }
+        ],
+        "window": true,
+        "expect": {
+          "reading": "working",
+          "failed": false,
+          "may_retry": true
+        },
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "message:send",
+            "headers": {
+              "A2A-Version": "1.0",
+              "A2A-Extensions": "https://agentmessaging.ai/extensions/budget/v1"
+            },
+            "body": {
+              "message": {
+                "messageId": "msg-b9",
+                "role": "ROLE_USER",
+                "parts": [
+                  {
+                    "text": "Go ahead with the higher budget."
+                  }
+                ],
+                "taskId": "task-b9",
+                "contextId": "ctx-b9",
+                "metadata": {
+                  "https://agentmessaging.ai/extensions/budget/v1": {
+                    "deadline": "2026-11-20T17:00:00Z",
+                    "revision": 1,
+                    "costCeiling": {
+                      "amountMicro": 7000000,
+                      "currency": "USD"
+                    }
+                  }
+                },
+                "extensions": [
+                  "https://agentmessaging.ai/extensions/budget/v1"
+                ]
+              }
+            }
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "task": {
+                "id": "task-b9",
+                "contextId": "ctx-b9",
+                "status": {
+                  "state": "TASK_STATE_WORKING",
+                  "timestamp": "2026-11-07T18:31:40.000Z"
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "name": "ceiling_reached on a Task that is not paused is not the budget's",
+        "task": {
+          "id": "task-b10",
+          "contextId": "ctx-b10",
+          "status": {
+            "state": "TASK_STATE_WORKING",
+            "timestamp": "2026-11-07T18:01:00.000Z"
+          },
+          "metadata": {
+            "https://agentmessaging.ai/extensions/budget/v1": {
+              "outcome": "ceiling_reached"
+            }
+          }
+        },
+        "window": true,
+        "expect": {
+          "reading": "working",
+          "failed": false,
+          "may_retry": true
+        }
+      },
+      {
         "name": "the older mark from a 0.3.0-wire agent, inside the window",
         "task": {
           "id": "task-b3",
@@ -5301,7 +5830,7 @@
         "expect": {
           "reading": "exhausted",
           "failed": false,
-          "retry": false
+          "may_retry": false
         }
       },
       {
@@ -5324,7 +5853,7 @@
         "expect": {
           "reading": "exhausted",
           "failed": false,
-          "retry": false
+          "may_retry": false
         }
       },
       {
@@ -5344,7 +5873,7 @@
         "expect": {
           "reading": "canceled",
           "failed": false,
-          "retry": false
+          "may_retry": true
         }
       },
       {
@@ -5366,7 +5895,7 @@
         "expect": {
           "reading": "failed",
           "failed": true,
-          "retry": false
+          "may_retry": true
         }
       },
       {
@@ -5383,10 +5912,1029 @@
         "expect": {
           "reading": "canceled",
           "failed": false,
-          "retry": false
+          "may_retry": true
         }
       }
     ]
+  },
+  "cancel_reasons": {
+    "comment": "Binding §12.6 (0.2.0-draft). A CancelTask request carries its reason under the cancel extension's URI in its metadata: reason from the closed list of SPEC.md §10.8, an optional note, unmet_need (kind:value) required with needs_not_furnished and allowed with no other reason, and dependency only with dependency_failed. The canceled Task carries the same object under the same URI. A CancelTask with no reason from a client that does not declare the extension (it does not activate it in A2A-Extensions) is recorded as user_requested. Through the bridge the reason passes unchanged and the bridge adds none.",
+    "uri": "https://agentmessaging.ai/extensions/cancel/v1",
+    "reasons": [
+      "user_requested",
+      "superseded",
+      "deadline_exceeded",
+      "budget_exhausted",
+      "upstream_cancelled",
+      "policy",
+      "needs_not_furnished",
+      "dependency_failed"
+    ],
+    "exchanges": [
+      {
+        "name": "a reason and a note",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000069",
+            "type": "request",
+            "ts": "2026-11-07T18:00:02.000Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "CancelTask",
+                "params": {
+                  "id": "task-c1",
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/cancel/v1": {
+                      "reason": "superseded",
+                      "note": "a broader query replaces this one"
+                    }
+                  }
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0",
+                "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+              }
+            },
+            "sig": "5mhweMnGcxmIDRNegr9BFznITPDIc0-Vzbr4FztoW2Yc3MFCvEVPiPf8LilpzsTD30EgxMw0iTn6OMrIzongBA"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000070",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:02.200Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000069",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-c1",
+                  "contextId": "ctx-c1",
+                  "status": {
+                    "state": "TASK_STATE_CANCELED",
+                    "timestamp": "2026-11-07T18:00:02.100Z"
+                  },
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/cancel/v1": {
+                      "reason": "superseded",
+                      "note": "a broader query replaces this one"
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "CS-Up34ESdfL46v0zemyYM9c8k3l3Lks0Ukee3fUom0G5ToIMm9dAX7arP3Y1z347TtiYzS1jEiiHYHF1moSBw"
+          }
+        ],
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "tasks/task-c1:cancel",
+            "headers": {
+              "A2A-Version": "1.0",
+              "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+            },
+            "body": {
+              "metadata": {
+                "https://agentmessaging.ai/extensions/cancel/v1": {
+                  "reason": "superseded",
+                  "note": "a broader query replaces this one"
+                }
+              }
+            }
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "id": "task-c1",
+              "contextId": "ctx-c1",
+              "status": {
+                "state": "TASK_STATE_CANCELED",
+                "timestamp": "2026-11-07T18:00:02.100Z"
+              },
+              "metadata": {
+                "https://agentmessaging.ai/extensions/cancel/v1": {
+                  "reason": "superseded",
+                  "note": "a broader query replaces this one"
+                }
+              }
+            }
+          }
+        },
+        "recorded": {
+          "reason": "superseded",
+          "note": "a broader query replaces this one"
+        }
+      },
+      {
+        "name": "a stock A2A client that sends no reason",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000071",
+            "type": "request",
+            "ts": "2026-11-07T18:00:02.400Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "CancelTask",
+                "params": {
+                  "id": "task-c2"
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0"
+              }
+            },
+            "sig": "fNmDTVgz18NbVt_x_AXR98fVEUi9O67qp9Wr9nRRuUkWYLx_IVh3emWRF6Ity64AQovFID_-Px2q21ns94RQCw"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000072",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:02.600Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000071",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-c2",
+                  "contextId": "ctx-c2",
+                  "status": {
+                    "state": "TASK_STATE_CANCELED",
+                    "timestamp": "2026-11-07T18:00:02.500Z"
+                  },
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/cancel/v1": {
+                      "reason": "user_requested"
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "RhDvaPzsDQw4HmKMm4EcMPlwnNNfDNA-q1LZwPvu0-XP8vHPcwkQDmv7_bNysCqJmnKaVqr7GcIw1B1UaNSDDw"
+          }
+        ],
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "tasks/task-c2:cancel",
+            "headers": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "id": "task-c2",
+              "contextId": "ctx-c2",
+              "status": {
+                "state": "TASK_STATE_CANCELED",
+                "timestamp": "2026-11-07T18:00:02.500Z"
+              },
+              "metadata": {
+                "https://agentmessaging.ai/extensions/cancel/v1": {
+                  "reason": "user_requested"
+                }
+              }
+            }
+          }
+        },
+        "recorded": {
+          "reason": "user_requested"
+        }
+      },
+      {
+        "name": "canceling a Task paused at its ceiling",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000073",
+            "type": "request",
+            "ts": "2026-11-07T18:00:02.800Z",
+            "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "method": "CancelTask",
+                "params": {
+                  "id": "task-b9",
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/cancel/v1": {
+                      "reason": "budget_exhausted",
+                      "note": "not worth raising the ceiling"
+                    }
+                  }
+                }
+              }
+            },
+            "meta": {
+              "a2a": {
+                "A2A-Version": "1.0",
+                "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+              }
+            },
+            "sig": "vbfmGEz68uuGE-l3jcxarZkrtOOxiyBuDQbOusK7M5xE_oB2B710BXJ-mfOzbuFAMuW0o1vT7ptDiJUPXSUVAQ"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000074",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:03.000Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000073",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-b9",
+                  "contextId": "ctx-b9",
+                  "status": {
+                    "state": "TASK_STATE_CANCELED",
+                    "timestamp": "2026-11-07T18:00:02.900Z"
+                  },
+                  "artifacts": [
+                    {
+                      "artifactId": "art-b9",
+                      "name": "partial summary",
+                      "parts": [
+                        {
+                          "text": "Two of five jurisdictions summarized."
+                        }
+                      ]
+                    }
+                  ],
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/budget/v1": {
+                      "outcome": "ceiling_reached",
+                      "spent": {
+                        "amountMicro": 900000,
+                        "currency": "USD"
+                      },
+                      "estimateToFinish": {
+                        "amountMicro": 2500000,
+                        "currency": "USD"
+                      }
+                    },
+                    "https://agentmessaging.ai/extensions/cancel/v1": {
+                      "reason": "budget_exhausted",
+                      "note": "not worth raising the ceiling"
+                    }
+                  }
+                }
+              }
+            },
+            "sig": "gG5haszTedFahp5sflvL2BTK3j9c2kHbA7i_kcnKfqwjYJLcEbJFRU8kfZ5AdVmf0NNv9qXn9AkWtqmShonuBQ"
+          }
+        ],
+        "http": {
+          "request": {
+            "method": "POST",
+            "path": "tasks/task-b9:cancel",
+            "headers": {
+              "A2A-Version": "1.0",
+              "A2A-Extensions": "https://agentmessaging.ai/extensions/cancel/v1"
+            },
+            "body": {
+              "metadata": {
+                "https://agentmessaging.ai/extensions/cancel/v1": {
+                  "reason": "budget_exhausted",
+                  "note": "not worth raising the ceiling"
+                }
+              }
+            }
+          },
+          "response": {
+            "status": 200,
+            "contentType": "application/a2a+json",
+            "body": {
+              "id": "task-b9",
+              "contextId": "ctx-b9",
+              "status": {
+                "state": "TASK_STATE_CANCELED",
+                "timestamp": "2026-11-07T18:00:02.900Z"
+              },
+              "artifacts": [
+                {
+                  "artifactId": "art-b9",
+                  "name": "partial summary",
+                  "parts": [
+                    {
+                      "text": "Two of five jurisdictions summarized."
+                    }
+                  ]
+                }
+              ],
+              "metadata": {
+                "https://agentmessaging.ai/extensions/budget/v1": {
+                  "outcome": "ceiling_reached",
+                  "spent": {
+                    "amountMicro": 900000,
+                    "currency": "USD"
+                  },
+                  "estimateToFinish": {
+                    "amountMicro": 2500000,
+                    "currency": "USD"
+                  }
+                },
+                "https://agentmessaging.ai/extensions/cancel/v1": {
+                  "reason": "budget_exhausted",
+                  "note": "not worth raising the ceiling"
+                }
+              }
+            }
+          }
+        },
+        "recorded": {
+          "reason": "budget_exhausted",
+          "note": "not worth raising the ceiling"
+        }
+      }
+    ],
+    "objects": [
+      {
+        "name": "a reason alone",
+        "value": {
+          "reason": "policy"
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "needs_not_furnished with what was not furnished",
+        "value": {
+          "reason": "needs_not_furnished",
+          "unmet_need": "credential:Salesforce"
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "dependency_failed naming the dependency",
+        "value": {
+          "reason": "dependency_failed",
+          "dependency": "Colorado DMV"
+        },
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a reason not on the list",
+        "value": {
+          "reason": "bored"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "no reason in the object",
+        "value": {
+          "note": "stop"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "a reason in other capitals",
+        "value": {
+          "reason": "User_Requested"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "a note that is not text",
+        "value": {
+          "reason": "policy",
+          "note": 42
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "needs_not_furnished without unmet_need",
+        "value": {
+          "reason": "needs_not_furnished"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "unmet_need of the wrong shape",
+        "value": {
+          "reason": "needs_not_furnished",
+          "unmet_need": "the licence"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "unmet_need on another reason",
+        "value": {
+          "reason": "user_requested",
+          "unmet_need": "credential:Salesforce"
+        },
+        "expect": {
+          "ok": false
+        }
+      },
+      {
+        "name": "dependency on another reason",
+        "value": {
+          "reason": "policy",
+          "dependency": "Colorado DMV"
+        },
+        "expect": {
+          "ok": false
+        }
+      }
+    ]
+  },
+  "carrier_without_subjects": {
+    "comment": "Binding §8 (0.2.0-draft), carriers without subjects, such as email. Each later change to a Task is a respond frame to the client whose result is the whole Task as it then stands, numbered by payload.a2a.seq. The client reads them in seq order, whatever order they arrive in, and the Task it holds is the one with the highest seq it has read without a gap. Such a carrier answers SendStreamingMessage and SubscribeToTask with UnsupportedOperationError.",
+    "request": {
+      "v": "0.4.0",
+      "id": "0199b000-0000-7000-8000-000000000075",
+      "type": "request",
+      "ts": "2026-11-07T18:00:00.200Z",
+      "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+      "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+      "trace": {
+        "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+        "span_id": "00f067aa0ba902b7"
+      },
+      "payload": {
+        "a2a": {
+          "method": "SendMessage",
+          "params": {
+            "message": {
+              "messageId": "msg-m1",
+              "role": "ROLE_USER",
+              "parts": [
+                {
+                  "text": "Quote 20 units of part 7741."
+                }
+              ],
+              "metadata": {
+                "https://agentmessaging.ai/extensions/offering/v1": {
+                  "offering": "quote"
+                }
+              }
+            }
+          }
+        }
+      },
+      "meta": {
+        "a2a": {
+          "A2A-Version": "1.0"
+        }
+      },
+      "sig": "LLFyFuwLUZPH_IifVXDKo1TVfjXACTrmdF_BLhdiFfZjS948dYNKVlMSNJ8Sd1u3XnVS-Oe9yawxMu6r-bEKCg"
+    },
+    "cases": [
+      {
+        "name": "in order",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000076",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.400Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "task": {
+                    "id": "task-m1",
+                    "contextId": "ctx-m1",
+                    "status": {
+                      "state": "TASK_STATE_WORKING",
+                      "timestamp": "2026-11-07T18:00:01.000Z"
+                    }
+                  }
+                },
+                "seq": 0
+              }
+            },
+            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000077",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.600Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_INPUT_REQUIRED",
+                    "message": {
+                      "messageId": "st-m1",
+                      "role": "ROLE_AGENT",
+                      "parts": [
+                        {
+                          "text": "Do you accept a split delivery?"
+                        }
+                      ]
+                    },
+                    "timestamp": "2026-11-07T18:05:00.000Z"
+                  }
+                },
+                "seq": 1
+              }
+            },
+            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000078",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.800Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_COMPLETED",
+                    "timestamp": "2026-11-07T18:15:00.000Z"
+                  },
+                  "artifacts": [
+                    {
+                      "artifactId": "art-quote-1",
+                      "name": "quote",
+                      "parts": [
+                        {
+                          "data": {
+                            "item": "part 7741",
+                            "units": 200,
+                            "unitPriceMicro": 1250000,
+                            "currency": "USD"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "seq": 2
+              }
+            },
+            "sig": "eJ0EXIPMX_MamOzEqqyogzC8aGE_L63hulacvVh24erb94H2UB0IY0_bipHo_8bxSl4VgqsVcDh5PRkVpJBwCQ"
+          }
+        ],
+        "expect": {
+          "seq": 2,
+          "state": "TASK_STATE_COMPLETED"
+        }
+      },
+      {
+        "name": "out of order, as mail may arrive",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000078",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.800Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_COMPLETED",
+                    "timestamp": "2026-11-07T18:15:00.000Z"
+                  },
+                  "artifacts": [
+                    {
+                      "artifactId": "art-quote-1",
+                      "name": "quote",
+                      "parts": [
+                        {
+                          "data": {
+                            "item": "part 7741",
+                            "units": 200,
+                            "unitPriceMicro": 1250000,
+                            "currency": "USD"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "seq": 2
+              }
+            },
+            "sig": "eJ0EXIPMX_MamOzEqqyogzC8aGE_L63hulacvVh24erb94H2UB0IY0_bipHo_8bxSl4VgqsVcDh5PRkVpJBwCQ"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000076",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.400Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "task": {
+                    "id": "task-m1",
+                    "contextId": "ctx-m1",
+                    "status": {
+                      "state": "TASK_STATE_WORKING",
+                      "timestamp": "2026-11-07T18:00:01.000Z"
+                    }
+                  }
+                },
+                "seq": 0
+              }
+            },
+            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000077",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.600Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_INPUT_REQUIRED",
+                    "message": {
+                      "messageId": "st-m1",
+                      "role": "ROLE_AGENT",
+                      "parts": [
+                        {
+                          "text": "Do you accept a split delivery?"
+                        }
+                      ]
+                    },
+                    "timestamp": "2026-11-07T18:05:00.000Z"
+                  }
+                },
+                "seq": 1
+              }
+            },
+            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+          }
+        ],
+        "expect": {
+          "seq": 2,
+          "state": "TASK_STATE_COMPLETED"
+        }
+      },
+      {
+        "name": "the same frame twice",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000076",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.400Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "task": {
+                    "id": "task-m1",
+                    "contextId": "ctx-m1",
+                    "status": {
+                      "state": "TASK_STATE_WORKING",
+                      "timestamp": "2026-11-07T18:00:01.000Z"
+                    }
+                  }
+                },
+                "seq": 0
+              }
+            },
+            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000077",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.600Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_INPUT_REQUIRED",
+                    "message": {
+                      "messageId": "st-m1",
+                      "role": "ROLE_AGENT",
+                      "parts": [
+                        {
+                          "text": "Do you accept a split delivery?"
+                        }
+                      ]
+                    },
+                    "timestamp": "2026-11-07T18:05:00.000Z"
+                  }
+                },
+                "seq": 1
+              }
+            },
+            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000077",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.600Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_INPUT_REQUIRED",
+                    "message": {
+                      "messageId": "st-m1",
+                      "role": "ROLE_AGENT",
+                      "parts": [
+                        {
+                          "text": "Do you accept a split delivery?"
+                        }
+                      ]
+                    },
+                    "timestamp": "2026-11-07T18:05:00.000Z"
+                  }
+                },
+                "seq": 1
+              }
+            },
+            "sig": "S4FmRQguRlPi-kxE5_8mlF0644n-6fQ8ilJZQH_y5qfzyj4unUPP072ozbjlF-oPAdRyMZcEwHB0k7fDmL0AAg"
+          }
+        ],
+        "expect": {
+          "seq": 1,
+          "state": "TASK_STATE_INPUT_REQUIRED"
+        }
+      },
+      {
+        "name": "a gap: seq 1 has not arrived",
+        "frames": [
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000076",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.400Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "task": {
+                    "id": "task-m1",
+                    "contextId": "ctx-m1",
+                    "status": {
+                      "state": "TASK_STATE_WORKING",
+                      "timestamp": "2026-11-07T18:00:01.000Z"
+                    }
+                  }
+                },
+                "seq": 0
+              }
+            },
+            "sig": "KaVmXTzuNXROBip6DrSCf58Vl7GFDeWFS137E0wuG6pdXmHrG5R9NY2de5Krr-rvSvPVnQWeffGZtYgrMMJRCg"
+          },
+          {
+            "v": "0.4.0",
+            "id": "0199b000-0000-7000-8000-000000000078",
+            "type": "respond",
+            "ts": "2026-11-07T18:00:00.800Z",
+            "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+            "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+            "in_reply_to": "0199b000-0000-7000-8000-000000000075",
+            "trace": {
+              "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+              "span_id": "00f067aa0ba902b7"
+            },
+            "payload": {
+              "a2a": {
+                "result": {
+                  "id": "task-m1",
+                  "contextId": "ctx-m1",
+                  "status": {
+                    "state": "TASK_STATE_COMPLETED",
+                    "timestamp": "2026-11-07T18:15:00.000Z"
+                  },
+                  "artifacts": [
+                    {
+                      "artifactId": "art-quote-1",
+                      "name": "quote",
+                      "parts": [
+                        {
+                          "data": {
+                            "item": "part 7741",
+                            "units": 200,
+                            "unitPriceMicro": 1250000,
+                            "currency": "USD"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "seq": 2
+              }
+            },
+            "sig": "eJ0EXIPMX_MamOzEqqyogzC8aGE_L63hulacvVh24erb94H2UB0IY0_bipHo_8bxSl4VgqsVcDh5PRkVpJBwCQ"
+          }
+        ],
+        "expect": {
+          "seq": 0,
+          "state": "TASK_STATE_WORKING",
+          "waiting_for": 1
+        }
+      }
+    ],
+    "streaming": {
+      "frames": [
+        {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000079",
+          "type": "request",
+          "ts": "2026-11-07T18:00:01.000Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "SendStreamingMessage",
+              "params": {
+                "message": {
+                  "messageId": "msg-m2",
+                  "role": "ROLE_USER",
+                  "parts": [
+                    {
+                      "text": "Quote 20 units, streaming."
+                    }
+                  ],
+                  "metadata": {
+                    "https://agentmessaging.ai/extensions/offering/v1": {
+                      "offering": "quote"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "sig": "h-hga-BVp9DOIDPpEaZhfPoy1P1LuX8BofiGYG4Jb43CnI8fDs84FV_K452WfGYOXFQJi_RlH-IYXmjQIUxfCg"
+        },
+        {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000080",
+          "type": "respond",
+          "ts": "2026-11-07T18:00:01.200Z",
+          "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "in_reply_to": "0199b000-0000-7000-8000-000000000079",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {}
+          },
+          "error": {
+            "code": "UnsupportedOperationError",
+            "message": "This carrier cannot stream.",
+            "details": {
+              "a2a": {
+                "code": -32004,
+                "data": {}
+              }
+            },
+            "retryable": false
+          },
+          "sig": "vKwin2isrlKCXM8aVE8H-y8hW_f8sa1HEtZhIOXXdO8P9Y7aFvzb5SljLWsKw4g-h7MkETywhiiIh1VuIUYOBg"
+        }
+      ]
+    }
   },
   "offering": {
     "comment": "Binding §12.1; the A2A Bridge §4.5. The offering a Message calls is the offering extension's value in its metadata. One declared offering serves a Message that names none; with several, naming none or an undeclared one is InvalidParamsError (-32602) listing the offerings. During the transition window the older keys agentmesh.offering and agentmesh.skill are still read from a caller with no key: the bridge adds the extension's key with the same value before it signs, and refuses the two disagreeing.",
@@ -5560,9 +7108,9 @@
       },
       "frame": {
         "v": "0.4.0",
-        "id": "0199b000-0000-7000-8000-000000000064",
+        "id": "0199b000-0000-7000-8000-000000000081",
         "type": "request",
-        "ts": "2026-11-07T18:00:01.000Z",
+        "ts": "2026-11-07T18:00:01.400Z",
         "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
         "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
         "trace": {
@@ -5597,7 +7145,7 @@
             "A2A-Extensions": "https://agentmessaging.ai/extensions/offering/v1"
           }
         },
-        "sig": "9ZVBqmPO603PAnqvxBt79ueOJxsqg4Teb3q2apdyx5gvtb60_ZdHyK5tECqaYNWbRbR3gchS_5bxvzXUNxhWAQ"
+        "sig": "u53BIegUGHZ5pw8kp3wkRjFKwOatbGTHWLww7pqPU6dSY34AO01HkJX_uu0E2tRqSqMxqbENF72v3JpqaAZVAg"
       }
     }
   },
@@ -5608,95 +7156,7 @@
         "name": "a clean 0.4.0 frame",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000065",
-          "type": "request",
-          "ts": "2026-11-07T18:00:01.200Z",
-          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
-          "trace": {
-            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
-            "span_id": "00f067aa0ba902b7"
-          },
-          "payload": {
-            "a2a": {
-              "method": "SendMessage",
-              "params": {
-                "message": {
-                  "messageId": "msg-x",
-                  "role": "ROLE_USER",
-                  "parts": [
-                    {
-                      "text": "Status?"
-                    }
-                  ],
-                  "taskId": "task-9f2c",
-                  "contextId": "ctx-51a0"
-                }
-              }
-            }
-          },
-          "meta": {
-            "a2a": {
-              "A2A-Version": "1.0"
-            }
-          },
-          "sig": "ykIVv31ckEXYwZJcUjuSHlv_j5i0gndevESq6tpewi1p3ngRcSgcansjX0kJ1rp2-Mc81WCA6ZUBgjLWGRUWDQ"
-        },
-        "window": true,
-        "expect": {
-          "ok": true
-        }
-      },
-      {
-        "name": "a 0.4.0 frame carrying task_id",
-        "frame": {
-          "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000066",
-          "type": "request",
-          "ts": "2026-11-07T18:00:01.400Z",
-          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
-          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
-          "trace": {
-            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
-            "span_id": "00f067aa0ba902b7"
-          },
-          "payload": {
-            "a2a": {
-              "method": "SendMessage",
-              "params": {
-                "message": {
-                  "messageId": "msg-x",
-                  "role": "ROLE_USER",
-                  "parts": [
-                    {
-                      "text": "Status?"
-                    }
-                  ],
-                  "taskId": "task-9f2c",
-                  "contextId": "ctx-51a0"
-                }
-              }
-            }
-          },
-          "meta": {
-            "a2a": {
-              "A2A-Version": "1.0"
-            }
-          },
-          "task_id": "task-9f2c",
-          "sig": "VXdJyqwh1NLVUrSIo44hYYCJphINxSlpaWrcHq4q8eRQFEJk0QF8DQPOf6RWEy8iZ8Wm_8wpbeTyWQbhHUKJCg"
-        },
-        "window": true,
-        "expect": {
-          "ok": false,
-          "code": "INVALID_ENVELOPE"
-        }
-      },
-      {
-        "name": "a 0.4.0 frame carrying context_id",
-        "frame": {
-          "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000067",
+          "id": "0199b000-0000-7000-8000-000000000082",
           "type": "request",
           "ts": "2026-11-07T18:00:01.600Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
@@ -5728,8 +7188,96 @@
               "A2A-Version": "1.0"
             }
           },
+          "sig": "Wp3JfLi39f6-xeQTd8CXGgxBKjcnHM4NtdVCMmmtd_BUr9YySxxq8eALttUk5PowaSIZVl-ewid1_Hrm1N8mAg"
+        },
+        "window": true,
+        "expect": {
+          "ok": true
+        }
+      },
+      {
+        "name": "a 0.4.0 frame carrying task_id",
+        "frame": {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000083",
+          "type": "request",
+          "ts": "2026-11-07T18:00:01.800Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "SendMessage",
+              "params": {
+                "message": {
+                  "messageId": "msg-x",
+                  "role": "ROLE_USER",
+                  "parts": [
+                    {
+                      "text": "Status?"
+                    }
+                  ],
+                  "taskId": "task-9f2c",
+                  "contextId": "ctx-51a0"
+                }
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
+          "task_id": "task-9f2c",
+          "sig": "iXQPorzALO7eyFkHIBp12GdoZrrqepGVALOGWwMUoYTo1H-kuDIBdCBTHaOZlBOncN4n6vENGEokUGFUGzwEAQ"
+        },
+        "window": true,
+        "expect": {
+          "ok": false,
+          "code": "INVALID_ENVELOPE"
+        }
+      },
+      {
+        "name": "a 0.4.0 frame carrying context_id",
+        "frame": {
+          "v": "0.4.0",
+          "id": "0199b000-0000-7000-8000-000000000084",
+          "type": "request",
+          "ts": "2026-11-07T18:00:02.000Z",
+          "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
+          "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
+          "trace": {
+            "trace_id": "4bf92f3577b34da6a3ce929d0e0e4736",
+            "span_id": "00f067aa0ba902b7"
+          },
+          "payload": {
+            "a2a": {
+              "method": "SendMessage",
+              "params": {
+                "message": {
+                  "messageId": "msg-x",
+                  "role": "ROLE_USER",
+                  "parts": [
+                    {
+                      "text": "Status?"
+                    }
+                  ],
+                  "taskId": "task-9f2c",
+                  "contextId": "ctx-51a0"
+                }
+              }
+            }
+          },
+          "meta": {
+            "a2a": {
+              "A2A-Version": "1.0"
+            }
+          },
           "context_id": "ctx-51a0",
-          "sig": "plHSNLm0hliEzqOsdFC625ddtpTx_9CKIG4U_FiCqmn0DwvbZ-pHGpqWqb0OTgjx59nA4y2iRGsFbibIrY_QDg"
+          "sig": "H-13ImABKT7jj31aoKZnwjn1q5phNdgjubVMKoxcFI9z8zVRkpxt03IxIUM8bHJCAB715YYqAQ_EWoPuUGmmBQ"
         },
         "window": true,
         "expect": {
@@ -5741,9 +7289,9 @@
         "name": "a 0.4.0 frame carrying artifacts",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000068",
+          "id": "0199b000-0000-7000-8000-000000000085",
           "type": "request",
-          "ts": "2026-11-07T18:00:01.800Z",
+          "ts": "2026-11-07T18:00:02.200Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "trace": {
@@ -5781,7 +7329,7 @@
               "role": "input"
             }
           ],
-          "sig": "NOyil5OkYdbHXGkAfJMhuztcA2Ee9hizR87YBn9m82qkI8wjl7q9ii3DyRbzwjH5r8vVVzxUldIl-nZTMWOoAg"
+          "sig": "gIIktxBKOJIdjQ1gP8U_PLfSRrjd33zpCoCee8pYu-LgO59vPs-Cncac0IQRcPGQSgwl9oz41IL036pHHKtZAA"
         },
         "window": true,
         "expect": {
@@ -5793,9 +7341,9 @@
         "name": "a 0.4.0 respond frame carrying task_id",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000069",
+          "id": "0199b000-0000-7000-8000-000000000086",
           "type": "respond",
-          "ts": "2026-11-07T18:00:02.000Z",
+          "ts": "2026-11-07T18:00:02.400Z",
           "from": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "to": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "in_reply_to": "0199b000-0000-7000-8000-000000000001",
@@ -5816,7 +7364,7 @@
               }
             }
           },
-          "sig": "dZBwyhgbCGdUKhfu8l6CNMI3_PHZMICGtQF5DM5GSh-5IuPqYlSNC6krOYdFA09fp4iUYGVfgGVJjrvZgRTMAg"
+          "sig": "5KOqvhltIa1V8AyQaSygBK1-jGvjyNPDEkGDjCKQOLAp42XZLs-tQL72qXt319oOkdlkum6okdJmdU0BoeXxCg"
         },
         "window": true,
         "expect": {
@@ -5828,9 +7376,9 @@
         "name": "a 0.3.0 envelope carrying task_id, inside the window",
         "frame": {
           "v": "0.3.0",
-          "id": "0199b000-0000-7000-8000-000000000070",
+          "id": "0199b000-0000-7000-8000-000000000087",
           "type": "request",
-          "ts": "2026-11-07T18:00:02.200Z",
+          "ts": "2026-11-07T18:00:02.600Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "trace": {
@@ -5844,7 +7392,7 @@
             }
           },
           "task_id": "task-9f2c",
-          "sig": "Fl9MaT5dDoGKRUWVUjmftkjAfHSu9HAbtbatSOgOCyIRLWrPCK5P8hltwxMyaTolHsisnJHPVNhswijXohs8Ag"
+          "sig": "PSchKit6W51ptFIUN-rh4PEY_c9FWtOmGUnTvwn1-2dhmM_g7rM-wGLU7GgpsqVkZH2RvEJFUmRPv83fRwXcCg"
         },
         "window": true,
         "expect": {
@@ -5855,9 +7403,9 @@
         "name": "a 0.3.0 envelope after the window",
         "frame": {
           "v": "0.3.0",
-          "id": "0199b000-0000-7000-8000-000000000071",
+          "id": "0199b000-0000-7000-8000-000000000088",
           "type": "request",
-          "ts": "2026-11-07T18:00:02.400Z",
+          "ts": "2026-11-07T18:00:02.800Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "to": "UAIUKGBIXQ3USXOYJQIFRNAPXT7SJSFODBHGBALIR4KDVVSVCLOY7LQF",
           "trace": {
@@ -5871,7 +7419,7 @@
             }
           },
           "task_id": "task-9f2c",
-          "sig": "P9S7bHg4MP0ObOz_PL7GuG0kmn2sf_hbQnlGD9VlEcEdHt8bC2t_AklgHDBjPZuHuJpwBCvOKHtdGL9ZWOWQBA"
+          "sig": "5uWT1aN220vej-RIUxXHxN9pQ-BgcR702jICypYRU_nqF6nrHNB3IQZyBL5MYPf0OQeF0d0OQAURsXhhO01dAw"
         },
         "window": false,
         "expect": {
@@ -5883,9 +7431,9 @@
         "name": "a 0.4.0 frame addressed to another agent still verifies; addressing is checked elsewhere",
         "frame": {
           "v": "0.4.0",
-          "id": "0199b000-0000-7000-8000-000000000072",
+          "id": "0199b000-0000-7000-8000-000000000089",
           "type": "request",
-          "ts": "2026-11-07T18:00:02.600Z",
+          "ts": "2026-11-07T18:00:03.000Z",
           "from": "UBMBH4BK6EIHQFVMHLSABFSQXB3JXUFZOXVZQTIERO33AD4HHAI3D7QP",
           "to": "UAKQRYZBYFOC65OQZVJ3QPCIERDTRNNZPMOJUYXC3DGPRCDWSKD4HV5A",
           "trace": {
@@ -5915,7 +7463,7 @@
               "A2A-Version": "1.0"
             }
           },
-          "sig": "h_F6E_AAAMb2RMdWH3uWb4Tkq55mHQ_wy8C7SYNFvLyl2ZSNLObBvc4JIhfUzNPnkXWRi7jFSpMCy1VeF8hQAg"
+          "sig": "3-8g9vTPsD--LPzg7KIv7Ro55tk3bQ2qMfzJKmXXj4eywqZM9VVz58iY7NnuJ-qcmV-rlsnHS6UO2jDdzFgDBw"
         },
         "window": true,
         "expect": {

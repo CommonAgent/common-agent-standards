@@ -135,11 +135,10 @@ function partOk(p) {
   if (!p || typeof p !== "object") return false;
   const kinds = ["text", "raw", "url", "data"].filter((k) => k in p);
   if (kinds.length !== 1) return false;
-  if (p.url !== undefined && MESH_REF.test(p.url)) {
-    const r = p.metadata?.[EXT.artifactRefs];
-    if (!r || !Number.isInteger(r.size) || r.size < 0 || typeof r.digest !== "string" || !/^sha256:[0-9a-f]{64}$/.test(r.digest)) return false;
-  }
-  return true;
+  const r = p.metadata?.[EXT.artifactRefs];
+  if (r === undefined) return !(p.url !== undefined && MESH_REF.test(p.url));
+  if (p.url === undefined) return false;
+  return Number.isInteger(r.size) && r.size >= 0 && typeof r.digest === "string" && /^sha256:[0-9a-f]{64}$/.test(r.digest);
 }
 
 // Binding §8: reading a stream from its deliveries.
@@ -177,13 +176,43 @@ function blockOk(b) {
   }
   return true;
 }
+const OUTCOME_STATE = { insufficient: "TASK_STATE_REJECTED", deadline_unmeetable: "TASK_STATE_REJECTED", ceiling_reached: "TASK_STATE_INPUT_REQUIRED", exhausted: "TASK_STATE_CANCELED" };
+const OUTCOME_FIELDS = { insufficient: ["estimate"], deadline_unmeetable: ["earliestCompletion"], ceiling_reached: ["spent", "estimateToFinish"], exhausted: [] };
 function budgetReading(task, window) {
   const state = task.status.state;
-  const out = task.metadata?.[EXT.budget]?.outcome;
-  const legacy = window && task.metadata?.["agentmesh.state"] === "exhausted";
-  if (state === "TASK_STATE_CANCELED" && (out === "exhausted" || legacy)) return { reading: "exhausted", failed: false, retry: false };
-  if (state === "TASK_STATE_REJECTED" && out === "insufficient") return { reading: "insufficient", failed: false, retry: false };
-  return { reading: state.replace("TASK_STATE_", "").toLowerCase(), failed: state === "TASK_STATE_FAILED", retry: false };
+  const b = task.metadata?.[EXT.budget];
+  const out = window && state === "TASK_STATE_CANCELED" && task.metadata?.["agentmesh.state"] === "exhausted" && b === undefined ? "exhausted" : b?.outcome;
+  if (out !== undefined && OUTCOME_STATE[out] === state && OUTCOME_FIELDS[out].every((k) => b === undefined || k in b)) {
+    return { reading: out, failed: false, may_retry: out !== "exhausted" };
+  }
+  return { reading: state.replace("TASK_STATE_", "").toLowerCase(), failed: state === "TASK_STATE_FAILED", may_retry: true };
+}
+
+// Binding §12.6: the cancel extension's object, and what a server records.
+const CANCEL_REASONS = new Set(["user_requested", "superseded", "deadline_exceeded", "budget_exhausted", "upstream_cancelled", "policy", "needs_not_furnished", "dependency_failed"]);
+const NEED = /^(resource|file|credential|text):.+$/;
+function cancelObjectOk(o) {
+  if (!o || typeof o !== "object" || !CANCEL_REASONS.has(o.reason)) return false;
+  if (o.note !== undefined && typeof o.note !== "string") return false;
+  if (o.reason === "needs_not_furnished" ? !(typeof o.unmet_need === "string" && NEED.test(o.unmet_need)) : o.unmet_need !== undefined) return false;
+  if (o.reason !== "dependency_failed" && o.dependency !== undefined) return false;
+  return true;
+}
+function recordedCancel(request) {
+  const o = request.payload.a2a.params.metadata?.[fx.cancel_reasons.uri];
+  const declared = (request.meta?.a2a?.["A2A-Extensions"] ?? "").split(/,\s*/).includes(fx.cancel_reasons.uri);
+  if (o === undefined) return declared ? null : { reason: "user_requested" };
+  return cancelObjectOk(o) ? o : null;
+}
+
+// Binding §8, carriers without subjects: whole Tasks in seq order.
+function readWhole(frames) {
+  const bySeq = new Map();
+  for (const f of frames) if (!bySeq.has(f.payload.a2a.seq)) bySeq.set(f.payload.a2a.seq, f.payload.a2a.result.task ?? f.payload.a2a.result);
+  let seq = -1;
+  while (bySeq.has(seq + 1)) seq++;
+  const highest = Math.max(...bySeq.keys());
+  return { seq, state: bySeq.get(seq)?.status.state, ...(highest > seq ? { waiting_for: seq + 1 } : {}) };
 }
 
 // Binding §12.1, the A2A Bridge §4.5: which offering a Message calls.
@@ -331,6 +360,41 @@ section("budget on the request", [{ name: "the budget extension, activated" }], 
   const m = f.payload.a2a.params.message;
   if (!blockOk(m.metadata?.[EXT.budget])) return "the budget block is not valid";
   return (f.meta.a2a["A2A-Extensions"] ?? "").split(/,\s*/).includes(EXT.budget) ? true : "the extension is not activated";
+});
+
+section("every budget outcome", [{ name: "four outcomes" }], () => {
+  const got = new Set(bg.tasks.map((c) => c.expect.reading));
+  const missing = Object.keys(OUTCOME_STATE).filter((o) => !got.has(o));
+  return missing.length ? `missing ${missing.join(", ")}` : true;
+});
+
+const cr = fx.cancel_reasons;
+section("cancel reasons on the wire", cr.exchanges, (c) => {
+  const p = pair(c.frames);
+  if (p) return p;
+  const [r, a] = c.frames;
+  if (r.payload.a2a.method !== "CancelTask") return "not a CancelTask";
+  const rp = requestProblem(c.http.request, r);
+  if (rp) return rp;
+  if (!same(c.http.response.body, a.payload.a2a.result)) return "HTTP+JSON body differs";
+  const rec = recordedCancel(r);
+  if (!same(rec, c.recorded)) return `recorded ${JSON.stringify(rec)}`;
+  if (a.payload.a2a.result.status.state !== "TASK_STATE_CANCELED") return "the Task is not canceled";
+  return same(a.payload.a2a.result.metadata?.[cr.uri], c.recorded) ? true : "the canceled Task does not carry the recorded reason";
+});
+section("cancel reason objects", cr.objects, (c) => (cancelObjectOk(c.value) === c.expect.ok ? true : `read as ${!c.expect.ok}`));
+section("the cancel reason list", [{ name: "SPEC.md §10.8's eight" }], () => (same([...cr.reasons].sort(), [...CANCEL_REASONS].sort()) ? true : "the list differs"));
+
+const cw = fx.carrier_without_subjects;
+section("carriers without subjects", cw.cases, (c) => {
+  for (const f of c.frames) { const fp = frameProblem(f, cw.request); if (fp) return fp; }
+  const got = readWhole(c.frames);
+  return same(got, c.expect) ? true : `got ${JSON.stringify(got)}`;
+});
+section("no streaming without subjects", [{ name: "UnsupportedOperationError" }], () => {
+  const p = pair(cw.streaming.frames);
+  if (p) return p;
+  return cw.streaming.frames[0].payload.a2a.method === "SendStreamingMessage" && cw.streaming.frames[1].error?.code === "UnsupportedOperationError" ? true : "not refused";
 });
 
 const of = fx.offering;
