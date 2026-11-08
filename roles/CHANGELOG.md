@@ -4,6 +4,29 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.8 (2026-11-08)
+
+A new composition role, the boss (§39), is the agent an owner talks to
+about one product: an agent made and remade through the lifecycle, with
+one build for each version. It answers questions about the product from
+the product's record, routes a directive to the agent of the stage that
+owns it and says where it went, and breaks a larger request across the
+lifecycle's stages: a plan that names each stage in order and the gate
+the owner will see at each, and a proposal of the first stage's existing
+action, such as Ask for changes on the spec writer's stage. It starts the
+next version's build only when the owner confirms that start. It holds
+the manager interface (§16) and sits on top of the process runner (§28),
+which keeps running the steps. It does no stage's work, never answers a
+gate or approves anything, changes no artifact, commits nothing beyond
+its authority, and answers what it committed in full. Every change
+reaches its stage through that stage's existing action, which the owner
+confirms. Its test follows the manager's (§16.3) and adds routing to the
+owning stage, a plan that names its gates, a refusal to answer a gate,
+and a full answer to what it committed. It defines no signature tag. §3.1
+lists it among the composition roles, and §38 says why it has no tag. The
+registry has twenty-five roles. No other section number, offering name,
+interface or wire string changes.
+
 ## v1.7 (2026-10-30)
 
 The code writer can be held by any coding agent through a hand-off. A new
