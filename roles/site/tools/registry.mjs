@@ -83,6 +83,8 @@ export const PAGES = {
     summary: "Writes the timeline of what happened when an agent went quiet or failed, with what is known and what is not. It restarts nothing, changes nothing, and does not say what caused it." },
   "process-runner": { date: "2026-09-14",
     summary: "Runs a process document as written. It sends each phase to the agent that holds it, stops at every gate for the owner, records who did what and when, and delivers the account and the run record. It raises no level, starts nothing early, invents no answer and commits no money beyond its instruction." },
+  boss: { date: "2026-11-08",
+    summary: "The agent an owner talks to about one product. It answers questions from the product's record, routes a directive to the stage that owns it, and breaks a larger request across the lifecycle's stages, naming the gates the owner will see and proposing each stage's own action. It does no stage's work, answers no gate, changes no artifact and commits nothing beyond its authority, and asked what it committed, it says in full." },
 
   worker: { date: "2026-08-29",
     summary: "An agent that can be given a piece of work by something that knows nothing about it. Seven exchanges: whether it is free, what a job would take, whether it will take it, how it is going, what came of it, what it is blocked on, and stop. It says what work costs it, and what the work is sold for stays outside its answers. It defines no document." },
