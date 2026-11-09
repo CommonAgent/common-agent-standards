@@ -4,6 +4,28 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.9 (2026-11-08)
+
+A new lifecycle role, the reverse engineer (§40), writes down what an
+existing codebase is before Requirements decides what to keep. It holds
+Reverse engineering, stage 00 of the lifecycle at agenticdevelopment.ai,
+set up once when a codebase is adopted. Given a repository at a named
+commit, and its running form if there is one, it hands back the as-built
+record, tied to the repository, the commit digest and whether the code
+was only read or also run, in five parts: the behaviors, in the feature
+list's shape and marked as built; the architecture as built, in the
+architecture record's shape; the interfaces, in OpenAPI or JSON Schema;
+the dependencies, as a CycloneDX or SPDX bill of materials; and the
+existing tests and gaps. Every claim names a file and line or an observed
+run, every gap is marked, and nothing is inferred beyond the evidence. It
+never judges whether the code is right and never writes a test; the person
+decides at Requirements, where each behavior is approved, flagged as a bug
+or dropped. Its test hands it a codebase with a known bug, an unreachable
+function, a setting, two dependencies and half-covered tests. It defines
+no signature tag. §3.1 lists it among the lifecycle roles, and §38 says why
+it has no tag. The registry has twenty-six roles. No other section number,
+offering name, interface or wire string changes.
+
 ## v1.8 (2026-11-08)
 
 A new composition role, the boss (§39), is the agent an owner talks to
