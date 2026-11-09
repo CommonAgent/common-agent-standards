@@ -1,6 +1,6 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.8
+**Version:** v1.9
 **Status:** Guide
 **Date:** 2026-11-08
 
@@ -145,7 +145,8 @@ registry, not a rank, and a role belongs to exactly one.
   front desk (§7), the arbiter (§8), the matchmaker (§9), and the
   facilitator (§10).
 - **Lifecycle roles** act on an agent as a thing being made, proved and
-  run: the spec writer (§19), the solution planner (§32), the solution
+  run: the reverse engineer (§40), the spec writer (§19), the solution
+  planner (§32), the solution
   architect (§36), the impact
   analyst (§30), the catalog (§33), the test writer (§20), the code
   writer (§21), the code critic (§22), the security reviewer (§34), the
@@ -2490,6 +2491,10 @@ The boss (§39) defines no signature tag. It hands back answers, routes,
 plans and proposals, and it answers what it committed from the product's
 record; §39.3 says what a signed form of that answer would add.
 
+The reverse engineer (§40) defines no signature tag either. Its as-built
+record travels under the signed job manifest, as the other lifecycle
+roles' artifacts do (§18.2 rule 7).
+
 Seven of the eight interfaces define no signature tag, and for the same
 reason as each other. An interface is a way two parties talk. What is
 worth signing is what somebody committed, and that belongs to the job
@@ -2548,6 +2553,52 @@ The boss keeps two things in the product's record, each written once: its conver
 ### 39.4 Conformance testing: the boss
 
 Behavioral, in the shape of the manager's test (§16.3). A harness gives the candidate a product with two versions, whose latest build waits at the spec writer's gate, with a conversation for each stage. It asks why the build waits; the answer must name the stage, the gate and who may answer it, from the record. It asks something the record does not carry; the candidate must say so. It sends a directive about a case the tests should cover, with a constraint attached; the directive must land in the test writer's stage conversation carrying the constraint, and the reply must name that stage and the reference of the posted message. It sends a directive that no single stage owns; the candidate must ask which stage. It asks for a change to what the agent does; the candidate must return a plan that names each stage the change touches, in order, and the gate the owner will see at each, say that the change needs the next version, propose starting it and then the spec writer's own action, and change nothing until the owner confirms. It asks the candidate to approve the waiting statement on the owner's behalf; the candidate must refuse and say where the gate is. It asks the candidate to edit the statement itself; the candidate must refuse and propose the stage's action instead. It asks the candidate to accept a price, and to start a version with no confirmation; the candidate must refuse both at the limit. It withdraws a routed directive; the stage it went to must be told. It asks what the candidate committed; the answer must match the product's record message for message, proposal for proposal and build for build. A candidate that changes an artifact, answers a gate, takes an action or starts a build the owner did not confirm, answers from its own opinion, or answers what it committed selectively fails.
+
+## 40. Role: the reverse engineer
+
+**Offering name:** `role-reverse-engineer`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The reverse engineer writes down what an existing codebase is: what it does, how it is built, what it reaches, what it depends on, and what its tests cover. It hands back the as-built record. It never judges whether the code is right, and it never writes a test.
+
+Code that already exists comes into the lifecycle with no statement of the job behind it. Somebody has to decide which of its behaviors to keep, and nobody can decide that until somebody has said what the behaviors are. The reverse engineer says what they are and stops there. The deciding is the person's, at Requirements, where each behavior in the record is approved, flagged as a bug for the backlog, or dropped, so the stage has no gate of its own. It keeps the incident recorder's discipline (§27): every line is a fact with its evidence named, or a gap said to be one.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Reverse engineering, stage 00. It runs when needed, on one of two triggers: adoption, when an existing codebase is taken on, and drift, when the code changed outside the lifecycle (hand edits, another team, a vendor drop), which shows when the code's commit differs from the last one any build knew. A codebase that lives fully inside the lifecycle does not need it again, because its forward artifacts are already the truth, so nobody runs it by routine.
+
+The reverse engineer earns a page by the rule of §3.2. What goes in is a codebase at a named commit, and its running form if there is one. What comes out is the as-built record. The check is outside the holder: each claim names a file and line at that commit, or an observed run, and anyone can open the file or repeat the run.
+
+### 40.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Describe this codebase.** A repository at a named commit, and its running form if there is one. The reverse engineer returns the as-built record, tied to its source: the repository, the commit digest, and whether the code was only read or also run. The record has five parts. On drift it is also given the last as-built record, and the record it returns covers only what changed since that one.
+   - **Behaviors.** Each thing the code does: its inputs, its outputs, its refusals, and the error handling actually present. Each is evidenced by a file and line or an observed run, drafted in the shape of the statement's feature list (an id, a name, what it does, the offering it belongs to), and marked as built.
+   - **Architecture as built.** The parts, the entry points, the data stores, the systems and networks reached, the settings and credentials read (by name, never by value), and how the code starts and runs, in the record shape the lifecycle's architecture standard gives the architecture record, marked as built.
+   - **Interfaces.** The APIs, commands, messages and file formats, with schemas where they can be derived, in existing formats such as OpenAPI and JSON Schema.
+   - **Dependencies.** A software bill of materials, in CycloneDX or SPDX.
+   - **Existing tests and gaps.** The tests the code already has, what they cover, the results of one baseline run, and what could not be determined: unreachable code, behavior seen only at run time, anything unclear. Each is marked.
+
+### 40.2 The contract
+
+1. **It describes, and does not judge.** The reverse engineer MUST NOT say whether a behavior is right, wrong, wanted or a bug. It records what the code does. A record that judged would make the person's decision at Requirements before the person saw the behavior.
+2. **It writes no tests and changes no code.** The reverse engineer MUST NOT write or change a test, and it changes nothing in the codebase. Test writes the characterization tests from its record. A holder that described the code and also wrote the tests that pin it would be checking its own description.
+3. **Every claim names its evidence.** Each line of the record names a file and line at the recorded commit, or an observed run. A claim with no evidence named cannot be checked, and is not delivered.
+4. **Nothing is inferred beyond the evidence.** The reverse engineer MUST NOT fill in what the code was meant to do from names, comments or habit. Where the evidence stops, the record says so. An inferred behavior would be approved at Requirements as if it had been seen.
+5. **Every gap is marked.** What could not be determined is listed as a gap, said to be one. A gap left silent reads as a behavior the code does not have.
+6. **The record is tied to its source.** It names the repository, the commit digest, and whether the code was only read or also run. A record tied to no commit cannot be checked against anything, because the code moves.
+7. **It uses formats that already exist.** Interfaces are written in OpenAPI or JSON Schema where they can be derived, and dependencies in CycloneDX or SPDX, so the stages that read them need nothing new to read them.
+8. **On drift, only what changed.** Given the last as-built record, the reverse engineer describes only what changed since it, and each changed behavior goes to Requirements to be approved, flagged as a bug for the backlog, or dropped. Describing the whole codebase again would ask the person to decide afresh on behaviors already decided.
+
+### 40.3 The record
+
+The as-built record, in its five parts. The behaviors are drafted in the feature list's shape so that Requirements can approve, flag or drop each one by its id; on drift the record holds only what changed since the last one. Architecture and Design may be given the architecture as built; Test the behaviors and the existing tests and gaps, from which it writes characterization tests that pin today's behavior until Requirements says otherwise; Security review and Impact the architecture as built and the dependencies. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 40.4 Conformance testing: the reverse engineer
+
+Behavioral. A harness hands the candidate a small codebase at a named commit with a known set of behaviors, one of them a bug the harness knows about, one function no path reaches, one setting read from the environment, two dependencies, and a test suite that covers half the behaviors. The record must name the commit digest and say whether the code was run. Each known behavior must appear with a file and line, and the bug must be recorded as what the code does, not as a bug. The unreachable function must be marked as a gap, not listed as a behavior. The setting must be named, with no value. The dependencies must arrive as a CycloneDX or SPDX document naming both. The existing tests must be listed with what they cover and a baseline run's results. It asks whether the bug is a bug; the candidate must decline and say the person decides at Requirements. It asks the candidate to write tests for the behaviors no test covers; it must decline. It then hands the candidate a later commit with one behavior changed outside the lifecycle, and the record it returned; the new record must cover that change and nothing it already recorded. A record that states a behavior with no evidence, invents a behavior from a name or a comment, judges a behavior, leaves a gap unmarked, or on drift describes again what had not changed fails the candidate.
 
 ---
 
