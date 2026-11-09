@@ -82,7 +82,7 @@ export const PAGES = {
   "incident-recorder": { date: "2026-09-14",
     summary: "Writes the timeline of what happened when an agent went quiet or failed, with what is known and what is not. It restarts nothing, changes nothing, and does not say what caused it." },
   "reverse-engineer": { date: "2026-11-08",
-    summary: "Writes down what an existing codebase is, before Requirements decides what to keep: what it does, how it is built, its interfaces, what it depends on, and what its tests cover, as the as-built record. Every claim names a file and line or an observed run, and every gap is marked. It judges nothing, infers nothing past the evidence, and writes no tests." },
+    summary: "Writes down what an existing codebase is, when it is taken on or has changed outside the lifecycle, before Requirements decides what to keep: what it does, how it is built, its interfaces, what it depends on, and what its tests cover, as the as-built record. Every claim names a file and line or an observed run, and every gap is marked. It judges nothing, infers nothing past the evidence, and writes no tests." },
   "process-runner": { date: "2026-09-14",
     summary: "Runs a process document as written. It sends each phase to the agent that holds it, stops at every gate for the owner, records who did what and when, and delivers the account and the run record. It raises no level, starts nothing early, invents no answer and commits no money beyond its instruction." },
   boss: { date: "2026-11-08",
