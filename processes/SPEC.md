@@ -1,10 +1,18 @@
 # Agent Processes Specification
 
-**Version:** 0.9.2
+**Version:** 0.10.0
 **Status:** Published
-**Date:** 2026-11-01
+**Date:** 2026-11-10
 
-**This revision.** A test case is pinned to the digest of the process's
+**This revision.** A phase can start on a draft (Section 8.4.1). Where a
+handoff waits on a person, a document may let the phase after it begin
+on what the person is reading, by ending the handoff line with
+`on draft: <key>`. Nothing that phase produces is handed on until the
+handoff exists. Where what it was given changed, or the person refused,
+its work is discarded, and the record keeps the discarded round. A gate
+is never shortened or skipped.
+
+**0.9.2.** A test case is pinned to the digest of the process's
 shape, which leaves out the `bindings:` block (Section 21.1), so
 swapping or upgrading the agent that holds a role keeps a suite valid
 and a change to the process itself does not. A deviation line may end
@@ -1209,7 +1217,9 @@ means what has to cross is stated before anything starts. For
 a `system:` phase, the handoff is whatever the system wrote, and the
 phase after it names where to find it. `after:` says when a phase is
 allowed to start; the handoff says what has to be there when it does,
-and a runtime MUST satisfy both.
+and a runtime MUST satisfy both. Section 8.4.1 is the one exception: a
+phase that starts on a draft begins before both, and nothing it
+produces counts until both are satisfied.
 
 The value of `after:` is normally names joined by `+`. It MAY carry
 qualifying prose where an edge is conditional; the corpus writes forms
@@ -1986,6 +1996,78 @@ to an agent of another owner is delivered only after the runtime has
 checked that the owner is bound by the named agreement. A handoff the
 runtime refused to deliver does not exist for the receiving phase.
 
+Section 8.4.1 is the one exception. It lets a phase begin before its
+handoff exists, and never lets it finish before then.
+
+### 8.4.1. Starting on a draft
+
+Some handoffs wait on a person, and the person is usually going to say
+yes. The test writer can write against the spec while the owner reads
+it, and most of the time the owner's answer changes nothing the test
+writer used. Holding the test writer until the owner answers turns a
+person's reading time into the whole process's waiting time. A document
+MAY let the receiving phase start on the draft instead, by ending the
+handoff line with `on draft: <key>`:
+
+```
+  approve-the-spec -> write-the-suite [approved-spec]: the spec as the
+    owner left it, with who approved it and when   on draft: spec-drafted
+```
+
+**Which handoffs.** The sending phase MUST be one that waits on a
+person: a `human:` phase at `never` (Section 7.1), or a phase at
+`supervised` whose output a person approves before it is handed on
+(Section 7.3). The key MUST name a handoff into the sending phase, the
+thing the person is reading. For a `supervised` phase the key MAY name
+the handoff itself, and the draft is then the output the person has not
+yet approved. A document MUST NOT write `on draft:` on any other
+handoff. A handoff out of an agent's phase has no draft: it exists when
+the phase closes.
+
+**What may start.** The receiving phase MAY begin once the draft exists
+and every other handoff into it exists. It MUST be told that it is
+working on a draft, and which one. A phase that acts in the world
+(sends to somebody outside, publishes, pays, signs) MUST NOT start on a
+draft, because what it did cannot be thrown away. A phase at `never`
+MUST NOT start on a draft either: the person it waits for decides when
+it begins.
+
+**What it produces is held.** Until the handoff exists, nothing the
+receiving phase produces is handed on. The phase MUST NOT close, no
+`after:` edge out of it is satisfied, and no handoff out of it exists.
+Its output is not a draft for any phase after it, so one early start
+never leads to another.
+
+**When the handoff arrives.** The runtime compares what the receiving
+phase was given from the draft with what the handoff carries. What the
+handoff adds about the decision itself, such as who approved it and
+when, is not a change. Where nothing the phase was given has changed,
+the early work stands, and the phase goes on and closes as if it had
+started when the handoff arrived. Where something has changed, the
+early work is discarded and the phase runs again on the handoff. The
+runtime MAY give the holder the discarded work and what changed, to
+revise from rather than start over. Where the draft changes while the
+phase is working, for example because a deviation sends it back to be
+revised, the runtime SHOULD stop the early work, and MAY start it again
+on the new draft.
+
+**When the handoff never arrives.** Where the person refuses, or the
+run ends before the handoff exists, the early work is discarded and
+nothing of it is handed on.
+
+**What it does not change.** The person's decision is the same decision
+it was. Starting on a draft never counts as approving it, and never
+shortens or skips a gate (Section 7.3). Discarded work still costs what
+it cost, and the run's caps (Section 10.3) count it. An author SHOULD
+write `on draft:` only where the draft rarely changes in ways the
+receiving phase uses, or where the receiving phase is cheap beside the
+wait.
+
+**Records.** Each round that began on a draft is recorded with the key
+and digest of the draft it began on, and with whether its work was
+kept or discarded (Section 13.3). A discarded round stays in the
+record. It is not erased because it did not count.
+
 ### 8.5. A handoff is a thing, not a conversation
 
 What a handoff names MUST be something a later reader can point at: a
@@ -2548,6 +2630,10 @@ Each phase leaves the record its own level produces:
 | `convenes <collab pattern>` | that pattern's `CONVENED` and `DONE` records |
 | `system: <action>` | one line: what happened, when, and what did it |
 | `human: <action>` | one line: what happened, when, and who did it |
+
+A round of a phase that began on a draft (Section 8.4.1) also names the
+key and digest of that draft, and says whether its work was kept or
+discarded.
 
 A phase whose records are not written is not complete. A runtime MUST
 NOT mark such a phase complete, MUST NOT treat it as satisfying an
@@ -3142,10 +3228,11 @@ with its own id, a version 1 and a `from:` line (section 15.6).
 
 A runtime is whatever carries out a run: a workflow engine, an agent, a
 person with the document open, or any combination (section 2). It
-conforms by what it does with eleven sets of obligations.
+conforms by what it does with twelve sets of obligations.
 
 **The graph (section 6).** A runtime MUST NOT begin a phase before every
-phase its `after:` line names has closed. A runtime MUST allow phases
+phase its `after:` line names has closed, except as section 8.4.1
+allows. A runtime MUST allow phases
 with no path between them to be in flight at the same time. Order comes
 from the `after:` lines and never from the order the phases are listed
 in, and a runtime that walks the list top to bottom is not running the
@@ -3208,6 +3295,15 @@ case written for another digest of the document, MUST NOT let a phase
 that acts in the world act in a test run, MUST run every other phase as
 it would for real, and MUST keep test runs out of
 anything a reader relies on for the real work.
+
+**Starting on a draft (section 8.4.1).** A runtime MUST start a phase
+on a draft only where the handoff line says `on draft:`, MUST tell the
+phase it is working on a draft, MUST NOT hand on anything it produces,
+close it, or satisfy an `after:` edge out of it before the handoff
+exists, MUST discard its work where what it was given changed or the
+handoff never arrives, MUST NOT start a phase on a draft that acts in
+the world or is at `never`, and MUST record each such round with its
+draft's key and digest and whether it was kept or discarded.
 
 **Extensions (section 20).** A runtime MUST run a document whose
 extensions it does not know as if their lines were absent, MUST NOT let
