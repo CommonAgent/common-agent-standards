@@ -4,6 +4,20 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.10.0 (2026-11-10)
+
+- §8.4.1 Starting on a draft. A handoff out of a phase that waits on a
+  person (a `human:` phase at `never`, or a `supervised` phase) MAY end
+  with `on draft: <key>`, naming the handoff the person is reading. The
+  receiving phase may then begin on that draft. Nothing it produces is
+  handed on, it does not close, and no edge out of it is satisfied
+  until the handoff exists. Where what it was given changed, or the
+  handoff never arrives, its work is discarded. A phase that acts in
+  the world, or is at `never`, does not start on a draft. Each early
+  round is recorded with its draft and whether it was kept (§13.3).
+  §6.5, §8.4 and §17.3 name the exception; §17.3 gains the matching
+  obligations. No document in the corpus changes.
+
 ## 0.9.2 (2026-11-01)
 
 - §21.1: a test case is pinned to the digest of the process's shape, the
