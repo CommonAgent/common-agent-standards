@@ -138,7 +138,9 @@ jobs:
   standard:
     name: ${{ matrix.name }}
     needs: plan
-    runs-on: ubuntu-latest
+    # ubuntu-24.04, not ubuntu-latest: Playwright 1.55 has no browsers for
+    # ubuntu 26.04, which ubuntu-latest became on 2026-11-10.
+    runs-on: ubuntu-24.04
     strategy:
       fail-fast: false
       matrix: ${{ fromJSON(needs.plan.outputs.matrix) }}
