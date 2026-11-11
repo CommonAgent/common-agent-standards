@@ -7,9 +7,10 @@ this process makes one the way careful software teams make a program.
 The request is turned into a written spec, and the person who asked
 reads it and says yes before anything else is written. Then the agent is
 built: its architecture, its own files, a suite of tests and its
-scripts, in that order, each stage passing a check its holder does not
-control before the next begins. The suite is fixed before any script
-exists, so the scripts are held to a standard they did not choose. The
+scripts, in that order. Each is checked before the next is started, by a
+check the agent that wrote it can't change, and it can't change itself
+once it passes. The tests are finished before any script exists, so the
+scripts must meet a standard they did not choose. The
 package is made from the spec and the scripts and nothing else, and the
 person says yes again before the package is deployed. After the deploy, an agent that built none of it
 checks the running agent against what its own package declares. The
@@ -21,12 +22,11 @@ adopt and argue with. Its owner, its
 dates, its targets and its roster are blank, and the adopting
 organization fills them in. Each agent phase is held by a role the
 [Agent Roles](https://agentroles.ai/) standard defines, and any agent
-that holds the role may hold the phase. One holder may hold several
-roles: the build in particular may be held by one builder that holds
-the solution architect, the test writer and the code writer at once,
-such as the organization's own coding agent, a vendor's, or one it
-contracts for the run, or by a holder for each. What must be separate is
-the check, not the author. The table at the end says where each
+that holds the role may hold the phase. One agent can take on several
+roles: the build in particular can be done by one agent doing the work
+of the solution architect, the test writer and the code writer, such as
+the organization's own coding agent, a vendor's, or one it contracts for
+the run, or by a separate agent for each. The table at the end says where each
 phase is specified. The process is written from the side of the
 organization that wants the agent, and the person who asks for it is
 the agent's owner for the whole run.
@@ -42,7 +42,7 @@ framework wrapped as an agent, are made another way and not here.
 |---|---|---|---|
 | 1 | Write the Spec | the four answers settled and the spec drafted | [spec writer](https://agentroles.ai/spec-writer.html) · agent's owner (person) |
 | 2 | Approve the Spec | the owner answers what is open and says yes | agent's owner (person) |
-| 3 | Build the Agent | the architecture, the agent's own files, the suite and the scripts, each stage passing its own check | [solution architect](https://agentroles.ai/solution-architect.html) · [test writer](https://agentroles.ai/test-writer.html) · [code writer](https://agentroles.ai/code-writer.html), one builder or a holder for each |
+| 3 | Build the Agent | the architecture, the agent's own files, the suite and the scripts, each checked before the next is started | [solution architect](https://agentroles.ai/solution-architect.html) · [test writer](https://agentroles.ai/test-writer.html) · [code writer](https://agentroles.ai/code-writer.html), one agent, or a separate agent for each |
 | 4 | Make the Package | a signed package from the spec and the scripts only | [package maker](https://agentroles.ai/package-maker.html) |
 | 5 | Approve the Deploy | the owner reads the package's record and says yes | agent's owner (person) |
 | 6 | Deploy the Agent | the package installed, or the running agent updated | [deployment manager](https://agentroles.ai/deployment-manager.html) |
@@ -63,13 +63,14 @@ would have saved has been done. That is also why the spec phase is
 `assisted`: the spec writer gathers and drafts, and the person settles
 the four answers.
 
-The build begins once the spec is approved, and it runs in a fixed
+The build starts once the spec is approved, and it always goes in this
 order: the architecture, the agent's own files, the suite, then the
-scripts. Each stage passes only when its check does, and what it settled
-is then fixed, so a later stage never moves it. The suite is fixed
-before any script exists and is shown to fail against empty stand-ins
-for every script; a suite written from the scripts can pass by agreeing
-with a mistake, so the order is the protection, whoever writes both. The
+scripts. Each stage is finished only when its check passes, and what it
+produced can't change after that, so a later stage can't undo an earlier
+one. The tests are finished before any script exists, and are shown to
+fail while every script is still empty; tests written from the scripts
+can pass by agreeing with a mistake, so this order is the protection,
+even when one agent writes both. The
 scripts are then written against that suite. The package is made only from the approved spec and
 the scripts the code writing phase delivered, so nothing reaches the
 package that the suite never saw.
@@ -109,8 +110,9 @@ trigger: a person asks for an agent in words, through
          version that runs today attached as the prototype
 concurrency: runs may overlap - one run per agent at a time
 goal: a running agent whose package was made from a spec the owner
-      approved, whose scripts pass a suite fixed before them, each stage
-      of the build passed by a check its holder does not control, and
+      approved, whose scripts pass tests finished before them, each stage
+      of the build checked by something the agent that did it can't
+      change, and
       whose conformance was checked by an agent that did not build it,
       with every step on the record
 phases:
@@ -130,16 +132,16 @@ phases:
                        after: write-the-spec
                        automation: never
   build-the-agent    - harness: from the approved spec, in this order,
-                       each stage passing its own check before the next
-                       begins and then fixed: the architecture record;
+                       each stage checked before the next starts and
+                       unchanged once it passes: the architecture record;
                        the agent's own files, accepted by the packer;
                        the suite, a test for every acceptance scenario,
                        shown to fail against an empty stand-in for every
                        script; and the scripts, in <your settled stack>,
                        passing the suite, with the prototype read when
                        there is one
-                       owner: <one builder, or solution-architect,
-                       test-writer and code-writer>
+                       owner: <one agent for all of it, or
+                       solution-architect, test-writer and code-writer>
                        after: approve-the-spec
                        automation: <level>
   make-the-package   - harness: the signed Agent Package made from the
@@ -211,10 +213,10 @@ deviations:
     not what was wanted; the request is restated and the spec redone
 bindings:
   roster:  <who holds each role - an agent claiming each of the roles
-           above; build-the-agent may be held by one builder holding
+           above; build-the-agent may be done by one agent taking on
            the solution architect, test writer and code writer roles,
-           or by a holder for each; no agent that holds a building
-           phase also holds check-conformance; and the agent's owner
+           or by a separate agent for each; no agent that builds also
+           checks conformance; and the agent's owner
            (person), who holds the three human phases>
   systems: none of the phases reaches a system of its own; each agent
            brings what its package declares
@@ -225,10 +227,11 @@ policy:
     a package a harness reads, is said out loud at the spec and never
     built as something else that looks close
   a spec goes to the owner before anything else is built
-  each stage of the build passes a check its holder does not control,
-    and what it settled is fixed before the next stage begins
-  the suite is fixed before any script is written, and never changed
-    to fit one
+  each stage of the build is checked by something the agent that did
+    it can't change, and what it produced can't change once the next
+    stage starts
+  the tests are finished before any script is written, and never
+    changed to fit one
   no test is edited to make a script pass, and no script is delivered
     that the suite fails
   only scripts delivered by build-the-agent are packed; a script
@@ -302,7 +305,7 @@ open: <what nobody finished, and who may close it>
   the conflict and changes neither the test nor the spec. The owner
   decides which is wrong, and that one is revised.
 - **A stage of the build fails its check.** The builder fixes what the
-  check names in that stage. What an earlier stage settled stays fixed,
+  check names in that stage. What an earlier stage produced stays as it is,
   and changing it is the owner's call, which sends the build back to
   that stage.
 - **A script cannot be traced to the build.** The package maker refuses

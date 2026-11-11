@@ -22,11 +22,10 @@ still have to agree on how it is asked and answered. Agent Roles describes
 those as **interfaces**: a slice of behaviour an agent implements,
 alongside whatever else it does. Roles say what an agent is. Interfaces
 say what an agent can be asked. An agent implements as many as it likes.
-It may hold more than one role when one job carries them all, as one
-builder holds the spec writer, the test writer and the code writer in a
-single build. Every role stays a responsibility of its own: each artifact
-still passes its own check, which its holder does not control. What must be
-separate is the check, not the author.
+It can also take on more than one role when one job needs them all, as
+when one agent writes the spec, the tests and the code of a single build.
+Each role keeps its own description, and the work of each is checked by
+something the agent that did it can't change.
 
 Agent Roles is a guide among the Common Agent Standards, beside
 [Agent SoW](https://agentsow.com), [Agent RFP](https://agentrfp.net),
