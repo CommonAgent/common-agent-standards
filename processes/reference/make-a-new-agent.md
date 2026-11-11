@@ -1,16 +1,17 @@
 # Reference process: Make a New Agent
 
-`ref/dev/make-a-new-agent v1`
+`ref/dev/make-a-new-agent v2`
 
 A person in an organization wants an agent to do a piece of work, and
 this process makes one the way careful software teams make a program.
 The request is turned into a written spec, and the person who asked
-reads it and says yes before anything else is written. A suite of tests
-is written from the spec alone, before any script exists, so the
-scripts are held to a standard they did not choose. The scripts are
-written to pass that suite, the package is made from the spec and the
-scripts and nothing else, and the person says yes again before the
-package is deployed. After the deploy, an agent that built none of it
+reads it and says yes before anything else is written. Then the agent is
+built: its architecture, its own files, a suite of tests and its
+scripts, in that order, each stage passing a check its holder does not
+control before the next begins. The suite is fixed before any script
+exists, so the scripts are held to a standard they did not choose. The
+package is made from the spec and the scripts and nothing else, and the
+person says yes again before the package is deployed. After the deploy, an agent that built none of it
 checks the running agent against what its own package declares. The
 run closes when the person has read the agent's AgentDoc and said it
 may be listed.
@@ -20,9 +21,12 @@ adopt and argue with. Its owner, its
 dates, its targets and its roster are blank, and the adopting
 organization fills them in. Each agent phase is held by a role the
 [Agent Roles](https://agentroles.ai/) standard defines, and any agent
-that holds the role may hold the phase. The scripts in particular may
-be written by any code writer: the organization's own agent, a vendor's,
-or one it contracts for the run. The table at the end says where each
+that holds the role may hold the phase. One holder may hold several
+roles: the build in particular may be held by one builder that holds
+the solution architect, the test writer and the code writer at once,
+such as the organization's own coding agent, a vendor's, or one it
+contracts for the run, or by a holder for each. What must be separate is
+the check, not the author. The table at the end says where each
 phase is specified. The process is written from the side of the
 organization that wants the agent, and the person who asks for it is
 the agent's owner for the whole run.
@@ -38,13 +42,12 @@ framework wrapped as an agent, are made another way and not here.
 |---|---|---|---|
 | 1 | Write the Spec | the four answers settled and the spec drafted | [spec writer](https://agentroles.ai/spec-writer.html) · agent's owner (person) |
 | 2 | Approve the Spec | the owner answers what is open and says yes | agent's owner (person) |
-| 3 | Write the Suite | tests from the spec alone, shown to fail against nothing | [test writer](https://agentroles.ai/test-writer.html) |
-| 4 | Write the Scripts | the scripts the spec names, passing the suite | [code writer](https://agentroles.ai/code-writer.html) |
-| 5 | Make the Package | a signed package from the spec and the scripts only | [package maker](https://agentroles.ai/package-maker.html) |
-| 6 | Approve the Deploy | the owner reads the package's record and says yes | agent's owner (person) |
-| 7 | Deploy the Agent | the package installed, or the running agent updated | [deployment manager](https://agentroles.ai/deployment-manager.html) |
-| 8 | Check Conformance | the package's own declarations tested on the agent | [conformance checker](https://agentroles.ai/conformance-checker.html) |
-| 9 | Publish the Agent | the owner reads the AgentDoc and says it may be listed | agent's owner (person) |
+| 3 | Build the Agent | the architecture, the agent's own files, the suite and the scripts, each stage passing its own check | [solution architect](https://agentroles.ai/solution-architect.html) · [test writer](https://agentroles.ai/test-writer.html) · [code writer](https://agentroles.ai/code-writer.html), one builder or a holder for each |
+| 4 | Make the Package | a signed package from the spec and the scripts only | [package maker](https://agentroles.ai/package-maker.html) |
+| 5 | Approve the Deploy | the owner reads the package's record and says yes | agent's owner (person) |
+| 6 | Deploy the Agent | the package installed, or the running agent updated | [deployment manager](https://agentroles.ai/deployment-manager.html) |
+| 7 | Check Conformance | the package's own declarations tested on the agent | [conformance checker](https://agentroles.ai/conformance-checker.html) |
+| 8 | Publish the Agent | the owner reads the AgentDoc and says it may be listed | agent's owner (person) |
 
 ## What the graph says
 
@@ -60,10 +63,14 @@ would have saved has been done. That is also why the spec phase is
 `assisted`: the spec writer gathers and drafts, and the person settles
 the four answers.
 
-The suite is written after the spec is approved and before any script
-exists. A suite written from the scripts can pass by agreeing with a
-mistake, so the order is the protection. The scripts are then written
-against that suite. The package is made only from the approved spec and
+The build begins once the spec is approved, and it runs in a fixed
+order: the architecture, the agent's own files, the suite, then the
+scripts. Each stage passes only when its check does, and what it settled
+is then fixed, so a later stage never moves it. The suite is fixed
+before any script exists and is shown to fail against empty stand-ins
+for every script; a suite written from the scripts can pass by agreeing
+with a mistake, so the order is the protection, whoever writes both. The
+scripts are then written against that suite. The package is made only from the approved spec and
 the scripts the code writing phase delivered, so nothing reaches the
 package that the suite never saw.
 
@@ -78,24 +85,23 @@ descriptor.
 There is no separate process for changing an agent. A change to a
 released agent is a run of this process whose request says what should
 differ and whose prototype is the version that runs today. The spec is
-revised, the suite is written to the revised spec, the scripts are
-written again against it, and the deploy phase updates the agent that
+revised, the build runs again from it, and the deploy phase updates the agent that
 already runs under that name.
 
 Five edges point backwards. The owner can send the spec back with
 changes, and the spec is revised rather than drafted again. A test that
 cannot pass without breaking the spec goes to the owner, who decides
 which of the two is wrong. A script the package would ship that cannot
-be traced to the code writing phase goes back through that phase. A
-failed conformance case sends the scripts back to be revised against
-the same suite. And at the deploy approval the owner can say that what
+be traced to the build goes back through it. A failed conformance case
+sends the build back for its scripts to be revised against the same
+suite. And at the deploy approval the owner can say that what
 was built is not what was wanted, which sends the run back to the spec.
 
 ## The document, with the blanks marked
 
 ```
-PROCESS: make a new agent             id: <team>/make-a-new-agent   v1
-from: ref/dev/make-a-new-agent v1
+PROCESS: make a new agent             id: <team>/make-a-new-agent   v2
+from: ref/dev/make-a-new-agent v2
 owner: <who>                          effective: <date>
 trigger: a person asks for an agent in words, through
          <your request channel>, with a prototype attached when one
@@ -103,7 +109,8 @@ trigger: a person asks for an agent in words, through
          version that runs today attached as the prototype
 concurrency: runs may overlap - one run per agent at a time
 goal: a running agent whose package was made from a spec the owner
-      approved, whose scripts pass a suite written before them, and
+      approved, whose scripts pass a suite fixed before them, each stage
+      of the build passed by a check its holder does not control, and
       whose conformance was checked by an agent that did not build it,
       with every step on the record
 phases:
@@ -122,23 +129,25 @@ phases:
                        owner: <the agent's owner>
                        after: write-the-spec
                        automation: never
-  write-the-suite    - harness: the tests the scripts will be held to,
-                       written from the spec alone and shown to fail
-                       against an empty stand-in for every script the
-                       spec names
-                       owner: test-writer          after: approve-the-spec
-                       automation: <level>
-  write-the-scripts  - harness: the scripts the spec names, in
-                       <your settled stack>, passing the suite, with the
-                       prototype read when there is one
-                       owner: code-writer          after: write-the-suite
+  build-the-agent    - harness: from the approved spec, in this order,
+                       each stage passing its own check before the next
+                       begins and then fixed: the architecture record;
+                       the agent's own files, accepted by the packer;
+                       the suite, a test for every acceptance scenario,
+                       shown to fail against an empty stand-in for every
+                       script; and the scripts, in <your settled stack>,
+                       passing the suite, with the prototype read when
+                       there is one
+                       owner: <one builder, or solution-architect,
+                       test-writer and code-writer>
+                       after: approve-the-spec
                        automation: <level>
   make-the-package   - harness: the signed Agent Package made from the
                        spec and the delivered scripts and nothing else,
                        carrying the draft Descriptor in
                        agent-descriptor.json and the runtime
                        requirements in agent-runtime-requirements.json
-                       owner: package-maker        after: write-the-scripts
+                       owner: package-maker        after: build-the-agent
                        automation: <level>
   approve-the-deploy - human: the owner reads the package's build record
                        and says whether it goes on <your hosts>
@@ -168,17 +177,15 @@ handoffs:
   write-the-spec -> approve-the-spec [spec-drafted]: the spec, the four answers
     as the person settled them, and the list of what the request left
     open
-  approve-the-spec -> write-the-suite [approved-spec]: the spec as the
-    owner left it, with who approved it and when
-  approve-the-spec -> write-the-scripts [approved-spec]: the same spec,
-    and the prototype when one came with the request
-  write-the-suite -> write-the-scripts [suite-written]: every test file, and the
-    note of what the suite could not cover
+  approve-the-spec -> build-the-agent [approved-spec]: the spec as the
+    owner left it, with who approved it and when, and the prototype when
+    one came with the request
   approve-the-spec -> make-the-package [approved-spec]: the spec as the
     owner left it, which names the scripts the package must ship
-  write-the-scripts -> make-the-package [scripts]: every script the spec
-    names, the writer's account, and the signed job manifest that came
-    with the delivery
+  build-the-agent -> make-the-package [scripts]: the architecture record,
+    the agent's own files, the suite, every script the agent's files
+    name, the record of each stage's check, the builder's account, and
+    the signed job manifest that came with the delivery
   make-the-package -> approve-the-deploy [package]: the package's
     address, its sha256, and the build record
   approve-the-deploy -> deploy-the-agent [approved-package]: the
@@ -191,21 +198,23 @@ handoffs:
 deviations:
   approve-the-spec -> write-the-spec [changes]: the owner names what is
     wrong or answers a blank; the spec is revised, not drafted again
-  write-the-scripts -> approve-the-spec [conflict]: a test cannot pass
+  build-the-agent -> approve-the-spec [conflict]: a test cannot pass
     without breaking what the spec says; the owner decides which of the
     two is wrong, and the suite or the spec is revised
-  make-the-package -> write-the-scripts [untraced]: a script the package
-    would ship cannot be traced to the delivery of write-the-scripts; it
+  make-the-package -> build-the-agent [untraced]: a script the package
+    would ship cannot be traced to the delivery of build-the-agent; it
     goes back through that phase
-  check-conformance -> write-the-scripts [failed]: a case the package's
+  check-conformance -> build-the-agent [failed]: a case the package's
     own declarations promise has failed; the scripts are revised
     against the same suite
   approve-the-deploy -> write-the-spec [wrong-spec]: what was built is
     not what was wanted; the request is restated and the spec redone
 bindings:
   roster:  <who holds each role - an agent claiming each of the roles
-           above, one per phase, with no agent that holds a building
-           phase also holding check-conformance, and the agent's owner
+           above; build-the-agent may be held by one builder holding
+           the solution architect, test writer and code writer roles,
+           or by a holder for each; no agent that holds a building
+           phase also holds check-conformance; and the agent's owner
            (person), who holds the three human phases>
   systems: none of the phases reaches a system of its own; each agent
            brings what its package declares
@@ -215,11 +224,14 @@ policy:
   a request for an agent this process cannot make, meaning anything but
     a package a harness reads, is said out loud at the spec and never
     built as something else that looks close
-  a spec goes to the owner before any suite or script is written
-  the suite is written from the spec and never from the scripts
+  a spec goes to the owner before anything else is built
+  each stage of the build passes a check its holder does not control,
+    and what it settled is fixed before the next stage begins
+  the suite is fixed before any script is written, and never changed
+    to fit one
   no test is edited to make a script pass, and no script is delivered
     that the suite fails
-  only scripts delivered by write-the-scripts are packed; a script
+  only scripts delivered by build-the-agent are packed; a script
     written or changed outside that phase goes back through it
   nothing is deployed without the owner's yes on the package
   a prototype is read as the most exact statement of what was wanted
@@ -234,9 +246,10 @@ measures:
 records:
   spec              - the spec as the owner approved it, the four
                       answers, and who approved it and when
-  suite             - every test file, its failure against empty
-                      stand-ins, and what it could not cover
-  delivery          - the scripts, the writer's account, the record of
+  build             - the architecture record, the agent's own files,
+                      the suite and its failure against empty
+                      stand-ins, and the check that passed each stage
+  delivery          - the scripts, the builder's account, the record of
                       every round, and the signed job manifest
   build-record      - the package's address and sha256, and the signed
                       build record
@@ -261,13 +274,13 @@ run left.
 
 The delivery record matters most for the integrity of the run. The
 signed job manifest that came with the scripts is what the package
-maker reads to trace every script it packs to the code writing phase,
+maker reads to trace every script it packs to the build,
 and a script it cannot trace is not packed.
 
 The run closes:
 
 ```
-RUN DONE: <team>/make-a-new-agent v1 · run <n>
+RUN DONE: <team>/make-a-new-agent v2 · run <n>
 outcome: <completed | abandoned>
 result: <the agent's name, deployed, checked and listed>
 open: <what nobody finished, and who may close it>
@@ -280,17 +293,20 @@ open: <what nobody finished, and who may close it>
   that looks close to what was asked is the failure this rule prevents.
 - **Another of the four answers ends the run.** Two of the four answers
   can end a run, and the kind of agent is only one of them. Whichever
-  one it is, the run closes at the spec, before a suite or a script has
+  one it is, the run closes at the spec, before any of the build has
   been paid for.
 - **The owner sends the spec back.** The spec writer revises what the
   owner named and keeps the rest. A spec drafted again from the start
   loses the answers the owner already gave.
-- **A test cannot pass without breaking the spec.** The code writer
-  reports the conflict and changes neither the test nor the spec. The
-  owner decides which is wrong, and that one is revised.
-- **A script cannot be traced to the code writing phase.** The package
-  maker refuses to pack it, and the script goes back through
-  write-the-scripts. A script changed by hand after delivery is a
+- **A test cannot pass without breaking the spec.** The builder reports
+  the conflict and changes neither the test nor the spec. The owner
+  decides which is wrong, and that one is revised.
+- **A stage of the build fails its check.** The builder fixes what the
+  check names in that stage. What an earlier stage settled stays fixed,
+  and changing it is the owner's call, which sends the build back to
+  that stage.
+- **A script cannot be traced to the build.** The package maker refuses
+  to pack it, and the script goes back through build-the-agent. A script changed by hand after delivery is a
   script the suite may never have seen.
 - **A conformance case fails.** The scripts are revised against the
   same suite, and the agent is packaged and deployed again. A case
@@ -312,8 +328,7 @@ open: <what nobody finished, and who may close it>
 | Phase | Where it is specified |
 |---|---|
 | write-the-spec | [The spec writer](https://agentroles.ai/spec-writer.html) in Agent Roles; [the Agent Package](https://commonagent.net/spec.html#12-how-an-agent-travels-the-agent-package) in the Common Agent Specification |
-| write-the-suite | [The test writer](https://agentroles.ai/test-writer.html) in Agent Roles |
-| write-the-scripts | [The code writer](https://agentroles.ai/code-writer.html) in Agent Roles; [the job manifest](https://commonagent.net/spec.html#5-7-the-job-manifest-and-revisions) in the Common Agent Specification |
+| build-the-agent | [The solution architect](https://agentroles.ai/solution-architect.html), [the test writer](https://agentroles.ai/test-writer.html) and [the code writer](https://agentroles.ai/code-writer.html) in Agent Roles; [the job manifest](https://commonagent.net/spec.html#5-7-the-job-manifest-and-revisions) in the Common Agent Specification |
 | make-the-package | [The package maker](https://agentroles.ai/package-maker.html) in Agent Roles; [the layout](https://commonagent.net/spec.html#12-2-layout) and [the build record](https://commonagent.net/spec.html#8-2-the-build-record) in the Common Agent Specification |
 | deploy-the-agent | [The deployment manager](https://agentroles.ai/deployment-manager.html) in Agent Roles; [install and update](https://commonagent.net/spec.html#12-7-publish-install-update-remove) and [the deployment record](https://commonagent.net/spec.html#8-3-the-deployment-record) in the Common Agent Specification |
 | check-conformance | [The conformance checker](https://agentroles.ai/conformance-checker.html) in Agent Roles; [the evaluation record](https://commonagent.net/spec.html#8-4-the-evaluation-record) in the Common Agent Specification |
