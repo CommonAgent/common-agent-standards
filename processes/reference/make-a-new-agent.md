@@ -20,9 +20,9 @@ may be listed.
 This is a reference process. It is a first draft for an organization to
 adopt and argue with. Its owner, its
 dates, its targets and its roster are blank, and the adopting
-organization fills them in. Each agent phase is held by a role the
+organization fills them in. Each agent phase is the work of a role the
 [Agent Roles](https://agentroles.ai/) standard defines, and any agent
-that holds the role may hold the phase. One agent can take on several
+that takes on the role may do the phase. One agent can take on several
 roles: the build in particular can be done by one agent doing the work
 of the solution architect, the test writer and the code writer, such as
 the organization's own coding agent, a vendor's, or one it contracts for
