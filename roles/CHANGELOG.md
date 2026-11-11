@@ -4,6 +4,14 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.10 (2026-11-11)
+
+One agent can take on several roles. An agent was limited to one role; it
+can now take on more than one when one job needs them all, as when one agent
+writes a new agent from its spec through its code. Each role keeps its own
+description, and the work of each is still checked by something the agent
+that did it can't change.
+
 ## v1.9 (2026-11-08)
 
 A new lifecycle role, the reverse engineer (§40), writes down what an

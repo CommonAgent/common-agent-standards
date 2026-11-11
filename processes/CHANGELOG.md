@@ -4,6 +4,15 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.10.1 (2026-11-11)
+
+- The reference process make-a-new-agent is version 2: two writing phases
+  where there were five. The person writes or approves the spec, then one
+  builder makes everything else once it is approved, and each stage passes a
+  check the builder does not control before the next begins. Agent Roles
+  v1.10 says one agent may take on several roles. The language does not
+  change, and a document valid under 0.10.0 is valid under this version.
+
 ## 0.10.0 (2026-11-10)
 
 - §8.4.1 Starting on a draft. A handoff out of a phase that waits on a

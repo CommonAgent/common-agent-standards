@@ -1,8 +1,8 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.9
+**Version:** v1.10
 **Status:** Guide
-**Date:** 2026-11-08
+**Date:** 2026-11-11
 
 > Agent Roles is a guide. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. Each description says what a holder does, what it needs and what it refuses. The descriptions are semi-formal, and they will change as we learn. Where the text says MUST, SHOULD or MAY, read it as a plain description of what a holder does. The site at https://agentroles.ai shows each role and interface on a page of its own.
 
@@ -21,8 +21,11 @@ job anybody contracts an agent for, but two agents that have never met
 still have to agree on how it is asked and answered. Agent Roles describes
 those as **interfaces**: a slice of behaviour an agent implements,
 alongside whatever else it does. Roles say what an agent is. Interfaces
-say what an agent can be asked. An agent implements as many as it likes
-and holds at most one role.
+say what an agent can be asked. An agent implements as many as it likes.
+It can also take on more than one role when one job needs them all, as
+when one agent writes the spec, the tests and the code of a single build.
+Each role keeps its own description, and the work of each is checked by
+something the agent that did it can't change.
 
 Agent Roles is a guide among the Common Agent Standards, beside
 [Agent SoW](https://agentsow.com), [Agent RFP](https://agentrfp.net),

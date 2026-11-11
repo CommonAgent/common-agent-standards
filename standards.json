@@ -185,9 +185,9 @@
       "spec": "processes/SPEC.md",
       "domain": "agentprocesses.ai",
       "site": "https://agentprocesses.ai/",
-      "version": "0.10.0",
+      "version": "0.10.1",
       "status": "Published",
-      "tag": "processes-v0.10.0",
+      "tag": "processes-v0.10.1",
       "builder": "processes/site/tools/build-spec.mjs",
       "summary": "Agent Processes is a plain-text language for writing down how a piece of work runs: what starts it, the phases it moves through and who holds each one, what crosses each handoff, and how much of each phase an agent may run on its own."
     },
@@ -200,9 +200,9 @@
       "spec": "roles/ROLES.md",
       "domain": "agentroles.ai",
       "site": "https://agentroles.ai/",
-      "version": "v1.9",
+      "version": "v1.10",
       "status": "Guide",
-      "tag": "roles-v1.9",
+      "tag": "roles-v1.10",
       "builder": "roles/site/tools/build-spec.mjs",
       "summary": "Agent Roles is a guide of working descriptions of jobs that recur wherever agents work. Each role says what its holder does, what it needs and what it refuses, and the descriptions will change as we learn."
     },
