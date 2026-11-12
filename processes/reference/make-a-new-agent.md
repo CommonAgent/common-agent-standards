@@ -1,16 +1,17 @@
 # Reference process: Make a New Agent
 
-`ref/dev/make-a-new-agent v2`
+`ref/dev/make-a-new-agent v3`
 
 A person in an organization wants an agent to do a piece of work, and
 this process makes one the way careful software teams make a program.
 The request is turned into a written spec, and the person who asked
 reads it and says yes before anything else is written. Then the agent is
 built: its architecture, its own files, a suite of tests and its
-scripts, in that order. Each is checked before the next is started, by a
-check the agent that wrote it can't change, and it can't change itself
-once it passes. The tests are finished before any script exists, so the
-scripts must meet a standard they did not choose. The
+scripts, in whatever order the builder works best. A check the builder
+can't change judges them all together and names what each still needs.
+The tests are shown to fail while every script is empty, and they can't
+change once the scripts are first judged against them, so the scripts
+must meet a standard they did not choose. The
 package is made from the spec and the scripts and nothing else, and the
 person says yes again before the package is deployed. After the deploy, an agent that built none of it
 checks the running agent against what its own package declares. The
@@ -42,7 +43,7 @@ framework wrapped as an agent, are made another way and not here.
 |---|---|---|---|
 | 1 | Write the Spec | the four answers settled and the spec drafted | [spec writer](https://agentroles.ai/spec-writer.html) · agent's owner (person) |
 | 2 | Approve the Spec | the owner answers what is open and says yes | agent's owner (person) |
-| 3 | Build the Agent | the architecture, the agent's own files, the suite and the scripts, each checked before the next is started | [solution architect](https://agentroles.ai/solution-architect.html) · [test writer](https://agentroles.ai/test-writer.html) · [code writer](https://agentroles.ai/code-writer.html), one agent, or a separate agent for each |
+| 3 | Build the Agent | the architecture, the agent's own files, the suite and the scripts, in any order, judged together by a check the builder can't change | [solution architect](https://agentroles.ai/solution-architect.html) · [test writer](https://agentroles.ai/test-writer.html) · [code writer](https://agentroles.ai/code-writer.html), one agent, or a separate agent for each |
 | 4 | Make the Package | a signed package from the spec and the scripts only | [package maker](https://agentroles.ai/package-maker.html) |
 | 5 | Approve the Deploy | the owner reads the package's record and says yes | agent's owner (person) |
 | 6 | Deploy the Agent | the package installed, or the running agent updated | [deployment manager](https://agentroles.ai/deployment-manager.html) |
@@ -63,15 +64,14 @@ would have saved has been done. That is also why the spec phase is
 `assisted`: the spec writer gathers and drafts, and the person settles
 the four answers.
 
-The build starts once the spec is approved, and it always goes in this
-order: the architecture, the agent's own files, the suite, then the
-scripts. Each stage is finished only when its check passes, and what it
-produced can't change after that, so a later stage can't undo an earlier
-one. The tests are finished before any script exists, and are shown to
-fail while every script is still empty; tests written from the scripts
-can pass by agreeing with a mistake, so this order is the protection,
-even when one agent writes both. The
-scripts are then written against that suite. The package is made only from the approved spec and
+The build starts once the spec is approved. The builder writes the
+architecture, the agent's own files, the suite and the scripts in
+whatever order it works best, and a check it can't change judges them
+together and names what each still needs. One thing has a fixed order.
+The suite is shown to fail against an empty stand-in for every script,
+and once the scripts are first judged against it, it can't change.
+Tests changed to fit the scripts can pass by agreeing with a mistake, so
+this is the protection, even when one agent writes both. The package is made only from the approved spec and
 the scripts the code writing phase delivered, so nothing reaches the
 package that the suite never saw.
 
@@ -101,8 +101,8 @@ was built is not what was wanted, which sends the run back to the spec.
 ## The document, with the blanks marked
 
 ```
-PROCESS: make a new agent             id: <team>/make-a-new-agent   v2
-from: ref/dev/make-a-new-agent v2
+PROCESS: make a new agent             id: <team>/make-a-new-agent   v3
+from: ref/dev/make-a-new-agent v3
 owner: <who>                          effective: <date>
 trigger: a person asks for an agent in words, through
          <your request channel>, with a prototype attached when one
@@ -110,9 +110,9 @@ trigger: a person asks for an agent in words, through
          version that runs today attached as the prototype
 concurrency: runs may overlap - one run per agent at a time
 goal: a running agent whose package was made from a spec the owner
-      approved, whose scripts pass tests finished before them, each stage
-      of the build checked by something the agent that did it can't
-      change, and
+      approved, whose scripts pass tests that could not change once the
+      scripts were judged against them, the build checked by something
+      the agent that did it can't change, and
       whose conformance was checked by an agent that did not build it,
       with every step on the record
 phases:
@@ -131,15 +131,16 @@ phases:
                        owner: <the agent's owner>
                        after: write-the-spec
                        automation: never
-  build-the-agent    - harness: from the approved spec, in this order,
-                       each stage checked before the next starts and
-                       unchanged once it passes: the architecture record;
-                       the agent's own files, accepted by the packer;
-                       the suite, a test for every acceptance scenario,
-                       shown to fail against an empty stand-in for every
-                       script; and the scripts, in <your settled stack>,
-                       passing the suite, with the prototype read when
-                       there is one
+  build-the-agent    - harness: from the approved spec, in any order,
+                       all judged together by a check the builder can't
+                       change: the architecture record; the agent's own
+                       files, accepted by the packer; the suite, a test
+                       for every acceptance scenario, shown to fail
+                       against an empty stand-in for every script and
+                       unchanged once the scripts are first judged
+                       against it; and the scripts, in <your settled
+                       stack>, passing the suite, with the prototype
+                       read when there is one
                        owner: <one agent for all of it, or
                        solution-architect, test-writer and code-writer>
                        after: approve-the-spec
@@ -186,7 +187,7 @@ handoffs:
     owner left it, which names the scripts the package must ship
   build-the-agent -> make-the-package [scripts]: the architecture record,
     the agent's own files, the suite, every script the agent's files
-    name, the record of each stage's check, the builder's account, and
+    name, the record of the check that passed the build, the builder's account, and
     the signed job manifest that came with the delivery
   make-the-package -> approve-the-deploy [package]: the package's
     address, its sha256, and the build record
@@ -227,11 +228,9 @@ policy:
     a package a harness reads, is said out loud at the spec and never
     built as something else that looks close
   a spec goes to the owner before anything else is built
-  each stage of the build is checked by something the agent that did
-    it can't change, and what it produced can't change once the next
-    stage starts
-  the tests are finished before any script is written, and never
-    changed to fit one
+  the build is checked by something the agent that did it can't change
+  the tests are shown to fail before the scripts are judged against
+    them, can't change after that, and are never changed to fit a script
   no test is edited to make a script pass, and no script is delivered
     that the suite fails
   only scripts delivered by build-the-agent are packed; a script
@@ -251,7 +250,7 @@ records:
                       answers, and who approved it and when
   build             - the architecture record, the agent's own files,
                       the suite and its failure against empty
-                      stand-ins, and the check that passed each stage
+                      stand-ins, and the check that passed the build
   delivery          - the scripts, the builder's account, the record of
                       every round, and the signed job manifest
   build-record      - the package's address and sha256, and the signed
@@ -283,7 +282,7 @@ and a script it cannot trace is not packed.
 The run closes:
 
 ```
-RUN DONE: <team>/make-a-new-agent v2 · run <n>
+RUN DONE: <team>/make-a-new-agent v3 · run <n>
 outcome: <completed | abandoned>
 result: <the agent's name, deployed, checked and listed>
 open: <what nobody finished, and who may close it>
@@ -304,10 +303,11 @@ open: <what nobody finished, and who may close it>
 - **A test cannot pass without breaking the spec.** The builder reports
   the conflict and changes neither the test nor the spec. The owner
   decides which is wrong, and that one is revised.
-- **A stage of the build fails its check.** The builder fixes what the
-  check names in that stage. What an earlier stage produced stays as it is,
-  and changing it is the owner's call, which sends the build back to
-  that stage.
+- **The build fails its check.** The builder fixes what the check names,
+  in whatever order it likes. The approved spec, and the suite once the
+  scripts have been judged against it, stay as they are; changing either
+  is the owner's call, which sends the run back to the spec or reopens
+  the suite.
 - **A script cannot be traced to the build.** The package maker refuses
   to pack it, and the script goes back through build-the-agent. A script changed by hand after delivery is a
   script the suite may never have seen.

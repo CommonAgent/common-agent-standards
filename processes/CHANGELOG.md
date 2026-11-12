@@ -4,6 +4,20 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.10.2 (2026-11-12)
+
+- The reference process make-a-new-agent is version 3. Version 2 had the
+  two writing phases right, but inside build-the-agent it fixed an order
+  (the architecture, the agent's own files, the suite, the scripts), each
+  checked before the next started and unchanged once it passed. That was
+  not the intent. In version 3 the builder writes those four in whatever
+  order it works best, and a check it can't change judges them together.
+  One order stays fixed: the suite is shown to fail against an empty
+  stand-in for every script, and once the scripts are first judged against
+  it, it can't change. The goal, the phase, a handoff, the policy, a
+  record and a failure edge say so. The language does not change, and a
+  document valid under 0.10.1 is valid under this version.
+
 ## 0.10.1 (2026-11-11)
 
 - The reference process make-a-new-agent is version 2: two writing phases

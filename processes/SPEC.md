@@ -1,8 +1,8 @@
 # Agent Processes Specification
 
-**Version:** 0.10.1
+**Version:** 0.10.2
 **Status:** Published
-**Date:** 2026-11-10
+**Date:** 2026-11-12
 
 **This revision.** A phase can start on a draft (Section 8.4.1). Where a
 handoff waits on a person, a document may let the phase after it begin
