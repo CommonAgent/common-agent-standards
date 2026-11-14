@@ -1,8 +1,8 @@
-# Agent Messaging 0.10
+# Agent Messaging 0.11
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.10.2-draft
+**Version:** 0.11.0-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -156,7 +156,7 @@ The agents and nodes a server runs for itself (its registry agent, its admission
 | Metering, economics and commerce | §13.5, §19, EXT-8 | A server MAY meter, price and settle. One that meters produces the observed meters of §13.5; prices, agreements and the billing provider follow §19. |
 | Stored observability | §13 | Trace propagation is in every envelope and is the SDKs' obligation. Storing traces, metrics and logs is optional, as §13 already says. |
 | Other extensions | §17.5, `extensions/` | Every extension other than rooms (EXT-5) and admission (EXT-6), including the A2A bridge. |
-| Federation | §21 | The mechanism is not yet specified and belongs to no profile. Its preconditions are core. |
+| Federation | §21 | Its preconditions are core. A private instance's link (§21.8 to §21.13) is optional: a server that offers it, on either end, follows those rules. Visiting is not yet specified and belongs to no profile. |
 
 The parked composed operations of §10 belong to no profile.
 
@@ -4836,6 +4836,8 @@ For critical operations (task state transitions, artifact delivery):
 - Consumers MUST use explicit ack policy and track processed message IDs.
 - The deduplication window SHOULD be set to at least 2 minutes.
 
+**The hop count.** A carrier that relays a message from one instance to another (a private instance's link, §21.8 to §21.13, or peering) carries the hop count of §21.2 in the message header `Mesh-Hops`, a decimal integer: absent means 0, and each crossing writes the count it received plus one. A carrier MUST drop, and never publish, a message whose count after the increment exceeds 3. The header is outside the signed envelope, and a carrier changes nothing inside the envelope.
+
 ### 18.9. Message Size
 
 - NATS default max message size: 1 MB.
@@ -5292,9 +5294,12 @@ rule's point.
 This spec defines a single mesh **instance**: one operator, one transport, one
 registry. Many independent instances are expected (public, corporate,
 personal), and connecting them (so an agent on one instance can reach an agent
-on another) is **federation**. The mechanism is not yet implemented. The
-*model* is settled, and it is written down here rather than deferred, because
-the choice constrains what this specification may do elsewhere.
+on another) is **federation**. The *model* is settled, and it is written down
+here rather than deferred, because the choice constrains what this
+specification may do elsewhere. One mechanism is specified: the link by which
+a private instance, one with no public address, reaches a public instance and
+is reached from it (§21.8 to §21.13). Visiting between instances that can each
+be reached is not yet specified.
 
 ### The model: agents visit, traffic does not tunnel
 
@@ -5333,11 +5338,14 @@ What follows from this, and is normative:
   of the instance holding the state, so tasks and rooms work normally without
   any cross-instance state protocol. Nothing here needs distributed streams.
 - **Peering is an optimization, never a precondition.** Two instances with
-  heavy mutual traffic MAY establish a transport-level link (in the reference binding, the NATS gateway
-  topology, with account import/export deciding which subjects cross). Basic
-  reachability MUST NOT depend on one, and no agent's behavior may differ by
-  whether a link exists. The relay guard (below) and the reserved
-  `mesh.peer.{instance}.>` namespace (§14.1) exist for that path.
+  heavy mutual traffic MAY establish a transport-level connection between
+  them (in the reference binding, the NATS gateway topology, with account
+  import/export deciding which subjects cross). Basic reachability between
+  instances that can each be reached MUST NOT depend on one, and no agent's
+  behavior may differ by whether one exists. The relay guard (below) and the
+  reserved `mesh.peer.{instance}.>` namespace (§14.1) exist for that path. An
+  instance that cannot be reached at all is reached through the link it dials
+  out (§21.8 to §21.13), which is not peering.
 - **Discovery does not cross by default.** Cross-instance discovery is strictly
   opt-in per operator; personal and private agents remain non-discoverable
   (§8.6, SPEC-NAMING §5.4). Note that *resolution* and *discovery* are
@@ -5463,7 +5471,7 @@ verifiable independent of which connection or instance carried them (§4.5).
 
 ### Preconditions (normative now)
 
-The mechanism is unbuilt, but its **preconditions bind this version of the
+Visiting is unbuilt, but its **preconditions bind this version of the
 specification**, so that a second instance can be connected without amending
 it. These are the constraints conformance tests t01 to t04 exercise, and they are
 cited elsewhere as §21.1 through §21.7 by number:
@@ -5472,11 +5480,15 @@ cited elsewhere as §21.1 through §21.7 by number:
    verify independent of which connection, node, or instance carried it
    (§4.5, restated here as a federation precondition). No implementation may
    treat "arrived on my transport" as evidence of authenticity.
-2. **Relay guard.** The envelope `meta` field reserves `hops`: an integer
-   incremented by each relaying instance. Instances MUST drop envelopes whose
-   `hops` exceeds a small bound (RECOMMENDED: 3). This is the loop-prevention
-   primitive peering will rely on; single-instance deployments simply never
-   set it.
+2. **Relay guard.** Each relaying instance increments a hop count carried
+   with the message, and instances MUST drop a message whose count exceeds a
+   small bound (RECOMMENDED: 3). The count rides outside the signed envelope,
+   because the envelope's signature covers `meta` (§5.3) and a relay cannot
+   change a signed byte: in the reference binding it is the message header
+   `Mesh-Hops` (§18). The envelope `meta` key `hops` stays reserved, and an
+   envelope whose sender set `meta.hops` above the bound is dropped too. This
+   is the loop-prevention primitive links (below) and peering rely on;
+   single-instance deployments simply never set either.
 3. **Subject mappability.** All protocol subjects live under prefixes an
    importing instance can rewrite mechanically (§14), and
    `mesh.peer.{instance}.>` is reserved for the relay path (§14.1).
@@ -5512,6 +5524,58 @@ The test of these constraints is concrete: **a second production instance must
 be connectable without amending this specification.** If connecting one
 requires a change to anything above, one of the seven constraints was violated;
 file it as a defect against this section.
+
+### A private instance's link (normative)
+
+Visiting assumes the visited instance can be reached. An instance with no
+public address, such as one on a person's computer or inside a company network
+with no way in, cannot be visited, and nothing outside it can open a
+connection to it. Such an instance is **private**. A private instance reaches
+other instances, and is reached from them, through a **link**: one connection
+that it dials out to a public instance and keeps open, the same way an agent
+behind a firewall keeps its connection to its mesh open. A link is not
+peering. The two operators make no arrangement with each other, and the public
+instance treats the link as one more node. These rules are cited as §21.8
+through §21.13:
+
+8. **The link is a node.** The private instance connects to the public
+   instance as a node (§4.2), under a node credential (§4.8) that the public
+   instance issues to the account holder who approved the link. The public
+   instance asks that account holder for the approval through its own channel
+   (for example, an emailed link) and MUST NOT issue a link credential without
+   it. The credential names the agents the link carries, as every node
+   credential names the agents its node vouches for, and the link vouches for
+   those agents and no others.
+9. **A linked agent keeps who it is.** A linked agent is registered on the
+   public instance under its own key, with its own signed manifest (§8.3) and
+   the link's vouch as its node (§4.4). It belongs there to the account holder who approved the
+   link. It is reachable at its ordinary inbox subject (§14.4), so an agent on
+   the public instance addresses it exactly as it addresses any other agent,
+   and its admission policy (EXT-6) is applied as for any other agent.
+10. **Inward.** A message for a linked agent that reaches the public instance
+    is carried down the link and published on the private instance at the
+    linked agent's inbox subject. Every message the linked agent sends in
+    answer, on the reply subject the sender gave, is carried back the same
+    way. While the link is down, a message for a linked agent waits in its
+    inbox on the public instance as for any offline agent (§16.4), and SHOULD
+    be carried down when the link returns.
+11. **Outward.** A message that an agent on the private instance addresses to
+    an agent the private instance does not hold is carried up the link and
+    published on the public instance at the recipient's inbox subject, and
+    every answer on the sender's reply subject is carried back down. The
+    private instance keeps no table of where other agents live: an agent it
+    does not hold is reached through its link, or not at all. A private
+    instance has at most one link.
+12. **Hops.** Each crossing of a link counts as one relay under §21.2: the
+    carrier increments the hop count, and a message over the bound is dropped,
+    never carried. A linked agent's own envelopes are carried unchanged, and
+    the receiver verifies them on their own signatures (§21.1). The link is
+    never evidence that a message is authentic.
+13. **The private instance's agents stay private by default.** Linking makes a
+    linked agent reachable by anyone who knows it, as any agent on the public
+    instance is reachable. It does not list it: a linked agent appears in the
+    public instance's discovery only if its own manifest asks to be listed
+    (§8.6).
 
 ### What a visitor pays with
 
@@ -7348,3 +7412,21 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > **0.10.2-draft (2026-11-07).** The binding (0.4.2-draft) lets an agent name a
 > default offering for Messages that name none (§12.1), and carries the person a
 > trusted host vouches for on a trial (§12.8). No section number changes.
+
+> **0.11.0-draft (2026-11-13). A private instance's link.** Federation gets
+> its first mechanism. An instance with no public address, such as one on a
+> person's computer, cannot be visited, so §21 now specifies the link it dials
+> out to a public instance and keeps open (§21.8 to §21.13): the link is a node
+> of the public instance, under a node credential issued to the account holder
+> who approved it; a linked agent keeps its own key and signed manifest and is
+> reached at its ordinary inbox subject; a message for a linked agent is
+> carried down the link, a message to an agent the private instance does not
+> hold is carried up it, and answers come back the same way; while the link is
+> down, messages wait in the public instance's inbox. A link is not peering,
+> and the rule that reachability never depends on peering now says it applies
+> between instances that can each be reached. §21.2 is corrected: the envelope
+> signature covers `meta`, so a relay could never increment `meta.hops`; the
+> hop count now rides outside the envelope, as the NATS header `Mesh-Hops`
+> (§18.8), and `meta.hops` stays reserved and is still bounded. §1.6 makes the
+> link optional on either end. Visiting is still unspecified. No section number
+> changes; the wire version stays 0.4.0.
