@@ -1,8 +1,8 @@
-# Agent Messaging 0.11
+# Agent Messaging 0.12
 
 A protocol for agents that work over reliable messaging: signed messages that wait in an inbox, events published to every subscriber, and presence
 
-**Version:** 0.11.0-draft
+**Version:** 0.12.0-draft
 **Status:** Working Draft
 **Date:** 2026-11-07
 
@@ -156,7 +156,7 @@ The agents and nodes a server runs for itself (its registry agent, its admission
 | Metering, economics and commerce | §13.5, §19, EXT-8 | A server MAY meter, price and settle. One that meters produces the observed meters of §13.5; prices, agreements and the billing provider follow §19. |
 | Stored observability | §13 | Trace propagation is in every envelope and is the SDKs' obligation. Storing traces, metrics and logs is optional, as §13 already says. |
 | Other extensions | §17.5, `extensions/` | Every extension other than rooms (EXT-5) and admission (EXT-6), including the A2A bridge. |
-| Federation | §21 | Its preconditions are core. A private instance's link (§21.8 to §21.13) is optional: a server that offers it, on either end, follows those rules. Visiting is not yet specified and belongs to no profile. |
+| Federation | §21 | Its preconditions are core. A private instance's link (§21.8 to §21.13) is optional: a server that offers it, on either end, follows those rules. Visiting (§21.14 to §21.20) is optional too: a server that issues passes follows rules 15 to 20, and a client that resolves names follows rule 14. |
 
 The parked composed operations of §10 belong to no profile.
 
@@ -5289,17 +5289,18 @@ rule's point.
 
 ---
 
-## 21. Federation (Planned)
+## 21. Federation
 
 This spec defines a single mesh **instance**: one operator, one transport, one
 registry. Many independent instances are expected (public, corporate,
 personal), and connecting them (so an agent on one instance can reach an agent
 on another) is **federation**. The *model* is settled, and it is written down
 here rather than deferred, because the choice constrains what this
-specification may do elsewhere. One mechanism is specified: the link by which
-a private instance, one with no public address, reaches a public instance and
-is reached from it (§21.8 to §21.13). Visiting between instances that can each
-be reached is not yet specified.
+specification may do elsewhere. Two mechanisms are specified: the link by
+which a private instance, one with no public address, reaches a public
+instance and is reached from it (§21.8 to §21.13), and the visit by which an
+agent of one instance that can be reached talks to an agent on another
+(§21.14 to §21.20).
 
 ### The model: agents visit, traffic does not tunnel
 
@@ -5471,9 +5472,9 @@ verifiable independent of which connection or instance carried them (§4.5).
 
 ### Preconditions (normative now)
 
-Visiting is unbuilt, but its **preconditions bind this version of the
-specification**, so that a second instance can be connected without amending
-it. These are the constraints conformance tests t01 to t04 exercise, and they are
+The **preconditions of visiting bind this version of the specification**, and
+bound every version before visiting itself was specified, so that a second
+instance can be connected without amending it. These are the constraints conformance tests t01 to t04 exercise, and they are
 cited elsewhere as §21.1 through §21.7 by number:
 
 1. **Carrier independence.** An envelope's signature, identity, and trace MUST
@@ -5576,6 +5577,88 @@ through §21.13:
     instance is reachable. It does not list it: a linked agent appears in the
     public instance's discovery only if its own manifest asks to be listed
     (§8.6).
+
+### A visit (normative)
+
+An agent whose home instance can be reached talks to an agent on another
+instance that can be reached by visiting it, as the model above says: it
+resolves the recipient's card, reads the recipient's home mesh from it, asks
+that mesh for a short pass, connects there under the pass, and addresses the
+recipient's inbox normally. The two operators make no arrangement with each
+other. The visitor's home instance is asked one question, whether it stands
+behind the visitor's key, and carries no traffic. These rules are cited as
+§21.14 through §21.20:
+
+14. **Reading where.** A sender that resolves a recipient whose card names a
+    home mesh (SPEC-NAMING §5.1) other than the instance the sender is
+    connected to MUST visit that mesh to reach it, or refuse to send and say
+    where the recipient lives. It MUST NOT publish on its own instance as if
+    the recipient were there (§21.6). A naming service that holds cards for
+    the agents of a mesh instance MUST fill each card's home mesh. A card with
+    no home mesh names no place to visit, and a sender reads it as an agent of
+    the instance it is connected to.
+15. **The pass.** The visitor asks the recipient's home mesh for a pass over
+    HTTPS, at the control plane the card names. It presents its handle, its
+    agent key, and a fresh signature by that key over the visit statement,
+    which names the time, the key and the instance it asks, so a pass request
+    cannot be replayed to another instance. It also presents a fresh signature
+    over its own home mesh's standing statement (rule 16), which the visited
+    instance carries there. In the reference binding the door is
+    `POST /v1/visit` and the visit statement is
+    `mesh-visit-v1:<unix seconds>:<agent key>:<the visited control plane URL>`,
+    honoured within 600 seconds of its time.
+16. **The checks before a pass.** The visited instance MUST, before it issues
+    anything:
+    1. resolve the visitor's handle at its naming service and verify the
+       card's signature (SPEC-NAMING §5), and refuse unless the card's
+       agentmesh endpoint carries the presented key and names a home mesh
+       that is not the visited instance itself;
+    2. ask that home mesh, over HTTPS at the address the card names, whether
+       an account with a verified owner holds the key (§4.1), carrying the
+       visitor's signature over the standing statement, and whether the key
+       is revoked (§4.10) or its agent stopped (§4.12). In the reference
+       binding these are `POST /v1/key-standing`, whose statement is
+       `mesh-key-standing-v1:<unix seconds>:<agent key>`, and
+       `GET /v1/key-check/<agent key>`;
+    3. refuse a visitor whose home mesh its operator has barred.
+
+    A check that fails MUST refuse with a machine-readable reason
+    (`visitor_card_invalid`, `visitor_not_in_standing`,
+    `visitor_key_revoked`, `visitor_home_barred`), and a check that cannot be
+    answered MUST refuse with `visitor_check_unavailable` rather than issue.
+    The visited instance rate-limits the door per key and per address.
+17. **What a pass is.** A pass is a node credential (§4.8) for the one visiting
+    agent key, issued by the visited instance with a short finite life
+    (RECOMMENDED: one hour or less), together with the transport address to
+    connect to. It is not renewed: a visitor that needs longer asks again,
+    and every new pass passes every check of rule 16 again. A pass lets the
+    visitor receive on its own inbox subject (§14.4), send to agents' inboxes
+    and knock and describe at their doors (EXT-6, §10.14), and read the
+    registry. It MUST NOT let the visitor register in the visited instance's
+    registry, appear in its discovery, publish presence, reach operator,
+    platform or peering subjects (§14.1), or send as any key but its own. The
+    visited instance MAY grant a visitor more, such as a room it was invited
+    to, and never more than a node credential for that agent could hold.
+18. **A visitor at an agent's door.** At every agent's door a visitor is a
+    sender with a verified identity that the recipient does not know, sorted
+    in the `registered` tier (EXT-6 §4) unless the recipient's roster names it,
+    and never as `anonymous`. Its owner decides, as for any stranger: the
+    visitor knocks, the knock carries its handle and home mesh so the owner
+    sees who asks and from where, and an admission granted to its key holds
+    for its later visits. A visitor's message is verified on its own
+    signature (§21.1); the pass is never evidence that a message is
+    authentic.
+19. **Late answers wait.** An answer can arrive after the visitor's
+    connection has closed or its pass has run out. A message on a visitor's
+    inbox subject while it is not connected waits on the visited instance as
+    for any offline agent (§16.4), for at least 24 hours after the visitor's
+    last pass expires, and is delivered when it visits again. The visited
+    instance MUST NOT carry it to the visitor's home instance.
+20. **Nothing crosses.** A visit relays nothing from one instance to another:
+    the visitor's own connection carries its own messages, so §21.2's hop
+    count does not apply and the visited instance MUST NOT forward a
+    visitor's message to any other instance. The visitor's home instance
+    holds no state for the visit and is not a party to it.
 
 ### What a visitor pays with
 
@@ -7430,3 +7513,18 @@ Revision notes from the 0.2 draft line onward, in chronological order (oldest fi
 > (§18.8), and `meta.hops` stays reserved and is still bounded. §1.6 makes the
 > link optional on either end. Visiting is still unspecified. No section number
 > changes; the wire version stays 0.4.0.
+
+> **0.12.0-draft (2026-11-14). A visit.** Federation gets its second
+> mechanism: an agent of one instance that can be reached talks to an agent on
+> another by visiting it (§21.14 to §21.20). A sender reads the recipient's
+> home mesh from its card and visits it rather than publishing locally; the
+> visitor asks that mesh for a pass with a fresh signature bound to it; the
+> visited instance checks the card, asks the visitor's home mesh whether it
+> stands behind the key and whether the key is revoked or stopped, and only
+> then issues a short pass, a node credential for that one key that cannot
+> register, be listed or speak for another key. At each agent's door a
+> visitor is sorted in the `registered` tier and knocks like any stranger.
+> Answers that arrive after a visit wait on the visited instance for the
+> visitor's next visit. Nothing is relayed between instances, so the hop count
+> does not apply. §21's heading drops "(Planned)". §1.6 makes visiting
+> optional. No section number changes; the wire version stays 0.4.0.
