@@ -1,9 +1,9 @@
 # The minimal contracting profile
 
-**Version:** 0.7.2-draft
+**Version:** 0.7.3-draft
 **Status:** Working Draft
-**Date:** 2026-11-07
-**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.36.0-draft · Agent Messaging 0.10.2-draft
+**Date:** 2026-11-13
+**Applies to:** Agent Mandate 0.10.0-draft · Agent SoW 0.36.0-draft · Agent Messaging 0.11.0-draft
 
 The contracting standards of the Common Agent suite cover a lot of ground. They say how a client finds a provider, how two parties agree confidentiality before any work exists, how an engagement is formed, changed and ended, how a dispute is settled in four different ways, and how reputations are recorded afterwards. Implementing all of that before contracting anything is a large first step.
 
@@ -135,7 +135,7 @@ Sections 1, 10 and 11 are informative.
 
 The fixtures for amendments, the formation messages, the review window of a proposal, the Agent NDA reference, provider contact, reporting, subcontracting, liability and service floors are left out with their sections.
 
-## 5. Agent Messaging 0.10.2-draft
+## 5. Agent Messaging 0.11.0-draft
 
 The two agents exchange tasks over Agent Messaging, and this profile assumes its core profile (Agent Messaging §1.6) without repeating it. On top of the core, a profile implementation implements two sections.
 
@@ -173,6 +173,8 @@ Each part this profile leaves out adds members, acts or documents that a profile
 A test runner that implements this profile runs the groups the file names and skips the rest. `tools/check-profiles.mjs` in the standards repository checks that every version, section, file, path and case the file names exists, and runs on every change, so a renamed case or a moved section breaks the check and is fixed in the same change.
 
 ## Changelog
+
+**0.7.3-draft** (2026-11-13). The profile applies to Agent Messaging 0.11.0-draft, which specifies a private instance's link (§21.8 to §21.13), outside the sections this profile names. The patch version moves because an implementation of 0.7.2-draft meets this version unchanged.
 
 **0.7.2-draft** (2026-11-07). The profile applies to Agent Messaging 0.10.2-draft, whose additions are outside the sections this profile names. The patch version moves because an implementation of 0.7.1-draft meets this version unchanged.
 
