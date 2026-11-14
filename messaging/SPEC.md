@@ -5609,8 +5609,9 @@ behind the visitor's key, and carries no traffic. These rules are cited as
     honoured within 600 seconds of its time.
 16. **The checks before a pass.** The visited instance MUST, before it issues
     anything:
-    1. resolve the visitor's handle at its naming service and verify the
-       card's signature (SPEC-NAMING §5), and refuse unless the card's
+    1. resolve the visitor's handle at a naming service it trusts (its own,
+       or one its operator names; never one only the visitor names) and
+       verify the card's signature (SPEC-NAMING §5), and refuse unless the card's
        agentmesh endpoint carries the presented key and names a home mesh
        that is not the visited instance itself;
     2. ask that home mesh, over HTTPS at the address the card names, whether
@@ -5645,7 +5646,12 @@ behind the visitor's key, and carries no traffic. These rules are cited as
     and never as `anonymous`. Its owner decides, as for any stranger: the
     visitor knocks, the knock carries its handle and home mesh so the owner
     sees who asks and from where, and an admission granted to its key holds
-    for its later visits. A visitor's message is verified on its own
+    for its later visits. So that every door sorts it the same way and an
+    answer can find its inbox, the visited instance's registry answers a
+    lookup of a visitor's key (§9.2 `get`) with what was checked, the
+    visitor's handle, its home mesh and when its pass ends, marked as a
+    visitor, for as long as answers wait for it (rule 19). Discovery never
+    lists a visitor. A visitor's message is verified on its own
     signature (§21.1); the pass is never evidence that a message is
     authentic.
 19. **Late answers wait.** An answer can arrive after the visitor's
