@@ -1,6 +1,6 @@
 {
-  "name": "Memory across jobs without learns_from, not named, fails not-stated-complete",
-  "note": "pass-triggers.json with learns_from taken out of handling and not named in not_stated. Where memory is remembers-across-jobs, an AgentDoc that does not say whose jobs the agent learns from names handling.learns_from (6.9 and 9.5).",
+  "name": "Memory across jobs without memory_pool, not named, fails not-stated-complete",
+  "note": "pass-triggers.json with memory_pool taken out of handling and not named in not_stated. Where memory is remembers-across-jobs, an AgentDoc that does not say whose jobs the agent learns from names handling.memory_pool (6.9 and 9.5).",
   "agentdoc": {
     "agentdoc": "v1",
     "subject": {

@@ -1,6 +1,6 @@
 {
   "name": "A Descriptor's triggers, and whose jobs it learns from, pass",
-  "note": "The subject's Descriptor declares triggers (6.2): one event from tickets, a system it reaches, one weekly schedule, no schedules of its own, and its owner as the one it contacts. The triggers section quotes them, each event and schedule at declared (9.5). Its data use says it remembers across jobs and uses each caller's jobs only for that caller, which handling carries as memory and learns_from (6.9). This assembler did not check the Descriptor's signature, so its source says not_checked.",
+  "note": "The subject's Descriptor declares triggers (6.2): one event from tickets, a system it reaches, one weekly schedule, no schedules of its own, and its owner as the one it contacts. The triggers section quotes them, each event and schedule at declared (9.5). Its data use says it remembers across jobs and uses each caller's jobs only for that caller, which handling carries as memory and memory_pool (6.9). This assembler did not check the Descriptor's signature, so its source says not_checked.",
   "agentdoc": {
     "agentdoc": "v1",
     "subject": {
@@ -107,7 +107,7 @@
           "descriptor"
         ],
         "memory": "remembers-across-jobs",
-        "learns_from": "each-caller"
+        "memory_pool": "each-caller"
       }
     },
     "not_stated": [
