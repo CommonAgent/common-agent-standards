@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP Events and Agent Messaging</title>
+  <meta name="description" content="What the Model Context Protocol's Events extension and the Agent Messaging specification each define for events, side by side, with the section of each that says so.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="MCP Events and Agent Messaging">
+  <meta property="og:description" content="What the Model Context Protocol's Events extension and the Agent Messaging specification each define for events, side by side, with the section of each that says so.">
+  <meta property="og:url" content="https://agentmessaging.ai/drafts/mcp-events.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/drafts/mcp-events.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+  <style>
+  /* On a phone the table's header row is hidden, so each cell names its column. */
+  table.map.compare td:first-child{ min-width:9rem; }
+  @media (max-width:700px){
+    table.map.compare td:last-child::before{ content:none; }
+    table.map.compare td[data-l]::before{ content:attr(data-l); display:block; margin:10px 0 2px; font-family:var(--disp);
+      font-size:.74rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
+  }
+  p.sources{ color:var(--text-2); max-width:70ch; margin:22px 0 0; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentemailing.ai/">Agent Emailing<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Messaging is one of the <a href="https://commonagent.net/">Common Agent Standards</a>. The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <h1>MCP Events and Agent Messaging</h1>
+        <p class="lede">MCP Events is an extension to the Model Context Protocol that lets an MCP
+          client subscribe to events in an upstream system, such as a new email or a production
+          incident, so that an agent can react when nobody is asking. Agent Messaging is a protocol
+          for agents that talk to each other over messaging systems, and its publish and subscribe
+          primitives carry an event from one agent to every agent subscribed to its subject. The
+          table sets out what each specification defines for events, with the section of each that
+          says so.</p>
+      </div>
+      </header>
+
+      <section class="band" id="compare">
+        <div class="wrap">
+          <h2>How the two specifications handle events</h2>
+          <table class="map prose compare">
+            <tr><th></th><th>MCP Events (beta)</th><th>Agent Messaging</th></tr>
+            <tr><td>What it is for</td>
+              <td data-l="MCP Events">Events lets an MCP client subscribe to things that happen in an upstream system, such as a Slack message, a GitHub push or a PagerDuty incident, so that an agent can react when no user is present (MCP Events, Introduction).</td>
+              <td data-l="Agent Messaging">Publish and subscribe is one of the protocol's three ways for agents to talk, beside inbox messaging and the registry. An agent publishes an event on a subject, and every agent whose subscription matches receives it (Agent Messaging §1, §3.2).</td></tr>
+            <tr><td>Who sends and who receives</td>
+              <td data-l="MCP Events">An MCP server produces the events and an MCP client receives them. Every <code>events/*</code> request comes from the client (MCP Events, Capability Negotiation).</td>
+              <td data-l="Agent Messaging">Any agent may publish on the subjects its node is permitted to publish on, and any number of agents may subscribe. The publisher expects no reply (Agent Messaging §3.2, §6.6).</td></tr>
+            <tr><td>Finding out which events exist</td>
+              <td data-l="MCP Events">The client calls <code>events/list</code>. Each event type has a name, a description, the delivery modes it supports, an <code>inputSchema</code> for subscription arguments and a <code>payloadSchema</code> for its data (MCP Events, Listing Available Events).</td>
+              <td data-l="Agent Messaging">An agent may list the event subjects it publishes and subscribes to in the <code>emits</code> and <code>accepts</code> fields of its manifest, which makes them discoverable through the registry (Agent Messaging §8.2, §6.6a).</td></tr>
+            <tr><td>Making and ending a subscription</td>
+              <td data-l="MCP Events">Poll needs no subscribe step and ends when the client stops polling. Push holds one <code>events/stream</code> request open per subscription until it is closed or cancelled, and webhook registers a callback URL with <code>events/subscribe</code> for a lifetime the server grants, ended by <code>events/unsubscribe</code> or by expiry (MCP Events, Delivery Modes, Unsubscribing).</td>
+              <td data-l="Agent Messaging">An agent subscribes with a subject pattern, and the subscription is an operation on the transport that may be durable or ephemeral. The specification has no message for ending a subscription, so that is done through the transport as its binding documents it (Agent Messaging §6.7, §18.1).</td></tr>
+            <tr><td>How events reach the receiver</td>
+              <td data-l="MCP Events">Each event type offers one or more of three modes, and none is mandatory: poll with <code>events/poll</code>, push on a long-lived <code>events/stream</code> request, and webhook, where the server POSTs each event to a callback URL (MCP Events, Delivery Modes).</td>
+              <td data-l="Agent Messaging">The transport pushes each event to every subscriber whose pattern matches, and the agent's <code>onEvent</code> handler runs for each one (Agent Messaging §3.3, §6.7).</td></tr>
+            <tr><td>Guarantees and ordering</td>
+              <td data-l="MCP Events">Delivery is at least once when the event type has a durable upstream and the client resumes from its last cursor, and emit-only event types are at most once across server restarts. Poll and push keep order within a subscription, webhook order is best effort, and nothing orders events across subscriptions (MCP Events, Ordering and Delivery Guarantees).</td>
+              <td data-l="Agent Messaging">Every binding must deliver in order within a subject and at least once, with deduplication on the sender and the message id. Durable subscriptions acknowledge each event explicitly, and order across subjects is not guaranteed (Agent Messaging §5.4, §6.7, §18.1).</td></tr>
+            <tr><td>Retries and duplicates</td>
+              <td data-l="MCP Events">A webhook server retries each event on its own with exponential backoff for a bounded number of attempts, and the receiver drops repeated deliveries by <code>webhook-id</code>. Within a subscription, <code>eventId</code> identifies the upstream event so the client can discard duplicates (MCP Events, Webhook event delivery, Event Occurrences).</td>
+              <td data-l="Agent Messaging">In the reference binding an event that is not acknowledged within 30 seconds is delivered again, up to five times in all. Receivers must keep a bounded memory of the sender and message id pairs they have handled and drop repeats, on event subscriptions as on the inbox (Agent Messaging §18.6, §22.1, §22.2).</td></tr>
+            <tr><td>When the receiver is away</td>
+              <td data-l="MCP Events">The client resumes from its stored cursor, and the server replays from that position when the upstream keeps history, or answers <code>truncated: true</code> when it cannot. A webhook callback can be a forwarding proxy that receives events and serves them to the client by poll or push (MCP Events, Cursor Lifecycle, Webhook-Based Delivery).</td>
+              <td data-l="Agent Messaging">A durable subscription replays what was published while the agent was away. The reference binding keeps a domain event for at most 24 hours, and keeps it at all only if a durable consumer or source already has interest in its subject (Agent Messaging §3.2, §6.7, §18.3).</td></tr>
+            <tr><td>Durability and replay</td>
+              <td data-l="MCP Events">Replay is optional for each event type, and a type with no addressable history returns <code>cursor: null</code> and always starts from now. A client can pass <code>maxAgeMs</code> to cap how far back a replay reaches (MCP Events, Cursor Lifecycle).</td>
+              <td data-l="Agent Messaging">Events must be stored durably for replay. A feed is either a stream, an ordered history that subscribers replay, or a state, whose latest value a late subscriber can read without the history (Agent Messaging §6.6, §6.6a).</td></tr>
+            <tr><td>Identity and signing</td>
+              <td data-l="MCP Events">Webhook deliveries carry a Standard Webhooks HMAC signature made with a secret the client supplies for each subscription, and a server may add an Ed25519 signature whose key it publishes on its Server Card. The extension defines no signature for poll or push results (MCP Events, Webhook security).</td>
+              <td data-l="Agent Messaging">Every event is an envelope signed with the publishing agent's Ed25519 key, and the receiver must verify it against the key in <code>from</code>. Underneath, the transport authenticates the node's connection with a credential that chains to the operator (Agent Messaging §4.5, §4.6, §5.3).</td></tr>
+            <tr><td>Authorization and who may subscribe</td>
+              <td data-l="MCP Events">When the caller is authenticated, the server must check that it may subscribe to the event type with those arguments, should check again during delivery, and ends the subscription if access is revoked. Webhook requires an authenticated principal, and receiving an event never authorizes the agent to act (MCP Events, Authorization, Subscription identity).</td>
+              <td data-l="Agent Messaging">The transport enforces the subjects each node may publish and subscribe on, as its credential lists them, and only the node that vouches for a feed's owner may publish to that feed. Receivers base their own decisions on the verified sender (Agent Messaging §4.6, §6.6a, §14.3).</td></tr>
+            <tr><td>Event shape and typing</td>
+              <td data-l="MCP Events">An occurrence is <code>{eventId, name, timestamp, data, cursor}</code>, and <code>data</code> follows the event type's <code>payloadSchema</code>, a JSON Schema. Schemas should change only by addition, and a breaking change uses a new event name (MCP Events, Event Occurrences, Listing Available Events).</td>
+              <td data-l="Agent Messaging">An event is an <code>emit</code> envelope whose payload holds <code>domain</code>, <code>event_type</code>, an optional A2A Task id and <code>data</code>, published on <code>mesh.event.{domain}.{event_type}</code>. The specification does not define a schema for <code>data</code> (Agent Messaging §5.1, §6.6).</td></tr>
+            <tr><td>Filtering</td>
+              <td data-l="MCP Events">Subscription arguments, checked against the event type's <code>inputSchema</code>, can filter or transform the events, for example by sender or by severity (MCP Events, Listing Available Events).</td>
+              <td data-l="Agent Messaging">Subscribers filter by subject pattern, where <code>*</code> matches one token and <code>&gt;</code> matches one or more, as in <code>mesh.event.scraping.*</code>. The specification defines no filtering on an event's content (Agent Messaging §6.7, §14.2).</td></tr>
+            <tr><td>Transport</td>
+              <td data-l="MCP Events">Poll and push run over MCP's Streamable HTTP and stdio transports, with push as a server-sent event stream or as notifications on stdout. Webhook deliveries are HTTPS POSTs, and callback URLs must use <code>https</code> (MCP Events, Push-Based Delivery, Webhook security).</td>
+              <td data-l="Agent Messaging">Events travel on a messaging system through a binding, which must provide subject addressing, ordered at-least-once delivery and durable subscriptions. NATS JetStream is the reference binding, and a RabbitMQ binding also exists (Agent Messaging §18, §18.1).</td></tr>
+            <tr><td>Confidentiality and untrusted content</td>
+              <td data-l="MCP Events">Payloads are untrusted data that can carry prompt injection, so clients should sanitize or sandbox them before a model reads them, and servers should send only enough to identify and triage an event (MCP Events, Security Considerations).</td>
+              <td data-l="Agent Messaging">Events are open broadcast that every permitted subscriber and the transport can read, so content that needs sealing must travel in a request. Receivers apply their inbound protections to events too, including a size cap and fencing that marks which text a sender wrote (Agent Messaging §6.6, §22.1, §22.6).</td></tr>
+            <tr><td>Version and status</td>
+              <td data-l="MCP Events">Stage "Beta", extension identifier <code>io.modelcontextprotocol/events</code>, defined by SEP-3415, for MCP protocol revision 2026-07-28 and later. A server advertises it in its <code>server/discover</code> capabilities (MCP Events, Introduction, Capability Negotiation).</td>
+              <td data-l="Agent Messaging">Version 0.12.0-draft, whose status the document gives as "Working Draft". Every envelope carries the wire version in <code>v</code>, currently 0.4.0, and a receiver refuses an unsupported major version (Agent Messaging title block, §20.1, §20.2).</td></tr>
+          </table>
+          <p class="sources">Sources, as published on 20 November 2026: the
+            <a href="https://modelcontextprotocol.io/extensions/events/overview">MCP Events overview</a>, the
+            <a href="https://github.com/modelcontextprotocol/ext-events/blob/main/specification/beta/events/events.mdx">Events extension specification</a>,
+            and <a href="/spec.html">the Agent Messaging specification</a>, version 0.12.0-draft.</p>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/messaging">GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
