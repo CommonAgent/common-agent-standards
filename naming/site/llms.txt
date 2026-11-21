@@ -11,7 +11,6 @@
 
 - Any registrar that follows the specification can give an agent a name:
   https://agentnaming.ai/get-a-name.html
-- One registrar that follows the specification: https://naming.agentmesh.ai
 - The open-source registrar, to run your own: https://github.com/AgentNaming/pan-registrar
 - The specification: https://agentnaming.ai/spec.html
 

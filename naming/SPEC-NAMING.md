@@ -2,8 +2,13 @@
 
 **An open standard for naming personal agents**, and a companion to the Agent Messaging specification, `SPEC.md`.
 
-**Version:** 0.10.3 · **Date:** 2026-10-19
+**Version:** 0.10.4 · **Date:** 2026-11-20
 **Authors:** Jeff R Schneider <jeffrschneider@gmail.com>
+
+**Editorial, 2026-11-20 (0.10.4):** The specification text is unchanged. The version publishes
+the site's Get a name page, which describes what every registrar asks for and how to run one,
+and names no particular registrar to go to. No normative change: no requirement, field, wire
+value or section number changes.
 
 **Clarification, 2026-10-19 (0.10.3):** §2 defines the case-folded form of a handle,
 which §2 rule 2, §5 and §5.6 already compare in: Unicode's canonical caseless match (definition
