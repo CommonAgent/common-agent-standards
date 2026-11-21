@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MCP Events and Agent Messaging</title>
+  <meta name="description" content="The Model Context Protocol's Events extension and the Agent Messaging specification side by side, and when to use each.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Agent Messaging">
+  <meta property="og:title" content="MCP Events and Agent Messaging">
+  <meta property="og:description" content="The Model Context Protocol's Events extension and the Agent Messaging specification side by side, and when to use each.">
+  <meta property="og:url" content="https://agentmessaging.ai/mcp-events.html">
+  <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Messaging. Inboxes, publish and subscribe, and presence for agents">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentmessaging.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentmessaging.ai/mcp-events.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+  <style>
+  /* On a phone the table's header row is hidden, so each cell names its column. */
+  table.map.compare td:first-child{ min-width:12rem; }
+  @media (max-width:700px){
+    table.map.compare td:last-child::before{ content:none; }
+    table.map.compare td[data-l]::before{ content:attr(data-l); display:block; margin:10px 0 2px; font-family:var(--disp);
+      font-size:.74rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
+  }
+  p.sources{ color:var(--text-2); max-width:70ch; margin:22px 0 0; }
+  p.when{ max-width:70ch; margin:0 0 28px; }
+  </style>
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Messaging home"><svg class="mark" viewBox="0 0 32 32" width="24" height="24" aria-hidden="true" focusable="false"><rect x="3" y="7" width="26" height="18" rx="3.5" fill="none" stroke="currentColor" stroke-width="2.2"/><path d="M4.5 9l11.5 8.5L27.5 9" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"/></svg><span class="wm">Agent <b>Messaging</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Messaging">
+        <details class="sec" open>
+          <summary>Agent Messaging<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/messaging">On GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Run it<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/run.html">Start in five minutes</a>
+          <a href="/run-broker.html">Choosing a broker</a>
+          <a href="/run-agents.html">Enrolling agents</a>
+          <a href="/run-admin.html">The admin CLI</a>
+          <a href="/run-operate.html">Upgrades and backups</a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentemailing.ai/">Agent Emailing<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentroles.ai/">Agent Roles<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Messaging is one of the <a href="https://commonagent.net/">Common Agent Standards</a>. The reference implementation is the <a href="https://github.com/agent-messaging/agent-messaging-server">Agent Messaging Server</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main">
+
+      <header class="herobg">
+      <div class="wrap hero">
+        <h1>MCP Events and Agent Messaging</h1>
+        <p class="lede">MCP Events lets an MCP client subscribe to events in an upstream system.
+          Agent Messaging is a transport between agents, with inboxes, publish and subscribe, and
+          presence.</p>
+      </div>
+      </header>
+
+      <section class="band" id="compare">
+        <div class="wrap">
+          <p class="when">Use MCP Events when an agent needs to hear about changes in one system it already reaches through an MCP server,
+            such as a new ticket or an updated file. Use Agent Messaging when agents need to reach each other: to leave a message for an
+            agent that is offline, to publish to a group of subscribers, to share files or a room, or to connect agents that sit behind
+            home or office firewalls.</p>
+          <h2>Side by side</h2>
+          <table class="map prose compare">
+            <tr><th></th><th>MCP Events (beta)</th><th>Agent Messaging</th></tr>
+            <tr><td>What it is, and where it sits</td>
+              <td data-l="MCP Events">An MCP extension, negotiated between one server and its client</td>
+              <td data-l="Agent Messaging">A transport between agents, and A2A runs over it</td></tr>
+            <tr><td>Who publishes, who receives</td>
+              <td data-l="MCP Events">The server publishes; each matching subscription gets the event</td>
+              <td data-l="Agent Messaging">Any agent publishes; every matching subscriber receives it</td></tr>
+            <tr><td>Subscribing to a shared group or channel</td>
+              <td data-l="MCP Events">Not supported</td>
+              <td data-l="Agent Messaging">Subjects with wildcards, and feeds owned by one agent</td></tr>
+            <tr><td>Finding which events exist</td>
+              <td data-l="MCP Events"><code>events/list</code>, with argument and payload schemas</td>
+              <td data-l="Agent Messaging"><code>emits</code> and <code>accepts</code> in the agent's manifest</td></tr>
+            <tr><td>How a subscription works</td>
+              <td data-l="MCP Events">Poll, a push stream, or a webhook with a lifetime</td>
+              <td data-l="Agent Messaging">A broker subscription, durable or ephemeral, pushed to the agent</td></tr>
+            <tr><td>Delivery guarantees</td>
+              <td data-l="MCP Events">At least once with a durable upstream; dedupe by <code>eventId</code></td>
+              <td data-l="Agent Messaging">At least once, in order per subject; dedupe by sender and id</td></tr>
+            <tr><td>Where events are stored</td>
+              <td data-l="MCP Events">No store required; replay draws on the upstream's history</td>
+              <td data-l="Agent Messaging">In the broker; up to 24 hours in three replicas on NATS</td></tr>
+            <tr><td>After the receiver restarts</td>
+              <td data-l="MCP Events">Resumes from its stored cursor, where the event type supports replay</td>
+              <td data-l="Agent Messaging">Its durable subscription delivers what it missed</td></tr>
+            <tr><td>After the server or broker restarts</td>
+              <td data-l="MCP Events">Emit-only events are lost; replayable types recover by cursor</td>
+              <td data-l="Agent Messaging">Stored events stay in replicated durable streams</td></tr>
+            <tr><td>A message for one agent that is offline</td>
+              <td data-l="MCP Events">Not supported</td>
+              <td data-l="Agent Messaging">Held in its inbox for up to 7 days</td></tr>
+            <tr><td>Files</td>
+              <td data-l="MCP Events">Not supported</td>
+              <td data-l="Agent Messaging">Inline or by reference; above the 1&nbsp;MB limit, by signed link</td></tr>
+            <tr><td>Rooms: a shared conversation, record and files</td>
+              <td data-l="MCP Events">Not supported</td>
+              <td data-l="Agent Messaging">Rooms extension: members, a shared record and a drive</td></tr>
+            <tr><td>Who opens the connection</td>
+              <td data-l="MCP Events">The client for poll and push; the server for webhooks</td>
+              <td data-l="Agent Messaging">Each agent's node opens one outbound connection</td></tr>
+            <tr><td>Behind NAT or a home firewall</td>
+              <td data-l="MCP Events">Poll and push work; a webhook needs a public HTTPS address</td>
+              <td data-l="Agent Messaging">Works; agents need no public address or inbound port</td></tr>
+            <tr><td>Signing</td>
+              <td data-l="MCP Events">HMAC on webhook deliveries; Ed25519 optional</td>
+              <td data-l="Agent Messaging">Every event signed with the publisher's Ed25519 key</td></tr>
+            <tr><td>Who may subscribe</td>
+              <td data-l="MCP Events">The server checks the principal; revoked access ends the subscription</td>
+              <td data-l="Agent Messaging">The broker enforces each node's subject permissions</td></tr>
+            <tr><td>Payload schema</td>
+              <td data-l="MCP Events">A JSON Schema for each event type</td>
+              <td data-l="Agent Messaging">Not supported</td></tr>
+            <tr><td>Filtering</td>
+              <td data-l="MCP Events">Subscription arguments that the event type defines</td>
+              <td data-l="Agent Messaging">Subject patterns with <code>*</code> and <code>&gt;</code> wildcards</td></tr>
+            <tr><td>Transport</td>
+              <td data-l="MCP Events">Streamable HTTP or stdio; webhooks over HTTPS</td>
+              <td data-l="Agent Messaging">A broker binding: NATS JetStream or RabbitMQ</td></tr>
+            <tr><td>Version and status</td>
+              <td data-l="MCP Events">Stage "Beta", for MCP revision 2026-07-28 and later</td>
+              <td data-l="Agent Messaging">0.12.0-draft, with the status "Working Draft"</td></tr>
+          </table>
+          <p class="sources">Sources, as published on 20 November 2026: the
+            <a href="https://modelcontextprotocol.io/extensions/events/overview">MCP Events overview</a>, the
+            <a href="https://github.com/modelcontextprotocol/ext-events/blob/main/specification/beta/events/events.mdx">Events extension specification</a>,
+            <a href="/spec.html">the Agent Messaging specification</a> and
+            <a href="/bindings/a2a/v1/">A2A over Agent Messaging</a>.</p>
+        </div>
+      </section>
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <span>Agent Messaging</span>
+          <a href="/spec.html">The specification</a>
+          <a href="/nats.html">On NATS</a>
+          <a href="/rabbitmq.html">On RabbitMQ</a>
+          <a href="/bindings.html">Bindings</a>
+          <a href="/conformance.html">Conformance suite</a>
+          <a href="/identity.html">Bring your own identity</a>
+          <a href="/run.html">Run it</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/messaging">GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span>Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
