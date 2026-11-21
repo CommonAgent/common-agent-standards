@@ -5,11 +5,11 @@
   <script async src="/ga.js"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MCP Events and Agent Messaging</title>
-  <meta name="description" content="The Model Context Protocol's Events extension and the Agent Messaging specification side by side, with the section of each that says so.">
+  <meta name="description" content="The Model Context Protocol's Events extension and the Agent Messaging specification side by side, and when to use each.">
   <meta property="og:type" content="website">
   <meta property="og:site_name" content="Agent Messaging">
   <meta property="og:title" content="MCP Events and Agent Messaging">
-  <meta property="og:description" content="The Model Context Protocol's Events extension and the Agent Messaging specification side by side, with the section of each that says so.">
+  <meta property="og:description" content="The Model Context Protocol's Events extension and the Agent Messaging specification side by side, and when to use each.">
   <meta property="og:url" content="https://agentmessaging.ai/drafts/mcp-events.html">
   <meta property="og:image" content="https://agentmessaging.ai/brand/png/og-image.png">
   <meta property="og:image:width" content="1200">
@@ -33,14 +33,13 @@
   <style>
   /* On a phone the table's header row is hidden, so each cell names its column. */
   table.map.compare td:first-child{ min-width:12rem; }
-  table.map.compare .cite{ font-family:var(--wire); font-size:.82em; color:var(--text-3); white-space:nowrap; }
   @media (max-width:700px){
     table.map.compare td:last-child::before{ content:none; }
     table.map.compare td[data-l]::before{ content:attr(data-l); display:block; margin:10px 0 2px; font-family:var(--disp);
       font-size:.74rem; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--text-3); }
-    table.map.compare .cite{ white-space:normal; }
   }
   p.sources{ color:var(--text-2); max-width:70ch; margin:22px 0 0; }
+  p.when{ max-width:70ch; margin:0 0 28px; }
   </style>
 </head>
 <body>
@@ -112,69 +111,73 @@
 
       <section class="band" id="compare">
         <div class="wrap">
+          <p class="when">Use MCP Events when an agent needs to hear about changes in one system it already reaches through an MCP server,
+            such as a new ticket or an updated file. Use Agent Messaging when agents need to reach each other: to leave a message for an
+            agent that is offline, to publish to a group of subscribers, to share files or a room, or to connect agents that sit behind
+            home or office firewalls.</p>
           <h2>Side by side</h2>
           <table class="map prose compare">
             <tr><th></th><th>MCP Events (beta)</th><th>Agent Messaging</th></tr>
             <tr><td>What it is, and where it sits</td>
-              <td data-l="MCP Events">An MCP extension, negotiated between one server and its client <span class="cite">Capability Negotiation</span></td>
-              <td data-l="Agent Messaging">A transport between agents, and A2A runs over it <span class="cite">§1.3, A2A binding §1</span></td></tr>
+              <td data-l="MCP Events">An MCP extension, negotiated between one server and its client</td>
+              <td data-l="Agent Messaging">A transport between agents, and A2A runs over it</td></tr>
             <tr><td>Who publishes, who receives</td>
-              <td data-l="MCP Events">The server publishes; each matching subscription gets the event <span class="cite">Event Occurrences</span></td>
-              <td data-l="Agent Messaging">Any agent publishes; every matching subscriber receives it <span class="cite">§3.2, §6.7</span></td></tr>
+              <td data-l="MCP Events">The server publishes; each matching subscription gets the event</td>
+              <td data-l="Agent Messaging">Any agent publishes; every matching subscriber receives it</td></tr>
             <tr><td>Subscribing to a shared group or channel</td>
               <td data-l="MCP Events">Not supported</td>
-              <td data-l="Agent Messaging">Subjects with wildcards, and feeds owned by one agent <span class="cite">§6.6a, §14.2</span></td></tr>
+              <td data-l="Agent Messaging">Subjects with wildcards, and feeds owned by one agent</td></tr>
             <tr><td>Finding which events exist</td>
-              <td data-l="MCP Events"><code>events/list</code>, with argument and payload schemas <span class="cite">Listing Available Events</span></td>
-              <td data-l="Agent Messaging"><code>emits</code> and <code>accepts</code> in the agent's manifest <span class="cite">§8.2</span></td></tr>
+              <td data-l="MCP Events"><code>events/list</code>, with argument and payload schemas</td>
+              <td data-l="Agent Messaging"><code>emits</code> and <code>accepts</code> in the agent's manifest</td></tr>
             <tr><td>How a subscription works</td>
-              <td data-l="MCP Events">Poll, a push stream, or a webhook with a lifetime <span class="cite">Delivery Modes</span></td>
-              <td data-l="Agent Messaging">A broker subscription, durable or ephemeral, pushed to the agent <span class="cite">§6.7</span></td></tr>
+              <td data-l="MCP Events">Poll, a push stream, or a webhook with a lifetime</td>
+              <td data-l="Agent Messaging">A broker subscription, durable or ephemeral, pushed to the agent</td></tr>
             <tr><td>Delivery guarantees</td>
-              <td data-l="MCP Events">At least once with a durable upstream; dedupe by <code>eventId</code> <span class="cite">Ordering and Delivery Guarantees</span></td>
-              <td data-l="Agent Messaging">At least once, in order per subject; dedupe by sender and id <span class="cite">§18.1, §22.2</span></td></tr>
+              <td data-l="MCP Events">At least once with a durable upstream; dedupe by <code>eventId</code></td>
+              <td data-l="Agent Messaging">At least once, in order per subject; dedupe by sender and id</td></tr>
             <tr><td>Where events are stored</td>
-              <td data-l="MCP Events">No store required; replay draws on the upstream's history <span class="cite">Cursor Lifecycle</span></td>
-              <td data-l="Agent Messaging">In the broker; up to 24 hours in three replicas on NATS <span class="cite">§6.6, §18.3</span></td></tr>
+              <td data-l="MCP Events">No store required; replay draws on the upstream's history</td>
+              <td data-l="Agent Messaging">In the broker; up to 24 hours in three replicas on NATS</td></tr>
             <tr><td>After the receiver restarts</td>
-              <td data-l="MCP Events">Resumes from its stored cursor, where the event type supports replay <span class="cite">Cursor Lifecycle</span></td>
-              <td data-l="Agent Messaging">Its durable subscription delivers what it missed <span class="cite">§3.2, §6.7</span></td></tr>
+              <td data-l="MCP Events">Resumes from its stored cursor, where the event type supports replay</td>
+              <td data-l="Agent Messaging">Its durable subscription delivers what it missed</td></tr>
             <tr><td>After the server or broker restarts</td>
-              <td data-l="MCP Events">Emit-only events are lost; replayable types recover by cursor <span class="cite">Ordering and Delivery Guarantees</span></td>
-              <td data-l="Agent Messaging">Stored events stay in replicated durable streams <span class="cite">§14.1, §18.3</span></td></tr>
+              <td data-l="MCP Events">Emit-only events are lost; replayable types recover by cursor</td>
+              <td data-l="Agent Messaging">Stored events stay in replicated durable streams</td></tr>
             <tr><td>A message for one agent that is offline</td>
               <td data-l="MCP Events">Not supported</td>
-              <td data-l="Agent Messaging">Held in its inbox for up to 7 days <span class="cite">§6.4, §16.4</span></td></tr>
+              <td data-l="Agent Messaging">Held in its inbox for up to 7 days</td></tr>
             <tr><td>Files</td>
               <td data-l="MCP Events">Not supported</td>
-              <td data-l="Agent Messaging">Inline or by reference; above the 1&nbsp;MB limit, by signed link <span class="cite">§7.5, §7.5.4, §18.9</span></td></tr>
+              <td data-l="Agent Messaging">Inline or by reference; above the 1&nbsp;MB limit, by signed link</td></tr>
             <tr><td>Rooms: a shared conversation, record and files</td>
               <td data-l="MCP Events">Not supported</td>
-              <td data-l="Agent Messaging">Rooms extension: members, a shared record and a drive <span class="cite">EXT-5</span></td></tr>
+              <td data-l="Agent Messaging">Rooms extension: members, a shared record and a drive</td></tr>
             <tr><td>Who opens the connection</td>
-              <td data-l="MCP Events">The client for poll and push; the server for webhooks <span class="cite">Delivery Modes</span></td>
-              <td data-l="Agent Messaging">Each agent's node opens one outbound connection <span class="cite">§4.2, A2A binding §1</span></td></tr>
+              <td data-l="MCP Events">The client for poll and push; the server for webhooks</td>
+              <td data-l="Agent Messaging">Each agent's node opens one outbound connection</td></tr>
             <tr><td>Behind NAT or a home firewall</td>
-              <td data-l="MCP Events">Poll and push work; a webhook needs a public HTTPS address <span class="cite">Webhook security</span></td>
-              <td data-l="Agent Messaging">Works; agents need no public address or inbound port <span class="cite">§1.3, A2A binding §1</span></td></tr>
+              <td data-l="MCP Events">Poll and push work; a webhook needs a public HTTPS address</td>
+              <td data-l="Agent Messaging">Works; agents need no public address or inbound port</td></tr>
             <tr><td>Signing</td>
-              <td data-l="MCP Events">HMAC on webhook deliveries; Ed25519 optional <span class="cite">Webhook security</span></td>
-              <td data-l="Agent Messaging">Every event signed with the publisher's Ed25519 key <span class="cite">§4.5, §5.3</span></td></tr>
+              <td data-l="MCP Events">HMAC on webhook deliveries; Ed25519 optional</td>
+              <td data-l="Agent Messaging">Every event signed with the publisher's Ed25519 key</td></tr>
             <tr><td>Who may subscribe</td>
-              <td data-l="MCP Events">The server checks the principal; revoked access ends the subscription <span class="cite">Authorization</span></td>
-              <td data-l="Agent Messaging">The broker enforces each node's subject permissions <span class="cite">§14.3</span></td></tr>
+              <td data-l="MCP Events">The server checks the principal; revoked access ends the subscription</td>
+              <td data-l="Agent Messaging">The broker enforces each node's subject permissions</td></tr>
             <tr><td>Payload schema</td>
-              <td data-l="MCP Events">A JSON Schema for each event type <span class="cite">Listing Available Events</span></td>
+              <td data-l="MCP Events">A JSON Schema for each event type</td>
               <td data-l="Agent Messaging">Not supported</td></tr>
             <tr><td>Filtering</td>
-              <td data-l="MCP Events">Subscription arguments that the event type defines <span class="cite">Listing Available Events</span></td>
-              <td data-l="Agent Messaging">Subject patterns with <code>*</code> and <code>&gt;</code> wildcards <span class="cite">§14.2</span></td></tr>
+              <td data-l="MCP Events">Subscription arguments that the event type defines</td>
+              <td data-l="Agent Messaging">Subject patterns with <code>*</code> and <code>&gt;</code> wildcards</td></tr>
             <tr><td>Transport</td>
-              <td data-l="MCP Events">Streamable HTTP or stdio; webhooks over HTTPS <span class="cite">Push-Based Delivery</span></td>
-              <td data-l="Agent Messaging">A broker binding: NATS JetStream or RabbitMQ <span class="cite">§18</span></td></tr>
+              <td data-l="MCP Events">Streamable HTTP or stdio; webhooks over HTTPS</td>
+              <td data-l="Agent Messaging">A broker binding: NATS JetStream or RabbitMQ</td></tr>
             <tr><td>Version and status</td>
-              <td data-l="MCP Events">Stage "Beta", for MCP revision 2026-07-28 and later <span class="cite">Introduction</span></td>
-              <td data-l="Agent Messaging">0.12.0-draft, with the status "Working Draft" <span class="cite">title block</span></td></tr>
+              <td data-l="MCP Events">Stage "Beta", for MCP revision 2026-07-28 and later</td>
+              <td data-l="Agent Messaging">0.12.0-draft, with the status "Working Draft"</td></tr>
           </table>
           <p class="sources">Sources, as published on 20 November 2026: the
             <a href="https://modelcontextprotocol.io/extensions/events/overview">MCP Events overview</a>, the
