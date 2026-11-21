@@ -55,6 +55,7 @@ export function rail(active) {
           ${a("/bindings.html", "Bindings", "bindings")}
           ${a("/conformance.html", "Conformance suite", "conformance")}
           ${a("/identity.html", "Bring your own identity", "identity")}
+          ${a("/mcp-events.html", "MCP Events compared", "mcp-events")}
           ${a(REPO_URL, "On GitHub", "", true)}
           </div>
         </details>
@@ -108,7 +109,7 @@ export const tailScript = `<script>
   </script>`;
 
 // Rewrite the marked regions of the hand-written pages.
-const PAGES = { "index.html": "home", "nats.html": "nats", "rabbitmq.html": "rabbitmq", "bindings.html": "bindings", "conformance.html": "conformance", "identity.html": "identity", "run.html": "run", "run-broker.html": "run-broker", "run-agents.html": "run-agents", "run-admin.html": "run-admin", "run-operate.html": "run-operate", "404.html": "" };
+const PAGES = { "index.html": "home", "nats.html": "nats", "rabbitmq.html": "rabbitmq", "bindings.html": "bindings", "conformance.html": "conformance", "identity.html": "identity", "mcp-events.html": "mcp-events", "run.html": "run", "run-broker.html": "run-broker", "run-agents.html": "run-agents", "run-admin.html": "run-admin", "run-operate.html": "run-operate", "404.html": "" };
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "..");
   for (const [file, key] of Object.entries(PAGES)) {
