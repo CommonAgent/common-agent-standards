@@ -4,6 +4,13 @@ Versions of Personal Agent Naming tagged in this repository, newest first. A ver
 tagged as `naming-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from AgentNaming/personal-agent-naming.
 
+## 0.10.4 (2026-11-20)
+
+Editorial, with no normative change. The specification text is unchanged. The version
+publishes the site's Get a name page, which describes what every registrar asks for and how to
+run one, and names no particular registrar to go to. The site's llms.txt drops the same
+mention. No requirement, field, wire value or section number changes.
+
 ## 0.10.3 (2026-10-19)
 
 A clarification. §2 defines the case-folded form of a handle, which §2 rule 2,
