@@ -4,6 +4,36 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.11.0 (2026-11-21)
+
+- §15.7 An adopted process is an agent. It presents the interface the
+  Common Agent Specification defines: another agent finds it, reads what
+  it does and starts a run of it as it starts any agent's offering. Its
+  Descriptor is generated from the document, and the runtime that runs
+  the document is its harness. The section says which part of the
+  document each member comes from: `does` from the goal and the close,
+  the offering's inputs from what the trigger carries, its outputs from
+  what the closing phases hand on and the run record, `triggers` from
+  the trigger's watches and clock, `systems[]` from the bindings and
+  the watches, `escalates[]` from the phases at `never`, and the limits
+  from `concurrency:`, each phase's `by:` and the caps. Where the
+  Descriptor and the document disagree, the document governs. A
+  reference process has a Descriptor too, with its blanks left open as
+  what setting it up needs, and a catalog may publish it. The Common
+  Agent Specification 0.43.0, Section 12.5.1, says how a package carries
+  the document and names its harness.
+- §15.4 A blank MAY end, inside its brackets, in a mark saying what
+  kind of answer it takes: `(person)`, `(system)`, `(policy)`,
+  `(number)` or `(run)`, as in `<your legal reviewer (person)>`. The
+  mark is not part of the answer, and whoever fills the blank replaces
+  it whole. A blank whose words already say its kind, or that sits in a
+  place this specification defines, needs no mark.
+- §15.3 A role SHOULD keep one wording throughout a document: in the
+  activity table, in every blank that names it, and as the owner of the
+  phases it holds.
+- Every new part is optional, so a document valid under 0.10.2 is valid
+  under this version.
+
 ## 0.10.2 (2026-11-12)
 
 - The reference process make-a-new-agent is version 3. Version 2 had the
