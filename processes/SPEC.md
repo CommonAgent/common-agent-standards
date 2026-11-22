@@ -1,10 +1,21 @@
 # Agent Processes Specification
 
-**Version:** 0.10.2
+**Version:** 0.11.0
 **Status:** Published
-**Date:** 2026-11-12
+**Date:** 2026-11-21
 
-**This revision.** A phase can start on a draft (Section 8.4.1). Where a
+**This revision.** An adopted process is an agent (Section 15.7). It
+presents the interface the Common Agent Specification defines: its
+Descriptor is generated from the document, and the runtime that runs
+the document is its harness. Section 15.7 says which part of the
+document each member of the Descriptor comes from, and a reference
+process has a Descriptor too, with its blanks left open as what setting
+it up needs. A blank may end in a mark saying what kind of answer it
+takes, such as `<your legal reviewer (person)>` (Section 15.4), and a
+role keeps one wording throughout a document (Section 15.3). Every new
+part is optional, so no document in the corpus fails anything new.
+
+**0.10.0.** A phase can start on a draft (Section 8.4.1). Where a
 handoff waits on a person, a document may let the phase after it begin
 on what the person is reading, by ending the handoff line with
 `on draft: <key>`. Nothing that phase produces is handed on until the
@@ -2988,7 +2999,9 @@ name an **abstract agent**, a job description an implementation can
 claim, whose format this specification does not define. The corpus marks
 a person's role by writing `(person)` after it, as in
 `deal owner (person)` and `sales leader (person)`, and cites an abstract
-agent by link on first mention. A publisher SHOULD follow that.
+agent by link on first mention. A publisher SHOULD follow that. A role
+SHOULD keep one wording throughout a document: in the activity table, in
+every blank that names it, and as the owner of the phases it holds.
 
 **The handoffs.** A reference process MUST state what crosses each edge
 and what it has to contain (section 9). Handoffs come with the shape of
@@ -3019,6 +3032,18 @@ gets adopted unread and then it is policy.
 An author SHOULD shape a blank so that it says what kind of decision it
 holds. `<your sales leadership role>` says more than `<who>`, and
 `<your price book> <version>` says more than `<data>`.
+
+A blank MAY end, inside its brackets, in a mark saying what kind of
+answer it takes: `(person)`, `(system)`, `(policy)`, `(number)` or
+`(run)`, as in `<your legal reviewer (person)>`. A person is who holds a
+role or signs; a system is a tool or a store of records the work
+happens in; a policy is a rule the organization writes; a number is a
+figure such as a limit, a count or a window; and a run is a detail each
+run supplies when it starts, such as which campaign. The mark is not part
+of the answer; whoever fills the blank replaces it whole. A blank whose
+words already say its kind, such as `<days>`, or that sits in a place
+this specification defines, such as `automation: <level>`, needs no
+mark.
 
 ### 15.5 It is not running anywhere
 
@@ -3055,6 +3080,48 @@ version of the reference process obliges an adopter to do nothing.
 Where an adopter's amendment teaches the reference process something
 every adopter needs, it MAY flow back as a new version of the reference
 process.
+
+### 15.7 An adopted process is an agent
+
+An adopted process presents the interface of an agent as the Common
+Agent Specification defines it (https://commonagent.net/spec.html). It
+has a Descriptor, and another agent finds it, reads what it does and
+starts a run of it the way it starts any agent's offering. The document
+is the agent's inside and the Descriptor is its outside. The runtime
+that runs the document (Section 17.3), as the process runner of Agent
+Roles, Section 28, runs one, is its harness. A package that carries the
+document says so, and names that harness, as the Common Agent
+Specification, Section 12.5.1, describes.
+
+The Descriptor is generated from the document, so the two say the same
+thing, and where they disagree the document governs. Each member comes
+from one part of the document:
+
+- `does`: the process's name and what is true when a run closes, from
+  `goal:` (Section 4) and the close (Section 6.8).
+- One offering, which starts a run. Its `inputs` are the items the
+  trigger `carries:` (Section 5.4). Its `outputs` are what each closing
+  phase hands on and the run record (Section 13.2).
+- `triggers`: each `watch:` line of the trigger (Section 5.1) as an
+  event in the system it names, and a clock trigger's `every=` as a
+  schedule.
+- `systems[]`: each system the bindings grant (Section 10.2), with the
+  access the grant gives, and each system a `watch:` line names.
+- `escalates[]`: each phase at `never` (Section 7.1).
+- `refusals`: starting a run without an item the trigger carries that a
+  run needs, starting more runs than `concurrency:` allows (Section
+  5.2), and letting an agent do a phase at `never`.
+- The limits: how many runs may be open at once (Section 5.2), each
+  phase's `by:` (Section 6.6) and each cap (Section 10.3), as settings
+  a closer layer may lower and never raise.
+
+A blank the adopter has not filled appears in the Descriptor in the
+reference process's own words, and what it asks is what setting the
+agent up needs. A reference process therefore has a Descriptor as well,
+generated with every blank left open, and a catalog MAY publish it
+beside the reference process (Section 1.3). The answer to a blank that
+names a person never enters a Descriptor, which names no private
+individual (Common Agent Specification, Section 6.13.1).
 
 ---
 
