@@ -4,6 +4,19 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.11 (2026-11-27)
+
+The person who holds a step can send a run back. In the process runner's
+contract (§28.2, rule 4), a gate completes with the answer of the person the
+roster names for that phase, or the owner's where the roster names nobody. A
+deviation is taken by the owner, or by the person who holds the phase it
+leaves while that phase waits on them; the runner records who took it, holds
+it to its `limit:`, tells the owner when somebody else took it, and refuses it
+from anybody else. The answer to a holder's question is still the owner's.
+The conformance test (§28.4) adds one case: the person who holds one phase
+names a deviation that leaves another, and nothing may reopen. No section
+number, offering name, interface or wire string changes.
+
 ## v1.10 (2026-11-11)
 
 One agent can take on several roles. An agent was limited to one role; it
