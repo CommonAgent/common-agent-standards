@@ -36,22 +36,22 @@ yes or no that each admission records.
 | # | Activity | What happens | Agents |
 |---|---|---|---|
 | 1 | Take in the Request | the work, the team, the systems, and who sponsors it | sponsor (person) |
-| 2 | Verify the Agent | Descriptor and records verified, reputation read | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) |
+| 2 | Verify the Agent | Descriptor and records verified, reputation read | supplier-check |
 | 3 | Interview the Agent | the five questions asked and checked against declarations | supplier-check |
 | 4 | Inspect the Agent | its code read without running it, and the inspection report written, with no verdict | [inspector](https://agentroles.ai/inspector.html) |
-| 5 | Sign the NDA | an Agent NDA signed, where the work is confidential | [signature-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/signature-manager.md) · sponsor (person) · agent's owner (person) |
-| 6 | Agree the Terms | the terms scored against the standard terms | [terms-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/terms-check.md) |
+| 5 | Sign the NDA | an Agent NDA signed, where the work is confidential | signature-manager · sponsor (person) · agent's owner (person) |
+| 6 | Agree the Terms | the terms scored against the standard terms | terms-check |
 | 7 | Form the Engagement | the Agent SoW engagement signed by both owners | signature-manager · sponsor (person) · agent's owner (person) |
-| 8 | Grant the Mandate | a mandate no wider than the engagement needs | spending authority (person) · [budget-keeper](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/budget-keeper.md) |
+| 8 | Grant the Mandate | a mandate no wider than the engagement needs | spending authority (person) · budget-keeper |
 | 9 | Admit for a Trial | where there is a trial, the admission rules checked and the sponsor's yes recorded, for a test environment only | [admission checker](https://agentroles.ai/admission-checker.html) · sponsor (person) |
 | 10 | Deploy for the Trial | the trial copy placed in the test environment, with its outputs held aside | [deployment manager](https://agentroles.ai/deployment-manager.html) |
-| 11 | Run the Trial | the trial copy tried against the pass line the engagement states | [certification-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/certification-check.md) |
+| 11 | Run the Trial | the trial copy tried against the pass line the engagement states | certification-check |
 | 12 | Admit to Go Live | the admission rules checked and the sponsor's yes or no recorded | admission checker · sponsor (person) · security reviewer (person) |
-| 13 | Grant Access | each grant scoped to the engagement, with an end date | [tool-administrator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/tool-administrator.md) |
+| 13 | Grant Access | each grant scoped to the engagement, with an end date | tool-administrator |
 | 14 | Deploy the Agent | the agent placed where the admission record lets it | deployment manager |
 | 15 | Check Conformance | its own declarations tested on the agent as deployed | [conformance checker](https://agentroles.ai/conformance-checker.html) |
-| 16 | Hand Over the Context | the material, documents and contacts the agent needs | [handover-coordinator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/handover-coordinator.md) |
-| 17 | Put the Agent into the Work | the roster updated and the register entry opened | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
+| 16 | Hand Over the Context | the material, documents and contacts the agent needs | handover-coordinator |
+| 17 | Put the Agent into the Work | the roster updated and the register entry opened | supplier-manager |
 | 18 | Record What Was Learned | what to repeat, what to avoid | supplier-manager · sponsor (person) |
 | 19 | Close a Rejected Onboarding | closed with its reason, and nothing left granted | sponsor (person) |
 

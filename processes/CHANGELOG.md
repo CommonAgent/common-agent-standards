@@ -4,6 +4,12 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.11.2 (2026-11-28)
+
+- The reference processes onboard-an-agent and offboard-an-agent name
+  their example agents as plain text. The links went to a private
+  catalog that readers could not open. No step changed.
+
 ## 0.11.1 (2026-11-28)
 
 - There is one way in for every agent, as the Agent Development

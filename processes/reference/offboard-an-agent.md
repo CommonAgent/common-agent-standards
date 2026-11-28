@@ -35,14 +35,14 @@ it reads that run's access list.
 | # | Activity | What happens | Agents |
 |---|---|---|---|
 | 1 | Take in the Ending | why the engagement ends, on what terms, and when | sponsor (person) |
-| 2 | Hand Over the Work in Flight | each open item given a new holder or closed | [handover-coordinator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/handover-coordinator.md) |
-| 3 | End the Engagement | terminated for convenience or cause, or lapsed | [signature-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/signature-manager.md) · sponsor (person) |
+| 2 | Hand Over the Work in Flight | each open item given a new holder or closed | handover-coordinator |
+| 3 | End the Engagement | terminated for convenience or cause, or lapsed | signature-manager · sponsor (person) |
 | 4 | Revoke the Mandate | the agent's mandate revoked, with every mandate under it | spending authority (person) |
-| 5 | Withdraw Admission and Access | admission revoked, every grant withdrawn and tried | [tool-administrator](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/tool-administrator.md) |
-| 6 | Settle the Money | final charges checked, reservation released | [budget-keeper](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/budget-keeper.md) |
-| 7 | Confirm the Data Returned or Deleted | the owner confirms in writing what was returned or deleted | [supplier-check](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-check.md) · agent's owner (person) |
+| 5 | Withdraw Admission and Access | admission revoked, every grant withdrawn and tried | tool-administrator |
+| 6 | Settle the Money | final charges checked, reservation released | budget-keeper |
+| 7 | Confirm the Data Returned or Deleted | the owner confirms in writing what was returned or deleted | supplier-check · agent's owner (person) |
 | 8 | File the Outcome | outcome and review filed with the reputation bureau | sponsor (person) |
-| 9 | Note What Stays Confidential | surviving confidentiality terms written on the register | [supplier-manager](https://github.com/jeffrschneider/agentcatalog/blob/main/agents/supplier-manager.md) |
+| 9 | Note What Stays Confidential | surviving confidentiality terms written on the register | supplier-manager |
 | 10 | Countersign the Exit, Where Wanted | named people countersign the run's records | sponsor (person) · security reviewer (person) |
 | 11 | Record What Was Learned | what to repeat, what to avoid | supplier-manager · sponsor (person) |
 | 12 | Escalate a Holdout | the unanswered data request put in writing | legal (person) |
