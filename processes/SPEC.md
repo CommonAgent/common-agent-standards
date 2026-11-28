@@ -1,6 +1,6 @@
 # Agent Processes Specification
 
-**Version:** 0.11.1
+**Version:** 0.11.2
 **Status:** Published
 **Date:** 2026-11-28
 
