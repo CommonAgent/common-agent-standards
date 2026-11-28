@@ -1,6 +1,6 @@
 # Reference process: Make a New Agent
 
-`ref/dev/make-a-new-agent v3`
+`ref/dev/make-a-new-agent v4`
 
 A person in an organization wants an agent to do a piece of work, and
 this process makes one the way careful software teams make a program.
@@ -12,8 +12,10 @@ can't change judges them all together and names what each still needs.
 The tests are shown to fail while every script is empty, and they can't
 change once the scripts are first judged against them, so the scripts
 must meet a standard they did not choose. The
-package is made from the spec and the scripts and nothing else, and the
-person says yes again before the package is deployed. After the deploy, an agent that built none of it
+package is made from the spec and the scripts and nothing else. Before
+it is deployed, it passes Admission, the one way in for every agent: an
+admission checker checks it against the organization's admission rules,
+and the person's yes is recorded. After the deploy, an agent that built none of it
 checks the running agent against what its own package declares. The
 run closes when the person has read the agent's AgentDoc and said it
 may be listed.
@@ -45,7 +47,7 @@ framework wrapped as an agent, are made another way and not here.
 | 2 | Approve the Spec | the owner answers what is open and says yes | agent's owner (person) |
 | 3 | Build the Agent | the architecture, the agent's own files, the suite and the scripts, in any order, judged together by a check the builder can't change | [solution architect](https://agentroles.ai/solution-architect.html) · [test writer](https://agentroles.ai/test-writer.html) · [code writer](https://agentroles.ai/code-writer.html), one agent, or a separate agent for each |
 | 4 | Make the Package | a signed package from the spec and the scripts only | [package maker](https://agentroles.ai/package-maker.html) |
-| 5 | Approve the Deploy | the owner reads the package's record and says yes | agent's owner (person) |
+| 5 | Admit the Agent | the package's records checked against the admission rules, and the owner's yes recorded | [admission checker](https://agentroles.ai/admission-checker.html) · agent's owner (person) |
 | 6 | Deploy the Agent | the package installed, or the running agent updated | [deployment manager](https://agentroles.ai/deployment-manager.html) |
 | 7 | Check Conformance | the package's own declarations tested on the agent | [conformance checker](https://agentroles.ai/conformance-checker.html) |
 | 8 | Publish the Agent | the owner reads the AgentDoc and says it may be listed | agent's owner (person) |
@@ -59,7 +61,7 @@ agent or several, whether the organization can stand a product behind
 every system the design names, and whether the thing already exists.
 Each answer is the person's, chosen from a short list, and two of them
 can end the run. They come before any suite is written, because the
-alternative is to find them at the deploy approval, after the work they
+alternative is to find them at admission, after the work they
 would have saved has been done. That is also why the spec phase is
 `assisted`: the spec writer gathers and drafts, and the person settles
 the four answers.
@@ -74,6 +76,15 @@ Tests changed to fit the scripts can pass by agreeing with a mistake, so
 this is the protection, even when one agent writes both. The package is made only from the approved spec and
 the scripts the code writing phase delivered, so nothing reaches the
 package that the suite never saw.
+
+The package goes through Admission before it is deployed, the same gate
+an agent from outside the organization passes. The admission checker
+checks the package's records against the organization's admission rules
+and marks each rule passed or failed with the line of the record behind
+it, and the owner says yes or no. The checker checks and records. It
+deploys nothing: the deployment manager carries out the signed admission
+record. An agent made here needs no trial, because its build was checked
+as it was written, so it is admitted to go live.
 
 Conformance is checked after the deploy, against the agent as it runs,
 by an agent that built none of it. Publishing is the owner's act. The
@@ -95,14 +106,14 @@ cannot pass without breaking the spec goes to the owner, who decides
 which of the two is wrong. A script the package would ship that cannot
 be traced to the build goes back through it. A failed conformance case
 sends the build back for its scripts to be revised against the same
-suite. And at the deploy approval the owner can say that what
+suite. And at admission the owner can say that what
 was built is not what was wanted, which sends the run back to the spec.
 
 ## The document, with the blanks marked
 
 ```
-PROCESS: make a new agent             id: <team>/make-a-new-agent   v3
-from: ref/dev/make-a-new-agent v3
+PROCESS: make a new agent             id: <team>/make-a-new-agent   v4
+from: ref/dev/make-a-new-agent v4
 owner: <who>                          effective: <date>
 trigger: a person asks for an agent in words, through
          <your request channel>, with a prototype attached when one
@@ -152,16 +163,23 @@ phases:
                        requirements in agent-runtime-requirements.json
                        owner: package-maker        after: build-the-agent
                        automation: <level>
-  approve-the-deploy - human: the owner reads the package's build record
-                       and says whether it goes on <your hosts>
-                       owner: <the agent's owner>
-                       after: make-the-package
+  admit-the-agent    - convenes approval: the admission checker checks
+                       the package's build record and the records the
+                       build left against <your admission rules>, marks
+                       each rule passed or failed with the line of the
+                       record behind it, and records the owner's yes or
+                       no with who and when; the signed admission record
+                       lets the agent go live on <your hosts>, with its
+                       owner, its way in and the rules it runs under, or
+                       turns it away with the reasons
+                       owner: admission-checker    after: make-the-package
                        automation: never
   deploy-the-agent   - harness: the package installed on <your hosts>,
                        or the running agent updated when the name
-                       already runs; the deployment manager answers with
+                       already runs, only where the admission record
+                       lets it; the deployment manager answers with
                        the agent's name and the signed deployment record
-                       owner: deployment-manager   after: approve-the-deploy
+                       owner: deployment-manager   after: admit-the-agent
                        automation: <level>
   check-conformance  - harness: the test derived from the package's own
                        declarations, run against the installed agent,
@@ -189,10 +207,12 @@ handoffs:
     the agent's own files, the suite, every script the agent's files
     name, the record of the check that passed the build, the builder's account, and
     the signed job manifest that came with the delivery
-  make-the-package -> approve-the-deploy [package]: the package's
+  make-the-package -> admit-the-agent [package]: the package's
     address, its sha256, and the build record
-  approve-the-deploy -> deploy-the-agent [approved-package]: the
-    package's address and sha256, with who approved it and when
+  admit-the-agent -> deploy-the-agent [admitted-package]: the
+    package's address and sha256, and the signed admission record with
+    the owner's yes, who gave it and when, and the rules the agent runs
+    under
   deploy-the-agent -> check-conformance [agent]: the agent's name and
     the deployment record
   check-conformance -> publish-the-agent [eval-record]: the signed
@@ -210,15 +230,17 @@ deviations:
   check-conformance -> build-the-agent [failed]: a case the package's
     own declarations promise has failed; the scripts are revised
     against the same suite
-  approve-the-deploy -> write-the-spec [wrong-spec]: what was built is
-    not what was wanted; the request is restated and the spec redone
+  admit-the-agent -> write-the-spec [wrong-spec]: what was built is
+    not what was wanted; the owner says no at admission, and the
+    request is restated and the spec redone
 bindings:
   roster:  <who holds each role - an agent claiming each of the roles
            above; build-the-agent may be done by one agent taking on
            the solution architect, test writer and code writer roles,
            or by a separate agent for each; no agent that builds also
-           checks conformance; and the agent's owner
-           (person), who holds the three human phases>
+           checks conformance; the admission checker builds nothing and
+           deploys nothing; and the agent's owner (person), who holds
+           the two human phases and gives the yes at admission>
   systems: none of the phases reaches a system of its own; each agent
            brings what its package declares
   data:    the request, the prototype when there is one,
@@ -235,7 +257,9 @@ policy:
     that the suite fails
   only scripts delivered by build-the-agent are packed; a script
     written or changed outside that phase goes back through it
-  nothing is deployed without the owner's yes on the package
+  nothing is deployed without a signed admission record that carries
+    the owner's yes; the admission checker checks and records, and the
+    deployment manager carries out the record
   a prototype is read as the most exact statement of what was wanted
     and is never shipped as it stands
 measures:
@@ -255,8 +279,9 @@ records:
                       every round, and the signed job manifest
   build-record      - the package's address and sha256, and the signed
                       build record
-  deploy-decision   - the owner's yes on the package, and when it was
-                      given
+  admission-record  - each admission rule passed or failed with the
+                      line behind it, and the owner's yes or no with
+                      who and when, signed by the admission checker
   deployment-record - the agent's name and the signed deployment record
   evaluation-record - every case confirmed, failed or flagged, signed
                       by the conformance checker
@@ -270,7 +295,8 @@ human gates leave the owner's decision with the time it was made, and
 the harness phases leave one closing record each. Three of the records
 are signed by the agent that made them, as the Common Agent
 Specification defines: the build record, the deployment record and the
-evaluation record. An AgentDoc is assembled from records like these, so
+evaluation record. The admission record is signed by the admission
+checker and carries the owner's yes. An AgentDoc is assembled from records like these, so
 a stranger deciding whether to use the agent reads the same records this
 run left.
 
@@ -282,7 +308,7 @@ and a script it cannot trace is not packed.
 The run closes:
 
 ```
-RUN DONE: <team>/make-a-new-agent v3 · run <n>
+RUN DONE: <team>/make-a-new-agent v4 · run <n>
 outcome: <completed | abandoned>
 result: <the agent's name, deployed, checked and listed>
 open: <what nobody finished, and who may close it>
@@ -314,15 +340,19 @@ open: <what nobody finished, and who may close it>
 - **A conformance case fails.** The scripts are revised against the
   same suite, and the agent is packaged and deployed again. A case
   passed by editing a test has not been passed.
-- **What was built is not what was wanted.** The owner says so at the
-  deploy approval, and the request is restated and the spec redone.
-  Nothing is deployed.
+- **What was built is not what was wanted.** The owner says no at
+  admission, and the request is restated and the spec redone. Nothing
+  is deployed.
+- **An admission rule fails.** The admission record turns the agent
+  away with the reasons, each at the line of the record behind it, and
+  it stays out at that version. A rule passed by changing the rule has
+  not been passed.
 - **The trigger fires for an agent that already has a run open.** One
   agent is made or changed by one run at a time, so the new request
   does not start a second run for the same agent.
-- **A run is abandoned.** A run abandoned before the deploy approval has
-  installed nothing, because nothing is deployed without the owner's
-  yes. A run abandoned after the deploy leaves an agent running, and
+- **A run is abandoned.** A run abandoned before admission has
+  installed nothing, because nothing is deployed without a signed
+  admission record carrying the owner's yes. A run abandoned after the deploy leaves an agent running, and
   the [retire an agent](./retire-an-agent.md) process is how it is
   taken down.
 
@@ -333,6 +363,7 @@ open: <what nobody finished, and who may close it>
 | write-the-spec | [The spec writer](https://agentroles.ai/spec-writer.html) in Agent Roles; [the Agent Package](https://commonagent.net/spec.html#12-how-an-agent-travels-the-agent-package) in the Common Agent Specification |
 | build-the-agent | [The solution architect](https://agentroles.ai/solution-architect.html), [the test writer](https://agentroles.ai/test-writer.html) and [the code writer](https://agentroles.ai/code-writer.html) in Agent Roles; [the job manifest](https://commonagent.net/spec.html#5-7-the-job-manifest-and-revisions) in the Common Agent Specification |
 | make-the-package | [The package maker](https://agentroles.ai/package-maker.html) in Agent Roles; [the layout](https://commonagent.net/spec.html#12-2-layout) and [the build record](https://commonagent.net/spec.html#8-2-the-build-record) in the Common Agent Specification |
+| admit-the-agent | [The admission checker](https://agentroles.ai/admission-checker.html) in Agent Roles; [Admission](https://agenticdevelopment.ai/stages.html#admission) in the Agent Development Lifecycle |
 | deploy-the-agent | [The deployment manager](https://agentroles.ai/deployment-manager.html) in Agent Roles; [install and update](https://commonagent.net/spec.html#12-7-publish-install-update-remove) and [the deployment record](https://commonagent.net/spec.html#8-3-the-deployment-record) in the Common Agent Specification |
 | check-conformance | [The conformance checker](https://agentroles.ai/conformance-checker.html) in Agent Roles; [the evaluation record](https://commonagent.net/spec.html#8-4-the-evaluation-record) in the Common Agent Specification |
 | publish-the-agent | [The documenter](https://agentroles.ai/documenter.html) in Agent Roles; [AgentDoc](https://agentdoc.net/) |

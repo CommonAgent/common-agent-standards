@@ -4,6 +4,36 @@ Versions of Agent Processes tagged in this repository, newest first. A version i
 tagged as `processes-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from jeffrschneider/agentprocesses.
 
+## 0.11.1 (2026-11-28)
+
+- There is one way in for every agent, as the Agent Development
+  Lifecycle now says (agenticdevelopment.ai, stages.json 1.9.0). Two
+  reference processes pass it.
+- The reference process make-a-new-agent is version 4. Its phase
+  approve-the-deploy becomes admit-the-agent: the admission checker
+  checks the package's records against the organization's admission
+  rules, marks each rule passed or failed with the line behind it, and
+  records the owner's yes or no with who and when. The signed admission
+  record is what deploy-the-agent carries out, and the checker deploys
+  nothing. An agent made here needs no trial. The goal is unchanged; a
+  handoff, a deviation, the policy, a record, the roster blank and a
+  failure edge say so.
+- The reference process onboard-an-agent is version 2. The outside
+  agent is inspected (inspect-agent: its code read without running it,
+  with no verdict), admitted for a trial where there is one
+  (admit-for-trial), deployed to a test environment for the trial
+  (deploy-for-trial), tried, admitted to go live (admit-to-go-live, in
+  place of decide-go-live), given access (grant-access, in place of
+  admit-and-grant), deployed (deploy-agent), and checked against its own
+  declarations (check-conformance) before the context is handed over and
+  it goes live. Inspection and the trial are marked as phases that do
+  not run in every run (Section 6.5.2): an agent reached only through
+  its A2A agent card goes to admission with its card, and an
+  organization that needs no trial goes straight to the admission to go
+  live. A failed conformance case goes back to that admission.
+- The language does not change, and a document valid under 0.11.0 is
+  valid under this version.
+
 ## 0.11.0 (2026-11-21)
 
 - §15.7 An adopted process is an agent. It presents the interface the
