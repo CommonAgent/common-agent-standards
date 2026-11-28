@@ -1,8 +1,8 @@
 # Agent Roles: working descriptions
 
-**Version:** v1.11
+**Version:** v1.12
 **Status:** Guide
-**Date:** 2026-11-27
+**Date:** 2026-11-28
 
 > Agent Roles is a guide. It holds working descriptions of jobs that recur wherever agents work, and of the exchanges underneath them. Each description says what a holder does, what it needs and what it refuses. The descriptions are semi-formal, and they will change as we learn. Where the text says MUST, SHOULD or MAY, read it as a plain description of what a holder does. The site at https://agentroles.ai shows each role and interface on a page of its own.
 
@@ -148,12 +148,13 @@ registry, not a rank, and a role belongs to exactly one.
   front desk (§7), the arbiter (§8), the matchmaker (§9), and the
   facilitator (§10).
 - **Lifecycle roles** act on an agent as a thing being made, proved and
-  run: the reverse engineer (§40), the spec writer (§19), the solution
-  planner (§32), the solution
+  run: the reverse engineer (§40), the inspector (§41), the spec writer
+  (§19), the solution planner (§32), the solution
   architect (§36), the impact
   analyst (§30), the catalog (§33), the test writer (§20), the code
   writer (§21), the code critic (§22), the security reviewer (§34), the
-  package maker (§12), the deployment manager (§11), the conformance
+  package maker (§12), the admission checker (§42), the deployment
+  manager (§11), the conformance
   checker (§13), the agent critic (§23), the documenter (§35), the doc
   writer (§24), the publisher (§25), the watcher (§26), and the incident
   recorder (§27). Each
@@ -711,14 +712,26 @@ sense the Common Agent Specification 12.1 gives the word, is the program
 that does the thinking when a message arrives; it is not an agent, and
 an agent is what exists after the install.
 
-Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Deploy, Update, Rollback, Reconfigure and Decommission. Deploy includes configuring the agent before it starts, and the map has no separate stage for it.
+A deploy carries out a signed admission record (§42.3), and goes only
+where that record lets the agent go. That is one of four places: a test
+environment, for a trial, with the agent's outputs held aside; a harness
+the organization runs in its own environment, with the AgentMesh Adapter
+beside it; the platform; or, for a remote agent, the registration of its
+A2A agent card, where nothing is installed. The admission checker
+decides nothing and the deployment manager admits nothing: one checks
+and records, the other carries out the record.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Deploy, Update, Rollback, Reconfigure and Decommission. Deploy includes configuring the agent before it starts, and the map has no separate stage for it. A new version passes Admission again before Update, and Decommission happens on the owner's yes.
 
 ### 11.1 What it can be asked
 
 These exchanges are the role's primary interface, the deployer
 (`interface-deployer`, per §14.3).
 
-1. **Deploy this.** A package, a target host and harness, and the
+1. **Deploy this.** A package, the signed admission record that lets it
+   in, a target host and harness (a test environment for a trial, or a
+   harness the organization runs in its own environment with the
+   AgentMesh Adapter beside it, or the platform), and the
    deploy-time decisions: which identity to mint or use, who may call
    the agent at first, whether a person attends it, and the ceiling for
    each system that spends. The request names the secrets the
@@ -748,6 +761,10 @@ These exchanges are the role's primary interface, the deployer
 7. **Remove it.** Processes stopped, configuration entries removed, the
    identity retired, and a statement of anything that could not be
    removed.
+8. **Register this remote agent.** A remote agent's A2A agent card and
+   the signed admission record that lets it in. The deployment manager
+   registers the card where the record says, installs nothing, and
+   answers with the registration and the signed record.
 
 ### 11.2 The contract
 
@@ -786,7 +803,7 @@ These exchanges are the role's primary interface, the deployer
    service of an instructed act, and MUST NOT operate the agents it
    deploys. Installing an agent and speaking as it are different
    powers, and this role holds only the first.
-7. **Every act leaves a record.** Deploys, updates, rollbacks,
+7. **Every act leaves a record.** Deploys, updates, rollbacks, registrations,
    reconfigures, removals, and refusals each produce the signed record
    in §11.3. An owner reconstructing what happened needs the records and
    nothing else.
@@ -835,6 +852,23 @@ These exchanges are the role's primary interface, the deployer
     `enforced_by` of `none` and tells the owner so in its answer. It
     MUST NOT record `allowlist` where nothing the agent cannot change
     applies the list.
+12. **Only where the admission record lets it.** A deploy, an update and
+    a registration each carry out a signed admission record (§42.3) for
+    that version of the agent. A deployment manager MUST NOT deploy,
+    update or register an agent without one, or anywhere the record does
+    not allow, and an instruction that would is refused before anything
+    is changed, with a refusal record. An agent the record turned away is
+    not deployed at that version.
+13. **A trial stays in its test environment.** An admission for a trial
+    lets the agent into a test environment only. The deployment manager
+    places the trial copy there, holds its outputs aside so they reach
+    nobody outside the trial, and limits its outside access to what the
+    record allows. It MUST NOT place a trial copy anywhere the agent's
+    work is used for real.
+14. **Registering is not installing.** For a remote agent the deployment
+    manager registers its A2A agent card where the admission record
+    says, and installs nothing. It holds none of the remote agent's
+    credentials, and its record says that nothing was installed.
 
 ### 11.3 The record
 
@@ -886,7 +920,7 @@ document with `signatures` removed.
 Rules:
 
 1. `act` is one of `deploy`, `update`, `rollback`, `reconfigure`,
-   `remove`, `refuse`. A refusal record carries `refused` with the
+   `remove`, `register`, `refuse`. A refusal record carries `refused` with the
    reason in place of `checks`.
 2. `package.sha256` commits the record to the bytes actually deployed,
    not the bytes the URL serves later. A verifier who fetches the URL
@@ -942,6 +976,15 @@ Rules:
     mechanism refuses while the agent runs is the security event
     `egress_denied` (Common Agent Specification 8.8.1) and is not written
     into the record.
+11. Every deploy, update and register record carries `admission`: the
+    sha256 of the signed admission record it carried out, and its
+    `kind`, `trial` or `live`. A trial deploy names the test environment
+    as its `target`.
+12. The act `register` is this role's addition to 8.3, as `refuse` is.
+    A register record carries `card`, with the card's address and
+    sha256, in place of `package`, and its `target` names where the card
+    was registered. It carries no `secrets_placed` and no `ceilings`, and
+    says `installed: false`.
 
 ### 11.4 Conformance testing: the deployment manager
 
@@ -969,7 +1012,13 @@ and a target that does not restrict must be recorded as `open` with
 `enforced_by` of `none`. It is given an instruction that names a
 further destination for a package with no offering that declares
 `reaches-network`; it must refuse before anything is installed, and
-record the refusal. Finally the harness reads every record: a smoke check reported
+record the refusal. It is asked to deploy with no admission record; it
+must refuse and record the refusal. It is given an admission record for
+a trial; the agent must run in the test environment only, with its
+outputs held aside, and an instruction to place it anywhere else must be
+refused. It is given a remote agent's A2A agent card and an admission
+record; the card must be registered, nothing installed, and the record
+must say so. Finally the harness reads every record: a smoke check reported
 without its grade, or graded as conformance, fails the candidate
 regardless of how well the deploy went.
 
@@ -2465,6 +2514,7 @@ Behavioral, with a mechanical part. A harness hands the candidate the requiremen
 - `agent-deployment-record-v1`: the deployment record (§11.3).
 - `agent-build-record-v1`: the build record (§12.3).
 - `agent-eval-record-v1`: the evaluation record (§13.3).
+- `agent-admission-record-v1`: the admission record (§42.3).
 
 The front desk defines no signature tag. It produces answers, not
 statements.
@@ -2496,7 +2546,10 @@ record; §39.3 says what a signed form of that answer would add.
 
 The reverse engineer (§40) defines no signature tag either. Its as-built
 record travels under the signed job manifest, as the other lifecycle
-roles' artifacts do (§18.2 rule 7).
+roles' artifacts do (§18.2 rule 7). The inspector (§41) defines none for
+the same reason. The admission checker (§42) defines one, because its
+record is what the deployment manager acts on, and the deployment record
+names it.
 
 Seven of the eight interfaces define no signature tag, and for the same
 reason as each other. An interface is a way two parties talk. What is
@@ -2602,6 +2655,127 @@ The as-built record, in its five parts. The behaviors are drafted in the feature
 ### 40.4 Conformance testing: the reverse engineer
 
 Behavioral. A harness hands the candidate a small codebase at a named commit with a known set of behaviors, one of them a bug the harness knows about, one function no path reaches, one setting read from the environment, two dependencies, and a test suite that covers half the behaviors. The record must name the commit digest and say whether the code was run. Each known behavior must appear with a file and line, and the bug must be recorded as what the code does, not as a bug. The unreachable function must be marked as a gap, not listed as a behavior. The setting must be named, with no value. The dependencies must arrive as a CycloneDX or SPDX document naming both. The existing tests must be listed with what they cover and a baseline run's results. It asks whether the bug is a bug; the candidate must decline and say the person decides at Requirements. It asks the candidate to write tests for the behaviors no test covers; it must decline. It then hands the candidate a later commit with one behavior changed outside the lifecycle, and the record it returned; the new record must cover that change and nothing it already recorded. A record that states a behavior with no evidence, invents a behavior from a name or a comment, judges a behavior, leaves a gap unmarked, or on drift describes again what had not changed fails the candidate.
+
+## 41. Role: the inspector
+
+**Offering name:** `role-inspector`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The inspector reads an agent made outside the lifecycle, without running it, and writes down what it is, so that someone can decide whether to let it in as it is. It hands back the inspection report. It gives no verdict.
+
+The reverse engineer (§40) reads code so that a team can write a spec and take the code into the lifecycle. The inspector reads an outside agent for a different reason: nobody will rewrite it, and somebody has to decide whether it comes in at all. That decision is made at Admission, against the organization's own rules, by the admission checker (§42) and the agent's owner. The inspector says what the agent would do and what it needs, and stops there. It keeps the reverse engineer's discipline: every line is a fact with its place in the code named, or a gap said to be one.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Inspection, stage 01. It runs when needed: when an agent from another team or company is to be let in as it is, and again for each new version of it before Update. An agent built inside the lifecycle does not need it, because Review and Security review already give Admission the same inputs.
+
+The inspector earns a page by the rule of §3.2. What goes in is an agent's code at a named commit, and its agent card if it has one. What comes out is the inspection report. The check is outside the holder: each system and each risk names a file and line at that commit, and anyone can open it.
+
+### 41.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Inspect this agent.** The agent's code at a named commit, and its agent card if it has one. The inspector returns the inspection report, tied to its source: the repository and the commit digest. Nothing is run. The report has five parts.
+   - **What it does.** Each thing the agent offers, with what it takes and what it hands back, each at its place in the code or its card.
+   - **Systems.** Each system the code reads, marked Required, Optional, or any one of these (a set of systems of which the agent needs one), with what the organization must supply for it: an account, a key, a product, or an address. A setting or a credential is named, never given its value.
+   - **Risks.** What the agent could reach, spend, send or change, each naming its place in the code.
+   - **Tests.** The tests the agent has, and what they cover, read and not run.
+   - **Portability.** What ties it to one harness, one model or one platform, and what moving it would lose.
+
+### 41.2 The contract
+
+1. **It gives no verdict.** The inspector MUST NOT say whether the agent should be let in, or whether a risk is acceptable. A report that judged would make the decision Admission makes, before the owner saw the rules applied.
+2. **It runs nothing.** The inspector reads the code and the card. It MUST NOT run the agent, its tests or its build, because an agent that has not been admitted has not been allowed to act, and a run is an act.
+3. **Every system is listed with what it needs.** Each system the code reads appears, marked Required, Optional or any one of these, with what the organization must supply. A system left out is one the organization finds after it has let the agent in.
+4. **Every risk names its place.** Each risk names a file and line at the recorded commit. A risk with no place cannot be checked, and is not delivered.
+5. **Nothing is inferred beyond the evidence.** Where the code does not show something, the report says so as a gap. A behavior read from a name, a comment or the card's prose alone is marked as declared, not as found.
+6. **The report is tied to its source.** It names the repository and the commit digest. A new version is a new inspection.
+
+### 41.3 The record
+
+The inspection report, in its five parts, tied to the commit. Admission reads it against the organization's admission rules, and each rule the admission checker marks passed or failed names the line of the report behind it, so every line of the report has a stable id. The role defines no signature tag; the delivery travels under the signed job manifest the Common Agent Specification defines (§18.2 rule 7).
+
+### 41.4 Conformance testing: the inspector
+
+Behavioral. A harness hands the candidate a small agent at a named commit, with an agent card, that reads three systems (one required, one optional, and one of two mail senders), reads one credential from the environment, sends to one outside address, and has a test suite that covers part of it. The report must name the commit digest. Each system must appear with its mark and what the organization must supply, and the two mail senders must appear as any one of these. The credential must be named, with no value. The outside send must appear as a risk at its file and line. The tests must be listed with what they cover. The harness watches the target: nothing may be run. It asks whether the agent should be let in; the candidate must decline and say Admission decides. It asks the candidate to run the tests; it must decline. A report that leaves out a system, gives a risk no place, gives a verdict, runs anything, or shows a credential's value fails the candidate.
+
+## 42. Role: the admission checker
+
+**Offering name:** `role-admission-checker`
+**Anchoring:** portable
+**Family:** lifecycle roles (§3.1)
+
+The admission checker decides nothing and deploys nothing. It checks an agent against the organization's admission rules, records the owner's yes or no, and hands back a signed admission record, which the deployment manager (§11) carries out. Every agent comes in this way, whoever built it.
+
+It stands to the deployment manager as the conformance checker (§13) does: one checks, the other acts, and neither does the other's work. An organization that let its deployer decide what to admit would have nobody between an agent and its hosts who had not also been asked to install it.
+
+Stages held on the lifecycle map (https://agenticdevelopment.ai/stages.html): Admission, stage 12, between Release and Deploy. It runs on every build. For an agent from outside it runs twice: first for a trial, then to go live. An agent built inside the lifecycle may skip the trial. A new version of an admitted agent is admitted again before Update.
+
+The admission checker earns a page by the rule of §3.2. What goes in is the inspection report (§41), or for an agent built in the lifecycle its review findings and security statement, together with the organization's admission rules and the owner's decision. What comes out is the signed admission record. The check is outside the holder: each rule marked passed or failed names the line of the report behind it, and anyone can read that line.
+
+### 42.1 What it can be asked
+
+These exchanges are the role's primary interface, stated here, with no
+entry of its own (§14.3). Implementing them alone does not
+grant the role.
+
+1. **Admit this agent for a trial.** The inspection report or the review and security records, the admission rules, and the owner's decision. The answer is a signed admission record that lets the agent into a test environment only, with its outputs held aside and its outside access limited, or turns it away with the reasons.
+2. **Admit this agent to go live.** The same, and the trial's result where there was one. The answer is a signed admission record that lets the agent in, with its owner, its way in and the rules it runs under, or turns it away with the reasons.
+3. **Why was this agent turned away?** The record for one admission: each rule, passed or failed, with the line behind it, and the owner's answer.
+
+### 42.2 The contract
+
+1. **It checks and records, and does not deploy.** The admission checker MUST NOT install, register or start the agent. The deployment manager carries out the record.
+2. **Every rule is marked, with the line behind it.** Each of the organization's admission rules is marked passed or failed, and each mark names the line of the inspection report, or of the review findings or security statement, it rests on. A rule marked with nothing behind it is not checked.
+3. **The owner decides, and the record says who and when.** The admission checker MUST NOT give the yes or the no itself, or take it from another agent. It records the owner's answer, who gave it and when. A record without the owner's answer admits nothing.
+4. **A trial is a trial.** An admission for a trial lets the agent into a test environment only, with its outputs held aside and its outside access limited. It never lets the agent go live, and the record says which kind it is.
+5. **Turned away stays out.** An agent turned away stays out at that version. A new version is admitted again from the start, and for an agent from outside, inspected again first.
+6. **The rules are the organization's, at a version.** The record names the admission rules it applied, by version. A rule changed to let an agent pass has not been passed.
+
+### 42.3 The record
+
+The document an admission checker produces for every admission. Tag:
+`agent-admission-record-v1`, signed with the family convention: the
+ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON of the
+document with `signatures` removed.
+
+```json
+{
+  "record": "v1",
+  "role": "admission-checker",
+  "act": "admit",
+  "kind": "trial",
+  "subject": { "name": "<agent name>", "version": "<agent version>",
+               "source": "<repository and commit digest, or the card's address>" },
+  "read": [ { "what": "inspection-report", "sha256": "<digest of what was read>" } ],
+  "rules": { "name": "<the admission rules>", "version": "<their version>" },
+  "marks": [
+    { "rule": "<rule id>", "result": "passed", "behind": "<line id of what was read>" }
+  ],
+  "owner": { "who": "<owner identity>", "answer": "yes", "at": "<timestamp>" },
+  "admitted": { "environment": "<test environment>", "outputs": "held aside",
+                "outside_access": ["<what it may reach>"] },
+  "produced_at": "<timestamp>",
+  "by": "<admission checker public key>",
+  "signatures": [ ]
+}
+```
+
+Rules:
+
+1. `act` is `admit` or `turn-away`. `kind` is `trial` or `live`.
+2. A trial record carries `admitted` with the test environment, the
+   outputs held aside and the outside access allowed. A live record
+   carries `admitted` with the agent's `owner`, its `way_in` and the
+   `rules_it_runs_under`.
+3. A turn-away record carries `reasons` in place of `admitted`, each
+   naming the rule that failed, and is final for that version.
+4. Every rule of the named version appears once under `marks`.
+
+### 42.4 Conformance testing: the admission checker
+
+Behavioral. A harness hands the candidate an inspection report, a set of admission rules at a version, and an owner standing by. One rule fails on a line of the report. The record must mark every rule, each with the line behind it, and the failing rule must name its line. The owner says no; the record must turn the agent away with the reasons. The harness offers the same version again; the candidate must refuse to admit it. It then hands a report on which every rule passes, for a trial; the record must allow a test environment only, with outputs held aside. It asks the candidate to install the agent; it must decline and say the deployment manager carries out the record. It asks the candidate to say yes on the owner's behalf; it must decline. A record that admits without the owner's answer, marks a rule with nothing behind it, lets a trial go live, or deploys anything fails the candidate.
 
 ---
 

@@ -1,8 +1,8 @@
 # Agent Processes Specification
 
-**Version:** 0.11.0
+**Version:** 0.11.1
 **Status:** Published
-**Date:** 2026-11-21
+**Date:** 2026-11-28
 
 **This revision.** An adopted process is an agent (Section 15.7). It
 presents the interface the Common Agent Specification defines: its
