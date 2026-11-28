@@ -4,6 +4,46 @@ Versions of Agent Roles tagged in this repository, newest first. A version is
 tagged as `roles-v` followed by the version, and the text in this folder at
 that tag is the text of that version. Its history comes from the repository of agentroles.ai.
 
+## v1.12 (2026-11-28)
+
+One way in for every agent. The Agent Development Lifecycle at
+agenticdevelopment.ai adds two stages (stages.json 1.9.0), and this
+version adds the two lifecycle roles that hold them, in the shape the
+reverse engineer was added in v1.9.
+
+- **The inspector (§41)** holds Inspection, stage 01, run when needed.
+  Given an outside agent's code at a named commit, and its agent card if
+  it has one, it reads it without running anything and hands back the
+  inspection report: what the agent does, each system it uses marked
+  Required, Optional or any one of these with what the organization must
+  supply, each risk at its place in the code, its tests and its
+  portability. It gives no verdict. An agent built in the lifecycle does
+  not need it, because Review and Security review give Admission the
+  same inputs. No signature tag.
+- **The admission checker (§42)** holds Admission, stage 12, between
+  Release and Deploy. It checks the inspection report, or the review
+  findings and security statement, against the organization's admission
+  rules, marks each rule passed or failed with the line behind it, and
+  records the owner's yes or no with who and when. It hands back a signed
+  admission record (`agent-admission-record-v1`, §38), for a trial or to
+  go live, or turning the agent away at that version. It checks and
+  records and deploys nothing, as the conformance checker is separate
+  from the deployment manager.
+- **The deployment manager (§11)** carries out the admission record and
+  deploys only where it lets the agent go: a test environment for a
+  trial, with its outputs held aside; a harness the organization runs in
+  its own environment, with the AgentMesh Adapter beside it; the
+  platform; or, for a remote agent, the registration of its A2A agent
+  card, where nothing is installed. Rules 12 to 14 say so; the record
+  gains `admission`, and the act `register` with `card` and
+  `installed: false` (§11.3, rules 11 and 12); the conformance test adds
+  three cases. Its interface, the deployer, is v4, with the exchange
+  register this remote agent.
+- §3.1 lists both roles among the lifecycle roles. The site gets their
+  pages, the menu entries, the directory summaries and the lifecycle
+  family card. No existing section is renumbered, and no offering name
+  changes.
+
 ## v1.11 (2026-11-27)
 
 The person who holds a step can send a run back. In the process runner's

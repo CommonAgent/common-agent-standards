@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <script async src="/ga.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The admission checker: Agent Roles</title>
+  <meta name="description" content="The admission checker checks an agent against the organization's admission rules, records the owner's yes or no, and hands back a signed admission record, which the deployment manager carries out. Every agent comes in this way, whoever built it.">
+  <meta property="og:type" content="article">
+  <meta property="og:site_name" content="Agent Roles">
+  <meta property="og:title" content="The admission checker: Agent Roles">
+  <meta property="og:description" content="The admission checker checks an agent against the organization's admission rules, records the owner's yes or no, and hands back a signed admission record, which the deployment manager carries out. Every agent comes in this way, whoever built it.">
+  <meta property="og:url" content="https://agentroles.ai/admission-checker.html">
+  <meta property="og:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Agent Roles. Working descriptions of the jobs and exchanges that recur wherever agents work.">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="https://agentroles.ai/brand/png/og-image.png">
+  <link rel="canonical" href="https://agentroles.ai/admission-checker.html">
+  <!-- chrome:head -->
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/site.css">
+  <script>
+  (function(){ var t=null; try{ t=localStorage.getItem('dev-theme'); }catch(e){}
+    if(location.hash==='#dark') t='dark'; if(location.hash==='#light') t='light';
+    if(t==='dark') document.documentElement.setAttribute('data-theme','dark'); })();
+  </script>
+  <!-- /chrome:head -->
+</head>
+<body>
+  <div class="layout">
+
+    <!-- chrome:rail -->
+  <aside class="rail" id="rail">
+      <div class="railhead">
+        <a class="brand" href="/" aria-label="Agent Roles, home"><svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true" focusable="false"><rect x="3.5" y="3.5" width="25" height="25" rx="6" fill="none" stroke="currentColor" stroke-width="2.2"/><circle cx="16" cy="12.6" r="4.2" fill="none" stroke="currentColor" stroke-width="2.3"/><path d="M8.8 24.4c1.8-3.9 4.4-5.6 7.2-5.6s5.4 1.7 7.2 5.6" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round"/></svg><span class="wm">Agent <b>Roles</b></span></a>
+        <button class="iconbtn" id="theme" type="button" aria-label="Switch colour theme"><span class="to-dark"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M13.5 9.6A5.6 5.6 0 0 1 6.4 2.5a5.6 5.6 0 1 0 7.1 7.1z" fill="currentColor"/></svg></span><span class="to-light"><svg viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3.2" fill="currentColor"/><g stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><path d="M8 1v1.8M8 13.2V15M1 8h1.8M13.2 8H15M3 3l1.3 1.3M11.7 11.7L13 13M3 13l1.3-1.3M11.7 4.3L13 3"/></g></svg></span><span class="to-dark">Dark</span><span class="to-light">Light</span></button>
+        <button class="iconbtn menubtn" id="menu" type="button" aria-expanded="false" aria-controls="rail"><svg viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4h12M2 8h12M2 12h12" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>Menu</button>
+      </div>
+      <nav aria-label="Agent Roles">
+        <details class="sec" open>
+          <summary>Agent Roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/">What it is</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/conformance.html">How a holder is checked</a>
+          <a href="/directory.html">Every role and interface</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Mesh roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/bookkeeper.html">The bookkeeper</a>
+          <a href="/frontdesk.html">The front desk</a>
+          <a href="/arbiter.html">The arbiter</a>
+          <a href="/matchmaker.html">The matchmaker</a>
+          <a href="/facilitator.html">The facilitator</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Lifecycle roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/reverse-engineer.html">The reverse engineer</a>
+          <a href="/inspector.html">The inspector</a>
+          <a href="/spec-writer.html">The spec writer</a>
+          <a href="/solution-planner.html">The solution planner</a>
+          <a href="/solution-architect.html">The solution architect</a>
+          <a href="/impact-analyst.html">The impact analyst</a>
+          <a href="/catalog.html">The catalog</a>
+          <a href="/test-writer.html">The test writer</a>
+          <a href="/code-writer.html">The code writer</a>
+          <a href="/code-critic.html">The code critic</a>
+          <a href="/security-reviewer.html">The security reviewer</a>
+          <a href="/package-maker.html">The package maker</a>
+          <a href="/admission-checker.html" class="on" aria-current="page">The admission checker</a>
+          <a href="/deployment-manager.html">The deployment manager</a>
+          <a href="/conformance-checker.html">The conformance checker</a>
+          <a href="/agent-critic.html">The agent critic</a>
+          <a href="/documenter.html">The documenter</a>
+          <a href="/doc-writer.html">The doc writer</a>
+          <a href="/publisher.html">The publisher</a>
+          <a href="/watcher.html">The watcher</a>
+          <a href="/incident-recorder.html">The incident recorder</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Composition roles<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/process-runner.html">The process runner</a>
+          <a href="/boss.html">The boss</a>
+          </div>
+        </details>
+        <details class="sec">
+          <summary>Interfaces<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/worker.html">The worker</a>
+          <a href="/manager.html">The manager</a>
+          <a href="/entryway.html">The entryway</a>
+          <a href="/deployer.html">The deployer</a>
+          <a href="/builder.html">The builder</a>
+          <a href="/evaluator.html">The evaluator</a>
+          <a href="/revisable-work.html">Revisable work</a>
+          <a href="/lifecycle.html">The lifecycle</a>
+          </div>
+        </details>
+        <details class="sec" open>
+          <summary>Reference<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md">The descriptions on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles/conformance">The published checks<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+        <details class="sec suite" open>
+          <summary>The Common Agent Standards<svg class="chev" viewBox="0 0 16 16" aria-hidden="true"><path d="M6 3l5 5-5 5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></summary>
+          <div class="items">
+          <a href="https://commonagent.net/standards.html">Every standard<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://commonagent.net/spec.html">The Common Agent Specification<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmessaging.ai/">Agent Messaging<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentemailing.ai/">Agent Emailing<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnaming.ai/">Personal Agent Naming<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentmandate.net/">Agent Mandate<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentrfp.net/">Agent RFP<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentsow.com/">Agent SoW<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentnda.net/">Agent NDA<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentreputations.com/">Agent Reputations<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentprocesses.ai/">Agent Processes<span class="ext" aria-hidden="true">↗</span></a>
+          <a href="https://agentcollab.dev/">Agent Collab<span class="ext" aria-hidden="true">↗</span></a>
+          </div>
+        </details>
+      </nav>
+      <div class="foot">Agent Roles is one of the <a href="https://commonagent.net/">Common Agent Standards</a>.</div>
+    </aside>
+  <!-- /chrome:rail -->
+
+    <main class="main" id="top">
+
+      <div class="wrap spec-hero">
+        <!-- chrome:entry -->
+  <h1>The admission checker</h1>
+        <div class="metas"><span>family <b>Lifecycle roles</b></span><span>offering name <b>role-admission-checker</b></span><span>updated <b>2026-11-28</b></span><span class="pill portable">portable</span></div>
+        <p class="canon">ROLES.md describes this role in section <a href="https://github.com/CommonAgent/common-agent-standards/blob/main/roles/ROLES.md#42-role-the-admission-checker">42</a>.</p>
+  <!-- /chrome:entry -->
+      </div>
+
+      <div class="wrap spec">
+        <p>The admission checker decides nothing and deploys nothing. It checks an agent against the organization's admission rules, records the owner's yes or no, and hands back a signed admission record, which the <a href="/deployment-manager.html">deployment manager</a> carries out. Every agent comes in this way, whoever built it.</p>
+        <p>It stands to the deployment manager as the <a href="/conformance-checker.html">conformance checker</a> does: one checks, the other acts, and neither does the other's work. An organization that let its deployer decide what to admit would have nobody between an agent and its hosts who had not also been asked to install it.</p>
+        <p>It holds the Admission stage on the lifecycle map (<a href="https://agenticdevelopment.ai/stages.html#admission">agenticdevelopment.ai</a>): stage 12, between Release and Deploy. It runs on every build. For an agent from outside it runs twice: first for a trial, then to go live. An agent built inside the lifecycle may skip the trial. A new version of an admitted agent is admitted again before Update.</p>
+        <p>It earns a page by the rule of §3.2. What goes in is the inspection report from the <a href="/inspector.html">inspector</a>, or for an agent built in the lifecycle its review findings and security statement, together with the organization's admission rules and the owner's decision. What comes out is the signed admission record. The check is outside the holder: each rule marked passed or failed names the line of the report behind it, and anyone can read that line.</p>
+
+        <h2 id="asks">1. The requests</h2>
+        <p>These exchanges are the role's primary interface, stated here, with no entry of its own (§14.3 of Agent Roles). Implementing them alone does not grant the role.</p>
+        <ol>
+          <li><b>Admit this agent for a trial.</b> The inspection report or the review and security records, the admission rules, and the owner's decision. The answer is a signed admission record that lets the agent into a test environment only, with its outputs held aside and its outside access limited, or turns it away with the reasons.</li>
+          <li><b>Admit this agent to go live.</b> The same, and the trial's result where there was one. The answer is a signed admission record that lets the agent in, with its owner, its way in and the rules it runs under, or turns it away with the reasons.</li>
+          <li><b>Why was this agent turned away?</b> The record for one admission: each rule, passed or failed, with the line behind it, and the owner's answer.</li>
+        </ol>
+
+        <h2 id="contract">2. What it does</h2>
+        <ol>
+          <li><b>It checks and records, and does not deploy.</b> The admission checker never installs, registers or starts the agent. The deployment manager carries out the record.</li>
+          <li><b>Every rule is marked, with the line behind it.</b> Each of the organization's admission rules is marked passed or failed, and each mark names the line of the inspection report, or of the review findings or security statement, it rests on. A rule marked with nothing behind it is not checked.</li>
+          <li><b>The owner decides, and the record says who and when.</b> The admission checker never gives the yes or the no itself, or takes it from another agent. It records the owner's answer, who gave it and when. A record without the owner's answer admits nothing.</li>
+          <li><b>A trial is a trial.</b> An admission for a trial lets the agent into a test environment only, with its outputs held aside and its outside access limited. It never lets the agent go live, and the record says which kind it is.</li>
+          <li><b>Turned away stays out.</b> An agent turned away stays out at that version. A new version is admitted again from the start, and for an agent from outside, inspected again first.</li>
+          <li><b>The rules are the organization's, at a version.</b> The record names the admission rules it applied, by version. A rule changed to let an agent pass has not been passed.</li>
+        </ol>
+
+        <h2 id="record">3. The record</h2>
+        <p>The document an admission checker produces for every admission. Tag: <code>agent-admission-record-v1</code>, signed with the family convention: the ASCII tag, one newline, then the JCS (RFC 8785) canonical JSON of the document with <code>signatures</code> removed. Section 42.3 of Agent Roles gives its members.</p>
+        <ol>
+          <li><code>act</code> is <code>admit</code> or <code>turn-away</code>. <code>kind</code> is <code>trial</code> or <code>live</code>.</li>
+          <li>A trial record carries <code>admitted</code> with the test environment, the outputs held aside and the outside access allowed. A live record carries <code>admitted</code> with the agent's <code>owner</code>, its <code>way_in</code> and the <code>rules_it_runs_under</code>.</li>
+          <li>A turn-away record carries <code>reasons</code> in place of <code>admitted</code>, each naming the rule that failed, and is final for that version.</li>
+          <li>Every rule of the named version appears once under <code>marks</code>.</li>
+        </ol>
+
+        <h2 id="conformance">4. How a holder is checked</h2>
+        <p>The test is behavioral. A harness hands the candidate an inspection report, a set of admission rules at a version, and an owner standing by. One rule fails on a line of the report. The record must mark every rule, each with the line behind it, and the failing rule must name its line. The owner says no; the record must turn the agent away with the reasons. The harness offers the same version again; the candidate must refuse to admit it. It then hands a report on which every rule passes, for a trial; the record must allow a test environment only, with outputs held aside. It asks the candidate to install the agent; it must decline and say the deployment manager carries out the record. It asks the candidate to say yes on the owner's behalf; it must decline. A record that admits without the owner's answer, marks a rule with nothing behind it, lets a trial go live, or deploys anything fails the candidate.</p>
+        <p>A platform can record the results of this check as evidence, so a role holder's reputation in the <a href="https://agentreputations.com">bureau</a> reflects whether it does the job the role defines.</p>
+
+        <p><i>v1.12 (2026-11-28): first published.</i></p>
+      </div>
+
+      <!-- chrome:footer -->
+  <footer class="sitefoot">
+        <div class="wrap">
+          <a href="/">Agent Roles</a>
+          <a href="/roles.html">What a role is</a>
+          <a href="/interfaces.html">What an interface is</a>
+          <a href="/directory.html">Every role and interface</a>
+          <a href="/interfaces/">Interface definitions</a>
+          <a href="https://github.com/CommonAgent/common-agent-standards/tree/main/roles">The source on GitHub</a>
+          <a href="https://commonagent.net/">The Common Agent Standards</a>
+          <span class="sponsor">Sponsored by <a href="https://agentmesh.ai/">AgentMesh</a></span>
+        </div>
+      </footer>
+  <!-- /chrome:footer -->
+
+    </main>
+  </div>
+  <!-- chrome:script -->
+  <script>
+  (function(){ var r=document.documentElement;
+    document.getElementById('theme').addEventListener('click', function(){
+      var dark = r.getAttribute('data-theme')!=='dark';
+      if(dark) r.setAttribute('data-theme','dark'); else r.removeAttribute('data-theme');
+      try{ localStorage.setItem('dev-theme', dark?'dark':'light'); }catch(e){} });
+    var rail=document.getElementById('rail'), mb=document.getElementById('menu');
+    mb.addEventListener('click', function(){ var o=rail.classList.toggle('open'); mb.setAttribute('aria-expanded', o?'true':'false'); });
+  })();
+  </script>
+  <!-- /chrome:script -->
+</body>
+</html>
